@@ -16,15 +16,13 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCardNoAddressForm";
 import AppAlert from "../../../core/components/AppAlert";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
-import {Link} from "react-router-dom";
-import {formatCurrency, formatNumbers, scrollToId} from "../../../_helpers";
+import {formatCurrency, formatNumbers, scrollToId, capitalize} from "../../../_helpers";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import LoadingButton from "../../../core/components/LoadingButton";
 import {ITEM_TYPES} from "../../../_constants";
 import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
-import {ROUTE_PATHS} from "../../../_routes";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -132,7 +130,11 @@ class OrderSummary extends Component {
       state: {
         type,
         paymentId: paymentIntent.id,
-        paymentMethod: selectedPaymentMethod,
+        paymentMethod: {
+          id: selectedPaymentMethod.id,
+          method: `${capitalize(selectedPaymentMethod.brand)} **** **** **** ${selectedPaymentMethod.lastDigits}`,
+          holder: selectedPaymentMethod.billingDetails.name,
+        },
         details: [
           {value: quantity.number, text: quantity.description, format: false},
           {value: cost.number, text: cost.description, format: true},
@@ -338,12 +340,13 @@ class OrderSummary extends Component {
       },
     ];
 
-    const paymentMethods = allPaymentMethods.map((method) => {
+    const paymentMethods = allPaymentMethods.map((data) => {
       return {
-        id: method.id,
-        brand: method.brand,
-        lastDigits: method.lastDigits,
-        holder: method.billingDetails.name,
+        id: data.id,
+        method: `${capitalize(data.brand)} **** **** **** ${data.lastDigits}`,
+        brand: data.brand,
+        lastDigits: data.lastDigits,
+        holder: data.billingDetails.name,
       };
     });
 
@@ -374,7 +377,7 @@ class OrderSummary extends Component {
             <div className="cards-container">
               <Form className="cards">
                 {paymentMethods.map((card, idx) => {
-                  const {brand, lastDigits, holder} = card;
+                  const {holder, lastDigits, brand} = card;
                   const isChecked = selectedPaymentMethod
                     ? card.id === selectedPaymentMethod.id
                     : false;
@@ -475,13 +478,14 @@ class OrderSummary extends Component {
                 label={
                   <span className="agree">
                     I agree to{" "}
-                    <Link
+                    <a
                       className="terms-link"
                       target="_blank"
+                      rel="noopener noreferrer"
                       style={{marginLeft: "0px"}}
-                      to={ROUTE_PATHS.purchaseTerms}>
+                      href="http://www.pokt.network/pokt-token-purchase-agreement/">
                       Purchase Terms and conditions.
-                      </Link>
+                      </a>
                   </span>
                 }
               />

@@ -15,6 +15,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
 import Purchase from "../../../core/components/Purchase/Purchase";
 import NodeService from "../../../core/services/PocketNodeService";
+import UserService from "../../../core/services/PocketUserService";
 
 class SelectValidatorPower extends Purchase {
   // TODO: On a later release, find a way to simplify the code and reduce
@@ -95,7 +96,7 @@ class SelectValidatorPower extends Purchase {
     });
   }
 
-  async createPaymentIntent(validatorPower, currency, amount) {
+  async createPaymentIntent(validatorPower, currency, amount, tokens) {
     const {address} = NodeService.getNodeInfo();
     const {pocketNode} = await NodeService.getNode(address);
 
@@ -109,7 +110,7 @@ class SelectValidatorPower extends Purchase {
       success,
       data: paymentIntentData,
     } = await PocketPaymentService.createNewPaymentIntent(
-      ITEM_TYPES.NODE, item, currency, parseFloat(amount)
+      ITEM_TYPES.NODE, item, currency, parseFloat(amount), tokens
     );
 
     if (!success) {
@@ -118,6 +119,7 @@ class SelectValidatorPower extends Purchase {
 
     return {success, data: paymentIntentData};
   }
+
 
   async goToSummary() {
     const {
@@ -143,7 +145,7 @@ class SelectValidatorPower extends Purchase {
       const totalAmount = parseFloat(numeral(total).format("0.000")).toFixed(3);
 
       const {data: paymentIntentData} = await this.createPaymentIntent(
-        selected, currency, totalAmount
+        selected, currency, totalAmount, currentAccountBalance
       );
 
       PaymentService.savePurchaseInfoInCache({
@@ -151,24 +153,47 @@ class SelectValidatorPower extends Purchase {
         validationPowerCost: parseFloat(totalAmount),
       });
 
-      // eslint-disable-next-line react/prop-types
-      this.props.history.push({
-        pathname: _getDashboardPath(DASHBOARD_PATHS.orderSummary),
-        state: {
-          type: ITEM_TYPES.NODE,
-          paymentIntent: paymentIntentData,
-          quantity: {
-            number: selected,
-            description: PURCHASE_ITEM_NAME.NODES,
+      if (total === 0) {
+        const user = UserService.getUserInfo().email;
+
+        this.props.history.replace({
+          pathname: _getDashboardPath(DASHBOARD_PATHS.invoice),
+          state: {
+            type: ITEM_TYPES.NODE,
+            paymentId: paymentIntentData.id,
+            paymentMethod: {
+              holder: user,
+              method: "POKT Tokens"
+            },
+            details: [
+              {value: selected, text: PURCHASE_ITEM_NAME.NODES, format: false},
+              {value: subTotalAmount, text: `${PURCHASE_ITEM_NAME.NODES} cost`, format: true},
+            ],
+            total,
+            currentAccountBalance,
           },
-          cost: {
-            number: subTotalAmount,
-            description: `${PURCHASE_ITEM_NAME.NODES} cost`,
+        });
+      } else {
+
+        // eslint-disable-next-line react/prop-types
+        this.props.history.push({
+          pathname: _getDashboardPath(DASHBOARD_PATHS.orderSummary),
+          state: {
+            type: ITEM_TYPES.NODE,
+            paymentIntent: paymentIntentData,
+            quantity: {
+              number: selected,
+              description: PURCHASE_ITEM_NAME.NODES,
+            },
+            cost: {
+              number: subTotalAmount,
+              description: `${PURCHASE_ITEM_NAME.NODES} cost`,
+            },
+            total: totalAmount,
+            currentAccountBalance,
           },
-          total: totalAmount,
-          currentAccountBalance,
-        },
-      });
+        });
+      }
     } catch (e) {
       this.setState({
         error: {show: true, message: <h4>{e.toString()}</h4>},
