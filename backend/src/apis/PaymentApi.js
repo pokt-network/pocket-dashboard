@@ -57,7 +57,7 @@ router.post("/payment_methods", apiAsyncWrapper(async (req, res) => {
  * Create a new intent of payment for apps.
  */
 router.post("/new_intent/apps", apiAsyncWrapper(async (req, res) => {
-  /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, maxRelays: string}, amount: number}} */
+  /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, maxRelays: string}, amount: number, tokens: number}} */
   const data = req.body;
 
   const paymentIntent = await paymentService.createPocketPaymentIntentForApps(data);
@@ -65,7 +65,7 @@ router.post("/new_intent/apps", apiAsyncWrapper(async (req, res) => {
   if (paymentIntent) {
     const {id, createdDate, currency, amount} = paymentIntent;
 
-    await paymentService.savePaymentHistory(createdDate, id, currency, amount, data.item, data.user);
+    await paymentService.savePaymentHistory(createdDate, id, currency, amount, data.item, data.user, data.tokens);
   }
 
   res.json(paymentIntent);
@@ -75,7 +75,7 @@ router.post("/new_intent/apps", apiAsyncWrapper(async (req, res) => {
  * Create a new intent of payment for nodes.
  */
 router.post("/new_intent/nodes", apiAsyncWrapper(async (req, res) => {
-  /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, validatorPower: string}, amount: number}} */
+  /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, validatorPower: string}, amount: number, tokens: number}} */
   const data = req.body;
 
   const paymentIntent = await paymentService.createPocketPaymentIntentForNodes(data);
@@ -83,7 +83,7 @@ router.post("/new_intent/nodes", apiAsyncWrapper(async (req, res) => {
   if (paymentIntent) {
     const {id, createdDate, currency, amount} = paymentIntent;
 
-    await paymentService.savePaymentHistory(createdDate, id, currency, amount, data.item, data.user);
+    await paymentService.savePaymentHistory(createdDate, id, currency, amount, data.item, data.user, data.tokens);
   }
 
   res.json(paymentIntent);

@@ -1,5 +1,5 @@
 import BaseService from "./BaseService";
-import {get_default_payment_provider} from "../providers/payment/Index";
+import {get_default_payment_provider, getTokenPaymentProvider} from "../providers/payment/Index";
 import {CardPaymentMethod, Payment, PaymentCurrencies, PaymentResult} from "../providers/payment/BasePaymentProvider";
 import {BillingDetails, PaymentHistory, PaymentMethod} from "../models/Payment";
 import UserService from "./UserService";
@@ -14,7 +14,6 @@ export default class PaymentService extends BaseService {
   constructor() {
     super();
 
-    this._paymentProvider = get_default_payment_provider();
     this.userService = new UserService();
   }
 
@@ -27,15 +26,28 @@ export default class PaymentService extends BaseService {
    * @param {*} item Item to pay.
    * @param {number} amount Amount intended to be collected by this payment.
    * @param {string} to For what is the payment (Apps or Node).
+   * @param {number} tokens Tokens used for this payment.
    *
    * @returns {Promise<PaymentResult>} A payment result of intent.
    * @private
    * @async
    */
-  async __createPocketPaymentIntent(userCustomerID, type, currency, item, amount, to) {
+  async __createPocketPaymentIntent(userCustomerID, type, currency, item, amount, to, tokens) {
     const description = `Acquiring ${to.toLowerCase() === "application" ? "Max Relays Per Day" : "Validator Power"} for ${to}`;
 
-    return this._paymentProvider.createPaymentIntent(userCustomerID, type, currency, item, amount, description);
+    if (amount === 0) {
+      return this.__getPaymentProvider("token").createPaymentIntent(userCustomerID, type, currency, item, amount, description, tokens);
+    } else {
+      return this.__getPaymentProvider("stripe").createPaymentIntent(userCustomerID, type, currency, item, amount, description, tokens);
+    }
+  }
+
+  __getPaymentProvider(type) {
+    if (type === "token") {
+      return getTokenPaymentProvider();
+    } else {
+      return get_default_payment_provider();
+    }
   }
 
   /**
@@ -47,21 +59,23 @@ export default class PaymentService extends BaseService {
    * @param {*} item Item to pay.
    * @param {number} amount Amount intended to be collected by this payment.
    * @param {string} itemType Item type for payment.
+   * @param {number} tokens Tokens used for this payment.
    *
    * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
    * @throws {DashboardValidationError} if validation fails.
    * @async
    */
-  async __createPocketPaymentForItem(userEmail, type, currency, item, amount, itemType) {
+  async __createPocketPaymentForItem(userEmail, type, currency, item, amount, itemType, tokens) {
     if (!Payment.validate({type, currency, item, amount})) {
       return false;
     }
+    const providerType = amount === 0 ? "token" : "stripe";
 
     // Getting user customer from user, a customer is required by stripe.
     let userCustomerID = await this.userService.getUserCustomerID(userEmail);
 
     if (!userCustomerID) {
-      const userCustomer = await this._paymentProvider.createCustomer(userEmail);
+      const userCustomer = await this.__getPaymentProvider(providerType).createCustomer(userEmail);
 
       userCustomerID = userCustomer.id;
       await this.userService.saveCustomerID(userEmail, userCustomerID);
@@ -73,7 +87,7 @@ export default class PaymentService extends BaseService {
       type: itemType
     };
 
-    return this.__createPocketPaymentIntent(userCustomerID, type, currency, paymentItem, amountFixed, itemType);
+    return this.__createPocketPaymentIntent(userCustomerID, type, currency, paymentItem, amountFixed, itemType, tokens);
   }
 
   /**
@@ -183,9 +197,9 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async createPocketPaymentIntentForApps(paymentIntentData) {
-    const {user, type, currency, item, amount} = paymentIntentData;
+    const {user, type, currency, item, amount, tokens} = paymentIntentData;
 
-    return this.__createPocketPaymentForItem(user, type, currency, item, amount, "Application");
+    return this.__createPocketPaymentForItem(user, type, currency, item, amount, "Application", tokens);
   }
 
   /**
@@ -202,9 +216,9 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async createPocketPaymentIntentForNodes(paymentIntentData) {
-    const {user, type, currency, item, amount} = paymentIntentData;
+    const {user, type, currency, item, amount, tokens} = paymentIntentData;
 
-    return this.__createPocketPaymentForItem(user, type, currency, item, amount, "Node");
+    return this.__createPocketPaymentForItem(user, type, currency, item, amount, "Node", tokens);
   }
 
   /**
@@ -248,12 +262,21 @@ export default class PaymentService extends BaseService {
    * @param {number} amount Amount.
    * @param {*} item Item bought.
    * @param {string} user User that belongs the payment.
+   * @param {number} tokens Tokens used for this payment.
    *
    * @returns {Promise<boolean>} If payment was saved or not.
    * @async
    */
-  async savePaymentHistory(createdDate, paymentID, currency, amount, item, user) {
+  async savePaymentHistory(createdDate, paymentID, currency, amount, item, user, tokens) {
+
     const {pokt_market_price: poktPrice} = Configurations.pocket_network;
+    const token = tokens === undefined ? 0 : tokens;
+
+    console.log(token);
+    console.log(token);
+    console.log(token);
+    console.log(token);
+
     const paymentHistory = PaymentHistory.createPaymentHistory({
       createdDate,
       paymentID,
@@ -261,7 +284,8 @@ export default class PaymentService extends BaseService {
       amount,
       item,
       user,
-      poktPrice
+      poktPrice,
+      tokens: token
     });
 
     if (await this.paymentHistoryExists(paymentHistory)) {
@@ -318,7 +342,7 @@ export default class PaymentService extends BaseService {
 
     if (dbPaymentMethods) {
       const paymentMethodIds = dbPaymentMethods.map(_ => _.paymentMethod.id);
-      const paymentMethods = await this._paymentProvider.retrieveCardPaymentMethods(paymentMethodIds);
+      const paymentMethods = await this.__getPaymentProvider("stripe").retrieveCardPaymentMethods(paymentMethodIds);
 
       return Promise.all(paymentMethods);
     }

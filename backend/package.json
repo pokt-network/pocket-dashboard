@@ -47,7 +47,7 @@
       "mongo": true
     },
     "rules": {
-      "no-console": "warn",
+      "no-console": "off",
       "comma-spacing": "error",
       "semi": [
         "error",
@@ -117,6 +117,7 @@
     "@pokt-network/pocket-js": "0.5.8-rc",
     "@sendgrid/client": "^7.2.0",
     "@sendgrid/mail": "^7.1.0",
+    "aws-sdk": "^2.727.1",
     "axios": "^0.19.2",
     "bcrypt": "^4.0.1",
     "big-integer": "^1.6.48",
@@ -132,7 +133,8 @@
     "nyc": "^15.0.0",
     "pm2": "^4.3.1",
     "query-string": "^6.11.1",
-    "stripe": "^8.33.0"
+    "stripe": "^8.33.0",
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
