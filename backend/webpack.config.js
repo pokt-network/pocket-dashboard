@@ -23,6 +23,17 @@ module.exports = {
   module: {
     rules: [
       {
+        enforce: "pre",
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: "eslint-loader",
+        options: {
+          emitWarning: true,
+          failOnError: false,
+          failOnWarning: false
+        }
+      },
+      {
         // Transpiles ES6-8 into ES5
         test: /\.js$/,
         exclude: /node_modules/,

@@ -9,9 +9,9 @@
   "author": "Codemera",
   "license": "MIT",
   "scripts": {
-    "build-server": "webpack --mode development --config ./backend/webpack.config.js",
+    "build-server": "webpack --watch --mode development --config ./backend/webpack.config.js",
     "build-server:prod": "webpack --mode production --config ./backend/webpack.config.js",
-    "start-server": "node ./backend/dist/server.js"
+    "start-server": "nodemon --watch backend ./backend/dist/server.js"
   },
   "dependencies": {
     "cookie-parser": "^1.4.4",
@@ -26,6 +26,10 @@
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
     "webpack-node-externals": "^1.7.2",
-    "webpack-dev-middleware": "^3.7.2"
+    "webpack-dev-middleware": "^3.7.2",
+    "eslint": "^6.8.0",
+    "babel-eslint": "^10.0.3",
+    "eslint-loader": "^3.0.3",
+    "nodemon": "^2.0.2"
   }
 }

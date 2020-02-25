@@ -15,7 +15,7 @@ configureExpress(app);
 // Tell express to use the webpack-dev-middleware and use the webpack.config.js
 // configuration file as a base.
 app.use(webpackDevMiddleware(webPackCompiler, {
-  publicPath: webPackConfig.output.publicPath,
+  publicPath: webPackConfig.output.publicPath
 }));
 
 const PORT = process.env.PORT || 3000;
