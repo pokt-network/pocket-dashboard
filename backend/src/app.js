@@ -3,7 +3,7 @@ import {configureRoutes} from './_routes';
 import {configureExpress} from './_configuration';
 
 import webpack from 'webpack';
-import webPackConfig from '../webpack.config'
+import webPackConfig from '../webpack.config';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import dotenv from 'dotenv';
 

@@ -5,6 +5,9 @@ import logger from 'morgan';
 export const configurations = {
   database: {
     url: process.env.DATABASE_URL
+  },
+  poktNetwork: {
+    url: process.env.POKT_NETWORK_URL
   }
 };
 
