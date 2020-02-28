@@ -5,9 +5,13 @@ import {configureExpress} from './_configuration';
 import webpack from 'webpack';
 import webPackConfig from '../webpack.config'
 import webpackDevMiddleware from 'webpack-dev-middleware';
+import dotenv from 'dotenv';
 
 const webPackCompiler = webpack(webPackConfig);
 const app = express();
+
+// Configure Environment Variables: Now .env files can be loaded and used.
+dotenv.config();
 
 configureRoutes(app);
 configureExpress(app);

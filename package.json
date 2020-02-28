@@ -17,7 +17,8 @@
     "cookie-parser": "^1.4.4",
     "express": "^4.16.1",
     "morgan": "^1.9.1",
-    "@pokt-network/pocket-js": "^0.0.1-rc"
+    "@pokt-network/pocket-js": "^0.0.1-rc",
+    "axios": "^0.19.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
@@ -31,6 +32,7 @@
     "eslint": "^6.8.0",
     "babel-eslint": "^10.0.3",
     "eslint-loader": "^3.0.3",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "dotenv": "^8.2.0"
   }
 }
