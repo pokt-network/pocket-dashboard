@@ -10,7 +10,7 @@ import dotenv from 'dotenv';
 const webPackCompiler = webpack(webPackConfig);
 const app = express();
 
-// Configure Environment Variables: Now .env files can be loaded and used.
+// Configure Environment Variables: Now .env files can be loaded and used in process.env .
 dotenv.config();
 
 configureRoutes(app);
