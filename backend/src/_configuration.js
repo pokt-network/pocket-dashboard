@@ -9,7 +9,7 @@ dotenv.config();
 export const configurations = {
   persistence: {
     url: process.env.DATABASE_URL,
-    dbName: 'pocketDB',
+    dbName: process.env.DATABASE_NAME,
     options: {
       useUnifiedTopology: true
     }
