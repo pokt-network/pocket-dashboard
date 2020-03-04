@@ -7,6 +7,7 @@ class MongoDBProvider {
   }
 
   open(callback) {
+    // noinspection JSIgnoredPromiseFromCall
     this.client.connect(callback);
   }
 
