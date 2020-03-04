@@ -1,10 +1,18 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import dotenv from "dotenv";
+
+// Configure Environment Variables: Now .env files can be loaded and used in process.env .
+dotenv.config();
 
 export const configurations = {
-  database: {
-    url: process.env.DATABASE_URL
+  persistence: {
+    url: process.env.DATABASE_URL,
+    dbName: 'pocketDB',
+    options: {
+      useUnifiedTopology: true
+    }
   },
   poktNetwork: {
     url: process.env.POKT_NETWORK_URL
