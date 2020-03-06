@@ -1,9 +1,9 @@
 import {after, before, describe, it} from "mocha";
 import "chai/register-should";
 
-import {configurations} from "../src/_configuration";
-import PersistenceService from "../src/services/data/PersistenceService";
-import MongoDBAdapter from "../src/services/data/MongoDBAdapter";
+import {configurations} from "../../../src/_configuration";
+import PersistenceService from "../../../src/services/data/PersistenceService";
+import MongoDBAdapter from "../../../src/services/data/MongoDBAdapter";
 
 let mongoDBProvider = null;
 let persistenceService = null;

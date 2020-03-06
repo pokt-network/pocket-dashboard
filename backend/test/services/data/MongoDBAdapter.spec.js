@@ -1,8 +1,8 @@
 import {after, before, describe, it} from "mocha";
 import "chai/register-should";
 
-import {configurations} from "../src/_configuration";
-import MongoDBAdapter from "../src/services/data/MongoDBAdapter";
+import {configurations} from "../../../src/_configuration";
+import MongoDBAdapter from "../../../src/services/data/MongoDBAdapter";
 
 let mongoDBProvider = null;
 
