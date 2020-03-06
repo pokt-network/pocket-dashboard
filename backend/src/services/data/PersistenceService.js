@@ -1,50 +1,77 @@
 class PersistenceService {
   constructor(dbProvider) {
-    this._dbProvider = dbProvider;
+    this.__dbProvider = dbProvider;
   }
 
-  openConnection(callback, errorCallback) {
-    if (!this._dbProvider.isOpen()) {
-      this._dbProvider.open((err) => {
-        if (!err) {
-          const db = this._dbProvider.getDB();
-
-          callback(db);
-          this.closeConnection();
-        } else {
-          errorCallback(err);
-        }
-      });
-    }
+  __openConnection() {
+    return this.__dbProvider.open();
   }
 
-  closeConnection(callback) {
-    this._dbProvider.close(callback);
+  closeConnection(dbConnection) {
+    this.__dbProvider.close(dbConnection);
   }
 
-  getElementByID(entity, callback) {
-    this.openConnection((db) => {
-    });
+  __getDB(dbConnection) {
+    return this.__dbProvider.getDB(dbConnection);
   }
 
-  getElements(entity, query, callback) {
-    this.openConnection((db) => {
+  async getCollection(entityName) {
+    const connection = await this.__openConnection();
+    const db = this.__getDB(connection);
 
-    });
+    return db.collection(entityName);
   }
 
-  saveEntity(entity, callback) {
-    this.openConnection((db) => {
+  async getEntities(entityName, filter = {}) {
+    const connection = await this.__openConnection();
+    const db = this.__getDB(connection);
+    const collection = db.collection(entityName);
 
-    });
+    const data = await collection.find(filter).toArray();
+    this.closeConnection(connection);
+
+    return data;
   }
 
-  deleteEntityByID(entity, callback) {
-    this.openConnection((db) => {
+  async getEntityByID(entityName, entityID) {
+    const filter = {
+      _id: entityID
+    };
 
-    });
+    const data = await this.getEntities(entityName, filter);
+
+    return data[0];
   }
 
+  async saveEntity(entityName, entity) {
+    const connection = await this.__openConnection();
+    const db = this.__getDB(connection);
+    const collection = db.collection(entityName);
+
+    const result = await collection.insertOne(entity);
+    this.closeConnection(connection);
+
+    return result;
+  }
+
+  async deleteEntities(entityName, filter) {
+    const connection = await this.__openConnection();
+    const db = this.__getDB(connection);
+    const collection = db.collection(entityName);
+
+    const result = await collection.deleteMany(filter);
+    this.closeConnection(connection);
+
+    return result;
+  }
+
+  async deleteEntityByID(entityName, entityID) {
+    const filter = {
+      _id: entityID
+    };
+
+    return await this.deleteEntities(entityName, filter);
+  }
 }
 
 export default PersistenceService
