@@ -29,7 +29,7 @@ describe('PersistenceService', () => {
     it('Expect save an entity successfully', async () => {
       const testEntity = {
         id: 99999,
-        name: 'test-example'
+        name: 'tests-example'
       };
 
       const result = await persistenceService.saveEntity(entityName, testEntity);
@@ -54,7 +54,7 @@ describe('PersistenceService', () => {
     it('Expect an object of element', async () => {
       const testEntity = {
         id: 99999,
-        name: 'test-example'
+        name: 'tests-example'
       };
 
       const result = await persistenceService.saveEntity(entityName, testEntity);
@@ -70,7 +70,7 @@ describe('PersistenceService', () => {
     it('Expect deleted an element successfully', async () => {
       const testEntity = {
         id: 99999,
-        name: 'test-example'
+        name: 'tests-example'
       };
 
       const result = await persistenceService.saveEntity(entityName, testEntity);
