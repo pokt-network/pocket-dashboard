@@ -19,7 +19,7 @@ class BaseAuthProvider {
    * @returns {string}
    */
   get_consent_url() {
-    return "";
+    return undefined;
   }
 
   /**
@@ -28,8 +28,8 @@ class BaseAuthProvider {
    *
    * @returns {string}
    */
-  get_token_code(url) {
-    return "";
+  get_user_data(url) {
+    return undefined;
   }
 }
 

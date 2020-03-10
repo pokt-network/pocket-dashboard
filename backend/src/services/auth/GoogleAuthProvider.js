@@ -11,8 +11,8 @@ class GoogleAuthProvider extends BaseAuthProvider {
     return super.get_consent_url();
   }
 
-  get_token_code(url) {
-    return super.get_token_code(url);
+  get_user_data(url) {
+    return super.get_user_data(url);
   }
 }
 
