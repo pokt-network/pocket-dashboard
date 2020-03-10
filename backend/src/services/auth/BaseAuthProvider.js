@@ -2,6 +2,7 @@ class BaseAuthProvider {
 
   /**
    *
+   * @param {string} name Name of auth backend provider.
    * @param {object} authProviderConfiguration Authentication provider basic configuration.
    *
    * @param {string} authProviderConfiguration.client_id
@@ -9,8 +10,9 @@ class BaseAuthProvider {
    * @param {string} authProviderConfiguration.callback_url
    *
    */
-  constructor(authProviderConfiguration) {
-    this.authProviderConfiguration = authProviderConfiguration;
+  constructor(name, authProviderConfiguration) {
+    this.name = name.toLowerCase();
+    this._authProviderConfiguration = authProviderConfiguration;
   }
 
   /**
