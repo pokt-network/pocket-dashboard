@@ -7,6 +7,20 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const configurations = {
+  auth: {
+    providers: {
+      google: {
+        client_id: process.env.AUTH_PROVIDER_GOOGLE_CLIENT_ID,
+        client_secret: process.env.AUTH_PROVIDER_GOOGLE_CLIENT_SECRET,
+        callback_url: process.env.AUTH_PROVIDER_GOOGLE_CALLBACK_URL
+      },
+      github: {
+        client_id: process.env.AUTH_PROVIDER_GITHUB_CLIENT_ID,
+        client_secret: process.env.AUTH_PROVIDER_GITHUB_CLIENT_SECRET,
+        callback_url: process.env.AUTH_PROVIDER_GITHUB_CALLBACK_URL
+      }
+    }
+  },
   persistence: {
     url: process.env.DATABASE_URL,
     dbName: process.env.DATABASE_NAME,
