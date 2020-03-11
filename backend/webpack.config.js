@@ -1,11 +1,11 @@
-const path = require('path');
+const path = require('path'); // no
 const nodeExternals = require('webpack-node-externals');
 const webpack = require("webpack");
 
 module.exports = {
   mode: "development",
   entry: {
-    server: './backend/src/app.js',
+    server: './src/app.js',
   },
   output: {
     path: path.join(__dirname, 'dist'),

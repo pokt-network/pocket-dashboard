@@ -19,7 +19,7 @@ app.use(webpackDevMiddleware(webPackCompiler, {
   publicPath: webPackConfig.output.publicPath
 }));
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4200;
 app.listen(PORT, () => {
   console.log(`App listening to ${PORT}....`);
   console.log('Press Ctrl+C to quit.');
