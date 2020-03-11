@@ -1,0 +1,46 @@
+{
+  "name": "pocket-dashboard",
+  "version": "1.0.0",
+  "description": "Pocket dashboard",
+  "repository": {
+    "url": "https://github.com/pokt-network/pocket-dashboard",
+    "type": "git"
+  },
+  "author": "Codemera",
+  "license": "MIT",
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0",
+    "react-scripts": "3.4.0",
+    "node-sass": "^4.13.1",
+    "bootstrap": "^4.4.1",
+    "react-bootstrap": "^1.0.0-beta.17",
+    "@fortawesome/react-fontawesome": "^0.1.9",
+    "@fortawesome/fontawesome-svg-core": "^1.2.27",
+    "@fortawesome/free-solid-svg-icons": "^5.12.1"
+  },
+  "scripts": {
+    "start": "node_modules/.bin/react-scripts start",
+    "build": "node_modules/.bin/react-scripts build",
+    "test": "node_modules/.bin/react-scripts test",
+    "eject": "node_modules/.bin/react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
