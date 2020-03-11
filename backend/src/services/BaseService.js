@@ -1,10 +1,10 @@
 import PersistenceService from "./data/PersistenceService";
 import MongoDBAdapter from "./data/MongoDBAdapter";
-import {configurations} from "../_configuration";
+import {Configurations} from "../_configuration";
 
 class BaseService {
   constructor() {
-    this._persistenceService = new PersistenceService(new MongoDBAdapter(configurations.persistence));
+    this._persistenceService = new PersistenceService(new MongoDBAdapter(Configurations.persistence));
   }
 }
 

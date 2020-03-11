@@ -1,7 +1,7 @@
 import {after, before, describe, it} from "mocha";
 import "chai/register-should";
 
-import {configurations} from "../../../src/_configuration";
+import {Configurations} from "../../../src/_configuration";
 import PersistenceService from "../../../src/services/data/PersistenceService";
 import MongoDBAdapter from "../../../src/services/data/MongoDBAdapter";
 
@@ -11,7 +11,7 @@ let persistenceService = null;
 const entityName = 'TestSpecs';
 
 before(() => {
-  mongoDBProvider = new MongoDBAdapter(configurations.persistence);
+  mongoDBProvider = new MongoDBAdapter(Configurations.persistence);
   persistenceService = new PersistenceService(mongoDBProvider);
 });
 

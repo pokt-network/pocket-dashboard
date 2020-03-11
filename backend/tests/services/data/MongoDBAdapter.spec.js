@@ -1,13 +1,13 @@
 import {after, before, describe, it} from "mocha";
 import "chai/register-should";
 
-import {configurations} from "../../../src/_configuration";
+import {Configurations} from "../../../src/_configuration";
 import MongoDBAdapter from "../../../src/services/data/MongoDBAdapter";
 
 let mongoDBProvider = null;
 
 before(() => {
-  mongoDBProvider = new MongoDBAdapter(configurations.persistence);
+  mongoDBProvider = new MongoDBAdapter(Configurations.persistence);
 });
 
 

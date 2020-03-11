@@ -1,12 +1,12 @@
 import {after, before, describe, it} from "mocha";
 import "chai/register-should";
 import PoktService from "../../src/services/PoktService";
-import {configurations} from "../../src/_configuration";
+import {Configurations} from "../../src/_configuration";
 
 let poktService = null;
 
 before(() => {
-  poktService = new PoktService(configurations.poktNetwork.nodes.test);
+  poktService = new PoktService(Configurations.poktNetwork.nodes.test);
 });
 
 

@@ -1,9 +1,9 @@
 import {Configuration, HttpRpcProvider, Pocket} from "@pokt-network/pocket-js";
 import {PocketAAT} from "@pokt-network/aat-js";
-import {configurations} from "../_configuration";
+import {Configurations} from "../_configuration";
 import assert from "assert";
 
-const POKT_NETWORK_CONFIGURATION = configurations.poktNetwork;
+const POKT_NETWORK_CONFIGURATION = Configurations.poktNetwork;
 
 const POKT_CONFIGURATION = new Configuration(
   POKT_NETWORK_CONFIGURATION.max_dispatchers,

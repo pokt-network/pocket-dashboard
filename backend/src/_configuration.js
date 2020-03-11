@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 // Configure Environment Variables: Now .env files can be loaded and used in process.env .
 dotenv.config();
 
-export const configurations = {
+export const Configurations = {
   auth: {
     providers: {
       google: {
