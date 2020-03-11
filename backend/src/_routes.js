@@ -1,6 +1,6 @@
-import index from './apis/index';
+import Index from './apis';
 
 
 export function configureRoutes(expressApp) {
-  expressApp.use('/', index);
+  expressApp.use('/', Index);
 }

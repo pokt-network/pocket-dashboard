@@ -1,2 +1,2 @@
 backend/webpack.config.js
-backend/src/app.js
+backend/src/App.js
