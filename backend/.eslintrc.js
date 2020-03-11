@@ -1,10 +1,11 @@
 module.exports = {
-  "env": {
-    "browser": true,
-    "node": true
+  env: {
+    es6: true,
+    mocha: true,
+    node: true
   },
-  "extends": [
+  extends: [
     "eslint:recommended",
   ],
-  "parser": "babel-eslint"
+  parser: "babel-eslint"
 };

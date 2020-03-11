@@ -1,11 +1,12 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import logger from 'morgan';
+import logger from "morgan";
 import dotenv from "dotenv";
 
 // Configure Environment Variables: Now .env files can be loaded and used in process.env .
 dotenv.config();
 
+/*eslint-disable */
 export const Configurations = {
   auth: {
     providers: {
@@ -51,6 +52,8 @@ export const Configurations = {
     }
   }
 };
+
+/*eslint-enable */
 
 export function configureExpress(expressApp) {
   expressApp.use(express.json());
