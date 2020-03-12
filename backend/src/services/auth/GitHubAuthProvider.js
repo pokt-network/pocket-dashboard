@@ -4,7 +4,7 @@ import {Configurations} from "../../_configuration";
 class GitHubAuthProvider extends BaseAuthProvider {
 
   constructor() {
-    super('github', Configurations.auth.providers.github);
+    super("github", Configurations.auth.providers.github);
   }
 
   get_consent_url() {

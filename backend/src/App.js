@@ -1,10 +1,10 @@
-import express from 'express';
-import {configureRoutes} from './_routes';
-import {configureExpress} from './_configuration';
+import express from "express";
+import {configureRoutes} from "./_routes";
+import {configureExpress} from "./_configuration";
 
-import webpack from 'webpack';
-import webPackConfig from '../webpack.config';
-import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpack from "webpack";
+import webPackConfig from "../webpack.config";
+import webpackDevMiddleware from "webpack-dev-middleware";
 
 const webPackCompiler = webpack(webPackConfig);
 const app = express();
@@ -21,6 +21,8 @@ app.use(webpackDevMiddleware(webPackCompiler, {
 
 const PORT = process.env.PORT || 4200;
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`App listening to ${PORT}....`);
-  console.log('Press Ctrl+C to quit.');
+  // eslint-disable-next-line no-console
+  console.log("Press Ctrl+C to quit.");
 });

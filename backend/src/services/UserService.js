@@ -4,5 +4,5 @@ class UserService extends BaseService {
 
 }
 
-export default UserService
+export default UserService;
 

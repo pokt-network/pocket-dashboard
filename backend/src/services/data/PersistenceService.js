@@ -74,4 +74,4 @@ class PersistenceService {
   }
 }
 
-export default PersistenceService
+export default PersistenceService;

@@ -21,7 +21,7 @@ function getNodeURLS(nodes) {
   assert.notEqual(null, nodes);
 
   return nodes.map((node) => {
-    const nodeURL = node + ':' + POKT_NETWORK_CONFIGURATION.default_rpc_port;
+    const nodeURL = node + ":" + POKT_NETWORK_CONFIGURATION.default_rpc_port;
     return new URL(nodeURL);
   });
 }
@@ -46,7 +46,7 @@ class PoktService {
    * @param {[string]} nodes List of nodes of Pokt network.
    */
   constructor(nodes) {
-    this.__pocket = new Pocket(getNodeURLS(nodes), getRPCDispatcher(nodes[0]), POKT_CONFIGURATION)
+    this.__pocket = new Pocket(getNodeURLS(nodes), getRPCDispatcher(nodes[0]), POKT_CONFIGURATION);
   }
 
 
@@ -81,7 +81,7 @@ class PoktService {
    * @returns {Promise<Account | Error>}
    */
   async importAccount(privateKeyHex, passphrase) {
-    return this.__pocket.keybase.importAccount(Buffer.from(privateKeyHex, 'hex'), passphrase);
+    return this.__pocket.keybase.importAccount(Buffer.from(privateKeyHex, "hex"), passphrase);
   }
 
   /**
@@ -105,7 +105,7 @@ class PoktService {
    *
    * @returns {Promise<string>}
    */
-  async exportRawAccount(addressHex, passphrase, encoding = 'hex') {
+  async exportRawAccount(addressHex, passphrase, encoding = "hex") {
     /** @type Buffer */
     const privateKey = await this.__pocket.keybase.exportAccount(addressHex, passphrase);
 
@@ -124,13 +124,13 @@ class PoktService {
   async createApplicationAuthenticationToken(clientAccount, applicationAccount, applicationAccountPassphrase) {
     const aatVersion = POKT_NETWORK_CONFIGURATION.aat_version;
 
-    const clientPublicKey = clientAccount.publicKey.toString('hex');
-    const applicationPublicKeyHex = applicationAccount.publicKey.toString('hex');
+    const clientPublicKey = clientAccount.publicKey.toString("hex");
+    const applicationPublicKeyHex = applicationAccount.publicKey.toString("hex");
     const applicationPrivateKeyHex = await this.exportRawAccount(applicationAccount.addressHex, applicationAccountPassphrase);
 
-    return PocketAAT.from(aatVersion, clientPublicKey, applicationPublicKeyHex, applicationPrivateKeyHex)
+    return PocketAAT.from(aatVersion, clientPublicKey, applicationPublicKeyHex, applicationPrivateKeyHex);
   }
 
 }
 
-export default PoktService
+export default PoktService;

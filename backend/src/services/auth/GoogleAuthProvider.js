@@ -4,7 +4,7 @@ import {Configurations} from "../../_configuration";
 class GoogleAuthProvider extends BaseAuthProvider {
 
   constructor() {
-    super('google', Configurations.auth.providers.google);
+    super("google", Configurations.auth.providers.google);
   }
 
   get_consent_url() {

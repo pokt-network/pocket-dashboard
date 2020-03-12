@@ -21,7 +21,6 @@ class BaseAuthProvider {
    * @returns {string}
    */
   get_consent_url() {
-    return undefined;
   }
 
   /**
@@ -30,8 +29,8 @@ class BaseAuthProvider {
    *
    * @returns {string}
    */
+  // eslint-disable-next-line no-unused-vars
   get_user_data(url) {
-    return undefined;
   }
 }
 

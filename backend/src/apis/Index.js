@@ -1,8 +1,8 @@
-import express from 'express';
+import express from "express";
 
 const router = express.Router();
 
-router.get('/', function (request, response) {
+router.get("/", function (request, response) {
   response.send({"greeting": "hello"});
 });
 
