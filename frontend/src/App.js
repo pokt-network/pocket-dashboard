@@ -1,20 +1,23 @@
-import React from "react";
+import React, {Component} from "react";
+// noinspection ES6CheckImport
+import {HashRouter, Redirect, Route, Switch} from "react-router-dom";
 import "./App.scss";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCoffee} from "@fortawesome/free-solid-svg-icons";
+//Pages
+import Login from "./views/Core/Login";
 
+class App extends Component {
+  render() {
+    return (
+      <HashRouter>
+        <Switch>
+          <Route exact path="/login" name="Login Page" component={Login}/>
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <FontAwesomeIcon icon={faCoffee}/>
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-      </header>
-    </div>
-  );
+          <Redirect from="/" to="/login"/>
+        </Switch>
+      </HashRouter>
+    );
+  }
 }
+
 
 export default App;

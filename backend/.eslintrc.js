@@ -7,7 +7,7 @@ module.exports = {
   },
   rules: {
     "no-console": "warn",
-    "comma-spacing": "warn",
+    "comma-spacing": "error",
     semi: ["error", "always"],
     quotes: ["error", "double"],
   },
