@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import {HashRouter, Redirect, Route, Switch} from "react-router-dom";
 import "./App.scss";
 //Pages
-import Login from "./views/Core/Login";
+import Login from "./views/Core/Login/Login";
 
 class App extends Component {
   render() {

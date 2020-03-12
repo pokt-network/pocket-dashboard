@@ -1,0 +1,82 @@
+@import "src/scss/Core";
+
+#login-page {
+  height: 100%;
+
+  #main-logo {
+    width: 45%;
+  }
+
+  #sidebar, #content {
+    height: 100vh;
+  }
+
+  #sidebar {
+    padding-top: 40px;
+    padding-left: 60px;
+    background: theme-color("dark");
+    color: color("white");
+
+    #title {
+      margin-top: 50px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+  }
+
+  #content {
+    background: theme-color("light");
+
+    div.help {
+      padding-top: 20px;
+      padding-left: 90%;
+
+      * {
+        font-size: 45px;
+        color: theme-color("dark");
+      }
+    }
+
+    div#main {
+      padding-top: 20px;
+      padding-left: 20%;
+      padding-right: 20%;
+
+      h1 {
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+
+      button, input {
+        height: 55px;
+      }
+
+      label, p, a, button {
+        font-weight: bold;
+      }
+
+      label, p, a {
+        color: color("gray");
+      }
+
+      #provider-buttons {
+        * {
+          margin-top: 5px;
+          margin-bottom: 5px;
+        }
+      }
+
+      #main-form {
+        button {
+          margin-top: 35px;
+        }
+
+        div:last-child {
+          margin-top: 10px;
+          text-align: center;
+        }
+      }
+    }
+
+  }
+}
