@@ -1,4 +1,37 @@
 @import "node_modules/bootstrap/scss/bootstrap";
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;1,300&family=Open+Sans:wght@400;800&display=swap');
+
+
+// Font variables
+$title: (
+  "font":"Open Sans",
+  "type": sans-serif,
+  "weight":800
+);
+
+$paragraph: (
+  "font":"Lato",
+  "type": sans-serif,
+  "weight":400
+);
+
+@mixin font-style($type) {
+  font-family: map_get($type, "font"), map_get($type, "type");
+  font-weight: map_get($type, "weight");
+}
+
+// Headers
+@for $i from 1 through 6 {
+  h#{$i} {
+    @include font-style($title)
+  }
+}
+
+// Paragraphs, Labels, Links
+label, p, a {
+  @include font-style($paragraph);
+}
+
 
 html, body {
   height: 100%;

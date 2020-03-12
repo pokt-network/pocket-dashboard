@@ -44,19 +44,10 @@
 
       h1 {
         text-transform: uppercase;
-        font-weight: bold;
       }
 
       button, input {
         height: 55px;
-      }
-
-      label, p, a, button {
-        font-weight: bold;
-      }
-
-      label, p, a {
-        color: color("gray");
       }
 
       #provider-buttons {

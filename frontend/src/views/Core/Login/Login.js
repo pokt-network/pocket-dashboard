@@ -17,16 +17,18 @@ class Login extends Component {
             </Row>
             <Row id={"title"}>
               <h1>
-                <p>We are</p>
-                <p>pocket</p>
-                <p>network</p>
+                We are <br/>
+                pocket <br/>
+                network
               </h1>
             </Row>
             <Row>
-              {/* eslint-disable-next-line react/no-unescaped-entities */}
-              <p>Pocket Network's mission is to ensure the sustainable</p>
-              <p>Decentralization of blockchain infrastructure. In a</p>
-              <p>market that is over-reliant on single-service provider.</p>
+              <p>
+                {/* eslint-disable-next-line react/no-unescaped-entities */}
+                Pocket Network's mission is to ensure the sustainable <br/>
+                Decentralization of blockchain infrastructure. In a <br/>
+                market that is over-reliant on single-service provider.
+              </p>
             </Row>
           </Col>
           <Col id={"content"}>
