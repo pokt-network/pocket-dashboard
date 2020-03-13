@@ -12,7 +12,13 @@ export const Configurations = {
       google: {
         client_id: process.env.AUTH_PROVIDER_GOOGLE_CLIENT_ID,
         client_secret: process.env.AUTH_PROVIDER_GOOGLE_CLIENT_SECRET,
-        callback_url: process.env.AUTH_PROVIDER_GOOGLE_CALLBACK_URL
+        callback_url: process.env.AUTH_PROVIDER_GOOGLE_CALLBACK_URL,
+        scopes: ["read:user", "user:email"],
+        urls: {
+          consent_url: "https://github.com/login/oauth/authorize",
+          access_token: "https://github.com/login/oauth/access_token",
+          user_info_url: "https://api.github.com/user"
+        }
       },
       github: {
         client_id: process.env.AUTH_PROVIDER_GITHUB_CLIENT_ID,

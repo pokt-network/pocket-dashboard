@@ -44,7 +44,7 @@ class BaseAuthProvider {
    *
    * @param {string} code Code to retrieve access token from auth provider.
    *
-   * @returns {string}
+   * @returns {Promise<string>}
    */
   // eslint-disable-next-line no-unused-vars
   async get_access_token(code) {
@@ -55,7 +55,7 @@ class BaseAuthProvider {
    *
    * @param {string} accessToken Access Token used to retrieve information from auth provider.
    *
-   * @returns {AuthProviderUser}
+   * @returns {Promise<AuthProviderUser>}
    */
   // eslint-disable-next-line no-unused-vars
   async get_user_data(accessToken) {

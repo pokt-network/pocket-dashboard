@@ -27,8 +27,10 @@ class GithubAuthProvider extends BaseAuthProvider {
     const parsedData = queryString.parse(responseURL.search);
 
     if (parsedData.error) {
-      // noinspection JSCheckFunctionSignatures
-      throw new Error(parsedData.error_description);
+      /** @type string */
+      const error = parsedData.error_description;
+
+      throw new Error(error);
     }
 
     if (parsedData.code === undefined) {
@@ -38,7 +40,6 @@ class GithubAuthProvider extends BaseAuthProvider {
     return parsedData.code;
   }
 
-  // noinspection JSCheckFunctionSignatures
   async get_access_token(code) {
     const requestParams = {
       client_id: this._authProviderConfiguration.client_id,
@@ -55,15 +56,16 @@ class GithubAuthProvider extends BaseAuthProvider {
     const parsedData = queryString.parse(response.data);
 
     if (parsedData.error) {
-      // noinspection JSCheckFunctionSignatures
-      throw new Error(parsedData.error_description);
+      /** @type string */
+      const error = parsedData.error_description;
+
+      throw new Error(error);
     }
 
     /** @type {string} */
     return parsedData.access_token;
   }
 
-  // noinspection JSCheckFunctionSignatures
   async get_user_data(accessToken) {
     const response = await axios({
       url: this._authProviderConfiguration.urls.user_info_url,
@@ -73,7 +75,9 @@ class GithubAuthProvider extends BaseAuthProvider {
       },
     });
 
+    /** @type {{id:string, name: string, email: string, avatar_url: string}} */
     const {data} = response;
+
     return new GithubAuthProviderUser(data.id, data.name, data.email, data.avatar_url);
   }
 }
