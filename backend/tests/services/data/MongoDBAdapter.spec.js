@@ -15,10 +15,10 @@ after(() => {
   mongoDBProvider = null;
 });
 
-describe('MongoDBAdapter', () => {
+describe("MongoDBAdapter", () => {
 
-  describe('open', () => {
-    it('Expected a successfully connection', async () => {
+  describe("open", () => {
+    it("Expected a successfully connection", async () => {
       const connection = await mongoDBProvider.open();
 
       should.exist(connection);

@@ -8,6 +8,11 @@ class BaseAuthProvider {
    * @param {string} authProviderConfiguration.client_id
    * @param {string} authProviderConfiguration.client_secret
    * @param {string} authProviderConfiguration.callback_url
+   * @param {string[]} authProviderConfiguration.scopes
+   * @param {object} authProviderConfiguration.urls
+   * @param {string} authProviderConfiguration.urls.consent_url
+   * @param {string} authProviderConfiguration.urls.access_token
+   * @param {string} authProviderConfiguration.urls.user_info_url
    *
    */
   constructor(name, authProviderConfiguration) {
@@ -24,13 +29,36 @@ class BaseAuthProvider {
   }
 
   /**
+   * Get code from consent redirect url.
    *
-   * @param {string| URL} url URL returned from backend auth provider(from outside).
+   * @param {string} url URL returned from backend auth provider(from outside).
+   *
+   * @return {string}
+   */
+  // eslint-disable-next-line no-unused-vars
+  extract_code_from_url(url) {
+  }
+
+  /**
+   * Get access token using the code returned from consent url.
+   *
+   * @param {string} code Code to retrieve access token from auth provider.
    *
    * @returns {string}
    */
   // eslint-disable-next-line no-unused-vars
-  get_user_data(url) {
+  async get_access_token(code) {
+  }
+
+  /**
+   * Get User data from auth provider.
+   *
+   * @param {string} accessToken Access Token used to retrieve information from auth provider.
+   *
+   * @returns {AuthProviderUser}
+   */
+  // eslint-disable-next-line no-unused-vars
+  async get_user_data(accessToken) {
   }
 }
 
