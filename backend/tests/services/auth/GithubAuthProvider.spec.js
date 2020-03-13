@@ -4,14 +4,14 @@ import {expect} from "chai";
 import GithubAuthProvider from "../../../src/services/auth/GithubAuthProvider";
 
 
-/** @type GithubAuthProvider */
+/** @type BaseAuthProvider */
 let githubProvider = null;
 
 /** @type string */
-const GITHUB_AUTH_URL_WITH_CODE = process.env.TEST_GITHUB_AUTH_URL_WITH_CODE; // You can get yours using the get_consent_url of GithubAuthProvider
+const GITHUB_AUTH_URL_WITH_CODE = process.env.TEST_GITHUB_AUTH_URL_WITH_CODE; // You can get yours using the getConsentURL of GithubAuthProvider
 
 /** @type string */
-const GITHUB_ACCESS_TOKEN = process.env.TEST_GITHUB_ACCESS_TOKEN; // You can get yours using the get_consent_url of GithubAuthProvider
+const GITHUB_ACCESS_TOKEN = process.env.TEST_GITHUB_ACCESS_TOKEN; // You can get yours using the getConsentURL of GithubAuthProvider
 
 before(() => {
   githubProvider = new GithubAuthProvider();
@@ -24,41 +24,41 @@ after(() => {
 
 describe("GithubAuthProvider", () => {
 
-  describe("get_consent_url", () => {
+  describe("getConsentURL", () => {
     it("Expect a valid url", () => {
 
-      const consent_url = githubProvider.get_consent_url();
+      const consent_url = githubProvider.getConsentURL();
 
       consent_url.should.to.be.a("string");
     });
   });
 
   if (GITHUB_AUTH_URL_WITH_CODE !== undefined) {
-    describe("extract_code_from_url", () => {
+    describe("extractCodeFromURL", () => {
       it("Expect a string code", () => {
 
-        const code = githubProvider.extract_code_from_url(GITHUB_AUTH_URL_WITH_CODE);
+        const code = githubProvider.extractCodeFromURL(GITHUB_AUTH_URL_WITH_CODE);
 
         code.should.to.be.a("string");
       });
     });
   }
 
-  describe("extract_code_from_url with error", () => {
+  describe("extractCodeFromURL with error", () => {
     it("Expect an error", () => {
       const badURL = "http://example.com/foo/bar";
 
-      const errorFn = () => githubProvider.extract_code_from_url(badURL);
+      const errorFn = () => githubProvider.extractCodeFromURL(badURL);
 
       expect(errorFn).to.throw();
     });
   });
 
   if (GITHUB_ACCESS_TOKEN !== undefined) {
-    describe("get_user_data", () => {
+    describe("getUserData", () => {
       it("Expect user data from github", async () => {
 
-        const userData = await githubProvider.get_user_data(GITHUB_ACCESS_TOKEN);
+        const userData = await githubProvider.getUserData(GITHUB_ACCESS_TOKEN);
 
         userData.should.to.be.an("object");
       });

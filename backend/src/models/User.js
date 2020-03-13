@@ -16,14 +16,14 @@ export class AuthProviderUser {
   }
 }
 
-export class GithubAuthProviderUser extends AuthProviderUser {
+export class GithubUser extends AuthProviderUser {
 
   constructor(id, name, email, avatarURL) {
     super("github", id, name, email, avatarURL);
   }
 }
 
-export class GoogleAuthProviderUser extends AuthProviderUser {
+export class GoogleUser extends AuthProviderUser {
 
   constructor(id, name, email, avatarURL) {
     super("google", id, name, email, avatarURL);

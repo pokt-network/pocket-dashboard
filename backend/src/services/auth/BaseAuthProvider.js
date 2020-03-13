@@ -1,3 +1,5 @@
+import * as queryString from "query-string";
+
 class BaseAuthProvider {
 
   /**
@@ -9,7 +11,7 @@ class BaseAuthProvider {
    * @param {string} authProviderConfiguration.client_secret
    * @param {string} authProviderConfiguration.callback_url
    * @param {string[]} authProviderConfiguration.scopes
-   * @param {object} authProviderConfiguration.urls
+   * @param {object} [authProviderConfiguration.urls]
    * @param {string} authProviderConfiguration.urls.consent_url
    * @param {string} authProviderConfiguration.urls.access_token
    * @param {string} authProviderConfiguration.urls.user_info_url
@@ -25,7 +27,7 @@ class BaseAuthProvider {
    *
    * @returns {string}
    */
-  get_consent_url() {
+  getConsentURL() {
   }
 
   /**
@@ -35,30 +37,44 @@ class BaseAuthProvider {
    *
    * @return {string}
    */
-  // eslint-disable-next-line no-unused-vars
-  extract_code_from_url(url) {
+  extractCodeFromURL(url) {
+    const responseURL = new URL(url);
+    const parsedData = queryString.parse(responseURL.search);
+
+    if (parsedData.error) {
+      /** @type string */
+      const error = parsedData.error_description;
+
+      throw new Error(error);
+    }
+
+    if (parsedData.code === undefined) {
+      throw new Error("URL does not contain code on query string");
+    }
+
+    return parsedData.code;
   }
 
   /**
    * Get access token using the code returned from consent url.
    *
-   * @param {string} code Code to retrieve access token from auth provider.
+   * @param {string} code Code to retrieve token from auth provider.
+   * @param {string} [tokenType] Type of token to retrieve from auth provider.
    *
    * @returns {Promise<string>}
    */
-  // eslint-disable-next-line no-unused-vars
-  async get_access_token(code) {
+  async getToken(code, tokenType) {
   }
 
   /**
    * Get User data from auth provider.
    *
-   * @param {string} accessToken Access Token used to retrieve information from auth provider.
+   * @param {string} token Token used to retrieve information from auth provider.
+   * @param {string} [tokenType] Type of token [access|refresh].
    *
    * @returns {Promise<AuthProviderUser>}
    */
-  // eslint-disable-next-line no-unused-vars
-  async get_user_data(accessToken) {
+  async getUserData(token, tokenType) {
   }
 }
 
