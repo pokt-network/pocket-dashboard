@@ -25,7 +25,8 @@
     "morgan": "^1.9.1",
     "nyc": "^15.0.0",
     "query-string": "^6.11.1",
-    "googleapis": "^48.0.0"
+    "googleapis": "^48.0.0",
+    "bcrypt": "^4.0.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
