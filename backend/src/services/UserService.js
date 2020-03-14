@@ -1,5 +1,5 @@
 import BaseService from "./BaseService";
-import {get_auth_providers} from "../providers/auth";
+import {get_auth_providers, getAuthProvider} from "../providers/auth";
 
 
 const AUTH_TOKEN_TYPE = "access_token";
@@ -15,22 +15,12 @@ class UserService extends BaseService {
 
 
   /**
-   * @param {string} name Name of Authentication provider.
-   * @return {BaseAuthProvider}
-   *
-   * @private
-   */
-  __getAuthProvider(name) {
-    return this.__authProviders.filter((provider) => provider.name === name.toLowerCase())[0];
-  }
-
-  /**
    * Retrieve User data from auth provider.
    *
    * @return Promise<AuthProviderUser>
    */
   async getProviderUserData(providerName, code) {
-    const authProvider = this.__getAuthProvider(providerName);
+    const authProvider = getAuthProvider(this.__authProviders, providerName);
     const accessToken = await authProvider.getToken(code, AUTH_TOKEN_TYPE);
 
     // TODO: Lookup information in database.
