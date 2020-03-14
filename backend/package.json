@@ -12,7 +12,9 @@
     "build": "webpack --watch --mode development --config webpack.config.js",
     "build:prod": "webpack --mode production --config webpack.config.js",
     "start": "nodemon dist/server.js",
-    "test": "mocha --require @babel/register --recursive tests"
+    "test": "mocha --require @babel/register --recursive tests",
+    "test:services": "mocha --require @babel/register --recursive tests/services",
+    "test:providers": "mocha --require @babel/register --recursive tests/providers"
   },
   "dependencies": {
     "@babel/runtime": "^7.8.4",

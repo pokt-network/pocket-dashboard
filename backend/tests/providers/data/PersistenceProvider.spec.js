@@ -2,8 +2,8 @@ import {after, before, describe, it} from "mocha";
 import "chai/register-should";
 
 import {Configurations} from "../../../src/_configuration";
-import PersistenceService from "../../../src/services/data/PersistenceService";
-import MongoDBAdapter from "../../../src/services/data/MongoDBAdapter";
+import PersistenceProvider from "../../../src/providers/data/PersistenceProvider";
+import MongoDBAdapter from "../../../src/providers/data/db/MongoDBAdapter";
 
 let mongoDBProvider = null;
 let persistenceService = null;
@@ -12,7 +12,7 @@ const entityName = "TestSpecs";
 
 before(() => {
   mongoDBProvider = new MongoDBAdapter(Configurations.persistence);
-  persistenceService = new PersistenceService(mongoDBProvider);
+  persistenceService = new PersistenceProvider(mongoDBProvider);
 });
 
 
@@ -23,7 +23,7 @@ after(() => {
   });
 });
 
-describe("PersistenceService", () => {
+describe("PersistenceProvider with MongoDB", () => {
 
   describe("saveEntity", () => {
     it("Expect save an entity successfully", async () => {

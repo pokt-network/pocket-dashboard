@@ -1,6 +1,8 @@
-class PersistenceService {
-  constructor(dbProvider) {
-    this.__dbProvider = dbProvider;
+import {get_default_db_provider} from "./db";
+
+class PersistenceProvider {
+  constructor() {
+    this.__dbProvider = get_default_db_provider();
   }
 
   __openConnection() {
@@ -15,6 +17,12 @@ class PersistenceService {
     return this.__dbProvider.getDB(dbConnection);
   }
 
+  /**
+   * Get Collection of entities.
+   *
+   * @param {string} entityName Entity name.
+   * @return {Promise<*>}
+   */
   async getCollection(entityName) {
     const connection = await this.__openConnection();
     const db = this.__getDB(connection);
@@ -74,4 +82,4 @@ class PersistenceService {
   }
 }
 
-export default PersistenceService;
+export default PersistenceProvider;

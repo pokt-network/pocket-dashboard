@@ -28,7 +28,7 @@ describe("PoktService", () => {
   });
 
   describe("getAccount", () => {
-    it("Expect an application account successfully created", async () => {
+    it("Expect an application account successfully retrieved", async () => {
       const testPassPhrase = "12345678";
       const account = await poktService.createAccount(testPassPhrase);
 

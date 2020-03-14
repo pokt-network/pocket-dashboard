@@ -1,7 +1,7 @@
 import {after, before, describe, it} from "mocha";
 import "chai/register-should";
 import {expect} from "chai";
-import GoogleAuthProvider from "../../../src/services/auth/GoogleAuthProvider";
+import GoogleAuthProvider from "../../../src/providers/auth/GoogleAuthProvider";
 
 
 /** @type BaseAuthProvider */

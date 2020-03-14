@@ -1,9 +1,7 @@
 import BaseService from "./BaseService";
-import GoogleAuthProvider from "./auth/GoogleAuthProvider";
-import GithubAuthProvider from "./auth/GithubAuthProvider";
+import {get_auth_providers} from "../providers/auth";
 
-/** @type Class<BaseAuthProvider>[] */
-const AUTH_PROVIDER_CLASSES = [GoogleAuthProvider, GithubAuthProvider];
+
 const AUTH_TOKEN_TYPE = "access_token";
 
 class UserService extends BaseService {
@@ -12,18 +10,9 @@ class UserService extends BaseService {
     super();
 
     /** @type BaseAuthProvider[] */
-    this.__authProviders = this.__get_auth_providers();
+    this.__authProviders = get_auth_providers();
   }
 
-  /**
-   *
-   * @return {BaseAuthProvider[]}
-   *
-   * @private
-   */
-  __get_auth_providers() {
-    return AUTH_PROVIDER_CLASSES.map((provider) => new provider());
-  }
 
   /**
    * @param {string} name Name of Authentication provider.
