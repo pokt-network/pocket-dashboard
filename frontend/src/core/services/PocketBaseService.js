@@ -1,6 +1,6 @@
 import {Configurations} from "../../_configuration";
 
-class BaseService {
+class PocketBaseService {
 
   /**
    * @param {string} baseServiceURL Base service URL (ex. "api/user")
@@ -13,7 +13,6 @@ class BaseService {
    * @param {string} apiPath Relative path to the specific api method.
    *
    * @return {string}
-   *
    * @protected
    */
   _getURL(apiPath) {
@@ -21,4 +20,4 @@ class BaseService {
   }
 }
 
-export default BaseService;
+export default PocketBaseService;

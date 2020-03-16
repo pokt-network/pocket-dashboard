@@ -8,10 +8,10 @@ import GoogleAuthProvider from "../../../src/providers/auth/GoogleAuthProvider";
 let googleAuthProvider = null;
 
 /** @type string */
-const GOOGLE_AUTH_URL_WITH_CODE = process.env.TEST_GOOGLE_AUTH_URL_WITH_CODE; // You can get yours using the getConsentURL of GoogleAuthProvider
+const GOOGLE_AUTH_URL_WITH_CODE = process.env.TEST_GOOGLE_AUTH_URL_WITH_CODE; // You can get yours using the getConsentURL of GoogleAuthProviderHook
 
 /** @type string */
-const GOOGLE_REFRESH_TOKEN = process.env.TEST_GOOGLE_REFRESH_TOKEN; // You can get yours using the getConsentURL of GoogleAuthProvider
+const GOOGLE_REFRESH_TOKEN = process.env.TEST_GOOGLE_REFRESH_TOKEN; // You can get yours using the getConsentURL of GoogleAuthProviderHook
 
 before(() => {
   googleAuthProvider = new GoogleAuthProvider();

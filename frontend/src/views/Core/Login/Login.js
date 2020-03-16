@@ -5,7 +5,7 @@ import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
 
 import "./Login.scss";
 import {AuthProviderButton} from "../../../core/components/AuthProviderButton";
-import UserService from "../../../core/services/UserService";
+import UserService from "../../../core/services/PocketUserService";
 
 
 class Login extends Component {
@@ -29,8 +29,9 @@ class Login extends Component {
    * @param {string} name Name of auth provider.
    *
    * @return {{name: string, consent_url:string}}
+   * @private
    */
-  getAuthProvider(name) {
+  __getAuthProvider(name) {
     /** @type {Array.<{name:string, consent_url:string}>} */
     const authProviders = this.state.authProviders;
 
@@ -69,8 +70,8 @@ class Login extends Component {
             <div id={"main"}>
               <h1>Login</h1>
               <div id={"provider-buttons"}>
-                <AuthProviderButton authProvider={this.getAuthProvider("google")}/>
-                <AuthProviderButton authProvider={this.getAuthProvider("github")}/>
+                <AuthProviderButton authProvider={this.__getAuthProvider("google")}/>
+                <AuthProviderButton authProvider={this.__getAuthProvider("github")}/>
               </div>
               <hr/>
               <Form id={"main-form"}>

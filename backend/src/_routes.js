@@ -1,5 +1,5 @@
-import Index from "./apis";
-import User from "./apis/User";
+import Index from "./apis/IndexApi";
+import User from "./apis/UserApi";
 
 
 export function configureRoutes(expressApp) {

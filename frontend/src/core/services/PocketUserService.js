@@ -1,7 +1,7 @@
-import BaseService from "./BaseService";
+import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
 
-class UserService extends BaseService {
+class PocketUserService extends PocketBaseService {
 
   constructor() {
     super("api/user");
@@ -71,7 +71,7 @@ class UserService extends BaseService {
    * @param {string} providerName Name of auth provider.
    * @param {string} code Code returned by auth provider.
    *
-   * @return {Promise<{success:boolean, [data]: *}>}
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
    */
   async loginWithAuthProvider(providerName, code) {
     const data = {
@@ -93,10 +93,47 @@ class UserService extends BaseService {
       });
   }
 
+  /**
+   * Login user with email.
+   *
+   * @param {string} username Username of user to login.
+   * @param {string} password Password of user.
+   *
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   */
+  async login(username, password) {
+    const data = {
+      username,
+      password
+    };
+
+    return axios.post(this._getURL("auth/login"), data)
+      .then(response => {
+        if (response.status === 200) {
+          this.saveUserInCache(response.data, true);
+
+          return {success: true};
+        }
+
+        return {success: false};
+      }).catch(err => {
+        return {success: false, data: err};
+      });
+  }
+
   logout() {
-    this.removeUserFromCached();
+    const data = {
+      username: this.getUserInfo().email,
+    };
+
+    this.post(this._getURL("auth/logout"), data)
+      .then(logoutResponse => {
+        if (logoutResponse.status === 200 && logoutResponse.data) {
+          this.removeUserFromCached();
+        }
+      });
   }
 
 }
 
-export default new UserService();
+export default new PocketUserService();

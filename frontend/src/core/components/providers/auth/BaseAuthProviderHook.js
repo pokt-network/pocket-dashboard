@@ -1,10 +1,11 @@
 import React, {Component} from "react";
+import PropTypes from "prop-types";
 import queryString from "query-string";
-import UserService from "../../../services/UserService";
+import UserService from "../../../services/PocketUserService";
 import {Redirect} from "react-router-dom";
 import {HOME_PATH} from "../../../../_routes";
 
-class BaseAuthProviderComponent extends Component {
+export class BaseAuthProviderHook extends Component {
 
 
   constructor(providerName, props, context) {
@@ -17,11 +18,10 @@ class BaseAuthProviderComponent extends Component {
   }
 
   componentDidMount() {
-    // eslint-disable-next-line react/prop-types
     const {location} = this.props;
 
     // noinspection JSUnresolvedFunction
-    const data = queryString.parse(location.search); // eslint-disable-line react/prop-types
+    const data = queryString.parse(location.search);
 
     UserService.loginWithAuthProvider(this.providerName, data.code)
       .then(response => {
@@ -37,4 +37,6 @@ class BaseAuthProviderComponent extends Component {
   }
 }
 
-export default BaseAuthProviderComponent;
+BaseAuthProviderHook.propTypes = {
+  location: PropTypes.object
+};
