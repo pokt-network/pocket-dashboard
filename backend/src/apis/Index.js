@@ -2,7 +2,7 @@ import express from "express";
 
 const router = express.Router();
 
-router.get("/", function (request, response) {
+router.get("/", (request, response) => {
   response.send({"greeting": "hello"});
 });
 

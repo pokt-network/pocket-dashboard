@@ -9,7 +9,7 @@ const AUTH_PROVIDER_CLASSES = [GoogleAuthProvider, GithubAuthProvider];
  * @return {BaseAuthProvider[]}
  */
 export function get_auth_providers() {
-  return AUTH_PROVIDER_CLASSES.map((provider) => new provider());
+  return AUTH_PROVIDER_CLASSES.map(provider => new provider());
 }
 
 
@@ -21,5 +21,5 @@ export function get_auth_providers() {
  * @return {BaseAuthProvider}
  */
 export function getAuthProvider(authProviders, name) {
-  return authProviders.filter((provider) => provider.name === name.toLowerCase())[0];
+  return authProviders.filter(provider => provider.name === name.toLowerCase())[0];
 }

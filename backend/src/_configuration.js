@@ -1,6 +1,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
+import cors from "cors";
 import dotenv from "dotenv";
 
 // Configure Environment Variables: Now .env files can be loaded and used in process.env.
@@ -64,4 +65,5 @@ export function configureExpress(expressApp) {
   expressApp.use(express.urlencoded({extended: false}));
   expressApp.use(cookieParser());
   expressApp.use(logger("dev"));
+  expressApp.use(cors());
 }

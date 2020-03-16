@@ -28,7 +28,8 @@
     "nyc": "^15.0.0",
     "query-string": "^6.11.1",
     "googleapis": "^48.0.0",
-    "bcrypt": "^4.0.1"
+    "bcrypt": "^4.0.1",
+    "cors": "^2.8.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -50,6 +51,7 @@
     "webpack": "^4.41.6",
     "webpack-cli": "^3.3.11",
     "webpack-dev-middleware": "^3.7.2",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-node-externals": "^1.7.2",
+    "dotenv-webpack": "^1.7.0"
   }
 }

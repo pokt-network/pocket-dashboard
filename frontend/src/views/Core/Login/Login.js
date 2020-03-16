@@ -3,10 +3,40 @@ import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
 
-
 import "./Login.scss";
+import {AuthProviderButton} from "../../../core/components/AuthProviderButton";
+import UserService from "../../../core/services/UserService";
+
 
 class Login extends Component {
+
+  constructor(props, context) {
+    super(props, context);
+
+    this.state = {
+      authProviders: []
+    };
+  }
+
+  componentDidMount() {
+    /** @type {UserService} */
+    UserService.getAuthProviders().then(providers => {
+      this.setState({authProviders: providers});
+    });
+  }
+
+  /**
+   * @param {string} name Name of auth provider.
+   *
+   * @return {{name: string, consent_url:string}}
+   */
+  getAuthProvider(name) {
+    /** @type {Array.<{name:string, consent_url:string}>} */
+    const authProviders = this.state.authProviders;
+
+    return authProviders.filter(value => value.name.toLowerCase() === name.toLowerCase())[0];
+  }
+
   render() {
     return (
       <Container fluid id={"login-page"}>
@@ -39,10 +69,8 @@ class Login extends Component {
             <div id={"main"}>
               <h1>Login</h1>
               <div id={"provider-buttons"}>
-                <Button variant="outline-secondary" size={"lg"} block className={"rounded-pill"}>Login with
-                  Google</Button>
-                <Button variant="outline-secondary" size={"lg"} block className={"rounded-pill"}>Login with
-                  Github</Button>
+                <AuthProviderButton authProvider={this.getAuthProvider("google")}/>
+                <AuthProviderButton authProvider={this.getAuthProvider("github")}/>
               </div>
               <hr/>
               <Form id={"main-form"}>

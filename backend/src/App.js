@@ -9,9 +9,9 @@ import webpackDevMiddleware from "webpack-dev-middleware";
 const webPackCompiler = webpack(webPackConfig);
 const app = express();
 
-
-configureRoutes(app);
 configureExpress(app);
+configureRoutes(app);
+
 
 // Tell express to use the webpack-dev-middleware and use the webpack.config.js
 // configuration file as a base.
