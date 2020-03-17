@@ -1,7 +1,9 @@
 import BaseService from "./BaseService";
 import {get_auth_providers, getAuthProvider} from "../providers/auth";
+import {PocketUser} from "../models/User";
 
 const AUTH_TOKEN_TYPE = "access_token";
+const USER_ENTITY_NAME = "Users";
 
 class UserService extends BaseService {
 
@@ -28,8 +30,32 @@ class UserService extends BaseService {
     return authProvider.getUserData(accessToken, AUTH_TOKEN_TYPE);
   }
 
-  async __signUp(user) {
-    // TODO: Implement the method.
+  /**
+   * Create user if not exists at Pocket database.
+   *
+   * @param {PocketUser} user User to create on database.
+   *
+   * @private
+   */
+  async __createUserIfNotExists(user) {
+    const dbUser = await this._persistenceService.getEntityByFilter(USER_ENTITY_NAME, {email: user.email});
+
+    if (!dbUser) {
+      await this._persistenceService.saveEntity(USER_ENTITY_NAME, user);
+    }
+  }
+
+  /**
+   * Update last login of user.
+   *
+   * @param {PocketUser} user User to update last login.
+   *
+   * @private
+   */
+  async __updateLastLogin(user) {
+    const userToUpdate = PocketUser.createPocketUserWithLastLogin(user);
+
+    await this._persistenceService.updateEntity(USER_ENTITY_NAME, {email: user.email}, userToUpdate);
   }
 
   /**
@@ -55,16 +81,23 @@ class UserService extends BaseService {
    * @return Promise<AuthProviderUser>
    */
   async authenticateWithAuthProvider(providerName, code) {
-    // TODO: Looking in the database to update last login.
-    // TODO: Implement sign up.
+    const user = await this.__getProviderUserData(providerName, code);
 
-    return this.__getProviderUserData(providerName, code);
+    // Create the user if not exists on DB.
+    const pocketUser = PocketUser.createPocketUserFromAuthProviderUser(user);
+    return this.__createUserIfNotExists(pocketUser).then(() => {
+
+      // Update last login of user.
+      this.__updateLastLogin(user);
+
+      return user;
+    });
   }
 
   /**
    * Authenticate user with email and password.
    *
-   * @param {string} username Username of user (in this case is the email).
+   * @param {string} username Username of user.
    * @param {string} password Password of user to authenticate.
    *
    * @return {Promise<void>}
@@ -73,6 +106,7 @@ class UserService extends BaseService {
     // TODO: Implement the method.
   }
 
+
   async signUpUser(user) {
     // TODO: Implement the method.
   }
@@ -80,7 +114,7 @@ class UserService extends BaseService {
   /**
    * Logout user.
    *
-   * @param {string} username Username of user (in this case is the email).
+   * @param {string} username Username of user.
    *
    * @return {Promise<void>}
    */
