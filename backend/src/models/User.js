@@ -9,6 +9,7 @@ export class PocketUser {
    * @param {string} [lastLogin] Last login.
    */
   constructor(provider, email, avatar, username, password, lastLogin) {
+    // TODO: remove avatar
     Object.assign(this, {provider: provider.toLowerCase(), email, avatar, username, password, lastLogin});
   }
 
@@ -20,6 +21,7 @@ export class PocketUser {
    * @return {PocketUser}
    */
   static createPocketUserFromAuthProviderUser(user) {
+    // TODO: save name as username
     return new PocketUser(user.provider, user.email);
   }
 
@@ -63,6 +65,7 @@ export class AuthProviderUser extends PocketUser {
    * @param {string} [avatar] Avatar of user.
    */
   constructor(provider, id, name, email, avatar) {
+    // TODO: remove avatar
     super(provider, email, avatar);
     this.id = id;
     this.name = name;
@@ -73,6 +76,7 @@ export class GithubUser extends AuthProviderUser {
 
 
   constructor(id, name, email, avatarURL) {
+    // TODO: remove avatar
     super("github", id, name, email, avatarURL);
   }
 }
@@ -80,6 +84,7 @@ export class GithubUser extends AuthProviderUser {
 export class GoogleUser extends AuthProviderUser {
 
   constructor(id, name, email, avatarURL) {
+    // TODO: remove avatar
     super("google", id, name, email, avatarURL);
   }
 }
@@ -87,6 +92,7 @@ export class GoogleUser extends AuthProviderUser {
 export class EmailUser extends PocketUser {
 
   constructor(id, name, email) {
+    // TODO: save name as username
     super("email", id, name, email);
   }
 }
