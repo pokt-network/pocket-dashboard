@@ -15,7 +15,7 @@ class Dashboard extends Component {
           <div>Email:</div>
           <div>{UserService.getUserInfo().email}</div>
           <div>Avatar:</div>
-          <div>{UserService.getUserInfo().avatar_url}</div>
+          <div>{UserService.getUserInfo().avatar}</div>
         </div>
       </div>
     );

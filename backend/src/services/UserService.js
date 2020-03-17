@@ -53,7 +53,7 @@ class UserService extends BaseService {
    * @private
    */
   async __updateLastLogin(user) {
-    const userToUpdate = PocketUser.createPocketUserWithLastLogin(user);
+    const userToUpdate = PocketUser.createPocketUserWithUTCLastLogin(user);
 
     await this._persistenceService.updateEntity(USER_ENTITY_NAME, {email: user.email}, userToUpdate);
   }
@@ -78,20 +78,19 @@ class UserService extends BaseService {
    * @param {string} providerName Name of auth provider.
    * @param {string} code Code returned by auth provider.
    *
-   * @return Promise<AuthProviderUser>
+   * @return {Promise<PocketUser>}
    */
   async authenticateWithAuthProvider(providerName, code) {
     const user = await this.__getProviderUserData(providerName, code);
 
     // Create the user if not exists on DB.
     const pocketUser = PocketUser.createPocketUserFromAuthProviderUser(user);
-    return this.__createUserIfNotExists(pocketUser).then(() => {
+    await this.__createUserIfNotExists(pocketUser);
 
-      // Update last login of user.
-      this.__updateLastLogin(user);
+    // Update last login of user on DB.
+    await this.__updateLastLogin(pocketUser);
 
-      return user;
-    });
+    return user;
   }
 
   /**
@@ -100,7 +99,7 @@ class UserService extends BaseService {
    * @param {string} username Username of user.
    * @param {string} password Password of user to authenticate.
    *
-   * @return {Promise<void>}
+   * @return {Promise<PocketUser>}
    */
   async authenticateUser(username, password) {
     // TODO: Implement the method.

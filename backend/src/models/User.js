@@ -3,12 +3,13 @@ export class PocketUser {
   /**
    * @param {string} provider Provider name.
    * @param {string} email Email of user.
+   * @param {string} [avatar] Avatar of user.
    * @param {string} [username] Username of user.
    * @param {string} [password] Password.
    * @param {string} [lastLogin] Last login.
    */
-  constructor(provider, email, username, password, lastLogin) {
-    Object.assign(this, {provider: provider.toLowerCase(), email, username, password, lastLogin});
+  constructor(provider, email, avatar, username, password, lastLogin) {
+    Object.assign(this, {provider: provider.toLowerCase(), email, avatar, username, password, lastLogin});
   }
 
   /**
@@ -34,7 +35,7 @@ export class PocketUser {
     /** @type string */
     const encryptedPassword = password;
 
-    return new PocketUser(user.provider, user.email, user.username, encryptedPassword);
+    return new PocketUser(user.provider, user.email, user.avatar, user.username, encryptedPassword);
   }
 
   /**
@@ -44,10 +45,10 @@ export class PocketUser {
    *
    * @return {PocketUser}
    */
-  static createPocketUserWithLastLogin(user) {
+  static createPocketUserWithUTCLastLogin(user) {
     const lastLoginUTC = new Date().toUTCString();
 
-    return new PocketUser(user.provider, user.email, user.username, user.password, lastLoginUTC);
+    return new PocketUser(user.provider, user.email, user.avatar, user.username, user.password, lastLoginUTC);
   }
 
 }
@@ -59,13 +60,12 @@ export class AuthProviderUser extends PocketUser {
    * @param {string} id ID of user.
    * @param {string} name Name of user.
    * @param {string} email Email of user.
-   * @param {string} [avatarURL] Gravatar of user.
+   * @param {string} [avatar] Avatar of user.
    */
-  constructor(provider, id, name, email, avatarURL) {
-    super(provider, email);
+  constructor(provider, id, name, email, avatar) {
+    super(provider, email, avatar);
     this.id = id;
     this.name = name;
-    this.avatarURL = avatarURL;
   }
 }
 

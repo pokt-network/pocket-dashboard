@@ -10,7 +10,7 @@ class PocketUserService extends PocketBaseService {
   /**
    * Save user data in local storage.
    *
-   * @param {{id:*,name:string,email:string,avatarURL:string}} user Pocket User to save.
+   * @param {{id:*,name:string,email:string,avatar:string}} user Pocket User to save.
    * @param {boolean} loggedIn If user is logged in.
    */
   saveUserInCache(user, loggedIn) {
@@ -18,7 +18,7 @@ class PocketUserService extends PocketBaseService {
     localStorage.setItem("user_id", user.id);
     localStorage.setItem("user_name", user.name);
     localStorage.setItem("user_email", user.email);
-    localStorage.setItem("user_avatar_url", user.avatarURL);
+    localStorage.setItem("user_avatar", user.avatar);
   }
 
   /**
@@ -29,7 +29,7 @@ class PocketUserService extends PocketBaseService {
     localStorage.removeItem("user_entity_id");
     localStorage.removeItem("user_name");
     localStorage.removeItem("user_email");
-    localStorage.removeItem("user_avatar_url");
+    localStorage.removeItem("user_avatar");
 
     localStorage.removeItem("is_logged_in");
   }
@@ -44,7 +44,7 @@ class PocketUserService extends PocketBaseService {
   /**
    * Get logged user information.
    *
-   * @return {{}|{avatar_url: string, name: string, id: *, email: string}}
+   * @return {{}|{avatar: string, name: string, id: *, email: string}}
    */
   getUserInfo() {
     if (this.isLoggedIn()) {
@@ -52,7 +52,7 @@ class PocketUserService extends PocketBaseService {
         id: localStorage.getItem("user_id"),
         name: localStorage.getItem("user_name"),
         email: localStorage.getItem("user_email"),
-        avatar_url: localStorage.getItem("user_avatar_url"),
+        avatar: localStorage.getItem("user_avatar"),
       };
     } else {
       return {};
