@@ -90,6 +90,7 @@ class UserService extends BaseService {
     // Update last login of user on DB.
     await this.__updateLastLogin(pocketUser);
 
+    // TODO: Return a Generic PocketUser using AuthProviderUser?
     return user;
   }
 
