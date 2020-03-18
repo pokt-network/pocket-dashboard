@@ -56,10 +56,10 @@ class GithubAuthProvider extends BaseAuthProvider {
       },
     });
 
-    /** @type {{id:string, name: string, email: string, avatar_url: string}} */
+    /** @type {{name: string, email: string}} */
     const {data} = response;
 
-    return new GithubUser(data.id, data.name, data.email, data.avatar_url);
+    return new GithubUser(data.email, data.name);
   }
 }
 

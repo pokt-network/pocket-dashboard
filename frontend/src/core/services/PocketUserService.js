@@ -10,26 +10,23 @@ class PocketUserService extends PocketBaseService {
   /**
    * Save user data in local storage.
    *
-   * @param {{id:*,name:string,email:string,avatar:string}} user Pocket User to save.
+   * @param {{username:string,email:string,provider:string}} user Pocket User to save.
    * @param {boolean} loggedIn If user is logged in.
    */
   saveUserInCache(user, loggedIn) {
     localStorage.setItem("is_logged_in", loggedIn.toString());
-    localStorage.setItem("user_id", user.id);
-    localStorage.setItem("user_name", user.name);
+    localStorage.setItem("user_name", user.username);
     localStorage.setItem("user_email", user.email);
-    localStorage.setItem("user_avatar", user.avatar);
+    localStorage.setItem("user_provider", user.provider);
   }
 
   /**
    * Remove user data from local storage.
    */
   removeUserFromCached() {
-    localStorage.removeItem("user_id");
-    localStorage.removeItem("user_entity_id");
     localStorage.removeItem("user_name");
     localStorage.removeItem("user_email");
-    localStorage.removeItem("user_avatar");
+    localStorage.removeItem("user_provider");
 
     localStorage.removeItem("is_logged_in");
   }
@@ -44,15 +41,14 @@ class PocketUserService extends PocketBaseService {
   /**
    * Get logged user information.
    *
-   * @return {{}|{avatar: string, name: string, id: *, email: string}}
+   * @return {{}|{provider: string, name: string, email: string}}
    */
   getUserInfo() {
     if (this.isLoggedIn()) {
       return {
-        id: localStorage.getItem("user_id"),
         name: localStorage.getItem("user_name"),
         email: localStorage.getItem("user_email"),
-        avatar: localStorage.getItem("user_avatar"),
+        provider: localStorage.getItem("user_provider")
       };
     } else {
       return {};
@@ -100,6 +96,7 @@ class PocketUserService extends PocketBaseService {
    * @param {string} password Password of user.
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   * @async
    */
   async login(username, password) {
     const data = {
@@ -123,7 +120,7 @@ class PocketUserService extends PocketBaseService {
 
   logout() {
     const data = {
-      username: this.getUserInfo().email,
+      email: this.getUserInfo().email,
     };
 
     this.post(this._getURL("auth/logout"), data)

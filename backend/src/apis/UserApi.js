@@ -46,16 +46,33 @@ router.post("/auth/login", async (request, response) => {
 });
 
 /**
+ * User sign up using email.
+ */
+router.post("/auth/signup", async (request, response) => {
+  try {
+    /** @type {{email:string, username:string, password1:string, password2:string}} */
+    const data = request.body;
+
+    const result = await userService.signUpUser(data);
+
+    response.send(result);
+  } catch (e) {
+    response.status(400).send(`An error has occurred: ${e}`);
+  }
+
+});
+
+/**
  * User logout.
  */
 router.post("/auth/logout", async (request, response) => {
   try {
-    /** @type {{username:string}} */
+    /** @type {{email:string}} */
     const data = request.body;
 
-    await userService.logout(data.username);
+    const result = await userService.logout(data.email);
 
-    response.send(true);
+    response.send(result);
   } catch (e) {
     response.status(false);
   }
