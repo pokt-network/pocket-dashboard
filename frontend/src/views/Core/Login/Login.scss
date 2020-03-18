@@ -7,23 +7,6 @@
     width: 45%;
   }
 
-  #sidebar, #content {
-    height: 100vh;
-  }
-
-  #sidebar {
-    padding-top: 40px;
-    padding-left: 60px;
-    background: theme-color("dark");
-    color: color("white");
-
-    #title {
-      margin-top: 50px;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-    }
-  }
-
   #content {
     background: theme-color("light");
 

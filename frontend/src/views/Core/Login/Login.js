@@ -2,8 +2,9 @@ import React, {Component} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import "./Login.scss";
 import {AuthProviderButton} from "../../../core/components/AuthProviderButton";
-import UserService from "../../../core/services/PocketUserService";
 import Help from '../../../core/components/Help/Help';
+import Sidebar from "../../../core/components/Sidebar";
+import UserService from "../../../core/services/PocketUserService";
 
 
 class Login extends Component {
@@ -40,26 +41,7 @@ class Login extends Component {
     return (
       <Container fluid id={"login-page"}>
         <Row>
-          <Col xs={2} sm={3} lg={3} id={"sidebar"}>
-            <Row>
-              <img src={"/logo.png"} alt="logo" id={"main-logo"}/>
-            </Row>
-            <Row id={"title"}>
-              <h1>
-                We are <br/>
-                pocket <br/>
-                network
-              </h1>
-            </Row>
-            <Row>
-              <p>
-                {/* eslint-disable-next-line react/no-unescaped-entities */}
-                Pocket Network's mission is to ensure the sustainable <br/>
-                Decentralization of blockchain infrastructure. In a <br/>
-                market that is over-reliant on single-service provider.
-              </p>
-            </Row>
-          </Col>
+          <Sidebar/>
           <Col id={"content"}>
             <Help/>
 
