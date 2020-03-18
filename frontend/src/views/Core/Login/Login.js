@@ -1,11 +1,9 @@
 import React, {Component} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
-
 import "./Login.scss";
 import {AuthProviderButton} from "../../../core/components/AuthProviderButton";
 import UserService from "../../../core/services/PocketUserService";
+import Help from '../../../core/components/Help/Help';
 
 
 class Login extends Component {
@@ -63,9 +61,7 @@ class Login extends Component {
             </Row>
           </Col>
           <Col id={"content"}>
-            <div className={"help text"}>
-              <Button variant={"link"}><FontAwesomeIcon icon={faQuestionCircle}/></Button>
-            </div>
+            <Help/>
 
             <div id={"main"}>
               <h1>Login</h1>

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
+import Help from "../../../core/components/Help/Help";
 import "./ForgotPassword.scss";
 
 class ForgotPassword extends Component {
@@ -12,11 +11,7 @@ class ForgotPassword extends Component {
           <Col id={"navbar"}>
             <img src={"/logo.png"} alt="logo" id={"main-logo"} />
 
-            <div className={"help"}>
-              <Button variant={"link"}>
-                <FontAwesomeIcon icon={faQuestionCircle} />
-              </Button>
-            </div>
+            <Help />
           </Col>
         </Row>
         <Row>
