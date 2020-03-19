@@ -1,14 +1,15 @@
-import React, { Component } from "react";
-import { Col, Row } from "react-bootstrap";
+import React, {Component} from "react";
+import PropTypes from "prop-types";
+import {Col, Row} from "react-bootstrap";
 
-class Sidebar extends Component {
+export default class Sidebar extends Component {
   render() {
-    const { children } = this.props;
+    const {children} = this.props;
 
     return (
       <Col xs={2} sm={3} lg={3} id={"sidebar"}>
         <Row>
-          <img src={"/logo.png"} alt="logo" id={"main-logo"} />
+          <img src={"/logo.png"} alt="logo" id={"main-logo"}/>
         </Row>
         {children}
       </Col>
@@ -16,4 +17,9 @@ class Sidebar extends Component {
   }
 }
 
-export default Sidebar;
+Sidebar.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
+};
