@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import Help from "../../../core/components/Help/Help";
+import React, {Component} from "react";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import HelpLink from "../../../core/components/HelpLink";
 import "./ForgotPassword.scss";
 
 class ForgotPassword extends Component {
@@ -9,9 +9,9 @@ class ForgotPassword extends Component {
       <Container fluid id={"forgot-password-page"}>
         <Row>
           <Col id={"navbar"}>
-            <img src={"/logo.png"} alt="logo" id={"main-logo"} />
+            <img src={"/logo.png"} alt="logo" id={"main-logo"}/>
 
-            <Help />
+            <HelpLink/>
           </Col>
         </Row>
         <Row>

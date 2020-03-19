@@ -1,32 +1,25 @@
-import React, {Component} from 'react';
-import {Col, Row} from 'react-bootstrap'
+import React, {Component} from "react";
+import PropTypes from "prop-types";
+import {Col, Row} from "react-bootstrap";
 
+export default class Sidebar extends Component {
+  render() {
+    const {children} = this.props;
 
-class Sidebar extends Component {
-  render() { 
-    return ( 
+    return (
       <Col xs={2} sm={3} lg={3} id={"sidebar"}>
-            <Row>
-              <img src={"/logo.png"} alt="logo" id={"main-logo"}/>
-            </Row>
-            <Row id={"title"}>
-              <h1>
-                We are <br/>
-                pocket <br/>
-                network
-              </h1>
-            </Row>
-            <Row>
-              <p>
-                {/* eslint-disable-next-line react/no-unescaped-entities */}
-                Pocket Network's mission is to ensure the sustainable <br/>
-                Decentralization of blockchain infrastructure. In a <br/>
-                market that is over-reliant on single-service provider.
-              </p>
-            </Row>
-          </Col>
-     );
+        <Row>
+          <img src={"/logo.png"} alt="logo" id={"main-logo"}/>
+        </Row>
+        {children}
+      </Col>
+    );
   }
 }
 
-export default Sidebar;
+Sidebar.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node
+  ])
+};

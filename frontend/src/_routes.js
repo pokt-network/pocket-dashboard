@@ -16,19 +16,9 @@ export const routePaths = {
  * @type {Array<{path: string, component: Component, exact: boolean, name: string}>}
  */
 const pageRoutes = [
-  { path: routePaths.login, exact: true, name: "Login", component: Login },
-  {
-    path: routePaths.home,
-    exact: true,
-    name: "Dashboard",
-    component: Dashboard
-  },
-  {
-    path: routePaths.forgot_password,
-    exact: true,
-    name: "Forgot Passsword",
-    component: ForgotPassword
-  },
+  {path: routePaths.login, exact: true, name: "Login", component: Login},
+  {path: routePaths.home, exact: true, name: "Dashboard", component: Dashboard},
+  {path: routePaths.forgot_password, exact: true, name: "Forgot Password", component: ForgotPassword}
   { path: routePaths.signup, exact: true, name: "Sign Up", component: SignUp }
 ];
 

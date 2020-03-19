@@ -59,7 +59,7 @@ class GoogleAuthProvider extends BaseAuthProvider {
       personFields: "emailAddresses,names,photos"
     });
 
-    return new GoogleUser(data.resourceName, data.names[0].displayName, data.emailAddresses[0].value, data.photos[0].url);
+    return new GoogleUser(data.emailAddresses[0].value, data.names[0].displayName);
   }
 }
 
