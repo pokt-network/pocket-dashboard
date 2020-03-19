@@ -39,7 +39,8 @@ class Login extends Component {
   }
 
   render() {
-    const { signup } = routePaths;
+    const { signup, forgot_password } = routePaths;
+
 
     return (
       <Container fluid id={"login-page"}>
@@ -85,7 +86,7 @@ class Login extends Component {
                   <Form.Control type="password" />
                 </Form.Group>
                 <p>
-                  Forgot your password? <a href="#">click here</a>
+                  Forgot your password? <a href={forgot_password}>click here</a>
                 </p>
 
                 <Button type="submit" variant="dark" size={"lg"} block>

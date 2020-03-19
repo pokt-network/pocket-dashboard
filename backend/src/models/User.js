@@ -18,6 +18,7 @@ export class PocketUser {
     Object.assign(this, {provider: provider.toLowerCase(), email, username, password, lastLogin});
   }
 
+
   /**
    * Factory method to create an user object.
    *
@@ -33,40 +34,32 @@ export class PocketUser {
   }
 
   /**
-   * Validate user data.
+   * Factory method to create an user object from db.
    *
-   * @param {Object} userData User data to validate.
-   * @param {string} userData.email Email of user.
-   * @param {string} userData.username Username of user.
-   * @param {string} userData.password1 Password of user.
-   * @param {string} userData.password2 Password to validate against Password1.
+   * @param {Object} user User from db.
+   * @param {string} user.provider
+   * @param {string} user.email
+   * @param {string} user.username
+   * @param {string} user.password
    *
-   * @return boolean
-   * @throws {Error} If validation fails
+   * @return {PocketUser}
    * @static
    */
-  static validate(userData) {
-
-    if (!EMAIL_REGEX.test(userData.email)) {
-      throw Error("Email address is not valid.");
-    }
-
-    // Validate if username has white spaces.
-    if (/\s/.test(userData.username)) {
-      throw Error("Username is not valid.");
-    }
-
-    if (userData.password1.length < PASSWORD_MIN_LENGTH || userData.password2.length < PASSWORD_MIN_LENGTH) {
-      throw Error(`Passwords must have ${PASSWORD_MIN_LENGTH} characters at least.`);
-    }
-
-    if (userData.password1 !== userData.password2) {
-      throw Error("Passwords does not match.");
-    }
-
-    return true;
+  static createPocketUserFromDB(user) {
+    return new PocketUser(user.provider, user.email, user.username, user.password);
   }
 
+  /**
+   * Remove password from user.
+   *
+   * @param {PocketUser} pocketUser Pocket user to remove password.
+   *
+   * @return {PocketUser}
+   * @static
+   */
+  static removeUserPassword(pocketUser) {
+    return new PocketUser(pocketUser.provider, pocketUser.email, pocketUser.username);
+  }
 }
 
 export class AuthProviderUser extends PocketUser {
@@ -108,6 +101,41 @@ export class EmailUser extends PocketUser {
   }
 
   /**
+   * Validate user data.
+   *
+   * @param {Object} userData User data to validate.
+   * @param {string} userData.email Email of user.
+   * @param {string} userData.username Username of user.
+   * @param {string} userData.password1 Password of user.
+   * @param {string} userData.password2 Password to validate against Password1.
+   *
+   * @return boolean
+   * @throws {Error} If validation fails
+   * @static
+   */
+  static validate(userData) {
+
+    if (!EMAIL_REGEX.test(userData.email)) {
+      throw Error("Email address is not valid.");
+    }
+
+    // Validate if username has white spaces.
+    if (/\s/.test(userData.username)) {
+      throw Error("Username is not valid.");
+    }
+
+    if (userData.password1.length < PASSWORD_MIN_LENGTH || userData.password2.length < PASSWORD_MIN_LENGTH) {
+      throw Error(`Passwords must have ${PASSWORD_MIN_LENGTH} characters at least.`);
+    }
+
+    if (userData.password1 !== userData.password2) {
+      throw Error("Passwords does not match.");
+    }
+
+    return true;
+  }
+
+  /**
    * Factory method to create an Email user with encrypted password.
    *
    * @param {string} email
@@ -135,6 +163,21 @@ export class EmailUser extends PocketUser {
    */
   static async encryptPassword(password) {
     return await bcrypt.hash(password, SALT_ROUNDS);
+  }
+
+
+  /**
+   * Compare passwords.
+   *
+   * @param {string} plainPassword Password unencrypted.
+   * @param {string} userPassword Encrypted user password.
+   *
+   * @return {Promise<boolean>}
+   * @static
+   * @async
+   */
+  static async validatePassword(plainPassword, userPassword) {
+    return await bcrypt.compare(plainPassword, userPassword);
   }
 }
 

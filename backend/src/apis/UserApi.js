@@ -24,7 +24,7 @@ router.post("/auth/provider/login", async (request, response) => {
 
     response.send(user);
   } catch (e) {
-    response.status(400).send(e);
+    response.status(400).send(e.toString());
   }
 
 });
@@ -40,7 +40,7 @@ router.post("/auth/login", async (request, response) => {
 
     response.send(user);
   } catch (e) {
-    response.status(400).send(e);
+    response.status(400).send(e.toString());
   }
 
 });
@@ -53,7 +53,7 @@ router.post("/auth/signup", async (request, response) => {
     /** @type {{email:string, username:string, password1:string, password2:string}} */
     const data = request.body;
 
-    const result = await userService.signUpUser(data);
+    const result = await userService.signupUser(data);
 
     response.send(result);
   } catch (e) {
