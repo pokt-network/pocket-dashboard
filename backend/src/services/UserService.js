@@ -3,7 +3,7 @@ import {get_auth_providers, getAuthProvider} from "../providers/auth";
 import {EmailUser, PocketUser} from "../models/User";
 
 const AUTH_TOKEN_TYPE = "access_token";
-const USER_ENTITY_NAME = "Users";
+const USER_COLLECTION_NAME = "Users";
 
 class UserService extends BaseService {
 
@@ -41,11 +41,11 @@ class UserService extends BaseService {
    * @async
    */
   async __createUserIfNotExists(user) {
-    const dbUser = await this._persistenceService.getEntityByFilter(USER_ENTITY_NAME, {email: user.email});
+    const dbUser = await this._persistenceService.getEntityByFilter(USER_COLLECTION_NAME, {email: user.email});
 
     if (!dbUser) {
       /** @type {{result: {n:number, ok: number}}} */
-      const result = await this._persistenceService.saveEntity(USER_ENTITY_NAME, user);
+      const result = await this._persistenceService.saveEntity(USER_COLLECTION_NAME, user);
 
       return Promise.resolve(result.result.ok === 1);
     }
@@ -63,7 +63,7 @@ class UserService extends BaseService {
   async __updateLastLogin(user) {
     const userToUpdate = PocketUser.createPocketUserWithUTCLastLogin(user);
 
-    await this._persistenceService.updateEntity(USER_ENTITY_NAME, {email: user.email}, userToUpdate);
+    await this._persistenceService.updateEntity(USER_COLLECTION_NAME, {email: user.email}, userToUpdate);
   }
 
   /**
@@ -93,12 +93,10 @@ class UserService extends BaseService {
     const user = await this.__getProviderUserData(providerName, code);
 
     // Create the user if not exists on DB.
-    const created = await this.__createUserIfNotExists(user);
+    await this.__createUserIfNotExists(user);
 
-    if (created) {
-      // Update last login of user on DB.
-      await this.__updateLastLogin(user);
-    }
+    // Update last login of user on DB.
+    await this.__updateLastLogin(user);
 
     return user;
   }
@@ -110,10 +108,29 @@ class UserService extends BaseService {
    * @param {string} password Password of user to authenticate.
    *
    * @return {Promise<PocketUser>}
+   * @throws {Error} If username or password is invalid.
    * @async
    */
   async authenticateUser(username, password) {
-    // TODO: Implement the method.
+    const filter = {$or: [{username}, {email: username}]};
+    const userDB = await this._persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    if (!userDB) {
+      throw Error("Invalid username.");
+    }
+
+    const pocketUser = PocketUser.createPocketUserFromDB(userDB);
+    if (!pocketUser.password) {
+      throw Error("Passwords do not match");
+    }
+
+    const passwordValidated = await EmailUser.validatePassword(password, pocketUser.password);
+
+    if (!passwordValidated) {
+      throw Error("Passwords do not match");
+    }
+
+    return PocketUser.removeUserPassword(pocketUser);
   }
 
   /**
@@ -129,8 +146,8 @@ class UserService extends BaseService {
    * @throws {Error} If validation fails
    * @async
    */
-  async signUpUser(userData) {
-    if (PocketUser.validate(userData)) {
+  async signupUser(userData) {
+    if (EmailUser.validate(userData)) {
       const emailPocketUser = await EmailUser.createEmailUserWithEncryptedPassword(userData.email, userData.username, userData.password1);
 
       // Create the user if not exists on DB.
