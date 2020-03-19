@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import "./VerifyEmail.scss";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import NavBar from "../../../core/components/NavBar";
@@ -33,5 +34,9 @@ class VerifyEmail extends Component {
     );
   }
 }
+
+VerifyEmail.propTypes = {
+  email: PropTypes.string
+};
 
 export default VerifyEmail;
