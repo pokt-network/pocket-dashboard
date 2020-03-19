@@ -7,13 +7,18 @@ import UserService from "../../../core/services/PocketUserService";
 import {routePaths} from "../../../_routes";
 import {Link} from "react-router-dom";
 import AuthSidebar from "../../../core/components/AuthSidebar";
+import PocketUserService from "../../../core/services/PocketUserService";
 
 class Login extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
-      authProviders: []
+      authProviders: [],
+      data: {
+        username: "",
+        password: ""
+      }
     };
   }
 
@@ -24,8 +29,35 @@ class Login extends Component {
     });
   }
 
+  handleLogin = async (e) => {
+    e.preventDefault();
+    const { username, password } = this.state.data;
+
+    const validationMsg = PocketUserService.validateLogin(username, 
+      password);
+
+    if (validationMsg !== '') {
+      console.log(validationMsg);
+      return;
+    } 
+
+    try {
+      await PocketUserService.login(username, password);
+      return this.props.history.replace('/dashboard');
+    } catch(err) {
+      console.log(err.data);
+    }
+  }
+
+  handleChange = ({ currentTarget: input }) => {
+    const data = {...this.state.data};
+    data[input.name] = input.value;
+    this.setState({ data })
+  }
+
   render() {
     const {signup, forgot_password} = routePaths;
+    const { username, password } = this.state.data;
 
     return (
       <Container fluid className={"auth-page"}>
@@ -48,17 +80,17 @@ class Login extends Component {
               <Form id={"main-form"}>
                 <Form.Group>
                   <Form.Label>E-mail</Form.Label>
-                  <Form.Control type="email"/>
+                  <Form.Control name="username" value={username} onChange={this.handleChange} />
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Password</Form.Label>
-                  <Form.Control type="password"/>
+                  <Form.Control required type="password" name="password" value={password} onChange={this.handleChange}/>
                 </Form.Group>
                 <p>
                   Forgot your password? <Link to={forgot_password}>click here</Link>
                 </p>
 
-                <Button type="submit" variant="dark" size={"lg"} block>
+                <Button onClick={this.handleLogin} type="submit" variant="dark" size={"lg"} block>
                   Login
                 </Button>
                 <div>
