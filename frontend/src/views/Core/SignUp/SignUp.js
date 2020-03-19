@@ -1,16 +1,16 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import "./Login.scss";
 import { AuthProviderButton } from "../../../core/components/AuthProviderButton";
 import HelpLink from "../../../core/components/HelpLink";
 import Sidebar from "../../../core/components/Sidebar";
 import UserService from "../../../core/services/PocketUserService";
+import "../Login/Login.scss";
 import { routePaths } from "../../../_routes";
 
-class Login extends Component {
+class SignUp extends Component {
   constructor(props, context) {
     super(props, context);
-
     this.state = {
       authProviders: []
     };
@@ -23,6 +23,8 @@ class Login extends Component {
     });
   }
 
+  // TODO: Refactor logic from providers to be shared by both sign up and
+  // login
   /**
    * @param {string} name Name of auth provider.
    *
@@ -39,34 +41,16 @@ class Login extends Component {
   }
 
   render() {
-    const { signup, forgot_password } = routePaths;
-
-
+    const { login } = routePaths;
     return (
       <Container fluid id={"login-page"}>
         <Row>
-          <Sidebar>
-            <Row id={"title"}>
-              <h1>
-                We are <br />
-                pocket <br />
-                network
-              </h1>
-            </Row>
-            <Row>
-              <p>
-                {/* eslint-disable-next-line react/no-unescaped-entities */}
-                Pocket Network's mission is to ensure the sustainable <br />
-                Decentralization of blockchain infrastructure. In a <br />
-                market that is over-reliant on single-service provider.
-              </p>
-            </Row>
-          </Sidebar>
+          <Sidebar />
           <Col id={"content"}>
             <HelpLink />
 
             <div id={"main"}>
-              <h1>Login</h1>
+              <h1>Create Account</h1>
               <div id={"provider-buttons"}>
                 <AuthProviderButton
                   authProvider={this.__getAuthProvider("google")}
@@ -82,19 +66,23 @@ class Login extends Component {
                   <Form.Control type="email" />
                 </Form.Group>
                 <Form.Group>
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control />
+                </Form.Group>
+                <Form.Group>
                   <Form.Label>Password</Form.Label>
                   <Form.Control type="password" />
                 </Form.Group>
-                <p>
-                  Forgot your password? <a href={forgot_password}>click here</a>
-                </p>
+                <Form.Group>
+                  <Form.Label>Confirm password</Form.Label>
+                  <Form.Control type="password" />
+                </Form.Group>
 
                 <Button type="submit" variant="dark" size={"lg"} block>
                   Login
                 </Button>
                 <div>
-                  {/* eslint-disable-next-line */}
-                  <a href={signup}>You don't have an account?</a>
+                  <Link to={login}>Do you have an account?</Link>
                 </div>
               </Form>
             </div>
@@ -105,4 +93,4 @@ class Login extends Component {
   }
 }
 
-export default Login;
+export default SignUp;
