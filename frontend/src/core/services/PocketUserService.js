@@ -55,11 +55,28 @@ class PocketUserService extends PocketBaseService {
     }
   }
 
-
+  /**
+   * Get available auth providers.
+   *
+   * @return {Promise|Promise<Array.<{name:string, consent_url:string}>>}
+   */
   getAuthProviders() {
     return axios.get(this._getURL("auth/providers"))
       .then(response => response.data);
   }
+
+  /**
+   * @param {Array.<{name:string, consent_url:string}>} authProviders Name of auth provider.
+   * @param {string} name Name of auth provider.
+   *
+   * @return {{name: string, consent_url:string}}
+   */
+  getAuthProvider(authProviders, name) {
+    return authProviders.filter(
+      value => value.name.toLowerCase() === name.toLowerCase()
+    )[0];
+  }
+
 
   /**
    * Login using an auth provider.

@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 import {Button} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
-import "../../scss/Core.scss";
 
 export default class HelpLink extends Component {
   render() {
