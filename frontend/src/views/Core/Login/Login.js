@@ -5,6 +5,7 @@ import { AuthProviderButton } from "../../../core/components/AuthProviderButton"
 import HelpLink from "../../../core/components/HelpLink";
 import Sidebar from "../../../core/components/Sidebar";
 import UserService from "../../../core/services/PocketUserService";
+import { routePaths } from "../../../_routes";
 
 class Login extends Component {
   constructor(props, context) {
@@ -38,6 +39,8 @@ class Login extends Component {
   }
 
   render() {
+    const { signup } = routePaths;
+
     return (
       <Container fluid id={"login-page"}>
         <Row>
@@ -90,7 +93,7 @@ class Login extends Component {
                 </Button>
                 <div>
                   {/* eslint-disable-next-line */}
-                  <a href="#">You don't have an account?</a>
+                  <a href={signup}>You don't have an account?</a>
                 </div>
               </Form>
             </div>

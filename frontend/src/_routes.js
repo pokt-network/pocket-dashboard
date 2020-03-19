@@ -18,7 +18,7 @@ export const routePaths = {
 const pageRoutes = [
   {path: routePaths.login, exact: true, name: "Login", component: Login},
   {path: routePaths.home, exact: true, name: "Dashboard", component: Dashboard},
-  {path: routePaths.forgot_password, exact: true, name: "Forgot Password", component: ForgotPassword}
+  {path: routePaths.forgot_password, exact: true, name: "Forgot Password", component: ForgotPassword},
   { path: routePaths.signup, exact: true, name: "Sign Up", component: SignUp }
 ];
 

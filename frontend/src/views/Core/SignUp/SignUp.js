@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { AuthProviderButton } from "../../../core/components/AuthProviderButton";
-import Help from "../../../core/components/Help/Help";
+import HelpLink from "../../../core/components/HelpLink";
 import Sidebar from "../../../core/components/Sidebar";
 import UserService from "../../../core/services/PocketUserService";
 import "../Login/Login.scss";
@@ -47,7 +47,7 @@ class SignUp extends Component {
         <Row>
           <Sidebar />
           <Col id={"content"}>
-            <Help />
+            <HelpLink />
 
             <div id={"main"}>
               <h1>Create Account</h1>
