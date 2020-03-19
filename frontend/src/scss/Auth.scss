@@ -1,19 +1,19 @@
-#login-page {
-  height: 100%;
+@import "Core";
 
+.auth-page {
   #main-logo {
     width: 45%;
   }
 
-  #content {
+  .content {
     background: theme-color("light");
 
-    div.help {
+    .help {
       padding-top: 20px;
       padding-left: 90%;
     }
 
-    div#main {
+    div.main {
       padding-top: 20px;
       padding-left: 20%;
       padding-right: 20%;
@@ -44,6 +44,5 @@
         }
       }
     }
-
   }
 }

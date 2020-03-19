@@ -3,6 +3,11 @@ import PropTypes from "prop-types";
 import {Button} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
+export const AuthProviderType = {
+  login: "Login",
+  signup: "Sign up"
+};
+
 export class AuthProviderButton extends Component {
 
 
@@ -19,10 +24,10 @@ export class AuthProviderButton extends Component {
   }
 
   render() {
-    const {block, icon, className, authProvider} = this.props;
+    const {block, icon, className, authProvider, type} = this.props;
     return (
       <Button variant="outline-secondary" className={className} size={"lg"} block={block} onClick={this.onButtonClick}>
-        {icon ? <FontAwesomeIcon icon={icon}/> : null} Login with {authProvider.name}
+        {icon ? <FontAwesomeIcon icon={icon}/> : null} {type} with {authProvider.name}
       </Button>
     );
   }
@@ -39,6 +44,7 @@ AuthProviderButton.defaultProps = {
 
 AuthProviderButton.propTypes = {
   block: PropTypes.bool,
+  type: PropTypes.string,
   className: PropTypes.string,
   icon: PropTypes.object,
   authProvider: PropTypes.shape({
