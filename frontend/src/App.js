@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import "./App.scss";
 //Pages
-import routes, {LOGIN_PATH} from "./_routes";
+import routes, {routePaths} from "./_routes";
 
 class App extends Component {
   render() {
@@ -17,7 +17,7 @@ class App extends Component {
             })
           }
 
-          <Redirect from="/" to={LOGIN_PATH}/>
+          <Redirect from="/" to={routePaths.login}/>
         </Switch>
       </BrowserRouter>
     );

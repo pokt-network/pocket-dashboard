@@ -1,0 +1,8 @@
+@import "src/scss/Core";
+
+.help {
+  * {
+    font-size: 45px;
+    color: theme-color("dark");
+  }
+}

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import queryString from "query-string";
 import UserService from "../../../services/PocketUserService";
 import {Redirect} from "react-router-dom";
-import {HOME_PATH} from "../../../../_routes";
+import {routePaths} from "../../../../_routes";
 
 export class BaseAuthProviderHook extends Component {
 
@@ -33,7 +33,7 @@ export class BaseAuthProviderHook extends Component {
   }
 
   render() {
-    return (!this.state.authenticated) ? <h6>Authenticating...</h6> : <Redirect to={HOME_PATH}/>;
+    return (!this.state.authenticated) ? <h6>Authenticating...</h6> : <Redirect to={routePaths.home}/>;
   }
 }
 
