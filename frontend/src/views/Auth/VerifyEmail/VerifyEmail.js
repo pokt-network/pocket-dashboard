@@ -6,11 +6,18 @@ import Navbar from "../../../core/components/Navbar";
 
 class VerifyEmail extends Component {
   state = {
-    email: ""
+    email: "justaname94@outlook.com"
   };
 
   componentDidMount() {
     // TODO Obtain email from backend
+  }
+
+  formatEmail(email) {
+    const index = email.indexOf("@");
+    const lastLetters = email.substring(index - 2, index); 
+    const emailProvider = email.substring(index);
+    return  `******${lastLetters}${emailProvider}`
   }
 
   render() {
@@ -27,7 +34,7 @@ class VerifyEmail extends Component {
           >
             <h1>
               We send an email to this address <br />
-              { email }
+              { this.formatEmail(email) }
             </h1>
             <p>You did not receive it?</p>
             <Button variant="dark" size={"lg"} block>
