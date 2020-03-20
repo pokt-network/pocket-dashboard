@@ -11,6 +11,9 @@ import AuthSidebar from "../../../core/components/AuthSidebar";
 class SignUp extends Component {
   constructor(props, context) {
     super(props, context);
+
+    this.handleSignUp = this.handleSignUp.bind(this);
+
     this.state = {
       authProviders: [],
       data: {
@@ -29,11 +32,17 @@ class SignUp extends Component {
     });
   }
 
-  handleSignUp = async e => {
+  validateSignUp(username, email, password1, password2) {
+    if (password1 !== password2)
+      return "Passwords don't match";
+    return "";
+  } 
+
+  async handleSignUp(e) {
     e.preventDefault();
     const { username, email, password1, password2 } = this.state.data;
 
-    const validationMsg = UserService.validateSignUp(
+    const validationMsg = this.validateSignUp(
       username,
       email,
       password1,
@@ -54,6 +63,7 @@ class SignUp extends Component {
     );
 
     if (success) return this.props.history.replace(login);
+    // TODO: Show proper message on front end to user.
     console.log(error.response.data);
   };
 

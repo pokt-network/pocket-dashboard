@@ -12,6 +12,9 @@ class Login extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.handleLogin = this.handleLogin.bind(this);
+
+
     this.state = {
       authProviders: [],
       data: {
@@ -28,11 +31,25 @@ class Login extends Component {
     });
   }
 
-  handleLogin = async (e) => {
+  /**
+   * Validate user login data.
+   *
+   * @param {string} username Username of user to login.
+   * @param {string} password Password of user.
+   *
+   * @return {string} Message about error or empty if there's none
+   */
+  validateLogin(username, password) {
+    if (username === "" || password === "" )
+      return "Username or password cannot be empty";
+    return "";
+  }
+
+  async handleLogin(e)  {
     e.preventDefault();
     const { username, password } = this.state.data;
 
-    const validationMsg = UserService.validateLogin(username, 
+    const validationMsg = this.validateLogin(username, 
       password);
 
     if (validationMsg !== '') {
@@ -47,6 +64,7 @@ class Login extends Component {
     );
 
     if (success) return this.props.history.replace(home);
+    // TODO: Show proper message on front end to user.
     console.log(error.response.data);
   }
 

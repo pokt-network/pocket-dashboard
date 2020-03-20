@@ -136,20 +136,6 @@ class PocketUserService extends PocketBaseService {
   }
 
     /**
-   * Login user with email.
-   *
-   * @param {string} username Username of user to login.
-   * @param {string} password Password of user.
-   *
-   * @return {string} Message about error or empty if there's none
-   */
-  validateLogin(username, password) {
-    if (username === "" || password === "" )
-      return "Username or password cannot be empty";
-    return "";
-  }
-
-    /**
    * Register new user.
    *
    * @param {string} username Username of user to login.
@@ -179,12 +165,6 @@ class PocketUserService extends PocketBaseService {
         return {success: false, data: err};
       });
   }
-
-  validateSignUp(username, email, password1, password2) {
-    if (password1 !== password2)
-      return "Passwords don't match";
-    return "";
-  } 
 
   logout() {
     const data = {
