@@ -65,7 +65,7 @@ class Login extends Component {
 
     if (success) return this.props.history.replace(home);
     // TODO: Show proper message on front end to user.
-    console.log(error.response.data);
+    console.log(error.response.data.message);
   }
 
   handleChange = ({ currentTarget: input }) => {

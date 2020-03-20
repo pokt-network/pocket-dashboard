@@ -64,7 +64,7 @@ class SignUp extends Component {
 
     if (success) return this.props.history.replace(login);
     // TODO: Show proper message on front end to user.
-    console.log(error.response.data);
+    console.log(error.response.data.message);
   };
 
 
