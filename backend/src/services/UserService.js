@@ -1,6 +1,7 @@
 import BaseService from "./BaseService";
 import {get_auth_providers, getAuthProvider} from "../providers/auth";
 import {EmailUser, PocketUser} from "../models/User";
+import {AnsweredSecurityQuestion} from "../models/SecurityQuestion";
 
 const AUTH_TOKEN_TYPE = "access_token";
 const USER_COLLECTION_NAME = "Users";
@@ -130,7 +131,7 @@ class UserService extends BaseService {
       throw Error("Passwords do not match");
     }
 
-    return PocketUser.removeUserPassword(pocketUser);
+    return PocketUser.removeSensitiveFields(pocketUser);
   }
 
   /**
@@ -169,6 +170,28 @@ class UserService extends BaseService {
     return Promise.resolve(true);
   }
 
+  /**
+   * Add or update answered security questions to user.
+   *
+   * @param {string} userEmail Email of user.
+   * @param {Array<{question: string, answer:string}>} questions Questions to add or update.
+   *
+   * @return {Promise<boolean>}
+   */
+  async addOrUpdateUserSecurityQuestions(userEmail, questions) {
+    const filter = {email: userEmail};
+    const userDB = await this._persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    if (!userDB) {
+      throw Error("Invalid user.");
+    }
+
+    const data = {securityQuestions: AnsweredSecurityQuestion.createAnsweredSecurityQuestions(questions)};
+    /** @type {{result: {n:number, ok: number}}} */
+    const result = await this._persistenceService.updateEntity(USER_COLLECTION_NAME, filter, data);
+
+    return Promise.resolve(result.result.ok === 1);
+  }
 }
 
 export default UserService;

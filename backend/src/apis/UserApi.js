@@ -24,7 +24,11 @@ router.post("/auth/provider/login", async (request, response) => {
 
     response.send(user);
   } catch (e) {
-    response.status(400).send(e.toString());
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
   }
 
 });
@@ -40,7 +44,11 @@ router.post("/auth/login", async (request, response) => {
 
     response.send(user);
   } catch (e) {
-    response.status(400).send(e.toString());
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
   }
 
 });
@@ -57,7 +65,11 @@ router.post("/auth/signup", async (request, response) => {
 
     response.send(result);
   } catch (e) {
-    response.status(400).send(`An error has occurred: ${e}`);
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
   }
 
 });
