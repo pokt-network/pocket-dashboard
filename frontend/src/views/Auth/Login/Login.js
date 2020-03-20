@@ -13,7 +13,11 @@ class Login extends Component {
     super(props, context);
 
     this.state = {
-      authProviders: []
+      authProviders: [],
+      data: {
+        username: "",
+        password: ""
+      }
     };
   }
 
@@ -24,8 +28,37 @@ class Login extends Component {
     });
   }
 
+  handleLogin = async (e) => {
+    e.preventDefault();
+    const { username, password } = this.state.data;
+
+    const validationMsg = UserService.validateLogin(username, 
+      password);
+
+    if (validationMsg !== '') {
+      console.log(validationMsg);
+      return;
+    } 
+
+    const { home } = routePaths;
+    const { success, data: error } = await UserService.login(
+      username,
+      password
+    );
+
+    if (success) return this.props.history.replace(home);
+    console.log(error.response.data);
+  }
+
+  handleChange = ({ currentTarget: input }) => {
+    const data = {...this.state.data};
+    data[input.name] = input.value;
+    this.setState({ data });
+  }
+
   render() {
     const {signup, forgot_password} = routePaths;
+    const { username, password} = this.state.data;
 
     return (
       <Container fluid className={"auth-page"}>
@@ -45,14 +78,14 @@ class Login extends Component {
                 />
               </div>
               <hr/>
-              <Form id={"main-form"}>
+              <Form onSubmit={this.handleLogin} id={"main-form"}>
                 <Form.Group>
-                  <Form.Label>E-mail</Form.Label>
-                  <Form.Control type="email"/>
+                  <Form.Label>Username or E-mail</Form.Label>
+                  <Form.Control name="username" value={username} onChange={this.handleChange} />
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Password</Form.Label>
-                  <Form.Control type="password"/>
+                  <Form.Control type="password" name="password" value={password} onChange={this.handleChange}/>
                 </Form.Group>
                 <p>
                   Forgot your password? <Link to={forgot_password}>click here</Link>

@@ -12,7 +12,13 @@ class SignUp extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      authProviders: []
+      authProviders: [],
+      data: {
+        username: '',
+        email: '',
+        password1: '',
+        password2: '',
+      }
     };
   }
 
@@ -23,8 +29,45 @@ class SignUp extends Component {
     });
   }
 
+  handleSignUp = async e => {
+    e.preventDefault();
+    const { username, email, password1, password2 } = this.state.data;
+
+    const validationMsg = UserService.validateSignUp(
+      username,
+      email,
+      password1,
+      password2
+    );
+
+    if (validationMsg !== "") {
+      console.log(validationMsg);
+      return;
+    }
+
+    const { login } = routePaths;
+    const { success, data: error } = await UserService.signUp(
+      username,
+      email,
+      password1,
+      password2
+    );
+
+    if (success) return this.props.history.replace(login);
+    console.log(error.response.data);
+  };
+
+
+  handleChange = ({ currentTarget: input }) => {
+    const data = {...this.state.data};
+    data[input.name] = input.value;
+    this.setState({ data })
+  }
+
+
   render() {
     const {login} = routePaths;
+    const { username, email, password1, password2 } = this.state.data;
 
     return (
       <Container fluid className={"auth-page"}>
@@ -42,22 +85,37 @@ class SignUp extends Component {
                                     authProvider={UserService.getAuthProvider(this.state.authProviders, "github")}/>
               </div>
               <hr/>
-              <Form id={"main-form"}>
+              <Form onSubmit={this.handleSignUp} id={"main-form"}>
                 <Form.Group>
                   <Form.Label>E-mail</Form.Label>
-                  <Form.Control type="email"/>
+                  <Form.Control 
+                    type="email" 
+                    name="email" 
+                    value={email} 
+                    onChange={this.handleChange} />
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Username</Form.Label>
-                  <Form.Control/>
+                  <Form.Control 
+                    name="username" 
+                    value={username} 
+                    onChange={this.handleChange}/>
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Password</Form.Label>
-                  <Form.Control type="password"/>
+                  <Form.Control 
+                  type="password"
+                  name="password1" 
+                  value={password1} 
+                  onChange={this.handleChange}/>
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Confirm password</Form.Label>
-                  <Form.Control type="password"/>
+                  <Form.Control 
+                    type="password"
+                    name="password2" 
+                    value={password2} 
+                    onChange={this.handleChange}/>
                 </Form.Group>
 
                 <Button type="submit" variant="dark" size={"lg"} block>
