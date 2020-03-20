@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./SecurityQuestions.scss";
-import NavBar from "../../../core/components/NavBar";
+import Navbar from "../../../core/components/Navbar";
 import { Button, Container, Col, Row, Form } from "react-bootstrap";
 import "./SecurityQuestions.scss";
 
@@ -42,7 +42,7 @@ class SecurityQuestions extends Component {
 
     return (
       <Container fluid id={"security-questions-page"}>
-        <NavBar />
+        <Navbar />
         <Row>
           <Col
             id="main"

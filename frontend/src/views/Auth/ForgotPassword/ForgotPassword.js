@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import "./ForgotPassword.scss";
-import NavBar from "../../../core/components/NavBar";
+import Navbar from "../../../core/components/Navbar";
 
 class ForgotPassword extends Component {
   render() {
     return (
       <Container fluid id={"forgot-password-page"}>
-        <NavBar />
+        <Navbar />
         <Row>
           <Col
             id={"main"}

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import "./VerifyEmail.scss";
 import { Button, Col, Container, Row } from "react-bootstrap";
-import NavBar from "../../../core/components/NavBar";
+import Navbar from "../../../core/components/Navbar";
 
 class VerifyEmail extends Component {
   // TODO: Integrate with backend
@@ -13,7 +13,7 @@ class VerifyEmail extends Component {
   render() {
     return (
       <Container fluid id="verify-email-page">
-        <NavBar />
+        <Navbar />
         <Row>
           <Col
             id="main"
