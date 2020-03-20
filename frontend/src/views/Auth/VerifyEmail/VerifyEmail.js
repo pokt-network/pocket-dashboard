@@ -5,12 +5,17 @@ import { Button, Col, Container, Row } from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
 
 class VerifyEmail extends Component {
-  // TODO: Integrate with backend
   state = {
     email: ""
   };
 
+  componentDidMount() {
+    // TODO Obtain email from backend
+  }
+
   render() {
+    const { email } = this.state;
+
     return (
       <Container fluid id="verify-email-page">
         <Navbar />
@@ -22,7 +27,7 @@ class VerifyEmail extends Component {
           >
             <h1>
               We send an email to this address <br />
-              ******23@gmail.com
+              { email }
             </h1>
             <p>You did not receive it?</p>
             <Button variant="dark" size={"lg"} block>
