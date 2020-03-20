@@ -1,3 +1,3 @@
 export const Configurations = {
-  backendUrl: 'http://localhost:4200'
+  backendUrl: process.env.REACT_APP_BACKEND_URL
 };
