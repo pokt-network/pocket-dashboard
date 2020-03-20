@@ -6,16 +6,24 @@ import "./SecurityQuestions.scss";
 
 class SecurityQuestions extends Component {
   // TODO: Integrate with backend
-  state = {
-    securityQuestions: []
-  };
+
+  constructor(props) {
+    super(props);
+
+    this.handleChange = this.handleChange.bind(this);
+
+    this.state = {
+      securityQuestions: []
+    };
+  }
+  
 
   componentDidMount = () => {
     const securityQuestions = ["Select one", ...this.state.securityQuestions];
     this.setState({ securityQuestions });
   };
 
-  handleChange = e => {
+  handleChange(e) {
     console.log(e.target.value);
   };
 
