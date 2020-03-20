@@ -13,9 +13,17 @@ export class PocketUser {
    * @param {string} username Username of user.
    * @param {string} [password] Password.
    * @param {string} [lastLogin] Last login.
+   * @param {Array<AnsweredSecurityQuestion>} [securityQuestions] Answered security question of user.
    */
-  constructor(provider, email, username, password, lastLogin) {
-    Object.assign(this, {provider: provider.toLowerCase(), email, username, password, lastLogin});
+  constructor(provider, email, username, password, lastLogin, securityQuestions) {
+    Object.assign(this, {
+      provider: provider.toLowerCase(),
+      email,
+      username,
+      password,
+      lastLogin,
+      securityQuestions
+    });
   }
 
 
@@ -41,23 +49,25 @@ export class PocketUser {
    * @param {string} user.email
    * @param {string} user.username
    * @param {string} user.password
+   * @param {string} user.lastLogin
+   * @param {Array<AnsweredSecurityQuestion>} user.securityQuestions
    *
    * @return {PocketUser}
    * @static
    */
   static createPocketUserFromDB(user) {
-    return new PocketUser(user.provider, user.email, user.username, user.password);
+    return new PocketUser(user.provider, user.email, user.username, user.password, user.lastLogin, user.securityQuestions);
   }
 
   /**
-   * Remove password from user.
+   * Remove sensitive fields from user.
    *
-   * @param {PocketUser} pocketUser Pocket user to remove password.
+   * @param {PocketUser} pocketUser Pocket user to remove fields.
    *
    * @return {PocketUser}
    * @static
    */
-  static removeUserPassword(pocketUser) {
+  static removeSensitiveFields(pocketUser) {
     return new PocketUser(pocketUser.provider, pocketUser.email, pocketUser.username);
   }
 }

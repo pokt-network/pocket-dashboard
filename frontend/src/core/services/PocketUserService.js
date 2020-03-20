@@ -4,7 +4,7 @@ import axios from "axios";
 class PocketUserService extends PocketBaseService {
 
   constructor() {
-    super("api/user");
+    super("api/users");
   }
 
   /**
