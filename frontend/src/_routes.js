@@ -3,13 +3,17 @@ import Dashboard from "./views/Dashboard/Dashboard";
 import ForgotPassword from "./views/Auth/ForgotPassword/ForgotPassword";
 import GithubAuthProviderHook from "./core/components/providers/auth/GithubAuthProviderHook";
 import GoogleAuthProviderHook from "./core/components/providers/auth/GoogleAuthProviderHook";
+import SecurityQuestions from './views/Auth/SecurityQuestions/SecurityQuestions';
 import SignUp from "./views/Auth/SignUp/SignUp";
+import VerifyEMail from './views/Auth/VerifyEmail/VerifyEmail'
 
 export const routePaths = {
   signup: "/signup",
   login: "/login",
   home: "/dashboard",
-  forgot_password: "/forgot-password"
+  forgot_password: "/forgot-password",
+  security_questions: "/security-questions",
+  verify_email: "/verify-email"
 };
 
 /**
@@ -19,7 +23,9 @@ const pageRoutes = [
   {path: routePaths.login, exact: true, name: "Login", component: Login},
   {path: routePaths.home, exact: true, name: "Dashboard", component: Dashboard},
   {path: routePaths.forgot_password, exact: true, name: "Forgot Password", component: ForgotPassword},
-  {path: routePaths.signup, exact: true, name: "Sign Up", component: SignUp}
+  {path: routePaths.security_questions, exact: true, name: "Security Questions", component: SecurityQuestions},
+  {path: routePaths.signup, exact: true, name: "Sign Up", component: SignUp},
+  {path: routePaths.verify_email, exact: true, name: "Sign Up", component: VerifyEMail},
 ];
 
 /**

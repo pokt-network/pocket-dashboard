@@ -1,19 +1,13 @@
-import React, {Component} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import HelpLink from "../../../core/components/HelpLink";
+import React, { Component } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import "./ForgotPassword.scss";
+import Navbar from "../../../core/components/Navbar";
 
 class ForgotPassword extends Component {
   render() {
     return (
       <Container fluid id={"forgot-password-page"}>
-        <Row>
-          <Col id={"navbar"}>
-            <img src={"/logo.png"} alt="logo" id={"main-logo"}/>
-
-            <HelpLink/>
-          </Col>
-        </Row>
+        <Navbar />
         <Row>
           <Col
             id={"main"}
