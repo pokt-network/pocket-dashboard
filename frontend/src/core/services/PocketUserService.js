@@ -148,6 +148,21 @@ class PocketUserService extends PocketBaseService {
       });
   }
 
+  /**
+   * Format an email.
+   *
+   * @param {string} email Email to format.
+   *
+   * @return {string}
+   */
+  formatEmail(email) {
+    const index = email.indexOf("@");
+    const lastLetters = email.substring(index - 2, index);
+    const emailProvider = email.substring(index);
+
+    return `******${lastLetters}${emailProvider}`;
+  }
+
 }
 
 export default new PocketUserService();

@@ -1,40 +1,40 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import PropTypes from "prop-types";
 import "./VerifyEmail.scss";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import {Button, Col, Container, Row} from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
+import PocketUserService from "../../../core/services/PocketUserService";
 
 class VerifyEmail extends Component {
-  state = {
-    email: "justaname94@outlook.com"
-  };
+
+
+  constructor(props, context) {
+    super(props, context);
+
+    this.state = {
+      email: "justaname94@outlook.com"
+    };
+  }
 
   componentDidMount() {
     // TODO Obtain email from backend
   }
 
-  formatEmail(email) {
-    const index = email.indexOf("@");
-    const lastLetters = email.substring(index - 2, index); 
-    const emailProvider = email.substring(index);
-    return  `******${lastLetters}${emailProvider}`
-  }
 
   render() {
-    const { email } = this.state;
+    const {email} = this.state;
 
     return (
       <Container fluid id="verify-email-page">
-        <Navbar />
+        <Navbar/>
         <Row>
           <Col
             id="main"
-            md={{ span: 8, offset: 2 }}
-            lg={{ span: 4, offset: 4 }}
-          >
+            md={{span: 8, offset: 2}}
+            lg={{span: 4, offset: 4}}>
             <h1>
-              We send an email to this address <br />
-              { this.formatEmail(email) }
+              We send an email to this address <br/>
+              {PocketUserService.formatEmail(email)}
             </h1>
             <p>You did not receive it?</p>
             <Button variant="dark" size={"lg"} block>

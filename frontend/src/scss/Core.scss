@@ -43,7 +43,8 @@ html, body {
 
 .help {
   * {
-    font-size: 45px;
+    padding: 2px 0;
+    font-size: 50px;
     color: theme-color("dark");
   }
 }
@@ -71,5 +72,9 @@ html, body {
   #main-logo {
     width: 190px;
     height: 90px;
+  }
+
+  .help {
+    padding-top: 5px;
   }
 }

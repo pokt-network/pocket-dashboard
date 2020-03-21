@@ -1,8 +1,7 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import "./SecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
-import { Button, Container, Col, Row, Form } from "react-bootstrap";
-import "./SecurityQuestions.scss";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 
 class SecurityQuestions extends Component {
   // TODO: Integrate with backend
@@ -16,7 +15,7 @@ class SecurityQuestions extends Component {
       securityQuestions: []
     };
   }
-  
+
 
   componentDidMount = () => {
     const securityQuestions = ["Select one", ...this.state.securityQuestions];
@@ -24,6 +23,7 @@ class SecurityQuestions extends Component {
   };
 
   handleChange(e) {
+    // TODO: Remove this
     console.log(e.target.value);
   };
 
