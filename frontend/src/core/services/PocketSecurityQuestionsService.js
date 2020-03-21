@@ -18,7 +18,7 @@ class PocketSecurityQuestionsService extends PocketBaseService {
   }
 
   /**
-   * Save Answers of security questions.
+   * Save answers of security questions.
    *
    * @param {string} email Email of user.
    * @param {Array<{question:string, answer:string}>} questions Security questions with their answers.
