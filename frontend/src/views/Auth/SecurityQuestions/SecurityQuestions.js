@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./SecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import UserService from "../../../core/services/PocketUserService";
+import SecurityQuestionsService from "../../../core/services/PocketSecurityQuestionsService";
 
 const QUESTIONS_QUANTITY = 3;
 class SecurityQuestions extends Component {
@@ -29,13 +29,8 @@ class SecurityQuestions extends Component {
   }
 
   async componentDidMount() {
-    const { success, data } = await UserService.getSecurityQuestions();
-    if (!success) {
-      // TODO: Properly log error in frontend
-      console.log(data);
-      return;
-    }
-    const securityQuestions = ["Select one", ...data];
+    const questions = await SecurityQuestionsService.getSecurityQuestions();
+    const securityQuestions = ["Select one", ...questions];
     this.setState({ securityQuestions });
   }
 
@@ -61,17 +56,17 @@ class SecurityQuestions extends Component {
       { question: chosenQuestions[2], answer: answer3 }
     ];
 
-    const { success, data } = await UserService.sendSecurityQuestions(
+    const { success, data: error } = await SecurityQuestionsService.saveSecurityQuestionAnswers(
       email,
       questions
     );
     if (!success) {
       // TODO: Properly log error in frontend
-      console.log(data);
+      console.log(error.data.message);
       return;
     }
     // TODO: Remove and redirect user to proper page (could it be /dashboard?)
-    console.log(data);
+    console.log(success);
   }
 
   render() {

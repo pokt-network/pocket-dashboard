@@ -4,7 +4,7 @@ import axios from "axios";
 class PocketSecurityQuestionsService extends PocketBaseService {
 
   constructor() {
-    super("/api/security_questions");
+    super("api/security_questions");
   }
 
   /**
@@ -13,7 +13,7 @@ class PocketSecurityQuestionsService extends PocketBaseService {
    * @return {Promise|Promise<Array.<{string}>>}
    */
   getSecurityQuestions() {
-    return axios.get(this._getURL("/"))
+    return axios.get(this._getURL(""))
       .then(response => response.data);
   }
 
@@ -40,7 +40,7 @@ class PocketSecurityQuestionsService extends PocketBaseService {
 
         return {success: false};
       }).catch(err => {
-        return {success: false, data: err};
+        return {success: false, data: err.response};
       });
   }
 
