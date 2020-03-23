@@ -13,7 +13,7 @@ class Login extends Component {
     super(props, context);
 
     this.handleLogin = this.handleLogin.bind(this);
-
+    this.handleChange = this.handleChange.bind(this);
 
     this.state = {
       authProviders: [],
@@ -53,6 +53,7 @@ class Login extends Component {
       password);
 
     if (validationMsg !== '') {
+    // TODO: Show proper message on front end to user.
       console.log(validationMsg);
       return;
     } 
@@ -68,7 +69,7 @@ class Login extends Component {
     console.log(error.response.data.message);
   }
 
-  handleChange = ({ currentTarget: input }) => {
+  handleChange({ currentTarget: input }) {
     const data = {...this.state.data};
     data[input.name] = input.value;
     this.setState({ data });

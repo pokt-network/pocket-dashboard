@@ -13,6 +13,7 @@ class SignUp extends Component {
     super(props, context);
 
     this.handleSignUp = this.handleSignUp.bind(this);
+    this.handleChange = this.handleChange.bind(this);
 
     this.state = {
       authProviders: [],
@@ -50,6 +51,7 @@ class SignUp extends Component {
     );
 
     if (validationMsg !== "") {
+    // TODO: Show proper message on front end to user.
       console.log(validationMsg);
       return;
     }
@@ -68,7 +70,7 @@ class SignUp extends Component {
   };
 
 
-  handleChange = ({ currentTarget: input }) => {
+  handleChange({ currentTarget: input }) {
     const data = {...this.state.data};
     data[input.name] = input.value;
     this.setState({ data })
