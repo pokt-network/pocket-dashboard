@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import {AuthProviderButton, AuthProviderType} from "../../../core/components/AuthProviderButton";
 import HelpLink from "../../../core/components/HelpLink";
@@ -17,11 +17,12 @@ class SignUp extends Component {
 
     this.state = {
       authProviders: [],
+      signedIn: false,
       data: {
-        username: '',
-        email: '',
-        password1: '',
-        password2: '',
+        username: "",
+        email: "",
+        password1: "",
+        password2: "",
       }
     };
   }
@@ -34,14 +35,15 @@ class SignUp extends Component {
   }
 
   validateSignUp(username, email, password1, password2) {
+    // TODO: Add more validations.
     if (password1 !== password2)
       return "Passwords don't match";
     return "";
-  } 
+  }
 
   async handleSignUp(e) {
     e.preventDefault();
-    const { username, email, password1, password2 } = this.state.data;
+    const {username, email, password1, password2} = this.state.data;
 
     const validationMsg = this.validateSignUp(
       username,
@@ -51,35 +53,44 @@ class SignUp extends Component {
     );
 
     if (validationMsg !== "") {
-    // TODO: Show proper message on front end to user.
+      // TODO: Show proper message on front end to user.
       console.log(validationMsg);
       return;
     }
 
-    const { login } = routePaths;
-    const { success, data: error } = await UserService.signUp(
+    const {success, data: error} = await UserService.signUp(
       username,
       email,
       password1,
       password2
     );
 
-    if (success) return this.props.history.replace(login);
-    // TODO: Show proper message on front end to user.
-    console.log(error.response.data.message);
+    if (!success) {
+      // TODO: Show proper message on front end to user.
+      console.log(error.response.data.message);
+    }
+
+    this.setState({
+      signedIn: success
+    });
   };
 
 
-  handleChange({ currentTarget: input }) {
+  handleChange({currentTarget: input}) {
     const data = {...this.state.data};
     data[input.name] = input.value;
-    this.setState({ data })
+    this.setState({data});
   }
 
 
   render() {
-    const {login} = routePaths;
-    const { username, email, password1, password2 } = this.state.data;
+    const {login, verify_email} = routePaths;
+    const {signedIn, data} = this.state;
+    const {username, email, password1, password2} = data;
+
+    if (signedIn) {
+      return <Redirect to={verify_email}/>;
+    }
 
     return (
       <Container fluid className={"auth-page"}>
@@ -100,33 +111,33 @@ class SignUp extends Component {
               <Form onSubmit={this.handleSignUp} id={"main-form"}>
                 <Form.Group>
                   <Form.Label>E-mail</Form.Label>
-                  <Form.Control 
-                    type="email" 
-                    name="email" 
-                    value={email} 
-                    onChange={this.handleChange} />
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={this.handleChange}/>
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Username</Form.Label>
-                  <Form.Control 
-                    name="username" 
-                    value={username} 
+                  <Form.Control
+                    name="username"
+                    value={username}
                     onChange={this.handleChange}/>
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Password</Form.Label>
-                  <Form.Control 
-                  type="password"
-                  name="password1" 
-                  value={password1} 
-                  onChange={this.handleChange}/>
+                  <Form.Control
+                    type="password"
+                    name="password1"
+                    value={password1}
+                    onChange={this.handleChange}/>
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Confirm password</Form.Label>
-                  <Form.Control 
+                  <Form.Control
                     type="password"
-                    name="password2" 
-                    value={password2} 
+                    name="password2"
+                    value={password2}
                     onChange={this.handleChange}/>
                 </Form.Group>
 

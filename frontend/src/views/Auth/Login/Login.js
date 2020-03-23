@@ -5,7 +5,7 @@ import {AuthProviderButton, AuthProviderType} from "../../../core/components/Aut
 import HelpLink from "../../../core/components/HelpLink";
 import UserService from "../../../core/services/PocketUserService";
 import {routePaths} from "../../../_routes";
-import {Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import AuthSidebar from "../../../core/components/AuthSidebar";
 
 class Login extends Component {
@@ -17,6 +17,7 @@ class Login extends Component {
 
     this.state = {
       authProviders: [],
+      loggedIn: false,
       data: {
         username: "",
         password: ""
@@ -40,44 +41,49 @@ class Login extends Component {
    * @return {string} Message about error or empty if there's none
    */
   validateLogin(username, password) {
-    if (username === "" || password === "" )
+    if (username === "" || password === "")
       return "Username or password cannot be empty";
     return "";
   }
 
-  async handleLogin(e)  {
+  async handleLogin(e) {
     e.preventDefault();
-    const { username, password } = this.state.data;
+    const {username, password} = this.state.data;
 
-    const validationMsg = this.validateLogin(username, 
-      password);
+    const validationMsg = this.validateLogin(username, password);
 
-    if (validationMsg !== '') {
-    // TODO: Show proper message on front end to user.
+    if (validationMsg !== "") {
+      // TODO: Show proper message on front end to user.
       console.log(validationMsg);
       return;
-    } 
+    }
 
-    const { home } = routePaths;
-    const { success, data: error } = await UserService.login(
-      username,
-      password
-    );
+    const {success, data: error} = await UserService.login(username, password);
 
-    if (success) return this.props.history.replace(home);
-    // TODO: Show proper message on front end to user.
-    console.log(error.response.data.message);
+    if (!success) {
+      // TODO: Show proper message on front end to user.
+      console.log(error.response.data.message);
+    }
+
+    this.setState({
+      loggedIn: success
+    });
   }
 
-  handleChange({ currentTarget: input }) {
+  handleChange({currentTarget: input}) {
     const data = {...this.state.data};
     data[input.name] = input.value;
-    this.setState({ data });
+    this.setState({data});
   }
 
   render() {
-    const {signup, forgot_password} = routePaths;
-    const { username, password} = this.state.data;
+    const {home, signup, forgot_password} = routePaths;
+    const {loggedIn, data} = this.state;
+    const {username, password} = data;
+
+    if (loggedIn) {
+      return <Redirect to={home}/>;
+    }
 
     return (
       <Container fluid className={"auth-page"}>
@@ -100,7 +106,7 @@ class Login extends Component {
               <Form onSubmit={this.handleLogin} id={"main-form"}>
                 <Form.Group>
                   <Form.Label>Username or E-mail</Form.Label>
-                  <Form.Control name="username" value={username} onChange={this.handleChange} />
+                  <Form.Control name="username" value={username} onChange={this.handleChange}/>
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Password</Form.Label>
