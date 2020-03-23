@@ -1,6 +1,6 @@
 import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
-
+import { Configurations } from '../../_configuration';
 class PocketUserService extends PocketBaseService {
 
   constructor() {
@@ -194,6 +194,51 @@ class PocketUserService extends PocketBaseService {
     return `******${lastLetters}${emailProvider}`;
   }
 
+    /**
+   * Retrieve security questions from server.
+   *
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   * @async
+   */
+  async getSecurityQuestions() {
+    return axios
+      .get(`${Configurations.backendUrl}/api/security_questions`)
+      .then(response => {
+        if (response.status === 200)
+          return { success: true, data: response.data };
+      })
+      .catch(err => {
+        return { sucess: false, data: err };
+      });
+  }
+
+  /**
+   * Send security questions to server.
+   *
+   * @param {string} email Email of user
+   * @param {Array.<{question:string, answer:string}>} questions Questions and
+   * answers of user
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   * @async
+   */
+  async sendSecurityQuestions(email, questions) {
+    const data = {
+      email: email,
+      questions: questions
+    };
+    return axios
+      .post(
+        `${Configurations.backendUrl}/api/security_questions/answered`,
+        data
+      )
+      .then(response => {
+        if (response.status === 200)
+          return { success: true, data: response.data };
+      })
+      .catch(err => {
+        return { sucess: false, data: err.response.data.message };
+      });
+  }
 }
 
 export default new PocketUserService();
