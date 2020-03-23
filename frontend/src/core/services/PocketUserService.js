@@ -135,6 +135,37 @@ class PocketUserService extends PocketBaseService {
       });
   }
 
+    /**
+   * Register new user.
+   *
+   * @param {string} username Username of user to login.
+   * @param {string} email Wmail of user.
+   * @param {string} password1 Password of user.
+   * @param {string} password2 Repeated password of user.
+   *
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   * @async
+   */
+  async signUp(username, email, password1, password2) {
+    const data = {
+      username,
+      email,
+      password1,
+      password2
+    };
+
+    return axios.post(this._getURL("auth/signup"), data)
+      .then(response => {
+        if (response.status === 200) {
+          return {success: true};
+        }
+
+        return {success: false};
+      }).catch(err => {
+        return {success: false, data: err};
+      });
+  }
+
   logout() {
     const data = {
       email: this.getUserInfo().email,
