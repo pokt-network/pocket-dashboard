@@ -1,7 +1,3 @@
-export const PaymentMethodTypes = {
-  card: "card"
-};
-
 export const PaymentCurrencies = {
   usd: "usd"
 };
@@ -32,48 +28,27 @@ export class PaymentRecipient {
 export class PaymentResult {
 
   /**
+   * @param {string} id ID of payment.
    * @param {Date} createdDate Date of creation of payment.
    * @param {string} paymentNumber Confirmation number of payment.
    * @param {string} currency Currency of payment.
    * @param {number} amount Amount of payment.
    */
-  constructor(createdDate, paymentNumber, currency, amount) {
+  constructor(id, createdDate, paymentNumber, currency, amount) {
     Object.assign(this, {createdDate, amount, currency, paymentNumber});
   }
 }
 
-export class Card {
+export class PaymentCard {
 
   /**
-   * @param {string} type Type of card.
    * @param {string} brandName Brand name.
    * @param {string} number Number of card.
-   * @param {number} cvc CVC of card.
+   * @param {string} cvc CVC of card.
    * @param {Date} date Expiration date of card.
    */
-  constructor(type, brandName, number, cvc, date) {
-    Object.assign(this, {type, brandName, number, cvc, date});
-  }
-}
-
-class PaymentMethod {
-
-  /**
-   * @param {string} method paymentMethod ID of the payment method (a PaymentMethod, Card, or compatible Source object) to attach to this Payment.
-   * @param {string} number Number of payment method.
-   */
-  constructor(method, number) {
-    Object.assign(this, {method, number});
-  }
-}
-
-export class CardPaymentMethod extends PaymentMethod {
-
-  /**
-   * @param {Card} card Card used as payment method.
-   */
-  constructor(card) {
-    super(card.type, card.number);
+  constructor(brandName, number, cvc, date) {
+    Object.assign(this, {brandName, number, cvc, date});
   }
 }
 
@@ -82,7 +57,6 @@ export default class BasePaymentProvider {
   /**
    * Make a payment.
    *
-   * @param {string} paymentMethodType The list of payment method types (e.g. card) that this payment is allowed to use.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
    * @param {number} amount Amount intended to be collected by this payment.
    * @param {string} description An arbitrary string attached to the object. Often useful for displaying to users.
@@ -92,20 +66,17 @@ export default class BasePaymentProvider {
    * @return {Promise<PaymentResult>}
    * @async
    */
-  async makePayment(paymentMethodType, currency, amount, description, metadata = undefined, receipt = undefined) {
+  async makeCardPayment(currency, amount, description, metadata = undefined, receipt = undefined) {
   }
 
   /**
-   * Update a payment.
+   * Create card payment method.
    *
-   * @param {string} paymentNumber Number of a payment created.
-   * @param {number} currency Three-letter ISO currency code, in lowercase.
-   * @param {PaymentMethod} paymentMethod Payment method.
+   * @param {PaymentCard} card PaymentCard to create a payment method.
    *
-   *
-   * @return {Promise<PaymentResult>}
+   * @return {Promise<*>}
    * @async
    */
-  async updatePayment(paymentNumber, currency, paymentMethod) {
+  async createCardPaymentMethod(card) {
   }
 }

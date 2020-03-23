@@ -29,7 +29,7 @@ export class AnsweredSecurityQuestion {
   }
 
   /**
-   * Factory method to create security questions.
+   * Factory type to create security questions.
    *
    * @param {Array<{question:string, answer:string}>} questions List of questions.
    *

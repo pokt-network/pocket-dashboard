@@ -4,20 +4,6 @@ import {Configurations} from "../../_configuration";
 
 const AMOUNT_CONVERT_NUMBER = 100;
 
-export const StripeCardPaymentMethods = {
-  unknown: "unknown",
-  visa: "pm_card_visa",
-  visa_debit: "pm_card_visa_debit",
-  mastercard: "pm_card_mastercard",
-  mastercard_debit: "pm_card_mastercard_debit",
-  mastercard_prepaid: "pm_card_mastercard_prepaid",
-  american_express: "pm_card_amex",
-  discover: "pm_card_discover",
-  diners: "pm_card_diners",
-  jcb: "pm_card_jcb",
-  union_pay: "pm_card_unionpay"
-};
-
 class StripePaymentProvider extends BasePaymentProvider {
 
   constructor() {
@@ -26,12 +12,11 @@ class StripePaymentProvider extends BasePaymentProvider {
     this._stripeAPIClient = new Stripe(Configurations.payment.default.client_secret, Configurations.payment.default.options);
   }
 
-
-  async makePayment(paymentMethodType, currency, amount, description, metadata = undefined, receipt = undefined) {
+  async makeCardPayment(currency, amount, description, metadata = undefined, receipt = undefined) {
 
     let paymentData = {
-      payment_method_types: [paymentMethodType],
       amount: amount * AMOUNT_CONVERT_NUMBER,
+      payment_method_types: ["card"],
       currency,
       description
     };
@@ -47,10 +32,23 @@ class StripePaymentProvider extends BasePaymentProvider {
 
     const paymentResultData = await this._stripeAPIClient.paymentIntents.create(paymentData);
 
-    return new PaymentResult(new Date(paymentResultData.created * 1000), paymentResultData.client_secret, paymentResultData.currency, (paymentResultData.amount / AMOUNT_CONVERT_NUMBER));
+    const date = new Date(paymentResultData.created * 1000);
+    const resultAmount = paymentResultData.amount / AMOUNT_CONVERT_NUMBER;
+
+    return new PaymentResult(paymentResultData.id, date, paymentResultData.client_secret, paymentResultData.currency, resultAmount);
   }
 
-
+  async createCardPaymentMethod(card) {
+    return await this._stripeAPIClient.paymentMethods.create({
+      type: "card",
+      card: {
+        number: card.number,
+        cvc: card.cvc,
+        exp_month: card.date.getMonth(),
+        exp_year: card.date.getFullYear()
+      }
+    });
+  }
 }
 
 export default StripePaymentProvider;

@@ -28,7 +28,7 @@ export class PocketUser {
 
 
   /**
-   * Factory method to create an user object.
+   * Factory type to create an user object.
    *
    * @param {PocketUser} user User to create.
    *
@@ -42,7 +42,7 @@ export class PocketUser {
   }
 
   /**
-   * Factory method to create an user object from db.
+   * Factory type to create an user object from db.
    *
    * @param {Object} user User from db.
    * @param {string} user.provider
@@ -146,7 +146,7 @@ export class EmailUser extends PocketUser {
   }
 
   /**
-   * Factory method to create an Email user with encrypted password.
+   * Factory type to create an Email user with encrypted password.
    *
    * @param {string} email
    * @param {string} username
@@ -163,7 +163,7 @@ export class EmailUser extends PocketUser {
   }
 
   /**
-   * Factory method to encrypt a password.
+   * Factory type to encrypt a password.
    *
    * @param {string} password Password to encrypt.
    *

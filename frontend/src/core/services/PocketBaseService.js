@@ -10,7 +10,7 @@ class PocketBaseService {
   }
 
   /**
-   * @param {string} apiPath Relative path to the specific api method.
+   * @param {string} apiPath Relative path to the specific api type.
    *
    * @return {string}
    * @protected

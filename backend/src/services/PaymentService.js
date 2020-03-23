@@ -14,10 +14,6 @@ export default class PaymentService extends BaseService {
 
   }
 
-  async __closePoktPayment() {
-
-  }
-
   async makePoktPaymentForNodes() {
 
   }
