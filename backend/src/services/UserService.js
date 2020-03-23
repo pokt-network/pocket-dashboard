@@ -6,7 +6,7 @@ import {AnsweredSecurityQuestion} from "../models/SecurityQuestion";
 const AUTH_TOKEN_TYPE = "access_token";
 const USER_COLLECTION_NAME = "Users";
 
-class UserService extends BaseService {
+export default class UserService extends BaseService {
 
   constructor() {
     super();
@@ -193,6 +193,4 @@ class UserService extends BaseService {
     return Promise.resolve(result.result.ok === 1);
   }
 }
-
-export default UserService;
 

@@ -4,7 +4,7 @@ import * as queryString from "query-string";
 import axios from "axios";
 import {GithubUser} from "../../models/User";
 
-class GithubAuthProvider extends BaseAuthProvider {
+export default class GithubAuthProvider extends BaseAuthProvider {
 
   constructor() {
     super("github", Configurations.auth.providers.github);
@@ -62,5 +62,3 @@ class GithubAuthProvider extends BaseAuthProvider {
     return new GithubUser(data.email, data.name);
   }
 }
-
-export default GithubAuthProvider;

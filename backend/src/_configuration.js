@@ -8,6 +8,13 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export const Configurations = {
+  payment: {
+    default: {
+      client_id: process.env.PAYMENT_DEFAULT_CLIENT_ID,
+      client_secret: process.env.PAYMENT_DEFAULT_CLIENT_SECRET,
+      options: {}
+    }
+  },
   auth: {
     providers: {
       google: {
@@ -30,10 +37,12 @@ export const Configurations = {
     }
   },
   persistence: {
-    url: process.env.DATABASE_URL,
-    dbName: process.env.DATABASE_NAME,
-    options: {
-      useUnifiedTopology: true
+    default: {
+      url: process.env.DATABASE_URL,
+      db_name: process.env.DATABASE_NAME,
+      options: {
+        useUnifiedTopology: true
+      }
     }
   },
   poktNetwork: {

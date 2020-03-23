@@ -1,6 +1,6 @@
 import {get_default_db_provider} from "./db";
 
-class PersistenceProvider {
+export default class PersistenceProvider {
   constructor() {
     this.__dbProvider = get_default_db_provider();
   }
@@ -154,5 +154,3 @@ class PersistenceProvider {
     return await this.deleteEntities(entityName, filter);
   }
 }
-
-export default PersistenceProvider;

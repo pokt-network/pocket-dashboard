@@ -40,7 +40,7 @@ function getRPCDispatcher(node) {
   return new HttpRpcProvider(new URL(node));
 }
 
-class PoktService {
+export default class PoktService {
 
   /**
    * @param {[string]} nodes List of nodes of Pokt network.
@@ -132,5 +132,3 @@ class PoktService {
   }
 
 }
-
-export default PoktService;

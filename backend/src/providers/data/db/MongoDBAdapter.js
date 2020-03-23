@@ -1,12 +1,12 @@
 import {MongoClient} from "mongodb";
 
-class MongoDBAdapter {
+export default class MongoDBAdapter {
   /**
    *
    * @param {object} properties
    * @param {string} properties.url
    * @param {object} properties.options
-   * @param {string} properties.dbName
+   * @param {string} properties.db_name
    */
   constructor(properties) {
     this.properties = properties;
@@ -40,9 +40,7 @@ class MongoDBAdapter {
    * @return {*}
    */
   getDB(connection) {
-    return connection.db(this.properties.dbName);
+    return connection.db(this.properties.db_name);
   }
 
 }
-
-export default MongoDBAdapter;

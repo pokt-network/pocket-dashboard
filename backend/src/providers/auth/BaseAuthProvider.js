@@ -1,9 +1,8 @@
 import * as queryString from "query-string";
 
-class BaseAuthProvider {
+export default class BaseAuthProvider {
 
   /**
-   *
    * @param {string} name Name of auth backend provider.
    * @param {object} authProviderConfiguration Authentication provider basic configuration.
    *
@@ -77,5 +76,3 @@ class BaseAuthProvider {
   async getUserData(token, tokenType) {
   }
 }
-
-export default BaseAuthProvider;

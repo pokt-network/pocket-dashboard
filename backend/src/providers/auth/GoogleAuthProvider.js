@@ -3,7 +3,7 @@ import {Configurations} from "../../_configuration";
 import {google} from "googleapis";
 import {GoogleUser} from "../../models/User";
 
-class GoogleAuthProvider extends BaseAuthProvider {
+export default class GoogleAuthProvider extends BaseAuthProvider {
 
   constructor() {
     super("google", Configurations.auth.providers.google);
@@ -62,5 +62,3 @@ class GoogleAuthProvider extends BaseAuthProvider {
     return new GoogleUser(data.emailAddresses[0].value, data.names[0].displayName);
   }
 }
-
-export default GoogleAuthProvider;
