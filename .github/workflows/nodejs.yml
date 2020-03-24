@@ -23,13 +23,12 @@ jobs:
         node-version: [10.x]
 
     services:
-      mongodb:
+      localhost:
         image: mongo:4.2
         ports:
           - 27017:27017
 
     steps:
-      - working-directory: backend
       - uses: actions/checkout@v2
 
       - name: Use Node.js ${{ matrix.node-version }}
@@ -38,6 +37,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
+        working-directory: backend
         run: yarn
 
           #      - name: Running lint
@@ -45,6 +45,7 @@ jobs:
         #        run: yarn lint
 
       - name: Running testing
+        working-directory: backend
         run: yarn test
 
         #      # Frontend CI
