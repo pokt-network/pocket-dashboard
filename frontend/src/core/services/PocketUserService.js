@@ -1,7 +1,6 @@
 import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
 
-const example_of_fail = 'example';
 
 class PocketUserService extends PocketBaseService {
 
