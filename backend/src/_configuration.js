@@ -50,7 +50,7 @@ export const Configurations = {
       }
     },
     test: {
-      url: "mongodb://localhost:27017",
+      url: process.env.TEST_DATABASE_URL,
       db_name: "pocket_dashboard_test",
       options: {
         useUnifiedTopology: true

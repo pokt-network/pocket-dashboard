@@ -14,19 +14,22 @@ on:
 
 
 jobs:
-  build:
+  backend:
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
         node-version: [10.x]
+        mongodb-version: ["4.2"]
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Start MongoDB As Docker
         uses: wbari/start-mongoDB@v0.2
+        with:
+          mongoDBVersion: ${{ matrix.mongodb-version }}
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -38,26 +41,27 @@ jobs:
         working-directory: backend
         run: yarn
 
-      - name: Running lint on backend
-        working-directory: backend
-        run: yarn lint
+      #      - name: Running lint on backend
+      #        working-directory: backend
+      #        run: yarn lint
 
       - name: Running testing on backend
         working-directory: backend
         run: yarn test
 
-      # Frontend CI
-      - name: Install backend dependencies
-        working-directory: frontend
-        run: yarn
-
-      - name: Running lint on backend
-        working-directory: frontend
-        run: yarn lint
-
-      - name: Running testing on backend
-        working-directory: frontend
-        run: yarn test
+        #      # Frontend CI
+        #      - name: Install backend dependencies
+        #        working-directory: frontend
+        #        run: yarn
+        #
+        ##      - name: Running lint on backend
+        ##        working-directory: frontend
+        ##        run: yarn lint
+        #
+        #      - name: Running testing on backend
+        #        working-directory: frontend
+        #        run: yarn test
 
         env:
           CI: true
+          TEST_DATABASE_URL: "mongodb://mongo:27017"
