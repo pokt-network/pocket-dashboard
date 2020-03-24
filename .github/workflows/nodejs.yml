@@ -36,18 +36,17 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: ping mongodb
-        #      - name: Install dependencies
-        #        working-directory: backend
-        #        run: yarn
+          - name: Install dependencies
+            working-directory: backend
+            run: yarn
 
-        #      - name: Running lint
-        #        working-directory: backend
-        #        run: yarn lint
+          #      - name: Running lint
+          #        working-directory: backend
+          #        run: yarn lint
 
-        #      - name: Running testing
-        #        working-directory: backend
-        #        run: yarn test
+          - name: Running testing
+            working-directory: backend
+            run: yarn test
 
         #      # Frontend CI
         #      - name: Install backend dependencies
