@@ -3,7 +3,7 @@ import UserService from "../services/UserService";
 
 const router = express.Router();
 
-/** @type UserService */
+/** @type {UserService} */
 const userService = new UserService();
 
 /**

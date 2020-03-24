@@ -13,7 +13,7 @@ class PocketSecurityQuestionsService extends PocketBaseService {
    * @return {Promise|Promise<Array.<{string}>>}
    */
   getSecurityQuestions() {
-    return axios.get(this._getURL(""))
+    return axios.get(this._getURL())
       .then(response => response.data);
   }
 
