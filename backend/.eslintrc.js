@@ -12,8 +12,12 @@ module.exports = {
     quotes: ["error", "double"],
     "no-unused-vars": "off",
   },
+  plugins: [
+    "jsdoc"
+  ],
   extends: [
     "eslint:recommended",
+    "plugin:jsdoc/recommended"
   ],
   parser: "babel-eslint"
 };
