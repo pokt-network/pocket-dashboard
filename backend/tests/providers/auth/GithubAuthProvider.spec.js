@@ -8,10 +8,10 @@ import GithubAuthProvider from "../../../src/providers/auth/GithubAuthProvider";
 let githubProvider = null;
 
 /** @type string */
-const GITHUB_AUTH_URL_WITH_CODE = process.env.TEST_GITHUB_AUTH_URL_WITH_CODE; // You can get yours using the getConsentURL of GithubAuthProviderHook
+const GITHUB_AUTH_URL_WITH_CODE = process.env.TEST_GITHUB_AUTH_URL_WITH_CODE; // You can get yours using the getConsentURL of GithubAuthProvider
 
 /** @type string */
-const GITHUB_ACCESS_TOKEN = process.env.TEST_GITHUB_ACCESS_TOKEN; // You can get yours using the getConsentURL of GithubAuthProviderHook
+const GITHUB_ACCESS_TOKEN = process.env.TEST_GITHUB_ACCESS_TOKEN; // You can get yours using the getConsentURL of GithubAuthProvider
 
 before(() => {
   githubProvider = new GithubAuthProvider();

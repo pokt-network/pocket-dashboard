@@ -1,7 +1,7 @@
 import {describe, it} from "mocha";
 import "chai/register-should";
 import {expect} from "chai";
-import {PocketUser} from "../../src/models/User";
+import {EmailUser, PocketUser} from "../../src/models/User";
 
 describe("User model", () => {
 
@@ -73,7 +73,7 @@ describe("User model", () => {
         password2: "secret12"
       };
 
-      const result = PocketUser.validate(testData);
+      const result = EmailUser.validate(testData);
 
       // noinspection BadExpressionStatementJS
       result.should.to.be.true;

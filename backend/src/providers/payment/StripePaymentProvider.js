@@ -1,22 +1,22 @@
 import BasePaymentProvider, {PaymentResult} from "./BasePaymentProvider";
 import Stripe from "stripe";
-import {Configurations} from "../../_configuration";
 
 const AMOUNT_CONVERT_NUMBER = 100;
 
 class StripePaymentProvider extends BasePaymentProvider {
 
-  constructor() {
-    super();
+  constructor(paymentProviderConfiguration) {
+    super(paymentProviderConfiguration);
+
     /** {Stripe} */
-    this._stripeAPIClient = new Stripe(Configurations.payment.default.client_secret, Configurations.payment.default.options);
+    this._stripeAPIClient = new Stripe(paymentProviderConfiguration.client_secret, paymentProviderConfiguration.options);
   }
 
-  async makeCardPayment(currency, amount, description, metadata = undefined, receipt = undefined) {
+  async makePayment(type, currency, amount, description, metadata = undefined, receipt = undefined) {
 
     let paymentData = {
       amount: amount * AMOUNT_CONVERT_NUMBER,
-      payment_method_types: ["card"],
+      payment_method_types: [type],
       currency,
       description
     };
@@ -44,8 +44,8 @@ class StripePaymentProvider extends BasePaymentProvider {
       card: {
         number: card.number,
         cvc: card.cvc,
-        exp_month: card.date.getMonth(),
-        exp_year: card.date.getFullYear()
+        exp_month: card.expirationDate.getMonth(),
+        exp_year: card.expirationDate.getFullYear()
       }
     });
   }

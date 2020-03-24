@@ -7,7 +7,7 @@ import MongoDBAdapter from "../../../src/providers/data/db/MongoDBAdapter";
 let mongoDBProvider = null;
 
 before(() => {
-  mongoDBProvider = new MongoDBAdapter(Configurations.persistence);
+  mongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
 });
 
 

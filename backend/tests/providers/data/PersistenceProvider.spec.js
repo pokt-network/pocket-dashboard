@@ -14,7 +14,7 @@ let persistenceService = null;
 const ENTITY_NAME = "TestSpecs";
 
 before(() => {
-  mongoDBProvider = new MongoDBAdapter(Configurations.persistence);
+  mongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
   persistenceService = new PersistenceProvider(mongoDBProvider);
 });
 

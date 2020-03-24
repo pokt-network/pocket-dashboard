@@ -15,7 +15,8 @@
     "test": "mocha --require @babel/register --recursive tests",
     "test:services": "mocha --require @babel/register --recursive tests/services",
     "test:providers": "mocha --require @babel/register --recursive tests/providers",
-    "test:models": "mocha --require @babel/register --recursive tests/models"
+    "test:models": "mocha --require @babel/register --recursive tests/models",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@babel/runtime": "^7.8.4",
