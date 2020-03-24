@@ -5,7 +5,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: all
+    branches: *
   pull_request:
     branches: [ master ]
 
@@ -22,40 +22,40 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        
+
       - name: Start MongoDB As Docker
         uses: wbari/start-mongoDB@v0.2
-      
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      
+
       # Backend CI
       - name: Install backend dependencies
         working-directory: backend
         run: yarn
-      
-      - name: Running lint on backend 
+
+      - name: Running lint on backend
         working-directory: backend
         run: yarn lint
-      
-      - name: Running testing on backend 
+
+      - name: Running testing on backend
         working-directory: backend
         run: yarn test
-      
+
       # Frontend CI
       - name: Install backend dependencies
         working-directory: frontend
         run: yarn
-      
-      - name: Running lint on backend 
+
+      - name: Running lint on backend
         working-directory: frontend
         run: yarn lint
-      
-      - name: Running testing on backend 
+
+      - name: Running testing on backend
         working-directory: frontend
         run: yarn test
-        
+
         env:
           CI: true
