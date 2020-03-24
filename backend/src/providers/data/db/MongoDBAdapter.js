@@ -18,10 +18,7 @@ export default class MongoDBAdapter {
    * @return {Promise<MongoClient>}
    */
   open() {
-    console.log(this.properties);
-    return MongoClient.connect(this.properties.url, this.properties.options, function (err) {
-      console.log(err);
-    });
+    return MongoClient.connect(this.properties.url, this.properties.options);
   }
 
   /**
