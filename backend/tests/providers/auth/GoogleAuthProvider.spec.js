@@ -2,15 +2,13 @@ import {after, before, describe, it} from "mocha";
 import "chai/register-should";
 import {expect} from "chai";
 import GoogleAuthProvider from "../../../src/providers/auth/GoogleAuthProvider";
+import BaseAuthProvider from "../../../src/providers/auth/BaseAuthProvider";
 
-
-/** @type BaseAuthProvider */
+/** @type {BaseAuthProvider} */
 let googleAuthProvider = null;
 
-/** @type string */
-const GOOGLE_AUTH_URL_WITH_CODE = process.env.TEST_GOOGLE_AUTH_URL_WITH_CODE; // You can get yours using the getConsentURL of GoogleAuthProvider
 
-/** @type string */
+/** @type {string} */
 const GOOGLE_REFRESH_TOKEN = process.env.TEST_GOOGLE_REFRESH_TOKEN; // You can get yours using the getConsentURL of GoogleAuthProvider
 
 before(() => {
@@ -33,16 +31,14 @@ describe("GoogleAuthProvider", () => {
     });
   });
 
-  if (GOOGLE_AUTH_URL_WITH_CODE !== undefined) {
-    describe("extractCodeFromURL", () => {
-      it("Expect a string code", () => {
+  describe("extractCodeFromURL", () => {
+    it("Expect a string code", () => {
+      const urlWithCode = "http://example.com/foo/bar?code=code_data";
+      const code = googleAuthProvider.extractCodeFromURL(urlWithCode);
 
-        const code = googleAuthProvider.extractCodeFromURL(GOOGLE_AUTH_URL_WITH_CODE);
-
-        code.should.to.be.a("string");
-      });
+      code.should.to.be.a("string");
     });
-  }
+  });
 
   describe("extractCodeFromURL with error", () => {
     it("Expect an error", () => {
