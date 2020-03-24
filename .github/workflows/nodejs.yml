@@ -20,15 +20,15 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x]
-        mongodb-version: ["4.2"]
+
+    services:
+      mongodb:
+        image: mongo:4.2
+        ports:
+          - 27017:27017
 
     steps:
       - uses: actions/checkout@v2
-
-      - name: Start MongoDB As Docker
-        uses: wbari/start-mongoDB@v0.2
-        with:
-          mongoDBVersion: ${{ matrix.mongodb-version }}
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
@@ -56,10 +56,6 @@ jobs:
         ##      - name: Running lint on backend
         ##        working-directory: frontend
         ##        run: yarn lint
-        #
-        #      - name: Running testing on backend
-        #        working-directory: frontend
-        #        run: yarn test
 
         env:
           CI: true
