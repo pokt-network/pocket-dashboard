@@ -1,10 +1,11 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import "./SecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import SecurityQuestionsService from "../../../core/services/PocketSecurityQuestionsService";
 
 const QUESTIONS_QUANTITY = 3;
+
 class SecurityQuestions extends Component {
   // TODO: Integrate with backend
 
@@ -28,35 +29,37 @@ class SecurityQuestions extends Component {
     };
   }
 
-  async componentDidMount() {
-    const questions = await SecurityQuestionsService.getSecurityQuestions();
-    const securityQuestions = ["Select one", ...questions];
-    this.setState({ securityQuestions });
+  componentDidMount() {
+    SecurityQuestionsService.getSecurityQuestions().then((questions) => {
+      const securityQuestions = ["Select one", ...questions];
+      this.setState({securityQuestions});
+    });
+
   }
 
   handleSelect(e, index) {
     const chosenQuestions = [...this.state.chosenQuestions];
     chosenQuestions[index] = e.target.value;
-    this.setState({ chosenQuestions });
+    this.setState({chosenQuestions});
   }
 
-  handleChange({ currentTarget: input }) {
-    const data = { ...this.state.data };
+  handleChange({currentTarget: input}) {
+    const data = {...this.state.data};
     data[input.name] = input.value;
-    this.setState({ data });
+    this.setState({data});
   }
 
   async sendQuestions(e) {
     e.preventDefault();
-    const { email, chosenQuestions } = this.state;
-    const { answer1, answer2, answer3 } = this.state.data;
+    const {email, chosenQuestions} = this.state;
+    const {answer1, answer2, answer3} = this.state.data;
     const questions = [
-      { question: chosenQuestions[0], answer: answer1 },
-      { question: chosenQuestions[1], answer: answer2 },
-      { question: chosenQuestions[2], answer: answer3 }
+      {question: chosenQuestions[0], answer: answer1},
+      {question: chosenQuestions[1], answer: answer2},
+      {question: chosenQuestions[2], answer: answer3}
     ];
 
-    const { success, data: error } = await SecurityQuestionsService.saveSecurityQuestionAnswers(
+    const {success, data: error} = await SecurityQuestionsService.saveSecurityQuestionAnswers(
       email,
       questions
     );
@@ -70,17 +73,17 @@ class SecurityQuestions extends Component {
   }
 
   render() {
-    const { securityQuestions } = this.state;
-    const { answer1, answer2, answer3 } = this.state.data;
+    const {securityQuestions} = this.state;
+    const {answer1, answer2, answer3} = this.state.data;
 
     return (
       <Container fluid id={"security-questions-page"}>
-        <Navbar />
+        <Navbar/>
         <Row>
           <Col
             id="main"
-            md={{ span: 8, offset: 2 }}
-            lg={{ span: 6, offset: 3 }}
+            md={{span: 8, offset: 2}}
+            lg={{span: 6, offset: 3}}
           >
             <Form onSubmit={this.sendQuestions}>
               <Form.Group>
@@ -100,7 +103,7 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <hr />
+              <hr/>
               <Form.Group>
                 <Form.Label>Question 2</Form.Label>
                 <Form.Control
@@ -118,7 +121,7 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <hr />
+              <hr/>
               <Form.Group>
                 <Form.Label>Question 3</Form.Label>
                 <Form.Control
