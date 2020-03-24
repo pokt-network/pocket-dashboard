@@ -37,15 +37,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        working-directory: ./backend
+        working-directory: backend
         run: yarn
 
       - name: Running lint
-        working-directory: ./backend
+        working-directory: backend
         run: yarn lint
 
       - name: Running testing
-        working-directory: ./backend
+        working-directory: backend
         run: yarn test
 
         env:
@@ -69,11 +69,11 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        working-directory: ./frontend
+        working-directory: frontend
         run: yarn
 
       - name: Running lint
-        working-directory: ./frontend
+        working-directory: frontend
         run: yarn lint
 
         env:
