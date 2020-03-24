@@ -36,15 +36,18 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       # Backend CI
-      - name: Install backend dependencies
+      - name: Install dependencies
         working-directory: backend
         run: yarn
 
-      #      - name: Running lint on backend
+      - name: Testing mongoDB
+        run: mongod --version
+
+      #      - name: Running lint
       #        working-directory: backend
       #        run: yarn lint
 
-      - name: Running testing on backend
+      - name: Running testing
         working-directory: backend
         run: yarn test
 
