@@ -4,6 +4,8 @@ import "chai/register-should";
 import {Configurations} from "../../../src/_configuration";
 import PersistenceProvider from "../../../src/providers/data/PersistenceProvider";
 import MongoDBAdapter from "../../../src/providers/data/db/MongoDBAdapter";
+import * as dbProvider from "../../../src/providers/data/db/Index";
+import sinon from "sinon";
 
 /** @type MongoDBAdapter */
 let mongoDBProvider = null;
@@ -14,8 +16,10 @@ let persistenceService = null;
 const ENTITY_NAME = "TestSpecs";
 
 before(() => {
-  mongoDBProvider = new MongoDBAdapter(Configurations.persistence);
-  persistenceService = new PersistenceProvider(mongoDBProvider);
+  mongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
+  sinon.stub(dbProvider, "get_default_db_provider").returns(mongoDBProvider);
+
+  persistenceService = new PersistenceProvider();
 });
 
 

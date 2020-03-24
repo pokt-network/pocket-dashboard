@@ -2,16 +2,14 @@ import {after, before, describe, it} from "mocha";
 import "chai/register-should";
 import {expect} from "chai";
 import GithubAuthProvider from "../../../src/providers/auth/GithubAuthProvider";
+import BaseAuthProvider from "../../../src/providers/auth/BaseAuthProvider";
 
-
-/** @type BaseAuthProvider */
+/** @type {BaseAuthProvider} */
 let githubProvider = null;
 
-/** @type string */
-const GITHUB_AUTH_URL_WITH_CODE = process.env.TEST_GITHUB_AUTH_URL_WITH_CODE; // You can get yours using the getConsentURL of GithubAuthProviderHook
 
-/** @type string */
-const GITHUB_ACCESS_TOKEN = process.env.TEST_GITHUB_ACCESS_TOKEN; // You can get yours using the getConsentURL of GithubAuthProviderHook
+/** @type {string} */
+const GITHUB_ACCESS_TOKEN = process.env.TEST_GITHUB_ACCESS_TOKEN; // You can get yours using the getConsentURL of GithubAuthProvider
 
 before(() => {
   githubProvider = new GithubAuthProvider();
@@ -33,16 +31,14 @@ describe("GithubAuthProvider", () => {
     });
   });
 
-  if (GITHUB_AUTH_URL_WITH_CODE !== undefined) {
-    describe("extractCodeFromURL", () => {
-      it("Expect a string code", () => {
+  describe("extractCodeFromURL", () => {
+    it("Expect a string code", () => {
+      const urlWithCode = "http://example.com/foo/bar?code=code_data";
+      const code = githubProvider.extractCodeFromURL(urlWithCode);
 
-        const code = githubProvider.extractCodeFromURL(GITHUB_AUTH_URL_WITH_CODE);
-
-        code.should.to.be.a("string");
-      });
+      code.should.to.be.a("string");
     });
-  }
+  });
 
   describe("extractCodeFromURL with error", () => {
     it("Expect an error", () => {

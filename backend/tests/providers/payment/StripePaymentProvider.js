@@ -1,7 +1,13 @@
 import {after, before, describe, it} from "mocha";
 import "chai/register-should";
 import StripePaymentProvider from "../../../src/providers/payment/StripePaymentProvider";
-import {CardBrands, PaymentCard, PaymentCurrencies} from "../../../src/providers/payment/BasePaymentProvider";
+import {
+  CardBrands,
+  PaymentCard,
+  PaymentCurrencies,
+  PaymentTypes
+} from "../../../src/providers/payment/BasePaymentProvider";
+import {Configurations} from "../../../src/_configuration";
 
 /** @type {StripePaymentProvider} */
 let stripePaymentProvider = null;
@@ -16,7 +22,7 @@ const TEST_CARDS = {
 };
 
 before(() => {
-  stripePaymentProvider = new StripePaymentProvider();
+  stripePaymentProvider = new StripePaymentProvider(Configurations.payment.test);
 });
 
 
@@ -24,35 +30,38 @@ after(() => {
   stripePaymentProvider = null;
 });
 
-describe("StripePaymentProvider", () => {
+if (Configurations.payment.test.client_id && Configurations.payment.test.client_secret) {
 
-  describe("createCardPaymentMethod", () => {
-    it("Created a card that don’t require authentication", async () => {
+  describe("StripePaymentProvider", () => {
 
-      const methodMethod = await stripePaymentProvider.createCardPaymentMethod(TEST_CARDS.no_auth_visa);
+    describe("createCardPaymentMethod", () => {
+      it("Created a card that don’t require authentication", async () => {
 
-      // eslint-disable-next-line no-undef
-      should.exist(methodMethod);
+        const methodMethod = await stripePaymentProvider.createCardPaymentMethod(TEST_CARDS.no_auth_visa);
 
-      methodMethod.should.be.an("object");
-      methodMethod.object.should.be.equal("payment_method");
+        // eslint-disable-next-line no-undef
+        should.exist(methodMethod);
+
+        methodMethod.should.be.an("object");
+        methodMethod.object.should.be.equal("payment_method");
+      });
+    });
+
+    describe("makeIntentPayment that don’t require authentication", () => {
+      it("Created a Payment with amount, currency, type type and description", async () => {
+        const currency = PaymentCurrencies.usd;
+        const amount = 90;
+        const description = "Test payment with Pocket dashboard";
+
+        /** @type {PaymentResult} */
+        const paymentResult = await stripePaymentProvider.makeIntentPayment(PaymentTypes.card, currency, amount, description);
+
+        // eslint-disable-next-line no-undef
+        should.exist(paymentResult);
+
+        paymentResult.should.be.an("object");
+        paymentResult.paymentNumber.should.be.a("string");
+      });
     });
   });
-
-  describe("makeCardPayment that don’t require authentication", () => {
-    it("Created a Payment with amount, currency, type type and description", async () => {
-      const currency = PaymentCurrencies.usd;
-      const amount = 90;
-      const description = "Test payment with Pocket dashboard";
-
-      /** @type {PaymentResult} */
-      const paymentResult = await stripePaymentProvider.makeCardPayment(currency, amount, description);
-
-      // eslint-disable-next-line no-undef
-      should.exist(paymentResult);
-
-      paymentResult.should.be.an("object");
-      paymentResult.paymentNumber.should.be.a("string");
-    });
-  });
-});
+}

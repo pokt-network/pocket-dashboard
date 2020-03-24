@@ -2,6 +2,10 @@ export const PaymentCurrencies = {
   usd: "usd"
 };
 
+export const PaymentTypes = {
+  card: "card"
+};
+
 export const CardBrands = {
   unknown: "Unknown",
   visa: "Visa",
@@ -45,18 +49,29 @@ export class PaymentCard {
    * @param {string} brandName Brand name.
    * @param {string} number Number of card.
    * @param {string} cvc CVC of card.
-   * @param {Date} date Expiration date of card.
+   * @param {Date} expirationDate Expiration expirationDate of card.
    */
-  constructor(brandName, number, cvc, date) {
-    Object.assign(this, {brandName, number, cvc, date});
+  constructor(brandName, number, cvc, expirationDate) {
+    Object.assign(this, {brandName, number, cvc, expirationDate});
   }
 }
 
 export default class BasePaymentProvider {
 
   /**
-   * Make a payment.
+   * @param {Object} paymentProviderConfiguration
+   * @param {string} paymentProviderConfiguration.client_id
+   * @param {string} paymentProviderConfiguration.client_secret
+   * @param {Object} paymentProviderConfiguration.options
+   */
+  constructor(paymentProviderConfiguration) {
+    this._paymentProviderConfiguration = paymentProviderConfiguration;
+  }
+
+  /**
+   * Make a intent of payment.
    *
+   * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
    * @param {number} amount Amount intended to be collected by this payment.
    * @param {string} description An arbitrary string attached to the object. Often useful for displaying to users.
@@ -66,7 +81,7 @@ export default class BasePaymentProvider {
    * @return {Promise<PaymentResult>}
    * @async
    */
-  async makeCardPayment(currency, amount, description, metadata = undefined, receipt = undefined) {
+  async makeIntentPayment(type, currency, amount, description, metadata = undefined, receipt = undefined) {
   }
 
   /**

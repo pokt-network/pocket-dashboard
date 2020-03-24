@@ -34,8 +34,10 @@
   "scripts": {
     "start": "BROWSER=none node_modules/.bin/react-scripts start",
     "build": "node_modules/.bin/react-scripts build",
+    "build:prod": "node_modules/.bin/react-scripts build --prod",
     "test": "node_modules/.bin/react-scripts test",
-    "eject": "node_modules/.bin/react-scripts eject"
+    "eject": "node_modules/.bin/react-scripts eject",
+    "lint": "eslint src/"
   },
   "browserslist": {
     "production": [

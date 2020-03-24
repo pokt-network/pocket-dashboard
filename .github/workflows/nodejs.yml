@@ -1,0 +1,88 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Pocket Daskboard CI
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - master
+
+
+jobs:
+  # Backend CI
+  Backend:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    services:
+      localhost:
+        image: mongo:4.2
+        ports:
+          - 27017:27017
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        working-directory: backend
+        run: yarn
+
+      - name: Running lint
+        working-directory: backend
+        run: yarn lint
+
+      - name: Running testing
+        working-directory: backend
+        run: yarn test
+
+      - name: Running prod build
+        working-directory: backend
+        run: yarn build:prod
+
+        env:
+          CI: true
+
+  # Frontend CI
+  Frontend:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: yarn
+
+      - name: Running lint
+        working-directory: frontend
+        run: yarn lint
+
+      - name: Running prod build
+        working-directory: frontend
+        run: yarn build:prod
+
+        env:
+          CI: true

@@ -1,4 +1,4 @@
-import {get_default_db_provider} from "./db";
+import {get_default_db_provider} from "./db/Index";
 
 export default class PersistenceProvider {
   constructor() {

@@ -13,6 +13,11 @@ export const Configurations = {
       client_id: process.env.PAYMENT_DEFAULT_CLIENT_ID,
       client_secret: process.env.PAYMENT_DEFAULT_CLIENT_SECRET,
       options: {}
+    },
+    test: {
+      client_id: process.env.TEST_PAYMENT_DEFAULT_CLIENT_ID,
+      client_secret: process.env.TEST_PAYMENT_DEFAULT_CLIENT_SECRET,
+      options: {}
     }
   },
   auth: {
@@ -40,6 +45,13 @@ export const Configurations = {
     default: {
       url: process.env.DATABASE_URL,
       db_name: process.env.DATABASE_NAME,
+      options: {
+        useUnifiedTopology: true
+      }
+    },
+    test: {
+      url: "mongodb://localhost:27017",
+      db_name: "pocket_dashboard_test",
       options: {
         useUnifiedTopology: true
       }
