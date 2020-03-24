@@ -1,6 +1,7 @@
 import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
 
+
 class PocketUserService extends PocketBaseService {
 
   constructor() {
@@ -193,7 +194,6 @@ class PocketUserService extends PocketBaseService {
 
     return `******${lastLetters}${emailProvider}`;
   }
-
 }
 
 export default new PocketUserService();

@@ -10,12 +10,12 @@ class PocketBaseService {
   }
 
   /**
-   * @param {string} apiPath Relative path to the specific api type.
+   * @param {string} [apiPath] Relative path to the specific api type.
    *
    * @return {string}
    * @protected
    */
-  _getURL(apiPath) {
+  _getURL(apiPath = "") {
     return `${this._serviceURL}/${apiPath}`;
   }
 }

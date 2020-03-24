@@ -3,7 +3,9 @@ import User from "./apis/UserApi";
 import SecurityQuestion from "./apis/SecurityQuestionApi";
 import Payment from "./apis/PaymentApi";
 
-
+/**
+ * @param {object} expressApp Express application object.
+ */
 export function configureRoutes(expressApp) {
   // Index API
   expressApp.use("/", Index);

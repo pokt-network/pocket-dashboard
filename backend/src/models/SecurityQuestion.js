@@ -21,8 +21,8 @@ export const SECURITY_QUESTIONS = [
 export class AnsweredSecurityQuestion {
 
   /**
-   * @param {string} question
-   * @param {string} answer
+   * @param {string} question Question data.
+   * @param {string} answer Answer data.
    */
   constructor(question, answer) {
     Object.assign(this, {question, answer});
@@ -33,7 +33,7 @@ export class AnsweredSecurityQuestion {
    *
    * @param {Array<{question:string, answer:string}>} questions List of questions.
    *
-   * @return {Array<AnsweredSecurityQuestion>}
+   * @returns {Array<AnsweredSecurityQuestion>} A list of security questions answered.
    * @static
    */
   static createAnsweredSecurityQuestions(questions) {

@@ -4,7 +4,7 @@ import {SECURITY_QUESTIONS} from "../models/SecurityQuestion";
 
 const router = express.Router();
 
-/** @type UserService */
+/** @type {UserService} */
 const userService = new UserService();
 
 /**

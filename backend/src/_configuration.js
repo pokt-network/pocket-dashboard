@@ -81,6 +81,9 @@ export const Configurations = {
   }
 };
 
+/**
+ * @param {object} expressApp Express application object.
+ */
 export function configureExpress(expressApp) {
   expressApp.use(express.json());
   expressApp.use(express.urlencoded({extended: false}));

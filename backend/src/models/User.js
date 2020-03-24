@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import {AnsweredSecurityQuestion} from "./SecurityQuestion";
 
 // eslint-disable-next-line no-useless-escape
 const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -32,7 +33,7 @@ export class PocketUser {
    *
    * @param {PocketUser} user User to create.
    *
-   * @return {PocketUser}
+   * @returns {PocketUser} A new Pocket user.
    * @static
    */
   static createPocketUserWithUTCLastLogin(user) {
@@ -41,10 +42,11 @@ export class PocketUser {
     return new PocketUser(user.provider, user.email, user.username, user.password, lastLoginUTC);
   }
 
+  /* eslint-disable jsdoc/require-param-description */
   /**
    * Factory type to create an user object from db.
    *
-   * @param {Object} user User from db.
+   * @param {object} user User from db.
    * @param {string} user.provider
    * @param {string} user.email
    * @param {string} user.username
@@ -52,9 +54,11 @@ export class PocketUser {
    * @param {string} user.lastLogin
    * @param {Array<AnsweredSecurityQuestion>} user.securityQuestions
    *
-   * @return {PocketUser}
+   * @returns {PocketUser} A new Pocket user.
    * @static
    */
+
+  /* eslint-enable jsdoc/require-param-description */
   static createPocketUserFromDB(user) {
     return new PocketUser(user.provider, user.email, user.username, user.password, user.lastLogin, user.securityQuestions);
   }
@@ -64,7 +68,7 @@ export class PocketUser {
    *
    * @param {PocketUser} pocketUser Pocket user to remove fields.
    *
-   * @return {PocketUser}
+   * @returns {PocketUser} A new Pocket user.
    * @static
    */
   static removeSensitiveFields(pocketUser) {
@@ -101,10 +105,9 @@ export class GoogleUser extends AuthProviderUser {
 export class EmailUser extends PocketUser {
 
   /**
-   *
-   * @param email Email of user.
-   * @param username Username of user.
-   * @param password Password of user.
+   * @param {string} email Email of user.
+   * @param {string} username Username of user.
+   * @param {string} password Password of user.
    */
   constructor(email, username, password) {
     super("email", email, username, password);
@@ -113,13 +116,13 @@ export class EmailUser extends PocketUser {
   /**
    * Validate user data.
    *
-   * @param {Object} userData User data to validate.
+   * @param {object} userData User data to validate.
    * @param {string} userData.email Email of user.
    * @param {string} userData.username Username of user.
    * @param {string} userData.password1 Password of user.
    * @param {string} userData.password2 Password to validate against Password1.
    *
-   * @return boolean
+   * @returns {boolean} If is validation success
    * @throws {Error} If validation fails
    * @static
    */
@@ -145,6 +148,7 @@ export class EmailUser extends PocketUser {
     return true;
   }
 
+  /* eslint-disable jsdoc/require-param-description */
   /**
    * Factory type to create an Email user with encrypted password.
    *
@@ -152,10 +156,12 @@ export class EmailUser extends PocketUser {
    * @param {string} username
    * @param {string} password
    *
-   * @return {Promise<PocketUser>}
+   * @returns {Promise<PocketUser>} A new Email user.
    * @static
    * @async
    */
+
+  /* eslint-enable jsdoc/require-param-description */
   static async createEmailUserWithEncryptedPassword(email, username, password) {
     const encryptedPassword = await EmailUser.encryptPassword(password);
 
@@ -167,7 +173,7 @@ export class EmailUser extends PocketUser {
    *
    * @param {string} password Password to encrypt.
    *
-   * @return {Promise<string>}
+   * @returns {Promise<string>} An encrypted password.
    * @static
    * @async
    */
@@ -182,7 +188,7 @@ export class EmailUser extends PocketUser {
    * @param {string} plainPassword Password unencrypted.
    * @param {string} userPassword Encrypted user password.
    *
-   * @return {Promise<boolean>}
+   * @returns {Promise<boolean>} If plainPassword matches against userPassword.
    * @static
    * @async
    */
