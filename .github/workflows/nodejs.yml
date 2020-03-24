@@ -14,7 +14,7 @@ on:
 
 jobs:
   # Backend CI
-  backend:
+  Backend:
 
     runs-on: ubuntu-latest
 
@@ -40,22 +40,41 @@ jobs:
         working-directory: backend
         run: yarn
 
-          #      - name: Running lint
-          #        working-directory: backend
-        #        run: yarn lint
+      - name: Running lint
+        working-directory: backend
+        run: yarn lint
 
       - name: Running testing
         working-directory: backend
         run: yarn test
 
-        #      # Frontend CI
-        #      - name: Install backend dependencies
-        #        working-directory: frontend
-        #        run: yarn
-        #
-        ##      - name: Running lint on backend
-        ##        working-directory: frontend
-        ##        run: yarn lint
+        env:
+          CI: true
+
+  # Backend CI
+  Frontend:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [10.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: yarn
+
+      - name: Running lint
+        working-directory: frontend
+        run: yarn lint
 
         env:
           CI: true
