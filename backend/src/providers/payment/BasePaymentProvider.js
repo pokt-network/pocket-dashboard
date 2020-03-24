@@ -69,7 +69,7 @@ export default class BasePaymentProvider {
   }
 
   /**
-   * Make a payment.
+   * Make a intent of payment.
    *
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
@@ -81,7 +81,7 @@ export default class BasePaymentProvider {
    * @return {Promise<PaymentResult>}
    * @async
    */
-  async makePayment(type, currency, amount, description, metadata = undefined, receipt = undefined) {
+  async makeIntentPayment(type, currency, amount, description, metadata = undefined, receipt = undefined) {
   }
 
   /**

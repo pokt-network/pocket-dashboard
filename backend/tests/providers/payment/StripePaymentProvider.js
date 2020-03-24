@@ -47,14 +47,14 @@ if (Configurations.payment.test.client_id && Configurations.payment.test.client_
       });
     });
 
-    describe("makeCardPayment that don’t require authentication", () => {
+    describe("makeIntentPayment that don’t require authentication", () => {
       it("Created a Payment with amount, currency, type type and description", async () => {
         const currency = PaymentCurrencies.usd;
         const amount = 90;
         const description = "Test payment with Pocket dashboard";
 
         /** @type {PaymentResult} */
-        const paymentResult = await stripePaymentProvider.makePayment(PaymentTypes.card, currency, amount, description);
+        const paymentResult = await stripePaymentProvider.makeIntentPayment(PaymentTypes.card, currency, amount, description);
 
         // eslint-disable-next-line no-undef
         should.exist(paymentResult);
