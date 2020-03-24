@@ -1,5 +1,5 @@
 import BaseService from "./BaseService";
-import {get_auth_providers, getAuthProvider} from "../providers/auth";
+import {get_auth_providers, getAuthProvider} from "../providers/auth/Index";
 import {EmailUser, PocketUser} from "../models/User";
 import {AnsweredSecurityQuestion} from "../models/SecurityQuestion";
 
