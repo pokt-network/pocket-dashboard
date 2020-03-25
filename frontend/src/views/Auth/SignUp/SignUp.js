@@ -36,8 +36,9 @@ class SignUp extends Component {
 
   validateSignUp(username, email, password1, password2) {
     // TODO: Add more validations.
-    if (password1 !== password2)
+    if (password1 !== password2) {
       return "Passwords don't match";
+    }
     return "";
   }
 
@@ -45,12 +46,7 @@ class SignUp extends Component {
     e.preventDefault();
     const {username, email, password1, password2} = this.state.data;
 
-    const validationMsg = this.validateSignUp(
-      username,
-      email,
-      password1,
-      password2
-    );
+    const validationMsg = this.validateSignUp(username, email, password1, password2);
 
     if (validationMsg !== "") {
       // TODO: Show proper message on front end to user.
@@ -58,26 +54,20 @@ class SignUp extends Component {
       return;
     }
 
-    const {success, data: error} = await UserService.signUp(
-      username,
-      email,
-      password1,
-      password2
-    );
+    const {success, data: error} = await UserService.signUp(username, email, password1, password2);
 
     if (!success) {
       // TODO: Show proper message on front end to user.
       console.log(error.response.data.message);
     }
 
-    this.setState({
-      signedIn: success
-    });
+    this.setState({signedIn: success});
   };
 
 
   handleChange({currentTarget: input}) {
     const data = {...this.state.data};
+
     data[input.name] = input.value;
     this.setState({data});
   }

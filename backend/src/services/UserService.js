@@ -11,7 +11,7 @@ export default class UserService extends BaseService {
   constructor() {
     super();
 
-    /** @type BaseAuthProvider[] */
+    /** @type {BaseAuthProvider[]} */
     this.__authProviders = get_auth_providers();
   }
 
@@ -121,6 +121,7 @@ export default class UserService extends BaseService {
     }
 
     const pocketUser = PocketUser.createPocketUserFromDB(userDB);
+
     if (!pocketUser.password) {
       throw Error("Passwords do not match");
     }

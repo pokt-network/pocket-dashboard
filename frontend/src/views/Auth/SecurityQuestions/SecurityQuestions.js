@@ -32,6 +32,7 @@ class SecurityQuestions extends Component {
   componentDidMount() {
     SecurityQuestionsService.getSecurityQuestions().then((questions) => {
       const securityQuestions = ["Select one", ...questions];
+
       this.setState({securityQuestions});
     });
 
@@ -39,12 +40,14 @@ class SecurityQuestions extends Component {
 
   handleSelect(e, index) {
     const chosenQuestions = [...this.state.chosenQuestions];
+
     chosenQuestions[index] = e.target.value;
     this.setState({chosenQuestions});
   }
 
   handleChange({currentTarget: input}) {
     const data = {...this.state.data};
+
     data[input.name] = input.value;
     this.setState({data});
   }
@@ -59,10 +62,8 @@ class SecurityQuestions extends Component {
       {question: chosenQuestions[2], answer: answer3}
     ];
 
-    const {success, data: error} = await SecurityQuestionsService.saveSecurityQuestionAnswers(
-      email,
-      questions
-    );
+    const {success, data: error} = await SecurityQuestionsService.saveSecurityQuestionAnswers(email, questions);
+
     if (!success) {
       // TODO: Properly log error in frontend
       console.log(error.data.message);

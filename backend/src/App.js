@@ -20,6 +20,7 @@ app.use(webpackDevMiddleware(webPackCompiler, {
 }));
 
 const PORT = process.env.PORT || 4200;
+
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`App listening to ${PORT}....`);

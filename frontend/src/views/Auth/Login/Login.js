@@ -41,8 +41,9 @@ class Login extends Component {
    * @return {string} Message about error or empty if there's none
    */
   validateLogin(username, password) {
-    if (username === "" || password === "")
+    if (username === "" || password === "") {
       return "Username or password cannot be empty";
+    }
     return "";
   }
 
@@ -65,13 +66,12 @@ class Login extends Component {
       console.log(error.response.data.message);
     }
 
-    this.setState({
-      loggedIn: success
-    });
+    this.setState({loggedIn: success});
   }
 
   handleChange({currentTarget: input}) {
     const data = {...this.state.data};
+
     data[input.name] = input.value;
     this.setState({data});
   }

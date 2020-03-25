@@ -25,6 +25,7 @@ export class AuthProviderButton extends Component {
 
   render() {
     const {block, icon, className, authProvider, type} = this.props;
+
     return (
       <Button variant="outline-secondary" className={className} size={"lg"} block={block} onClick={this.onButtonClick}>
         {icon ? <FontAwesomeIcon icon={icon}/> : null} {type} with {authProvider.name}

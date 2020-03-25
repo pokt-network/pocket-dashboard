@@ -6,9 +6,7 @@ import assert from "assert";
 const POKT_NETWORK_CONFIGURATION = Configurations.poktNetwork;
 
 const POKT_CONFIGURATION = new Configuration(
-  POKT_NETWORK_CONFIGURATION.max_dispatchers,
-  POKT_NETWORK_CONFIGURATION.request_timeout,
-  POKT_NETWORK_CONFIGURATION.max_sessions);
+  POKT_NETWORK_CONFIGURATION.max_dispatchers, POKT_NETWORK_CONFIGURATION.request_timeout, POKT_NETWORK_CONFIGURATION.max_sessions);
 
 /**
  * Convert list of string nodes to URL nodes.
@@ -22,6 +20,7 @@ function getNodeURLS(nodes) {
 
   return nodes.map((node) => {
     const nodeURL = node + ":" + POKT_NETWORK_CONFIGURATION.default_rpc_port;
+
     return new URL(nodeURL);
   });
 }

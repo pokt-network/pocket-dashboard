@@ -7,10 +7,10 @@ import MongoDBAdapter from "../../../src/providers/data/db/MongoDBAdapter";
 import * as dbProvider from "../../../src/providers/data/db/Index";
 import sinon from "sinon";
 
-/** @type MongoDBAdapter */
+/** @type {MongoDBAdapter} */
 let mongoDBProvider = null;
 
-/** @type PersistenceProvider */
+/** @type {PersistenceProvider} */
 let persistenceService = null;
 
 const ENTITY_NAME = "TestSpecs";
@@ -26,6 +26,7 @@ before(() => {
 after(() => {
   persistenceService.deleteEntities(ENTITY_NAME, {}).then(async () => {
     const collection = await persistenceService.getCollection(ENTITY_NAME);
+
     await collection.drop();
 
     mongoDBProvider = null;

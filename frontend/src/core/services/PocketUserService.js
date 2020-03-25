@@ -42,7 +42,7 @@ class PocketUserService extends PocketBaseService {
   /**
    * Get logged user information.
    *
-   * @return {{}|{provider: string, name: string, email: string}}
+   * @return {{provider: string, name: string, email: string}}
    */
   getUserInfo() {
     if (this.isLoggedIn()) {
@@ -52,7 +52,11 @@ class PocketUserService extends PocketBaseService {
         provider: localStorage.getItem("user_provider")
       };
     } else {
-      return {};
+      return {
+        name: "",
+        email: "",
+        provider: ""
+      };
     }
   }
 
@@ -98,12 +102,19 @@ class PocketUserService extends PocketBaseService {
         if (response.status === 200) {
           this.saveUserInCache(response.data, true);
 
-          return {success: true};
+          return {
+            success: true
+          };
         }
 
-        return {success: false};
+        return {
+          success: false
+        };
       }).catch(err => {
-        return {success: false, data: err};
+        return {
+          success: false,
+          data: err
+        };
       });
   }
 
@@ -127,16 +138,23 @@ class PocketUserService extends PocketBaseService {
         if (response.status === 200) {
           this.saveUserInCache(response.data, true);
 
-          return {success: true};
+          return {
+            success: true
+          };
         }
 
-        return {success: false};
+        return {
+          success: false
+        };
       }).catch(err => {
-        return {success: false, data: err};
+        return {
+          success: false,
+          data: err
+        };
       });
   }
 
-    /**
+  /**
    * Register new user.
    *
    * @param {string} username Username of user to login.
@@ -158,12 +176,19 @@ class PocketUserService extends PocketBaseService {
     return axios.post(this._getURL("auth/signup"), data)
       .then(response => {
         if (response.status === 200) {
-          return {success: true};
+          return {
+            success: true
+          };
         }
 
-        return {success: false};
+        return {
+          success: false
+        };
       }).catch(err => {
-        return {success: false, data: err};
+        return {
+          success: false,
+          data: err
+        };
       });
   }
 

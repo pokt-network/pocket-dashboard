@@ -11,24 +11,23 @@ export default class GoogleAuthProvider extends BaseAuthProvider {
   }
 
   __createGoogleAuth() {
-    return new google.auth.OAuth2(
-      this._authProviderConfiguration.client_id,
-      this._authProviderConfiguration.client_secret,
-      this._authProviderConfiguration.callback_url
-    );
+    const {client_id, client_secret, callback_url} = this._authProviderConfiguration;
+
+    return new google.auth.OAuth2(client_id, client_secret, callback_url);
   }
 
   /**
    * @param {string} token Token to use when authenticate people api.
    * @param {string} tokenType Type of token.
    *
+   * @returns {google.people} Google people service.
    * @private
    */
   __getPeopleService(token, tokenType) {
-    let credentials = {};
-    credentials[tokenType] = token;
-
     const auth = this.__createGoogleAuth();
+    let credentials = {};
+
+    credentials[tokenType] = token;
     auth.setCredentials(credentials);
 
     return google.people({
