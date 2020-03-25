@@ -1,16 +1,16 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import PropTypes from "prop-types";
-import "./StatusCard.scss";
+import "./PocketElementCard.scss";
 
-class StatusCard extends Component {
+class PocketElementCard extends Component {
   render() {
-    const { title, subtitle, iconURL, status } = this.props;
+    const {title, subtitle, iconURL, status} = this.props;
 
     return (
       <div className="p-card">
         <div className="p-card-body">
           <div className="detail">
-            <img src={iconURL} />
+            <img src={iconURL} alt="" />
             <div className="info">
               <h1>{title}</h1>
               <p>{subtitle}</p>
@@ -25,11 +25,11 @@ class StatusCard extends Component {
   }
 }
 
-StatusCard.propTypes = {
+PocketElementCard.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   iconURL: PropTypes.string,
   status: PropTypes.string
 };
 
-export default StatusCard;
+export default PocketElementCard;
