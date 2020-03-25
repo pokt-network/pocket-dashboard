@@ -1,0 +1,54 @@
+@import "../../../scss/Core.scss";
+
+.p-card {
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, .125);
+  border-radius: 5px;
+  box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 6px 0 rgba(0, 0, 0, 0.19);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1;
+
+  color: #ffffff;
+  background-color: theme-color("dark");
+
+  p,
+  h1 {
+    margin-bottom: 0;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+
+  .p-card-body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 10px 20px;
+
+    .detail {
+      display: flex;
+      flex-direction: row;
+
+      img {
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        margin-right: 20px;
+      }
+    }
+
+    .status {
+      align-self: center;
+
+      p {
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+    }
+  }
+}
