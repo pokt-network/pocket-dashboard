@@ -1,10 +1,10 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import PropTypes from "prop-types";
 import "./InfoCard.scss";
 
 class InfoCard extends Component {
   render() {
-    const { title, subtitle } = this.props;
+    const {title, subtitle} = this.props;
 
     return (
       <div className="p-badge">
