@@ -112,7 +112,7 @@ export default class PoktService {
    * @param {string} passphrase Passphrase used to generate the account.
    * @param {string} encoding Encoding used to encode the buffer of private key.
    *
-   * @returns {Promise<string>} An encrypted private key.
+   * @returns {Promise<string>} A Hex private key.
    */
   async exportRawAccount(addressHex, passphrase, encoding = "hex") {
     /** @type {Buffer} */
@@ -122,7 +122,7 @@ export default class PoktService {
   }
 
   /**
-   * Create an Application Authentication Token to be used on Pokt network.
+   * Get an Application Authentication Token to be used on Pokt network.
    *
    * @param {Account} clientAccount The client Pokt account our dApp is connecting to.
    * @param {Account} applicationAccount The funded applications Pokt account address.
@@ -130,7 +130,7 @@ export default class PoktService {
    *
    * @returns {Promise<PocketAAT>} An application authorization tokens.
    */
-  async createApplicationAuthenticationToken(clientAccount, applicationAccount, applicationAccountPassphrase) {
+  async getApplicationAuthenticationToken(clientAccount, applicationAccount, applicationAccountPassphrase) {
     const aatVersion = POKT_NETWORK_CONFIGURATION.aat_version;
 
     const clientPublicKey = clientAccount.publicKey.toString("hex");

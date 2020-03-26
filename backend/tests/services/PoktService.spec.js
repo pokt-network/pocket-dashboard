@@ -87,13 +87,13 @@ describe("PoktService", () => {
     });
   });
 
-  describe("createApplicationAuthenticationToken", () => {
-    it("Expected an ATT successfully created", async () => {
+  describe("getApplicationAuthenticationToken", () => {
+    it("Expected an ATT successfully retrieved", async () => {
       const testPassPhrase = "12345678";
       const clientAccount = await poktService.createAccount(testPassPhrase);
       const applicationAccount = await poktService.createAccount(testPassPhrase);
 
-      const attToken = await poktService.createApplicationAuthenticationToken(clientAccount, applicationAccount, testPassPhrase);
+      const attToken = await poktService.getApplicationAuthenticationToken(clientAccount, applicationAccount, testPassPhrase);
 
       // eslint-disable-next-line no-undef
       should.exist(attToken);

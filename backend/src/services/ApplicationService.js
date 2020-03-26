@@ -36,13 +36,14 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Create an AAT to the application.
+   * Get an AAT of the application.
    *
    * @param {PocketApplication} application Application to create AAT.
    *
+   * TODO: Change this value
    * @returns {ApplicationKeys} Application keys.
    */
-  createAAT(application) {
+  getAAT(application) {
     return null;
   }
 

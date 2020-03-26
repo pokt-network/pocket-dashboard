@@ -1,20 +1,11 @@
-import {PocketAAT} from "@pokt-network/aat-js";
-
-export const ApplicationStatuses = {
-  bounded: "bounded",
-  unbounding: "unbounding",
-  unbounded: "unbounded"
-};
-
 export class ApplicationKeys {
 
   /**
    * @param {string} address Address of application in the network.
    * @param {string} publicKey Public key of application in the network.
-   * @param {PocketAAT} aat Application Authorization Tokens
    */
-  constructor(address, publicKey, aat) {
-    Object.assign(this, {address, publicKey, aat});
+  constructor(address, publicKey) {
+    Object.assign(this, {address, publicKey});
   }
 }
 
@@ -23,6 +14,7 @@ export class ApplicationPoktAccount {
   /**
    * @param {string} address Address of application in the network.
    * @param {string} privateKey Private key of application.
+   * TODO: Add passphrase
    */
   constructor(address, privateKey) {
     Object.assign(this, {address, privateKey});
@@ -41,12 +33,9 @@ export class PocketApplication {
   constructor(name, owner, url, contactEmail, user) {
     Object.assign(this, {name, owner, url, contactEmail, user});
 
-    this.status = ApplicationStatuses.unbounded;
     this.description = "";
     this.icon = "";
     this.applicationKeys = null;
-
-    this.jailed = false;
 
     // TODO: Add type
     this.networkChains = [];
