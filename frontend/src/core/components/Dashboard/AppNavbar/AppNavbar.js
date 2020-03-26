@@ -13,9 +13,9 @@ class AppNavbar extends Component {
     return (
       <Row>
         <Col id={"app-navbar"}>
-        <NotificationIcon/>
-        <HelpLink link={helpLink}/>
-        <LoginStatus/>
+          <NotificationIcon />
+          <HelpLink size={"2x"} link={helpLink} />
+          <LoginStatus />
         </Col>
       </Row>
     );
@@ -23,11 +23,11 @@ class AppNavbar extends Component {
 }
 
 AppNavbar.defaultProps = {
-  helpLink: "#"
+  helpLink: "#",
 };
 
 AppNavbar.propTypes = {
-  helpLink: PropTypes.string
+  helpLink: PropTypes.string,
 };
 
 export default AppNavbar;
