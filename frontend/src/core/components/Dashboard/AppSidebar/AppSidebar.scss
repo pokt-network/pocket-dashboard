@@ -1,0 +1,35 @@
+@import "../../../../scss/Core.scss";
+
+#app-sidebar {
+  list-style-type: none;
+  padding-left: 0;
+  padding-top: 30px;
+  width: 100%;
+
+  li {
+    display: flex;
+    align-items: center;
+    padding-left: 30px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    .icon {
+      margin-right: 20px;
+    }
+
+    a {
+      color: #ffffff;
+      display: block;
+      font-size: 1.2em;
+
+    }
+
+    a:hover {
+      text-decoration: none;
+    }
+  }
+
+  li:hover {
+    background-color: rgb(38, 42, 48);
+  }
+}
