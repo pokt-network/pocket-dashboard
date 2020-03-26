@@ -1,7 +1,8 @@
 import BaseService from "./BaseService";
 import {get_auth_providers, getAuthProvider} from "../providers/auth/Index";
-import {EmailUser, PocketUser} from "../models/User";
+import {AuthProviderUser, EmailUser, PocketUser} from "../models/User";
 import {AnsweredSecurityQuestion} from "../models/SecurityQuestion";
+import BaseAuthProvider from "../providers/auth/BaseAuthProvider";
 
 const AUTH_TOKEN_TYPE = "access_token";
 const USER_COLLECTION_NAME = "Users";
@@ -21,7 +22,7 @@ export default class UserService extends BaseService {
    * @param {string} providerName Name of auth provider.
    * @param {string} code Code returned by auth provider.
    *
-   * @return {Promise<AuthProviderUser>}
+   * @returns {Promise<AuthProviderUser>} An auth Provider user.
    * @private
    * @async
    */
@@ -37,7 +38,7 @@ export default class UserService extends BaseService {
    *
    * @param {PocketUser} user User to create on database.
    *
-   * @return {Promise<boolean>}
+   * @returns {Promise<boolean>} If user was created or not.
    * @private
    * @async
    */
@@ -70,7 +71,7 @@ export default class UserService extends BaseService {
   /**
    * Get consent provider auth urls.
    *
-   * @return {{name:string, consent_url:string}[]}
+   * @returns {{name:string, consent_url:string}[]} The consent url for all auth provider available.
    */
   getConsentProviderUrls() {
     return this.__authProviders.map(provider => {
@@ -87,7 +88,7 @@ export default class UserService extends BaseService {
    * @param {string} providerName Name of auth provider.
    * @param {string} code Code returned by auth provider.
    *
-   * @return {Promise<PocketUser>}
+   * @returns {Promise<PocketUser>} an authenticated(via auth provider) pocket user.
    * @async
    */
   async authenticateWithAuthProvider(providerName, code) {
@@ -108,7 +109,7 @@ export default class UserService extends BaseService {
    * @param {string} username Email or username of user.
    * @param {string} password Password of user to authenticate.
    *
-   * @return {Promise<PocketUser>}
+   * @returns {Promise<PocketUser>} An authenticated pocket user.
    * @throws {Error} If username or password is invalid.
    * @async
    */
@@ -138,13 +139,13 @@ export default class UserService extends BaseService {
   /**
    * Sign up a User.
    *
-   * @param {Object} userData User data to validate.
+   * @param {object} userData User data to validate.
    * @param {string} userData.email Email of userData.
    * @param {string} userData.username Username of userData.
    * @param {string} userData.password1 Password of userData.
    * @param {string} userData.password2 Password to validate against Password1.
    *
-   * @return {Promise<boolean>}
+   * @returns {Promise<boolean>} If user was created or not.
    * @throws {Error} If validation fails
    * @async
    */
@@ -164,7 +165,7 @@ export default class UserService extends BaseService {
    *
    * @param {string} email Email of user.
    *
-   * @return {Promise<boolean>}
+   * @returns {Promise<boolean>} If user was logout or not.
    * @async
    */
   async logout(email) {
@@ -177,7 +178,7 @@ export default class UserService extends BaseService {
    * @param {string} userEmail Email of user.
    * @param {Array<{question: string, answer:string}>} questions Questions to add or update.
    *
-   * @return {Promise<boolean>}
+   * @returns {Promise<boolean>} If user record was updated or not.
    */
   async addOrUpdateUserSecurityQuestions(userEmail, questions) {
     const filter = {email: userEmail};

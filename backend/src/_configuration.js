@@ -76,7 +76,19 @@ export const Configurations = {
         "http://node9.testnet.pokt.network",
         "http://node10.testnet.pokt.network"
       ],
-      main: []
+      // TODO: Change to the main network nodes.
+      main: [
+        "http://node1.testnet.pokt.network",
+        "http://node2.testnet.pokt.network",
+        "http://node3.testnet.pokt.network",
+        "http://node4.testnet.pokt.network",
+        "http://node5.testnet.pokt.network",
+        "http://node6.testnet.pokt.network",
+        "http://node7.testnet.pokt.network",
+        "http://node8.testnet.pokt.network",
+        "http://node9.testnet.pokt.network",
+        "http://node10.testnet.pokt.network"
+      ]
     }
   }
 };
