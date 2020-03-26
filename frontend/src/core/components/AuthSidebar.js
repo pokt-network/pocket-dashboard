@@ -6,7 +6,8 @@ export default class AuthSidebar extends Component {
   render() {
 
     return (
-      <Sidebar>
+      <Sidebar xs={2} sm={3} lg={3} >
+        <div id="auth-sidebar" style={{paddingLeft: 60}}>
         <Row id={"title"}>
           <h1>
             We are <br/>
@@ -22,6 +23,7 @@ export default class AuthSidebar extends Component {
             market that is over-reliant on single-service provider.
           </p>
         </Row>
+        </div>
       </Sidebar>
     );
   }

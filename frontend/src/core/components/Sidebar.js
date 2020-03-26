@@ -4,10 +4,10 @@ import {Col, Row} from "react-bootstrap";
 
 export default class Sidebar extends Component {
   render() {
-    const {children} = this.props;
+    const {children, xs, sm, lg} = this.props;
 
     return (
-      <Col xs={2} sm={3} lg={3} id={"sidebar"}>
+      <Col xs={xs} sm={sm} lg={lg} id={"sidebar"}>
         <Row>
           <img src={"/logo.png"} alt="logo" id={"main-logo"}/>
         </Row>
@@ -21,5 +21,8 @@ Sidebar.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
-  ])
+  ]),
+  xs: PropTypes.number,
+  sm: PropTypes.number,
+  lg: PropTypes.number,
 };
