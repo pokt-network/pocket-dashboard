@@ -41,7 +41,6 @@ export class PocketApplication {
   constructor(name, owner, url, contactEmail, user) {
     Object.assign(this, {name, owner, url, contactEmail, user});
 
-    this.freeTier = false;
     this.status = ApplicationStatuses.unbounded;
     this.description = "";
     this.icon = "";
