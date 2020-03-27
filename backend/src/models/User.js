@@ -148,20 +148,18 @@ export class EmailUser extends PocketUser {
     return true;
   }
 
-  /* eslint-disable jsdoc/require-param-description */
+
   /**
-   * Factory type to create an Email user with encrypted password.
+   * Factory method to create an Email user with encrypted password.
    *
-   * @param {string} email
-   * @param {string} username
-   * @param {string} password
+   * @param {string} email Email.
+   * @param {string} username Username.
+   * @param {string} password Password.
    *
    * @returns {Promise<PocketUser>} A new Email user.
    * @static
    * @async
    */
-
-  /* eslint-enable jsdoc/require-param-description */
   static async createEmailUserWithEncryptedPassword(email, username, password) {
     const encryptedPassword = await EmailUser.encryptPassword(password);
 

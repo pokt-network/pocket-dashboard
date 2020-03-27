@@ -1,5 +1,5 @@
 import PersistenceProvider from "../providers/data/PersistenceProvider";
-import PoktService, {get_default_pokt_network} from "./PoktService";
+import PocketService, {get_default_pocket_network} from "./PocketService";
 
 export default class BaseService {
   constructor() {
@@ -7,6 +7,6 @@ export default class BaseService {
     this._persistenceService = new PersistenceProvider();
 
     /** @protected */
-    this._poktService = new PoktService(get_default_pokt_network());
+    this._pocketService = new PocketService(get_default_pocket_network());
   }
 }

@@ -57,9 +57,10 @@ export const Configurations = {
       }
     }
   },
-  poktNetwork: {
+  pocketNetwork: {
     aat_version: "0.0.1",
     default_rpc_port: 8081,
+    min_max_relay_per_app: 100,
     max_dispatchers: process.env.POKT_NETWORK_MAX_DISPATCHER,
     request_timeout: process.env.POKT_NETWORK_REQUEST_TIMEOUT,
     max_sessions: process.env.POKT_NETWORK_MAX_SESSIONS,
@@ -76,7 +77,7 @@ export const Configurations = {
         "http://node9.testnet.pokt.network",
         "http://node10.testnet.pokt.network"
       ],
-      // TODO: Change to the main network nodes.
+      // TODO: Change to the real main network nodes.
       main: [
         "http://node1.testnet.pokt.network",
         "http://node2.testnet.pokt.network",

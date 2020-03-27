@@ -3,10 +3,10 @@ import {PocketAAT} from "@pokt-network/aat-js";
 import {Configurations} from "../_configuration";
 import assert from "assert";
 
-const POKT_NETWORK_CONFIGURATION = Configurations.poktNetwork;
+const POCKET_NETWORK_CONFIGURATION = Configurations.pocketNetwork;
 
-const POKT_CONFIGURATION = new Configuration(
-  POKT_NETWORK_CONFIGURATION.max_dispatchers, POKT_NETWORK_CONFIGURATION.request_timeout, POKT_NETWORK_CONFIGURATION.max_sessions);
+const POCKET_CONFIGURATION = new Configuration(
+  POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.request_timeout, POCKET_NETWORK_CONFIGURATION.max_sessions);
 
 
 /**
@@ -20,7 +20,7 @@ function getNodeURLS(nodes) {
   assert.notEqual(null, nodes);
 
   return nodes.map((node) => {
-    const nodeURL = node + ":" + POKT_NETWORK_CONFIGURATION.default_rpc_port;
+    const nodeURL = node + ":" + POCKET_NETWORK_CONFIGURATION.default_rpc_port;
 
     return new URL(nodeURL);
   });
@@ -45,17 +45,17 @@ function getRPCDispatcher(node) {
  *
  * @returns {string[]} List of default nodes.
  */
-export function get_default_pokt_network() {
-  return POKT_NETWORK_CONFIGURATION.nodes.main;
+export function get_default_pocket_network() {
+  return POCKET_NETWORK_CONFIGURATION.nodes.main;
 }
 
-export default class PoktService {
+export default class PocketService {
 
   /**
    * @param {string[]} nodes List of nodes of Pokt network.
    */
   constructor(nodes) {
-    this.__pocket = new Pocket(getNodeURLS(nodes), getRPCDispatcher(nodes[0]), POKT_CONFIGURATION);
+    this.__pocket = new Pocket(getNodeURLS(nodes), getRPCDispatcher(nodes[0]), POCKET_CONFIGURATION);
   }
 
 
@@ -131,7 +131,7 @@ export default class PoktService {
    * @returns {Promise<PocketAAT>} An application authorization tokens.
    */
   async getApplicationAuthenticationToken(clientAccount, applicationAccount, applicationAccountPassphrase) {
-    const aatVersion = POKT_NETWORK_CONFIGURATION.aat_version;
+    const aatVersion = POCKET_NETWORK_CONFIGURATION.aat_version;
 
     const clientPublicKey = clientAccount.publicKey.toString("hex");
     const applicationPublicKeyHex = applicationAccount.publicKey.toString("hex");

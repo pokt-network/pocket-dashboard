@@ -33,8 +33,9 @@ export default class UserService extends BaseService {
     return authProvider.getUserData(accessToken, AUTH_TOKEN_TYPE);
   }
 
+
   /**
-   * Create user if not exists at Pocket database.
+   * Persist user if not exists at Pocket database.
    *
    * @param {PocketUser} user User to create on database.
    *
@@ -42,10 +43,9 @@ export default class UserService extends BaseService {
    * @private
    * @async
    */
-  async __createUserIfNotExists(user) {
-    const dbUser = await this._persistenceService.getEntityByFilter(USER_COLLECTION_NAME, {email: user.email});
+  async __persistUserIfNotExists(user) {
 
-    if (!dbUser) {
+    if (!await this.userExists(user.email)) {
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this._persistenceService.saveEntity(USER_COLLECTION_NAME, user);
 
@@ -66,6 +66,21 @@ export default class UserService extends BaseService {
     const userToUpdate = PocketUser.createPocketUserWithUTCLastLogin(user);
 
     await this._persistenceService.updateEntity(USER_COLLECTION_NAME, {email: user.email}, userToUpdate);
+  }
+
+  /**
+   * Check if user exists on DB.
+   *
+   * @param {string} userEmail User email to check if exists.
+   *
+   * @returns {Promise<boolean>} If user exists or not.
+   * @async
+   */
+  async userExists(userEmail) {
+    const filter = {email: userEmail};
+    const dbUser = await this._persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    return Promise.resolve(dbUser !== null);
   }
 
   /**
@@ -95,7 +110,7 @@ export default class UserService extends BaseService {
     const user = await this.__getProviderUserData(providerName, code);
 
     // Create the user if not exists on DB.
-    await this.__createUserIfNotExists(user);
+    await this.__persistUserIfNotExists(user);
 
     // Update last login of user on DB.
     await this.__updateLastLogin(user);
@@ -146,7 +161,7 @@ export default class UserService extends BaseService {
    * @param {string} userData.password2 Password to validate against Password1.
    *
    * @returns {Promise<boolean>} If user was created or not.
-   * @throws {Error} If validation fails
+   * @throws {Error} If validation fails.
    * @async
    */
   async signupUser(userData) {
@@ -154,7 +169,7 @@ export default class UserService extends BaseService {
       const emailPocketUser = await EmailUser.createEmailUserWithEncryptedPassword(userData.email, userData.username, userData.password1);
 
       // Create the user if not exists on DB.
-      const created = await this.__createUserIfNotExists(emailPocketUser);
+      const created = await this.__persistUserIfNotExists(emailPocketUser);
 
       return Promise.resolve(created);
     }
