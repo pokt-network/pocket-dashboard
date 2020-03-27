@@ -1,9 +1,9 @@
 import React, {Component} from "react";
-import AppNavbar from "../../core/components/Dashboard/AppNavbar/AppNavbar";
+import AppNavbar from "../../core/components/DefaultLayout/AppNavbar/AppNavbar";
 import UserService from "../../core/services/PocketUserService";
 import {Container, Col, Row} from "react-bootstrap";
-import AppSidebar from "../../core/components/Dashboard/AppSidebar/AppSidebar";
-import Breadcrumbs from "../../core/components/Dashboard/Breadcrumb";
+import AppSidebar from "../../core/components/DefaultLayout/AppSidebar/AppSidebar";
+import Breadcrumbs from "../../core/components/DefaultLayout/Breadcrumb";
 
 class Dashboard extends Component {
   render() {
