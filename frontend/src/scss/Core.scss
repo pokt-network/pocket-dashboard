@@ -43,18 +43,20 @@ html, body {
 
 .help {
   * {
-    padding: 2px 0;
-    font-size: 50px;
     color: theme-color("dark");
   }
 }
 
 #sidebar {
-  padding-top: 40px;
-  padding-left: 60px;
+  padding-top: 5px;
   background: theme-color("dark");
   color: color("white");
 
+  #main-logo {
+    width: 70%;
+    padding-left: 60px;
+  }
+  
   #title {
     margin-top: 50px;
     margin-bottom: 10px;

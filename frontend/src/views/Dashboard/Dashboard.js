@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import UserService from "../../core/services/PocketUserService";
 
 class Dashboard extends Component {
-
   render() {
     return (
       <div>
@@ -19,4 +18,3 @@ class Dashboard extends Component {
 }
 
 export default Dashboard;
-
