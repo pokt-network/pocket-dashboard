@@ -1,15 +1,10 @@
-import {before, describe, it} from "mocha";
+import {describe, it} from "mocha";
 import "chai/register-should";
 
 import {Configurations} from "../../../src/_configuration";
 import MongoDBAdapter from "../../../src/providers/data/db/MongoDBAdapter";
 
-let mongoDBProvider = null;
-
-before(() => {
-  mongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
-});
-
+const mongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
 
 describe("MongoDBAdapter", () => {
 

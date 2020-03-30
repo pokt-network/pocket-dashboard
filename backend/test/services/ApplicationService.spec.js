@@ -7,13 +7,12 @@ import {
   ApplicationStatuses,
   PocketApplication
 } from "../../src/models/Application";
+import {configureTestService} from "../setupTests";
 
-/** @type {ApplicationService} */
-let applicationService = null;
-
+const applicationService = new ApplicationService();
 
 before(() => {
-  applicationService = new ApplicationService();
+  configureTestService(applicationService);
 });
 
 describe("ApplicationService", () => {

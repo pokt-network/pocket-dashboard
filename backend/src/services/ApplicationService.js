@@ -19,8 +19,7 @@ export default class ApplicationService extends BaseService {
   constructor() {
     super();
 
-    /** @protected */
-    this._userService = new UserService();
+    this.userService = new UserService();
   }
 
   /**
@@ -54,7 +53,7 @@ export default class ApplicationService extends BaseService {
 
     if (!await this.applicationExists(application)) {
       /** @type {{result: {n:number, ok: number}}} */
-      const result = await this._persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, application);
+      const result = await this.persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, application);
 
       return Promise.resolve(result.result.ok === 1);
     }
@@ -72,7 +71,7 @@ export default class ApplicationService extends BaseService {
    * @private
    */
   async __createPocketAccount(passPhrase) {
-    const account = await this._pocketService.createAccount(passPhrase);
+    const account = await this.pocketService.createAccount(passPhrase);
 
     if (account instanceof Error) {
       throw account;
@@ -91,7 +90,7 @@ export default class ApplicationService extends BaseService {
    */
   async applicationExists(application) {
     const filter = {name: application.name, owner: application.owner};
-    const dbApplication = await this._persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const dbApplication = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
     return Promise.resolve(dbApplication !== undefined);
   }
@@ -134,7 +133,7 @@ export default class ApplicationService extends BaseService {
    */
   async createApplication(applicationData) {
     if (PocketApplication.validate(applicationData)) {
-      if (!await this._userService.userExists(applicationData.user)) {
+      if (!await this.userService.userExists(applicationData.user)) {
         throw new Error("User does not exist");
       }
 
@@ -153,7 +152,7 @@ export default class ApplicationService extends BaseService {
       const created = await this.__persistApplicationIfNotExists(application);
 
       if (created) {
-        const privateApplicationData = await ApplicationPrivatePocketAccount.createApplicationPrivatePocketAccount(this._pocketService, pocketAccount, passPhrase);
+        const privateApplicationData = await ApplicationPrivatePocketAccount.createApplicationPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
         const networkData = ApplicationNetworkInfo.createNetworkInfoToNewApplication();
 
         return {privateApplicationData, networkData};

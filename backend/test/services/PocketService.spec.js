@@ -1,13 +1,9 @@
-import {before, describe, it} from "mocha";
+import {describe, it} from "mocha";
 import "chai/register-should";
 import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
 
-let pocketService = null;
-
-before(() => {
-  pocketService = new PocketService(Configurations.pocketNetwork.nodes.test);
-});
+let pocketService = new PocketService(Configurations.pocketNetwork.nodes.test);
 
 
 describe("PocketService", () => {

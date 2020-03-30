@@ -55,6 +55,7 @@ export default class PocketService {
    * @param {string[]} nodes List of nodes of Pokt network.
    */
   constructor(nodes) {
+    /** @private */
     this.__pocket = new Pocket(getNodeURLS(nodes), getRPCDispatcher(nodes[0]), POCKET_CONFIGURATION);
   }
 

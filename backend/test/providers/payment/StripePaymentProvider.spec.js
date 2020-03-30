@@ -1,4 +1,4 @@
-import {before, describe, it} from "mocha";
+import {describe, it} from "mocha";
 import "chai/register-should";
 import StripePaymentProvider from "../../../src/providers/payment/StripePaymentProvider";
 import {
@@ -9,8 +9,7 @@ import {
 } from "../../../src/providers/payment/BasePaymentProvider";
 import {Configurations} from "../../../src/_configuration";
 
-/** @type {StripePaymentProvider} */
-let stripePaymentProvider = null;
+const stripePaymentProvider = new StripePaymentProvider(Configurations.payment.test);
 
 const TEST_CVC_NUMBER = "333";
 const TEST_EXPIRATION_DATE = new Date(2025, 10, 1, 1, 33, 30, 0);
@@ -21,9 +20,6 @@ const TEST_CARDS = {
   without_funds: new PaymentCard(CardBrands.unknown, "4000000000009995", TEST_CVC_NUMBER, TEST_EXPIRATION_DATE),
 };
 
-before(() => {
-  stripePaymentProvider = new StripePaymentProvider(Configurations.payment.test);
-});
 
 if (Configurations.payment.test.client_id && Configurations.payment.test.client_secret) {
 

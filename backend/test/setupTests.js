@@ -3,23 +3,33 @@ import MongoDBAdapter from "../src/providers/data/db/MongoDBAdapter";
 import PersistenceProvider from "../src/providers/data/PersistenceProvider";
 import {Configurations} from "../src/_configuration";
 import sinon from "sinon";
-import * as pocket from "../src/services/PocketService";
+import BaseService from "../src/services/BaseService";
+import PocketService from "../src/services/PocketService";
 
-let mongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
-
-/** @type {PersistenceProvider} */
-let persistenceService = null;
-
-sinon.stub(pocket, "get_default_pocket_network").returns(Configurations.pocketNetwork.nodes.test);
+const testPocketService = new PocketService(Configurations.pocketNetwork.nodes.test);
+const testMongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
+const testPersistenceService = new PersistenceProvider();
 
 before(() => {
-  persistenceService = new PersistenceProvider();
-  sinon.stub(persistenceService, "dbProvider").value(mongoDBProvider);
+  configureTestPersistenceProvider(testPersistenceService);
 });
 
 after(async () => {
-  await persistenceService.dropDataBase();
-
-  mongoDBProvider = null;
-  persistenceService = null;
+  await testPersistenceService.dropDataBase();
 });
+
+/**
+ * @param {BaseService} service Service to configure to test.
+ */
+export function configureTestService(service) {
+  sinon.stub(service, "persistenceService").value(testPersistenceService);
+  sinon.stub(service, "pocketService").value(testPocketService);
+}
+
+/**
+ *
+ * @param {PersistenceProvider} persistenceProvider Persistence provider to configure to test.
+ */
+export function configureTestPersistenceProvider(persistenceProvider) {
+  sinon.stub(persistenceProvider, "dbProvider").value(testMongoDBProvider);
+}

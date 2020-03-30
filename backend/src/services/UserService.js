@@ -47,7 +47,7 @@ export default class UserService extends BaseService {
 
     if (!await this.userExists(user.email)) {
       /** @type {{result: {n:number, ok: number}}} */
-      const result = await this._persistenceService.saveEntity(USER_COLLECTION_NAME, user);
+      const result = await this.persistenceService.saveEntity(USER_COLLECTION_NAME, user);
 
       return Promise.resolve(result.result.ok === 1);
     }
@@ -65,7 +65,7 @@ export default class UserService extends BaseService {
   async __updateLastLogin(user) {
     const userToUpdate = PocketUser.createPocketUserWithUTCLastLogin(user);
 
-    await this._persistenceService.updateEntity(USER_COLLECTION_NAME, {email: user.email}, userToUpdate);
+    await this.persistenceService.updateEntity(USER_COLLECTION_NAME, {email: user.email}, userToUpdate);
   }
 
   /**
@@ -78,7 +78,7 @@ export default class UserService extends BaseService {
    */
   async userExists(userEmail) {
     const filter = {email: userEmail};
-    const dbUser = await this._persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     return Promise.resolve(dbUser !== null);
   }
@@ -130,7 +130,7 @@ export default class UserService extends BaseService {
    */
   async authenticateUser(username, password) {
     const filter = {$or: [{username}, {email: username}]};
-    const userDB = await this._persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     if (!userDB) {
       throw Error("Invalid username.");
@@ -197,7 +197,7 @@ export default class UserService extends BaseService {
    */
   async addOrUpdateUserSecurityQuestions(userEmail, questions) {
     const filter = {email: userEmail};
-    const userDB = await this._persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     if (!userDB) {
       throw Error("Invalid user.");
@@ -205,7 +205,7 @@ export default class UserService extends BaseService {
 
     const data = {securityQuestions: AnsweredSecurityQuestion.createAnsweredSecurityQuestions(questions)};
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this._persistenceService.updateEntity(USER_COLLECTION_NAME, filter, data);
+    const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, filter, data);
 
     return Promise.resolve(result.result.ok === 1);
   }
