@@ -2,16 +2,12 @@ import {after, before, describe, it} from "mocha";
 import "chai/register-should";
 import ApplicationService from "../../src/services/ApplicationService";
 import MongoDBAdapter from "../../src/providers/data/db/MongoDBAdapter";
-import {Configurations} from "../../src/_configuration";
-import sinon from "sinon";
-import * as dbProvider from "../../src/providers/data/db";
 import {
   ApplicationNetworkInfo,
   ApplicationPrivatePocketAccount,
   ApplicationStatuses,
   PocketApplication
 } from "../../src/models/Application";
-import * as pocket from "../../src/services/PocketService";
 import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
 
 /** @type {MongoDBAdapter} */
@@ -26,11 +22,6 @@ let persistenceService = null;
 const APPLICATION_COLLECTION_NAME = "Applications";
 
 before(() => {
-  mongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
-  sinon.stub(dbProvider, "get_default_db_provider").returns(mongoDBProvider);
-
-  sinon.stub(pocket, "get_default_pocket_network").returns(Configurations.pocketNetwork.nodes.test);
-
   persistenceService = new PersistenceProvider();
   applicationService = new ApplicationService();
 });
