@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import UserService from "../../core/services/PocketUserService";
+// import UserService from "../../core/services/PocketUserService";
 import AppTable from "../../core/components/Table/Table";
 
 class Dashboard extends Component {
