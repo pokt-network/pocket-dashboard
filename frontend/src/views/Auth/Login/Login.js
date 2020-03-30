@@ -86,7 +86,7 @@ class Login extends Component {
     }
 
     return (
-      <Container fluid className={"Auth-page"}>
+      <Container fluid className={"auth-page"}>
         <Row>
           <AuthSidebar/>
           <Col className={"content"}>
