@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Container, Col, Row} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
 import {Route} from "react-router-dom";
 import AppSidebar from "./AppSidebar/AppSidebar";
 import AppNavbar from "./AppNavbar/AppNavbar";
@@ -12,11 +12,11 @@ class DefaultLayout extends Component {
     const {path} = this.props.match;
 
     return (
-      <Container fluid className={"auth-page"}>
+      <Container fluid className={"Auth-page"}>
         <Row>
-          <AppSidebar />
+          <AppSidebar/>
           <Col>
-            <AppNavbar />
+            <AppNavbar/>
             <Row>
               {/* TODO: Remove manually written links for testing purposes */}
               <Breadcrumbs

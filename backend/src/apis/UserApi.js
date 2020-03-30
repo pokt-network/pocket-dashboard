@@ -6,16 +6,16 @@ const router = express.Router();
 const userService = new UserService();
 
 /**
- * Provides auth provider urls to show consent.
+ * Provides Auth provider urls to show consent.
  */
-router.get("/auth/providers", (request, response) => {
+router.get("/Auth/Providers", (request, response) => {
   response.send(userService.getConsentProviderUrls());
 });
 
 /**
- * User authentication using an auth provider.
+ * User authentication using an Auth provider.
  */
-router.post("/auth/provider/login", async (request, response) => {
+router.post("/Auth/provider/login", async (request, response) => {
   try {
     /** @type {{provider_name:string, code:string}} */
     const data = request.body;
@@ -35,7 +35,7 @@ router.post("/auth/provider/login", async (request, response) => {
 /**
  * User authentication using username and password.
  */
-router.post("/auth/login", async (request, response) => {
+router.post("/Auth/login", async (request, response) => {
   try {
     /** @type {{username:string, password:string}} */
     const data = request.body;
@@ -55,7 +55,7 @@ router.post("/auth/login", async (request, response) => {
 /**
  * User sign up using email.
  */
-router.post("/auth/signup", async (request, response) => {
+router.post("/Auth/signup", async (request, response) => {
   try {
     /** @type {{email:string, username:string, password1:string, password2:string}} */
     const data = request.body;
@@ -76,7 +76,7 @@ router.post("/auth/signup", async (request, response) => {
 /**
  * User logout.
  */
-router.post("/auth/logout", async (request, response) => {
+router.post("/Auth/logout", async (request, response) => {
   try {
     /** @type {{email:string}} */
     const data = request.body;

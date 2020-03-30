@@ -3,7 +3,7 @@ import * as queryString from "query-string";
 export default class BaseAuthProvider {
 
   /**
-   * @param {string} name Name of auth backend provider.
+   * @param {string} name Name of Auth backend provider.
    * @param {object} authProviderConfiguration Authentication provider basic configuration.
    *
    * @param {string} authProviderConfiguration.client_id
@@ -32,7 +32,7 @@ export default class BaseAuthProvider {
   /**
    * Get code from consent redirect url.
    *
-   * @param {string} url URL returned from backend auth provider(from outside).
+   * @param {string} url URL returned from backend Auth provider(from outside).
    *
    * @return {string}
    */
@@ -57,8 +57,8 @@ export default class BaseAuthProvider {
   /**
    * Get access token using the code returned from consent url.
    *
-   * @param {string} code Code to retrieve token from auth provider.
-   * @param {string} [tokenType] Type of token to retrieve from auth provider.
+   * @param {string} code Code to retrieve token from Auth provider.
+   * @param {string} [tokenType] Type of token to retrieve from Auth provider.
    *
    * @returns {Promise<string>}
    */
@@ -66,9 +66,9 @@ export default class BaseAuthProvider {
   }
 
   /**
-   * Get User data from auth provider.
+   * Get User data from Auth provider.
    *
-   * @param {string} token Token used to retrieve information from auth provider.
+   * @param {string} token Token used to retrieve information from Auth provider.
    * @param {string} [tokenType] Type of token [access|refresh].
    *
    * @returns {Promise<AuthProviderUser>}

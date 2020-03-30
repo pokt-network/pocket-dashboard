@@ -1,7 +1,7 @@
 import Login from "./views/Auth/Login/Login";
 import ForgotPassword from "./views/Auth/ForgotPassword/ForgotPassword";
-import GithubAuthProviderHook from "./core/components/providers/auth/GithubAuthProviderHook";
-import GoogleAuthProviderHook from "./core/components/providers/auth/GoogleAuthProviderHook";
+import GithubAuthProviderHook from "./core/components/Providers/Auth/GithubAuthProviderHook";
+import GoogleAuthProviderHook from "./core/components/Providers/Auth/GoogleAuthProviderHook";
 import SecurityQuestions from "./views/Auth/SecurityQuestions/SecurityQuestions";
 import SignUp from "./views/Auth/SignUp/SignUp";
 import VerifyEMail from "./views/Auth/VerifyEmail/VerifyEmail";
@@ -34,13 +34,13 @@ const pageRoutes = [
  */
 const authProviderRoutes = [
   {
-    path: "/api/auth/provider/github",
+    path: "/api/Auth/provider/github",
     exact: true,
     name: "Github",
     component: GithubAuthProviderHook
   },
   {
-    path: "/api/auth/provider/google",
+    path: "/api/Auth/provider/google",
     exact: true,
     name: "Google",
     component: GoogleAuthProviderHook
@@ -48,7 +48,7 @@ const authProviderRoutes = [
 ];
 
 export const dashboardPaths = {
-  home: ""    
+  home: ""
 };
 
 

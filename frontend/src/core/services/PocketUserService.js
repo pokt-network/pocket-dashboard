@@ -61,18 +61,18 @@ class PocketUserService extends PocketBaseService {
   }
 
   /**
-   * Get available auth providers.
+   * Get available Auth Providers.
    *
    * @return {Promise|Promise<Array.<{name:string, consent_url:string}>>}
    */
   getAuthProviders() {
-    return axios.get(this._getURL("auth/providers"))
+    return axios.get(this._getURL("Auth/Providers"))
       .then(response => response.data);
   }
 
   /**
-   * @param {Array.<{name:string, consent_url:string}>} authProviders Name of auth provider.
-   * @param {string} name Name of auth provider.
+   * @param {Array.<{name:string, consent_url:string}>} authProviders Name of Auth provider.
+   * @param {string} name Name of Auth provider.
    *
    * @return {{name: string, consent_url:string}}
    */
@@ -84,10 +84,10 @@ class PocketUserService extends PocketBaseService {
 
 
   /**
-   * Login using an auth provider.
+   * Login using an Auth provider.
    *
-   * @param {string} providerName Name of auth provider.
-   * @param {string} code Code returned by auth provider.
+   * @param {string} providerName Name of Auth provider.
+   * @param {string} code Code returned by Auth provider.
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    */
@@ -97,7 +97,7 @@ class PocketUserService extends PocketBaseService {
       code
     };
 
-    return axios.post(this._getURL("auth/provider/login"), data)
+    return axios.post(this._getURL("Auth/provider/login"), data)
       .then(response => {
         if (response.status === 200) {
           this.saveUserInCache(response.data, true);
@@ -133,7 +133,7 @@ class PocketUserService extends PocketBaseService {
       password
     };
 
-    return axios.post(this._getURL("auth/login"), data)
+    return axios.post(this._getURL("Auth/login"), data)
       .then(response => {
         if (response.status === 200) {
           this.saveUserInCache(response.data, true);
@@ -173,7 +173,7 @@ class PocketUserService extends PocketBaseService {
       password2
     };
 
-    return axios.post(this._getURL("auth/signup"), data)
+    return axios.post(this._getURL("Auth/signup"), data)
       .then(response => {
         if (response.status === 200) {
           return {
@@ -197,7 +197,7 @@ class PocketUserService extends PocketBaseService {
       email: this.getUserInfo().email,
     };
 
-    this.post(this._getURL("auth/logout"), data)
+    this.post(this._getURL("Auth/logout"), data)
       .then(logoutResponse => {
         if (logoutResponse.status === 200 && logoutResponse.data) {
           this.removeUserFromCached();

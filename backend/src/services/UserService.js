@@ -17,12 +17,12 @@ export default class UserService extends BaseService {
   }
 
   /**
-   * Retrieve User data from auth provider.
+   * Retrieve User data from Auth provider.
    *
-   * @param {string} providerName Name of auth provider.
-   * @param {string} code Code returned by auth provider.
+   * @param {string} providerName Name of Auth provider.
+   * @param {string} code Code returned by Auth provider.
    *
-   * @returns {Promise<AuthProviderUser>} An auth Provider user.
+   * @returns {Promise<AuthProviderUser>} An Auth Provider user.
    * @private
    * @async
    */
@@ -84,9 +84,9 @@ export default class UserService extends BaseService {
   }
 
   /**
-   * Get consent provider auth urls.
+   * Get consent provider Auth urls.
    *
-   * @returns {{name:string, consent_url:string}[]} The consent url for all auth provider available.
+   * @returns {{name:string, consent_url:string}[]} The consent url for all Auth provider available.
    */
   getConsentProviderUrls() {
     return this.__authProviders.map(provider => {
@@ -98,12 +98,12 @@ export default class UserService extends BaseService {
   }
 
   /**
-   * Authenticate User using an auth provider. If the user does not exist on our database it will create.
+   * Authenticate User using an Auth provider. If the user does not exist on our database it will create.
    *
-   * @param {string} providerName Name of auth provider.
-   * @param {string} code Code returned by auth provider.
+   * @param {string} providerName Name of Auth provider.
+   * @param {string} code Code returned by Auth provider.
    *
-   * @returns {Promise<PocketUser>} an authenticated(via auth provider) pocket user.
+   * @returns {Promise<PocketUser>} an authenticated(via Auth provider) pocket user.
    * @async
    */
   async authenticateWithAuthProvider(providerName, code) {
