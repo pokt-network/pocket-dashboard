@@ -23,15 +23,14 @@ before(() => {
 });
 
 
-after(() => {
-  persistenceService.deleteEntities(ENTITY_NAME, {}).then(async () => {
-    const collection = await persistenceService.getCollection(ENTITY_NAME);
+after(async () => {
+  await persistenceService.deleteEntities(ENTITY_NAME, {});
+  const collection = await persistenceService.getCollection(ENTITY_NAME);
 
-    await collection.drop();
+  await collection.drop();
 
-    mongoDBProvider = null;
-    persistenceService = null;
-  });
+  mongoDBProvider = null;
+  persistenceService = null;
 });
 
 describe("PersistenceProvider with MongoDB", () => {

@@ -1,6 +1,7 @@
 import {Account} from "@pokt-network/pocket-js";
-import PocketService, {get_default_pocket_network} from "../services/PocketService";
+import PocketService from "../services/PocketService";
 import {Configurations} from "../_configuration";
+import {EMAIL_REGEX, URL_REGEX} from "./Regex";
 
 export const ApplicationStatuses = {
   bounded: "bounded",
@@ -46,6 +47,7 @@ export class ApplicationPrivatePocketAccount {
   /**
    * Convenient Factory method to create a application private pocket account.
    *
+   * @param {PocketService} pocketService Pocket service used to get account.
    * @param {Account} account Pocket account.
    * @param {string} passPhrase Passphrase used to generate account.
    *
@@ -53,9 +55,7 @@ export class ApplicationPrivatePocketAccount {
    * @static
    * @async
    */
-  static async createApplicationPrivatePocketAccount(account, passPhrase) {
-    const pocketService = new PocketService(get_default_pocket_network());
-
+  static async createApplicationPrivatePocketAccount(pocketService, account, passPhrase) {
     const privateKey = await pocketService.exportRawAccount(account.addressHex, passPhrase);
 
     return Promise.resolve(new ApplicationPrivatePocketAccount(account.addressHex, privateKey));
@@ -124,7 +124,28 @@ export class PocketApplication {
    * @static
    */
   static validate(applicationData) {
-    // TODO: Implement method.
+
+    if (applicationData.name === "") {
+      throw Error("Name is not valid.");
+    }
+
+    if (applicationData.owner === "") {
+      throw Error("Owner is not valid.");
+    }
+
+    if (!URL_REGEX.test(applicationData.url)) {
+      throw Error("URL is not valid.");
+    }
+
+    if (!EMAIL_REGEX.test(applicationData.contactEmail)) {
+      throw Error("Contact email address is not valid.");
+    }
+
+    if (!EMAIL_REGEX.test(applicationData.user)) {
+      throw Error("User is not valid.");
+    }
+
+    return true;
   }
 
   /**

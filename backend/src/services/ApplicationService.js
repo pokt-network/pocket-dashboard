@@ -33,10 +33,10 @@ export default class ApplicationService extends BaseService {
    * @async
    */
   async __generatePassphrase(application) {
-    const seed = 1000;
+    const seed = 10;
 
     const now = new Date();
-    const data = application.name + now.toUTCString() + (Math.random() * seed).toString();
+    const data = `${application.name} + ${now.toUTCString()}`;
 
     return await bcrypt.hash(data, seed);
   }
@@ -93,7 +93,7 @@ export default class ApplicationService extends BaseService {
     const filter = {name: application.name, owner: application.owner};
     const dbApplication = await this._persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
-    return Promise.resolve(dbApplication !== null);
+    return Promise.resolve(dbApplication !== undefined);
   }
 
   /**
@@ -128,7 +128,7 @@ export default class ApplicationService extends BaseService {
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
    *
-   * @returns {{privateApplicationData: ApplicationPrivatePocketAccount, networkData:ApplicationNetworkInfo}} An application information.
+   * @returns {{privateApplicationData: ApplicationPrivatePocketAccount, networkData:ApplicationNetworkInfo}| boolean} An application information or false if not.
    * @throws {Error} If validation fails or already exists.
    * @async
    */
@@ -145,19 +145,21 @@ export default class ApplicationService extends BaseService {
       }
 
       // Generate Pocket account for application.
-      const passPhrase = this.__generatePassphrase(application);
+      const passPhrase = await this.__generatePassphrase(application);
       const pocketAccount = await this.__createPocketAccount(passPhrase);
 
       application.publicPocketAccount = ApplicationPublicPocketAccount.createApplicationPublicPocketAccount(pocketAccount);
 
-      const created = this.__persistApplicationIfNotExists(application);
+      const created = await this.__persistApplicationIfNotExists(application);
 
       if (created) {
-        const privateApplicationData = await ApplicationPrivatePocketAccount.createApplicationPrivatePocketAccount(pocketAccount, passPhrase);
+        const privateApplicationData = await ApplicationPrivatePocketAccount.createApplicationPrivatePocketAccount(this._pocketService, pocketAccount, passPhrase);
         const networkData = ApplicationNetworkInfo.createNetworkInfoToNewApplication();
 
         return {privateApplicationData, networkData};
       }
+
+      return Promise.resolve(false);
     }
   }
 

@@ -1,8 +1,7 @@
 import bcrypt from "bcrypt";
 import {AnsweredSecurityQuestion} from "./SecurityQuestion";
+import {EMAIL_REGEX} from "./Regex";
 
-// eslint-disable-next-line no-useless-escape
-const EMAIL_REGEX = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 const PASSWORD_MIN_LENGTH = 8;
 const SALT_ROUNDS = 10;
 
