@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 // eslint-disable-next-line react/display-name
 const LabelToggle = React.forwardRef(({children, onClick}, ref) => (
-  <React.Fragment>
+  <div>
     <p style={{marginBottom: 0}}>You are logged in as</p>
     {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
     <a
@@ -19,7 +19,7 @@ const LabelToggle = React.forwardRef(({children, onClick}, ref) => (
       {children}
       &#x25bc;
     </a>
-  </React.Fragment>
+  </div>
 ));
 
 LabelToggle.propTypes = {

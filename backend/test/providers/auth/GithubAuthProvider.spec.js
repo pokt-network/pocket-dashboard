@@ -1,24 +1,13 @@
-import {after, before, describe, it} from "mocha";
+import {describe, it} from "mocha";
 import "chai/register-should";
 import {expect} from "chai";
 import GithubAuthProvider from "../../../src/providers/auth/GithubAuthProvider";
-import BaseAuthProvider from "../../../src/providers/auth/BaseAuthProvider";
 
-/** @type {BaseAuthProvider} */
-let githubProvider = null;
-
+const githubProvider = new GithubAuthProvider();
 
 /** @type {string} */
 const GITHUB_ACCESS_TOKEN = process.env.TEST_GITHUB_ACCESS_TOKEN; // You can get yours using the getConsentURL of GithubAuthProvider
 
-before(() => {
-  githubProvider = new GithubAuthProvider();
-});
-
-
-after(() => {
-  githubProvider = null;
-});
 
 describe("GithubAuthProvider", () => {
 

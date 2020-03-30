@@ -1,9 +1,9 @@
 import {get_default_db_provider} from "./db/Index";
-import MongoClient from "mongodb";
+import {Db, MongoClient} from "mongodb";
 
 export default class PersistenceProvider {
   constructor() {
-    this.__dbProvider = get_default_db_provider();
+    this.dbProvider = get_default_db_provider();
   }
 
   /**
@@ -11,24 +11,36 @@ export default class PersistenceProvider {
    * @private
    */
   __openConnection() {
-    return this.__dbProvider.open();
+    return this.dbProvider.open();
   }
 
   /**
    * @param {MongoClient} dbConnection DB provider connection object.
    *
-   * @returns {object} DB Provider db object.
+   * @returns {Db} DB Provider db object.
    * @private
    */
   __getDB(dbConnection) {
-    return this.__dbProvider.getDB(dbConnection);
+    return this.dbProvider.getDB(dbConnection);
   }
 
   /**
    * @param {MongoClient} dbConnection DB provider connection object.
    */
   closeConnection(dbConnection) {
-    this.__dbProvider.close(dbConnection);
+    this.dbProvider.close(dbConnection);
+  }
+
+  /**
+   * Drop a Database.
+   *
+   * @returns {Promise<*>} Drop database result.
+   */
+  async dropDataBase() {
+    const connection = await this.__openConnection();
+    const db = this.__getDB(connection);
+
+    return await db.dropDatabase();
   }
 
   /**

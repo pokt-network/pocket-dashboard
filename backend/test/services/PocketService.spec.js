@@ -1,25 +1,17 @@
-import {after, before, describe, it} from "mocha";
+import {describe, it} from "mocha";
 import "chai/register-should";
-import PoktService from "../../src/services/PoktService";
+import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
 
-let poktService = null;
-
-before(() => {
-  poktService = new PoktService(Configurations.poktNetwork.nodes.test);
-});
+let pocketService = new PocketService(Configurations.pocketNetwork.nodes.test);
 
 
-after(() => {
-  poktService = null;
-});
-
-describe("PoktService", () => {
+describe("PocketService", () => {
 
   describe("createAccount", () => {
     it("Expect an application account successfully created", async () => {
       const testPassPhrase = "12345678";
-      const applicationAccount = await poktService.createAccount(testPassPhrase);
+      const applicationAccount = await pocketService.createAccount(testPassPhrase);
 
       // eslint-disable-next-line no-undef
       should.exist(applicationAccount);
@@ -30,9 +22,9 @@ describe("PoktService", () => {
   describe("getAccount", () => {
     it("Expect an application account successfully retrieved", async () => {
       const testPassPhrase = "12345678";
-      const account = await poktService.createAccount(testPassPhrase);
+      const account = await pocketService.createAccount(testPassPhrase);
 
-      const retrievedAccount = await poktService.getAccount(account.addressHex);
+      const retrievedAccount = await pocketService.getAccount(account.addressHex);
 
       // eslint-disable-next-line no-undef
       should.exist(account);
@@ -46,10 +38,10 @@ describe("PoktService", () => {
   describe("importAccount", () => {
     it("Expect an application account successfully imported", async () => {
       const testPassPhrase = "12345678";
-      const account = await poktService.createAccount(testPassPhrase);
-      const accountPrivateKeyHex = await poktService.exportRawAccount(account.addressHex, testPassPhrase);
+      const account = await pocketService.createAccount(testPassPhrase);
+      const accountPrivateKeyHex = await pocketService.exportRawAccount(account.addressHex, testPassPhrase);
 
-      const importedAccount = await poktService.importAccount(accountPrivateKeyHex, testPassPhrase);
+      const importedAccount = await pocketService.importAccount(accountPrivateKeyHex, testPassPhrase);
 
       // eslint-disable-next-line no-undef
       should.exist(importedAccount);
@@ -62,9 +54,9 @@ describe("PoktService", () => {
   describe("exportAccount", () => {
     it("Expect an application account successfully exported", async () => {
       const testPassPhrase = "12345678";
-      const account = await poktService.createAccount(testPassPhrase);
+      const account = await pocketService.createAccount(testPassPhrase);
 
-      const privateKey = await poktService.exportAccount(account.addressHex, testPassPhrase);
+      const privateKey = await pocketService.exportAccount(account.addressHex, testPassPhrase);
 
       // eslint-disable-next-line no-undef
       should.exist(privateKey);
@@ -76,9 +68,9 @@ describe("PoktService", () => {
   describe("exportRawAccount", () => {
     it("Expect an application account successfully exported", async () => {
       const testPassPhrase = "12345678";
-      const account = await poktService.createAccount(testPassPhrase);
+      const account = await pocketService.createAccount(testPassPhrase);
 
-      const privateKeyHex = await poktService.exportRawAccount(account.addressHex, testPassPhrase);
+      const privateKeyHex = await pocketService.exportRawAccount(account.addressHex, testPassPhrase);
 
       // eslint-disable-next-line no-undef
       should.exist(privateKeyHex);
@@ -87,13 +79,13 @@ describe("PoktService", () => {
     });
   });
 
-  describe("createApplicationAuthenticationToken", () => {
-    it("Expected an ATT successfully created", async () => {
+  describe("getApplicationAuthenticationToken", () => {
+    it("Expected an ATT successfully retrieved", async () => {
       const testPassPhrase = "12345678";
-      const clientAccount = await poktService.createAccount(testPassPhrase);
-      const applicationAccount = await poktService.createAccount(testPassPhrase);
+      const clientAccount = await pocketService.createAccount(testPassPhrase);
+      const applicationAccount = await pocketService.createAccount(testPassPhrase);
 
-      const attToken = await poktService.createApplicationAuthenticationToken(clientAccount, applicationAccount, testPassPhrase);
+      const attToken = await pocketService.getApplicationAuthenticationToken(clientAccount, applicationAccount, testPassPhrase);
 
       // eslint-disable-next-line no-undef
       should.exist(attToken);

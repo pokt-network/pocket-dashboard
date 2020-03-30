@@ -22,7 +22,7 @@ export const routePaths = {
  */
 const pageRoutes = [
   {path: routePaths.login, exact: true, name: "Login", component: Login},
-  {path: routePaths.home, exact: false, name: "Dashboard", component: DefaultLayout},
+  {path: routePaths.home, exact: false, name: "Home", component: DefaultLayout},
   {path: routePaths.forgot_password, exact: true, name: "Forgot Password", component: ForgotPassword},
   {path: routePaths.security_questions, exact: true, name: "Security Questions", component: SecurityQuestions},
   {path: routePaths.signup, exact: true, name: "Sign Up", component: SignUp},

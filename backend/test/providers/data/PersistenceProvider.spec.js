@@ -1,37 +1,14 @@
-import {after, before, describe, it} from "mocha";
+import {before, describe, it} from "mocha";
 import "chai/register-should";
-
-import {Configurations} from "../../../src/_configuration";
 import PersistenceProvider from "../../../src/providers/data/PersistenceProvider";
-import MongoDBAdapter from "../../../src/providers/data/db/MongoDBAdapter";
-import * as dbProvider from "../../../src/providers/data/db/Index";
-import sinon from "sinon";
+import {configureTestPersistenceProvider} from "../../setupTests";
 
-/** @type {MongoDBAdapter} */
-let mongoDBProvider = null;
 
-/** @type {PersistenceProvider} */
-let persistenceService = null;
-
+const persistenceService = new PersistenceProvider();
 const ENTITY_NAME = "TestSpecs";
 
 before(() => {
-  mongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
-  sinon.stub(dbProvider, "get_default_db_provider").returns(mongoDBProvider);
-
-  persistenceService = new PersistenceProvider();
-});
-
-
-after(() => {
-  persistenceService.deleteEntities(ENTITY_NAME, {}).then(async () => {
-    const collection = await persistenceService.getCollection(ENTITY_NAME);
-
-    await collection.drop();
-
-    mongoDBProvider = null;
-    persistenceService = null;
-  });
+  configureTestPersistenceProvider(persistenceService);
 });
 
 describe("PersistenceProvider with MongoDB", () => {
@@ -40,7 +17,7 @@ describe("PersistenceProvider with MongoDB", () => {
     it("Expect save an entity successfully", async () => {
       const testEntity = {
         id: 99999,
-        name: "tests-example"
+        name: "test-example"
       };
 
       const result = await persistenceService.saveEntity(ENTITY_NAME, testEntity);
@@ -68,7 +45,7 @@ describe("PersistenceProvider with MongoDB", () => {
     it("Expect an object of element", async () => {
       const testEntity = {
         id: 99999,
-        name: "tests-example"
+        name: "test-example"
       };
 
       const result = await persistenceService.saveEntity(ENTITY_NAME, testEntity);
@@ -87,7 +64,7 @@ describe("PersistenceProvider with MongoDB", () => {
     it("Expect an object of element", async () => {
       const testEntity = {
         id: 99999,
-        name: "tests-example"
+        name: "test-example"
       };
 
       await persistenceService.saveEntity(ENTITY_NAME, testEntity);
@@ -105,10 +82,10 @@ describe("PersistenceProvider with MongoDB", () => {
     it("Expect and element updated", async () => {
       const testEntity = {
         id: 99999,
-        name: "tests-example"
+        name: "test-example"
       };
       const dataToUpdate = {
-        name: "tests-exampleUpdated"
+        name: "test-exampleUpdated"
       };
 
       await persistenceService.saveEntity(ENTITY_NAME, testEntity);
@@ -128,7 +105,7 @@ describe("PersistenceProvider with MongoDB", () => {
     it("Expect deleted an element successfully", async () => {
       const testEntity = {
         id: 99999,
-        name: "tests-example"
+        name: "test-example"
       };
 
       const result = await persistenceService.saveEntity(ENTITY_NAME, testEntity);

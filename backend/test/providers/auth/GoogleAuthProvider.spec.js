@@ -1,24 +1,12 @@
-import {after, before, describe, it} from "mocha";
+import {describe, it} from "mocha";
 import "chai/register-should";
 import {expect} from "chai";
 import GoogleAuthProvider from "../../../src/providers/auth/GoogleAuthProvider";
-import BaseAuthProvider from "../../../src/providers/auth/BaseAuthProvider";
 
-/** @type {BaseAuthProvider} */
-let googleAuthProvider = null;
-
+const googleAuthProvider = new GoogleAuthProvider();
 
 /** @type {string} */
 const GOOGLE_REFRESH_TOKEN = process.env.TEST_GOOGLE_REFRESH_TOKEN; // You can get yours using the getConsentURL of GoogleAuthProvider
-
-before(() => {
-  googleAuthProvider = new GoogleAuthProvider();
-});
-
-
-after(() => {
-  googleAuthProvider = null;
-});
 
 describe("GoogleAuthProvider", () => {
 
