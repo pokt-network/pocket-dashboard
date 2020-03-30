@@ -3,7 +3,6 @@ import UserService from "../services/UserService";
 
 const router = express.Router();
 
-/** @type {UserService} */
 const userService = new UserService();
 
 /**
@@ -86,7 +85,7 @@ router.post("/auth/logout", async (request, response) => {
 
     response.send(result);
   } catch (e) {
-    response.status(false);
+    response.send(false);
   }
 
 });
