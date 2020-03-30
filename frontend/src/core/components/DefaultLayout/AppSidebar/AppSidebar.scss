@@ -6,30 +6,29 @@
   padding-top: 30px;
   width: 100%;
 
-  li {
-    display: flex;
-    align-items: center;
-    padding-left: 30px;
-    padding-top: 20px;
-    padding-bottom: 20px;
 
-    .icon {
-      margin-right: 20px;
-    }
+  a {
+    color: #ffffff;
+    display: block;
+    font-size: 1.2em;
 
-    a {
-      color: #ffffff;
-      display: block;
-      font-size: 1.2em;
+    li {
+      display: flex;
+      align-items: center;
+      padding-left: 30px;
+      padding-top: 20px;
+      padding-bottom: 20px;
 
-    }
-
-    a:hover {
-      text-decoration: none;
+      .icon {
+        margin-right: 20px;
+      }
     }
   }
 
-  li:hover {
+  a:hover {
+    text-decoration: none;
     background-color: rgb(38, 42, 48);
   }
+
+
 }

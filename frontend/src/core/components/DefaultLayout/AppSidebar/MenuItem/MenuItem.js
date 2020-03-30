@@ -4,10 +4,14 @@ import {faSquare} from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
 
 class MenuItem extends Component {
-  render() { 
+  render() {
     const {url, text} = this.props;
 
-    return  <li><FontAwesomeIcon icon={faSquare} size="2x" className="icon" /><a href={url}>{text}</a></li>;
+    return (
+      <a href={url}>
+        <li><FontAwesomeIcon icon={faSquare} size="2x" className="icon"/>{text}</li>
+      </a>
+    );
   }
 }
 
