@@ -1,4 +1,0 @@
-exit: true
-require: "@babel/register"
-file:
-  - test/setupTests.js
