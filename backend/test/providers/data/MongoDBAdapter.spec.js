@@ -1,4 +1,4 @@
-import {after, before, describe, it} from "mocha";
+import {before, describe, it} from "mocha";
 import "chai/register-should";
 
 import {Configurations} from "../../../src/_configuration";
@@ -10,10 +10,6 @@ before(() => {
   mongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
 });
 
-
-after(() => {
-  mongoDBProvider = null;
-});
 
 describe("MongoDBAdapter", () => {
 

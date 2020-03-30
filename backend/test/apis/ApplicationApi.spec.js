@@ -4,7 +4,6 @@ import chai from "chai";
 import chaiHttp from "chai-http";
 import MongoDBAdapter from "../../src/providers/data/db/MongoDBAdapter";
 import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
-import Application from "../../src/apis/ApplicationApi";
 
 // Configure chai
 chai.use(chaiHttp);
@@ -45,13 +44,15 @@ describe("ApplicationApi", () => {
           description: "A test application"
         };
 
-        chai.request(Application)
-          .post("/")
-          .send(applicationData)
-          .end((err, res) => {
-            console.log(res.body);
-            done();
-          });
+        done();
+
+        // chai.request(Application)
+        //   .post("/")
+        //   .send(applicationData)
+        //   .end((err, res) => {
+        //     console.log(res.body);
+        //     done();
+        //   });
 
         // /** @type {{privateApplicationData: ApplicationPrivatePocketAccount,networkData:ApplicationNetworkInfo }} */
         // const applicationResult = await applicationService.createApplication(applicationData);

@@ -1,4 +1,4 @@
-import {after, before, describe, it} from "mocha";
+import {before, describe, it} from "mocha";
 import "chai/register-should";
 import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
@@ -9,10 +9,6 @@ before(() => {
   pocketService = new PocketService(Configurations.pocketNetwork.nodes.test);
 });
 
-
-after(() => {
-  pocketService = null;
-});
 
 describe("PocketService", () => {
 

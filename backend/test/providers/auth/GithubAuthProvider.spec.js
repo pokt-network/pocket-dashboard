@@ -1,4 +1,4 @@
-import {after, before, describe, it} from "mocha";
+import {before, describe, it} from "mocha";
 import "chai/register-should";
 import {expect} from "chai";
 import GithubAuthProvider from "../../../src/providers/auth/GithubAuthProvider";
@@ -15,10 +15,6 @@ before(() => {
   githubProvider = new GithubAuthProvider();
 });
 
-
-after(() => {
-  githubProvider = null;
-});
 
 describe("GithubAuthProvider", () => {
 

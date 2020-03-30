@@ -3,7 +3,7 @@ import {Db, MongoClient} from "mongodb";
 
 export default class PersistenceProvider {
   constructor() {
-    this.__dbProvider = get_default_db_provider();
+    this.dbProvider = get_default_db_provider();
   }
 
   /**
@@ -11,7 +11,7 @@ export default class PersistenceProvider {
    * @private
    */
   __openConnection() {
-    return this.__dbProvider.open();
+    return this.dbProvider.open();
   }
 
   /**
@@ -21,14 +21,14 @@ export default class PersistenceProvider {
    * @private
    */
   __getDB(dbConnection) {
-    return this.__dbProvider.getDB(dbConnection);
+    return this.dbProvider.getDB(dbConnection);
   }
 
   /**
    * @param {MongoClient} dbConnection DB provider connection object.
    */
   closeConnection(dbConnection) {
-    this.__dbProvider.close(dbConnection);
+    this.dbProvider.close(dbConnection);
   }
 
   /**

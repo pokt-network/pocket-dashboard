@@ -1,4 +1,4 @@
-import {after, before, describe, it} from "mocha";
+import {before, describe, it} from "mocha";
 import "chai/register-should";
 import StripePaymentProvider from "../../../src/providers/payment/StripePaymentProvider";
 import {
@@ -23,11 +23,6 @@ const TEST_CARDS = {
 
 before(() => {
   stripePaymentProvider = new StripePaymentProvider(Configurations.payment.test);
-});
-
-
-after(() => {
-  stripePaymentProvider = null;
 });
 
 if (Configurations.payment.test.client_id && Configurations.payment.test.client_secret) {

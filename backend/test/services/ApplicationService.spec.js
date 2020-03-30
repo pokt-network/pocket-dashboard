@@ -1,41 +1,19 @@
-import {after, before, describe, it} from "mocha";
+import {before, describe, it} from "mocha";
 import "chai/register-should";
 import ApplicationService from "../../src/services/ApplicationService";
-import MongoDBAdapter from "../../src/providers/data/db/MongoDBAdapter";
 import {
   ApplicationNetworkInfo,
   ApplicationPrivatePocketAccount,
   ApplicationStatuses,
   PocketApplication
 } from "../../src/models/Application";
-import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
-
-/** @type {MongoDBAdapter} */
-let mongoDBProvider = null;
 
 /** @type {ApplicationService} */
 let applicationService = null;
 
-/** @type {PersistenceProvider} */
-let persistenceService = null;
-
-const APPLICATION_COLLECTION_NAME = "Applications";
 
 before(() => {
-  persistenceService = new PersistenceProvider();
   applicationService = new ApplicationService();
-});
-
-
-after(async () => {
-  await persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, {});
-  const collection = await persistenceService.getCollection(APPLICATION_COLLECTION_NAME);
-
-  await collection.drop();
-
-  mongoDBProvider = null;
-  persistenceService = null;
-  applicationService = null;
 });
 
 describe("ApplicationService", () => {

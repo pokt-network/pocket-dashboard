@@ -1,4 +1,4 @@
-import {after, before, describe, it} from "mocha";
+import {before, describe, it} from "mocha";
 import "chai/register-should";
 
 import {Configurations} from "../../../src/_configuration";
@@ -17,20 +17,9 @@ const ENTITY_NAME = "TestSpecs";
 
 before(() => {
   mongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
-  sinon.stub(dbProvider, "get_default_db_provider").returns(mongoDBProvider);
 
   persistenceService = new PersistenceProvider();
-});
-
-
-after(async () => {
-  await persistenceService.deleteEntities(ENTITY_NAME, {});
-  const collection = await persistenceService.getCollection(ENTITY_NAME);
-
-  await collection.drop();
-
-  mongoDBProvider = null;
-  persistenceService = null;
+  sinon.stub(persistenceService, "dbProvider").value(mongoDBProvider);
 });
 
 describe("PersistenceProvider with MongoDB", () => {
