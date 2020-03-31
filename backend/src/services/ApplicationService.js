@@ -3,6 +3,7 @@ import {
   ApplicationNetworkInfo,
   ApplicationPrivatePocketAccount,
   ApplicationPublicPocketAccount,
+  ExtendedPocketApplication,
   PocketApplication
 } from "../models/Application";
 import {PocketUser} from "../models/User";
@@ -81,6 +82,23 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
+   *
+   * @param {PocketApplication[]} applications Applications to add pocket data.
+   *
+   * @returns {Promise<ExtendedPocketApplication>} Pocket applications with pocket data.
+   * @private
+   */
+  async __addPocketNetworkProperties(applications) {
+    const extendedApplications = applications.map(async (application) => {
+      const applicationData = await this.pocketService.getApplication(application.publicPocketAccount.address);
+
+      return ExtendedPocketApplication.createExtendedPocketApplication(application, applicationData.status.toString(), applicationData.stakedTokens);
+    });
+
+    return Promise.resolve(extendedApplications);
+  }
+
+  /**
    * Check if application exists on DB.
    *
    * @param {PocketApplication} application Application to check if exists.
@@ -98,21 +116,40 @@ export default class ApplicationService extends BaseService {
   /**
    * Get all applications on network.
    *
-   * @returns {PocketApplication[]} List of applications.
+   * @param {number} offset Offset of query.
+   * @param {number} limit Limit of query.
+   *
+   * @returns {ExtendedPocketApplication[]} List of applications.
+   * @async
    */
-  getAllApplications() {
-    return null;
+  async getAllApplications(offset, limit) {
+    const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, {}, limit, offset))
+      .map(PocketApplication.createPocketApplication);
+
+    await this.__addPocketNetworkProperties(applications);
+
+    return applications;
   }
 
   /**
    * Get all applications on network that belongs to user.
    *
    * @param {PocketUser} user Pocket user.
+   * @param {number} offset Offset of query.
+   * @param {number} limit Limit of query.
    *
-   * @returns {PocketApplication[]} List of applications.
+   * @returns {ExtendedPocketApplication[]} List of applications.
+   * @async
    */
-  listUserApplications(user) {
-    return null;
+  async listUserApplications(user, offset, limit) {
+    const filter = {user: user.email};
+    /** @type {PocketApplication[]} */
+    const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
+      .map(PocketApplication.createPocketApplication);
+
+    await this.__addPocketNetworkProperties(applications);
+
+    return applications;
   }
 
   /**

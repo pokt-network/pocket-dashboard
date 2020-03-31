@@ -65,6 +65,7 @@ export const Configurations = {
     request_timeout: process.env.POKT_NETWORK_REQUEST_TIMEOUT,
     max_sessions: process.env.POKT_NETWORK_MAX_SESSIONS,
     nodes: {
+      testRpcProvider: "http://node4.testnet.pokt.network",
       test: [
         "http://node1.testnet.pokt.network",
         "http://node2.testnet.pokt.network",
@@ -78,6 +79,7 @@ export const Configurations = {
         "http://node10.testnet.pokt.network"
       ],
       // TODO: Change to main chain
+      rpcProvider: "http://node4.testnet.pokt.network",
       main: [
         "http://node1.testnet.pokt.network",
         "http://node2.testnet.pokt.network",

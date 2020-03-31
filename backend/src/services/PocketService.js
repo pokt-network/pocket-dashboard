@@ -1,4 +1,4 @@
-import {Account, Configuration, HttpRpcProvider, Pocket} from "@pokt-network/pocket-js";
+import {Account, Application, Configuration, HttpRpcProvider, Pocket, QueryAppResponse} from "@pokt-network/pocket-js";
 import {PocketAAT} from "@pokt-network/aat-js";
 import {Configurations} from "../_configuration";
 import assert from "assert";
@@ -37,26 +37,32 @@ function getNodeURLS(nodes) {
 function getRPCDispatcher(node) {
   assert.notEqual(null, node);
 
-  return new HttpRpcProvider(new URL(node));
+  const nodeURL = node + ":" + POCKET_NETWORK_CONFIGURATION.default_rpc_port;
+
+  return new HttpRpcProvider(new URL(nodeURL));
 }
 
 /**
  * Get the default pokt network nodes.
  *
- * @returns {string[]} List of default nodes.
+ * @returns {{nodes:string[], rpcProvider: string}} List of default nodes.
  */
 export function get_default_pocket_network() {
-  return POCKET_NETWORK_CONFIGURATION.nodes.main;
+  return {
+    nodes: POCKET_NETWORK_CONFIGURATION.nodes.main,
+    rpcProvider: POCKET_NETWORK_CONFIGURATION.nodes.rpcProvider
+  };
 }
 
 export default class PocketService {
 
   /**
    * @param {string[]} nodes List of nodes of Pokt network.
+   * @param {string} rpcProvider RPC provider of Pokt network.
    */
-  constructor(nodes) {
+  constructor(nodes, rpcProvider) {
     /** @private */
-    this.__pocket = new Pocket(getNodeURLS(nodes), getRPCDispatcher(nodes[0]), POCKET_CONFIGURATION);
+    this.__pocket = new Pocket(getNodeURLS(nodes), getRPCDispatcher(rpcProvider), POCKET_CONFIGURATION);
   }
 
 
@@ -141,4 +147,22 @@ export default class PocketService {
     return PocketAAT.from(aatVersion, clientPublicKey, applicationPublicKeyHex, applicationPrivateKeyHex);
   }
 
+  /**
+   * Get Account status.
+   *
+   * @param {string} addressHex Account address.
+   *
+   * @returns {Promise<Application | Error>} The account status.
+   * @async
+   */
+  async getApplication(addressHex) {
+    /** @type {QueryAppResponse} */
+    const applicationData = await this.__pocket.rpc().query.getApp(addressHex);
+
+    if (applicationData instanceof Error) {
+      throw applicationData;
+    }
+
+    return applicationData.application;
+  }
 }

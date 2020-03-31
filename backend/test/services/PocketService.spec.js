@@ -3,7 +3,7 @@ import "chai/register-should";
 import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
 
-let pocketService = new PocketService(Configurations.pocketNetwork.nodes.test);
+const pocketService = new PocketService(Configurations.pocketNetwork.nodes.test, Configurations.pocketNetwork.nodes.testRpcProvider);
 
 
 describe("PocketService", () => {
@@ -91,6 +91,22 @@ describe("PocketService", () => {
       should.exist(attToken);
 
       attToken.should.be.an("object");
+    });
+  });
+
+  describe("getApplication", () => {
+    it("Expected an application information successfully retrieved", async () => {
+      const testPassPhrase = "12345678";
+      const applicationAccount = await pocketService.createAccount(testPassPhrase);
+
+      const applicationData = await pocketService.getApplication(applicationAccount.addressHex);
+
+      console.log(applicationData);
+
+      // eslint-disable-next-line no-undef
+      should.exist(applicationData);
+
+      applicationData.should.be.an("object");
     });
   });
 

@@ -57,20 +57,26 @@ export default class PersistenceProvider {
 
   /**
    * @param {string} entityName Collection name of entities.
-   * @param {object} filter Filter used to retrieve elements.
+   * @param {object} [filter] Filter used to retrieve elements.
+   * @param {number} [limit] Limit used to retrieve elements.
+   * @param {number} [offset] Offset used to retrieve elements.
    *
    * @returns {Promise<object[]>} Entities by filter applied.
    */
-  async getEntities(entityName, filter = {}) {
+  async getEntities(entityName, filter = {}, limit, offset = 0) {
     const connection = await this.__openConnection();
     const db = this.__getDB(connection);
     const collection = db.collection(entityName);
 
-    const data = await collection.find(filter).toArray();
+    let data = await collection.find(filter).skip(offset);
+
+    if (limit) {
+      data = data.limit(limit);
+    }
 
     this.closeConnection(connection);
 
-    return data;
+    return data.toArray();
   }
 
   /**

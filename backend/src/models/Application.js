@@ -169,3 +169,29 @@ export class PocketApplication {
     return new PocketApplication(name, owner, url, contactEmail, user, description, icon);
   }
 }
+
+export class ExtendedPocketApplication {
+
+  /**
+   * @param {PocketApplication} pocketApplication Pocket application.
+   * @param {string} status Status.
+   * @param {bigint} stakedPokt StakedPokt.
+   */
+  constructor(pocketApplication, status, stakedPokt) {
+    Object.assign(this, {pocketApplication, status, stakedPokt});
+  }
+
+  /**
+   * Convenient Factory method to create an Extended Pocket application.
+   *
+   * @param {PocketApplication} pocketApplication Application data.
+   * @param {string} status Status.
+   * @param {bigint} stakedPokt Staked Pokt.
+   *
+   * @returns {ExtendedPocketApplication} A new Pocket application.
+   * @static
+   */
+  static createExtendedPocketApplication(pocketApplication, status, stakedPokt) {
+    return new ExtendedPocketApplication(pocketApplication, status, stakedPokt);
+  }
+}
