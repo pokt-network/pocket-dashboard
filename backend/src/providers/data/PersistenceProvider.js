@@ -68,15 +68,18 @@ export default class PersistenceProvider {
     const db = this.__getDB(connection);
     const collection = db.collection(entityName);
 
-    let data = await collection.find(filter).skip(offset);
+    let data = await collection.find(filter)
+      .skip(offset === 0 ? offset : offset - 1);
 
     if (limit) {
-      data = data.limit(limit);
+      data = await data.limit(limit);
     }
+
+    data = await data.toArray();
 
     this.closeConnection(connection);
 
-    return data.toArray();
+    return data;
   }
 
   /**
