@@ -6,7 +6,6 @@ import {
   ExtendedPocketApplication,
   PocketApplication
 } from "../models/Application";
-import {PocketUser} from "../models/User";
 import PocketAAT from "@pokt-network/aat-js";
 import {Account} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
@@ -85,17 +84,24 @@ export default class ApplicationService extends BaseService {
    *
    * @param {PocketApplication[]} applications Applications to add pocket data.
    *
-   * @returns {Promise<ExtendedPocketApplication>} Pocket applications with pocket data.
+   * @returns {Promise<ExtendedPocketApplication[]>} Pocket applications with pocket data.
    * @private
+   * @async
    */
-  async __addPocketNetworkProperties(applications) {
+  async __getExtendedPocketApplications(applications) {
     const extendedApplications = applications.map(async (application) => {
-      const applicationData = await this.pocketService.getApplication(application.publicPocketAccount.address);
+      let networkData;
 
-      return ExtendedPocketApplication.createExtendedPocketApplication(application, applicationData.status.toString(), applicationData.stakedTokens);
+      try {
+        networkData = await this.pocketService.getApplication(application.publicPocketAccount.address);
+      } catch (e) {
+        networkData = null;
+      }
+
+      return ExtendedPocketApplication.createExtendedPocketApplication(application, networkData);
     });
 
-    return Promise.resolve(extendedApplications);
+    return Promise.all(extendedApplications);
   }
 
   /**
@@ -116,40 +122,36 @@ export default class ApplicationService extends BaseService {
   /**
    * Get all applications on network.
    *
-   * @param {number} offset Offset of query.
    * @param {number} limit Limit of query.
+   * @param {number} [offset] Offset of query.
    *
    * @returns {ExtendedPocketApplication[]} List of applications.
    * @async
    */
-  async getAllApplications(offset, limit) {
+  async getAllApplications(limit, offset = 0) {
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, {}, limit, offset))
       .map(PocketApplication.createPocketApplication);
 
-    await this.__addPocketNetworkProperties(applications);
-
-    return applications;
+    return await this.__getExtendedPocketApplications(applications);
   }
 
   /**
    * Get all applications on network that belongs to user.
    *
-   * @param {PocketUser} user Pocket user.
-   * @param {number} offset Offset of query.
+   * @param {string} userEmail Email of user.
    * @param {number} limit Limit of query.
+   * @param {number} [offset] Offset of query.
    *
    * @returns {ExtendedPocketApplication[]} List of applications.
    * @async
    */
-  async listUserApplications(user, offset, limit) {
-    const filter = {user: user.email};
+  async getUserApplications(userEmail, limit, offset = 0) {
+    const filter = {user: userEmail};
     /** @type {PocketApplication[]} */
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
       .map(PocketApplication.createPocketApplication);
 
-    await this.__addPocketNetworkProperties(applications);
-
-    return applications;
+    return await this.__getExtendedPocketApplications(applications);
   }
 
   /**
