@@ -55,10 +55,10 @@ export default class ApplicationService extends BaseService {
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this.persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, application);
 
-      return Promise.resolve(result.result.ok === 1);
+      return result.result.ok === 1;
     }
 
-    return Promise.resolve(false);
+    return false;
   }
 
   /**
@@ -66,7 +66,7 @@ export default class ApplicationService extends BaseService {
    *
    * @param {string} passPhrase Passphrase used to create pocket account.
    *
-   * @returns {Promise<Account>} A Pocket account created successfully.
+   * @returns {Promise<Account> | Error} A Pocket account created successfully.
    * @throws {Error} If creation of account fails.
    * @private
    */
@@ -116,7 +116,7 @@ export default class ApplicationService extends BaseService {
     const filter = {name: application.name, owner: application.owner};
     const dbApplication = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
-    return Promise.resolve(dbApplication !== undefined);
+    return dbApplication !== undefined;
   }
 
   /**
@@ -132,7 +132,7 @@ export default class ApplicationService extends BaseService {
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, {}, limit, offset))
       .map(PocketApplication.createPocketApplication);
 
-    return await this.__getExtendedPocketApplications(applications);
+    return this.__getExtendedPocketApplications(applications);
   }
 
   /**
@@ -142,7 +142,7 @@ export default class ApplicationService extends BaseService {
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
    *
-   * @returns {ExtendedPocketApplication[]} List of applications.
+   * @returns {Promise<ExtendedPocketApplication[]>} List of applications.
    * @async
    */
   async getUserApplications(userEmail, limit, offset = 0) {
@@ -151,7 +151,7 @@ export default class ApplicationService extends BaseService {
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
       .map(PocketApplication.createPocketApplication);
 
-    return await this.__getExtendedPocketApplications(applications);
+    return this.__getExtendedPocketApplications(applications);
   }
 
   /**
@@ -166,7 +166,7 @@ export default class ApplicationService extends BaseService {
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
    *
-   * @returns {{privateApplicationData: ApplicationPrivatePocketAccount, networkData:ApplicationNetworkInfo}| boolean} An application information or false if not.
+   * @returns {Promise<{privateApplicationData: ApplicationPrivatePocketAccount, networkData:ApplicationNetworkInfo}| boolean>} An application information or false if not.
    * @throws {Error} If validation fails or already exists.
    * @async
    */
@@ -197,7 +197,7 @@ export default class ApplicationService extends BaseService {
         return {privateApplicationData, networkData};
       }
 
-      return Promise.resolve(false);
+      return false;
     }
   }
 

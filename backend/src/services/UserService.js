@@ -49,9 +49,9 @@ export default class UserService extends BaseService {
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this.persistenceService.saveEntity(USER_COLLECTION_NAME, user);
 
-      return Promise.resolve(result.result.ok === 1);
+      return result.result.ok === 1;
     }
-    return Promise.resolve(false);
+    return false;
   }
 
   /**
@@ -80,7 +80,7 @@ export default class UserService extends BaseService {
     const filter = {email: userEmail};
     const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
-    return Promise.resolve(dbUser !== null);
+    return dbUser !== null;
   }
 
   /**
@@ -169,9 +169,7 @@ export default class UserService extends BaseService {
       const emailPocketUser = await EmailUser.createEmailUserWithEncryptedPassword(userData.email, userData.username, userData.password1);
 
       // Create the user if not exists on DB.
-      const created = await this.__persistUserIfNotExists(emailPocketUser);
-
-      return Promise.resolve(created);
+      return await this.__persistUserIfNotExists(emailPocketUser);
     }
   }
 
@@ -184,7 +182,7 @@ export default class UserService extends BaseService {
    * @async
    */
   async logout(email) {
-    return Promise.resolve(true);
+    return true;
   }
 
   /**
@@ -207,7 +205,7 @@ export default class UserService extends BaseService {
     /** @type {{result: {n:number, ok: number}}} */
     const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, filter, data);
 
-    return Promise.resolve(result.result.ok === 1);
+    return result.result.ok === 1;
   }
 }
 
