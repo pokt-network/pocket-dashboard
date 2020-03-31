@@ -14,20 +14,16 @@ class DefaultLayout extends Component {
     return (
       <Container fluid className={"Auth-page"}>
         <Row>
-          <AppSidebar/>
+          <AppSidebar />
           <Col>
-            <AppNavbar/>
+            <AppNavbar />
             <Row>
               {/* TODO: Remove manually written links for testing purposes */}
               <Breadcrumbs
-                links={[
-                  {url: "#", label: "Home", active: false},
-                  {url: "#1", label: "DefaultLayout", active: false},
-                  {url: "#2", label: "Overview", active: true},
-                ]}
+                links={[{url: "#", label: "Network Status", active: true}]}
               />
             </Row>
-            <Row>
+            <Row className={"pl-5 pr-5"}>
               {dashboardRoutes.map((route, idx) => {
                 return (
                   <Route
