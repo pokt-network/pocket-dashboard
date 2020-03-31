@@ -39,6 +39,92 @@ describe("PersistenceProvider with MongoDB", () => {
       should.exist(entities);
       entities.should.be.an("array");
     });
+
+    it("Expect an array of elements with limit", async () => {
+
+      const limit = 2;
+      const testEntities = [
+        {
+          id: 99999,
+          name: "test-example 1"
+        },
+        {
+          id: 99999,
+          name: "test-example 2"
+        },
+        {
+          id: 99999,
+          name: "test-example 3"
+        },
+        {
+          id: 99999,
+          name: "test-example 4"
+        },
+        {
+          id: 99999,
+          name: "test-example 5"
+        }
+      ];
+
+      for (const testEntity of testEntities) {
+        await persistenceService.saveEntity(ENTITY_NAME, testEntity);
+      }
+
+      const entities = await persistenceService.getEntities(ENTITY_NAME, {}, limit);
+
+      // eslint-disable-next-line no-undef
+      should.exist(entities);
+      entities.should.be.an("array");
+      entities.length.should.be.equal(limit);
+    });
+
+    it("Expect an array of elements with offset and limit", async () => {
+
+      const limit = 3;
+      const offset = 2;
+      const expectedID = 99998;
+      const testEntities = [
+        {
+          id: 99999,
+          name: "test-example 1"
+        },
+        {
+          id: expectedID,
+          name: "test-example 2"
+        },
+        {
+          id: 99997,
+          name: "test-example 3"
+        },
+        {
+          id: 99996,
+          name: "test-example 4"
+        },
+        {
+          id: 99995,
+          name: "test-example 5"
+        }
+      ];
+
+      await persistenceService.deleteEntities(ENTITY_NAME, {});
+      for (const testEntity of testEntities) {
+        await persistenceService.saveEntity(ENTITY_NAME, testEntity);
+      }
+
+      const entities = await persistenceService.getEntities(ENTITY_NAME, {}, limit, offset);
+      const entity = entities[0];
+
+      // eslint-disable-next-line no-undef
+      should.exist(entities);
+      // eslint-disable-next-line no-undef
+      should.exist(entity);
+
+      entities.should.be.an("array");
+      entities.length.should.be.equal(limit);
+
+      entity.should.be.an("object");
+      entity.id.should.be.equal(expectedID);
+    });
   });
 
   describe("getElementByID", () => {

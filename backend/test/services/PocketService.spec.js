@@ -94,7 +94,7 @@ describe("PocketService", () => {
     });
   });
 
-  describe("getApplication", () => {
+  describe.skip("getApplication", () => {
     it("Expected an application information successfully retrieved", async () => {
       const testPassPhrase = "12345678";
       const applicationAccount = await pocketService.createAccount(testPassPhrase);

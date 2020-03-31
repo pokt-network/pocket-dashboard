@@ -1,4 +1,4 @@
-import {Account} from "@pokt-network/pocket-js";
+import {Account, Application} from "@pokt-network/pocket-js";
 import PocketService from "../services/PocketService";
 import {Configurations} from "../_configuration";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
@@ -159,14 +159,20 @@ export class PocketApplication {
    * @param {string} applicationData.user User.
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
-   *
+   * @param {ApplicationPublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
+   * @param {string[]} [applicationData.networkChains] network chains.
+   *,
    * @returns {PocketApplication} A new Pocket application.
    * @static
    */
   static createPocketApplication(applicationData) {
-    const {name, owner, url, contactEmail, user, description, icon} = applicationData;
+    const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount, networkChain} = applicationData;
+    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon);
 
-    return new PocketApplication(name, owner, url, contactEmail, user, description, icon);
+    pocketApplication.publicPocketAccount = publicPocketAccount;
+    pocketApplication.networkChains = networkChain;
+
+    return pocketApplication;
   }
 }
 
@@ -174,24 +180,22 @@ export class ExtendedPocketApplication {
 
   /**
    * @param {PocketApplication} pocketApplication Pocket application.
-   * @param {string} status Status.
-   * @param {bigint} stakedPokt StakedPokt.
+   * @param {Application} networkData Application data from Pocket Network.
    */
-  constructor(pocketApplication, status, stakedPokt) {
-    Object.assign(this, {pocketApplication, status, stakedPokt});
+  constructor(pocketApplication, networkData) {
+    Object.assign(this, {pocketApplication, networkData});
   }
 
   /**
    * Convenient Factory method to create an Extended Pocket application.
    *
    * @param {PocketApplication} pocketApplication Application data.
-   * @param {string} status Status.
-   * @param {bigint} stakedPokt Staked Pokt.
+   * @param {Application} networkData Application data from Pocket Network.
    *
    * @returns {ExtendedPocketApplication} A new Pocket application.
    * @static
    */
-  static createExtendedPocketApplication(pocketApplication, status, stakedPokt) {
-    return new ExtendedPocketApplication(pocketApplication, status, stakedPokt);
+  static createExtendedPocketApplication(pocketApplication, networkData) {
+    return new ExtendedPocketApplication(pocketApplication, networkData);
   }
 }
