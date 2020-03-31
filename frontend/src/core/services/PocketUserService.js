@@ -197,7 +197,6 @@ class PocketUserService extends PocketBaseService {
       email: this.getUserInfo().email,
     };
 
-
     axios.post(this._getURL("auth/logout"), data)
       .then(logoutResponse => {
         if (logoutResponse.status === 200 && logoutResponse.data) {
