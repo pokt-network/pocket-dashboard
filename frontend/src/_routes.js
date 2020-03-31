@@ -11,7 +11,7 @@ import Dashboard from "./views/Dashboard/Dashboard";
 export const routePaths = {
   signup: "/signup",
   login: "/login",
-  home: "/",
+  home: "/dashboard",
   forgot_password: "/forgot-password",
   security_questions: "/security-questions",
   verify_email: "/verify-email"
@@ -22,11 +22,11 @@ export const routePaths = {
  */
 const pageRoutes = [
   {path: routePaths.login, exact: true, name: "Login", component: Login},
+  {path: routePaths.home, exact: false, name: "Home", component: DefaultLayout},
   {path: routePaths.forgot_password, exact: true, name: "Forgot Password", component: ForgotPassword},
   {path: routePaths.security_questions, exact: true, name: "Security Questions", component: SecurityQuestions},
   {path: routePaths.signup, exact: true, name: "Sign Up", component: SignUp},
   {path: routePaths.verify_email, exact: true, name: "Verify Email", component: VerifyEMail},
-  {path: routePaths.home, exact: false, name: "Home", component: DefaultLayout},
 ];
 
 /**
@@ -48,7 +48,7 @@ const authProviderRoutes = [
 ];
 
 export const dashboardPaths = {
-  home: "/dashboard"
+  home: ""
 };
 
 

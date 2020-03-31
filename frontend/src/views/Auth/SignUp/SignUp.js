@@ -83,7 +83,7 @@ class SignUp extends Component {
     }
 
     return (
-      <Container fluid className={"auth-page"}>
+      <Container fluid className={"Auth-page"}>
         <Row>
           <AuthSidebar/>
           <Col className={"content"}>

@@ -9,7 +9,7 @@ export default class Sidebar extends Component {
     return (
       <Col xs={xs} sm={sm} lg={lg} id={"sidebar"}>
         <Row>
-          <img src={"/logo.png"} alt="logo" id={"main-logo"} />
+          <img src={"/logo.png"} alt="logo" id={"main-logo"}/>
         </Row>
         {children}
       </Col>
@@ -20,7 +20,7 @@ export default class Sidebar extends Component {
 Sidebar.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
+    PropTypes.node
   ]),
   xs: PropTypes.number,
   sm: PropTypes.number,
