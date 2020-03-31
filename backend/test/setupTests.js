@@ -6,7 +6,7 @@ import sinon from "sinon";
 import BaseService from "../src/services/BaseService";
 import PocketService from "../src/services/PocketService";
 
-const testPocketService = new PocketService(Configurations.pocketNetwork.nodes.test, Configurations.pocketNetwork.nodes.testRpcProvider);
+const testPocketService = new PocketService(Configurations.pocketNetwork.nodes.test, Configurations.pocketNetwork.nodes.test_rpc_provider);
 const testMongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
 const testPersistenceService = new PersistenceProvider();
 

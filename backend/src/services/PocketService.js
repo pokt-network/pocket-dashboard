@@ -45,12 +45,12 @@ function getRPCDispatcher(node) {
 /**
  * Get the default pokt network nodes.
  *
- * @returns {{nodes:string[], rpcProvider: string}} List of default nodes.
+ * @returns {{nodes:string[], rpc_provider: string}} List of default nodes.
  */
 export function get_default_pocket_network() {
   return {
     nodes: POCKET_NETWORK_CONFIGURATION.nodes.main,
-    rpcProvider: POCKET_NETWORK_CONFIGURATION.nodes.rpcProvider
+    rpcProvider: POCKET_NETWORK_CONFIGURATION.nodes.rpc_provider
   };
 }
 

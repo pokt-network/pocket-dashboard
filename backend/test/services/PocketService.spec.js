@@ -3,7 +3,7 @@ import "chai/register-should";
 import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
 
-const pocketService = new PocketService(Configurations.pocketNetwork.nodes.test, Configurations.pocketNetwork.nodes.testRpcProvider);
+const pocketService = new PocketService(Configurations.pocketNetwork.nodes.test, Configurations.pocketNetwork.nodes.test_rpc_provider);
 
 
 describe("PocketService", () => {
