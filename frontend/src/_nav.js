@@ -3,32 +3,32 @@ export default {
     {
       name: "Network Status",
       url: "/dashboard",
-      icon: "faSquare",
+      icon: "square",
     },
     {
       name: "Apps",
       url: "/apps",
-      icon: "faSquare",
+      icon: "square",
     },
     {
       name: "Nodes",
       url: "/nodes",
-      icon: "faSquare",
+      icon: "square",
     },
     {
       name: "User profile",
       url: "/profile",
-      icon: "faSquare",
+      icon: "square",
     },
     {
       name: "Documentation",
       url: "/Documentation",
-      icon: "faSquare",
+      icon: "square",
     },
     {
       name: "FAQ",
       url: "/faq",
-      icon: "faSquare",
+      icon: "square",
     },
   ],
 };

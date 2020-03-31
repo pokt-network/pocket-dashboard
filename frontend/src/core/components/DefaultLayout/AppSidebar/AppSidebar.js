@@ -12,7 +12,12 @@ class AppSidebar extends Component {
         <Row>
           <ul id="app-sidebar">
             {navRoutes.items.map((route, idx) => (
-              <MenuItem key={idx} label={route.name} url={route.url} />
+              <MenuItem
+                key={idx}
+                label={route.name}
+                url={route.url}
+                icon={route.icon}
+              />
             ))}
           </ul>
         </Row>
