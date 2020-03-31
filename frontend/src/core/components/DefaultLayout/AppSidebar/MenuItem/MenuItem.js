@@ -5,23 +5,26 @@ import PropTypes from "prop-types";
 
 class MenuItem extends Component {
   render() {
-    const {url, text} = this.props;
+    const {url, label} = this.props;
 
     return (
       <a href={url}>
-        <li><FontAwesomeIcon icon={faSquare} size="2x" className="icon"/>{text}</li>
+        <li>
+          <FontAwesomeIcon icon={faSquare} size="2x" className="icon" />
+          {label}
+        </li>
       </a>
     );
   }
 }
 
 MenuItem.defaultProps = {
-  url: "#"
+  url: "#",
 };
 
 MenuItem.propTypes = {
   url: PropTypes.string,
-  text: PropTypes.string
+  label: PropTypes.string,
 };
 
 export default MenuItem;
