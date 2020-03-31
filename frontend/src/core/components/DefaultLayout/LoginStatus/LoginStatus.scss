@@ -1,0 +1,24 @@
+#login-status {
+  display: flex;
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+
+    #info-msg {
+      margin-bottom: 0;
+      font-size: 0.8em;
+    }
+
+    #username {
+      font-weight: bold;
+      margin-bottom: 0;
+      align-self: center;
+    }
+  }
+
+  #down-arrow {
+    margin-left: 5px;
+    align-self: center;
+  }
+}

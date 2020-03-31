@@ -3,7 +3,7 @@ import {Col, Row} from "react-bootstrap";
 import HelpLink from "../../HelpLink";
 import PropTypes from "prop-types";
 import NotificationIcon from "../../Notification";
-import LoginStatus from "../LoginStatus";
+import LoginStatus from "../LoginStatus/LoginStatus";
 import "./AppNavbar.scss";
 
 class AppNavbar extends Component {

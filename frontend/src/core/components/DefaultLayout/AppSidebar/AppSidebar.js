@@ -15,7 +15,7 @@ class AppSidebar extends Component {
             <MenuItem text="Nodes" />
             <MenuItem text="User profile" />
             <MenuItem text="Documentation" />
-            <MenuItem text="Faq" />
+            <MenuItem text="FAQ" />
           </ul>
         </Row>
       </Sidebar>
