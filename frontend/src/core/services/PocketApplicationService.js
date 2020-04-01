@@ -40,6 +40,16 @@ class PocketApplicationService extends PocketBaseService {
       .then(response => response.data);
   }
 
+  /**
+   * Get staked summary data.
+   *
+   * @return {Promise|Promise<*>}
+   */
+  getStakedApplicationSummary() {
+    return axios.post(this._getURL("/summary/staked"))
+      .then(response => response.data);
+  }
+
 
   /**
    * Create application.
