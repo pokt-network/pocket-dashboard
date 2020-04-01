@@ -50,9 +50,9 @@ function getOptionalQueryOption(request, option) {
 /**
  * Create new application.
  */
-router.post("/", async (request, response) => {
+router.post("", async (request, response) => {
   try {
-    /** @type {{name:string, owner:string,url:string,contactEmail:string,user:string,description:string, icon:string }} */
+    /** @type {{name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string }} */
     const data = request.body;
     const application = await applicationService.createApplication(data);
 
