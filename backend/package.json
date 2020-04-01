@@ -27,9 +27,8 @@
       "@babel/preset-env"
     ],
     "plugins": [
-      [
-        "@babel/transform-runtime"
-      ]
+      "@babel/transform-runtime",
+      "@babel/plugin-syntax-bigint"
     ]
   },
   "mocha": {
@@ -135,6 +134,7 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/register": "^7.8.6",
+    "@babel/plugin-syntax-bigint": "^7.8.3",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "chai": "^4.2.0",

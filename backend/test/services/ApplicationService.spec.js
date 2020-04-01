@@ -1,12 +1,8 @@
 import {before, describe, it} from "mocha";
 import "chai/register-should";
 import ApplicationService from "../../src/services/ApplicationService";
-import {
-  ApplicationNetworkInfo,
-  ApplicationPrivatePocketAccount,
-  ApplicationStatuses,
-  PocketApplication
-} from "../../src/models/Application";
+import {ApplicationPrivatePocketAccount, PocketApplication} from "../../src/models/Application";
+import {Application, BondStatus} from "@pokt-network/pocket-js";
 import {configureTestService} from "../setupTests";
 import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
 import sinon from "sinon";
@@ -30,8 +26,8 @@ describe("ApplicationService", () => {
         description: "A test application"
       };
 
-      /** @type {{privateApplicationData: ApplicationPrivatePocketAccount,networkData:ApplicationNetworkInfo }} */
-      const applicationResult = await applicationService.createApplication(applicationData);
+      /** @type {{privateApplicationData: ApplicationPrivatePocketAccount, networkData:Application}} */
+      const applicationResult = await applicationService.createApplication(applicationData) || false;
 
       // eslint-disable-next-line no-undef
       should.exist(applicationResult);
@@ -43,10 +39,9 @@ describe("ApplicationService", () => {
       applicationResult.privateApplicationData.address.length.should.be.equal(40);
       applicationResult.privateApplicationData.privateKey.length.should.be.equal(128);
 
-      applicationResult.networkData.balance.should.be.equal(0);
-      applicationResult.networkData.stakePokt.should.be.equal(0);
+      applicationResult.networkData.stakedTokens.toString().should.be.equal("0");
       applicationResult.networkData.jailed.should.be.equal(false);
-      applicationResult.networkData.status.should.be.equal(ApplicationStatuses.unbounded);
+      applicationResult.networkData.status.should.be.equal(BondStatus.unbonded);
     });
   });
 
@@ -83,7 +78,8 @@ describe("ApplicationService", () => {
         user: "tester@app.com",
         description: "A test application",
         publicPocketAccount: {
-          address: "7ee87e5738ffa409dd4cdec3a2703c90bbb34811"
+          address: "bc28256f5c58611e96d13996cf535bdc0204366a",
+          publicKey: "642f58349a768375d39747d96ea174256c5e1684bf4a8ae92c5ae0d14a9ed291"
         }
       },
       {
@@ -94,7 +90,8 @@ describe("ApplicationService", () => {
         user: "tester@app.com",
         description: "A test application",
         publicPocketAccount: {
-          address: "7ee87e5738ffa409dd4cdec3a2703c90bbb34811"
+          address: "bc28256f5c58611e96d13996cf535bdc0204366a",
+          publicKey: "642f58349a768375d39747d96ea174256c5e1684bf4a8ae92c5ae0d14a9ed291"
         }
       },
       {
@@ -105,7 +102,8 @@ describe("ApplicationService", () => {
         user: "tester@app.com",
         description: "A test application",
         publicPocketAccount: {
-          address: "7ee87e5738ffa409dd4cdec3a2703c90bbb34811"
+          address: "bc28256f5c58611e96d13996cf535bdc0204366a",
+          publicKey: "642f58349a768375d39747d96ea174256c5e1684bf4a8ae92c5ae0d14a9ed291"
         }
       },
       {
@@ -116,7 +114,8 @@ describe("ApplicationService", () => {
         user: "tester@app.com",
         description: "A test application",
         publicPocketAccount: {
-          address: "7ee87e5738ffa409dd4cdec3a2703c90bbb34811"
+          address: "bc28256f5c58611e96d13996cf535bdc0204366a",
+          publicKey: "642f58349a768375d39747d96ea174256c5e1684bf4a8ae92c5ae0d14a9ed291"
         }
       },
       {
@@ -127,7 +126,8 @@ describe("ApplicationService", () => {
         user: "tester@app.com",
         description: "A test application",
         publicPocketAccount: {
-          address: "7ee87e5738ffa409dd4cdec3a2703c90bbb34811"
+          address: "bc28256f5c58611e96d13996cf535bdc0204366a",
+          publicKey: "642f58349a768375d39747d96ea174256c5e1684bf4a8ae92c5ae0d14a9ed291"
         }
       }
     ];

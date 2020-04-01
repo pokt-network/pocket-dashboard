@@ -1,13 +1,12 @@
 import BaseService from "./BaseService";
 import {
-  ApplicationNetworkInfo,
   ApplicationPrivatePocketAccount,
   ApplicationPublicPocketAccount,
   ExtendedPocketApplication,
   PocketApplication
 } from "../models/Application";
 import PocketAAT from "@pokt-network/aat-js";
-import {Account} from "@pokt-network/pocket-js";
+import {Account, Application} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import bcrypt from "bcrypt";
 
@@ -166,7 +165,7 @@ export default class ApplicationService extends BaseService {
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
    *
-   * @returns {Promise<{privateApplicationData: ApplicationPrivatePocketAccount, networkData:ApplicationNetworkInfo}| boolean>} An application information or false if not.
+   * @returns {Promise<{privateApplicationData: ApplicationPrivatePocketAccount, networkData:Application}| boolean>} An application information or false if not.
    * @throws {Error} If validation fails or already exists.
    * @async
    */
@@ -192,7 +191,7 @@ export default class ApplicationService extends BaseService {
 
       if (created) {
         const privateApplicationData = await ApplicationPrivatePocketAccount.createApplicationPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
-        const networkData = ApplicationNetworkInfo.createNetworkInfoToNewApplication();
+        const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount);
 
         return {privateApplicationData, networkData};
       }
