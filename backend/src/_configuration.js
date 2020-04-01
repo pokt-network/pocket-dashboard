@@ -149,7 +149,11 @@ export const Configurations = {
         netID: "MAINNET",
         hash: "6cbb58da0b05d23022557dd2e479dd5cdf2441f20507b37383467d837ad40f5e"
       },
-      {name: "POA Network", netID: "99", hash: "54cb0d71117aa644e74bdea848d61bd2fd410d3d4a3ed92b46b0847769dc132e"},
+      {
+        name: "POA Network",
+        netID: "99",
+        hash: "54cb0d71117aa644e74bdea848d61bd2fd410d3d4a3ed92b46b0847769dc132e"
+      },
       {
         name: "POA Kovan Network",
         netID: "42",
@@ -185,14 +189,26 @@ export const Configurations = {
         netID: "MAINNET",
         hash: "d5ddbb1ca49249438f552dccfd01918ee1fbdc6457997a142c8cfd144b40cd15"
       },
-      {name: "Waves Mainnet", netID: "W", hash: "4ecc78e62904c833ad5b727b9abf343a17d0d24fb27e9b5d2dd8c34361c23156"},
+      {
+        name: "Waves Mainnet",
+        netID: "W",
+        hash: "4ecc78e62904c833ad5b727b9abf343a17d0d24fb27e9b5d2dd8c34361c23156"
+      },
       {
         name: "Zcoin Mainnet",
         netID: "MAINNET",
         hash: "d754973bdeab17eaed47729ee074ad87737c3ce51198263b8c4781568ea39e72"
       },
-      {name: "ICON Mainnet", netID: "1", hash: "d9d669583c2d2a88e54c0120be6f8195b2575192f178f925099813ff9095d139"},
-      {name: "ICON Testnet", netID: "3", hash: "d9d77bce50d80e70026bd240fb0759f08aab7aee63d0a6d98c545f2b5ae0a0b8"}
+      {
+        name: "ICON Mainnet",
+        netID: "1",
+        hash: "d9d669583c2d2a88e54c0120be6f8195b2575192f178f925099813ff9095d139"
+      },
+      {
+        name: "ICON Testnet",
+        netID: "3",
+        hash: "d9d77bce50d80e70026bd240fb0759f08aab7aee63d0a6d98c545f2b5ae0a0b8"
+      }
     ]
   }
 };
