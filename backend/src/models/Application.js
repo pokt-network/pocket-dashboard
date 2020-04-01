@@ -186,3 +186,15 @@ export class ExtendedPocketApplication {
     return new Application(address, publicKey, false, BondStatus.unbonded, chains, 0n, maxRelay);
   }
 }
+
+export class StakedApplicationSummary {
+
+  /**
+   * @param {string} totalApplications Total of Applications.
+   * @param {string} averageStaked Average of staked applications.
+   * @param {string} averageRelays Average of relays.
+   */
+  constructor(totalApplications, averageStaked, averageRelays) {
+    Object.assign(this, {totalApplications, averageStaked, averageRelays});
+  }
+}

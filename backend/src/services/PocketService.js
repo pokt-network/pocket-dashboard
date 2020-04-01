@@ -1,4 +1,13 @@
-import {Account, Application, Configuration, HttpRpcProvider, Pocket, QueryAppResponse} from "@pokt-network/pocket-js";
+import {
+  Account,
+  Application,
+  Configuration,
+  HttpRpcProvider,
+  Pocket,
+  QueryAppResponse,
+  QueryAppsResponse,
+  StakingStatus
+} from "@pokt-network/pocket-js";
 import {PocketAAT} from "@pokt-network/aat-js";
 import {Configurations} from "../_configuration";
 import assert from "assert";
@@ -45,7 +54,7 @@ function getRPCDispatcher(node) {
 /**
  * Get the default pokt network nodes.
  *
- * @returns {{nodes:string[], rpc_provider: string}} List of default nodes.
+ * @returns {{nodes:string[], rpcProvider: string}} List of default nodes.
  */
 export function get_default_pocket_network() {
   return {
@@ -148,21 +157,39 @@ export default class PocketService {
   }
 
   /**
-   * Get Account status.
+   * Get Application data.
    *
    * @param {string} addressHex Account address.
    *
-   * @returns {Promise<Application | Error>} The account status.
+   * @returns {Application | Error} The account data.
    * @async
    */
   async getApplication(addressHex) {
     /** @type {QueryAppResponse} */
-    const applicationData = await this.__pocket.rpc().query.getApp(addressHex);
+    const applicationResponse = await this.__pocket.rpc().query.getApp(addressHex);
 
-    if (applicationData instanceof Error) {
-      throw applicationData;
+    if (applicationResponse instanceof Error) {
+      throw applicationResponse;
     }
 
-    return applicationData.application;
+    return applicationResponse.application;
+  }
+
+  /**
+   * Get Applications data.
+   *
+   * @param {StakingStatus} status Staking status.
+   *
+   * @returns {Promise<Application[] | Error>} The applications data.
+   */
+  async getApplications(status) {
+    /** @type {QueryAppsResponse} */
+    const applicationsResponse = await this.__pocket.rpc().query.getApps(status);
+
+    if (applicationsResponse instanceof Error) {
+      throw applicationsResponse;
+    }
+
+    return applicationsResponse.applications;
   }
 }

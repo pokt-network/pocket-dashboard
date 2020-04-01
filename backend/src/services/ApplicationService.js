@@ -3,12 +3,14 @@ import {
   ApplicationPrivatePocketAccount,
   ApplicationPublicPocketAccount,
   ExtendedPocketApplication,
-  PocketApplication
+  PocketApplication,
+  StakedApplicationSummary
 } from "../models/Application";
 import PocketAAT from "@pokt-network/aat-js";
-import {Account, Application} from "@pokt-network/pocket-js";
+import {Account, Application, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import bcrypt from "bcrypt";
+import bigInt from "big-integer";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -89,12 +91,13 @@ export default class ApplicationService extends BaseService {
    */
   async __getExtendedPocketApplications(applications) {
     const extendedApplications = applications.map(async (application) => {
+      /** @type {Application} */
       let networkData;
 
       try {
         networkData = await this.pocketService.getApplication(application.publicPocketAccount.address);
       } catch (e) {
-        networkData = null;
+        networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount);
       }
 
       return ExtendedPocketApplication.createExtendedPocketApplication(application, networkData);
@@ -197,6 +200,39 @@ export default class ApplicationService extends BaseService {
       }
 
       return false;
+    }
+  }
+
+  /**
+   * Get staked application summary.
+   *
+   * @returns {Promise<StakedApplicationSummary>} Summary data of staked applications.
+   */
+  async getStakedApplicationSummary() {
+    try {
+      /** @type {Application[]} */
+      const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
+
+      // noinspection JSValidateTypes
+      const totalApplications = bigInt(stakedApplications.length);
+
+      // noinspection JSValidateTypes
+      /** @type {bigint} */
+      const totalStaked = stakedApplications.reduce((acc, appA) => bigInt(appA.stakedTokens).add(acc), 0n);
+
+      // noinspection JSValidateTypes
+      /** @type {bigint} */
+      const totalRelays = stakedApplications.reduce((acc, appA) => bigInt(appA.maxRelays).add(acc), 0n);
+
+      // noinspection JSUnresolvedFunction
+      const averageStaked = totalStaked.divide(totalApplications);
+      // noinspection JSUnresolvedFunction
+      const averageMaxRelays = totalRelays.divide(totalApplications);
+
+      return new StakedApplicationSummary(totalApplications.value.toString(), averageStaked.value.toString(), averageMaxRelays.value.toString());
+
+    } catch (e) {
+      return new StakedApplicationSummary("0n", "0n", "0n");
     }
   }
 
