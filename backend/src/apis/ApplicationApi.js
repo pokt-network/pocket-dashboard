@@ -12,7 +12,7 @@ const applicationService = new ApplicationService();
  * @returns {string} Query option value.
  */
 function getQueryOption(request, option) {
-  const parsedData = request.query;
+  const parsedData = request.body;
 
   // eslint-disable-next-line no-prototype-builtins
   if (!parsedData.hasOwnProperty(option)) {

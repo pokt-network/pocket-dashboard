@@ -1,0 +1,36 @@
+.stats {
+  .col {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.order-by {
+  display: flex;
+  align-items: baseline;
+
+  .dropdown {
+    flex-grow: 2;
+
+    button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+
+  p {
+    margin-right: 15px;
+  }
+}
+
+.apps-list {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 5px;
+  background-color: #e6e6e6;
+  overflow-x: hidden;
+  overflow-x: auto;
+  max-height: 60vh;
+}
