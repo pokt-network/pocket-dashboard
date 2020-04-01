@@ -128,7 +128,7 @@ export class PocketApplication {
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
    * @param {ApplicationPublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
-   *,
+   *
    * @returns {PocketApplication} A new Pocket application.
    * @static
    */
