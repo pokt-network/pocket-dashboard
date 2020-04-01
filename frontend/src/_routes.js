@@ -17,6 +17,10 @@ export const routePaths = {
   verify_email: "/verify-email"
 };
 
+export const dashboardPaths = {
+  home: ""
+};
+
 /**
  * @type {Array<{path: string, component: Component, exact: boolean, name: string}>}
  */
@@ -47,11 +51,6 @@ const authProviderRoutes = [
   }
 ];
 
-export const dashboardPaths = {
-  home: ""
-};
-
-
 /**
  * @type {Array<{path: string, component: Component, exact: boolean, name: string}>}
  */
@@ -64,6 +63,6 @@ export const dashboardRoutes = [
   }
 ];
 
-const routes = pageRoutes.concat(authProviderRoutes, dashboardRoutes);
+const routes = pageRoutes.concat(authProviderRoutes);
 
 export default routes;
