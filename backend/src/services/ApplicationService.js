@@ -7,7 +7,7 @@ import {
   StakedApplicationSummary
 } from "../models/Application";
 import PocketAAT from "@pokt-network/aat-js";
-import {Account, Application, StakingStatus} from "@pokt-network/pocket-js";
+import {Account, Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import bcrypt from "bcrypt";
 import bigInt from "big-integer";
@@ -97,7 +97,11 @@ export default class ApplicationService extends BaseService {
       try {
         networkData = await this.pocketService.getApplication(application.publicPocketAccount.address);
       } catch (e) {
-        networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount);
+
+        /** @type {ApplicationParams} */
+        const appParameters = await this.pocketService.getApplicationParameters();
+
+        networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters.baseRelaysPerPokt);
       }
 
       return ExtendedPocketApplication.createExtendedPocketApplication(application, networkData);

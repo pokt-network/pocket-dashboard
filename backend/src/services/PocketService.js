@@ -1,6 +1,7 @@
 import {
   Account,
   Application,
+  ApplicationParams,
   Configuration,
   HttpRpcProvider,
   Pocket,
@@ -161,7 +162,8 @@ export default class PocketService {
    *
    * @param {string} addressHex Account address.
    *
-   * @returns {Application | Error} The account data.
+   * @returns {Application} The account data.
+   * @throws Error If Query fails.
    * @async
    */
   async getApplication(addressHex) {
@@ -180,7 +182,9 @@ export default class PocketService {
    *
    * @param {StakingStatus} status Staking status.
    *
-   * @returns {Promise<Application[] | Error>} The applications data.
+   * @returns {Promise<Application[]>} The applications data.
+   * @throws Error If Query fails.
+   * @async
    */
   async getApplications(status) {
     /** @type {QueryAppsResponse} */
@@ -191,5 +195,22 @@ export default class PocketService {
     }
 
     return applicationsResponse.applications;
+  }
+
+  /**
+   * Get Application Parameters data.
+   *
+   * @returns {Promise<ApplicationParams>} The application parameters.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getApplicationParameters() {
+    const applicationParametersResponse = await this.__pocket.rpc().query.getAppParams();
+
+    if (applicationParametersResponse instanceof Error) {
+      throw applicationParametersResponse;
+    }
+
+    return applicationParametersResponse.applicationParams;
   }
 }

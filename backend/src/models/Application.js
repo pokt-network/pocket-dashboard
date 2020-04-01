@@ -156,34 +156,29 @@ export class ExtendedPocketApplication {
    * Convenient Factory method to create an extended pocket application.
    *
    * @param {PocketApplication} pocketApplication Application data.
-   * @param {Application} [networkData] Application data from Pocket Network.
+   * @param {Application} applicationData Application data from Pocket Network.
    *
    * @returns {ExtendedPocketApplication} A new Pocket application.
    * @static
    */
-  static createExtendedPocketApplication(pocketApplication, networkData = null) {
-    let data = networkData;
-
-    if (data === null) {
-      data = this.createNetworkApplication(pocketApplication.publicPocketAccount);
-    }
-
-    return new ExtendedPocketApplication(pocketApplication, data);
+  static createExtendedPocketApplication(pocketApplication, applicationData) {
+    return new ExtendedPocketApplication(pocketApplication, applicationData);
   }
 
   /**
    * Convenient Factory method to create network application.
    *
    * @param {ApplicationPublicPocketAccount} publicPocketAccount Public pocket account.
+   * @param {bigint} maxRelays Max Relays.
    *
    * @returns {Application} Application.
+   * @static
    */
-  static createNetworkApplication(publicPocketAccount) {
+  static createNetworkApplication(publicPocketAccount, maxRelays) {
     const {address, publicKey} = publicPocketAccount;
-    const maxRelay = Configurations.pocketNetwork.min_max_relay_per_app;
     const chains = Configurations.pocketNetwork.chains;
 
-    return new Application(address, publicKey, false, BondStatus.unbonded, chains, 0n, maxRelay);
+    return new Application(address, publicKey, false, BondStatus.unbonded, chains, 0n, maxRelays);
   }
 }
 

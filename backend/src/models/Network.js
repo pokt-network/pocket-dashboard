@@ -12,7 +12,10 @@ export class NetworkChain {
   }
 
   /**
+   * Get available network chains.
+   *
    * @returns {NetworkChain[]} Network chains in Pocket.
+   * @static
    */
   static getAvailableNetworkChains() {
     /** @type {{name:string, netID:string, hash:string}[]} */
