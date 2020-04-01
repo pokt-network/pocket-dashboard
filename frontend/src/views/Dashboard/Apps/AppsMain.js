@@ -1,17 +1,11 @@
 import React, {Component} from "react";
 import "./AppsMain.scss";
-import {
-  Button,
-  Col,
-  Dropdown,
-  Row,
-  InputGroup,
-  FormControl,
-} from "react-bootstrap";
+import {Button, Col, Row, InputGroup, FormControl} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
+import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 
 const styles = {
   button: {
@@ -44,7 +38,7 @@ class AppsMain extends Component {
     this.setState({data});
   }
 
-  handleAppSearch(query) {
+  handleAppSearch() {
     const {userApps} = this.state;
     const {searchQuery} = this.state.data;
 
@@ -65,7 +59,8 @@ class AppsMain extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail, LIMIT
+      userEmail,
+      LIMIT
     );
 
     this.setState({userApps, filteredUserApps: userApps});
@@ -134,30 +129,25 @@ class AppsMain extends Component {
               </Col>
               <Col sm="4" md="4" lg="4" className="order-by">
                 <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
-                <Dropdown>
-                  <Dropdown.Toggle variant="light" id="dropdown-basic">
-                    All
-                  </Dropdown.Toggle>
-
-                  <Dropdown.Menu>
-                    <Dropdown.Item href="#/action-1">All</Dropdown.Item>
-                    <Dropdown.Item href="#/action-2">Newest</Dropdown.Item>
-                    <Dropdown.Item href="#/action-3">Oldest</Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                {/* TODO: Implement sorting on apps */}
+                <AppDropdown
+                  onSelect={t => console.log(t)}
+                  options={["All", "Newest", "Oldest"]}
+                />
               </Col>
             </Row>
             <div className="apps-list">
               {filteredUserApps.map((app, idx) => {
                 const {name, icon} = app.pocketApplication;
+                const {staked_tokens, status} = app.networkData;
 
                 // TODO: Add network information
                 return (
                   <PocketElementCard
                     key={idx}
                     title={name}
-                    subtitle="Staked POKT: 200 POKT"
-                    status="bonded"
+                    subtitle={`Staked POKT: ${staked_tokens} POKT`}
+                    status={status.toString()}
                     iconURL={icon}
                   />
                 );
@@ -169,17 +159,11 @@ class AppsMain extends Component {
             <div className="order-by">
               <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
               {/* TODO: Refactor dropdown to a component */}
-              <Dropdown>
-                <Dropdown.Toggle variant="light" id="dropdown-basic">
-                  All
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                  <Dropdown.Item href="#/action-1">All</Dropdown.Item>
-                  <Dropdown.Item href="#/action-2">Newest</Dropdown.Item>
-                  <Dropdown.Item href="#/action-3">Oldest</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
+              {/* TODO: Implement sorting on apps */}
+              <AppDropdown
+                onSelect={t => console.log(t)}
+                options={["All", "Newest", "Oldest"]}
+              />
             </div>
           </Col>
         </Row>

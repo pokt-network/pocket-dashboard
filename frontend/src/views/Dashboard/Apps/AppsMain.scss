@@ -9,17 +9,6 @@
   display: flex;
   align-items: baseline;
 
-  .dropdown {
-    flex-grow: 2;
-
-    button {
-      width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-  }
-
   p {
     margin-right: 15px;
   }
