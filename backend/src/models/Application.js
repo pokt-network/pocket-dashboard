@@ -1,13 +1,8 @@
-import {Account, Application} from "@pokt-network/pocket-js";
+import {Account, Application, BondStatus} from "@pokt-network/pocket-js";
 import PocketService from "../services/PocketService";
-import {Configurations} from "../_configuration";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
+import {Configurations} from "../_configuration";
 
-export const ApplicationStatuses = {
-  bounded: "bounded",
-  unbounding: "unbounding",
-  unbounded: "unbounded"
-};
 
 export class ApplicationPublicPocketAccount {
 
@@ -62,30 +57,6 @@ export class ApplicationPrivatePocketAccount {
   }
 }
 
-export class ApplicationNetworkInfo {
-
-  /**
-   * @param {number} balance Balance.
-   * @param {number} stakePokt Stake Pokt.
-   * @param {number} maxRelay Max Relay.
-   * @param {boolean} jailed Jailed.
-   * @param {string} status Status.
-   */
-  constructor(balance, stakePokt, maxRelay, jailed, status) {
-    Object.assign(this, {balance, stakePokt, maxRelay, jailed, status});
-  }
-
-  /**
-   * Convenient Factory method to create a application network information, when you create new application.
-   *
-   * @returns {ApplicationNetworkInfo} A new application network information.
-   * @static
-   */
-  static createNetworkInfoToNewApplication() {
-    return new ApplicationNetworkInfo(0, 0, Configurations.pocketNetwork.min_max_relay_per_app, false, ApplicationStatuses.unbounded);
-  }
-}
-
 export class PocketApplication {
 
   /**
@@ -102,9 +73,6 @@ export class PocketApplication {
 
     /** @type {ApplicationPublicPocketAccount} */
     this.publicPocketAccount = null;
-
-    // TODO: Add type
-    this.networkChains = [];
   }
 
   /**
@@ -160,17 +128,15 @@ export class PocketApplication {
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
    * @param {ApplicationPublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
-   * @param {string[]} [applicationData.networkChains] network chains.
-   *,
+   *
    * @returns {PocketApplication} A new Pocket application.
    * @static
    */
   static createPocketApplication(applicationData) {
-    const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount, networkChain} = applicationData;
+    const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount} = applicationData;
     const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon);
 
     pocketApplication.publicPocketAccount = publicPocketAccount;
-    pocketApplication.networkChains = networkChain;
 
     return pocketApplication;
   }
@@ -187,15 +153,36 @@ export class ExtendedPocketApplication {
   }
 
   /**
-   * Convenient Factory method to create an Extended Pocket application.
+   * Convenient Factory method to create an extended pocket application.
    *
    * @param {PocketApplication} pocketApplication Application data.
-   * @param {Application} networkData Application data from Pocket Network.
+   * @param {Application} [networkData] Application data from Pocket Network.
    *
    * @returns {ExtendedPocketApplication} A new Pocket application.
    * @static
    */
-  static createExtendedPocketApplication(pocketApplication, networkData) {
-    return new ExtendedPocketApplication(pocketApplication, networkData);
+  static createExtendedPocketApplication(pocketApplication, networkData = null) {
+    let data = networkData;
+
+    if (data === null) {
+      data = this.createNetworkApplication(pocketApplication.publicPocketAccount);
+    }
+
+    return new ExtendedPocketApplication(pocketApplication, data);
+  }
+
+  /**
+   * Convenient Factory method to create network application.
+   *
+   * @param {ApplicationPublicPocketAccount} publicPocketAccount Public pocket account.
+   *
+   * @returns {Application} Application.
+   */
+  static createNetworkApplication(publicPocketAccount) {
+    const {address, publicKey} = publicPocketAccount;
+    const maxRelay = Configurations.pocketNetwork.min_max_relay_per_app;
+    const chains = Configurations.pocketNetwork.chains;
+
+    return new Application(address, publicKey, false, BondStatus.unbonded, chains, 0n, maxRelay);
   }
 }
