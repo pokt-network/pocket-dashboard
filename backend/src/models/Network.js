@@ -1,3 +1,5 @@
+import {Configurations} from "../_configuration";
+
 export class NetworkChain {
 
   /**
@@ -9,4 +11,13 @@ export class NetworkChain {
     Object.assign(this, {name, netID, hash});
   }
 
+  /**
+   * @returns {NetworkChain[]} Network chains in Pocket.
+   */
+  static getAvailableNetworkChains() {
+    /** @type {{name:string, netID:string, hash:string}[]} */
+    const chains = Configurations.pocketNetwork.chains;
+
+    return chains.map(chain => new NetworkChain(chain.name, chain.netID, chain.hash));
+  }
 }
