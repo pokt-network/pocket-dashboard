@@ -9,8 +9,9 @@ class Breadcrumbs extends Component {
     return (
       <div style={{width: "100%"}}>
         <Breadcrumb>
-          {links.map(link => (
+          {links.map((link, idx) => (
             <Breadcrumb.Item
+              className={idx === 0 ? "pl-4" : ""}
               active={link.active}
               href={link.url}
               key={link.url}
