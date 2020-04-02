@@ -83,6 +83,29 @@ export default class ApplicationService extends BaseService {
 
   /**
    *
+   * @param {PocketApplication} application Application to add pocket data.
+   *
+   * @returns {Promise<ExtendedPocketApplication>} Pocket application with pocket data.
+   * @private
+   * @async
+   */
+  async __getExtendedPocketApplication(application) {
+    /** @type {Application} */
+    let networkApplication;
+
+    try {
+      networkApplication = await this.pocketService.getApplication(application.publicPocketAccount.address);
+    } catch (e) {
+      const appParameters = await this.pocketService.getApplicationParameters();
+
+      networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
+    }
+
+    return ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
+  }
+
+  /**
+   *
    * @param {PocketApplication[]} applications Applications to add pocket data.
    *
    * @returns {Promise<ExtendedPocketApplication[]>} Pocket applications with pocket data.
@@ -90,20 +113,7 @@ export default class ApplicationService extends BaseService {
    * @async
    */
   async __getExtendedPocketApplications(applications) {
-    const extendedApplications = applications.map(async (application) => {
-      /** @type {Application} */
-      let networkData;
-
-      try {
-        networkData = await this.pocketService.getApplication(application.publicPocketAccount.address);
-      } catch (e) {
-        const appParameters = await this.pocketService.getApplicationParameters();
-
-        networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
-      }
-
-      return ExtendedPocketApplication.createExtendedPocketApplication(application, networkData);
-    });
+    const extendedApplications = applications.map(async (application) => this.__getExtendedPocketApplication(application));
 
     return Promise.all(extendedApplications);
   }
@@ -124,6 +134,30 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
+   * Get application data.
+   *
+   * @param {string} applicationAddress Application address.
+   *
+   * @returns {Promise<ExtendedPocketApplication>} Application data.
+   * @async
+   */
+  async getApplication(applicationAddress) {
+    const filter = {
+      "publicPocketAccount.address": applicationAddress
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (applicationDB) {
+      const application = PocketApplication.createPocketApplication(applicationDB);
+
+      return this.__getExtendedPocketApplication(application);
+    }
+
+    return null;
+  }
+
+  /**
    * Get all applications on network.
    *
    * @param {number} limit Limit of query.
@@ -136,7 +170,11 @@ export default class ApplicationService extends BaseService {
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, {}, limit, offset))
       .map(PocketApplication.createPocketApplication);
 
-    return this.__getExtendedPocketApplications(applications);
+    if (applications) {
+      return this.__getExtendedPocketApplications(applications);
+    }
+
+    return [];
   }
 
   /**

@@ -64,6 +64,44 @@ describe("ApplicationService", () => {
     });
   });
 
+  describe("getApplication", () => {
+    const address = "bc28256f5c58611e96d13996cf535bdc0204366a";
+
+    const applicationData = {
+      name: "Test application 999",
+      owner: "Tester",
+      url: "http://example.com",
+      contactEmail: "tester@app.com",
+      user: "tester@app.com",
+      description: "A test application",
+      publicPocketAccount: {
+        address: address,
+        publicKey: "642f58349a768375d39747d96ea174256c5e1684bf4a8ae92c5ae0d14a9ed291"
+      }
+    };
+
+    it("Expect a application", async () => {
+
+      const persistenceService = sinon.createStubInstance(PersistenceProvider);
+      const stubFilter = {
+        "publicPocketAccount.address": address
+      };
+
+      persistenceService.getEntityByFilter
+        .withArgs("Applications", stubFilter)
+        .returns(Promise.resolve(applicationData));
+
+      sinon.stub(applicationService, "persistenceService").value(persistenceService);
+
+      const application = await applicationService.getApplication(address);
+
+      // eslint-disable-next-line no-undef
+      should.exist(application);
+
+      application.should.be.an("object");
+    });
+  });
+
   describe("getStakedApplicationSummary", () => {
     it("Expect staked summary data from network", async () => {
 

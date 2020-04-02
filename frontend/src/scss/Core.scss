@@ -1,23 +1,38 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;1,300&family=Open+Sans:wght@400;800&display=swap');
 
+// Table variables
+$table: (
+  columns:(
+    background-color: theme-color("dark"),
+    color: white
+  ),
+  data: (
+    odd: "",
+    even:""
+  ),
+  selected-item: (
+    background-color: rgba(0, 0, 0, 0.075)
+  )
+);
+
 
 // Font variables
 $title: (
-  "font":"Open Sans",
-  "type": sans-serif,
-  "weight":800
+  font:"Open Sans",
+  type: sans-serif,
+  weight:800
 );
 
 $paragraph: (
-  "font":"Lato",
-  "type": sans-serif,
-  "weight":400
+  font:"Lato",
+  type: sans-serif,
+  weight:400
 );
 
 @mixin font-style($type) {
-  font-family: map_get($type, "font"), map_get($type, "type");
-  font-weight: map_get($type, "weight");
+  font-family: map_get($type, font), map_get($type, type);
+  font-weight: map_get($type, weight);
 }
 
 // Headers
@@ -56,7 +71,7 @@ html, body {
     width: 70%;
     padding-left: 60px;
   }
-  
+
   #title {
     margin-top: 50px;
     margin-bottom: 10px;

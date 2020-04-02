@@ -85,6 +85,25 @@ router.get("/summary/staked", async (request, response) => {
 });
 
 /**
+ * Get application by address.
+ */
+router.get("/:address", async (request, response) => {
+  try {
+    /** @type {{address:string}} */
+    const data = request.params;
+    const application = await applicationService.getApplication(data.address);
+
+    response.send(application);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
  * Get all applications.
  */
 router.get("", async (request, response) => {
