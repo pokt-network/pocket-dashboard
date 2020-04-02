@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import UserService from "../../core/services/PocketUserService";
-import AppTable from "../../core/components/AppTable/AppTable";
 
 class Dashboard extends Component {
   render() {
