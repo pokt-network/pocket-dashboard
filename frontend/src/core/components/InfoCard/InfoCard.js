@@ -18,7 +18,7 @@ class InfoCard extends Component {
 }
 
 InfoCard.propTypes = {
-  title: PropTypes.string,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   subtitle: PropTypes.string,
 };
 

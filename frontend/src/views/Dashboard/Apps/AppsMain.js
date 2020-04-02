@@ -13,6 +13,12 @@ const styles = {
   },
 };
 
+const BONDSTATUS = {
+  0: "Bonded",
+  1: "Unbonding",
+  2: "Unbonded",
+};
+
 const LIMIT = 10;
 
 class AppsMain extends Component {
@@ -25,6 +31,9 @@ class AppsMain extends Component {
     this.state = {
       userApps: [],
       filteredUserApps: [],
+      totalApplications: 0,
+      averageStaked: 0,
+      averageRelays: 0,
       data: {
         searchQuery: "",
       },
@@ -48,7 +57,7 @@ class AppsMain extends Component {
       filteredUserApps = userApps.filter(a =>
         a.pocketApplication.name
           .toLowerCase()
-          .startsWith(searchQuery.toLowerCase())
+          .includes(searchQuery.toLowerCase())
       );
     }
 
@@ -59,15 +68,31 @@ class AppsMain extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail,
-      LIMIT
+      userEmail, LIMIT
     );
 
-    this.setState({userApps, filteredUserApps: userApps});
+    const {
+      totalApplications,
+      averageRelays,
+      averageStaked,
+    } = await ApplicationService.getStakedApplicationSummary();
+
+    this.setState({
+      userApps,
+      filteredUserApps: userApps,
+      totalApplications,
+      averageRelays,
+      averageStaked,
+    });
   }
 
   render() {
-    const {filteredUserApps} = this.state;
+    const {
+      filteredUserApps,
+      totalApplications,
+      averageStaked,
+      averageRelays,
+    } = this.state;
 
     return (
       <React.Fragment>
@@ -96,13 +121,16 @@ class AppsMain extends Component {
         </Row>
         <Row className="stats mb-4">
           <Col>
-            <InfoCard title="38,354" subtitle="Total of app" />
+            <InfoCard title={totalApplications} subtitle="Total of app" />
           </Col>
           <Col>
-            <InfoCard title="1,345" subtitle="Average staked" />
+            <InfoCard title={averageStaked} subtitle="Average staked" />
           </Col>
           <Col>
-            <InfoCard title="345" subtitle="Average relays per application" />
+            <InfoCard
+              title={averageRelays}
+              subtitle="Average relays per application"
+            />
           </Col>
         </Row>
         <Row>
@@ -115,6 +143,11 @@ class AppsMain extends Component {
                     placeholder="Search app"
                     name="searchQuery"
                     onChange={this.handleChange}
+                    onKeyPress={({key}) => {
+                      if (key === "Enter") {
+                        this.handleAppSearch();
+                      }
+                    }}
                   />
                   <InputGroup.Append>
                     <Button
@@ -147,7 +180,7 @@ class AppsMain extends Component {
                     key={idx}
                     title={name}
                     subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                    status={status.toString()}
+                    status={BONDSTATUS[status]}
                     iconURL={icon}
                   />
                 );
