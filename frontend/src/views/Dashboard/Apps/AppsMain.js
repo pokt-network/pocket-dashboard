@@ -70,8 +70,7 @@ class AppsMain extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail,
-      LIMIT
+      userEmail, LIMIT
     );
 
     const {
