@@ -1,4 +1,4 @@
-import {Configurations} from "../_configuration";
+import {Chains} from "../providers/NetworkChains";
 
 export class NetworkChain {
 
@@ -18,9 +18,6 @@ export class NetworkChain {
    * @static
    */
   static getAvailableNetworkChains() {
-    /** @type {{name:string, netID:string, hash:string}[]} */
-    const chains = Configurations.pocketNetwork.chains;
-
-    return chains.map(chain => new NetworkChain(chain.name, chain.netID, chain.hash));
+    return Chains.map(chain => new NetworkChain(chain.name, chain.netID, chain.hash));
   }
 }
