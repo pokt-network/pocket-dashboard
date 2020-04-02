@@ -64,6 +64,21 @@ describe("ApplicationService", () => {
     });
   });
 
+  describe("getStakedApplicationSummary", () => {
+    it("Expect staked summary data from network", async () => {
+
+      const summaryData = await applicationService.getStakedApplicationSummary();
+
+      // eslint-disable-next-line no-undef
+      should.exist(summaryData);
+
+      summaryData.should.be.an("object");
+      summaryData.totalApplications.should.not.be.equal("0");
+      summaryData.averageStaked.should.not.be.equal("0");
+      summaryData.averageRelays.should.not.be.equal("0");
+    });
+  });
+
   describe("listApplications", () => {
     const user = "tester@app.com";
     const limit = 10;

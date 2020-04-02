@@ -67,6 +67,24 @@ router.post("", async (request, response) => {
 });
 
 /**
+ * Get staked summary data.
+ */
+router.get("/summary/staked", async (request, response) => {
+  try {
+
+    const summaryData = await applicationService.getStakedApplicationSummary();
+
+    response.send(summaryData);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
  * Get all applications.
  */
 router.get("", async (request, response) => {

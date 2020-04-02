@@ -2,6 +2,7 @@ import {describe, it} from "mocha";
 import "chai/register-should";
 import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
+import {StakingStatus} from "@pokt-network/pocket-js";
 
 const pocketService = new PocketService(Configurations.pocketNetwork.nodes.test, Configurations.pocketNetwork.nodes.test_rpc_provider);
 
@@ -94,19 +95,17 @@ describe("PocketService", () => {
     });
   });
 
-  describe.skip("getApplication", () => {
-    it("Expected an application information successfully retrieved", async () => {
-      const testPassPhrase = "12345678";
-      const applicationAccount = await pocketService.createAccount(testPassPhrase);
+  describe("getApplications", () => {
+    it("Expected applications data successfully retrieved", async () => {
+      const status = StakingStatus.Staked;
 
-      const applicationData = await pocketService.getApplication(applicationAccount.addressHex);
-
-      console.log(applicationData);
+      const applicationsData = await pocketService.getApplications(status);
 
       // eslint-disable-next-line no-undef
-      should.exist(applicationData);
+      should.exist(applicationsData);
 
-      applicationData.should.be.an("object");
+      applicationsData.should.be.an("array");
+      applicationsData.length.should.be.greaterThan(0);
     });
   });
 
