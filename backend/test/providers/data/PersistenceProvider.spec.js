@@ -1,36 +1,14 @@
-import {after, before, describe, it} from "mocha";
+import {before, describe, it} from "mocha";
 import "chai/register-should";
-
-import {Configurations} from "../../../src/_configuration";
 import PersistenceProvider from "../../../src/providers/data/PersistenceProvider";
-import MongoDBAdapter from "../../../src/providers/data/db/MongoDBAdapter";
-import * as dbProvider from "../../../src/providers/data/db/Index";
-import sinon from "sinon";
+import {configureTestPersistenceProvider} from "../../setupTests";
 
-/** @type {MongoDBAdapter} */
-let mongoDBProvider = null;
 
-/** @type {PersistenceProvider} */
-let persistenceService = null;
-
+const persistenceService = new PersistenceProvider();
 const ENTITY_NAME = "TestSpecs";
 
 before(() => {
-  mongoDBProvider = new MongoDBAdapter(Configurations.persistence.test);
-  sinon.stub(dbProvider, "get_default_db_provider").returns(mongoDBProvider);
-
-  persistenceService = new PersistenceProvider();
-});
-
-
-after(async () => {
-  await persistenceService.deleteEntities(ENTITY_NAME, {});
-  const collection = await persistenceService.getCollection(ENTITY_NAME);
-
-  await collection.drop();
-
-  mongoDBProvider = null;
-  persistenceService = null;
+  configureTestPersistenceProvider(persistenceService);
 });
 
 describe("PersistenceProvider with MongoDB", () => {
@@ -39,7 +17,7 @@ describe("PersistenceProvider with MongoDB", () => {
     it("Expect save an entity successfully", async () => {
       const testEntity = {
         id: 99999,
-        name: "tests-example"
+        name: "test-example"
       };
 
       const result = await persistenceService.saveEntity(ENTITY_NAME, testEntity);
@@ -61,13 +39,99 @@ describe("PersistenceProvider with MongoDB", () => {
       should.exist(entities);
       entities.should.be.an("array");
     });
+
+    it("Expect an array of elements with limit", async () => {
+
+      const limit = 2;
+      const testEntities = [
+        {
+          id: 99999,
+          name: "test-example 1"
+        },
+        {
+          id: 99999,
+          name: "test-example 2"
+        },
+        {
+          id: 99999,
+          name: "test-example 3"
+        },
+        {
+          id: 99999,
+          name: "test-example 4"
+        },
+        {
+          id: 99999,
+          name: "test-example 5"
+        }
+      ];
+
+      for (const testEntity of testEntities) {
+        await persistenceService.saveEntity(ENTITY_NAME, testEntity);
+      }
+
+      const entities = await persistenceService.getEntities(ENTITY_NAME, {}, limit);
+
+      // eslint-disable-next-line no-undef
+      should.exist(entities);
+      entities.should.be.an("array");
+      entities.length.should.be.equal(limit);
+    });
+
+    it("Expect an array of elements with offset and limit", async () => {
+
+      const limit = 3;
+      const offset = 2;
+      const expectedID = 99998;
+      const testEntities = [
+        {
+          id: 99999,
+          name: "test-example 1"
+        },
+        {
+          id: expectedID,
+          name: "test-example 2"
+        },
+        {
+          id: 99997,
+          name: "test-example 3"
+        },
+        {
+          id: 99996,
+          name: "test-example 4"
+        },
+        {
+          id: 99995,
+          name: "test-example 5"
+        }
+      ];
+
+      await persistenceService.deleteEntities(ENTITY_NAME, {});
+      for (const testEntity of testEntities) {
+        await persistenceService.saveEntity(ENTITY_NAME, testEntity);
+      }
+
+      const entities = await persistenceService.getEntities(ENTITY_NAME, {}, limit, offset);
+      const entity = entities[0];
+
+      // eslint-disable-next-line no-undef
+      should.exist(entities);
+      // eslint-disable-next-line no-undef
+      should.exist(entity);
+
+      entities.should.be.an("array");
+      entities.length.should.be.equal(limit);
+
+      entity.should.be.an("object");
+      entity.id.should.be.equal(expectedID);
+    });
   });
 
   describe("getElementByID", () => {
     it("Expect an object of element", async () => {
       const testEntity = {
         id: 99999,
-        name: "tests-example"
+        name: "test-example"
       };
 
       const result = await persistenceService.saveEntity(ENTITY_NAME, testEntity);
@@ -86,7 +150,7 @@ describe("PersistenceProvider with MongoDB", () => {
     it("Expect an object of element", async () => {
       const testEntity = {
         id: 99999,
-        name: "tests-example"
+        name: "test-example"
       };
 
       await persistenceService.saveEntity(ENTITY_NAME, testEntity);
@@ -104,10 +168,10 @@ describe("PersistenceProvider with MongoDB", () => {
     it("Expect and element updated", async () => {
       const testEntity = {
         id: 99999,
-        name: "tests-example"
+        name: "test-example"
       };
       const dataToUpdate = {
-        name: "tests-exampleUpdated"
+        name: "test-exampleUpdated"
       };
 
       await persistenceService.saveEntity(ENTITY_NAME, testEntity);
@@ -127,7 +191,7 @@ describe("PersistenceProvider with MongoDB", () => {
     it("Expect deleted an element successfully", async () => {
       const testEntity = {
         id: 99999,
-        name: "tests-example"
+        name: "test-example"
       };
 
       const result = await persistenceService.saveEntity(ENTITY_NAME, testEntity);

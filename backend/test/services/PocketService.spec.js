@@ -1,18 +1,11 @@
-import {after, before, describe, it} from "mocha";
+import {describe, it} from "mocha";
 import "chai/register-should";
 import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
+import {StakingStatus} from "@pokt-network/pocket-js";
 
-let pocketService = null;
+const pocketService = new PocketService(Configurations.pocketNetwork.nodes.test, Configurations.pocketNetwork.nodes.test_rpc_provider);
 
-before(() => {
-  pocketService = new PocketService(Configurations.pocketNetwork.nodes.test);
-});
-
-
-after(() => {
-  pocketService = null;
-});
 
 describe("PocketService", () => {
 
@@ -99,6 +92,20 @@ describe("PocketService", () => {
       should.exist(attToken);
 
       attToken.should.be.an("object");
+    });
+  });
+
+  describe("getApplications", () => {
+    it("Expected applications data successfully retrieved", async () => {
+      const status = StakingStatus.Staked;
+
+      const applicationsData = await pocketService.getApplications(status);
+
+      // eslint-disable-next-line no-undef
+      should.exist(applicationsData);
+
+      applicationsData.should.be.an("array");
+      applicationsData.length.should.be.greaterThan(0);
     });
   });
 

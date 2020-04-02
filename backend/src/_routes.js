@@ -2,6 +2,8 @@ import Index from "./apis/IndexApi";
 import User from "./apis/UserApi";
 import SecurityQuestion from "./apis/SecurityQuestionApi";
 import Payment from "./apis/PaymentApi";
+import Application from "./apis/ApplicationApi";
+import Network from "./apis/NetworkApi";
 
 /**
  * @param {object} expressApp Express application object.
@@ -18,4 +20,10 @@ export function configureRoutes(expressApp) {
 
   // Payments API
   expressApp.use("/api/payments", Payment);
+
+  // Applications API
+  expressApp.use("/api/applications", Application);
+
+  // Network API
+  expressApp.use("/api/network", Network);
 }

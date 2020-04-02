@@ -1,13 +1,8 @@
-import {Account} from "@pokt-network/pocket-js";
+import {Account, Application, ApplicationParams, BondStatus} from "@pokt-network/pocket-js";
 import PocketService from "../services/PocketService";
-import {Configurations} from "../_configuration";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
+import {Chains} from "../providers/NetworkChains";
 
-export const ApplicationStatuses = {
-  bounded: "bounded",
-  unbounding: "unbounding",
-  unbounded: "unbounded"
-};
 
 export class ApplicationPublicPocketAccount {
 
@@ -62,30 +57,6 @@ export class ApplicationPrivatePocketAccount {
   }
 }
 
-export class ApplicationNetworkInfo {
-
-  /**
-   * @param {number} balance Balance.
-   * @param {number} stakePokt Stake Pokt.
-   * @param {number} maxRelay Max Relay.
-   * @param {boolean} jailed Jailed.
-   * @param {string} status Status.
-   */
-  constructor(balance, stakePokt, maxRelay, jailed, status) {
-    Object.assign(this, {balance, stakePokt, maxRelay, jailed, status});
-  }
-
-  /**
-   * Convenient Factory method to create a application network information, when you create new application.
-   *
-   * @returns {ApplicationNetworkInfo} A new application network information.
-   * @static
-   */
-  static createNetworkInfoToNewApplication() {
-    return new ApplicationNetworkInfo(0, 0, Configurations.pocketNetwork.min_max_relay_per_app, false, ApplicationStatuses.unbounded);
-  }
-}
-
 export class PocketApplication {
 
   /**
@@ -102,9 +73,6 @@ export class PocketApplication {
 
     /** @type {ApplicationPublicPocketAccount} */
     this.publicPocketAccount = null;
-
-    // TODO: Add type
-    this.networkChains = [];
   }
 
   /**
@@ -159,13 +127,69 @@ export class PocketApplication {
    * @param {string} applicationData.user User.
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
+   * @param {ApplicationPublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
    *
    * @returns {PocketApplication} A new Pocket application.
    * @static
    */
   static createPocketApplication(applicationData) {
-    const {name, owner, url, contactEmail, user, description, icon} = applicationData;
+    const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount} = applicationData;
+    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon);
 
-    return new PocketApplication(name, owner, url, contactEmail, user, description, icon);
+    pocketApplication.publicPocketAccount = publicPocketAccount;
+
+    return pocketApplication;
+  }
+}
+
+export class ExtendedPocketApplication {
+
+  /**
+   * @param {PocketApplication} pocketApplication Pocket application.
+   * @param {Application} networkData Application data from Pocket Network.
+   */
+  constructor(pocketApplication, networkData) {
+    Object.assign(this, {pocketApplication, networkData});
+  }
+
+  /**
+   * Convenient Factory method to create an extended pocket application.
+   *
+   * @param {PocketApplication} pocketApplication Application data.
+   * @param {Application} applicationData Application data from Pocket Network.
+   *
+   * @returns {ExtendedPocketApplication} A new Pocket application.
+   * @static
+   */
+  static createExtendedPocketApplication(pocketApplication, applicationData) {
+    return new ExtendedPocketApplication(pocketApplication, applicationData);
+  }
+
+  /**
+   * Convenient Factory method to create network application.
+   *
+   * @param {ApplicationPublicPocketAccount} publicPocketAccount Public pocket account.
+   * @param {ApplicationParams} applicationParameters Application parameter from network.
+   *
+   * @returns {Application} Application.
+   * @static
+   */
+  static createNetworkApplication(publicPocketAccount, applicationParameters) {
+    const {address, publicKey} = publicPocketAccount;
+    const chainHashes = Chains.map(chain => chain.hash);
+
+    return new Application(address, publicKey, false, BondStatus.unbonded, chainHashes, 0n, applicationParameters.baseRelaysPerPokt, applicationParameters.unstakingTime);
+  }
+}
+
+export class StakedApplicationSummary {
+
+  /**
+   * @param {string} totalApplications Total of Applications.
+   * @param {string} averageStaked Average of staked applications.
+   * @param {string} averageRelays Average of relays.
+   */
+  constructor(totalApplications, averageStaked, averageRelays) {
+    Object.assign(this, {totalApplications, averageStaked, averageRelays});
   }
 }

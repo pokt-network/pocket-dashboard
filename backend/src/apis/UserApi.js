@@ -3,18 +3,17 @@ import UserService from "../services/UserService";
 
 const router = express.Router();
 
-/** @type {UserService} */
 const userService = new UserService();
 
 /**
- * Provides auth provider urls to show consent.
+ * Provides Auth provider urls to show consent.
  */
 router.get("/auth/providers", (request, response) => {
   response.send(userService.getConsentProviderUrls());
 });
 
 /**
- * User authentication using an auth provider.
+ * User authentication using an Auth provider.
  */
 router.post("/auth/provider/login", async (request, response) => {
   try {
@@ -86,7 +85,7 @@ router.post("/auth/logout", async (request, response) => {
 
     response.send(result);
   } catch (e) {
-    response.status(false);
+    response.send(false);
   }
 
 });

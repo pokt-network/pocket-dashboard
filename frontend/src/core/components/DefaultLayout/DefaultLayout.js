@@ -1,30 +1,45 @@
 import React, {Component} from "react";
-import {Container, Col, Row} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
+import {Redirect, Route} from "react-router-dom";
 import AppSidebar from "./AppSidebar/AppSidebar";
 import AppNavbar from "./AppNavbar/AppNavbar";
 import Breadcrumbs from "./Breadcrumb";
-import Dashboard from "../../../views/Dashboard/Dashboard";
+import {dashboardRoutes, routePaths} from "../../../_routes";
+import UserService from "../../services/PocketUserService";
 
 class DefaultLayout extends Component {
   render() {
+    // eslint-disable-next-line react/prop-types
+    const {path} = this.props.match;
+
+    if (!UserService.isLoggedIn()) {
+      return <Redirect to={routePaths.login}/>;
+    }
+
     return (
       <Container fluid className={"auth-page"}>
         <Row>
-          <AppSidebar />
+          <AppSidebar/>
           <Col>
-            <AppNavbar />
+            <AppNavbar/>
             <Row>
               {/* TODO: Remove manually written links for testing purposes */}
               <Breadcrumbs
-                links={[
-                  {url: "#", label: "Home", active: false},
-                  {url: "#1", label: "DefaultLayout", active: false},
-                  {url: "#2", label: "Overview", active: true},
-                ]}
+                links={[{url: "#", label: "Network Status", active: true}]}
               />
             </Row>
-            <Row>
-              <Dashboard />
+            <Row className={"pl-5 pr-5"}>
+              {dashboardRoutes.map((route, idx) => {
+                return (
+                  <Route
+                    key={idx}
+                    path={`${path}${route.path}`}
+                    exact={route.exact}
+                    name={route.name}
+                    component={route.component}
+                  />
+                );
+              })}
             </Row>
           </Col>
         </Row>

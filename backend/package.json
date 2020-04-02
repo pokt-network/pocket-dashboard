@@ -6,17 +6,110 @@
     "url": "https://github.com/pokt-network/pocket-dashboard",
     "type": "git"
   },
+  "eslintIgnore": [
+    "webpack.config.js",
+    "dist/"
+  ],
   "author": "Codemera",
   "license": "MIT",
   "scripts": {
     "build": "webpack --watch --mode development --config webpack.config.js",
     "build:prod": "webpack --mode production --config webpack.config.js",
     "start": "nodemon dist/server.js",
-    "test": "mocha --require @babel/register --exit --recursive tests",
-    "test:services": "mocha --require @babel/register --exit --recursive tests/services",
-    "test:providers": "mocha --require @babel/register --exit --recursive tests/providers",
-    "test:models": "mocha --require @babel/register --exit --recursive tests/models",
+    "test": "mocha test",
+    "test:services": "mocha test/services",
+    "test:providers": "mocha test/providers",
+    "test:models": "mocha test/models",
     "lint": "eslint ."
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env"
+    ],
+    "plugins": [
+      "@babel/transform-runtime",
+      "@babel/plugin-syntax-bigint"
+    ]
+  },
+  "mocha": {
+    "exit": true,
+    "require": "@babel/register",
+    "file": [
+      "test/setupTests.js"
+    ]
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "mocha": true,
+      "node": true,
+      "mongo": true
+    },
+    "rules": {
+      "no-console": "warn",
+      "comma-spacing": "error",
+      "semi": [
+        "error",
+        "always"
+      ],
+      "quotes": [
+        "error",
+        "double"
+      ],
+      "no-unused-vars": "off",
+      "eqeqeq": "error",
+      "no-alert": "error",
+      "curly": "error",
+      "brace-style": [
+        "error",
+        "1tbs"
+      ],
+      "object-curly-spacing": [
+        "error",
+        "never"
+      ],
+      "function-call-argument-newline": [
+        "error",
+        "never"
+      ],
+      "one-var-declaration-per-line": [
+        "error",
+        "always"
+      ],
+      "padding-line-between-statements": [
+        "error",
+        {
+          "blankLine": "always",
+          "prev": [
+            "const",
+            "let",
+            "var"
+          ],
+          "next": "*"
+        },
+        {
+          "blankLine": "any",
+          "prev": [
+            "const",
+            "let",
+            "var"
+          ],
+          "next": [
+            "const",
+            "let",
+            "var"
+          ]
+        }
+      ]
+    },
+    "plugins": [
+      "jsdoc"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:jsdoc/recommended"
+    ],
+    "parser": "babel-eslint"
   },
   "dependencies": {
     "@babel/runtime": "^7.8.4",
@@ -32,7 +125,8 @@
     "googleapis": "^48.0.0",
     "bcrypt": "^4.0.1",
     "cors": "^2.8.5",
-    "stripe": "^8.33.0"
+    "stripe": "^8.33.0",
+    "big-integer": "^1.6.48"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
@@ -41,9 +135,11 @@
     "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/preset-env": "^7.8.4",
     "@babel/register": "^7.8.6",
+    "@babel/plugin-syntax-bigint": "^7.8.3",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "debug": "^2.6.9",
     "dotenv": "^8.2.0",
     "eslint": "^6.8.0",

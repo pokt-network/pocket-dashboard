@@ -1,11 +1,12 @@
 import Login from "./views/Auth/Login/Login";
 import ForgotPassword from "./views/Auth/ForgotPassword/ForgotPassword";
-import GithubAuthProviderHook from "./core/components/providers/auth/GithubAuthProviderHook";
-import GoogleAuthProviderHook from "./core/components/providers/auth/GoogleAuthProviderHook";
+import GithubAuthProviderHook from "./core/components/Providers/Auth/GithubAuthProviderHook";
+import GoogleAuthProviderHook from "./core/components/Providers/Auth/GoogleAuthProviderHook";
 import SecurityQuestions from "./views/Auth/SecurityQuestions/SecurityQuestions";
 import SignUp from "./views/Auth/SignUp/SignUp";
 import VerifyEMail from "./views/Auth/VerifyEmail/VerifyEmail";
 import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
+import Dashboard from "./views/Dashboard/Dashboard";
 
 export const routePaths = {
   signup: "/signup",
@@ -16,12 +17,16 @@ export const routePaths = {
   verify_email: "/verify-email"
 };
 
+export const dashboardPaths = {
+  home: ""
+};
+
 /**
  * @type {Array<{path: string, component: Component, exact: boolean, name: string}>}
  */
 const pageRoutes = [
   {path: routePaths.login, exact: true, name: "Login", component: Login},
-  {path: routePaths.home, exact: true, name: "Root", component: DefaultLayout},
+  {path: routePaths.home, exact: false, name: "Home", component: DefaultLayout},
   {path: routePaths.forgot_password, exact: true, name: "Forgot Password", component: ForgotPassword},
   {path: routePaths.security_questions, exact: true, name: "Security Questions", component: SecurityQuestions},
   {path: routePaths.signup, exact: true, name: "Sign Up", component: SignUp},
@@ -33,16 +38,28 @@ const pageRoutes = [
  */
 const authProviderRoutes = [
   {
-    path: "/api/auth/provider/github",
+    path: "/api/Auth/provider/github",
     exact: true,
     name: "Github",
     component: GithubAuthProviderHook
   },
   {
-    path: "/api/auth/provider/google",
+    path: "/api/Auth/provider/google",
     exact: true,
     name: "Google",
     component: GoogleAuthProviderHook
+  }
+];
+
+/**
+ * @type {Array<{path: string, component: Component, exact: boolean, name: string}>}
+ */
+export const dashboardRoutes = [
+  {
+    path: dashboardPaths.home,
+    exact: true,
+    name: "Home - Dashboard",
+    component: Dashboard,
   }
 ];
 

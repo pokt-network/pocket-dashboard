@@ -1,15 +1,16 @@
 import BaseService from "./BaseService";
 import {
-  ApplicationNetworkInfo,
   ApplicationPrivatePocketAccount,
   ApplicationPublicPocketAccount,
-  PocketApplication
+  ExtendedPocketApplication,
+  PocketApplication,
+  StakedApplicationSummary
 } from "../models/Application";
-import {PocketUser} from "../models/User";
 import PocketAAT from "@pokt-network/aat-js";
-import {Account} from "@pokt-network/pocket-js";
+import {Account, Application, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import bcrypt from "bcrypt";
+import bigInt from "big-integer";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -19,8 +20,7 @@ export default class ApplicationService extends BaseService {
   constructor() {
     super();
 
-    /** @protected */
-    this._userService = new UserService();
+    this.userService = new UserService();
   }
 
   /**
@@ -54,12 +54,12 @@ export default class ApplicationService extends BaseService {
 
     if (!await this.applicationExists(application)) {
       /** @type {{result: {n:number, ok: number}}} */
-      const result = await this._persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, application);
+      const result = await this.persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, application);
 
-      return Promise.resolve(result.result.ok === 1);
+      return result.result.ok === 1;
     }
 
-    return Promise.resolve(false);
+    return false;
   }
 
   /**
@@ -67,18 +67,55 @@ export default class ApplicationService extends BaseService {
    *
    * @param {string} passPhrase Passphrase used to create pocket account.
    *
-   * @returns {Promise<Account>} A Pocket account created successfully.
+   * @returns {Promise<Account> | Error} A Pocket account created successfully.
    * @throws {Error} If creation of account fails.
    * @private
    */
   async __createPocketAccount(passPhrase) {
-    const account = await this._pocketService.createAccount(passPhrase);
+    const account = await this.pocketService.createAccount(passPhrase);
 
     if (account instanceof Error) {
       throw account;
     }
 
     return account;
+  }
+
+  /**
+   *
+   * @param {PocketApplication} application Application to add pocket data.
+   *
+   * @returns {Promise<ExtendedPocketApplication>} Pocket application with pocket data.
+   * @private
+   * @async
+   */
+  async __getExtendedPocketApplication(application) {
+    /** @type {Application} */
+    let networkApplication;
+
+    try {
+      networkApplication = await this.pocketService.getApplication(application.publicPocketAccount.address);
+    } catch (e) {
+      const appParameters = await this.pocketService.getApplicationParameters();
+
+      networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
+    }
+
+    return ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
+  }
+
+  /**
+   *
+   * @param {PocketApplication[]} applications Applications to add pocket data.
+   *
+   * @returns {Promise<ExtendedPocketApplication[]>} Pocket applications with pocket data.
+   * @private
+   * @async
+   */
+  async __getExtendedPocketApplications(applications) {
+    const extendedApplications = applications.map(async (application) => this.__getExtendedPocketApplication(application));
+
+    return Promise.all(extendedApplications);
   }
 
   /**
@@ -91,29 +128,72 @@ export default class ApplicationService extends BaseService {
    */
   async applicationExists(application) {
     const filter = {name: application.name, owner: application.owner};
-    const dbApplication = await this._persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const dbApplication = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
-    return Promise.resolve(dbApplication !== undefined);
+    return dbApplication !== undefined;
+  }
+
+  /**
+   * Get application data.
+   *
+   * @param {string} applicationAddress Application address.
+   *
+   * @returns {Promise<ExtendedPocketApplication>} Application data.
+   * @async
+   */
+  async getApplication(applicationAddress) {
+    const filter = {
+      "publicPocketAccount.address": applicationAddress
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (applicationDB) {
+      const application = PocketApplication.createPocketApplication(applicationDB);
+
+      return this.__getExtendedPocketApplication(application);
+    }
+
+    return null;
   }
 
   /**
    * Get all applications on network.
    *
-   * @returns {PocketApplication[]} List of applications.
+   * @param {number} limit Limit of query.
+   * @param {number} [offset] Offset of query.
+   *
+   * @returns {ExtendedPocketApplication[]} List of applications.
+   * @async
    */
-  getAllApplications() {
-    return null;
+  async getAllApplications(limit, offset = 0) {
+    const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, {}, limit, offset))
+      .map(PocketApplication.createPocketApplication);
+
+    if (applications) {
+      return this.__getExtendedPocketApplications(applications);
+    }
+
+    return [];
   }
 
   /**
    * Get all applications on network that belongs to user.
    *
-   * @param {PocketUser} user Pocket user.
+   * @param {string} userEmail Email of user.
+   * @param {number} limit Limit of query.
+   * @param {number} [offset] Offset of query.
    *
-   * @returns {PocketApplication[]} List of applications.
+   * @returns {Promise<ExtendedPocketApplication[]>} List of applications.
+   * @async
    */
-  listUserApplications(user) {
-    return null;
+  async getUserApplications(userEmail, limit, offset = 0) {
+    const filter = {user: userEmail};
+    /** @type {PocketApplication[]} */
+    const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
+      .map(PocketApplication.createPocketApplication);
+
+    return this.__getExtendedPocketApplications(applications);
   }
 
   /**
@@ -128,13 +208,13 @@ export default class ApplicationService extends BaseService {
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
    *
-   * @returns {{privateApplicationData: ApplicationPrivatePocketAccount, networkData:ApplicationNetworkInfo}| boolean} An application information or false if not.
+   * @returns {Promise<{privateApplicationData: ApplicationPrivatePocketAccount, networkData:Application}| boolean>} An application information or false if not.
    * @throws {Error} If validation fails or already exists.
    * @async
    */
   async createApplication(applicationData) {
     if (PocketApplication.validate(applicationData)) {
-      if (!await this._userService.userExists(applicationData.user)) {
+      if (!await this.userService.userExists(applicationData.user)) {
         throw new Error("User does not exist");
       }
 
@@ -153,13 +233,48 @@ export default class ApplicationService extends BaseService {
       const created = await this.__persistApplicationIfNotExists(application);
 
       if (created) {
-        const privateApplicationData = await ApplicationPrivatePocketAccount.createApplicationPrivatePocketAccount(this._pocketService, pocketAccount, passPhrase);
-        const networkData = ApplicationNetworkInfo.createNetworkInfoToNewApplication();
+        const appParameters = await this.pocketService.getApplicationParameters();
+
+        const privateApplicationData = await ApplicationPrivatePocketAccount.createApplicationPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
+        const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
 
         return {privateApplicationData, networkData};
       }
 
-      return Promise.resolve(false);
+      return false;
+    }
+  }
+
+  /**
+   * Get staked application summary.
+   *
+   * @returns {Promise<StakedApplicationSummary>} Summary data of staked applications.
+   */
+  async getStakedApplicationSummary() {
+    try {
+      /** @type {Application[]} */
+      const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
+
+      // noinspection JSValidateTypes
+      const totalApplications = bigInt(stakedApplications.length);
+
+      // noinspection JSValidateTypes
+      /** @type {bigint} */
+      const totalStaked = stakedApplications.reduce((acc, appA) => bigInt(appA.stakedTokens).add(acc), 0n);
+
+      // noinspection JSValidateTypes
+      /** @type {bigint} */
+      const totalRelays = stakedApplications.reduce((acc, appA) => bigInt(appA.maxRelays).add(acc), 0n);
+
+      // noinspection JSUnresolvedFunction
+      const averageStaked = totalStaked.divide(totalApplications);
+      // noinspection JSUnresolvedFunction
+      const averageMaxRelays = totalRelays.divide(totalApplications);
+
+      return new StakedApplicationSummary(totalApplications.value.toString(), averageStaked.value.toString(), averageMaxRelays.value.toString());
+
+    } catch (e) {
+      return new StakedApplicationSummary("0n", "0n", "0n");
     }
   }
 

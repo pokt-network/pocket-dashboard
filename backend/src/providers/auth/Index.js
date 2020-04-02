@@ -15,7 +15,7 @@ export function get_auth_providers() {
 
 /**
  *
- * @param {BaseAuthProvider[]} authProviders List of available auth providers.
+ * @param {BaseAuthProvider[]} authProviders List of available Auth Providers.
  * @param {string} name Name of Authentication provider.
  *
  * @return {BaseAuthProvider}

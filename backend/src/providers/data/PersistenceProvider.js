@@ -1,9 +1,9 @@
 import {get_default_db_provider} from "./db/Index";
-import MongoClient from "mongodb";
+import {Db, MongoClient} from "mongodb";
 
 export default class PersistenceProvider {
   constructor() {
-    this.__dbProvider = get_default_db_provider();
+    this.dbProvider = get_default_db_provider();
   }
 
   /**
@@ -11,24 +11,36 @@ export default class PersistenceProvider {
    * @private
    */
   __openConnection() {
-    return this.__dbProvider.open();
+    return this.dbProvider.open();
   }
 
   /**
    * @param {MongoClient} dbConnection DB provider connection object.
    *
-   * @returns {object} DB Provider db object.
+   * @returns {Db} DB Provider db object.
    * @private
    */
   __getDB(dbConnection) {
-    return this.__dbProvider.getDB(dbConnection);
+    return this.dbProvider.getDB(dbConnection);
   }
 
   /**
    * @param {MongoClient} dbConnection DB provider connection object.
    */
   closeConnection(dbConnection) {
-    this.__dbProvider.close(dbConnection);
+    this.dbProvider.close(dbConnection);
+  }
+
+  /**
+   * Drop a Database.
+   *
+   * @returns {Promise<*>} Drop database result.
+   */
+  async dropDataBase() {
+    const connection = await this.__openConnection();
+    const db = this.__getDB(connection);
+
+    return await db.dropDatabase();
   }
 
   /**
@@ -45,16 +57,25 @@ export default class PersistenceProvider {
 
   /**
    * @param {string} entityName Collection name of entities.
-   * @param {object} filter Filter used to retrieve elements.
+   * @param {object} [filter] Filter used to retrieve elements.
+   * @param {number} [limit] Limit used to retrieve elements.
+   * @param {number} [offset] Offset used to retrieve elements.
    *
    * @returns {Promise<object[]>} Entities by filter applied.
    */
-  async getEntities(entityName, filter = {}) {
+  async getEntities(entityName, filter = {}, limit, offset = 0) {
     const connection = await this.__openConnection();
     const db = this.__getDB(connection);
     const collection = db.collection(entityName);
 
-    const data = await collection.find(filter).toArray();
+    let data = await collection.find(filter)
+      .skip(offset === 0 ? offset : offset - 1);
+
+    if (limit) {
+      data = await data.limit(limit);
+    }
+
+    data = await data.toArray();
 
     this.closeConnection(connection);
 

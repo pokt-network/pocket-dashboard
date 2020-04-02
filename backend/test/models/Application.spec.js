@@ -100,7 +100,6 @@ describe("Application model", () => {
 
       const result = PocketApplication.validate(applicationData);
 
-      // noinspection BadExpressionStatementJS
       result.should.to.be.true;
     });
   });
