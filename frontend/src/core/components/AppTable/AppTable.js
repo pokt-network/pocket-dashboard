@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Table} from "react-bootstrap";
-import "./Table.scss";
+import "./AppTable.scss";
 import {PropTypes} from "prop-types";
 
 class AppTable extends Component {
@@ -48,27 +48,27 @@ class AppTable extends Component {
   }
 
   render() {
-    const {columns, columnData} = this.props;
+    const {columns, data} = this.props;
 
     return (
       <Table hover className="app-table">
         <thead>
-          <tr>
-            {columns.map((col, idx) => (
-              <th key={idx}>{col}</th>
-            ))}
-          </tr>
+        <tr>
+          {
+            columns.map((col, idx) => (<th key={idx}>{col}</th>))
+          }
+        </tr>
         </thead>
         <tbody>
-          {columnData.map((column, idx) => (
+        {
+          data.map((column, idx) => (
             <tr
               onClick={() => this.toggleColumnActive(column)}
               className={this.isActive(column)}
-              key={idx}
-            >
-              {column.map((col, idx) => (
-                <td key={idx}>{col}</td>
-              ))}
+              key={idx}>
+              {
+                column.map((col, idx) => (<td key={idx}>{col}</td>))
+              }
             </tr>
           ))}
         </tbody>
@@ -83,7 +83,7 @@ AppTable.defaultProps = {
 
 AppTable.propTypes = {
   columns: PropTypes.array,
-  columnData: PropTypes.array,
+  data: PropTypes.array,
   handleSelect: PropTypes.func,
   multiSelect: PropTypes.bool,
 };

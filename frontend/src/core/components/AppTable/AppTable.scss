@@ -4,8 +4,8 @@
   cursor: pointer;
 
   thead {
-    background-color: theme-color("dark");
-    color: #ffffff;
+    background-color: map_get(map_get($table, columns), background-color);
+    color: map_get(map_get($table, columns), color);
     border: 2px solid transparent;
 
     th:first-child {
@@ -20,7 +20,7 @@
   }
 
   .active {
-    background-color: rgba(0, 0, 0, 0.075);
+    background-color: map_get(map_get($table, selected-item), background-color);
   }
 
 }
