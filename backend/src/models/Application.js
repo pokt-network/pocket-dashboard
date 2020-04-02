@@ -178,7 +178,7 @@ export class ExtendedPocketApplication {
     const {address, publicKey} = publicPocketAccount;
     const chainHashes = Chains.map(chain => chain.hash);
 
-    return new Application(address, publicKey, false, BondStatus.unbonded, chainHashes, 0n, applicationParameters.baseRelaysPerPokt);
+    return new Application(address, publicKey, false, BondStatus.unbonded, chainHashes, 0n, applicationParameters.baseRelaysPerPokt, applicationParameters.unstakingTime);
   }
 }
 
