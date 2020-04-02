@@ -7,17 +7,6 @@ class Dashboard extends Component {
     return (
       <div>
         <h1>Welcome back {UserService.getUserInfo().name}</h1>
-
-        {/*// TODO: Remove this component for demonstration purposes*/}
-        <AppTable
-          columns={["#", "First Name", "Last Name", "Username"]}
-          data={[
-            ["1", "Mark", "Twain", "@mark"],
-            ["2", "Omar", "Zach", "@omar"],
-            ["3", "Olivan", "Wells", "@olivan"],
-          ]}
-          handleSelect={data => console.log(data)}
-        />
       </div>
     );
   }

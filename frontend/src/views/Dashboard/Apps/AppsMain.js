@@ -6,6 +6,7 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
+import AppTable from "../../../core/components/AppTable/AppTable";
 
 const styles = {
   button: {
@@ -29,6 +30,7 @@ class AppsMain extends Component {
     this.handleChange = this.handleChange.bind(this);
 
     this.state = {
+      registeredApps: [],
       userApps: [],
       filteredUserApps: [],
       totalApplications: 0,
@@ -68,7 +70,8 @@ class AppsMain extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail, LIMIT
+      userEmail,
+      LIMIT
     );
 
     const {
@@ -77,12 +80,20 @@ class AppsMain extends Component {
       averageStaked,
     } = await ApplicationService.getStakedApplicationSummary();
 
+    let registeredApps = await ApplicationService.getAllApplications(LIMIT);
+
+    registeredApps = registeredApps.map(app => [
+      app.pocketApplication.name,
+      app.networkData.address,
+    ]);
+
     this.setState({
       userApps,
       filteredUserApps: userApps,
       totalApplications,
       averageRelays,
       averageStaked,
+      registeredApps,
     });
   }
 
@@ -92,6 +103,7 @@ class AppsMain extends Component {
       totalApplications,
       averageStaked,
       averageRelays,
+      registeredApps,
     } = this.state;
 
     return (
@@ -133,7 +145,7 @@ class AppsMain extends Component {
             />
           </Col>
         </Row>
-        <Row>
+        <Row className="mb-4">
           <Col sm="8" md="8" lg="8">
             <h2 className="mb-3">My apps</h2>
             <Row>
@@ -198,6 +210,11 @@ class AppsMain extends Component {
                 options={["All", "Newest", "Oldest"]}
               />
             </div>
+            <AppTable
+              columns={["Name", "Address"]}
+              data={registeredApps}
+              hover={false}
+            />
           </Col>
         </Row>
       </React.Fragment>
