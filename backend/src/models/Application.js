@@ -1,7 +1,7 @@
-import {Account, Application, BondStatus} from "@pokt-network/pocket-js";
+import {Account, Application, ApplicationParams, BondStatus} from "@pokt-network/pocket-js";
 import PocketService from "../services/PocketService";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
-import {Configurations} from "../_configuration";
+import {Chains} from "../providers/NetworkChains";
 
 
 export class ApplicationPublicPocketAccount {
@@ -169,16 +169,16 @@ export class ExtendedPocketApplication {
    * Convenient Factory method to create network application.
    *
    * @param {ApplicationPublicPocketAccount} publicPocketAccount Public pocket account.
-   * @param {bigint} maxRelays Max Relays.
+   * @param {ApplicationParams} applicationParameters Application parameter from network.
    *
    * @returns {Application} Application.
    * @static
    */
-  static createNetworkApplication(publicPocketAccount, maxRelays) {
+  static createNetworkApplication(publicPocketAccount, applicationParameters) {
     const {address, publicKey} = publicPocketAccount;
     const chains = Configurations.pocketNetwork.chains;
 
-    return new Application(address, publicKey, false, BondStatus.unbonded, chains, 0n, maxRelays);
+    return new Application(address, publicKey, false, BondStatus.unbonded, chains, 0n, applicationParameters.baseRelaysPerPokt);
   }
 }
 
