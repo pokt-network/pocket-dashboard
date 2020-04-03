@@ -20,4 +20,17 @@ export class NetworkChain {
   static getAvailableNetworkChains() {
     return Chains.map(chain => new NetworkChain(chain.name, chain.netID, chain.hash));
   }
+
+  /**
+   * Get Network chains from hashes.
+   *
+   * @param {string[]} networkHashes Network hashes.
+   * @returns {NetworkChain[]} Network chains in Pocket.
+   * @static
+   */
+  static getNetworkChains(networkHashes) {
+    return Chains
+      .filter(chain => networkHashes.includes(chain.hash))
+      .map(chain => new NetworkChain(chain.name, chain.netID, chain.hash));
+  }
 }

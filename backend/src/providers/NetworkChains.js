@@ -1,3 +1,4 @@
+/** @type {{name:string, netID:string, hash:string}[]} */
 export const Chains = [
   {
     name: "Aion Testnet Network",

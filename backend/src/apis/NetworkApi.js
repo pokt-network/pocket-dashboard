@@ -21,4 +21,25 @@ router.get("/chains", async (request, response) => {
   }
 });
 
+/**
+ * Get network chains from hashes.
+ */
+router.post("/chains", async (request, response) => {
+  try {
+
+    /** @type {{networkHashes: string[]}} */
+    const data = request.body;
+
+    const chains = NetworkChain.getNetworkChains(data.networkHashes);
+
+    response.send(chains);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
 export default router;
