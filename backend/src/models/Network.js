@@ -25,6 +25,7 @@ export class NetworkChain {
    * Get Network chains from hashes.
    *
    * @param {string[]} networkHashes Network hashes.
+   *
    * @returns {NetworkChain[]} Network chains in Pocket.
    * @static
    */
