@@ -37,7 +37,7 @@ class AppDropdown extends Component {
     const {selected} = this.state;
 
     return (
-      <Dropdown>
+      <Dropdown className="app-dropdown">
         <Dropdown.Toggle variant="light" id="dropdown-basic">
           {selected}
         </Dropdown.Toggle>
