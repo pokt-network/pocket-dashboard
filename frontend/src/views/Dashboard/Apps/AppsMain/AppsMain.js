@@ -1,18 +1,13 @@
 import React, {Component} from "react";
+import axios from "axios";
 import "./AppsMain.scss";
 import {Button, Col, Row, InputGroup, FormControl} from "react-bootstrap";
-import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
-import ApplicationService from "../../../core/services/PocketApplicationService";
-import UserService from "../../../core/services/PocketUserService";
-import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import AppTable from "../../../core/components/AppTable/AppTable";
-
-const styles = {
-  button: {
-    fontWeight: "bold",
-  },
-};
+import InfoCard from "../../../../core/components/InfoCard/InfoCard";
+import PocketElementCard from "../../../../core/components/PocketElementCard/PocketElementCard";
+import ApplicationService from "../../../../core/services/PocketApplicationService";
+import UserService from "../../../../core/services/PocketUserService";
+import AppDropdown from "../../../../core/components/AppDropdown/AppDropdown";
+import AppTable from "../../../../core/components/AppTable/AppTable";
 
 const BONDSTATUS = {
   0: "Bonded",
@@ -20,7 +15,7 @@ const BONDSTATUS = {
   2: "Unbonded",
 };
 
-const LIMIT = 10;
+const APPLICATIONS_LIMIT = 10;
 
 class AppsMain extends Component {
   constructor(props, context) {
@@ -70,7 +65,7 @@ class AppsMain extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail, LIMIT
+      userEmail, APPLICATIONS_LIMIT
     );
 
     const {
@@ -79,7 +74,9 @@ class AppsMain extends Component {
       averageStaked,
     } = await ApplicationService.getStakedApplicationSummary();
 
-    let registeredApps = await ApplicationService.getAllApplications(LIMIT);
+    let registeredApps = await ApplicationService.getAllApplications(
+      APPLICATIONS_LIMIT
+    );
 
     registeredApps = registeredApps.map(app => [
       app.pocketApplication.name,
@@ -106,26 +103,21 @@ class AppsMain extends Component {
     } = this.state;
 
     return (
-      <React.Fragment>
+      <div>
         <Row>
           <Col sm="8" md="8" lg="8">
             <h2 className="ml-1">General Apps Information</h2>
           </Col>
-          <Col sm="4" md="4" lg="4" className="d-flex justify-content-end">
-            <Button
-              variant="dark"
-              size={"md"}
-              className="ml-4 pl-4 pr-4 mr-3"
-              style={styles.button}
-            >
+          <Col
+            sm="4"
+            md="4"
+            lg="4"
+            className="d-flex justify-content-end general-info"
+          >
+            <Button variant="dark" size={"md"} className="ml-4 pl-4 pr-4 mr-3">
               Create new app
             </Button>
-            <Button
-              variant="secondary"
-              size={"md"}
-              className="pl-4 pr-4"
-              style={styles.button}
-            >
+            <Button variant="secondary" size={"md"} className="pl-4 pr-4">
               Import app
             </Button>
           </Col>
@@ -216,7 +208,7 @@ class AppsMain extends Component {
             />
           </Col>
         </Row>
-      </React.Fragment>
+      </div>
     );
   }
 }
