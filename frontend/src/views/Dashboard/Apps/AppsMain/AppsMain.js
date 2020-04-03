@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import axios from "axios";
 import "./AppsMain.scss";
 import {Button, Col, Row, InputGroup, FormControl} from "react-bootstrap";
 import InfoCard from "../../../../core/components/InfoCard/InfoCard";
