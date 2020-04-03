@@ -2,6 +2,9 @@ import React, {Component} from "react";
 import "./CreateAppInfo.scss";
 import {Button, Col, Row, Form} from "react-bootstrap";
 import ImageFileUpload from "../../../../core/components/ImageFileUpload/ImageFileUpload";
+import Identicon from "identicon.js";
+import ApplicationService from "../../../../core/services/PocketApplicationService";
+import UserService from "../../../../core/services/PocketUserService";
 
 class CreateAppInfo extends Component {
   constructor(props, context) {
@@ -9,13 +12,14 @@ class CreateAppInfo extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleDrop = this.handleDrop.bind(this);
+    this.handleCreate = this.handleCreate.bind(this);
 
     this.state = {
       data: {
         name: "",
-        applicationDev: "",
+        owner: "",
         url: "",
-        email: "",
+        contactEmail: "",
         description: "",
         icon: "",
       },
@@ -33,7 +37,7 @@ class CreateAppInfo extends Component {
     reader.onloadend = () => {
       const base64data = reader.result;
 
-      this.setState({icon: base64data});
+      this.setState({data: {icon: base64data}});
     };
   }
 
@@ -44,9 +48,36 @@ class CreateAppInfo extends Component {
     this.setState({data});
   }
 
+  handleCreate(e) {
+    e.preventDefault();
+
+    let {name, owner, url, contactEmail, description, icon} = this.state.data;
+
+    // TODO: Show proper message on front end to user on validation error
+    if (name === "" || contactEmail === "" || owner === "") {
+      console.log("missing required field");
+    }
+
+    const currTime = new Date().getTime();
+
+    // Use current time as a 'hash' to generate icon of 250x250
+    const identicon = `data:image/png;base64,${new Identicon(
+      `${currTime}${currTime / 2}`, 250).toString()}`;
+
+    if (!icon) {
+      icon = identicon;
+    }
+
+    const user = UserService.getUserInfo().email;
+
+    ApplicationService.createApplication(
+      name, owner, url, contactEmail, description, icon, user
+    );
+  }
+
   state = {};
   render() {
-    const {name, applicationDev, url, email, description} = this.state.data;
+    const {name, owner, url, contactEmail, description} = this.state.data;
 
     return (
       <div id="create-app-info">
@@ -61,7 +92,7 @@ class CreateAppInfo extends Component {
             <ImageFileUpload handleDrop={img => this.handleDrop(img.preview)} />
           </Col>
           <Col sm="9" md="9" lg="9">
-            <Form>
+            <Form onSubmit={this.handleCreate}>
               <Form.Group>
                 <Form.Label>Name*</Form.Label>
                 <Form.Control
@@ -73,15 +104,15 @@ class CreateAppInfo extends Component {
               <Form.Group>
                 <Form.Label>Application Developer*</Form.Label>
                 <Form.Control
-                  name="applicationDev"
-                  value={applicationDev}
+                  name="owner"
+                  value={owner}
                   onChange={this.handleChange}
                 />
               </Form.Group>
               <Form.Group>
                 <Form.Label>URL</Form.Label>
                 <Form.Control
-                  name="irl"
+                  name="url"
                   value={url}
                   onChange={this.handleChange}
                 />
@@ -89,9 +120,9 @@ class CreateAppInfo extends Component {
               <Form.Group>
                 <Form.Label>Contact email*</Form.Label>
                 <Form.Control
-                  name="email"
+                  name="contactEmail"
                   type="email"
-                  value={email}
+                  value={contactEmail}
                   onChange={this.handleChange}
                 />
               </Form.Group>
