@@ -7,7 +7,7 @@ import SignUp from "./views/Auth/SignUp/SignUp";
 import VerifyEMail from "./views/Auth/VerifyEmail/VerifyEmail";
 import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
 import Dashboard from "./views/Dashboard/Dashboard";
-import AppsMain from "./views/Dashboard/Apps/AppsMain";
+import AppsMain from "./views/Dashboard/Apps/AppsMain/AppsMain";
 
 export const routePaths = {
   signup: "/signup",
