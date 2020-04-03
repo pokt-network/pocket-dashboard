@@ -2,11 +2,13 @@ import {
   Account,
   Application,
   ApplicationParams,
+  CoinDenom,
   Configuration,
   HttpRpcProvider,
   Pocket,
   QueryAppResponse,
   QueryAppsResponse,
+  RawTxResponse,
   StakingStatus
 } from "@pokt-network/pocket-js";
 import {PocketAAT} from "@pokt-network/aat-js";
@@ -212,5 +214,31 @@ export default class PocketService {
     }
 
     return applicationParametersResponse.applicationParams;
+  }
+
+  /**
+   * Stake an application in pocket network.
+   *
+   * @param {Account} applicationAccount Application account to stake.
+   * @param {string} passPhrase Passphrase used to encrypt account.
+   * @param {string} poktAmount Pocket amount to stake.
+   * @param {string[]} networkChains Network Chains to stake.
+   *
+   * @returns {Promise<RawTxResponse>} The transaction hash.
+   * @throws Error if transaction fails.
+   */
+  async stakeApplication(applicationAccount, passPhrase, poktAmount, networkChains) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const publicKey = applicationAccount.publicKey.toString("hex");
+    const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.address, passPhrase);
+
+    const transactionResponse = await transactionSender.appStake(publicKey, networkChains, poktAmount)
+      .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake an application");
+
+    if (transactionResponse instanceof Error) {
+      throw  transactionResponse;
+    }
+
+    return transactionResponse;
   }
 }
