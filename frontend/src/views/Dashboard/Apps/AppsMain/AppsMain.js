@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import axios from "axios";
 import "./AppsMain.scss";
 import {Button, Col, Row, InputGroup, FormControl} from "react-bootstrap";
 import InfoCard from "../../../../core/components/InfoCard/InfoCard";
@@ -124,10 +123,10 @@ class AppsMain extends Component {
         </Row>
         <Row className="stats mb-4">
           <Col>
-            <InfoCard title={totalApplications} subtitle="Total of app" />
+            <InfoCard title={totalApplications} subtitle="Total of app"/>
           </Col>
           <Col>
-            <InfoCard title={averageStaked} subtitle="Average staked" />
+            <InfoCard title={averageStaked} subtitle="Average staked"/>
           </Col>
           <Col>
             <InfoCard
