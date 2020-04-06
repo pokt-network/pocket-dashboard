@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import BootstrapTable from "react-bootstrap-table-next";
 import "./AppsMain.scss";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import InfoCard from "../../../../core/components/InfoCard/InfoCard";
@@ -6,7 +7,6 @@ import PocketElementCard from "../../../../core/components/PocketElementCard/Poc
 import ApplicationService from "../../../../core/services/PocketApplicationService";
 import UserService from "../../../../core/services/PocketUserService";
 import AppDropdown from "../../../../core/components/AppDropdown/AppDropdown";
-import AppTable from "../../../../core/components/AppTable/AppTable";
 
 const BOND_STATUS = {
   0: "Bonded",
@@ -50,7 +50,7 @@ class AppsMain extends Component {
     let filteredUserApps = userApps;
 
     if (searchQuery) {
-      filteredUserApps = userApps.filter(a =>
+      filteredUserApps = userApps.filter((a) =>
         a.pocketApplication.name
           .toLowerCase()
           .includes(searchQuery.toLowerCase())
@@ -73,14 +73,9 @@ class AppsMain extends Component {
       averageStaked,
     } = await ApplicationService.getStakedApplicationSummary();
 
-    let registeredApps = await ApplicationService.getAllApplications(
+    const registeredApps = await ApplicationService.getAllApplications(
       APPLICATIONS_LIMIT
     );
-
-    registeredApps = registeredApps.map(app => [
-      app.pocketApplication.name,
-      app.networkData.address,
-    ]);
 
     this.setState({
       userApps,
@@ -100,6 +95,17 @@ class AppsMain extends Component {
       averageRelays,
       registeredApps,
     } = this.state;
+
+    const columns = [
+      {
+        dataField: "pocketApplication.name",
+        text: "Name",
+      },
+      {
+        dataField: "networkData.address",
+        text: "Address",
+      },
+    ];
 
     return (
       <div>
@@ -123,10 +129,10 @@ class AppsMain extends Component {
         </Row>
         <Row className="stats mb-4">
           <Col>
-            <InfoCard title={totalApplications} subtitle="Total of app"/>
+            <InfoCard title={totalApplications} subtitle="Total of app" />
           </Col>
           <Col>
-            <InfoCard title={averageStaked} subtitle="Average staked"/>
+            <InfoCard title={averageStaked} subtitle="Average staked" />
           </Col>
           <Col>
             <InfoCard
@@ -166,7 +172,7 @@ class AppsMain extends Component {
                 <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
                 {/* TODO: Implement sorting on apps */}
                 <AppDropdown
-                  onSelect={t => console.log(t)}
+                  onSelect={(t) => console.log(t)}
                   options={["All", "Newest", "Oldest"]}
                 />
               </Col>
@@ -193,17 +199,18 @@ class AppsMain extends Component {
             <h2>Registered apps</h2>
             <div className="order-by">
               <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
-              {/* TODO: Refactor dropdown to a component */}
               {/* TODO: Implement sorting on apps */}
               <AppDropdown
-                onSelect={t => console.log(t)}
+                onSelect={(t) => console.log(t)}
                 options={["All", "Newest", "Oldest"]}
               />
             </div>
-            <AppTable
-              columns={["Name", "Address"]}
+            <BootstrapTable
+              classes="table app-table table-striped"
+              keyField="hash"
               data={registeredApps}
-              hover={false}
+              columns={columns}
+              bordered={false}
             />
           </Col>
         </Row>
