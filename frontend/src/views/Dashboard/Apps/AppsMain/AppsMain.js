@@ -124,6 +124,7 @@ class AppsMain extends Component {
           <Col>
             <InfoCard title={totalApplications} subtitle="Total of app" />
           </Col>
+          <Col>
             <InfoCard title={averageStaked} subtitle="Average staked" />
           </Col>
           <Col>
