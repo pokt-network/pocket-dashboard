@@ -8,6 +8,7 @@ import VerifyEMail from "./views/Auth/VerifyEmail/VerifyEmail";
 import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
 import Dashboard from "./views/Dashboard/Dashboard";
 import AppsMain from "./views/Dashboard/Apps/AppsMain/AppsMain";
+import AppCreated from "./views/Dashboard/Apps/AppsMain/AppCreated/AppCreated";
 import CreateAppInfo from "./views/Dashboard/Apps/CreateAppInfo/CreateAppInfo";
 
 export const ROUTE_PATHS = {
@@ -22,6 +23,7 @@ export const ROUTE_PATHS = {
 export const DASHBOARD_PATHS = {
   home: "/dashboard",
   apps: "/apps",
+  appCreated: "/apps/created",
   createAppInfo: "/apps/new"
 };
 
@@ -64,6 +66,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Home - Dashboard",
     component: Dashboard,
+  },
+  {
+    path: DASHBOARD_PATHS.appCreated,
+    exact: true,
+    name: "App creation",
+    component: AppCreated,
   },
   {
     path: DASHBOARD_PATHS.createAppInfo,
