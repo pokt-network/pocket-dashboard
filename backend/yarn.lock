@@ -841,7 +841,16 @@
   resolved "https://registry.yarnpkg.com/@istanbuljs/schema/-/schema-0.1.2.tgz#26520bf09abe4a5644cd5414e37125a8954241dd"
   integrity sha512-tsAQNx32a8CoFhjhijUIhI4kccIAgmGhy8LZMZgGfmXcpMbPRUqn5LWmgRttILi6yeGmBJd2xsPkFMs0PzgPCw==
 
-"@pokt-network/aat-js@0.0.2-rc", "@pokt-network/aat-js@^0.0.2-rc":
+"@pokt-network/aat-js@0.1.0-rc":
+  version "0.1.0-rc"
+  resolved "https://registry.yarnpkg.com/@pokt-network/aat-js/-/aat-js-0.1.0-rc.tgz#7c11e65ae42ba390dcd7dece2accee7034cf808f"
+  integrity sha512-Xa3hJlnv9lnbv0MA3HQ6BMw/r2DS6OI9ALQ/ImzNosr+wwIkUKezGqAQRu0B7vfjE0PwqeTTaG1B4eelZ+bAGA==
+  dependencies:
+    "@types/libsodium-wrappers" "^0.7.7"
+    js-sha3 "^0.8.0"
+    libsodium-wrappers "^0.7.6"
+
+"@pokt-network/aat-js@^0.0.2-rc":
   version "0.0.2-rc"
   resolved "https://registry.yarnpkg.com/@pokt-network/aat-js/-/aat-js-0.0.2-rc.tgz#7e91c3056ca5489747988f679ba55d1a64ec1c8d"
   integrity sha512-ij1c8wVAjjgB0sS9XLaF8GpTIJe80zEN9u/vz4ZdGj2K3ngjoUb0MPV7UOJ6q+CAt6OKCy5ZwQ82qL0kb+ojCw==
@@ -850,10 +859,10 @@
     "@types/pokt-network__ed25519" pabelnl/types-pokt-network-ed25519
     js-sha3 "^0.8.0"
 
-"@pokt-network/amino-js@0.7.2-alpha.1":
-  version "0.7.2-alpha.1"
-  resolved "https://registry.yarnpkg.com/@pokt-network/amino-js/-/amino-js-0.7.2-alpha.1.tgz#4483279137bedf27a30fe31f8a299e053f67108e"
-  integrity sha512-qU3mDnn6Whk9vW1eVXJlJDp7jf160RzLRNQc4DLIx1MuZMVBK14ThWpV+6a6v+iEXSRZE4HQvdFCJBOf8Zsd8A==
+"@pokt-network/amino-js@0.7.3-alpha.1":
+  version "0.7.3-alpha.1"
+  resolved "https://registry.yarnpkg.com/@pokt-network/amino-js/-/amino-js-0.7.3-alpha.1.tgz#fb070684bc2b75856891d4f8ad043614fe35d848"
+  integrity sha512-nqO7R2fWBv+ucEPP6CsEFnLnM8rwyhZD3ldwyORRqocix5t7oDtjcvgWTsHDnEuxCnoEzouFAz2jQ+lZRhhPCQ==
   dependencies:
     "@tendermint/belt" "0.2.1"
     "@tendermint/types" "0.1.1"
@@ -866,24 +875,23 @@
     bindings "^1.2.1"
     nan "^2.0.9"
 
-"@pokt-network/pocket-js@^0.1.0-rc":
-  version "0.1.0-rc"
-  resolved "https://registry.yarnpkg.com/@pokt-network/pocket-js/-/pocket-js-0.1.0-rc.tgz#0314dbb6adb1f9c1a694c20d0526ba0432c5689e"
-  integrity sha512-CrAEJ5xyOegfDo3C3oFhFTdwmflBJv/+NI1zLPYz/4+bCUVUhj6Z9kmYJkLoJ5PKnRWRCZHIF0NnnE4FhGOTgw==
+"@pokt-network/pocket-js@^0.2.2-rc":
+  version "0.2.2-rc"
+  resolved "https://registry.yarnpkg.com/@pokt-network/pocket-js/-/pocket-js-0.2.2-rc.tgz#71ae34aea6d9a6e06eb01b9e5869fb374dd53d5c"
+  integrity sha512-/iwhCVXF2+HmxgZ43bhs0NbxqH1waYU7Ejz6CqVqbN2i8imzheUzMiCBatOuMYRBewVcAGF0L9com+l7hfrNyA==
   dependencies:
-    "@pokt-network/aat-js" "0.0.2-rc"
-    "@pokt-network/amino-js" "0.7.2-alpha.1"
-    "@pokt-network/ed25519" "0.0.1"
+    "@pokt-network/aat-js" "0.1.0-rc"
+    "@pokt-network/amino-js" "0.7.3-alpha.1"
     "@tendermint/belt" "^0.2.1"
     "@types/aes-js" "^3.1.0"
-    "@types/pokt-network__ed25519" pabelnl/types-pokt-network-ed25519
+    "@types/libsodium-wrappers" "^0.7.7"
     aes-js "^3.1.2"
     axios "^0.18.1"
     js-sha256 "^0.9.0"
     js-sha3 "^0.8.0"
+    libsodium-wrappers "^0.7.6"
     node-localstorage "^2.1.5"
     pbkdf2 "^3.0.17"
-    seedrandom "^3.0.5"
 
 "@sinonjs/commons@^1", "@sinonjs/commons@^1.6.0", "@sinonjs/commons@^1.7.0":
   version "1.7.1"
@@ -952,6 +960,11 @@
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@types/cookiejar/-/cookiejar-2.1.1.tgz#90b68446364baf9efd8e8349bb36bd3852b75b80"
   integrity sha512-aRnpPa7ysx3aNW60hTiCtLHlQaIFsXFCgQlpakNgDNVFzbtusSY8PwjAQgRWfSk0ekNoBjO51eQRB6upA9uuyw==
+
+"@types/libsodium-wrappers@^0.7.7":
+  version "0.7.7"
+  resolved "https://registry.yarnpkg.com/@types/libsodium-wrappers/-/libsodium-wrappers-0.7.7.tgz#cdb25e85458612ec80f0157c3815fac187d0b6d2"
+  integrity sha512-Li91pVKcLvQJK3ZolwCPo85oxf2gKBCApgnesRxYg4OVYchLXcJB2eivX8S87vfQVv6ZRnyCO1lLDosZGJfpRg==
 
 "@types/node@*":
   version "13.9.0"
@@ -4163,6 +4176,18 @@ levn@^0.3.0, levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+libsodium-wrappers@^0.7.6:
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/libsodium-wrappers/-/libsodium-wrappers-0.7.6.tgz#baed4c16d4bf9610104875ad8a8e164d259d48fb"
+  integrity sha512-OUO2CWW5bHdLr6hkKLHIKI4raEkZrf3QHkhXsJ1yCh6MZ3JDA7jFD3kCATNquuGSG6MjjPHQIQms0y0gBDzjQg==
+  dependencies:
+    libsodium "0.7.6"
+
+libsodium@0.7.6:
+  version "0.7.6"
+  resolved "https://registry.yarnpkg.com/libsodium/-/libsodium-0.7.6.tgz#018b80c5728054817845fbffa554274441bda277"
+  integrity sha512-hPb/04sEuLcTRdWDtd+xH3RXBihpmbPCsKW/Jtf4PsvdyKh+D6z2D2gvp/5BfoxseP+0FCOg66kE+0oGUE/loQ==
+
 loader-fs-cache@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/loader-fs-cache/-/loader-fs-cache-1.0.2.tgz#54cedf6b727e1779fd8f01205f05f6e88706f086"
@@ -5747,11 +5772,6 @@ schema-utils@^2.6.1:
   dependencies:
     ajv "^6.10.2"
     ajv-keywords "^3.4.1"
-
-seedrandom@^3.0.5:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-3.0.5.tgz#54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7"
-  integrity sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==
 
 semver-diff@^2.0.0:
   version "2.1.0"

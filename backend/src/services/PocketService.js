@@ -18,7 +18,7 @@ import assert from "assert";
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocketNetwork;
 
 const POCKET_CONFIGURATION = new Configuration(
-  POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.request_timeout, POCKET_NETWORK_CONFIGURATION.max_sessions);
+  POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
 
 
 /**
@@ -182,15 +182,16 @@ export default class PocketService {
   /**
    * Get Applications data.
    *
-   * @param {StakingStatus} status Staking status.
+   * @param {StakingStatus} status Status of the apps to retrieve.
    *
    * @returns {Promise<Application[]>} The applications data.
    * @throws Error If Query fails.
    * @async
    */
   async getApplications(status) {
+    // TODO: Change the status string for StakingStatus parameter
     /** @type {QueryAppsResponse} */
-    const applicationsResponse = await this.__pocket.rpc().query.getApps(status);
+    const applicationsResponse = await this.__pocket.rpc().query.getApps("staked");
 
     if (applicationsResponse instanceof Error) {
       throw applicationsResponse;
@@ -230,13 +231,14 @@ export default class PocketService {
   async stakeApplication(applicationAccount, passPhrase, poktAmount, networkChains) {
     const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
     const publicKey = applicationAccount.publicKey.toString("hex");
+
     const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.address, passPhrase);
 
     const transactionResponse = await transactionSender.appStake(publicKey, networkChains, poktAmount)
       .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake an application");
 
     if (transactionResponse instanceof Error) {
-      throw  transactionResponse;
+      throw transactionResponse;
     }
 
     return transactionResponse;
