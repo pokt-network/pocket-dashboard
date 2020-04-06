@@ -15,7 +15,7 @@ class AppCreated extends Component {
   state = {};
   render() {
     const {applicationData} = this.props;
-    TODO: Get POKT balance
+    // TODO: Get POKT balance
     const {
       address,
       privateKey,
