@@ -1,8 +1,6 @@
 @import "../../../scss/Core.scss";
 
 .app-table {
-  cursor: pointer;
-
   thead {
     background-color: map_get(map_get($table, columns), background-color);
     color: map_get(map_get($table, columns), color);
@@ -18,9 +16,4 @@
       border-top-color: transparent;
     }
   }
-
-  .active {
-    background-color: map_get(map_get($table, selected-item), background-color);
-  }
-
 }
