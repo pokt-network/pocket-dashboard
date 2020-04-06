@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
-import "./ChooseChain.scss";
+import "./ChainList.scss";
 import {Button, Col, Row, FormControl, InputGroup} from "react-bootstrap";
 import AppDropdown from "../../../../core/components/AppDropdown/AppDropdown";
 import NetworkService from "../../../../core/services/PocketNetworkService";

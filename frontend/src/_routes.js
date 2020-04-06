@@ -9,7 +9,7 @@ import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
 import Dashboard from "./views/Dashboard/Dashboard";
 import AppsMain from "./views/Dashboard/Apps/AppsMain/AppsMain";
 import CreateAppInfo from "./views/Dashboard/Apps/CreateAppInfo/CreateAppInfo";
-import ChooseChain from "./views/Dashboard/Apps/ChainList/ChainList";
+import ChainList from "./views/Dashboard/Apps/ChainList/ChainList";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
