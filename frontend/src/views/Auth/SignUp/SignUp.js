@@ -5,7 +5,7 @@ import {AuthProviderButton, AuthProviderType} from "../../../core/components/Aut
 import HelpLink from "../../../core/components/HelpLink";
 import UserService from "../../../core/services/PocketUserService";
 import "./SignUp.scss";
-import {routePaths} from "../../../_routes";
+import {ROUTE_PATHS} from "../../../_routes";
 import AuthSidebar from "../../../core/components/AuthSidebar";
 
 class SignUp extends Component {
@@ -74,7 +74,7 @@ class SignUp extends Component {
 
 
   render() {
-    const {login, verify_email} = routePaths;
+    const {login, verify_email} = ROUTE_PATHS;
     const {signedIn, data} = this.state;
     const {username, email, password1, password2} = data;
 

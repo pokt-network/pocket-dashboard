@@ -10,7 +10,7 @@ import Dashboard from "./views/Dashboard/Dashboard";
 import AppsMain from "./views/Dashboard/Apps/AppsMain/AppsMain";
 import CreateAppInfo from "./views/Dashboard/Apps/CreateAppInfo/CreateAppInfo";
 
-export const routePaths = {
+export const ROUTE_PATHS = {
   signup: "/signup",
   login: "/login",
   home: "/dashboard",
@@ -19,8 +19,8 @@ export const routePaths = {
   verify_email: "/verify-email"
 };
 
-export const dashboardPaths = {
-  home: "",
+export const DASHBOARD_PATHS = {
+  home: "/dashboard",
   apps: "/apps",
   createAppInfo: "/apps/new"
 };
@@ -29,12 +29,12 @@ export const dashboardPaths = {
  * @type {Array<{path: string, component: Component, exact: boolean, name: string}>}
  */
 const pageRoutes = [
-  {path: routePaths.login, exact: true, name: "Login", component: Login},
-  {path: routePaths.home, exact: false, name: "Home", component: DefaultLayout},
-  {path: routePaths.forgot_password, exact: true, name: "Forgot Password", component: ForgotPassword},
-  {path: routePaths.security_questions, exact: true, name: "Security Questions", component: SecurityQuestions},
-  {path: routePaths.signup, exact: true, name: "Sign Up", component: SignUp},
-  {path: routePaths.verify_email, exact: true, name: "Verify Email", component: VerifyEMail},
+  {path: ROUTE_PATHS.login, exact: true, name: "Login", component: Login},
+  {path: ROUTE_PATHS.forgot_password, exact: true, name: "Forgot Password", component: ForgotPassword},
+  {path: ROUTE_PATHS.security_questions, exact: true, name: "Security Questions", component: SecurityQuestions},
+  {path: ROUTE_PATHS.signup, exact: true, name: "Sign Up", component: SignUp},
+  {path: ROUTE_PATHS.verify_email, exact: true, name: "Verify Email", component: VerifyEMail},
+  {path: ROUTE_PATHS.home, exact: false, name: "Home", component: DefaultLayout},
 ];
 
 /**
@@ -42,13 +42,13 @@ const pageRoutes = [
  */
 const authProviderRoutes = [
   {
-    path: "/api/Auth/provider/github",
+    path: "/api/auth/provider/github",
     exact: true,
     name: "Github",
     component: GithubAuthProviderHook
   },
   {
-    path: "/api/Auth/provider/google",
+    path: "/api/auth/provider/google",
     exact: true,
     name: "Google",
     component: GoogleAuthProviderHook
@@ -60,19 +60,19 @@ const authProviderRoutes = [
  */
 export const dashboardRoutes = [
   {
-    path: dashboardPaths.home,
+    path: DASHBOARD_PATHS.home,
     exact: true,
     name: "Home - Dashboard",
     component: Dashboard,
   },
   {
-    path: dashboardPaths.createAppInfo,
+    path: DASHBOARD_PATHS.createAppInfo,
     exact: true,
     name: "Create New App",
     component: CreateAppInfo,
   },
   {
-    path: dashboardPaths.apps,
+    path: DASHBOARD_PATHS.apps,
     exact: true,
     name: "Apps",
     component: AppsMain,

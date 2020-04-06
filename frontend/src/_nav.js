@@ -7,27 +7,27 @@ export default {
     },
     {
       name: "Apps",
-      url: "/apps",
+      url: "/dashboard/apps",
       icon: "square",
     },
     {
       name: "Nodes",
-      url: "/nodes",
+      url: "/dashboard/nodes",
       icon: "square",
     },
     {
       name: "User profile",
-      url: "/profile",
+      url: "/dashboard/profile",
       icon: "square",
     },
     {
       name: "Documentation",
-      url: "/Documentation",
+      url: "/dashboard/Documentation",
       icon: "square",
     },
     {
       name: "FAQ",
-      url: "/faq",
+      url: "/dashboard/faq",
       icon: "square",
     },
   ],

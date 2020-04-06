@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import UserService from "../../../services/PocketUserService";
 import "./LoginStatus.scss";
 import {Redirect} from "react-router-dom";
-import {routePaths} from "../../../../_routes";
+import {ROUTE_PATHS} from "../../../../_routes";
 
 // eslint-disable-next-line react/display-name
 const LabelToggle = React.forwardRef(({children, onClick}, ref) => (
@@ -53,7 +53,7 @@ class LoginStatus extends Component {
 
   render() {
     const {loggedOut} = this.state;
-    const {login} = routePaths;
+    const {login} = ROUTE_PATHS;
 
     if (loggedOut) {
       return <Redirect to={login} />;
