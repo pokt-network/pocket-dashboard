@@ -1,4 +1,4 @@
-import {Account, Application, ApplicationParams, BondStatus} from "@pokt-network/pocket-js";
+import {Account, Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
 import PocketService from "../services/PocketService";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
 import {Chains} from "../providers/NetworkChains";
@@ -73,6 +73,8 @@ export class PocketApplication {
 
     /** @type {ApplicationPublicPocketAccount} */
     this.publicPocketAccount = null;
+
+    this.freeTier = false;
   }
 
   /**
@@ -178,7 +180,7 @@ export class ExtendedPocketApplication {
     const {address, publicKey} = publicPocketAccount;
     const chainHashes = Chains.map(chain => chain.hash);
 
-    return new Application(address, publicKey, false, BondStatus.unbonded, chainHashes, 0n, applicationParameters.baseRelaysPerPokt, applicationParameters.unstakingTime);
+    return new Application(address, publicKey, false, StakingStatus.Unstaked, chainHashes, 0n, applicationParameters.baseRelaysPerPokt, applicationParameters.unstakingTime);
   }
 }
 
