@@ -1,0 +1,51 @@
+#tier-selection {
+  #titles {
+    h1 {
+      margin-bottom: 0;
+    }
+
+    p {
+      font-size: 1.5em;
+    }
+  }
+
+  .tier-card {
+    text-align: center;
+    min-height: 560px;
+
+    h2 {
+      margin-top: 50px;
+      margin-bottom: 35px;
+    }
+
+    p {
+      font-size: 1.3em;
+      margin-bottom: 25px;
+    }
+
+    p:last-of-type {
+      margin-bottom: 30px;
+    }
+
+    .cta {
+      font-weight: bold;
+      font-size: 1.3em;
+    }
+
+    button {
+      margin: auto;
+    }
+
+    small {
+      display: block;
+    }
+
+    .custom-tier-title {
+      margin-bottom: 66px;
+    }
+  }
+
+  .right-tier {
+    margin-left: 0;
+  }
+}

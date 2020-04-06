@@ -9,6 +9,7 @@ import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
 import Dashboard from "./views/Dashboard/Dashboard";
 import AppsMain from "./views/Dashboard/Apps/AppsMain/AppsMain";
 import CreateAppInfo from "./views/Dashboard/Apps/CreateAppInfo/CreateAppInfo";
+import TierSelection from "./views/Dashboard/Apps/TierSelection/TierSelection";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -22,7 +23,8 @@ export const ROUTE_PATHS = {
 export const DASHBOARD_PATHS = {
   home: "/dashboard",
   apps: "/apps",
-  createAppInfo: "/apps/new"
+  createAppInfo: "/apps/new",
+  tierSelection: "/apps/tiers"
 };
 
 /**
@@ -76,7 +78,13 @@ export const dashboardRoutes = [
     exact: true,
     name: "Apps",
     component: AppsMain,
-  }
+  },
+  {
+    path: DASHBOARD_PATHS.tierSelection,
+    exact: true,
+    name: "Tier Selection",
+    component: TierSelection,
+  },
 ];
 
 const routes = pageRoutes.concat(authProviderRoutes);
