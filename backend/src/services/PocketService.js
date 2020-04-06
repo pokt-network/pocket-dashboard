@@ -141,6 +141,28 @@ export default class PocketService {
   }
 
   /**
+   * Retrieve the free tier account.
+   *
+   * @returns {Promise<Account | Error>} Free Tier account.
+   * @throws Error If the account is not valid.
+   */
+  async getFreeTierAccount() {
+    const privateKey = POCKET_NETWORK_CONFIGURATION.free_tier_account;
+
+    if (!privateKey) {
+      throw Error("Free Tier account value is required");
+    }
+
+    const account = await this.importAccount(privateKey, "freeTier");
+
+    if (account instanceof Error) {
+      throw Error("Free Tier account is not valid");
+    }
+
+    return account;
+  }
+
+  /**
    * Get an Application Authentication Token to be used on Pokt network.
    *
    * @param {Account} clientAccount The client Pokt account our dApp is connecting to.

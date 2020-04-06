@@ -62,9 +62,10 @@ export const Configurations = {
     default_rpc_port: 8081,
     transaction_fee: "100000",
     chain_id: "pocket-testnet-rc-0.2.1",
-    max_dispatchers: process.env.POKT_NETWORK_MAX_DISPATCHER,
-    request_timeout: process.env.POKT_NETWORK_REQUEST_TIMEOUT,
-    max_sessions: process.env.POKT_NETWORK_MAX_SESSIONS,
+    max_dispatchers: process.env.POCKET_NETWORK_MAX_DISPATCHER,
+    request_timeout: process.env.POCKET_NETWORK_REQUEST_TIMEOUT,
+    max_sessions: process.env.POCKET_NETWORK_MAX_SESSIONS,
+    free_tier_account: process.env.POCKET_FREE_TIER_ACCOUNT,
     nodes: {
       test_rpc_provider: "http://node4.testnet.pokt.network",
       test: [
