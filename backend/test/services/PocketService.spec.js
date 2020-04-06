@@ -7,7 +7,7 @@ import {StakingStatus} from "@pokt-network/pocket-js";
 /** @type {string} */
 const ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_ACCOUNT_PRIVATE_KEY_WITH_POKT;
 
-const pocketService = new PocketService(Configurations.pocketNetwork.nodes.test, Configurations.pocketNetwork.nodes.test_rpc_provider);
+const pocketService = new PocketService(Configurations.pocket_network.nodes.test, Configurations.pocket_network.nodes.test_rpc_provider);
 
 describe("PocketService", () => {
 

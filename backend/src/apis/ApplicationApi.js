@@ -150,4 +150,25 @@ router.post("/user", async (request, response) => {
   }
 });
 
+/**
+ * Create a free tier application.
+ */
+router.post("/freetier", async (request, response) => {
+  try {
+
+    /** @type {{applicationPrivateKey: string, networkChains: string[]}} */
+    const data = request.body;
+
+    const aat = await applicationService.createFreeTierApplication(data.applicationPrivateKey, data.networkChains);
+
+    response.send(aat);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
 export default router;

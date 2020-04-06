@@ -57,7 +57,7 @@ export const Configurations = {
       }
     }
   },
-  pocketNetwork: {
+  pocket_network: {
     aat_version: "0.0.1",
     default_rpc_port: 8081,
     transaction_fee: "100000",
@@ -65,7 +65,10 @@ export const Configurations = {
     max_dispatchers: process.env.POCKET_NETWORK_MAX_DISPATCHER,
     request_timeout: process.env.POCKET_NETWORK_REQUEST_TIMEOUT,
     max_sessions: process.env.POCKET_NETWORK_MAX_SESSIONS,
-    free_tier_account: process.env.POCKET_FREE_TIER_ACCOUNT,
+    free_tier: {
+      account: process.env.POCKET_FREE_TIER_ACCOUNT,
+      stake_amount: process.env.POCKET_FREE_TIER_AMOUNT,
+    },
     nodes: {
       test_rpc_provider: "http://node4.testnet.pokt.network",
       test: [

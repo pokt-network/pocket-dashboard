@@ -15,7 +15,7 @@ import {PocketAAT} from "@pokt-network/aat-js";
 import {Configurations} from "../_configuration";
 import assert from "assert";
 
-const POCKET_NETWORK_CONFIGURATION = Configurations.pocketNetwork;
+const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
 const POCKET_CONFIGURATION = new Configuration(
   POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
@@ -143,20 +143,22 @@ export default class PocketService {
   /**
    * Retrieve the free tier account.
    *
+   * @param {string} passphrase Passphrase used to import account.
+   *
    * @returns {Promise<Account | Error>} Free Tier account.
    * @throws Error If the account is not valid.
    */
-  async getFreeTierAccount() {
-    const privateKey = POCKET_NETWORK_CONFIGURATION.free_tier_account;
+  async getFreeTierAccount(passphrase) {
+    const privateKey = POCKET_NETWORK_CONFIGURATION.free_tier.account;
 
     if (!privateKey) {
-      throw Error("Free Tier account value is required");
+      throw Error("Free tier account value is required");
     }
 
-    const account = await this.importAccount(privateKey, "freeTier");
+    const account = await this.importAccount(privateKey, passphrase);
 
     if (account instanceof Error) {
-      throw Error("Free Tier account is not valid");
+      throw Error("Free tier account is not valid");
     }
 
     return account;

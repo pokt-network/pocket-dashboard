@@ -7,14 +7,7 @@ import PocketElementCard from "../../../../core/components/PocketElementCard/Poc
 import ApplicationService from "../../../../core/services/PocketApplicationService";
 import UserService from "../../../../core/services/PocketUserService";
 import AppDropdown from "../../../../core/components/AppDropdown/AppDropdown";
-
-const BOND_STATUS = {
-  0: "Bonded",
-  1: "Unbonding",
-  2: "Unbonded",
-};
-
-const APPLICATIONS_LIMIT = 10;
+import {BONDSTATUS, APPLICATIONS_LIMIT} from "../../../../constants";
 
 class AppsMain extends Component {
   constructor(props, context) {
@@ -131,7 +124,6 @@ class AppsMain extends Component {
           <Col>
             <InfoCard title={totalApplications} subtitle="Total of app" />
           </Col>
-          <Col>
             <InfoCard title={averageStaked} subtitle="Average staked" />
           </Col>
           <Col>
@@ -188,7 +180,7 @@ class AppsMain extends Component {
                     key={idx}
                     title={name}
                     subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                    status={BOND_STATUS[status]}
+                    status={BONDSTATUS[status]}
                     iconURL={icon}
                   />
                 );
