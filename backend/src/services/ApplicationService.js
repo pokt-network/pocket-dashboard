@@ -334,7 +334,7 @@ export default class ApplicationService extends BaseService {
 
     try {
       const freeTierAccount = await this.pocketService.getFreeTierAccount(passphrase);
-      const stakeAmount = Configurations.pocketNetwork.free_tier.stake_amount;
+      const stakeAmount = Configurations.pocket_network.free_tier.stake_amount;
 
       const aat = this.__getAAT(clientApplicationAccount, freeTierAccount, passphrase);
 
