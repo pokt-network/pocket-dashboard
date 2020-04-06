@@ -4,7 +4,7 @@ import {Redirect, Route} from "react-router-dom";
 import AppSidebar from "./AppSidebar/AppSidebar";
 import AppNavbar from "./AppNavbar/AppNavbar";
 import Breadcrumbs from "./Breadcrumb";
-import {dashboardRoutes, routePaths} from "../../../_routes";
+import {dashboardRoutes, ROUTE_PATHS} from "../../../_routes";
 import UserService from "../../services/PocketUserService";
 
 class DefaultLayout extends Component {
@@ -13,7 +13,7 @@ class DefaultLayout extends Component {
     const {path} = this.props.match;
 
     if (!UserService.isLoggedIn()) {
-      return <Redirect to={routePaths.login}/>;
+      return <Redirect to={ROUTE_PATHS.login}/>;
     }
 
     return (

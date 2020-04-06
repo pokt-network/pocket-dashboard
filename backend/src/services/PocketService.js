@@ -2,11 +2,13 @@ import {
   Account,
   Application,
   ApplicationParams,
+  CoinDenom,
   Configuration,
   HttpRpcProvider,
   Pocket,
   QueryAppResponse,
   QueryAppsResponse,
+  RawTxResponse,
   StakingStatus
 } from "@pokt-network/pocket-js";
 import {PocketAAT} from "@pokt-network/aat-js";
@@ -16,7 +18,7 @@ import assert from "assert";
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocketNetwork;
 
 const POCKET_CONFIGURATION = new Configuration(
-  POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.request_timeout, POCKET_NETWORK_CONFIGURATION.max_sessions);
+  POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
 
 
 /**
@@ -139,6 +141,30 @@ export default class PocketService {
   }
 
   /**
+   * Retrieve the free tier account.
+   *
+   * @param {string} passphrase Passphrase used to import account.
+   *
+   * @returns {Promise<Account | Error>} Free Tier account.
+   * @throws Error If the account is not valid.
+   */
+  async getFreeTierAccount(passphrase) {
+    const privateKey = POCKET_NETWORK_CONFIGURATION.free_tier.account;
+
+    if (!privateKey) {
+      throw Error("Free tier account value is required");
+    }
+
+    const account = await this.importAccount(privateKey, passphrase);
+
+    if (account instanceof Error) {
+      throw Error("Free tier account is not valid");
+    }
+
+    return account;
+  }
+
+  /**
    * Get an Application Authentication Token to be used on Pokt network.
    *
    * @param {Account} clientAccount The client Pokt account our dApp is connecting to.
@@ -180,15 +206,16 @@ export default class PocketService {
   /**
    * Get Applications data.
    *
-   * @param {StakingStatus} status Staking status.
+   * @param {StakingStatus} status Status of the apps to retrieve.
    *
    * @returns {Promise<Application[]>} The applications data.
    * @throws Error If Query fails.
    * @async
    */
   async getApplications(status) {
+    // TODO: Change the status string for StakingStatus parameter
     /** @type {QueryAppsResponse} */
-    const applicationsResponse = await this.__pocket.rpc().query.getApps(status);
+    const applicationsResponse = await this.__pocket.rpc().query.getApps("staked");
 
     if (applicationsResponse instanceof Error) {
       throw applicationsResponse;
@@ -212,5 +239,32 @@ export default class PocketService {
     }
 
     return applicationParametersResponse.applicationParams;
+  }
+
+  /**
+   * Stake an application in pocket network.
+   *
+   * @param {Account} applicationAccount Application account to stake.
+   * @param {string} passPhrase Passphrase used to encrypt account.
+   * @param {string} poktAmount Pocket amount to stake.
+   * @param {string[]} networkChains Network Chains to stake.
+   *
+   * @returns {Promise<RawTxResponse>} The transaction hash.
+   * @throws Error if transaction fails.
+   */
+  async stakeApplication(applicationAccount, passPhrase, poktAmount, networkChains) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const publicKey = applicationAccount.publicKey.toString("hex");
+
+    const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.address, passPhrase);
+
+    const transactionResponse = await transactionSender.appStake(publicKey, networkChains, poktAmount)
+      .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake an application");
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse;
   }
 }

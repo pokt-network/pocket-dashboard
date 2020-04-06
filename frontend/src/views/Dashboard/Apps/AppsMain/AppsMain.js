@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import "./AppsMain.scss";
-import {Button, Col, Row, InputGroup, FormControl} from "react-bootstrap";
+import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import InfoCard from "../../../../core/components/InfoCard/InfoCard";
 import PocketElementCard from "../../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../../core/services/PocketApplicationService";
@@ -175,7 +175,7 @@ class AppsMain extends Component {
                     key={idx}
                     title={name}
                     subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                    status={BONDSTATUS[status]}
+                    status={BOND_STATUS[status]}
                     iconURL={icon}
                   />
                 );

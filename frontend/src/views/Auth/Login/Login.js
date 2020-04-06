@@ -4,7 +4,7 @@ import "./Login.scss";
 import {AuthProviderButton, AuthProviderType} from "../../../core/components/AuthProviderButton";
 import HelpLink from "../../../core/components/HelpLink";
 import UserService from "../../../core/services/PocketUserService";
-import {routePaths} from "../../../_routes";
+import {ROUTE_PATHS} from "../../../_routes";
 import {Link, Redirect} from "react-router-dom";
 import AuthSidebar from "../../../core/components/AuthSidebar";
 
@@ -77,7 +77,7 @@ class Login extends Component {
   }
 
   render() {
-    const {home, signup, forgot_password} = routePaths;
+    const {home, signup, forgot_password} = ROUTE_PATHS;
     const {loggedIn, data} = this.state;
     const {username, password} = data;
 

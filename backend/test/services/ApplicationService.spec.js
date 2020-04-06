@@ -2,10 +2,16 @@ import {before, describe, it} from "mocha";
 import "chai/register-should";
 import ApplicationService from "../../src/services/ApplicationService";
 import {ApplicationPrivatePocketAccount, PocketApplication} from "../../src/models/Application";
-import {Application, BondStatus} from "@pokt-network/pocket-js";
+import {Application, StakingStatus} from "@pokt-network/pocket-js";
 import {configureTestService} from "../setupTests";
 import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
 import sinon from "sinon";
+
+/** @type {string} */
+const FREE_TIER_APPLICATION_PRIVATE_KEY = process.env.TEST_FREE_TIER_APPLICATION_PRIVATE_KEY;
+
+/** @type {string} */
+const FREE_TIER_ADDRESS = process.env.TEST_FREE_TIER_ADDRESS;
 
 const applicationService = new ApplicationService();
 
@@ -41,7 +47,7 @@ describe("ApplicationService", () => {
 
       applicationResult.networkData.stakedTokens.toString().should.be.equal("0");
       applicationResult.networkData.jailed.should.be.equal(false);
-      applicationResult.networkData.status.should.be.equal(BondStatus.unbonded);
+      applicationResult.networkData.status.should.be.equal(StakingStatus.Unstaked);
     });
   });
 
@@ -63,6 +69,49 @@ describe("ApplicationService", () => {
       exists.should.be.equal(true);
     });
   });
+
+  if (FREE_TIER_APPLICATION_PRIVATE_KEY && FREE_TIER_ADDRESS) {
+    describe("createFreeTierApplication", () => {
+
+      const applicationData = {
+        name: "Test application 999",
+        owner: "Tester",
+        url: "http://example.com",
+        contactEmail: "tester@app.com",
+        user: "tester@app.com",
+        description: "A test application",
+        publicPocketAccount: {
+          address: FREE_TIER_ADDRESS,
+          publicKey: "642f58349a768375d39747d96ea174256c5e1684bf4a8ae92c5ae0d14a9ed291"
+        }
+      };
+
+      it("Expect an aat", async () => {
+
+        const persistenceService = sinon.createStubInstance(PersistenceProvider);
+        const stubFilter = {
+          "publicPocketAccount.address": FREE_TIER_ADDRESS
+        };
+
+        persistenceService.getEntityByFilter
+          .withArgs("Applications", stubFilter)
+          .returns(Promise.resolve(applicationData));
+
+        sinon.stub(applicationService, "persistenceService").value(persistenceService);
+
+        const networkChains = [
+          "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
+        ];
+
+        const aat = await applicationService.createFreeTierApplication(FREE_TIER_APPLICATION_PRIVATE_KEY, networkChains);
+
+        // eslint-disable-next-line no-undef
+        should.exist(aat);
+
+        aat.should.be.an("object");
+      });
+    });
+  }
 
   describe("getApplication", () => {
     const address = "bc28256f5c58611e96d13996cf535bdc0204366a";

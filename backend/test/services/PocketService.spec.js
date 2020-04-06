@@ -4,8 +4,10 @@ import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
 import {StakingStatus} from "@pokt-network/pocket-js";
 
-const pocketService = new PocketService(Configurations.pocketNetwork.nodes.test, Configurations.pocketNetwork.nodes.test_rpc_provider);
+/** @type {string} */
+const ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_ACCOUNT_PRIVATE_KEY_WITH_POKT;
 
+const pocketService = new PocketService(Configurations.pocketNetwork.nodes.test, Configurations.pocketNetwork.nodes.test_rpc_provider);
 
 describe("PocketService", () => {
 
@@ -97,9 +99,8 @@ describe("PocketService", () => {
 
   describe("getApplications", () => {
     it("Expected applications data successfully retrieved", async () => {
-      const status = StakingStatus.Staked;
+      const applicationsData = await pocketService.getApplications(StakingStatus.Staked);
 
-      const applicationsData = await pocketService.getApplications(status);
 
       // eslint-disable-next-line no-undef
       should.exist(applicationsData);
@@ -108,5 +109,27 @@ describe("PocketService", () => {
       applicationsData.length.should.be.greaterThan(0);
     });
   });
+  if (ACCOUNT_PRIVATE_KEY_WITH_POKT) {
+    describe("stakeApplication", () => {
+      it("Expected a transaction hash successfully", async () => {
+        const passPhrase = "testPassphrase";
+        const account = await pocketService.importAccount(ACCOUNT_PRIVATE_KEY_WITH_POKT, passPhrase);
+        const poktToStake = "10000000";
+        const networkChains = [
+          "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
+        ];
 
+        const transaction = await pocketService.stakeApplication(account, passPhrase, poktToStake, networkChains);
+
+        // eslint-disable-next-line no-undef
+        should.exist(transaction);
+
+        transaction.should.be.an("object");
+        transaction.logs.should.be.an("array");
+
+        transaction.logs.should.not.to.be.empty;
+        transaction.logs[0].success.should.to.be.true;
+      });
+    });
+  }
 });

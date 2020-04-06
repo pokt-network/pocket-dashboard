@@ -11,6 +11,7 @@ import {Account, Application, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import bcrypt from "bcrypt";
 import bigInt from "big-integer";
+import {Configurations} from "../_configuration";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -116,6 +117,34 @@ export default class ApplicationService extends BaseService {
     const extendedApplications = applications.map(async (application) => this.__getExtendedPocketApplication(application));
 
     return Promise.all(extendedApplications);
+  }
+
+  /**
+   * Mark application as Free tier.
+   *
+   * @param {PocketApplication} application Pocket application to mark as free tier.
+   * @private
+   */
+  async __markApplicationAsFreeTier(application) {
+    const filter = {
+      "publicPocketAccount.address": application.publicPocketAccount.address
+    };
+
+    application.freeTier = true;
+    await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
+  }
+
+  /**
+   * Get an AAT of the application.
+   *
+   * @param {Account} clientAccount Client account to create AAT.
+   * @param {Account} applicationAccount Application account to create AAT.
+   * @param {string} applicationPassphrase Application passphrase.
+   *
+   * @returns {PocketAAT} Application AAT.
+   */
+  async __getAAT(clientAccount, applicationAccount, applicationPassphrase) {
+    return this.pocketService.getApplicationAuthenticationToken(clientAccount, applicationAccount, applicationPassphrase);
   }
 
   /**
@@ -249,6 +278,7 @@ export default class ApplicationService extends BaseService {
    * Get staked application summary.
    *
    * @returns {Promise<StakedApplicationSummary>} Summary data of staked applications.
+   * @async
    */
   async getStakedApplicationSummary() {
     try {
@@ -279,13 +309,45 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Get an AAT of the application.
+   * Create free tier application.
    *
-   * @param {PocketApplication} application Application to create AAT.
+   * @param {string} privateApplicationKey Application private key.
+   * @param {string[]} networkChains Network chains to stake application.
    *
-   * @returns {PocketAAT} Application AAT.
+   * @returns {Promise<PocketAAT | boolean>} If application was created or not.
+   * @async
    */
-  getAAT(application) {
-    return null;
+  async createFreeTierApplication(privateApplicationKey, networkChains) {
+    const passphrase = "FreeTierApplication";
+    const clientApplicationAccount = await this.pocketService.importAccount(privateApplicationKey, passphrase);
+    const filter = {
+      "publicPocketAccount.address": clientApplicationAccount.addressHex
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (!applicationDB) {
+      return false;
+    }
+
+    const clientApplication = PocketApplication.createPocketApplication(applicationDB);
+
+    try {
+      const freeTierAccount = await this.pocketService.getFreeTierAccount(passphrase);
+      const stakeAmount = Configurations.pocketNetwork.free_tier.stake_amount;
+
+      const aat = this.__getAAT(clientApplicationAccount, freeTierAccount, passphrase);
+
+      // Stake application using free tier account
+      await this.pocketService.stakeApplication(freeTierAccount, passphrase, stakeAmount, networkChains);
+
+      await this.__markApplicationAsFreeTier(clientApplication);
+
+      return aat;
+
+    } catch (e) {
+      return false;
+    }
+
   }
 }
