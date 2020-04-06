@@ -22,20 +22,22 @@ class AppTable extends Component {
   }
 
   toggleColumnActive(col) {
-    const {multiSelect} = this.props;
+    const {multiSelect, handleSelect} = this.props;
 
     let selectedElements = [...this.state.selectedElements];
 
     if (multiSelect) {
       selectedElements = this.multiColumnToggle(selectedElements, col);
     } else {
-      selectedElements = [col];
+      selectedElements = this.isActive(col) ? [] : [col];
     }
 
     this.setState({selectedElements});
 
     // Trigger data select change outside
-    this.props.handleSelect(selectedElements);
+    if (handleSelect) {
+      handleSelect(selectedElements);
+    }
   }
 
   multiColumnToggle(selectedElements, col) {
@@ -48,10 +50,10 @@ class AppTable extends Component {
   }
 
   render() {
-    const {columns, data} = this.props;
+    const {columns, data, hover} = this.props;
 
     return (
-      <Table hover className="app-table">
+      <Table responsive striped hover={hover} className="app-table">
         <thead>
         <tr>
           {
@@ -79,6 +81,7 @@ class AppTable extends Component {
 
 AppTable.defaultProps = {
   multiSelect: false,
+  hover: true,
 };
 
 AppTable.propTypes = {
@@ -86,6 +89,7 @@ AppTable.propTypes = {
   data: PropTypes.array,
   handleSelect: PropTypes.func,
   multiSelect: PropTypes.bool,
+  hover: PropTypes.bool
 };
 
 export default AppTable;

@@ -7,7 +7,7 @@ class InfoCard extends Component {
     const {title, subtitle} = this.props;
 
     return (
-      <div className="p-badge">
+      <div className="p-badge pt-4 pb-4">
         <div className="p-badge-body">
           <h1>{title}</h1>
           <p>{subtitle}</p>
@@ -18,8 +18,8 @@ class InfoCard extends Component {
 }
 
 InfoCard.propTypes = {
-  title: PropTypes.string,
-  subtitle: PropTypes.string
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  subtitle: PropTypes.string,
 };
 
 export default InfoCard;

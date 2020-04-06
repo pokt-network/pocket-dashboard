@@ -45,11 +45,18 @@ class PocketApplicationService extends PocketBaseService {
    * @return {Promise|Promise<Array.<*>>}
    */
   getAllUserApplications(user, limit, offset = 0) {
-    const params = {limit, offset};
-    const data = {user};
-
-    return axios.post(this._getURL("/user"), {data, params})
-      .then(response => response.data);
+    // Axios options format to send both query parameters and body data
+    return axios({
+      method: "post",
+      url: this._getURL("user"),
+      data: {
+        user
+      },
+      params: {
+        limit,
+        offset
+      }
+    }).then(response => response.data);
   }
 
   /**
@@ -58,7 +65,7 @@ class PocketApplicationService extends PocketBaseService {
    * @return {Promise|Promise<*>}
    */
   getStakedApplicationSummary() {
-    return axios.post(this._getURL("/summary/staked"))
+    return axios.get(this._getURL("summary/staked"))
       .then(response => response.data);
   }
 
@@ -71,7 +78,8 @@ class PocketApplicationService extends PocketBaseService {
    * @param {string} url URL.
    * @param {string} contactEmail Contact email.
    * @param {string} [description] Description.
-   * @param {string} [icon] Icon.
+   * @param {string} [icon] Icon (string is in base64 format).
+   * @param {string} [user] ser email.
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
