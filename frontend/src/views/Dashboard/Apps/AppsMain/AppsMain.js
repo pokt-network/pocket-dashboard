@@ -7,14 +7,7 @@ import ApplicationService from "../../../../core/services/PocketApplicationServi
 import UserService from "../../../../core/services/PocketUserService";
 import AppDropdown from "../../../../core/components/AppDropdown/AppDropdown";
 import AppTable from "../../../../core/components/AppTable/AppTable";
-
-const BONDSTATUS = {
-  0: "Bonded",
-  1: "Unbonding",
-  2: "Unbonded",
-};
-
-const APPLICATIONS_LIMIT = 10;
+import {BONDSTATUS, APPLICATIONS_LIMIT} from "../../../../constants";
 
 class AppsMain extends Component {
   constructor(props, context) {

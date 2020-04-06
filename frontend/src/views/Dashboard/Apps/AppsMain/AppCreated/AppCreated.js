@@ -3,13 +3,7 @@ import {Alert, Button, Col, Row} from "react-bootstrap";
 import "./AppCreated.scss";
 import InfoCard from "../../../../../core/components/InfoCard/InfoCard";
 import {PropTypes} from "prop-types";
-
-// TODO: Move constants to constants file.
-const BONDSTATUS = {
-  0: "Bonded",
-  1: "Unbonding",
-  2: "Unbonded",
-};
+import {BONDSTATUS} from "../../../../../constants";
 
 class AppCreated extends Component {
   state = {};
