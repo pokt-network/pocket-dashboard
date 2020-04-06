@@ -71,7 +71,7 @@ export const dashboardRoutes = [
     path: DASHBOARD_PATHS.appCreated,
     exact: true,
     name: "App creation",
-    component: App,
+    component: AppCreated,
   },
   {
     path: DASHBOARD_PATHS.createAppInfo,

@@ -175,7 +175,7 @@ class AppsMain extends Component {
                     key={idx}
                     title={name}
                     subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                    status={BOND_STATUS[status]}
+                    status={BONDSTATUS[status]}
                     iconURL={icon}
                   />
                 );
