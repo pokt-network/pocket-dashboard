@@ -1,0 +1,25 @@
+.dropzone {
+  .drop {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    p {
+      width: 200px;
+      font-weight: bold;
+      text-align: center;
+    }
+  }
+
+  .drop-border {
+    border: 2px dashed gray;
+    height: 275px;
+    width: 275px;
+    border-radius: 50%;
+  }
+
+  img {
+    cursor: pointer;
+  }
+}

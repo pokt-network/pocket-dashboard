@@ -79,13 +79,13 @@ class PocketApplicationService extends PocketBaseService {
    * @param {string} contactEmail Contact email.
    * @param {string} [description] Description.
    * @param {string} [icon] Icon (string is in base64 format).
-   * @param {string} [user] ser email.
+   * @param {string} [user] User email.
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async createApplication(name, owner, url, contactEmail, description, icon) {
-    const data = {name, owner, url, contactEmail, description, icon};
+  async createApplication(name, owner, url, contactEmail, description, icon, user) {
+    const data = {name, owner, url, contactEmail, description, icon, user};
 
     return axios.post(this._getURL(""), data)
       .then(response => {

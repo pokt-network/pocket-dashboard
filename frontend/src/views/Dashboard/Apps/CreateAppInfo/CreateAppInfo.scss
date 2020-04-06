@@ -1,0 +1,29 @@
+#create-app-info {
+  h1 {
+    font-size: 2em;
+  }
+
+  .legal-info {
+    p {
+      margin-bottom: 10px;
+    }
+  }
+
+  .submit {
+    button[type=submit] {
+      font-weight: bold;
+      padding-left: 50px;
+      padding-right: 50px;
+    }
+
+    p {
+      margin-top: 5px;
+      font-size: 0.7em;
+    }
+
+    a {
+      color: #343A41;
+      text-decoration: underline;
+    }
+  }
+}
