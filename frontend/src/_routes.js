@@ -10,6 +10,7 @@ import Dashboard from "./views/Dashboard/Dashboard";
 import AppsMain from "./views/Dashboard/Apps/AppsMain/AppsMain";
 import AppCreated from "./views/Dashboard/Apps/AppsMain/AppCreated/AppCreated";
 import CreateAppInfo from "./views/Dashboard/Apps/CreateAppInfo/CreateAppInfo";
+import ChainList from "./views/Dashboard/Apps/ChainList/ChainList";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -23,8 +24,9 @@ export const ROUTE_PATHS = {
 export const DASHBOARD_PATHS = {
   home: "/dashboard",
   apps: "/apps",
+  createAppInfo: "/apps/new",
+  chooseChain: "/apps/chains",
   appCreated: "/apps/created",
-  createAppInfo: "/apps/new"
 };
 
 /**
@@ -78,6 +80,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Create New App",
     component: CreateAppInfo,
+  },
+  {
+    path: DASHBOARD_PATHS.chooseChain,
+    exact: true,
+    name: "Chain list",
+    component: ChainList,
   },
   {
     path: DASHBOARD_PATHS.apps,
