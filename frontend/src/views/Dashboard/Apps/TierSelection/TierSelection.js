@@ -31,7 +31,7 @@ class TierSelection extends Component {
                   Get Free Tier
                 </Button>
                 <br />
-                <small>By getting free tier you agree to Pocket's</small>
+                <small>By getting free tier you agree to Pocket&apos;s</small>
                 <small>
                   {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
                   <a className="link" href="#">
