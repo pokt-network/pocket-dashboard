@@ -103,7 +103,7 @@ describe("ApplicationService", () => {
           "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
         ];
 
-        const aat = await applicationService.createFreeTierApplication(FREE_TIER_APPLICATION_PRIVATE_KEY, networkChains);
+        const aat = await applicationService.markAsFreeTierApplication(FREE_TIER_APPLICATION_PRIVATE_KEY, networkChains);
 
         // eslint-disable-next-line no-undef
         should.exist(aat);

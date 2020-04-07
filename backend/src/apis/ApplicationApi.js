@@ -151,7 +151,7 @@ router.post("/user", async (request, response) => {
 });
 
 /**
- * Create a free tier application.
+ * Mark as a free tier application.
  */
 router.post("/freetier", async (request, response) => {
   try {
@@ -159,9 +159,30 @@ router.post("/freetier", async (request, response) => {
     /** @type {{applicationAccountAddress: string, networkChains: string[]}} */
     const data = request.body;
 
-    const aat = await applicationService.createFreeTierApplication(data.applicationAccountAddress, data.networkChains);
+    const aat = await applicationService.markAsFreeTierApplication(data.applicationAccountAddress, data.networkChains);
 
     response.send(aat);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Unstake a free tier application.
+ */
+router.post("/freetier/unstake", async (request, response) => {
+  try {
+
+    /** @type {{applicationAccountAddress: string}} */
+    const data = request.body;
+
+    const unstaked = await applicationService.unstakeFreeTierApplication(data.applicationAccountAddress);
+
+    response.send(unstaked);
   } catch (e) {
     const error = {
       message: e.toString()

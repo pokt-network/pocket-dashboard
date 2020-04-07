@@ -292,6 +292,38 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
+   * Unstake free tier application.
+   *
+   * @param {string} applicationAccountAddress Application account address.
+   *
+   * @returns {Promise<boolean>} If application was unstaked or not.
+   * @async
+   */
+  async unstakeFreeTierApplication(applicationAccountAddress) {
+    const passphrase = "UnstakeFreeTierApplication";
+    const filter = {
+      "publicPocketAccount.address": applicationAccountAddress
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (!applicationDB) {
+      return false;
+    }
+
+    try {
+      const freeTierAccount = await this.pocketService.getFreeTierAccount(passphrase);
+
+      // Unstake application using free tier account
+      await this.pocketService.unstakeApplication(freeTierAccount, passphrase);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
    * Create free tier application.
    *
    * @param {string} applicationAccountAddress Application account address.
@@ -300,7 +332,7 @@ export default class ApplicationService extends BaseService {
    * @returns {Promise<PocketAAT | boolean>} If application was created or not.
    * @async
    */
-  async createFreeTierApplication(applicationAccountAddress, networkChains) {
+  async markAsFreeTierApplication(applicationAccountAddress, networkChains) {
     const passphrase = "FreeTierApplication";
     const filter = {
       "publicPocketAccount.address": applicationAccountAddress
