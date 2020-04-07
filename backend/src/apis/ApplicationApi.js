@@ -106,6 +106,25 @@ router.get("/summary/staked", async (request, response) => {
 });
 
 /**
+ * Get application data by private key.
+ */
+router.post("/network/data", async (request, response) => {
+  try {
+    /** @type {{applicationAccountPrivateKey:string}} */
+    const data = request.params;
+    const application = await applicationService.getApplicationNetworkData(data.applicationAccountPrivateKey);
+
+    response.send(application);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
  * Get application by address.
  */
 router.get("/:applicationAccountAddress", async (request, response) => {

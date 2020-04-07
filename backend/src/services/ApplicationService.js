@@ -163,6 +163,25 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
+   * Get application network data.
+   *
+   * @param {string} applicationAccountPrivateKey Application account private key.
+   *
+   * @returns {Promise<Application | boolean>} Application network data of false if account is not valid or not at network.
+   * @async
+   */
+  async getApplicationNetworkData(applicationAccountPrivateKey) {
+    try {
+      const passPhrase = "ApplicationNetworkData";
+      const applicationAccount = await this.pocketService.importAccount(applicationAccountPrivateKey, passPhrase);
+
+      return await this.pocketService.getApplication(applicationAccount.addressHex);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
    * Get application data.
    *
    * @param {string} applicationAddress Application address.
@@ -431,4 +450,5 @@ export default class ApplicationService extends BaseService {
 
     return result.result.ok === 1;
   }
+
 }
