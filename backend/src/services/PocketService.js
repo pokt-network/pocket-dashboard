@@ -244,21 +244,44 @@ export default class PocketService {
    * Stake an application in pocket network.
    *
    * @param {Account} applicationAccount Application account to stake.
-   * @param {string} passPhrase Passphrase used to encrypt account.
-   * @param {string} poktAmount Pocket amount to stake.
+   `   * @param {string} passPhrase Passphrase used to import the account.
+   * @param {string} uPoktAmount uPocket amount to stake.
    * @param {string[]} networkChains Network Chains to stake.
    *
-   * @returns {Promise<RawTxResponse>} The transaction hash.
+   * @returns {Promise<RawTxResponse>} Raw transaction data
    * @throws Error if transaction fails.
    */
-  async stakeApplication(applicationAccount, passPhrase, poktAmount, networkChains) {
+  async stakeApplication(applicationAccount, passPhrase, uPoktAmount, networkChains) {
     const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
     const publicKey = applicationAccount.publicKey.toString("hex");
 
     const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.address, passPhrase);
 
-    const transactionResponse = await transactionSender.appStake(publicKey, networkChains, poktAmount)
+    const transactionResponse = await transactionSender.appStake(publicKey, networkChains, uPoktAmount)
       .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake an application");
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse;
+  }
+
+  /**
+   * Unstake an application in pocket network.
+   *
+   * @param {Account} applicationAccount Application account to unstake.
+   * @param {string} passPhrase Passphrase used to import the account.
+   *
+   * @returns {Promise<RawTxResponse>} Raw transaction data
+   * @throws Error if transaction fails.
+   */
+  async unstakeApplication(applicationAccount, passPhrase) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.addressHex, passPhrase);
+
+    const transactionResponse = await transactionSender.appUnstake(applicationAccount.addressHex)
+      .submit(chain_id, transaction_fee);
 
     if (transactionResponse instanceof Error) {
       throw transactionResponse;

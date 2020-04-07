@@ -132,5 +132,23 @@ describe("PocketService", () => {
         transaction.logs[0].success.should.to.be.true;
       });
     });
+
+    describe("unstakeApplication", () => {
+      it("Expected a transaction hash successfully", async () => {
+        const passPhrase = "testPassphrase";
+        const account = await pocketService.importAccount(ACCOUNT_PRIVATE_KEY_WITH_POKT, passPhrase);
+
+        const transaction = await pocketService.unstakeApplication(account, passPhrase);
+
+        // eslint-disable-next-line no-undef
+        should.exist(transaction);
+
+        transaction.should.be.an("object");
+        transaction.logs.should.be.an("array");
+
+        transaction.logs.should.not.to.be.empty;
+        transaction.logs[0].success.should.to.be.true;
+      });
+    });
   }
 });
