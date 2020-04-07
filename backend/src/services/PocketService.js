@@ -15,7 +15,7 @@ import {PocketAAT} from "@pokt-network/aat-js";
 import {Configurations} from "../_configuration";
 import assert from "assert";
 
-const POCKET_NETWORK_CONFIGURATION = Configurations.pocketNetwork;
+const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
 const POCKET_CONFIGURATION = new Configuration(
   POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
@@ -167,16 +167,15 @@ export default class PocketService {
   /**
    * Get an Application Authentication Token to be used on Pokt network.
    *
-   * @param {Account} clientAccount The client Pokt account our dApp is connecting to.
-   * @param {Account} applicationAccount The funded applications Pokt account address.
+   * @param {string} clientPublicKey The client Pocket account public key.
+   * @param {Account} applicationAccount The funded application Pocket account.
    * @param {string} applicationAccountPassphrase The passphrase used to generate application address.
    *
    * @returns {Promise<PocketAAT>} An application authorization tokens.
    */
-  async getApplicationAuthenticationToken(clientAccount, applicationAccount, applicationAccountPassphrase) {
+  async getApplicationAuthenticationToken(clientPublicKey, applicationAccount, applicationAccountPassphrase) {
     const aatVersion = POCKET_NETWORK_CONFIGURATION.aat_version;
 
-    const clientPublicKey = clientAccount.publicKey.toString("hex");
     const applicationPublicKeyHex = applicationAccount.publicKey.toString("hex");
     const applicationPrivateKeyHex = await this.exportRawAccount(applicationAccount.addressHex, applicationAccountPassphrase);
 
@@ -245,21 +244,44 @@ export default class PocketService {
    * Stake an application in pocket network.
    *
    * @param {Account} applicationAccount Application account to stake.
-   * @param {string} passPhrase Passphrase used to encrypt account.
-   * @param {string} poktAmount Pocket amount to stake.
+   `   * @param {string} passPhrase Passphrase used to import the account.
+   * @param {string} uPoktAmount uPocket amount to stake.
    * @param {string[]} networkChains Network Chains to stake.
    *
-   * @returns {Promise<RawTxResponse>} The transaction hash.
+   * @returns {Promise<RawTxResponse>} Raw transaction data
    * @throws Error if transaction fails.
    */
-  async stakeApplication(applicationAccount, passPhrase, poktAmount, networkChains) {
+  async stakeApplication(applicationAccount, passPhrase, uPoktAmount, networkChains) {
     const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
     const publicKey = applicationAccount.publicKey.toString("hex");
 
     const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.address, passPhrase);
 
-    const transactionResponse = await transactionSender.appStake(publicKey, networkChains, poktAmount)
+    const transactionResponse = await transactionSender.appStake(publicKey, networkChains, uPoktAmount)
       .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake an application");
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse;
+  }
+
+  /**
+   * Unstake an application in pocket network.
+   *
+   * @param {Account} applicationAccount Application account to unstake.
+   * @param {string} passPhrase Passphrase used to import the account.
+   *
+   * @returns {Promise<RawTxResponse>} Raw transaction data
+   * @throws Error if transaction fails.
+   */
+  async unstakeApplication(applicationAccount, passPhrase) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.addressHex, passPhrase);
+
+    const transactionResponse = await transactionSender.appUnstake(applicationAccount.addressHex)
+      .submit(chain_id, transaction_fee);
 
     if (transactionResponse instanceof Error) {
       throw transactionResponse;

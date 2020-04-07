@@ -7,7 +7,7 @@ import {StakingStatus} from "@pokt-network/pocket-js";
 /** @type {string} */
 const ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_ACCOUNT_PRIVATE_KEY_WITH_POKT;
 
-const pocketService = new PocketService(Configurations.pocketNetwork.nodes.test, Configurations.pocketNetwork.nodes.test_rpc_provider);
+const pocketService = new PocketService(Configurations.pocket_network.nodes.test, Configurations.pocket_network.nodes.test_rpc_provider);
 
 describe("PocketService", () => {
 
@@ -86,9 +86,10 @@ describe("PocketService", () => {
     it("Expected an ATT successfully retrieved", async () => {
       const testPassPhrase = "12345678";
       const clientAccount = await pocketService.createAccount(testPassPhrase);
+      const clientPublicKey = clientAccount.publicKey.toString("hex");
       const applicationAccount = await pocketService.createAccount(testPassPhrase);
 
-      const attToken = await pocketService.getApplicationAuthenticationToken(clientAccount, applicationAccount, testPassPhrase);
+      const attToken = await pocketService.getApplicationAuthenticationToken(clientPublicKey, applicationAccount, testPassPhrase);
 
       // eslint-disable-next-line no-undef
       should.exist(attToken);
@@ -120,6 +121,24 @@ describe("PocketService", () => {
         ];
 
         const transaction = await pocketService.stakeApplication(account, passPhrase, poktToStake, networkChains);
+
+        // eslint-disable-next-line no-undef
+        should.exist(transaction);
+
+        transaction.should.be.an("object");
+        transaction.logs.should.be.an("array");
+
+        transaction.logs.should.not.to.be.empty;
+        transaction.logs[0].success.should.to.be.true;
+      });
+    });
+
+    describe("unstakeApplication", () => {
+      it("Expected a transaction hash successfully", async () => {
+        const passPhrase = "testPassphrase";
+        const account = await pocketService.importAccount(ACCOUNT_PRIVATE_KEY_WITH_POKT, passPhrase);
+
+        const transaction = await pocketService.unstakeApplication(account, passPhrase);
 
         // eslint-disable-next-line no-undef
         should.exist(transaction);

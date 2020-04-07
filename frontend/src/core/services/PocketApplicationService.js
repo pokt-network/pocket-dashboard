@@ -110,13 +110,13 @@ class PocketApplicationService extends PocketBaseService {
   /**
    * Create free tier application.
    *
-   * @param {string} privateApplicationKey Application private key.
+   * @param {string} applicationAccountAddress Application account address.
    * @param {string[]} networkChains Network chains to stake application.
    *
    * @returns {Promise|Promise<*>}
    */
-  createFreeTierApplication(privateApplicationKey, networkChains) {
-    return axios.post(this._getURL("/freetier"), {privateApplicationKey, networkChains})
+  createFreeTierApplication(applicationAccountAddress, networkChains) {
+    return axios.post(this._getURL("/freetier"), {applicationAccountAddress, networkChains})
       .then(response => response.data);
   }
 

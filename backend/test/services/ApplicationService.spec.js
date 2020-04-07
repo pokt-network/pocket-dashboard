@@ -11,6 +11,9 @@ import sinon from "sinon";
 const FREE_TIER_APPLICATION_PRIVATE_KEY = process.env.TEST_FREE_TIER_APPLICATION_PRIVATE_KEY;
 
 /** @type {string} */
+const APPLICATION_PRIVATE_KEY_ON_NETWORK = process.env.TEST_APPLICATION_PRIVATE_KEY_ON_NETWORK;
+
+/** @type {string} */
 const FREE_TIER_ADDRESS = process.env.TEST_FREE_TIER_ADDRESS;
 
 const applicationService = new ApplicationService();
@@ -103,7 +106,7 @@ describe("ApplicationService", () => {
           "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
         ];
 
-        const aat = await applicationService.createFreeTierApplication(FREE_TIER_APPLICATION_PRIVATE_KEY, networkChains);
+        const aat = await applicationService.markAsFreeTierApplication(FREE_TIER_APPLICATION_PRIVATE_KEY, networkChains);
 
         // eslint-disable-next-line no-undef
         should.exist(aat);
@@ -129,7 +132,7 @@ describe("ApplicationService", () => {
       }
     };
 
-    it("Expect a application", async () => {
+    it("Expect an application", async () => {
 
       const persistenceService = sinon.createStubInstance(PersistenceProvider);
       const stubFilter = {
@@ -148,6 +151,63 @@ describe("ApplicationService", () => {
       should.exist(application);
 
       application.should.be.an("object");
+    });
+  });
+
+  if (APPLICATION_PRIVATE_KEY_ON_NETWORK) {
+    describe("getApplicationNetworkData", () => {
+      it("Expect an application network data", async () => {
+
+        const applicationNetworkData = await applicationService.getApplicationNetworkData(APPLICATION_PRIVATE_KEY_ON_NETWORK);
+
+        // eslint-disable-next-line no-undef
+        should.exist(applicationNetworkData);
+
+        applicationNetworkData.should.be.an("object");
+      });
+    });
+  }
+
+  describe("getApplicationNetworkData with invalid address", () => {
+    it("Expect a false value", async () => {
+
+      const applicationNetworkData = await applicationService.getApplicationNetworkData("NOT_VALID_ADDRESS");
+
+      // eslint-disable-next-line no-undef
+      should.exist(applicationNetworkData);
+
+      applicationNetworkData.should.be.false;
+    });
+  });
+
+  describe("deleteApplication", () => {
+    const address = "bc28256f5c58611e96d13996cf535bdc0204366a";
+
+    const resultData = {
+      result: {
+        ok: 1
+      }
+    };
+
+    it("Expect success", async () => {
+
+      const persistenceService = sinon.createStubInstance(PersistenceProvider);
+      const stubFilter = {
+        "publicPocketAccount.address": address
+      };
+
+      persistenceService.deleteEntities
+        .withArgs("Applications", stubFilter)
+        .returns(Promise.resolve(resultData));
+
+      sinon.stub(applicationService, "persistenceService").value(persistenceService);
+
+      const deleted = await applicationService.deleteApplication(address);
+
+      // eslint-disable-next-line no-undef
+      should.exist(deleted);
+
+      deleted.should.be.true;
     });
   });
 
