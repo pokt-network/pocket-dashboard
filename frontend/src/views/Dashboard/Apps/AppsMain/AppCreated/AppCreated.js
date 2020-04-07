@@ -1,14 +1,25 @@
 import React, {Component} from "react";
+import {Redirect} from "react-router-dom";
 import {Alert, Button, Col, Row} from "react-bootstrap";
 import "./AppCreated.scss";
 import InfoCard from "../../../../../core/components/InfoCard/InfoCard";
 import {PropTypes} from "prop-types";
-import {BONDSTATUS} from "../../../../../constants";
+import {DASHBOARD_PATHS, _getDashboardPath} from "../../../../../_routes";
 
 class AppCreated extends Component {
-  state = {};
+  constructor(props, context) {
+    super(props, context);
+
+    this.appsPath = _getDashboardPath(DASHBOARD_PATHS.apps);
+  }
+
   render() {
-    const {applicationData} = this.props;
+    if (this.props.location.state === undefined) {
+      return <Redirect to={this.appsPath} />;
+    }
+
+    const {applicationData} = this.props.location.state;
+
     // TODO: Get POKT balance
     const {
       address,
@@ -21,7 +32,7 @@ class AppCreated extends Component {
 
     const generalInfo = [
       {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
-      {title: BONDSTATUS[status], subtitle: "Stake status"},
+      {title: status.toUpperCase(), subtitle: "Stake status"},
       {title: maxRelays, subtitle: "Max Relays"},
       {title: jailed === true ? "YES" : "NO", subtitle: "Jailed"},
     ];
@@ -57,7 +68,12 @@ class AppCreated extends Component {
             <Alert variant="dark">{address}</Alert>
           </Col>
         </Row>
-        <Button size="lg" variant="dark" className="float-right mt-2">
+        <Button
+          href={this.appsPath}
+          size="lg"
+          variant="dark"
+          className="float-right mt-2"
+        >
           Continue
         </Button>
       </div>
@@ -66,13 +82,17 @@ class AppCreated extends Component {
 }
 
 AppCreated.propTypes = {
-  applicationData: PropTypes.shape({
-    address: PropTypes.string,
-    privateKey: PropTypes.string,
-    stakedTokens: PropTypes.number,
-    maxRelays: PropTypes.string,
-    status: PropTypes.number,
-    jailed: PropTypes.bool,
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      applicationData: PropTypes.shape({
+        address: PropTypes.string,
+        privateKey: PropTypes.string,
+        stakedTokens: PropTypes.number,
+        maxRelays: PropTypes.number,
+        status: PropTypes.string,
+        jailed: PropTypes.bool,
+      }),
+    }),
   }),
 };
 
