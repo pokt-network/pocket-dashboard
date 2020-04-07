@@ -86,9 +86,10 @@ describe("PocketService", () => {
     it("Expected an ATT successfully retrieved", async () => {
       const testPassPhrase = "12345678";
       const clientAccount = await pocketService.createAccount(testPassPhrase);
+      const clientPublicKey = clientAccount.publicKey.toString("hex");
       const applicationAccount = await pocketService.createAccount(testPassPhrase);
 
-      const attToken = await pocketService.getApplicationAuthenticationToken(clientAccount, applicationAccount, testPassPhrase);
+      const attToken = await pocketService.getApplicationAuthenticationToken(clientPublicKey, applicationAccount, testPassPhrase);
 
       // eslint-disable-next-line no-undef
       should.exist(attToken);

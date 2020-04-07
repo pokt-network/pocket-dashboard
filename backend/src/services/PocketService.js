@@ -167,16 +167,15 @@ export default class PocketService {
   /**
    * Get an Application Authentication Token to be used on Pokt network.
    *
-   * @param {Account} clientAccount The client Pokt account our dApp is connecting to.
-   * @param {Account} applicationAccount The funded applications Pokt account address.
+   * @param {string} clientPublicKey The client Pocket account public key.
+   * @param {Account} applicationAccount The funded application Pocket account.
    * @param {string} applicationAccountPassphrase The passphrase used to generate application address.
    *
    * @returns {Promise<PocketAAT>} An application authorization tokens.
    */
-  async getApplicationAuthenticationToken(clientAccount, applicationAccount, applicationAccountPassphrase) {
+  async getApplicationAuthenticationToken(clientPublicKey, applicationAccount, applicationAccountPassphrase) {
     const aatVersion = POCKET_NETWORK_CONFIGURATION.aat_version;
 
-    const clientPublicKey = clientAccount.publicKey.toString("hex");
     const applicationPublicKeyHex = applicationAccount.publicKey.toString("hex");
     const applicationPrivateKeyHex = await this.exportRawAccount(applicationAccount.addressHex, applicationAccountPassphrase);
 

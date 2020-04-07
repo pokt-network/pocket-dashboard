@@ -137,14 +137,14 @@ export default class ApplicationService extends BaseService {
   /**
    * Get an AAT of the application.
    *
-   * @param {Account} clientAccount Client account to create AAT.
+   * @param {string} clientPublicKey Client account public key to create AAT.
    * @param {Account} applicationAccount Application account to create AAT.
    * @param {string} applicationPassphrase Application passphrase.
    *
    * @returns {PocketAAT} Application AAT.
    */
-  async __getAAT(clientAccount, applicationAccount, applicationPassphrase) {
-    return this.pocketService.getApplicationAuthenticationToken(clientAccount, applicationAccount, applicationPassphrase);
+  async __getAAT(clientPublicKey, applicationAccount, applicationPassphrase) {
+    return this.pocketService.getApplicationAuthenticationToken(clientPublicKey, applicationAccount, applicationPassphrase);
   }
 
   /**
@@ -226,6 +226,113 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
+   * Get staked application summary.
+   *
+   * @returns {Promise<StakedApplicationSummary>} Summary data of staked applications.
+   * @async
+   */
+  async getStakedApplicationSummary() {
+    try {
+      /** @type {Application[]} */
+      const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
+
+      // noinspection JSValidateTypes
+      const totalApplications = bigInt(stakedApplications.length);
+
+      // noinspection JSValidateTypes
+      /** @type {bigint} */
+      const totalStaked = stakedApplications.reduce((acc, appA) => bigInt(appA.stakedTokens).add(acc), 0n);
+
+      // noinspection JSValidateTypes
+      /** @type {bigint} */
+      const totalRelays = stakedApplications.reduce((acc, appA) => bigInt(appA.maxRelays).add(acc), 0n);
+
+      // noinspection JSUnresolvedFunction
+      const averageStaked = totalStaked.divide(totalApplications);
+      // noinspection JSUnresolvedFunction
+      const averageMaxRelays = totalRelays.divide(totalApplications);
+
+      return new StakedApplicationSummary(totalApplications.value.toString(), averageStaked.value.toString(), averageMaxRelays.value.toString());
+
+    } catch (e) {
+      return new StakedApplicationSummary("0n", "0n", "0n");
+    }
+  }
+
+  /**
+   * Get AAT using Free tier account.
+   *
+   * @param {string} clientAccountAddress The client account address(In this case is the account of application).
+   *
+   * @returns {Promise<PocketAAT | boolean>} AAT for application.
+   * @async
+   */
+  async getFreeTierAAT(clientAccountAddress) {
+    const passphrase = "FreeTierAAT";
+    const filter = {
+      "publicPocketAccount.address": clientAccountAddress
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (!applicationDB) {
+      return false;
+    }
+
+    const clientApplication = PocketApplication.createPocketApplication(applicationDB);
+
+    try {
+      const freeTierAccount = await this.pocketService.getFreeTierAccount(passphrase);
+
+      return this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, passphrase);
+
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Create free tier application.
+   *
+   * @param {string} applicationAccountAddress Application account address.
+   * @param {string[]} networkChains Network chains to stake application.
+   *
+   * @returns {Promise<PocketAAT | boolean>} If application was created or not.
+   * @async
+   */
+  async createFreeTierApplication(applicationAccountAddress, networkChains) {
+    const passphrase = "FreeTierApplication";
+    const filter = {
+      "publicPocketAccount.address": applicationAccountAddress
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (!applicationDB) {
+      return false;
+    }
+
+    const clientApplication = PocketApplication.createPocketApplication(applicationDB);
+
+    try {
+      const freeTierAccount = await this.pocketService.getFreeTierAccount(passphrase);
+      const stakeAmount = Configurations.pocket_network.free_tier.stake_amount;
+
+      const aat = await this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, passphrase);
+
+      // Stake application using free tier account
+      await this.pocketService.stakeApplication(freeTierAccount, passphrase, stakeAmount, networkChains);
+
+      await this.__markApplicationAsFreeTier(clientApplication);
+
+      return aat;
+
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
    * Create an application on network.
    *
    * @param {object} applicationData Application to create.
@@ -272,82 +379,5 @@ export default class ApplicationService extends BaseService {
 
       return false;
     }
-  }
-
-  /**
-   * Get staked application summary.
-   *
-   * @returns {Promise<StakedApplicationSummary>} Summary data of staked applications.
-   * @async
-   */
-  async getStakedApplicationSummary() {
-    try {
-      /** @type {Application[]} */
-      const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
-
-      // noinspection JSValidateTypes
-      const totalApplications = bigInt(stakedApplications.length);
-
-      // noinspection JSValidateTypes
-      /** @type {bigint} */
-      const totalStaked = stakedApplications.reduce((acc, appA) => bigInt(appA.stakedTokens).add(acc), 0n);
-
-      // noinspection JSValidateTypes
-      /** @type {bigint} */
-      const totalRelays = stakedApplications.reduce((acc, appA) => bigInt(appA.maxRelays).add(acc), 0n);
-
-      // noinspection JSUnresolvedFunction
-      const averageStaked = totalStaked.divide(totalApplications);
-      // noinspection JSUnresolvedFunction
-      const averageMaxRelays = totalRelays.divide(totalApplications);
-
-      return new StakedApplicationSummary(totalApplications.value.toString(), averageStaked.value.toString(), averageMaxRelays.value.toString());
-
-    } catch (e) {
-      return new StakedApplicationSummary("0n", "0n", "0n");
-    }
-  }
-
-  /**
-   * Create free tier application.
-   *
-   * @param {string} privateApplicationKey Application private key.
-   * @param {string[]} networkChains Network chains to stake application.
-   *
-   * @returns {Promise<PocketAAT | boolean>} If application was created or not.
-   * @async
-   */
-  async createFreeTierApplication(privateApplicationKey, networkChains) {
-    const passphrase = "FreeTierApplication";
-    const clientApplicationAccount = await this.pocketService.importAccount(privateApplicationKey, passphrase);
-    const filter = {
-      "publicPocketAccount.address": clientApplicationAccount.addressHex
-    };
-
-    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
-
-    if (!applicationDB) {
-      return false;
-    }
-
-    const clientApplication = PocketApplication.createPocketApplication(applicationDB);
-
-    try {
-      const freeTierAccount = await this.pocketService.getFreeTierAccount(passphrase);
-      const stakeAmount = Configurations.pocket_network.free_tier.stake_amount;
-
-      const aat = this.__getAAT(clientApplicationAccount, freeTierAccount, passphrase);
-
-      // Stake application using free tier account
-      await this.pocketService.stakeApplication(freeTierAccount, passphrase, stakeAmount, networkChains);
-
-      await this.__markApplicationAsFreeTier(clientApplication);
-
-      return aat;
-
-    } catch (e) {
-      return false;
-    }
-
   }
 }

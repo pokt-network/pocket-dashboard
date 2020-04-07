@@ -156,10 +156,31 @@ router.post("/user", async (request, response) => {
 router.post("/freetier", async (request, response) => {
   try {
 
-    /** @type {{applicationPrivateKey: string, networkChains: string[]}} */
+    /** @type {{applicationAccountAddress: string, networkChains: string[]}} */
     const data = request.body;
 
-    const aat = await applicationService.createFreeTierApplication(data.applicationPrivateKey, data.networkChains);
+    const aat = await applicationService.createFreeTierApplication(data.applicationAccountAddress, data.networkChains);
+
+    response.send(aat);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Get AAT for Free tier
+ */
+router.get("/freetier/aat/:applicationAccountAddress", async (request, response) => {
+  try {
+
+    /** @type {{applicationAccountAddress:string}} */
+    const data = request.params;
+
+    const aat = await applicationService.getFreeTierAAT(data.applicationAccountAddress);
 
     response.send(aat);
   } catch (e) {
