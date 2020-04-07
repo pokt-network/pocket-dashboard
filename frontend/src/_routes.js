@@ -27,6 +27,11 @@ export const DASHBOARD_PATHS = {
   createAppInfo: "/apps/new"
 };
 
+// Helper anonymous function to render routes within the dashboard router
+export const _getDashboardPath = (path) => {
+  return `${DASHBOARD_PATHS.home}${path}`;
+};
+
 /**
  * @type {Array<{path: string, component: Component, exact: boolean, name: string}>}
  */

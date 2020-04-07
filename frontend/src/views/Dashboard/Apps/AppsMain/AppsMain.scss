@@ -25,7 +25,13 @@
 }
 
 .general-info {
-  button {
+
+  button,
+  a {
     font-weight: bold;
+  }
+
+  a {
+    padding-top: 10px;
   }
 }
