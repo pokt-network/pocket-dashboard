@@ -67,6 +67,27 @@ router.post("", async (request, response) => {
 });
 
 /**
+ * Delete an application from dashboard.
+ */
+router.delete("/:applicationAccountAddress", async (request, response) => {
+  try {
+
+    /** @type {{applicationAccountAddress:string}} */
+    const data = request.params;
+
+    const deleted = await applicationService.deleteApplication(data.applicationAccountAddress);
+
+    response.send(deleted);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
  * Get staked summary data.
  */
 router.get("/summary/staked", async (request, response) => {
@@ -87,11 +108,11 @@ router.get("/summary/staked", async (request, response) => {
 /**
  * Get application by address.
  */
-router.get("/:address", async (request, response) => {
+router.get("/:applicationAccountAddress", async (request, response) => {
   try {
-    /** @type {{address:string}} */
+    /** @type {{applicationAccountAddress:string}} */
     const data = request.params;
-    const application = await applicationService.getApplication(data.address);
+    const application = await applicationService.getApplication(data.applicationAccountAddress);
 
     response.send(application);
   } catch (e) {

@@ -151,6 +151,37 @@ describe("ApplicationService", () => {
     });
   });
 
+  describe("deleteApplication", () => {
+    const address = "bc28256f5c58611e96d13996cf535bdc0204366a";
+
+    const resultData = {
+      result: {
+        ok: 1
+      }
+    };
+
+    it("Expect success", async () => {
+
+      const persistenceService = sinon.createStubInstance(PersistenceProvider);
+      const stubFilter = {
+        "publicPocketAccount.address": address
+      };
+
+      persistenceService.deleteEntities
+        .withArgs("Applications", stubFilter)
+        .returns(Promise.resolve(resultData));
+
+      sinon.stub(applicationService, "persistenceService").value(persistenceService);
+
+      const deleted = await applicationService.deleteApplication(address);
+
+      // eslint-disable-next-line no-undef
+      should.exist(deleted);
+
+      deleted.should.be.true;
+    });
+  });
+
   describe("getStakedApplicationSummary", () => {
     it("Expect staked summary data from network", async () => {
 
