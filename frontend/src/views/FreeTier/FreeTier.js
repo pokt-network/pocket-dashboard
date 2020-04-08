@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Row, Card, Col} from "react-bootstrap";
+import {Button, Card, Col, Row} from "react-bootstrap";
 import "./FreeTier.scss";
 
 class FreeTier extends Component {

@@ -2,9 +2,9 @@ import React, {Component} from "react";
 import {Redirect} from "react-router-dom";
 import {Alert, Button, Col, Row} from "react-bootstrap";
 import "./AppCreated.scss";
-import InfoCard from "../../../../../core/components/InfoCard/InfoCard";
+import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {PropTypes} from "prop-types";
-import {DASHBOARD_PATHS, _getDashboardPath} from "../../../../../_routes";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 
 class AppCreated extends Component {
   constructor(props, context) {

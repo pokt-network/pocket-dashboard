@@ -1,11 +1,11 @@
 import React, {Component} from "react";
 import {Redirect} from "react-router-dom";
-import {Button, Col, Row, Form} from "react-bootstrap";
-import ImageFileUpload from "../../../../core/components/ImageFileUpload/ImageFileUpload";
-import Identicon from "identicon.js";
-import ApplicationService from "../../../../core/services/PocketApplicationService";
-import UserService from "../../../../core/services/PocketUserService";
-import {DASHBOARD_PATHS, _getDashboardPath} from "../../../../_routes";
+import {Button, Col, Form, Row} from "react-bootstrap";
+import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
+import Identicon from "../../../../node_modules/identicon.js/identicon";
+import ApplicationService from "../../../core/services/PocketApplicationService";
+import UserService from "../../../core/services/PocketUserService";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import "./CreateAppInfo.scss";
 
 class CreateAppInfo extends Component {

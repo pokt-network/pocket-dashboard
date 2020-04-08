@@ -7,12 +7,12 @@ import SignUp from "./views/Auth/SignUp/SignUp";
 import VerifyEMail from "./views/Auth/VerifyEmail/VerifyEmail";
 import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
 import Dashboard from "./views/Dashboard/Dashboard";
-import AppsMain from "./views/Dashboard/Apps/AppsMain/AppsMain";
-import AppCreated from "./views/Dashboard/Apps/AppsMain/AppCreated/AppCreated";
-import CreateAppInfo from "./views/Dashboard/Apps/CreateAppInfo/CreateAppInfo";
-import TierSelection from "./views/Dashboard/Apps/TierSelection/TierSelection";
-import FreeTier from "./views/Dashboard/FreeTier/FreeTier";
-import ChainList from "./views/Dashboard/Apps/ChainList/ChainList";
+import AppsMain from "./views/Apps/AppsMain/AppsMain";
+import AppCreated from "./views/Apps/AppCreated/AppCreated";
+import CreateAppInfo from "./views/Apps/CreateAppInfo/CreateAppInfo";
+import TierSelection from "./views/Apps/TierSelection/TierSelection";
+import FreeTier from "./views/FreeTier/FreeTier";
+import ChainList from "./views/Apps/ChainList/ChainList";
 
 export const ROUTE_PATHS = {
   signup: "/signup",

@@ -1,9 +1,9 @@
 import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import "./ChainList.scss";
-import {Button, Col, Row, FormControl, InputGroup} from "react-bootstrap";
-import AppDropdown from "../../../../core/components/AppDropdown/AppDropdown";
-import NetworkService from "../../../../core/services/PocketNetworkService";
+import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
+import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
+import NetworkService from "../../../core/services/PocketNetworkService";
 
 class ChooseChain extends Component {
   constructor(props, context) {

@@ -2,13 +2,13 @@ import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import "./AppsMain.scss";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
-import InfoCard from "../../../../core/components/InfoCard/InfoCard";
-import PocketElementCard from "../../../../core/components/PocketElementCard/PocketElementCard";
-import ApplicationService from "../../../../core/services/PocketApplicationService";
-import UserService from "../../../../core/services/PocketUserService";
-import AppDropdown from "../../../../core/components/AppDropdown/AppDropdown";
-import {BONDSTATUS, APPLICATIONS_LIMIT} from "../../../../constants";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../../_routes";
+import InfoCard from "../../../core/components/InfoCard/InfoCard";
+import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
+import ApplicationService from "../../../core/services/PocketApplicationService";
+import UserService from "../../../core/services/PocketUserService";
+import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
+import {APPLICATIONS_LIMIT, BONDSTATUS} from "../../../constants";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 
 class AppsMain extends Component {
   constructor(props, context) {
