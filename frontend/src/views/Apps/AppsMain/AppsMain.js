@@ -9,6 +9,7 @@ import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 import {APPLICATIONS_LIMIT, BONDSTATUS} from "../../../constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import Loader from "../../../core/components/Loader";
 
 class AppsMain extends Component {
   constructor(props, context) {
@@ -24,6 +25,7 @@ class AppsMain extends Component {
       totalApplications: 0,
       averageStaked: 0,
       averageRelays: 0,
+      loading: true,
       data: {
         searchQuery: "",
       },
@@ -58,7 +60,8 @@ class AppsMain extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
+      userEmail,
+      APPLICATIONS_LIMIT
     );
 
     const {
@@ -78,6 +81,7 @@ class AppsMain extends Component {
       averageRelays,
       averageStaked,
       registeredApps,
+      loading: false,
     });
   }
 
@@ -88,6 +92,7 @@ class AppsMain extends Component {
       averageStaked,
       averageRelays,
       registeredApps,
+      loading,
     } = this.state;
 
     const columns = [
@@ -101,6 +106,10 @@ class AppsMain extends Component {
       },
     ];
 
+    if (loading) {
+      return <Loader />;
+    }
+
     return (
       <div>
         <Row>
@@ -113,7 +122,12 @@ class AppsMain extends Component {
             lg="4"
             className="d-flex justify-content-end general-info"
           >
-            <Button href={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)} variant="dark" size={"md"} className="ml-4 pl-4 pr-4 mr-3">
+            <Button
+              href={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}
+              variant="dark"
+              size={"md"}
+              className="ml-4 pl-4 pr-4 mr-3"
+            >
               Create new app
             </Button>
             <Button variant="secondary" size={"md"} className="pl-4 pr-4">
