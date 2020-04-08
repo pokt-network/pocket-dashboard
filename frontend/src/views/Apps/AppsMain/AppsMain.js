@@ -60,8 +60,7 @@ class AppsMain extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail,
-      APPLICATIONS_LIMIT
+      userEmail, APPLICATIONS_LIMIT
     );
 
     const {
@@ -167,7 +166,7 @@ class AppsMain extends Component {
                   />
                   <InputGroup.Append>
                     <Button
-                      type="submit"
+              hash        type="submit"
                       onClick={this.handleAppSearch}
                       variant="dark"
                     >
@@ -215,7 +214,7 @@ class AppsMain extends Component {
             </div>
             <BootstrapTable
               classes="table app-table table-striped"
-              keyField="hash"
+              keyField="networkData.address"
               data={registeredApps}
               columns={columns}
               bordered={false}

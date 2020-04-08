@@ -30,9 +30,15 @@ class AppCreated extends Component {
       status,
     } = applicationData;
 
+    let statusCapitalized = "";
+
+    if (status) {
+      statusCapitalized = status[0].toUpperCase() + status.slice(1);
+    }
+
     const generalInfo = [
       {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
-      {title: status.toUpperCase(), subtitle: "Stake status"},
+      {title: statusCapitalized, subtitle: "Stake status"},
       {title: maxRelays, subtitle: "Max Relays"},
       {title: jailed === true ? "YES" : "NO", subtitle: "Jailed"},
     ];
