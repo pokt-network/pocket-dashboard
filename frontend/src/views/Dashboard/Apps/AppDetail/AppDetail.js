@@ -20,12 +20,13 @@ class AppDetail extends Component {
   }
 
   async componentDidMount() {
+    // eslint-disable-next-line react/prop-types
+    const {address} = this.props.match.params;
+
     const {
       pocketApplication,
       networkData,
-    } = await ApplicationService.getApplication(
-      "71cd589f22e3488da750d425b511094547694000"
-    );
+    } = await ApplicationService.getApplication(address);
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
 
