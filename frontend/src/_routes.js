@@ -7,10 +7,12 @@ import SignUp from "./views/Auth/SignUp/SignUp";
 import VerifyEMail from "./views/Auth/VerifyEmail/VerifyEmail";
 import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
 import Dashboard from "./views/Dashboard/Dashboard";
-import AppsMain from "./views/Dashboard/Apps/AppsMain/AppsMain";
-import AppCreated from "./views/Dashboard/Apps/AppsMain/AppCreated/AppCreated";
-import CreateAppInfo from "./views/Dashboard/Apps/CreateAppInfo/CreateAppInfo";
-import ChainList from "./views/Dashboard/Apps/ChainList/ChainList";
+import AppsMain from "./views/Apps/AppsMain/AppsMain";
+import AppCreated from "./views/Apps/AppCreated/AppCreated";
+import CreateAppInfo from "./views/Apps/CreateAppInfo/CreateAppInfo";
+import TierSelection from "./views/Apps/TierSelection/TierSelection";
+import FreeTier from "./views/FreeTier/FreeTier";
+import ChainList from "./views/Apps/ChainList/ChainList";
 import AppDetail from "./views/Dashboard/Apps/AppDetail/AppDetail";
 
 export const ROUTE_PATHS = {
@@ -27,8 +29,15 @@ export const DASHBOARD_PATHS = {
   apps: "/apps",
   appDetail: "/apps/detail/:address",
   createAppInfo: "/apps/new",
+  tierSelection: "/apps/tiers",
+  freeTier: "/apps/free-tier",
   chooseChain: "/apps/chains",
   appCreated: "/apps/created",
+};
+
+// Helper anonymous function to render routes within the dashboard router
+export const _getDashboardPath = (path) => {
+  return `${DASHBOARD_PATHS.home}${path}`;
 };
 
 /**
@@ -100,7 +109,19 @@ export const dashboardRoutes = [
     exact: true,
     name: "Chain list",
     component: ChainList,
-  }
+  },
+  {
+    path: DASHBOARD_PATHS.tierSelection,
+    exact: true,
+    name: "Tier Selection",
+    component: TierSelection
+  },
+  {
+    path: DASHBOARD_PATHS.freeTier,
+    exact: true,
+    name: "Free tier",
+    component: FreeTier,
+  },
 ];
 
 const routes = pageRoutes.concat(authProviderRoutes);

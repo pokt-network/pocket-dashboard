@@ -18,6 +18,7 @@ function ImageFileUpload(props) {
       );
       props.handleDrop(acceptedFiles[0]);
     },
+    multiple: false,
   });
 
   const thumbs = files.map((file, idx) => (

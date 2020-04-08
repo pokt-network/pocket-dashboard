@@ -1,5 +1,6 @@
 import BaseService from "./BaseService";
 import {get_default_payment_provider} from "../providers/payment";
+import BasePaymentProvider from "../providers/payment/BasePaymentProvider";
 
 export default class PaymentService extends BaseService {
 
@@ -11,18 +12,14 @@ export default class PaymentService extends BaseService {
   }
 
   async __makePoktPayment() {
-
   }
 
   async makePoktPaymentForNodes() {
-
   }
 
   async makePoktPaymentForApps() {
-
   }
 
   async getPaymentHistory() {
-
   }
 }

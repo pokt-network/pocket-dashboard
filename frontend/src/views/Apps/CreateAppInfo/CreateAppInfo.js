@@ -1,10 +1,12 @@
 import React, {Component} from "react";
+import {Redirect} from "react-router-dom";
+import {Button, Col, Form, Row} from "react-bootstrap";
+import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
+import Identicon from "../../../../node_modules/identicon.js/identicon";
+import ApplicationService from "../../../core/services/PocketApplicationService";
+import UserService from "../../../core/services/PocketUserService";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import "./CreateAppInfo.scss";
-import {Button, Col, Row, Form} from "react-bootstrap";
-import ImageFileUpload from "../../../../core/components/ImageFileUpload/ImageFileUpload";
-import Identicon from "identicon.js";
-import ApplicationService from "../../../../core/services/PocketApplicationService";
-import UserService from "../../../../core/services/PocketUserService";
 
 class CreateAppInfo extends Component {
   constructor(props, context) {
@@ -21,23 +23,25 @@ class CreateAppInfo extends Component {
         url: "",
         contactEmail: "",
         description: "",
-        icon: "",
       },
+      icon: "",
+      applicationData: {},
+      created: false,
     };
   }
 
   async handleDrop(img) {
     // Fetch image blob data and converts it to base64
-    let blob = await fetch(img).then(r => r.blob());
+    const blob = await fetch(img).then((r) => r.blob());
 
-    let reader = new FileReader();
+    const reader = new FileReader();
 
     reader.readAsDataURL(blob);
 
     reader.onloadend = () => {
       const base64data = reader.result;
 
-      this.setState({data: {icon: base64data}});
+      this.setState({icon: base64data});
     };
   }
 
@@ -48,10 +52,11 @@ class CreateAppInfo extends Component {
     this.setState({data});
   }
 
-  handleCreate(e) {
+  async handleCreate(e) {
     e.preventDefault();
 
-    let {name, owner, url, contactEmail, description, icon} = this.state.data;
+    const {name, owner, url, contactEmail, description} = this.state.data;
+    let {icon} = this.state;
 
     // TODO: Show proper message on front end to user on validation error
     if (name === "" || contactEmail === "" || owner === "") {
@@ -62,7 +67,8 @@ class CreateAppInfo extends Component {
 
     // Use current time as a 'hash' to generate icon of 250x250
     const identicon = `data:image/png;base64,${new Identicon(
-      `${currTime}${currTime / 2}`, 250).toString()}`;
+      `${currTime}${currTime / 2}`, 250
+    ).toString()}`;
 
     if (!icon) {
       icon = identicon;
@@ -70,14 +76,43 @@ class CreateAppInfo extends Component {
 
     const user = UserService.getUserInfo().email;
 
-    ApplicationService.createApplication(
+    const {success, data} = await ApplicationService.createApplication(
       name, owner, url, contactEmail, description, icon, user
     );
+
+    if (success) {
+      const {privateApplicationData, networkData} = data;
+      const applicationData = {
+        address: privateApplicationData.address,
+        privateKey: privateApplicationData.privateKey,
+        stakedTokens: networkData.staked_tokens,
+        maxRelays: networkData.max_relays,
+        status: networkData.status,
+        jailed: networkData.jailed,
+      };
+
+      this.setState({applicationData, created: true});
+    } else {
+      // TODO: Show proper error message on front-end.
+      console.log(data.response.data.message);
+    }
   }
 
   state = {};
   render() {
     const {name, owner, url, contactEmail, description} = this.state.data;
+    const {created, applicationData} = this.state;
+
+    if (created) {
+      return (
+        <Redirect
+          to={{
+            pathname:_getDashboardPath(DASHBOARD_PATHS.appCreated),
+            state: {applicationData},
+          }}
+        />
+      );
+    }
 
     return (
       <div id="create-app-info">
@@ -89,7 +124,9 @@ class CreateAppInfo extends Component {
         </Row>
         <Row>
           <Col sm="3" md="3" lg="3">
-            <ImageFileUpload handleDrop={img => this.handleDrop(img.preview)} />
+            <ImageFileUpload
+              handleDrop={(img) => this.handleDrop(img.preview)}
+            />
           </Col>
           <Col sm="9" md="9" lg="9">
             <Form onSubmit={this.handleCreate}>
@@ -164,7 +201,7 @@ class CreateAppInfo extends Component {
                   By continuing you agree to Pocket&apos;s <br />
                   {/*TODO: Add terms and conditions link*/}
                   {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-                  <a href="#">Terms and conditions</a>
+                  <a className="link" href="#">Terms and conditions</a>
                 </p>
               </div>
             </Form>
