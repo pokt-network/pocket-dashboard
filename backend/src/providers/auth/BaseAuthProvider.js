@@ -1,4 +1,5 @@
 import * as queryString from "query-string";
+import {AuthProviderUser} from "../../models/User";
 
 export default class BaseAuthProvider {
 
@@ -6,15 +7,14 @@ export default class BaseAuthProvider {
    * @param {string} name Name of Auth backend provider.
    * @param {object} authProviderConfiguration Authentication provider basic configuration.
    *
-   * @param {string} authProviderConfiguration.client_id
-   * @param {string} authProviderConfiguration.client_secret
-   * @param {string} authProviderConfiguration.callback_url
-   * @param {string[]} authProviderConfiguration.scopes
-   * @param {object} [authProviderConfiguration.urls]
-   * @param {string} authProviderConfiguration.urls.consent_url
-   * @param {string} authProviderConfiguration.urls.access_token
-   * @param {string} authProviderConfiguration.urls.user_info_url
-   *
+   * @param {string} authProviderConfiguration.client_id Client ID of OAuth protocol.
+   * @param {string} authProviderConfiguration.client_secret Client Secret of OAuth protocol.
+   * @param {string} authProviderConfiguration.callback_url Callback URL of OAuth protocol.
+   * @param {string[]} authProviderConfiguration.scopes Scopes allowed.
+   * @param {object} [authProviderConfiguration.urls] URL's used for calls to API.
+   * @param {string} authProviderConfiguration.urls.consent_url Base consent URL.
+   * @param {string} authProviderConfiguration.urls.access_token Base access token URL.
+   * @param {string} authProviderConfiguration.urls.user_info_url Base user info URL.
    */
   constructor(name, authProviderConfiguration) {
     this.name = name.toLowerCase();
@@ -24,7 +24,8 @@ export default class BaseAuthProvider {
   /**
    * Get the consent url to render on frontend.
    *
-   * @returns {string}
+   * @returns {string} the consent URL.
+   * @abstract
    */
   getConsentURL() {
   }
@@ -34,14 +35,14 @@ export default class BaseAuthProvider {
    *
    * @param {string} url URL returned from backend Auth provider(from outside).
    *
-   * @return {string}
+   * @returns {string} Code retrieved from callback URL.
    */
   extractCodeFromURL(url) {
     const responseURL = new URL(url);
     const parsedData = queryString.parse(responseURL.search);
 
     if (parsedData.error) {
-      /** @type string */
+      /** @type {string} */
       const error = parsedData.error_description;
 
       throw new Error(error);
@@ -55,12 +56,13 @@ export default class BaseAuthProvider {
   }
 
   /**
-   * Get access token using the code returned from consent url.
+   * Get token using the code returned from consent url.
    *
    * @param {string} code Code to retrieve token from Auth provider.
    * @param {string} [tokenType] Type of token to retrieve from Auth provider.
    *
-   * @returns {Promise<string>}
+   * @returns {Promise<string>} Access token.
+   * @abstract
    */
   async getToken(code, tokenType) {
   }
@@ -71,7 +73,8 @@ export default class BaseAuthProvider {
    * @param {string} token Token used to retrieve information from Auth provider.
    * @param {string} [tokenType] Type of token [access|refresh].
    *
-   * @returns {Promise<AuthProviderUser>}
+   * @returns {Promise<AuthProviderUser>} Auth provider user.
+   * @abstract
    */
   async getUserData(token, tokenType) {
   }

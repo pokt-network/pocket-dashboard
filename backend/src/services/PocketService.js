@@ -244,7 +244,7 @@ export default class PocketService {
    * Stake an application in pocket network.
    *
    * @param {Account} applicationAccount Application account to stake.
-   `   * @param {string} passPhrase Passphrase used to import the account.
+   * @param {string} passPhrase Passphrase used to import the account.
    * @param {string} uPoktAmount uPocket amount to stake.
    * @param {string[]} networkChains Network Chains to stake.
    *
