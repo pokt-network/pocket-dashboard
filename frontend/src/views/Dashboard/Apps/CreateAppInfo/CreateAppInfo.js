@@ -201,7 +201,7 @@ class CreateAppInfo extends Component {
                   By continuing you agree to Pocket&apos;s <br />
                   {/*TODO: Add terms and conditions link*/}
                   {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-                  <a href="#">Terms and conditions</a>
+                  <a className="link" href="#">Terms and conditions</a>
                 </p>
               </div>
             </Form>

@@ -96,6 +96,15 @@ html, body {
   }
 }
 
+a.link {
+  color: #343A41;
+  text-decoration: underline;
+}
+
+button, .btn {
+  font-weight: bold;
+}
+
 .app-table {
   thead {
     background-color: map_get(map_get($table, columns), background-color);
@@ -113,3 +122,4 @@ html, body {
     }
   }
 }
+
