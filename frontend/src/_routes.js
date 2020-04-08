@@ -13,7 +13,7 @@ import CreateAppInfo from "./views/Apps/CreateAppInfo/CreateAppInfo";
 import TierSelection from "./views/Apps/TierSelection/TierSelection";
 import FreeTier from "./views/FreeTier/FreeTier";
 import ChainList from "./views/Apps/ChainList/ChainList";
-import AppDetail from "./views/Dashboard/Apps/AppDetail/AppDetail";
+import AppDetail from "./views/Apps/AppDetail/AppDetail";
 
 export const ROUTE_PATHS = {
   signup: "/signup",

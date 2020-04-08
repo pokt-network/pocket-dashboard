@@ -1,12 +1,12 @@
 import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Button, Col, Row, Badge} from "react-bootstrap";
-import InfoCard from "../../../../core/components/InfoCard/InfoCard";
-import HelpLink from "../../../../core/components/HelpLink";
-import {NETWORK_TABLE_COLUMNS} from "../../../../constants";
+import InfoCard from "../../../core/components/InfoCard/InfoCard";
+import HelpLink from "../../../core/components/HelpLink";
+import {NETWORK_TABLE_COLUMNS} from "../../../constants";
 import "./AppDetail.scss";
-import ApplicationService from "../../../../core/services/PocketApplicationService";
-import NetworkService from "../../../../core/services/PocketNetworkService";
+import ApplicationService from "../../../core/services/PocketApplicationService";
+import NetworkService from "../../../core/services/PocketNetworkService";
 
 class AppDetail extends Component {
   constructor(props, context) {
