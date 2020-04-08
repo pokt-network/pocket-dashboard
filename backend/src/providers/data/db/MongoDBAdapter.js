@@ -1,12 +1,11 @@
-import {MongoClient} from "mongodb";
+import {Db, MongoClient} from "mongodb";
 
 export default class MongoDBAdapter {
   /**
-   *
-   * @param {object} properties
-   * @param {string} properties.url
-   * @param {object} properties.options
-   * @param {string} properties.db_name
+   * @param {object} properties Properties of MongoDB.
+   * @param {string} properties.url URL of MongoDB instance.
+   * @param {object} properties.options Options of MongoDB instance.
+   * @param {string} properties.db_name Database name of MongoDB instance.
    */
   constructor(properties) {
     this.properties = properties;
@@ -15,7 +14,7 @@ export default class MongoDBAdapter {
   /**
    * Open a connection to MongoDB.
    *
-   * @return {Promise<MongoClient>}
+   * @returns {Promise<MongoClient>} MongoDB Client.
    */
   open() {
     return MongoClient.connect(this.properties.url, this.properties.options);
@@ -26,7 +25,7 @@ export default class MongoDBAdapter {
    *
    * @param {MongoClient} connection Connection to close.
    *
-   * @return {*}
+   * @returns {*} The result of close operation from MongoDB.
    */
   close(connection) {
     return connection.close();
@@ -37,7 +36,7 @@ export default class MongoDBAdapter {
    *
    * @param {MongoClient} connection Connection to retrieve the DB.
    *
-   * @return {*}
+   * @returns {Db} Database instance.
    */
   getDB(connection) {
     return connection.db(this.properties.db_name);

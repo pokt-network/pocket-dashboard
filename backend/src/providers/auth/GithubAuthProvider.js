@@ -37,13 +37,12 @@ export default class GithubAuthProvider extends BaseAuthProvider {
     const parsedData = queryString.parse(response.data);
 
     if (parsedData.error) {
-      /** @type string */
+      /** @type {string} */
       const error = parsedData.error_description;
 
       throw new Error(error);
     }
 
-    /** @type {string} */
     return parsedData.access_token;
   }
 

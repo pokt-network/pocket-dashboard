@@ -11,6 +11,7 @@ import AppsMain from "./views/Dashboard/Apps/AppsMain/AppsMain";
 import AppCreated from "./views/Dashboard/Apps/AppsMain/AppCreated/AppCreated";
 import CreateAppInfo from "./views/Dashboard/Apps/CreateAppInfo/CreateAppInfo";
 import TierSelection from "./views/Dashboard/Apps/TierSelection/TierSelection";
+import FreeTier from "./views/Dashboard/FreeTier/FreeTier";
 import ChainList from "./views/Dashboard/Apps/ChainList/ChainList";
 
 export const ROUTE_PATHS = {
@@ -27,8 +28,14 @@ export const DASHBOARD_PATHS = {
   apps: "/apps",
   createAppInfo: "/apps/new",
   tierSelection: "/apps/tiers",
+  freeTier: "/apps/free-tier",
   chooseChain: "/apps/chains",
   appCreated: "/apps/created",
+};
+
+// Helper anonymous function to render routes within the dashboard router
+export const _getDashboardPath = (path) => {
+  return `${DASHBOARD_PATHS.home}${path}`;
 };
 
 /**
@@ -99,7 +106,13 @@ export const dashboardRoutes = [
     path: DASHBOARD_PATHS.tierSelection,
     exact: true,
     name: "Tier Selection",
-    component: TierSelection,
+    component: TierSelection
+  },
+  {
+    path: DASHBOARD_PATHS.freeTier,
+    exact: true,
+    name: "Free tier",
+    component: FreeTier,
   },
 ];
 

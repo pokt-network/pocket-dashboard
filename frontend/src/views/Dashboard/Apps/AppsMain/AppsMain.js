@@ -8,6 +8,7 @@ import ApplicationService from "../../../../core/services/PocketApplicationServi
 import UserService from "../../../../core/services/PocketUserService";
 import AppDropdown from "../../../../core/components/AppDropdown/AppDropdown";
 import {BONDSTATUS, APPLICATIONS_LIMIT} from "../../../../constants";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../../_routes";
 
 class AppsMain extends Component {
   constructor(props, context) {
@@ -112,7 +113,7 @@ class AppsMain extends Component {
             lg="4"
             className="d-flex justify-content-end general-info"
           >
-            <Button variant="dark" size={"md"} className="ml-4 pl-4 pr-4 mr-3">
+            <Button href={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)} variant="dark" size={"md"} className="ml-4 pl-4 pr-4 mr-3">
               Create new app
             </Button>
             <Button variant="secondary" size={"md"} className="pl-4 pr-4">

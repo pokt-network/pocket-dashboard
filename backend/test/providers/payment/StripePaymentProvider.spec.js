@@ -44,7 +44,6 @@ if (Configurations.payment.test.client_id && Configurations.payment.test.client_
         const amount = 90;
         const description = "Test payment with Pocket dashboard";
 
-        /** @type {PaymentResult} */
         const paymentResult = await stripePaymentProvider.makeIntentPayment(PaymentTypes.card, currency, amount, description);
 
         // eslint-disable-next-line no-undef

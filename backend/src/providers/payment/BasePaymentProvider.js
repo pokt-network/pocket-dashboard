@@ -59,10 +59,10 @@ export class PaymentCard {
 export default class BasePaymentProvider {
 
   /**
-   * @param {Object} paymentProviderConfiguration
-   * @param {string} paymentProviderConfiguration.client_id
-   * @param {string} paymentProviderConfiguration.client_secret
-   * @param {Object} paymentProviderConfiguration.options
+   * @param {object} paymentProviderConfiguration Payment provider configuration.
+   * @param {string} paymentProviderConfiguration.client_id Client ID of Payment provider.
+   * @param {string} paymentProviderConfiguration.client_secret Client secret of Payment provider.
+   * @param {object} paymentProviderConfiguration.options Extra Options of payment provider.
    */
   constructor(paymentProviderConfiguration) {
     this._paymentProviderConfiguration = paymentProviderConfiguration;
@@ -75,11 +75,12 @@ export default class BasePaymentProvider {
    * @param {string} currency Three-letter ISO currency code, in lowercase.
    * @param {number} amount Amount intended to be collected by this payment.
    * @param {string} description An arbitrary string attached to the object. Often useful for displaying to users.
-   * @param {Object} [metadata] Set of key-value pairs that you can attach to an object.
+   * @param {object} [metadata] Set of key-value pairs that you can attach to an object.
    * @param {PaymentRecipient} [receipt] Payment receipt.
    *
-   * @return {Promise<PaymentResult>}
+   * @returns {Promise<PaymentResult>} Payment result.
    * @async
+   * @abstract
    */
   async makeIntentPayment(type, currency, amount, description, metadata = undefined, receipt = undefined) {
   }
@@ -89,8 +90,9 @@ export default class BasePaymentProvider {
    *
    * @param {PaymentCard} card PaymentCard to create a payment method.
    *
-   * @return {Promise<*>}
+   * @returns {Promise<*>} A card payment method.
    * @async
+   * @abstract
    */
   async createCardPaymentMethod(card) {
   }
