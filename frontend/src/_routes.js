@@ -10,6 +10,7 @@ import Dashboard from "./views/Dashboard/Dashboard";
 import AppsMain from "./views/Dashboard/Apps/AppsMain/AppsMain";
 import AppCreated from "./views/Dashboard/Apps/AppsMain/AppCreated/AppCreated";
 import CreateAppInfo from "./views/Dashboard/Apps/CreateAppInfo/CreateAppInfo";
+import FreeTier from "./views/Dashboard/FreeTier/FreeTier";
 import ChainList from "./views/Dashboard/Apps/ChainList/ChainList";
 
 export const ROUTE_PATHS = {
@@ -25,6 +26,7 @@ export const DASHBOARD_PATHS = {
   home: "/dashboard",
   apps: "/apps",
   createAppInfo: "/apps/new",
+  freeTier: "/apps/free-tier",
   chooseChain: "/apps/chains",
   appCreated: "/apps/created",
 };
@@ -97,7 +99,13 @@ export const dashboardRoutes = [
     exact: true,
     name: "Apps",
     component: AppsMain,
-  }
+  },
+  {
+    path: DASHBOARD_PATHS.freeTier,
+    exact: true,
+    name: "Free tier",
+    component: FreeTier,
+  },
 ];
 
 const routes = pageRoutes.concat(authProviderRoutes);
