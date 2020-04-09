@@ -2,13 +2,13 @@ import React, {Component} from "react";
 import {Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
-import Identicon from "../../../../node_modules/identicon.js/identicon";
+import Identicon from "identicon.js";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import "./CreateAppInfo.scss";
+import "./CreateAppForm.scss";
 
-class CreateAppInfo extends Component {
+class CreateAppForm extends Component {
   constructor(props, context) {
     super(props, context);
 
@@ -212,4 +212,4 @@ class CreateAppInfo extends Component {
   }
 }
 
-export default CreateAppInfo;
+export default CreateAppForm;
