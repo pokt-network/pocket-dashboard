@@ -13,6 +13,7 @@ import CreateAppInfo from "./views/Apps/CreateAppInfo/CreateAppInfo";
 import TierSelection from "./views/Apps/TierSelection/TierSelection";
 import FreeTier from "./views/FreeTier/FreeTier";
 import ChainList from "./views/Apps/ChainList/ChainList";
+import Import from "./views/Apps/Import/Import";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -27,6 +28,7 @@ export const DASHBOARD_PATHS = {
   home: "/dashboard",
   apps: "/apps",
   createAppInfo: "/apps/new",
+  importApp: "/apps/import",
   tierSelection: "/apps/tiers",
   freeTier: "/apps/free-tier",
   chooseChain: "/apps/chains",
@@ -89,6 +91,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Create New App",
     component: CreateAppInfo,
+  },
+  {
+    path: DASHBOARD_PATHS.importApp,
+    exact: true,
+    name: "Import App",
+    component: Import,
   },
   {
     path: DASHBOARD_PATHS.chooseChain,
