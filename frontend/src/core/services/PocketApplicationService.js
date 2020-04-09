@@ -2,10 +2,20 @@ import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
 
 
-class PocketApplicationService extends PocketBaseService {
+export class PocketApplicationService extends PocketBaseService {
 
   constructor() {
     super("api/applications");
+  }
+
+  static copyToClickboard(value) {
+    const el = document.createElement("textarea");
+
+    el.value = value;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
   }
 
   /**
