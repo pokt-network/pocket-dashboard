@@ -10,7 +10,6 @@ class Loader extends Component {
       <div id="loader" style={{marginTop: "20vh"}}>
         <DotLoader
           className="loader"
-          css={{display: "block", margin: "0 auto"}}
           size={100}
           color={"#44AAE1"}
           loading={loading}

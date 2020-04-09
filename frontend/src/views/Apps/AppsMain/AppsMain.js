@@ -80,7 +80,6 @@ class AppsMain extends Component {
       averageRelays,
       averageStaked,
       registeredApps,
-      loading: false,
     });
   }
 
@@ -166,7 +165,7 @@ class AppsMain extends Component {
                   />
                   <InputGroup.Append>
                     <Button
-              hash        type="submit"
+                      type="submit"
                       onClick={this.handleAppSearch}
                       variant="dark"
                     >
