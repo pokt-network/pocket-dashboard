@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Alert, Button, Col, Row} from "react-bootstrap";
 import "./AppCreated.scss";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
@@ -11,7 +11,6 @@ class AppCreated extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.appsPath = _getDashboardPath(DASHBOARD_PATHS.apps);
     this.state = {
       privateKey: "",
       address: "",
@@ -44,6 +43,8 @@ class AppCreated extends Component {
       privateKey,
       loading: false,
     });
+
+    ApplicationService.removeAppInfoFromCache();
   }
 
   render() {
@@ -106,14 +107,17 @@ class AppCreated extends Component {
             <Alert variant="dark">{address}</Alert>
           </Col>
         </Row>
-        <Button
-          href={this.appsPath}
-          size="lg"
-          variant="dark"
-          className="float-right mt-2"
+        <Link
+          to={() => {
+            const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
+
+            return url.replace(":address", address);
+          }}
         >
-          Continue
-        </Button>
+          <Button size="lg" variant="dark" className="float-right mt-2">
+            Continue
+          </Button>
+        </Link>
       </div>
     );
   }

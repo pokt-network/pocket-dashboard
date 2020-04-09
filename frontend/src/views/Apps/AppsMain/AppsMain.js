@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {Link} from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import "./AppsMain.scss";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
@@ -121,14 +122,15 @@ class AppsMain extends Component {
             lg="4"
             className="d-flex justify-content-end general-info"
           >
-            <Button
-              href={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}
-              variant="dark"
-              size={"md"}
-              className="ml-4 pl-4 pr-4 mr-3"
-            >
-              Create new app
-            </Button>
+            <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
+              <Button
+                variant="dark"
+                size={"md"}
+                className="ml-4 pl-4 pr-4 mr-3"
+              >
+                Create new app
+              </Button>
+            </Link>
             <Button variant="secondary" size={"md"} className="pl-4 pr-4">
               Import app
             </Button>
@@ -166,7 +168,7 @@ class AppsMain extends Component {
                   />
                   <InputGroup.Append>
                     <Button
-              hash        type="submit"
+                      type="submit"
                       onClick={this.handleAppSearch}
                       variant="dark"
                     >

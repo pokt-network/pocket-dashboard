@@ -85,9 +85,6 @@ class ChooseChain extends Component {
                 Pocket Core Protocol currently supports in Testnet phase one.
               </p>
             </div>
-            <Button variant="dark" size={"lg"} className="pl-5 pr-5">
-              Continue
-            </Button>
           </Col>
         </Row>
         <Row>
