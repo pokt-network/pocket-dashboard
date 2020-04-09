@@ -1,11 +1,52 @@
 import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
-
+import SecureLS from "secure-ls";
+import {Configurations} from "../../_configuration";
 
 class PocketApplicationService extends PocketBaseService {
-
   constructor() {
     super("api/applications");
+
+    this.ls = new SecureLS(Configurations.secureLS);
+  }
+
+  /**
+   * Save application address and chains in local storage encrypted.
+   *
+   * @param {address:string} address Pocket application address
+   * @param {address:string} address Pocket application privateKey
+   * @param {Array<string>} chains Pocket application chosen chains.
+   */
+  saveAppInfoInCache({address, privateKey, chains}) {
+    if (address) {
+      this.ls.set("app_address", {data: address});
+    }
+    if (privateKey) {
+      this.ls.set("app_private_key", {data: privateKey});
+    }
+    if (chains) {
+      this.ls.set("app_chains", {data: chains});
+    }
+  }
+
+  /**
+   * Remove app address data from local storage.
+   */
+  removeAppInfoFromCache() {
+    this.ls.remove("app_address");
+    this.ls.remove("app_private_key");
+    this.ls.remove("app_chains");
+  }
+
+  /**
+   * Get Address and chains for app creating/importing
+   */
+  getAppAInfo() {
+    return {
+      address: this.ls.get("app_address").data,
+      privateKey: this.ls.get("app_private_key").data,
+      chains: this.ls.get("app_chains").data,
+    };
   }
 
   /**
