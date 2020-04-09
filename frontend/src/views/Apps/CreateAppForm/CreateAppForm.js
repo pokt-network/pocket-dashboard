@@ -91,6 +91,10 @@ class CreateAppForm extends Component {
         jailed: networkData.jailed,
       };
 
+      ApplicationService.saveAppInfoInCache({
+        address: applicationData.address,
+        privateKey: applicationData.privateKey,
+      });
       this.setState({applicationData, created: true});
     } else {
       // TODO: Show proper error message on front-end.
@@ -107,7 +111,7 @@ class CreateAppForm extends Component {
       return (
         <Redirect
           to={{
-            pathname:_getDashboardPath(DASHBOARD_PATHS.appCreated),
+            pathname:_getDashboardPath(DASHBOARD_PATHS.chooseChain),
             state: {applicationData},
           }}
         />

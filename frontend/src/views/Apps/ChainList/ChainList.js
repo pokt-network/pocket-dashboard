@@ -4,6 +4,8 @@ import "./ChainList.scss";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 import NetworkService from "../../../core/services/PocketNetworkService";
+import ApplicationService from "../../../core/services/PocketApplicationService";
+import {DASHBOARD_PATHS, _getDashboardPath} from "../../../_routes";
 
 class ChooseChain extends Component {
   constructor(props, context) {
@@ -11,11 +13,22 @@ class ChooseChain extends Component {
 
     this.onRowSelect = this.onRowSelect.bind(this);
     this.onRowSelectAll = this.onRowSelectAll.bind(this);
+    this.handleChains = this.handleChains.bind(this);
 
     this.state = {
       chains: [],
       chosenChains: [],
     };
+  }
+
+  handleChains() {
+    const {chosenChains} = this.state;
+    const chainsHashes = chosenChains.map((ch) => ch.hash);
+
+    ApplicationService.saveAppInfoInCache({chains: chainsHashes});
+
+    // eslint-disable-next-line react/prop-types
+    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.tierSelection));
   }
 
   async componentDidMount() {
@@ -135,6 +148,7 @@ class ChooseChain extends Component {
               bordered={false}
             />
             <Button
+              onClick={this.handleChains}
               variant="dark"
               size={"lg"}
               className="float-right mt-4 pl-5 pr-5"
