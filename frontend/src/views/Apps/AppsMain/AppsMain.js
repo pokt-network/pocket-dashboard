@@ -80,6 +80,7 @@ class AppsMain extends Component {
       averageRelays,
       averageStaked,
       registeredApps,
+      loading: false,
     });
   }
 
