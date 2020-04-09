@@ -6,7 +6,7 @@ import {Configurations} from "../../../_configuration";
 
 const STRIPE_PROMISE = loadStripe(Configurations.payment.default.client_id);
 
-class Payment extends Component {
+class PaymentContainer extends Component {
 
   render() {
     return (
@@ -17,7 +17,7 @@ class Payment extends Component {
   }
 }
 
-Payment.propTypes = {
+PaymentContainer.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
@@ -25,4 +25,4 @@ Payment.propTypes = {
 };
 
 
-export default Payment;
+export default PaymentContainer;
