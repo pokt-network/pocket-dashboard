@@ -31,30 +31,28 @@ jobs:
           - 27017:27017
 
     steps:
-      env:
-        CI: true
-        - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-        - name: Use Node.js ${{ matrix.node-version }}
-          uses: actions/setup-node@v1
-          with:
-            node-version: ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
 
-        - name: Install dependencies
-          working-directory: backend
-          run: yarn
+      - name: Install dependencies
+        working-directory: backend
+        run: yarn
 
-        - name: Running lint
-          working-directory: backend
-          run: yarn lint
+      - name: Running lint
+        working-directory: backend
+        run: yarn lint
 
-        - name: Running testing
-          working-directory: backend
-          run: yarn test
+      - name: Running testing
+        working-directory: backend
+        run: yarn test
 
-        - name: Running prod build
-          working-directory: backend
-          run: yarn build:prod
+      - name: Running prod build
+        working-directory: backend
+        run: yarn build:prod
 
   Backend-Docker:
     needs: Backend
