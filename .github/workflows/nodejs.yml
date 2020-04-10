@@ -59,14 +59,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - run: echo ${{ github.workspace }}
       - name: Build and Push
         uses: docker/build-push-action@v1
         with:
+          path: ${{ github.workspace }}/backend
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ env.DOCKER_REPOSITORY }}
           build_args: PORT=${{ env.DOCKER_BACKEND_PORT }}
-          path: ./backend
           tag_with_ref: true
           always_pull: true
 
