@@ -59,11 +59,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - run: echo ${{ github.workspace }}
+      - run: echo ${{ github.workspace }}/pokt-network/pocket-dashboard
       - name: Build and Push
         uses: docker/build-push-action@v1
         with:
-          path: ${{ github.workspace }}/backend
+          path: ${{ github.workspace }}/pokt-network/pocket-dashboard/backend
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: ${{ env.DOCKER_REPOSITORY }}
