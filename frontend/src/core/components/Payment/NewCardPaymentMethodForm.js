@@ -1,6 +1,9 @@
 import React, {Component} from "react";
 import {Col, Form, Row} from "react-bootstrap";
 import PaymentContainer from "./PaymentContainer";
+import {CardCVCNumberInput, CardExpirationDateInput, CardNumberInput} from "./FormComponents";
+
+import "./Payment.scss";
 
 class NewCardPaymentMethodForm extends Component {
 
@@ -14,7 +17,10 @@ class NewCardPaymentMethodForm extends Component {
         <Form>
           <Row>
             <Col sm="6" md="6" lg="6">
-              Credit card number
+              <Form.Group>
+                <Form.Label>Credit card number*</Form.Label>
+                <CardNumberInput/>
+              </Form.Group>
             </Col>
             <Col sm="6" md="6" lg="6">
               <Form.Group>
@@ -31,33 +37,48 @@ class NewCardPaymentMethodForm extends Component {
             <Col sm="6" md="6" lg="6">
               <Form.Group>
                 <Form.Label>Expiration Date*</Form.Label>
-                <Form.Control
-                  name="expirationDate"
-                  type="text"
-                />
+                <CardExpirationDateInput/>
               </Form.Group>
             </Col>
             <Col sm="6" md="6" lg="6">
               <Form.Group>
                 <Form.Label>CVC/CVC2*</Form.Label>
+                <CardCVCNumberInput/>
+              </Form.Group>
+            </Col>
+          </Row>
+
+          <Row>
+            <Col sm="12" md="12" lg="12">
+              <Form.Group>
+                <Form.Label>Billing Address Line 1</Form.Label>
                 <Form.Control
-                  name="cvc"
-                  type="text"
+                  as="textarea"
+                  rows="2"
+                  name="billingAddress"
                 />
               </Form.Group>
             </Col>
           </Row>
 
           <Row>
-            Billing Adddres Line 1
-          </Row>
-
-          <Row>
             <Col sm="6" md="6" lg="6">
-              Zip Code
+              <Form.Group>
+                <Form.Label>Zip Code</Form.Label>
+                <Form.Control
+                  name="cvc"
+                  type="zipCode"
+                />
+              </Form.Group>
             </Col>
             <Col sm="6" md="6" lg="6">
-              Region/Country
+              <Form.Group>
+                <Form.Label>Region/Country</Form.Label>
+                <Form.Control
+                  name="cvc"
+                  type="country"
+                />
+              </Form.Group>
             </Col>
           </Row>
         </Form>

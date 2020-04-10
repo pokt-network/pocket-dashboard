@@ -10,9 +10,11 @@ class PaymentContainer extends Component {
 
   render() {
     return (
-      <Elements stripe={STRIPE_PROMISE}>
-        {this.props.children}
-      </Elements>
+      <div className={"payment-container"}>
+        <Elements stripe={STRIPE_PROMISE}>
+          {this.props.children}
+        </Elements>
+      </div>
     );
   }
 }
