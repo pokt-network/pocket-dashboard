@@ -62,7 +62,6 @@ jobs:
 
     steps:
       - name: Build and Push
-        working-directory: backend
         uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
