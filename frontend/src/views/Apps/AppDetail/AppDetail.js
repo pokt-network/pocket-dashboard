@@ -9,6 +9,7 @@ import ApplicationService, {
   PocketApplicationService,
 } from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
+import Loader from "../../../core/components/Loader";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -18,7 +19,8 @@ class AppDetail extends Component {
       pocketApplication: {},
       networkData: {},
       chains: [],
-      freeTier: false,
+      aat: {},
+      loading: true,
     };
   }
 
@@ -33,7 +35,33 @@ class AppDetail extends Component {
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
 
-    this.setState({pocketApplication, networkData, chains});
+    const {freeTier} = pocketApplication.freeTier;
+
+    let aat;
+
+    if (freeTier) {
+      aat = await ApplicationService.getFreeTierAppAAT(networkData.address);
+    }
+
+    this.setState({
+      pocketApplication,
+      networkData,
+      chains,
+      aat,
+      loading: false,
+    });
+  }
+
+  parseAAT(aat) {
+    let aatParsed = {};
+
+    aatParsed["version"] = aat.version;
+    delete aat.version;
+
+    for (let [key, value] of Object.entries(aat)) {
+      aatParsed[key] = `${value.slice(0, 15)}...`;
+    }
+    return JSON.stringify(aatParsed, null, 2);
   }
 
   render() {
@@ -43,6 +71,7 @@ class AppDetail extends Component {
       contactEmail,
       description,
       icon,
+      freeTier,
     } = this.state.pocketApplication;
     const {
       jailed,
@@ -53,15 +82,13 @@ class AppDetail extends Component {
       address,
     } = this.state.networkData;
 
-    const {freeTier} = this.state;
-
     let statusCapitalized = "";
 
     if (status) {
       statusCapitalized = status[0].toUpperCase() + status.slice(1);
     }
 
-    const {chains} = this.state;
+    const {chains, aat, loading} = this.state;
 
     const generalInfo = [
       {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
@@ -74,15 +101,15 @@ class AppDetail extends Component {
       {title: contactEmail, subtitle: "Email"},
     ];
 
-    // TODO: Get aat from backend
-    const aat = {
-      version: "0.0.1",
-      app_address: "bd4a...",
-      client_pub_key: "9948...",
-      signature: "a383...",
-    };
+    let aatStr = "";
 
-    const aatStr = JSON.stringify(aat, null, 2);
+    if (freeTier) {
+      aatStr = this.parseAAT(aat);
+    }
+
+    if (loading) {
+      return <Loader />;
+    }
 
     return (
       <div id="app-detail">
@@ -135,7 +162,7 @@ class AppDetail extends Component {
           ))}
         </Row>
         <Row className="mt-3">
-          <Col>
+          <Col lg={freeTier ? 6 : 12} md={freeTier ? 6 : 12}>
             <div className="info-section">
               <h3>Address</h3>
               <Alert variant="dark">{address}</Alert>
@@ -146,7 +173,7 @@ class AppDetail extends Component {
             </div>
           </Col>
           {freeTier && (
-            <Col>
+            <Col lg="6" md="6">
               <div id="aat-info" className="mb-2">
                 <h3>AAT</h3>
                 <span>
@@ -162,7 +189,9 @@ class AppDetail extends Component {
                   </code>
                   <p
                     onClick={() =>
-                      PocketApplicationService.copyToClickboard(aatStr)
+                      PocketApplicationService.copyToClickboard(
+                        JSON.stringify(aat, null, 2)
+                      )
                     }
                   >
                     Copy

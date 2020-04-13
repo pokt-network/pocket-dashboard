@@ -172,6 +172,19 @@ export class PocketApplicationService extends PocketBaseService {
       .then(response => response.data);
   }
 
+  /**
+   * GET AAT from free.
+   *
+   * @param {string} applicationAccountAddress Application account address.
+   * @param {string[]} networkChains Network chains to stake application.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getFreeTierAppAAT(applicationAccountAddress) {
+    return axios
+      .get(this._getURL(`/freetier/aat/${applicationAccountAddress}`))
+      .then((response) => response.data);
+  }
 }
 
 export default new PocketApplicationService();
