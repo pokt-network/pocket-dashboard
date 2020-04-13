@@ -60,6 +60,18 @@ export class PocketApplicationService extends PocketBaseService {
     document.body.removeChild(el);
   }
 
+  static parseAAT(aat) {
+    let aatParsed = {};
+
+    aatParsed["version"] = aat.version;
+    delete aat.version;
+
+    for (let [key, value] of Object.entries(aat)) {
+      aatParsed[key] = `${value.slice(0, 15)}...`;
+    }
+    return JSON.stringify(aatParsed, null, 2);
+  }
+
   /**
    * Get application.
    *
