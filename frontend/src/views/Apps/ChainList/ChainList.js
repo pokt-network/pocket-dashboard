@@ -1,8 +1,9 @@
 import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import "./ChainList.scss";
-import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
+import {Button, Col, Row, FormControl, InputGroup} from "react-bootstrap";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
+import {NETWORK_TABLE_COLUMNS} from "../../../constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 
 class ChooseChain extends Component {
@@ -50,21 +51,6 @@ class ChooseChain extends Component {
 
   render() {
     const {chains} = this.state;
-
-    const columns = [
-      {
-        dataField: "name",
-        text: "Network",
-      },
-      {
-        dataField: "netID",
-        text: "Network Identifier (NetID)",
-      },
-      {
-        dataField: "hash",
-        text: "Hash",
-      },
-    ];
 
     // BoostrapTable selectionParams
     const tableSelectOptions = {
@@ -130,7 +116,7 @@ class ChooseChain extends Component {
               classes="table app-table table-striped"
               keyField="hash"
               data={chains}
-              columns={columns}
+              columns={NETWORK_TABLE_COLUMNS}
               selectRow={tableSelectOptions}
               bordered={false}
             />
