@@ -11,9 +11,7 @@ class CardExpirationDateInput extends Component {
       classes: {
         base: "payment-input card-expiration-date-input"
       },
-      style: {
-        base: PaymentInputStyle
-      },
+      style: PaymentInputStyle,
       placeholder: ""
     };
   }

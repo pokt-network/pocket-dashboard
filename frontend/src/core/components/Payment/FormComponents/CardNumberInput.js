@@ -11,9 +11,7 @@ class CardNumberInput extends Component {
       classes: {
         base: "payment-input card-number-input"
       },
-      style: {
-        base: PaymentInputStyle
-      },
+      style: PaymentInputStyle,
       placeholder: ""
     };
   }
