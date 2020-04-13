@@ -67,14 +67,15 @@ export class PocketApplication {
    * @param {string} user User that belong the application.
    * @param {string} [description] Description.
    * @param {string} [icon] Icon.
+   * @param {boolean} [freeTier] Wether is on free tier or not.
    */
-  constructor(name, owner, url, contactEmail, user, description, icon) {
+  constructor(name, owner, url, contactEmail, user, description, icon, freeTier) {
     Object.assign(this, {name, owner, url, contactEmail, user, description, icon});
 
     /** @type {ApplicationPublicPocketAccount} */
     this.publicPocketAccount = null;
 
-    this.freeTier = false;
+    this.freeTier = freeTier || false;
   }
 
   /**
@@ -135,8 +136,8 @@ export class PocketApplication {
    * @static
    */
   static createPocketApplication(applicationData) {
-    const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount} = applicationData;
-    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon);
+    const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount, freeTier} = applicationData;
+    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, freeTier);
 
     pocketApplication.publicPocketAccount = publicPocketAccount;
 
