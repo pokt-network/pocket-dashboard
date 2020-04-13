@@ -3,7 +3,8 @@ import axios from "axios";
 import SecureLS from "secure-ls";
 import {Configurations} from "../../_configuration";
 
-class PocketApplicationService extends PocketBaseService {
+export class PocketApplicationService extends PocketBaseService {
+
   constructor() {
     super("api/applications");
 
@@ -47,6 +48,16 @@ class PocketApplicationService extends PocketBaseService {
       privateKey: this.ls.get("app_private_key").data,
       chains: this.ls.get("app_chains").data,
     };
+  }
+
+  static copyToClickboard(value) {
+    const el = document.createElement("textarea");
+
+    el.value = value;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand("copy");
+    document.body.removeChild(el);
   }
 
   /**

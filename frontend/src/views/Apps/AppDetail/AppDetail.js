@@ -5,7 +5,9 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
 import {NETWORK_TABLE_COLUMNS} from "../../../constants";
 import "./AppDetail.scss";
-import ApplicationService from "../../../core/services/PocketApplicationService";
+import ApplicationService, {
+  PocketApplicationService,
+} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 
 class AppDetail extends Component {
@@ -16,6 +18,7 @@ class AppDetail extends Component {
       pocketApplication: {},
       networkData: {},
       chains: [],
+      freeTier: false,
     };
   }
 
@@ -50,6 +53,8 @@ class AppDetail extends Component {
       address,
     } = this.state.networkData;
 
+    const {freeTier} = this.state;
+
     let statusCapitalized = "";
 
     if (status) {
@@ -69,14 +74,15 @@ class AppDetail extends Component {
       {title: contactEmail, subtitle: "Email"},
     ];
 
-    const exJson = {
+    // TODO: Get aat from backend
+    const aat = {
       version: "0.0.1",
       app_address: "bd4a...",
       client_pub_key: "9948...",
       signature: "a383...",
     };
 
-    const jsonString = JSON.stringify(exJson, null, 2);
+    const aatStr = JSON.stringify(aat, null, 2);
 
     return (
       <div id="app-detail">
@@ -88,9 +94,11 @@ class AppDetail extends Component {
               <div className="info">
                 <h1 className="d-flex align-items-baseline">
                   {name}
-                  <Badge variant="dark" className="ml-2 pt-2 pb-2 pl-3 pr-3">
-                    Free Tier
-                  </Badge>
+                  {freeTier && (
+                    <Badge variant="dark" className="ml-2 pt-2 pb-2 pl-3 pr-3">
+                      Free Tier
+                    </Badge>
+                  )}
                 </h1>
                 <p className="description">{description}</p>
               </div>
@@ -137,38 +145,32 @@ class AppDetail extends Component {
               <Alert variant="dark">{public_key}</Alert>
             </div>
           </Col>
-          <Col>
-            <div id="aat-info" className="mb-2">
-              <h3>AAT</h3>
-              <span>
-                <HelpLink size="2x" />
-                <p>How to create an AAT?</p>
-              </span>
-            </div>
-            <div className="aat-code">
-              <pre>
-                <code className="language-html" data-lang="html">
-                  {"# Returns\n"}
-                  <span id="aat">{jsonString}</span>
-                </code>
-                <p
-                  onClick={() => {
-                    // This won't be rendered on html
-                    const aat = document.querySelector("#aat").innerHTML;
-                    const el = document.createElement("textarea");
-
-                    el.value = aat;
-                    document.body.appendChild(el);
-                    el.select();
-                    document.execCommand("copy");
-                    document.body.removeChild(el);
-                  }}
-                >
-                  Copy
-                </p>
-              </pre>
-            </div>
-          </Col>
+          {freeTier && (
+            <Col>
+              <div id="aat-info" className="mb-2">
+                <h3>AAT</h3>
+                <span>
+                  <HelpLink size="2x" />
+                  <p>How to create an AAT?</p>
+                </span>
+              </div>
+              <div className="aat-code">
+                <pre>
+                  <code className="language-html" data-lang="html">
+                    {"# Returns\n"}
+                    <span id="aat">{aatStr}</span>
+                  </code>
+                  <p
+                    onClick={() =>
+                      PocketApplicationService.copyToClickboard(aatStr)
+                    }
+                  >
+                    Copy
+                  </p>
+                </pre>
+              </div>
+            </Col>
+          )}
         </Row>
         <Row>
           <Col>

@@ -11,11 +11,13 @@ on:
     branches:
       - master
 
+env:
+  DOCKER_REPOSITORY: poktnetwork/pocket-dashboard
+  DOCKER_BACKEND_PORT: 4200
 
 jobs:
   # Backend CI
   Backend:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -52,12 +54,24 @@ jobs:
         working-directory: backend
         run: yarn build:prod
 
-        env:
-          CI: true
+  Backend-Docker:
+    needs: Backend
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build and Push
+        uses: docker/build-push-action@v1
+        with:
+          dockerfile: ./backend/Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: ${{ env.DOCKER_REPOSITORY }}
+          build_args: PORT=${{ env.DOCKER_BACKEND_PORT }}
+          tag_with_ref: true
+          always_pull: true
 
   # Frontend CI
   Frontend:
-
     runs-on: ubuntu-latest
 
     strategy:
