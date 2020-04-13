@@ -176,13 +176,38 @@ export class PocketApplicationService extends PocketBaseService {
    * GET AAT from free.
    *
    * @param {string} applicationAccountAddress Application account address.
-   * @param {string[]} networkChains Network chains to stake application.
    *
    * @returns {Promise|Promise<*>}
    */
   getFreeTierAppAAT(applicationAccountAddress) {
     return axios
       .get(this._getURL(`/freetier/aat/${applicationAccountAddress}`))
+      .then((response) => response.data);
+  }
+
+  /**
+   * Delete an application from dashboard (but not from the network). 
+   * 
+   * @param {string} applicationAccountAddress Application account address.
+   * 
+   * @returns {Promise|Promise<*>}
+   */
+  deleteAppFromDashboard(applicationAccountAddress) {
+    return axios
+      .delete(this._getURL(`/${applicationAccountAddress}`))
+      .then((response) => response.data);
+  }
+
+  /**
+   * Unstake a free tier application. 
+   * 
+   * @param {string} applicationAccountAddress Application account address.
+   * 
+   * @returns {Promise|Promise<*>}
+   */
+  unstakeFreeTierApplication(applicationAccountAddress) {
+    return axios
+      .post(this._getURL("/freetier/unstake"), {applicationAccountAddress})
       .then((response) => response.data);
   }
 }

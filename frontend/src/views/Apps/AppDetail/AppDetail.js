@@ -10,6 +10,7 @@ import ApplicationService, {
 } from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -22,6 +23,9 @@ class AppDetail extends Component {
       aat: {},
       loading: true,
     };
+
+    this.deleteApplication = this.deleteApplication.bind(this);
+    this.unstakeApplication = this.unstakeApplication.bind(this);
   }
 
   async componentDidMount() {
@@ -50,6 +54,34 @@ class AppDetail extends Component {
       aat,
       loading: false,
     });
+  }
+
+  async deleteApplication() {
+    const {address} = this.state.networkData;
+
+    const success = await ApplicationService.deleteAppFromDashboard(address);
+
+    if (success) {
+      // eslint-disable-next-line react/prop-types
+      this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.apps));
+    }
+  }
+
+  async unstakeApplication() {
+    const {address} = this.state.networkData;
+    const {freeTier} = this.state.pocketApplication;
+
+    if (freeTier) {
+      const success = await ApplicationService.unstakeFreeTierApplication(
+        address
+      );
+
+      if (success) {
+        // TODO: Show message on frontend about success
+      }
+    } else {
+      // TODO: Integrate unstake for custom tier apps
+    }
   }
 
   parseAAT(aat) {
@@ -216,14 +248,22 @@ class AppDetail extends Component {
         <Row className="mt-3 mb-4">
           <Col className="action-buttons">
             <div className="main-options">
-              <Button variant="dark" className="pr-4 pl-4">
+              <Button
+                onClick={this.unstakeApplication}
+                variant="dark"
+                className="pr-4 pl-4"
+              >
                 Unstake
               </Button>
               <Button variant="secondary" className="ml-3 pr-4 pl-4">
                 New Purchase
               </Button>
             </div>
-            <Button href="#" variant="link" className="link mt-3">
+            <Button
+              onClick={this.deleteApplication}
+              variant="link"
+              className="link mt-3"
+            >
               Delete App
             </Button>
           </Col>
