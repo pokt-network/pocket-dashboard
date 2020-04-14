@@ -1,0 +1,30 @@
+.order-by {
+  display: flex;
+  align-items: baseline;
+
+  p {
+    margin-right: 15px;
+  }
+}
+
+.main-list {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 5px;
+  background-color: #e6e6e6;
+  overflow-x: hidden;
+  overflow-x: auto;
+  max-height: 60vh;
+}
+
+.general-info {
+
+  button,
+  a {
+    font-weight: bold;
+  }
+
+  a {
+    padding-top: 10px;
+  }
+}
