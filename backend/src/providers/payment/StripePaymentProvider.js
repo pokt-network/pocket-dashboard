@@ -22,7 +22,7 @@ class StripePaymentProvider extends BasePaymentProvider {
       metadata: {
         account: item.account,
         name: item.name,
-        type: item.type.toUpperCase(),
+        type: item.type,
         pokt: item.pokt
       }
     };

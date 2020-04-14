@@ -26,7 +26,7 @@ class PocketStripePaymentService extends PocketBaseService {
   }
 
   /**
-   * Create payment as intent to payment history.
+   * Create payment as intent on history.
    *
    * @param {string} paymentIntentID Payment intent used.
    * @param {object} item Payment item.
@@ -43,7 +43,7 @@ class PocketStripePaymentService extends PocketBaseService {
   }
 
   /**
-   * Mark payment as success.
+   * Mark payment as success on history.
    *
    * @param {string} paymentIntentID Payment intent used.
    * @param {string} paymentMethod Payment method to save.
