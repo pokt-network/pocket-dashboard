@@ -4,19 +4,21 @@ import PaymentContainer from "./PaymentContainer";
 import {CardCVCNumberInput, CardExpirationDateInput, CardNumberInput} from "./FormComponents";
 import {CardNumberElement, ElementsConsumer} from "@stripe/react-stripe-js";
 import "./Payment.scss";
+import PropTypes from "prop-types";
 
-class NewCardPaymentMethodForm extends Component {
+class CardPaymentMethodForm extends Component {
 
 
   constructor(props, context) {
     super(props, context);
 
-    this.handleCreateMethod = this.handleCreateMethod.bind(this);
+    this.handlePayMethod = this.handlePayMethod.bind(this);
   }
 
-  async handleCreateMethod(e, stripeElements, stripe) {
+  async handlePayMethod(e, stripeElements, stripe) {
     e.preventDefault();
 
+    const {paymentIntentID} = this.props;
     const cardNumber = stripeElements.getElement(CardNumberElement);
 
     const {error, paymentMethod} = await stripe.createPaymentMethod({
@@ -42,7 +44,7 @@ class NewCardPaymentMethodForm extends Component {
                   <h2>Add Payment method</h2>
                 </Row>
 
-                <Form onSubmit={(e) => this.handleCreateMethod(e, elements, stripe)}>
+                <Form onSubmit={(e) => this.handlePayMethod(e, elements, stripe)}>
                   <Row>
                     <Col sm="6" md="6" lg="6">
                       <Form.Group>
@@ -111,7 +113,7 @@ class NewCardPaymentMethodForm extends Component {
                   </Row>
                   <div className="submit float-right mt-2">
                     <Button variant="dark" size="lg" type="submit">
-                      Save
+                      Pay
                     </Button>
                   </div>
                 </Form>
@@ -124,4 +126,8 @@ class NewCardPaymentMethodForm extends Component {
   }
 }
 
-export default NewCardPaymentMethodForm;
+CardPaymentMethodForm.propTypes = {
+  paymentIntentID: PropTypes.string
+};
+
+export default CardPaymentMethodForm;
