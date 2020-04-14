@@ -16,6 +16,7 @@ export default class PaymentService extends BaseService {
    *
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
+   * @param {*} item Item to pay.
    * @param {number} amount Amount intended to be collected by this payment.
    * @param {string} to For what is the payment (Apps or Node).
    *
@@ -23,10 +24,10 @@ export default class PaymentService extends BaseService {
    * @private
    * @async
    */
-  async __createPocketPaymentIntent(type, currency, amount, to) {
+  async __createPocketPaymentIntent(type, currency, item, amount, to) {
     const description = `Acquire pokt for ${to}`;
 
-    return this._paymentProvider.createPaymentIntent(type, currency, amount, description);
+    return this._paymentProvider.createPaymentIntent(type, currency, item, amount, description);
   }
 
   /**
@@ -34,13 +35,14 @@ export default class PaymentService extends BaseService {
    *
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
+   * @param {*} item Item to pay.
    * @param {number} amount Amount intended to be collected by this payment.
    *
    * @returns {boolean} True is validation is success.
    * @private
    * @throws Error if validation fails.
    */
-  __validateData(type, currency, amount) {
+  __validateData(type, currency, item, amount) {
     if (!type) {
       throw Error("Type is required");
     }
@@ -51,6 +53,23 @@ export default class PaymentService extends BaseService {
 
     if (amount === 0) {
       throw Error("Amount is invalid");
+    }
+
+    if (!item) {
+      throw Error("Item is required");
+    } else {
+
+      if (!item.account) {
+        throw Error("Item account is required");
+      }
+
+      if (!item.name) {
+        throw Error("Item name is required");
+      }
+
+      if (!item.pokt) {
+        throw Error("Item pokt is required");
+      }
     }
 
     return true;
@@ -70,17 +89,23 @@ export default class PaymentService extends BaseService {
    *
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
+   * @param {*} item Item to pay.
    * @param {number} amount Amount intended to be collected by this payment.
    *
    * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
    * @throws Error if validation fails.
    * @async
    */
-  async createPocketPaymentIntentForApps(type, currency, amount) {
+  async createPocketPaymentIntentForApps(type, currency, item, amount) {
 
-    this.__validateData(type, currency, amount);
+    this.__validateData(type, currency, item, amount);
 
-    return this.__createPocketPaymentIntent(type, currency, amount, "apps");
+    const appItem = {
+      ...item,
+      type: "Application"
+    };
+
+    return this.__createPocketPaymentIntent(type, currency, appItem, amount, "apps");
   }
 
 

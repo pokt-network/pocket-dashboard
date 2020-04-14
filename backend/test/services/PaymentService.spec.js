@@ -25,9 +25,14 @@ describe("PaymentService", () => {
       it("Create a Payment with amount, currency and type successfully", async () => {
         const type = PaymentTypes.card;
         const currency = PaymentCurrencies.usd;
+        const item = {
+          account: "b9628a13220f049b93fdefe4fb9ca2bca10fe460",
+          name: "My App",
+          pokt: 346
+        };
         const amount = 90;
 
-        const paymentResult = await paymentService.createPocketPaymentIntentForApps(type, currency, amount);
+        const paymentResult = await paymentService.createPocketPaymentIntentForApps(type, currency, item, amount);
 
         // eslint-disable-next-line no-undef
         should.exist(paymentResult);

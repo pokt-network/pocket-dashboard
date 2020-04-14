@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import UserService from "../../core/services/PocketUserService";
-import CardPaymentMethodForm from "../../core/components/Payment/CardPaymentMethodForm";
+import NewCardPaymentMethodForm from "../../core/components/Payment/Stripe/NewCardPaymentMethodForm";
 
 class Dashboard extends Component {
   render() {
@@ -9,7 +9,7 @@ class Dashboard extends Component {
         <h1>Welcome back {UserService.getUserInfo().name}</h1>
 
         {/*TODO: Remove this element when finish.*/}
-        <CardPaymentMethodForm/>
+        <NewCardPaymentMethodForm paymentIntentID={"pi_1GXxByFF1uO1aFOlXDgxNOZj_secret_WlUhD7ThcYd1LgxTrpkzKsIBY"}/>
       </div>
     );
   }

@@ -24,14 +24,22 @@ router.get("/currencies", (request, response) => {
 });
 
 /**
+ * Save a new payment method.
+ */
+router.post("/payment_method", async (request, response) => {
+  // TODO: Implement this endpoint
+  response.send("// TODO: Implement this endpoint");
+});
+
+/**
  * Create a new intent of payment for apps.
  */
 router.post("/new_intent/apps", async (request, response) => {
   try {
-    /** @type {{type:string, currency: string, amount: number}} */
+    /** @type {{type:string, currency: string, item: {account:string, name:string, type:string, pokt:number}, amount: number}} */
     const data = request.body;
 
-    const paymentIntent = await paymentService.createPocketPaymentIntentForApps(data.type, data.currency, data.amount);
+    const paymentIntent = await paymentService.createPocketPaymentIntentForApps(data.type, data.currency, data.item, data.amount);
 
     response.send(paymentIntent);
   } catch (e) {
@@ -54,6 +62,22 @@ router.post("/new_intent/nodes", async (request, response) => {
  * Retrieve history information about payments.
  */
 router.get("/history", (request, response) => {
+  response.send("// TODO: Implement this endpoint");
+});
+
+/**
+ * Create payment as intent on history.
+ */
+router.post("/history", async (request, response) => {
+  // TODO: Implement this endpoint
+  response.send("// TODO: Implement this endpoint");
+});
+
+/**
+ * Mark payment as success on history.
+ */
+router.put("/history", async (request, response) => {
+  // TODO: Implement this endpoint
   response.send("// TODO: Implement this endpoint");
 });
 

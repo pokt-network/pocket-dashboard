@@ -3,10 +3,12 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 import PaymentContainer from "./PaymentContainer";
 import {CardCVCNumberInput, CardExpirationDateInput, CardNumberInput} from "./FormComponents";
 import {CardNumberElement, ElementsConsumer} from "@stripe/react-stripe-js";
-import "./Payment.scss";
+import "../Payment.scss";
 import PropTypes from "prop-types";
+import {PAYMENT_REGION_OR_COUNTRY} from "../../../../_constants";
+import PocketStripePaymentService from "../../../services/PocketStripePaymentService";
 
-class CardPaymentMethodForm extends Component {
+class NewCardPaymentMethodForm extends Component {
 
 
   constructor(props, context) {
@@ -15,22 +17,27 @@ class CardPaymentMethodForm extends Component {
     this.handlePayMethod = this.handlePayMethod.bind(this);
   }
 
-  async handlePayMethod(e, stripeElements, stripe) {
+  handlePayMethod(e, stripeElements, stripe) {
     e.preventDefault();
 
     const {paymentIntentID} = this.props;
     const cardNumber = stripeElements.getElement(CardNumberElement);
 
-    const {error, paymentMethod} = await stripe.createPaymentMethod({
-      type: "card",
-      card: cardNumber,
-    });
+    // TODO: Data validation
+    const billingDetails = {
+      name: "Tester",
+      address: {
+        line1: "Line 1",
+        postal_code: "Postal code",
+        country: "US"
+      }
+    };
 
-    if (error) {
-      console.log("[error]", error);
-    } else {
-      console.log("[PaymentMethod]", paymentMethod);
-    }
+    PocketStripePaymentService.confirmPaymentWithNewCard(stripe, paymentIntentID, cardNumber, billingDetails)
+      .then(result => {
+        // TODO: Post-process payment result
+        console.log(result);
+      });
   }
 
   render() {
@@ -83,9 +90,8 @@ class CardPaymentMethodForm extends Component {
                       <Form.Group>
                         <Form.Label>Billing Address Line 1</Form.Label>
                         <Form.Control
-                          as="textarea"
-                          rows="2"
-                          name="billingAddress"
+                          name="billingAddressLine1"
+                          type="text"
                         />
                       </Form.Group>
                     </Col>
@@ -96,24 +102,27 @@ class CardPaymentMethodForm extends Component {
                       <Form.Group>
                         <Form.Label>Zip Code</Form.Label>
                         <Form.Control
-                          name="cvc"
-                          type="zipCode"
+                          name="zipCode"
+                          type="text"
                         />
                       </Form.Group>
                     </Col>
                     <Col sm="6" md="6" lg="6">
                       <Form.Group>
                         <Form.Label>Region/Country</Form.Label>
-                        <Form.Control
-                          name="cvc"
-                          type="country"
-                        />
+                        <Form.Control as="select">
+                          {
+                            PAYMENT_REGION_OR_COUNTRY.map(country => (
+                              <option key={country.code}>{country.name}</option>
+                            ))
+                          }
+                        </Form.Control>
                       </Form.Group>
                     </Col>
                   </Row>
                   <div className="submit float-right mt-2">
                     <Button variant="dark" size="lg" type="submit">
-                      Pay
+                      Save and Pay
                     </Button>
                   </div>
                 </Form>
@@ -126,8 +135,8 @@ class CardPaymentMethodForm extends Component {
   }
 }
 
-CardPaymentMethodForm.propTypes = {
+NewCardPaymentMethodForm.propTypes = {
   paymentIntentID: PropTypes.string
 };
 
-export default CardPaymentMethodForm;
+export default NewCardPaymentMethodForm;

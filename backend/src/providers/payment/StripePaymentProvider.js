@@ -12,13 +12,19 @@ class StripePaymentProvider extends BasePaymentProvider {
     this._stripeAPIClient = new Stripe(paymentProviderConfiguration.client_secret, paymentProviderConfiguration.options);
   }
 
-  async createPaymentIntent(type, currency, amount, description) {
+  async createPaymentIntent(type, currency, item, amount, description) {
 
     let paymentData = {
       amount: amount * AMOUNT_CONVERT_NUMBER,
       payment_method_types: [type],
       currency,
-      description
+      description,
+      metadata: {
+        account: item.account,
+        name: item.name,
+        type: item.type.toUpperCase(),
+        pokt: item.pokt
+      }
     };
 
     const paymentResultData = await this._stripeAPIClient.paymentIntents.create(paymentData);

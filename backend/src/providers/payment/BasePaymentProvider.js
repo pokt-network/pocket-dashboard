@@ -28,7 +28,7 @@ export class PaymentResult {
      * @param {number} amount Amount of payment.
      */
     constructor(id, createdDate, paymentNumber, currency, amount) {
-        Object.assign(this, {createdDate, amount, currency, paymentNumber});
+        Object.assign(this, {id, createdDate, amount, currency, paymentNumber});
     }
 }
 
@@ -49,6 +49,7 @@ export default class BasePaymentProvider {
      *
      * @param {string} type Type of payment.
      * @param {string} currency Three-letter ISO currency code, in lowercase.
+     * @param {*} item Item to pay.
      * @param {number} amount Amount intended to be collected by this payment.
      * @param {string} description An arbitrary string attached to the object. Often useful for displaying to users.
      *
@@ -56,6 +57,6 @@ export default class BasePaymentProvider {
      * @async
      * @abstract
      */
-    async createPaymentIntent(type, currency, amount, description) {
+    async createPaymentIntent(type, currency, item, amount, description) {
     }
 }
