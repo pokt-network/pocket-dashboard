@@ -1,8 +1,8 @@
-import React, {Component} from "react";
+import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import "./AppsMain.scss";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
-import InfoCard from "../../../core/components/InfoCard/InfoCard";
+import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
@@ -10,15 +10,14 @@ import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 import {APPLICATIONS_LIMIT, BONDSTATUS} from "../../../constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
+import Main from "../../components/Main/Main";
 
-class AppsMain extends Component {
+class AppsMain extends Main {
   constructor(props, context) {
     super(props, context);
 
-    this.handleAppSearch = this.handleAppSearch.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-
     this.state = {
+      ...this.state,
       registeredApps: [],
       userApps: [],
       filteredUserApps: [],
@@ -26,34 +25,7 @@ class AppsMain extends Component {
       averageStaked: 0,
       averageRelays: 0,
       loading: true,
-      data: {
-        searchQuery: "",
-      },
     };
-  }
-
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
-
-    data[input.name] = input.value;
-    this.setState({data});
-  }
-
-  handleAppSearch() {
-    const {userApps} = this.state;
-    const {searchQuery} = this.state.data;
-
-    let filteredUserApps = userApps;
-
-    if (searchQuery) {
-      filteredUserApps = userApps.filter((a) =>
-        a.pocketApplication.name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-      );
-    }
-
-    this.setState({filteredUserApps});
   }
 
   async componentDidMount() {
@@ -105,6 +77,12 @@ class AppsMain extends Component {
       },
     ];
 
+    const cards = [
+      {title: totalApplications, subtitle: "Total of apps"},
+      {title: averageStaked, subtitle: "Average staked"},
+      {title: averageRelays, subtitle: "Average relays per application"},
+    ];
+
     if (loading) {
       return <Loader />;
     }
@@ -135,18 +113,7 @@ class AppsMain extends Component {
           </Col>
         </Row>
         <Row className="stats mb-4">
-          <Col>
-            <InfoCard title={totalApplications} subtitle="Total of app" />
-          </Col>
-          <Col>
-            <InfoCard title={averageStaked} subtitle="Average staked" />
-          </Col>
-          <Col>
-            <InfoCard
-              title={averageRelays}
-              subtitle="Average relays per application"
-            />
-          </Col>
+          <InfoCards cards={cards}></InfoCards>
         </Row>
         <Row className="mb-4">
           <Col sm="8" md="8" lg="8">
@@ -184,7 +151,7 @@ class AppsMain extends Component {
                 />
               </Col>
             </Row>
-            <div className="apps-list">
+            <div className="main-list">
               {filteredUserApps.map((app, idx) => {
                 const {name, icon} = app.pocketApplication;
                 const {staked_tokens, status} = app.networkData;
