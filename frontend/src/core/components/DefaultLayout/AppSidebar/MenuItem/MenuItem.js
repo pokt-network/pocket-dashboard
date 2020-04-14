@@ -3,6 +3,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {fas} from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
 import {library} from "@fortawesome/fontawesome-svg-core";
+import {Link} from "react-router-dom";
 
 library.add(fas);
 
@@ -11,12 +12,12 @@ class MenuItem extends Component {
     const {url, label, icon} = this.props;
 
     return (
-      <a href={url}>
+      <Link to={url}>
         <li>
           <FontAwesomeIcon icon={icon} size="2x" className="icon" />
           {label}
         </li>
-      </a>
+      </Link>
     );
   }
 }
