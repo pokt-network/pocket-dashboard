@@ -24,7 +24,7 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async __createPocketPaymentIntent(type, currency, amount, to) {
-    const description = "";
+    const description = `Acquire pokt for ${to}`;
 
     return this._paymentProvider.createPaymentIntent(type, currency, amount, description);
   }
@@ -62,7 +62,7 @@ export default class PaymentService extends BaseService {
    * @returns {string[]} List of currencies.
    */
   getAvailableCurrencies() {
-    return PaymentCurrencies.values();
+    return Object.values(PaymentCurrencies);
   }
 
   /**
@@ -76,7 +76,7 @@ export default class PaymentService extends BaseService {
    * @throws Error if validation fails.
    * @async
    */
-  async createPoktPaymentIntentForApps(type, currency, amount) {
+  async createPocketPaymentIntentForApps(type, currency, amount) {
 
     this.__validateData(type, currency, amount);
 
@@ -84,9 +84,11 @@ export default class PaymentService extends BaseService {
   }
 
 
-  async createPoktPaymentForNodes() {
+  async createPocketPaymentForNodes() {
+    // TODO: Implement this method.
   }
 
   async getPaymentHistory() {
+    // TODO: Implement this method.
   }
 }

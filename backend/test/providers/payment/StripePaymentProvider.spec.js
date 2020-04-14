@@ -6,12 +6,12 @@ import {Configurations} from "../../../src/_configuration";
 
 const stripePaymentProvider = new StripePaymentProvider(Configurations.payment.test);
 
-if (Configurations.payment.test.client_id && Configurations.payment.test.client_secret) {
 
-  describe("StripePaymentProvider", () => {
+describe("StripePaymentProvider", () => {
 
+  if (Configurations.payment.test.client_id && Configurations.payment.test.client_secret) {
     describe("createPaymentIntent that don’t require authentication", () => {
-      it("Created a Payment with amount, currency, type type and description", async () => {
+      it("Created a Payment with amount, currency, type and description", async () => {
         const currency = PaymentCurrencies.usd;
         const amount = 90;
         const description = "Test payment with Pocket dashboard";
@@ -25,5 +25,5 @@ if (Configurations.payment.test.client_id && Configurations.payment.test.client_
         paymentResult.paymentNumber.should.be.a("string");
       });
     });
-  });
-}
+  }
+});
