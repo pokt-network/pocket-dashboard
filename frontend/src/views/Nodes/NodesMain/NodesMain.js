@@ -1,8 +1,7 @@
-import React, {Component} from "react";
+import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import "./NodesMain.scss";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
-import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
@@ -10,58 +9,31 @@ import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 import {APPLICATIONS_LIMIT, BONDSTATUS} from "../../../constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
+import Main from "../../components/Main/Main";
+import InfoCards from "../../../core/components/InfoCards";
 
-class NodesMain extends Component {
+class NodesMain extends Main {
   constructor(props, context) {
     super(props, context);
 
-    this.handleAppSearch = this.handleAppSearch.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-
     this.state = {
+      ...this.state,
       registeredApps: [],
       userNodes: [],
-      filteredNodesApps: [],
+      filteredNodes: [],
       totalNodes: 0,
       averageStaked: 0,
       averageRelays: 0,
       loading: true,
-      data: {
-        searchQuery: "",
-      },
     };
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
-
-    data[input.name] = input.value;
-    this.setState({data});
-  }
-
-  handleAppSearch() {
-    const {userNodes} = this.state;
-    const {searchQuery} = this.state.data;
-
-    let filteredNodesApps = userNodes;
-
-    if (searchQuery) {
-      filteredNodesApps = userNodes.filter((a) =>
-        a.pocketApplication.name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-      );
-    }
-
-    this.setState({filteredNodesApps});
-  }
-
   async componentDidMount() {
+    // TODO: Replace this object job to retrieve data from nodes instead of apps
     const userEmail = UserService.getUserInfo().email;
 
     const userNodes = await ApplicationService.getAllUserApplications(
-      userEmail,
-      APPLICATIONS_LIMIT
+      userEmail, APPLICATIONS_LIMIT
     );
 
     const {
@@ -76,7 +48,7 @@ class NodesMain extends Component {
 
     this.setState({
       userNodes,
-      filteredNodesApps: userNodes,
+      filteredNodes: userNodes,
       totalApplications: totalNodes,
       averageRelays,
       averageStaked,
@@ -87,7 +59,7 @@ class NodesMain extends Component {
 
   render() {
     const {
-      filteredNodesApps,
+      filteredNodes,
       totalApplications: totalNodes,
       averageStaked,
       averageRelays,
@@ -104,6 +76,14 @@ class NodesMain extends Component {
         dataField: "networkData.address",
         text: "Address",
       },
+    ];
+
+    const cards = [
+      {title: totalNodes, subtitle: "Total of node"},
+      {title: averageStaked, subtitle: "Average staked"},
+      {title: averageRelays, subtitle: "Average relays per node"},
+      {title: 23867, subtitle: "Max Staked"},
+      {title: 10345, subtitle: "Min staked"},
     ];
 
     if (loading) {
@@ -136,18 +116,7 @@ class NodesMain extends Component {
           </Col>
         </Row>
         <Row className="stats mb-4">
-          <Col>
-            <InfoCard title={totalNodes} subtitle="Total of app" />
-          </Col>
-          <Col>
-            <InfoCard title={averageStaked} subtitle="Average staked" />
-          </Col>
-          <Col>
-            <InfoCard
-              title={averageRelays}
-              subtitle="Average relays per node"
-            />
-          </Col>
+          <InfoCards cards={cards}></InfoCards>
         </Row>
         <Row className="mb-4">
           <Col sm="8" md="8" lg="8">
@@ -156,19 +125,19 @@ class NodesMain extends Component {
               <Col sm="8" md="8" lg="8">
                 <InputGroup className="mb-3">
                   <FormControl
-                    placeholder="Search app"
+                    placeholder="Search node"
                     name="searchQuery"
                     onChange={this.handleChange}
                     onKeyPress={({key}) => {
                       if (key === "Enter") {
-                        this.handleAppSearch();
+                        this.handleSearch();
                       }
                     }}
                   />
                   <InputGroup.Append>
                     <Button
                       type="submit"
-                      onClick={this.handleAppSearch}
+                      onClick={this.handleSearch}
                       variant="dark"
                     >
                       Search
@@ -186,7 +155,7 @@ class NodesMain extends Component {
               </Col>
             </Row>
             <div className="main-list">
-              {filteredNodesApps.map((app, idx) => {
+              {filteredNodes.map((app, idx) => {
                 const {name, icon} = app.pocketApplication;
                 const {staked_tokens, status} = app.networkData;
 
@@ -214,7 +183,7 @@ class NodesMain extends Component {
               />
             </div>
             <BootstrapTable
-              classes="table app-table table-striped"
+              classes="app-table table-striped"
               keyField="networkData.address"
               data={registeredApps}
               columns={columns}
