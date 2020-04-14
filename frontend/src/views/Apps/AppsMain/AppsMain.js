@@ -180,7 +180,11 @@ class AppsMain extends Component {
                 {/* TODO: Implement sorting on apps */}
                 <AppDropdown
                   onSelect={(t) => console.log(t)}
-                  options={["All", "Newest", "Oldest"]}
+                  options={[
+                    {text: "All", dataField: "all"},
+                    {text: "Newest", dataField: "newest"},
+                    {text: "Oldest", dataField: "oldest"},
+                  ]}
                 />
               </Col>
             </Row>
@@ -209,7 +213,7 @@ class AppsMain extends Component {
               {/* TODO: Implement sorting on apps */}
               <AppDropdown
                 onSelect={(t) => console.log(t)}
-                options={["All", "Newest", "Oldest"]}
+                options={[{text: "All"}, {text: "Newest"}, {text: "Oldest"}]}
               />
             </div>
             <BootstrapTable
