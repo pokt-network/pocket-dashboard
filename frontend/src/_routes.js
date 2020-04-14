@@ -75,7 +75,7 @@ const authProviderRoutes = [
  */
 export const dashboardRoutes = [
   {
-    path: DASHBOARD_PATHS.home,
+    path: "/",
     exact: true,
     name: "Home - Dashboard",
     component: Dashboard,
