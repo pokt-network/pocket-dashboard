@@ -11,49 +11,33 @@ class PocketStripePaymentService extends PocketBaseService {
   /**
    * Save payment method for use later.
    *
-   * @param {string} paymentMethod Payment method to save.
+   * @param {string} paymentMethodID Payment method ID to save.
    * @param {object} billingDetails Billing details used on this payment method.
    *
    * @returns {Promise<*>}
    * @private
    */
-  __savePaymentMethod(paymentMethod, billingDetails) {
+  __savePaymentMethod(paymentMethodID, billingDetails) {
     const user = PocketUserService.getUserInfo().email;
-    const data = {user, paymentMethod, billingDetails};
+    const data = {id: paymentMethodID, user, billingDetails};
 
     return axios.post(this._getURL("payment_method"), data)
       .then(response => response.data);
   }
 
   /**
-   * Create payment as intent on history.
-   *
-   * @param {string} paymentIntentID Payment intent used.
-   * @param {object} item Payment item.
-   *
-   * @returns {Promise<*>}
-   * @private
-   */
-  async __createPayment(paymentIntentID, item) {
-    const user = PocketUserService.getUserInfo().email;
-    const data = {user, paymentIntentID, item};
-
-    return axios.post(this._getURL("history"), data)
-      .then(response => response.data);
-  }
-
-  /**
    * Mark payment as success on history.
    *
-   * @param {string} paymentIntentID Payment intent used.
-   * @param {string} paymentMethod Payment method to save.
+   * @param {string} paymentID Payment intent ID used.
+   * @param {string} paymentMethodID Payment method ID to save.
    * @param {object} billingDetails Billing details used on this payment method.
    *
    * @returns {Promise<*>}
    * @private
    */
-  async __markPaymentAsSuccess(paymentIntentID, paymentMethod, billingDetails) {
-    const data = {paymentIntentID, paymentMethod, billingDetails};
+  async __markPaymentAsSuccess(paymentID, paymentMethodID, billingDetails) {
+    const user = PocketUserService.getUserInfo().email;
+    const data = {paymentID, user, paymentMethodID, billingDetails};
 
     return axios.put(this._getURL("history"), data)
       .then(response => response.data);

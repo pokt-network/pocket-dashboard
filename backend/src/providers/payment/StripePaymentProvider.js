@@ -20,7 +20,7 @@ class StripePaymentProvider extends BasePaymentProvider {
       currency,
       description,
       metadata: {
-        account: item.account,
+        "pocket account": item.account,
         name: item.name,
         type: item.type,
         pokt: item.pokt
