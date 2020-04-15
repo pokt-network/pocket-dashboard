@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
-import {Alert, Button, Col, Row, Badge} from "react-bootstrap";
+import {Alert, Button, Col, Modal, Row, Badge} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
 import {NETWORK_TABLE_COLUMNS} from "../../../constants";
@@ -11,6 +11,7 @@ import ApplicationService, {
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -22,6 +23,8 @@ class AppDetail extends Component {
       chains: [],
       aat: {},
       loading: true,
+      showDeleteModal: false,
+      deleted: false,
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -62,8 +65,7 @@ class AppDetail extends Component {
     const success = await ApplicationService.deleteAppFromDashboard(address);
 
     if (success) {
-      // eslint-disable-next-line react/prop-types
-      this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.apps));
+      this.setState({deleted: true});
     }
   }
 
@@ -108,7 +110,7 @@ class AppDetail extends Component {
       statusCapitalized = status[0].toUpperCase() + status.slice(1);
     }
 
-    const {chains, aat, loading} = this.state;
+    const {chains, aat, loading, showDeleteModal, deleted} = this.state;
 
     const generalInfo = [
       {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
@@ -129,6 +131,16 @@ class AppDetail extends Component {
 
     if (loading) {
       return <Loader />;
+    }
+
+    if (deleted) {
+      return (
+        <DeletedOverlay
+          text="You application was succesfully removed"
+          buttonText="Go to apps list"
+          buttonLink={_getDashboardPath(DASHBOARD_PATHS.apps)}
+        />
+      );
     }
 
     return (
@@ -248,7 +260,7 @@ class AppDetail extends Component {
               </Button>
             </div>
             <Button
-              onClick={this.deleteApplication}
+              onClick={() => this.setState({showDeleteModal: true})}
               variant="link"
               className="link mt-3"
             >
@@ -256,6 +268,37 @@ class AppDetail extends Component {
             </Button>
           </Col>
         </Row>
+
+        <Modal
+          show={showDeleteModal}
+          onHide={() => this.setState({showDeleteModal: false})}
+          animation={false}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Are you sure you want to delete this App?</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            This action is irreversible, if you delete it you will never be able
+            to access it again
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="light"
+              className="pr-4 pl-4"
+              onClick={this.deleteApplication}
+            >
+              Delete
+            </Button>
+            <Button
+              variant="dark"
+              className="pr-4 pl-4"
+              onClick={() => this.setState({showDeleteModal: false})}
+            >
+              Cancel
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
