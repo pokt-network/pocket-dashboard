@@ -14,6 +14,7 @@ import TierSelection from "./views/Apps/TierSelection/TierSelection";
 import FreeTier from "./views/FreeTier/FreeTier";
 import ChainList from "./views/Apps/ChainList/ChainList";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
+import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -30,6 +31,7 @@ export const DASHBOARD_PATHS = {
   appDetail: "/apps/detail/:address",
   createAppInfo: "/apps/new",
   tierSelection: "/apps/tiers",
+  selectRelays: "/apps/relays",
   freeTier: "/apps/free-tier",
   chooseChain: "/apps/chains",
   appCreated: "/apps/created",
@@ -115,6 +117,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Tier Selection",
     component: TierSelection
+  },
+  {
+    path: DASHBOARD_PATHS.selectRelays,
+    exact: true,
+    name: "Relays Selection",
+    component: SelectRelays
   },
   {
     path: DASHBOARD_PATHS.freeTier,
