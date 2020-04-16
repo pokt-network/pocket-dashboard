@@ -130,6 +130,7 @@ export class PocketApplication {
    * @param {string} applicationData.user User.
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
+   * @param {boolean} [applicationData.freeTier] Free tier status.
    * @param {ApplicationPublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
    *
    * @returns {PocketApplication} A new Pocket application.
