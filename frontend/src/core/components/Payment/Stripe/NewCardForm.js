@@ -6,41 +6,89 @@ import {CardNumberElement, ElementsConsumer} from "@stripe/react-stripe-js";
 import "../Payment.scss";
 import PropTypes from "prop-types";
 import {PAYMENT_REGION_OR_COUNTRY} from "../../../../_constants";
-import PocketStripePaymentService from "../../../services/PocketStripePaymentService";
 
-class NewCardPaymentMethodForm extends Component {
+class NewCardForm extends Component {
 
 
   constructor(props, context) {
     super(props, context);
 
+    this.state = {
+      data: {
+        cardHolderName: "",
+        billingAddressLine1: "",
+        zipCode: "",
+        country: ""
+      }
+    };
+
     this.handlePayMethod = this.handlePayMethod.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange({currentTarget: input}) {
+    const data = {...this.state.data};
+
+    data[input.name] = input.value;
+    this.setState({data});
+  }
+
+  /**
+   * Validate form data.
+   *
+   * @return {boolean} If validation was succeeded or not.
+   * @throws Error If validation fails.
+   */
+  validateLogin() {
+    const {cardHolderName, billingAddressLine1, zipCode, country} = this.state.data;
+
+    if (!cardHolderName) {
+      throw Error("Card holder name cannot be empty");
+    }
+
+    if (!zipCode) {
+      throw Error("Zip code cannot be empty");
+    }
+
+    if (!billingAddressLine1) {
+      throw Error("Address line 1 cannot be empty");
+    }
+
+
+    if (!country) {
+      throw Error("Country cannot be empty");
+    }
+
+    return true;
   }
 
   handlePayMethod(e, stripeElements, stripe) {
     e.preventDefault();
 
-    const {paymentIntentID} = this.props;
-    const cardNumber = stripeElements.getElement(CardNumberElement);
+    try {
+      this.validateLogin();
 
-    // TODO: Data validation
-    const billingDetails = {
-      name: "Tester",
-      address: {
-        line1: "Line 1",
-        postal_code: "Postal code",
-        country: "US"
-      }
-    };
+      const cardNumber = stripeElements.getElement(CardNumberElement);
+      const {cardHolderName, billingAddressLine1, zipCode, country} = this.state.data;
 
-    PocketStripePaymentService.confirmPaymentWithNewCard(stripe, paymentIntentID, cardNumber, billingDetails)
-      .then(result => {
-        // TODO: Post-process payment result
-        console.log(result);
-      });
+      const cardData = {
+        card: cardNumber,
+        cardHolderName,
+        billingAddressLine1,
+        zipCode,
+        country
+      };
+
+      this.props.formActionHandler(e, cardData, stripe);
+    } catch (e) {
+      console.log(e.message);
+    }
   }
 
   render() {
+    const {cardHolderName, billingAddressLine1, zipCode} = this.state.data;
+    const {formTitle, actionButtonName} = this.props;
+
     return (
       <PaymentContainer>
         <ElementsConsumer>
@@ -48,7 +96,7 @@ class NewCardPaymentMethodForm extends Component {
             ({elements, stripe}) => (
               <div>
                 <Row>
-                  <h2>Add Payment method</h2>
+                  <h2>{formTitle}</h2>
                 </Row>
 
                 <Form onSubmit={(e) => this.handlePayMethod(e, elements, stripe)}>
@@ -65,6 +113,8 @@ class NewCardPaymentMethodForm extends Component {
                         <Form.Control
                           name="cardHolderName"
                           type="text"
+                          value={cardHolderName}
+                          onChange={this.handleChange}
                         />
                       </Form.Group>
                     </Col>
@@ -88,10 +138,12 @@ class NewCardPaymentMethodForm extends Component {
                   <Row>
                     <Col sm="12" md="12" lg="12">
                       <Form.Group>
-                        <Form.Label>Billing Address Line 1</Form.Label>
+                        <Form.Label>Billing Address Line 1*</Form.Label>
                         <Form.Control
                           name="billingAddressLine1"
                           type="text"
+                          value={billingAddressLine1}
+                          onChange={this.handleChange}
                         />
                       </Form.Group>
                     </Col>
@@ -100,20 +152,27 @@ class NewCardPaymentMethodForm extends Component {
                   <Row>
                     <Col sm="6" md="6" lg="6">
                       <Form.Group>
-                        <Form.Label>Zip Code</Form.Label>
+                        <Form.Label>Zip Code*</Form.Label>
                         <Form.Control
                           name="zipCode"
                           type="text"
+                          value={zipCode}
+                          onChange={this.handleChange}
                         />
                       </Form.Group>
                     </Col>
                     <Col sm="6" md="6" lg="6">
                       <Form.Group>
-                        <Form.Label>Region/Country</Form.Label>
-                        <Form.Control as="select">
+                        <Form.Label>Region/Country*</Form.Label>
+                        <Form.Control
+                          name="country"
+                          as="select"
+                          onChange={this.handleChange}
+                        >
+                          <option/>
                           {
                             PAYMENT_REGION_OR_COUNTRY.map(country => (
-                              <option key={country.code}>{country.name}</option>
+                              <option key={country.code} value={country.code}>{country.name}</option>
                             ))
                           }
                         </Form.Control>
@@ -122,7 +181,7 @@ class NewCardPaymentMethodForm extends Component {
                   </Row>
                   <div className="submit float-right mt-2">
                     <Button variant="dark" size="lg" type="submit">
-                      Save and Pay
+                      {actionButtonName}
                     </Button>
                   </div>
                 </Form>
@@ -135,8 +194,18 @@ class NewCardPaymentMethodForm extends Component {
   }
 }
 
-NewCardPaymentMethodForm.propTypes = {
-  paymentIntentID: PropTypes.string
+// noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
+NewCardForm.defaultProps = {
+  formTitle: "Add Payment method",
+  actionButtonName: "Save",
+  formActionHandler: (event, formData, stripe) => {
+  }
 };
 
-export default NewCardPaymentMethodForm;
+NewCardForm.propTypes = {
+  formTitle: PropTypes.string,
+  actionButtonName: PropTypes.string,
+  formActionHandler: PropTypes.func
+};
+
+export default NewCardForm;

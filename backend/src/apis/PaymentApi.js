@@ -28,7 +28,7 @@ router.get("/currencies", (request, response) => {
  */
 router.post("/payment_method", async (request, response) => {
   try {
-    /** @type {{user:string, id: string, billingDetails: {name: string, address:{line1:string, zip_code:string, country:string}}}} */
+    /** @type {{user:string, id: string, billingDetails: {name: string, address:{line1:string, postal_code:string, country:string}}}} */
     const data = request.body;
 
     const saved = await paymentService.savePaymentMethod(data);
