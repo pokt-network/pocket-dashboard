@@ -6,15 +6,17 @@ export const PaymentTypes = {
   card: "card"
 };
 
-export class PaymentRecipient {
+export class CardPaymentMethod {
 
   /**
-   * @param {string} name Name of Recipient.
-   * @param {string} [email] Email address that the receipt for the resulting payment will be sent to.
-   * @param {string} [number] Number of Recipient.
+   * @param {string} id ID of card payment method.
+   * @param {string} lastDigits Last digits of card.
+   * @param {number} expirationMonth Expiration month.
+   * @param {number} expirationYear Expiration year.
+   * @param {object} billingDetails Billing details.
    */
-  constructor(name, email, number) {
-    Object.assign(this, {name, email, number});
+  constructor(id, lastDigits, expirationMonth, expirationYear, billingDetails) {
+    Object.assign(this, {id, lastDigits, expirationMonth, expirationYear, billingDetails});
   }
 }
 
@@ -107,5 +109,29 @@ export default class BasePaymentProvider {
    * @abstract
    */
   async createPaymentIntent(type, currency, item, amount, description) {
+  }
+
+  /**
+   * Retrieve card payment method data.
+   *
+   * @param {string} paymentMethodID Card payment method ID.
+   *
+   * @returns {Promise<CardPaymentMethod>} Card payment method.
+   * @async
+   * @abstract
+   */
+  async retrieveCardPaymentMethod(paymentMethodID) {
+  }
+
+  /**
+   * Retrieve list of card payment method data.
+   *
+   * @param {string[]} paymentMethodIDs Card payment method IDs.
+   *
+   * @returns {Promise<CardPaymentMethod[]>} List of card payment method.
+   * @async
+   * @abstract
+   */
+  async retrieveCardPaymentMethods(paymentMethodIDs) {
   }
 }

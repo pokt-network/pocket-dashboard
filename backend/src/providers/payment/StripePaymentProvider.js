@@ -1,4 +1,4 @@
-import BasePaymentProvider, {PaymentResult} from "./BasePaymentProvider";
+import BasePaymentProvider, {CardPaymentMethod, PaymentResult} from "./BasePaymentProvider";
 import Stripe from "stripe";
 
 const AMOUNT_CONVERT_NUMBER = 100;
@@ -33,6 +33,25 @@ class StripePaymentProvider extends BasePaymentProvider {
     const resultAmount = paymentResultData.amount / AMOUNT_CONVERT_NUMBER;
 
     return new PaymentResult(paymentResultData.id, date, paymentResultData.client_secret, paymentResultData.currency, resultAmount);
+  }
+
+  async retrieveCardPaymentMethod(paymentMethodID) {
+    const paymentMethodData = await this._stripeAPIClient.paymentMethods.retrieve(paymentMethodID);
+
+    if (!paymentMethodData) {
+      return null;
+    }
+
+    const {id, card, billing_details} = paymentMethodData;
+    const {last4, exp_month, exp_year} = card;
+
+    return new CardPaymentMethod(id, last4, exp_month, exp_year, billing_details);
+  }
+
+  async retrieveCardPaymentMethods(paymentMethodIDs) {
+    const cardPaymentMethods = await paymentMethodIDs.map(this.retrieveCardPaymentMethod);
+
+    return Promise.all(cardPaymentMethods);
   }
 }
 
