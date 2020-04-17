@@ -3,6 +3,7 @@ import "./SecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import SecurityQuestionsService from "../../../core/services/PocketSecurityQuestionsService";
+import AppSteps from "../../../core/components/AppSteps/AppSteps";
 
 const QUESTIONS_QUANTITY = 3;
 
@@ -24,8 +25,8 @@ class SecurityQuestions extends Component {
       data: {
         answer1: "",
         answer2: "",
-        answer3: ""
-      }
+        answer3: "",
+      },
     };
   }
 
@@ -35,7 +36,6 @@ class SecurityQuestions extends Component {
 
       this.setState({securityQuestions});
     });
-
   }
 
   handleSelect(e, index) {
@@ -59,10 +59,16 @@ class SecurityQuestions extends Component {
     const questions = [
       {question: chosenQuestions[0], answer: answer1},
       {question: chosenQuestions[1], answer: answer2},
-      {question: chosenQuestions[2], answer: answer3}
+      {question: chosenQuestions[2], answer: answer3},
     ];
 
-    const {success, data: error} = await SecurityQuestionsService.saveSecurityQuestionAnswers(email, questions);
+    const {
+      success,
+      data: error,
+    } = await SecurityQuestionsService.saveSecurityQuestionAnswers(
+      email,
+      questions
+    );
 
     if (!success) {
       // TODO: Properly log error in frontend
@@ -79,21 +85,29 @@ class SecurityQuestions extends Component {
 
     return (
       <Container fluid id={"security-questions-page"}>
-        <Navbar/>
+        <Navbar />
+        <Row className="mb-3">
+          <Col lg={{span: 8, offset: 2}}>
+            <AppSteps
+              steps={[
+                "Account Created",
+                "Email Verified",
+                "Security Questions",
+              ]}
+              current={1}
+            />
+          </Col>
+        </Row>
         <Row>
-          <Col
-            id="main"
-            md={{span: 8, offset: 2}}
-            lg={{span: 6, offset: 3}}
-          >
+          <Col id="main" md={{span: 8, offset: 2}} lg={{span: 6, offset: 3}}>
             <Form onSubmit={this.sendQuestions}>
               <Form.Group>
                 <Form.Label>Question 1</Form.Label>
                 <Form.Control
                   as="select"
-                  onChange={e => this.handleSelect(e, 0)}
+                  onChange={(e) => this.handleSelect(e, 0)}
                 >
-                  {securityQuestions.map(question => (
+                  {securityQuestions.map((question) => (
                     <option key={question}>{question}</option>
                   ))}
                 </Form.Control>
@@ -104,14 +118,14 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <hr/>
+              <hr />
               <Form.Group>
                 <Form.Label>Question 2</Form.Label>
                 <Form.Control
                   as="select"
-                  onChange={e => this.handleSelect(e, 1)}
+                  onChange={(e) => this.handleSelect(e, 1)}
                 >
-                  {securityQuestions.map(question => (
+                  {securityQuestions.map((question) => (
                     <option key={question}>{question}</option>
                   ))}
                 </Form.Control>
@@ -122,14 +136,14 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <hr/>
+              <hr />
               <Form.Group>
                 <Form.Label>Question 3</Form.Label>
                 <Form.Control
                   as="select"
-                  onChange={e => this.handleSelect(e, 2)}
+                  onChange={(e) => this.handleSelect(e, 2)}
                 >
-                  {securityQuestions.map(question => (
+                  {securityQuestions.map((question) => (
                     <option key={question}>{question}</option>
                   ))}
                 </Form.Control>
