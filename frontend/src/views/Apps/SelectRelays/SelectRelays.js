@@ -6,6 +6,7 @@ import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import AppSlider from "../../../core/components/AppSlider";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {MAX_RELAYS} from "../../../constants";
+import {formatCurrency} from "../../../_helpers";
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -28,7 +29,9 @@ class SelectRelays extends Component {
   }
 
   render() {
-    const {alert, relays, poktPrice, total} = this.state;
+    const {alert, relays, poktPrice, total: currentTotal} = this.state;
+
+    const total = formatCurrency(currentTotal);
 
     return (
       <div id="select-relays">
@@ -83,7 +86,7 @@ class SelectRelays extends Component {
                 </InfoCard>
                 <InfoCard
                   className="text-center"
-                  title={`$${total}`}
+                  title={total}
                   subtitle="Total amount"
                 >
                   <span></span>

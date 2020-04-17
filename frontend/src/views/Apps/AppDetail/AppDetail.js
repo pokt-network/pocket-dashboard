@@ -12,6 +12,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
+import {copyToClickboard} from "../../../_helpers";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -221,9 +222,7 @@ class AppDetail extends Component {
                   </code>
                   <p
                     onClick={() =>
-                      PocketApplicationService.copyToClickboard(
-                        JSON.stringify(aat, null, 2)
-                      )
+                      copyToClickboard(JSON.stringify(aat, null, 2))
                     }
                   >
                     Copy
