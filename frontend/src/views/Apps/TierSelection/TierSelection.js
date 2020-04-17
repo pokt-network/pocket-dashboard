@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Card, Col, Row} from "react-bootstrap";
+import {Button, Card, Col, Modal, Row} from "react-bootstrap";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import "./TierSelection.scss";
 import {DASHBOARD_PATHS, _getDashboardPath} from "../../../_routes";
@@ -9,6 +9,11 @@ class TierSelection extends Component {
     super(props, context);
 
     this.handleTierSelection = this.handleTierSelection.bind(this);
+
+    this.state = {
+      freeTierModal: false,
+      customTierModal: false,
+    };
   }
 
   async handleTierSelection(isFreeTier) {
@@ -16,7 +21,8 @@ class TierSelection extends Component {
       const {address, chains} = ApplicationService.getAppAInfo();
 
       const data = await ApplicationService.createFreeTierApplication(
-        address, chains
+        address,
+        chains
       );
 
       // TODO: Notify of errors on the frontend
@@ -30,6 +36,8 @@ class TierSelection extends Component {
   }
 
   render() {
+    const {freeTierModal, customTierModal} = this.state;
+
     return (
       <div id="tier-selection" className="mt-4 ml-5">
         <Row>
@@ -48,9 +56,13 @@ class TierSelection extends Component {
                 <p>Staked POKT is own by Pocket Network Inc</p>
                 <p>Unstake balance unavailable</p>
                 {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-                <a className="link cta" href="#">
+                <Button
+                  onClick={() => this.setState({freeTierModal: true})}
+                  variant="link"
+                  className="link cta"
+                >
                   How it works
-                </a>
+                </Button>
                 <br />
                 <Button
                   onClick={() => this.handleTierSelection(true)}
@@ -80,10 +92,13 @@ class TierSelection extends Component {
                 <p>Staked POKT is own by the user</p>
                 <p>Unstake balance available for transfers</p>
                 {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-                <a className="link cta" href="#">
-                  Learn More
-                </a>
-                <br />
+                <Button
+                  onClick={() => this.setState({customTierModal: true})}
+                  variant="link"
+                  className="link cta"
+                >
+                  Learn more
+                </Button>
                 <Button size="lg" variant="dark" className="pr-5 pl-5 mt-3">
                   Customize your tier
                 </Button>
@@ -91,6 +106,68 @@ class TierSelection extends Component {
             </Card>
           </Col>
         </Row>
+        <Modal
+          className="app-modal"
+          show={freeTierModal}
+          onHide={() => this.setState({freeTierModal: false})}
+          animation={false}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>How the free tier works?</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Dictum
+            fusce ut placerat orci nulla pellentesque dignissim enim. Semper
+            quis lectus nulla at volutpat diam ut. Sed velit dignissim sodales
+            ut. Cursus euismod quis viverra nibh cras. Diam sollicitudin tempor
+            id eu nisl nunc mi ipsum. Tortor condimentum lacinia quis vel.
+            Cursus eget nunc scelerisque viverra mauris in aliquam sem.
+            Tincidunt arcu non sodales neque sodales ut etiam sit amet. Id eu
+            nisl nunc mi ipsum faucibus vitae aliquet.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="dark"
+              className="pr-4 pl-4"
+              onClick={() => this.setState({freeTierModal: false})}
+            >
+              Ok
+            </Button>
+          </Modal.Footer>
+        </Modal>
+        <Modal
+          className="app-modal"
+          show={customTierModal}
+          onHide={() => this.setState({customTierModal: false})}
+          animation={false}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Run actually desentralized infrastructure</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Odio facilisis mauris sit amet massa. Urna porttitor rhoncus dolor
+            purus non enim praesent elementum facilisis. Ac tincidunt vitae
+            semper quis. Tellus cras adipiscing enim eu turpis egestas pretium.
+            Nulla at volutpat diam ut venenatis. Viverra nam libero justo
+            laoreet. Risus nullam eget felis eget nunc. Tincidunt id aliquet
+            risus feugiat. Sed risus ultricies tristique nulla aliquet.
+            Habitasse platea dictumst vestibulum rhoncus est pellentesque elit
+            ullamcorper dignissim. Egestas sed tempus urna et pharetra pharetra
+            massa. Accumsan in nisl nisi scelerisque eu ultrices vitae.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="dark"
+              className="pr-4 pl-4"
+              onClick={() => this.setState({customTierModal: false})}
+            >
+              Ok
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }

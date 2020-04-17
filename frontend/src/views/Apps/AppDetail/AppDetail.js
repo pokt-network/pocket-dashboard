@@ -23,7 +23,7 @@ class AppDetail extends Component {
       chains: [],
       aat: {},
       loading: true,
-      showDeleteModal: false,
+      deleteModal: false,
       deleted: false,
     };
 
@@ -42,7 +42,7 @@ class AppDetail extends Component {
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
 
-    const {freeTier} = pocketApplication.freeTier;
+    const {freeTier} = pocketApplication;
 
     let aat;
 
@@ -110,7 +110,7 @@ class AppDetail extends Component {
       statusCapitalized = status[0].toUpperCase() + status.slice(1);
     }
 
-    const {chains, aat, loading, showDeleteModal, deleted} = this.state;
+    const {chains, aat, loading, deleteModal, deleted} = this.state;
 
     const generalInfo = [
       {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
@@ -260,7 +260,7 @@ class AppDetail extends Component {
               </Button>
             </div>
             <Button
-              onClick={() => this.setState({showDeleteModal: true})}
+              onClick={() => this.setState({deleteModal: true})}
               variant="link"
               className="link mt-3"
             >
@@ -268,10 +268,10 @@ class AppDetail extends Component {
             </Button>
           </Col>
         </Row>
-
         <Modal
-          show={showDeleteModal}
-          onHide={() => this.setState({showDeleteModal: false})}
+          className="app-modal"
+          show={deleteModal}
+          onHide={() => this.setState({deleteModal: false})}
           animation={false}
           centered
         >
@@ -293,7 +293,7 @@ class AppDetail extends Component {
             <Button
               variant="dark"
               className="pr-4 pl-4"
-              onClick={() => this.setState({showDeleteModal: false})}
+              onClick={() => this.setState({deleteModal: false})}
             >
               Cancel
             </Button>

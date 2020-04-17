@@ -96,7 +96,7 @@ html, body {
   }
 }
 
-a.link {
+a.link, button.link {
   color: #343A41;
   text-decoration: underline;
 }
@@ -165,5 +165,15 @@ button, .btn {
 
   a {
     padding-top: 10px;
+  }
+}
+
+.app-modal {
+  .modal-header {
+    border-bottom: 0;
+  }
+
+  .modal-footer {
+    border-top: 0;
   }
 }
