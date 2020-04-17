@@ -9,7 +9,7 @@ import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
 import Dashboard from "./views/Dashboard/Dashboard";
 import AppsMain from "./views/Apps/AppsMain/AppsMain";
 import AppCreated from "./views/Apps/AppCreated/AppCreated";
-import CreateAppInfo from "./views/Apps/CreateAppInfo/CreateAppInfo";
+import CreateAppForm from "./views/Apps/CreateAppForm/CreateAppForm";
 import TierSelection from "./views/Apps/TierSelection/TierSelection";
 import FreeTier from "./views/FreeTier/FreeTier";
 import ChainList from "./views/Apps/ChainList/ChainList";
@@ -104,7 +104,7 @@ export const dashboardRoutes = [
     path: DASHBOARD_PATHS.createAppInfo,
     exact: true,
     name: "Create New App",
-    component: CreateAppInfo,
+    component: CreateAppForm,
   },
   {
     path: DASHBOARD_PATHS.nodes,
