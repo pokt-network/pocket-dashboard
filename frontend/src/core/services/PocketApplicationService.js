@@ -1,11 +1,53 @@
 import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
-
+import SecureLS from "secure-ls";
+import {Configurations} from "../../_configuration";
 
 export class PocketApplicationService extends PocketBaseService {
 
   constructor() {
     super("api/applications");
+
+    this.ls = new SecureLS(Configurations.secureLS);
+  }
+
+  /**
+   * Save application address and chains in local storage encrypted.
+   *
+   * @param {address:string} address Pocket application address
+   * @param {address:string} address Pocket application privateKey
+   * @param {Array<string>} chains Pocket application chosen chains.
+   */
+  saveAppInfoInCache({address, privateKey, chains}) {
+    if (address) {
+      this.ls.set("app_address", {data: address});
+    }
+    if (privateKey) {
+      this.ls.set("app_private_key", {data: privateKey});
+    }
+    if (chains) {
+      this.ls.set("app_chains", {data: chains});
+    }
+  }
+
+  /**
+   * Remove app address data from local storage.
+   */
+  removeAppInfoFromCache() {
+    this.ls.remove("app_address");
+    this.ls.remove("app_private_key");
+    this.ls.remove("app_chains");
+  }
+
+  /**
+   * Get Address and chains for app creating/importing
+   */
+  getAppAInfo() {
+    return {
+      address: this.ls.get("app_address").data,
+      privateKey: this.ls.get("app_private_key").data,
+      chains: this.ls.get("app_chains").data,
+    };
   }
 
   static copyToClickboard(value) {
@@ -16,6 +58,18 @@ export class PocketApplicationService extends PocketBaseService {
     el.select();
     document.execCommand("copy");
     document.body.removeChild(el);
+  }
+
+  static parseAAT(aat) {
+    let aatParsed = {};
+
+    aatParsed["version"] = aat.version;
+    delete aat.version;
+
+    for (let [key, value] of Object.entries(aat)) {
+      aatParsed[key] = `${value.slice(0, 15)}...`;
+    }
+    return JSON.stringify(aatParsed, null, 2);
   }
 
   /**
@@ -130,6 +184,44 @@ export class PocketApplicationService extends PocketBaseService {
       .then(response => response.data);
   }
 
+  /**
+   * GET AAT from free.
+   *
+   * @param {string} applicationAccountAddress Application account address.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getFreeTierAppAAT(applicationAccountAddress) {
+    return axios
+      .get(this._getURL(`/freetier/aat/${applicationAccountAddress}`))
+      .then((response) => response.data);
+  }
+
+  /**
+   * Delete an application from dashboard (but not from the network). 
+   * 
+   * @param {string} applicationAccountAddress Application account address.
+   * 
+   * @returns {Promise|Promise<*>}
+   */
+  deleteAppFromDashboard(applicationAccountAddress) {
+    return axios
+      .delete(this._getURL(`/${applicationAccountAddress}`))
+      .then((response) => response.data);
+  }
+
+  /**
+   * Unstake a free tier application. 
+   * 
+   * @param {string} applicationAccountAddress Application account address.
+   * 
+   * @returns {Promise|Promise<*>}
+   */
+  unstakeFreeTierApplication(applicationAccountAddress) {
+    return axios
+      .post(this._getURL("/freetier/unstake"), {applicationAccountAddress})
+      .then((response) => response.data);
+  }
 }
 
 export default new PocketApplicationService();
