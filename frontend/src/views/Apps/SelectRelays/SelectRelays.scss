@@ -1,0 +1,54 @@
+#select-relays {
+  .price-card {
+
+    margin: 0px 10px 10px 0px;
+    text-align: center;
+    background-color: #515151;
+    padding-left: 40px;
+    padding-right: 40px;
+    display: inline-block;
+    border-radius: 5px;
+
+    p {
+      color: white;
+      margin-bottom: 0;
+    }
+  }
+
+  .relays-calc {
+    display: flex;
+
+    .slider-wrapper {
+      flex-grow: 2;
+      padding: 60px 40px;
+      background-color: rgb(235, 235, 235);
+      border-radius: 5px;
+
+      .rc-slider-mark-text {
+        font-size: 1.5em;
+      }
+
+      .rc-slider-dot {
+        display: none;
+      }
+    }
+
+    .p-badge {
+      margin: 0px 0px 0px 10px;
+    }
+
+    .p-badge:last-of-type {
+      margin-top: 10px;
+    }
+
+    .p-badge h1 {
+      font-size: 1.2em;
+      font-weight: 300;
+    }
+
+    .p-badge p {
+      font-weight: bold;
+    }
+  }
+
+}

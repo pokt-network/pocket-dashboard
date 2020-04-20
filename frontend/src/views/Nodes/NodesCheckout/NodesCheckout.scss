@@ -1,0 +1,31 @@
+#nodes-checkout {
+  .segment {
+    padding: 35px;
+    margin-left: 20px;
+    margin-right: 20px;
+    border: 1px solid #686868;
+    border-radius: 5px;
+
+    hr {
+      background-color: #686868;
+    }
+  }
+
+  .field {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .invoice {
+    .label {
+      text-transform: uppercase;
+      padding: 10px;
+      background-color: #F5F5F5;
+      font-weight: bold;
+
+      p {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

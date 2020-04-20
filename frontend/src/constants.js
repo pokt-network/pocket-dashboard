@@ -20,3 +20,5 @@ export const NETWORK_TABLE_COLUMNS = [
     text: "Hash",
   },
 ];
+
+export const MAX_RELAYS = 20000;

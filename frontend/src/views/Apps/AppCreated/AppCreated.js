@@ -1,25 +1,53 @@
 import React, {Component} from "react";
-import {Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Alert, Button, Col, Row} from "react-bootstrap";
 import "./AppCreated.scss";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {PropTypes} from "prop-types";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import ApplicationService from "../../../core/services/PocketApplicationService";
+import Loader from "../../../core/components/Loader";
 
 class AppCreated extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.appsPath = _getDashboardPath(DASHBOARD_PATHS.apps);
+    this.state = {
+      privateKey: "",
+      address: "",
+      stakedTokens: 0,
+      maxRelays: 0,
+      jailed: false,
+      status: "",
+      loading: true,
+    };
+  }
+
+  async componentDidMount() {
+    const {address, privateKey} = ApplicationService.getAppAInfo();
+
+    const {networkData} = await ApplicationService.getApplication(address);
+
+    const {
+      jailed,
+      status,
+      max_relays: maxRelays,
+      staked_tokens: stakedTokens,
+    } = networkData;
+
+    this.setState({
+      jailed,
+      status,
+      maxRelays,
+      stakedTokens,
+      address,
+      privateKey,
+      loading: false,
+    });
+
+    ApplicationService.removeAppInfoFromCache();
   }
 
   render() {
-    if (this.props.location.state === undefined) {
-      return <Redirect to={this.appsPath} />;
-    }
-
-    const {applicationData} = this.props.location.state;
-
     // TODO: Get POKT balance
     const {
       address,
@@ -28,7 +56,8 @@ class AppCreated extends Component {
       maxRelays,
       jailed,
       status,
-    } = applicationData;
+      loading,
+    } = this.state;
 
     let statusCapitalized = "";
 
@@ -42,6 +71,10 @@ class AppCreated extends Component {
       {title: maxRelays, subtitle: "Max Relays"},
       {title: jailed === true ? "YES" : "NO", subtitle: "Jailed"},
     ];
+
+    if (loading) {
+      return <Loader />;
+    }
 
     return (
       <div id="app-created">
@@ -74,32 +107,20 @@ class AppCreated extends Component {
             <Alert variant="dark">{address}</Alert>
           </Col>
         </Row>
-        <Button
-          href={this.appsPath}
-          size="lg"
-          variant="dark"
-          className="float-right mt-2"
+        <Link
+          to={() => {
+            const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
+
+            return url.replace(":address", address);
+          }}
         >
-          Continue
-        </Button>
+          <Button size="lg" variant="dark" className="float-right mt-2">
+            Continue
+          </Button>
+        </Link>
       </div>
     );
   }
 }
-
-AppCreated.propTypes = {
-  location: PropTypes.shape({
-    state: PropTypes.shape({
-      applicationData: PropTypes.shape({
-        address: PropTypes.string,
-        privateKey: PropTypes.string,
-        stakedTokens: PropTypes.number,
-        maxRelays: PropTypes.number,
-        status: PropTypes.string,
-        jailed: PropTypes.bool,
-      }),
-    }),
-  }),
-};
 
 export default AppCreated;

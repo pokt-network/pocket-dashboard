@@ -1,9 +1,34 @@
 import React, {Component} from "react";
 import {Button, Card, Col, Row} from "react-bootstrap";
+import ApplicationService from "../../../core/services/PocketApplicationService";
 import "./TierSelection.scss";
+import {DASHBOARD_PATHS, _getDashboardPath} from "../../../_routes";
 
 class TierSelection extends Component {
-  state = {};
+  constructor(props, context) {
+    super(props, context);
+
+    this.handleTierSelection = this.handleTierSelection.bind(this);
+  }
+
+  async handleTierSelection(isFreeTier) {
+    if (isFreeTier) {
+      const {address, chains} = ApplicationService.getAppAInfo();
+
+      const data = await ApplicationService.createFreeTierApplication(
+        address, chains
+      );
+
+      // TODO: Notify of errors on the frontend
+      if (data !== false) {
+        // eslint-disable-next-line react/prop-types
+        this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.appCreated));
+      }
+    } else {
+      // TODO: Handle Custom tier
+    }
+  }
+
   render() {
     return (
       <div id="tier-selection" className="mt-4 ml-5">
@@ -27,7 +52,12 @@ class TierSelection extends Component {
                   How it works
                 </a>
                 <br />
-                <Button size="lg" variant="dark" className="pr-5 pl-5 mt-3">
+                <Button
+                  onClick={() => this.handleTierSelection(true)}
+                  size="lg"
+                  variant="dark"
+                  className="pr-5 pl-5 mt-3"
+                >
                   Get Free Tier
                 </Button>
                 <br />
