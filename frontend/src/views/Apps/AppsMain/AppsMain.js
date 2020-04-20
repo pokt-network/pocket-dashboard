@@ -73,7 +73,7 @@ class AppsMain extends Main {
         text: "Name",
       },
       {
-        dataField: "networkData.address",
+        dataField: "pocketApplication.publicPocketAccount.address",
         text: "Address",
       },
     ];
@@ -183,7 +183,7 @@ class AppsMain extends Main {
             </div>
             <BootstrapTable
               classes="table app-table table-striped"
-              keyField="networkData.address"
+              keyField="pocketApplication.publicPocketAccount.address"
               data={registeredApps}
               columns={columns}
               bordered={false}
