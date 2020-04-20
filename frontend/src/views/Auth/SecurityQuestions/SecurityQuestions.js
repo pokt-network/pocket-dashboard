@@ -66,8 +66,7 @@ class SecurityQuestions extends Component {
       success,
       data: error,
     } = await SecurityQuestionsService.saveSecurityQuestionAnswers(
-      email,
-      questions
+      email, questions
     );
 
     if (!success) {
