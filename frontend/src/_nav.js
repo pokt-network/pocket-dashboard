@@ -2,17 +2,17 @@ export const profile = {
   items: [
     {
       name: "General Information",
-      url: "/",
+      url: "/dashboard/profile",
       icon: "circle",
     },
     {
       name: "Payment method",
-      url: "/payments",
+      url: "/dashboard/profile/payments",
       icon: "circle",
     },
     {
       name: "Payment History",
-      url: "/payments/history",
+      url: "/dashboard/payments/history",
       icon: "circle",
     },
     {

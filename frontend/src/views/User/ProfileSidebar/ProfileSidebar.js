@@ -1,8 +1,9 @@
 import React, {Component} from "react";
 import {profile} from "../../../_nav";
 import MenuItem from "../../../core/components/DefaultLayout/AppSidebar/MenuItem/MenuItem";
+import "./ProfileSidebar.scss";
 
-class MenuProfile extends Component {
+class ProfileSidebar extends Component {
   render() {
     return (
       <ul id="profile-sidebar" className="sidebar-menu">
@@ -19,4 +20,4 @@ class MenuProfile extends Component {
   }
 }
 
-export default MenuProfile;
+export default ProfileSidebar;

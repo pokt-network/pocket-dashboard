@@ -16,7 +16,7 @@ import ChainList from "./views/Apps/ChainList/ChainList";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
-import General from "./views/User/Profile/Profile";
+import General from "./views/User/ProfileLayout/Profile";
 
 export const ROUTE_PATHS = {
   signup: "/signup",

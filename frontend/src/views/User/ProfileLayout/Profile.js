@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import "./Profile.scss";
-import MenuProfile from "../MenuProfile/MenuProfile";
 import {Col, Row} from "react-bootstrap";
+import ProfileSidebar from "../ProfileSidebar/ProfileSidebar";
 
 class Profile extends Component {
   state = {};
@@ -10,8 +10,9 @@ class Profile extends Component {
       <div>
         <Row className="mt-5">
           <Col lg={4} md={4} sm={4}>
-            <MenuProfile />
+            <ProfileSidebar />
           </Col>
+          <Col lg={8} md={8} sm={8}></Col>
         </Row>
       </div>
     );

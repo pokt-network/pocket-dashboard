@@ -17,6 +17,13 @@ class AppSidebar extends Component {
                 label={route.name}
                 url={route.url}
                 icon={route.icon}
+                isActive={(match, location) => {
+                  if (!match) {
+                    return false;
+                  }
+
+                  return match.url === location.pathname;
+                }}
               />
             ))}
           </ul>

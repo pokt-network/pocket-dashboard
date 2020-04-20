@@ -2,6 +2,10 @@
 
 #app-sidebar {
   a:hover {
-    background-color: rgb(38, 42, 48);
+    background-color: #2d3239;
+  }
+
+  a.active {
+    background-color: #262a30;
   }
 }
