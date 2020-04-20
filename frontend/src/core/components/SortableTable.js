@@ -44,7 +44,13 @@ class SortableTable extends Component {
   }
 
   render() {
-    const {title, columns: allColumns, data} = this.props;
+    const {
+      title,
+      columns: allColumns,
+      className,
+      // eslint-disable-next-line no-unused-vars
+      ...restProps
+    } = this.props;
 
     const columns = allColumns.map((col) => {
       return {...col, sort: true};
@@ -69,9 +75,8 @@ class SortableTable extends Component {
         <Row>
           <Col>
             <BootstrapTable
-              classes="table-responsive app-table table-striped"
-              keyField="hash"
-              data={data}
+              {...restProps}
+              classes={"app-table table-striped " + className}
               columns={columns}
               bordered={false}
               sort={{
@@ -86,7 +91,12 @@ class SortableTable extends Component {
   }
 }
 
+SortableTable.defaultProps = {
+  className: "",
+};
+
 SortableTable.propTypes = {
+  className: PropTypes.string,
   title: PropTypes.string,
   columns: PropTypes.array,
   data: PropTypes.array,

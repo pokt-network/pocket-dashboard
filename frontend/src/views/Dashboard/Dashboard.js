@@ -6,41 +6,10 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
 import {Link} from "react-router-dom";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
 import SortableTable from "../../core/components/SortableTable";
-import {NETWORK_TABLE_COLUMNS} from "../../constants";
-
-// TODO: Remove dummy data and connect to backend.
-const chains = [
-  {
-    name: "Aion Testnet Network",
-    netID: 32,
-    hash: "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309",
-  },
-  {
-    name: "Aion Mainnet Network",
-    netID: 256,
-    hash: "8ef9a7c67f6f8ad14f82c1f340963951245f912f037a7087f3f2d2f9f9ee38a8",
-  },
-  {
-    name: "Ethereum Mainnet Network",
-    netID: 1,
-    hash: "0de3141aec1e69aea9d45d9156269b81a3ab4ead314fbf45a8007063879e743b",
-  },
-  {
-    name: "Ethereum Rinkeby Network",
-    netID: 4,
-    hash: "8cf7f8799c5b30d36c86d18f0f4ca041cf1803e0414ed9e9fd3a19ba2f0938ff",
-  },
-  {
-    name: "Ethereum Ropsten Network",
-    netID: 3,
-    hash: "10d1290eee169e3970afb106fe5417a11b81676ce1e2119a0292df29f0445d30",
-  },
-  {
-    name: "Ethereum Goerli Network",
-    netID: 5,
-    hash: "4ae7539e01ad2c42528b6a697f118a3535e404fe65999b2c6fee506465390367",
-  },
-];
+import {NETWORK_TABLE_COLUMNS, APPLICATIONS_LIMIT} from "../../constants";
+import NetworkService from "../../core/services/PocketNetworkService";
+import Loader from "../../core/components/Loader";
+import ApplicationService from "../../core/services/PocketApplicationService";
 
 class Dashboard extends Component {
   constructor(props, context) {
@@ -48,11 +17,33 @@ class Dashboard extends Component {
 
     this.state = {
       alert: true,
+      loading: true,
+      chains: [],
+      userApps: [],
     };
   }
 
+  async componentDidMount() {
+    const userEmail = UserService.getUserInfo().email;
+    const networkHashes = [
+      "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309",
+      "8ef9a7c67f6f8ad14f82c1f340963951245f912f037a7087f3f2d2f9f9ee38a8",
+      "0de3141aec1e69aea9d45d9156269b81a3ab4ead314fbf45a8007063879e743b",
+      "d9d77bce50d80e70026bd240fb0759f08aab7aee63d0a6d98c545f2b5ae0a0b8",
+    ];
+    const userApps = await ApplicationService.getAllUserApplications(
+      userEmail,
+      APPLICATIONS_LIMIT
+    );
+
+    // TODO: Replace sample data with actual data from backend
+    const chains = await NetworkService.getNetworkChains(networkHashes);
+
+    this.setState({userApps, chains, loading: false});
+  }
+
   render() {
-    const {alert} = this.state;
+    const {alert, chains, loading, userApps} = this.state;
 
     const cards = [
       {title: "US $0.60", subtitle: "POKT Price"},
@@ -62,6 +53,21 @@ class Dashboard extends Component {
       {title: "38,353", subtitle: "Total of apps"},
       {title: "37,235", subtitle: "Total Staked apps"},
     ];
+
+    const appsColumns = [
+      {
+        dataField: "pocketApplication.name",
+        text: "Name",
+      },
+      {
+        dataField: "networkData.address",
+        text: "Address",
+      },
+    ];
+
+    if (loading) {
+      return <Loader />;
+    }
 
     return (
       <div id="dashboard">
@@ -131,6 +137,8 @@ class Dashboard extends Component {
         <Row>
           <Col lg="6">
             <SortableTable
+              className="table-responsive"
+              keyField="hash"
               title="Supported Blockchains"
               columns={NETWORK_TABLE_COLUMNS}
               data={chains}
@@ -138,6 +146,8 @@ class Dashboard extends Component {
           </Col>
           <Col lg="6">
             <SortableTable
+              className="table-responsive"
+              keyField="hash"
               title="Most popular chains"
               columns={NETWORK_TABLE_COLUMNS}
               data={chains}
@@ -147,6 +157,8 @@ class Dashboard extends Component {
         <Row className="mt-5">
           <Col lg="6">
             <SortableTable
+              className="table-responsive"
+              keyField="hash"
               title="Registered  Nodes"
               columns={NETWORK_TABLE_COLUMNS}
               data={chains}
@@ -155,8 +167,9 @@ class Dashboard extends Component {
           <Col lg="6">
             <SortableTable
               title="Registered Apps"
-              columns={NETWORK_TABLE_COLUMNS}
-              data={chains}
+              keyField="networkData.address"
+              columns={appsColumns}
+              data={userApps}
             />
           </Col>
         </Row>
