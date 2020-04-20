@@ -43,6 +43,28 @@ router.post("/payment_method", async (request, response) => {
   }
 });
 
+
+/**
+ * Get user payment methods.
+ */
+router.post("/payment_methods", async (request, response) => {
+  try {
+    /** @type {{user:string}} */
+    const data = request.body;
+
+    const paymentMethods = await paymentService.getUserPaymentMethods(data.user);
+
+    response.send(paymentMethods);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+
 /**
  * Create a new intent of payment for apps.
  */

@@ -1,6 +1,6 @@
 import BaseService from "./BaseService";
 import {get_default_payment_provider} from "../providers/payment";
-import {Payment, PaymentCurrencies, PaymentResult} from "../providers/payment/BasePaymentProvider";
+import {CardPaymentMethod, Payment, PaymentCurrencies, PaymentResult} from "../providers/payment/BasePaymentProvider";
 import {BillingDetails, PaymentHistory, PaymentMethod} from "../models/Payment";
 
 const PAYMENT_METHOD_COLLECTION_NAME = "PaymentMethods";
@@ -195,4 +195,25 @@ export default class PaymentService extends BaseService {
 
     return result.result.ok === 1;
   }
+
+  /**
+   * Get user payment methods.
+   *
+   * @param {string} user User email.
+   *
+   * @returns {Promise<[]|CardPaymentMethod[]>} Payment methods.
+   */
+  async getUserPaymentMethods(user) {
+    const dbPaymentMethods = await this.persistenceService.getEntities(PAYMENT_METHOD_COLLECTION_NAME, {user});
+
+    if (dbPaymentMethods) {
+      const paymentMethodIds = dbPaymentMethods.map(_ => _.id);
+      const paymentMethods = await this._paymentProvider.retrieveCardPaymentMethods(paymentMethodIds);
+
+      return Promise.all(paymentMethods);
+    }
+
+    return [];
+  }
+
 }
