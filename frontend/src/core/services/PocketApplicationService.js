@@ -183,7 +183,7 @@ export class PocketApplicationService extends PocketBaseService {
    */
   getFreeTierAppAAT(applicationAccountAddress) {
     return axios
-      .get(this._getURL(`/freetier/aat/${applicationAccountAddress}`))
+      .get(this._getURL(`freetier/aat/${applicationAccountAddress}`))
       .then((response) => response.data);
   }
 

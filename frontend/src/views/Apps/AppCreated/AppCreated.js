@@ -6,6 +6,7 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import Loader from "../../../core/components/Loader";
+import {BONDSTATUS} from "../../../constants";
 
 class AppCreated extends Component {
   constructor(props, context) {
@@ -62,7 +63,10 @@ class AppCreated extends Component {
     let statusCapitalized = "";
 
     if (status) {
-      statusCapitalized = status[0].toUpperCase() + status.slice(1);
+      statusCapitalized =
+        typeof status === "number"
+          ? BONDSTATUS[status]
+          : status[0].toUpperCase() + status.slice(1);
     }
 
     const generalInfo = [

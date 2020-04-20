@@ -3,7 +3,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Button, Col, Modal, Row, Badge} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
-import {NETWORK_TABLE_COLUMNS} from "../../../constants";
+import {NETWORK_TABLE_COLUMNS, BONDSTATUS} from "../../../constants";
 import "./AppDetail.scss";
 import ApplicationService, {
   PocketApplicationService,
@@ -48,7 +48,9 @@ class AppDetail extends Component {
     let aat;
 
     if (freeTier) {
-      aat = await ApplicationService.getFreeTierAppAAT(networkData.address);
+      aat = await ApplicationService.getFreeTierAppAAT(
+        pocketApplication.publicPocketAccount.address
+      );
     }
 
     this.setState({
@@ -108,7 +110,10 @@ class AppDetail extends Component {
     let statusCapitalized = "";
 
     if (status) {
-      statusCapitalized = status[0].toUpperCase() + status.slice(1);
+      statusCapitalized =
+        typeof status === "number"
+          ? BONDSTATUS[status]
+          : status[0].toUpperCase() + status.slice(1);
     }
 
     const {chains, aat, loading, showDeleteModal, deleted} = this.state;
