@@ -3,6 +3,7 @@ import "./NodesCheckout.scss";
 import {Button, Col, Row} from "react-bootstrap";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
 import Invoice from "./Invoice";
+import {formatCurrency} from "../../../_helpers";
 
 class NodesCheckout extends Component {
   constructor(props, context) {
@@ -38,7 +39,11 @@ class NodesCheckout extends Component {
       {text: "Purchase detail 1", value: 2500},
       {text: "Purchase detail 2", value: 1500},
       {text: "Balance", value: 5500},
-    ];
+    ].map((it) => {
+      return {text: it.text, value: formatCurrency(it.value)};
+    });
+
+    const total = formatCurrency(400);
 
     return (
       <div id="nodes-checkout">
@@ -63,7 +68,7 @@ class NodesCheckout extends Component {
           </Col>
         </Row>
         <Row className="segment mb-2">
-          <Invoice information={information} items={items} total={400} />
+          <Invoice information={information} items={items} total={total} />
         </Row>
         <Button
           variant="dark pl-4"

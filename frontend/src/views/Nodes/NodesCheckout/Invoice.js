@@ -25,7 +25,7 @@ class Invoice extends Component {
               <p>{item.value}</p>
             </div>
           ))}
-          <div className="label field">
+          <div className="label field pl-3">
             <p className="font-weight-bold">Total Cost:</p>
             <p>{total}</p>
           </div>
@@ -48,7 +48,7 @@ Invoice.propTypes = {
       value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     })
   ),
-  total: PropTypes.number,
+  total: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
 };
 
 export default Invoice;
