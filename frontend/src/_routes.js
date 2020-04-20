@@ -16,6 +16,7 @@ import ChainList from "./views/Apps/ChainList/ChainList";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
+import NodesCheckout from "./views/Nodes/NodesCheckout/NodesCheckout";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -37,6 +38,7 @@ export const DASHBOARD_PATHS = {
   chooseChain: "/apps/chains",
   appCreated: "/apps/created",
   nodes: "/nodes",
+  nodesCheckout: "/nodes/checkout",
 };
 
 // Helper anonymous function to render routes within the dashboard router
@@ -113,6 +115,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Nodes",
     component: NodesMain,
+  },
+  {
+    path: DASHBOARD_PATHS.nodesCheckout,
+    exact: true,
+    name: "Nodes Checkout",
+    component: NodesCheckout,
   },
   {
     path: DASHBOARD_PATHS.chooseChain,
