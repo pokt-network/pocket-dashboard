@@ -16,7 +16,8 @@ import ChainList from "./views/Apps/ChainList/ChainList";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
-import General from "./views/User/ProfileLayout/Profile";
+import General from "./views/User/General/General";
+import Profile from './views/User/ProfileLayout/Profile';
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -39,6 +40,10 @@ export const DASHBOARD_PATHS = {
   appCreated: "/apps/created",
   nodes: "/nodes",
   profile: "/profile",
+};
+
+export const PROFILE_PATHS = {
+  general: "",
 };
 
 // Helper anonymous function to render routes within the dashboard router
@@ -144,8 +149,17 @@ export const dashboardRoutes = [
     path: DASHBOARD_PATHS.profile,
     exact: true,
     name: "User General",
-    component: General,
+    component: Profile,
   },
+];
+
+export const profileRoutes = [
+  {
+    path: PROFILE_PATHS.general,
+    exact: true,
+    name: "General Information",
+    component: General
+  }
 ];
 
 const routes = pageRoutes.concat(authProviderRoutes);
