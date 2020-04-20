@@ -25,18 +25,13 @@ class Dashboard extends Component {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
-    const networkHashes = [
-      "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309",
-      "8ef9a7c67f6f8ad14f82c1f340963951245f912f037a7087f3f2d2f9f9ee38a8",
-      "0de3141aec1e69aea9d45d9156269b81a3ab4ead314fbf45a8007063879e743b",
-      "d9d77bce50d80e70026bd240fb0759f08aab7aee63d0a6d98c545f2b5ae0a0b8",
-    ];
+
     const userApps = await ApplicationService.getAllUserApplications(
       userEmail, APPLICATIONS_LIMIT
     );
 
     // TODO: Replace sample data with actual data from backend
-    const chains = await NetworkService.getNetworkChains(networkHashes);
+    const chains = await NetworkService.getAvailableNetworkChains();
 
     this.setState({userApps, chains, loading: false});
   }
@@ -153,14 +148,13 @@ class Dashboard extends Component {
             />
           </Col>
         </Row>
-        <Row className="mt-5">
+        <Row className="mt-5 mb-4">
           <Col lg="6">
             <SortableTable
-              className="table-responsive"
               keyField="hash"
               title="Registered  Nodes"
-              columns={NETWORK_TABLE_COLUMNS}
-              data={chains}
+              columns={appsColumns}
+              data={userApps}
             />
           </Col>
           <Col lg="6">
