@@ -15,6 +15,7 @@ import FreeTier from "./views/FreeTier/FreeTier";
 import ChainList from "./views/Apps/ChainList/ChainList";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
+import General from "./views/User/Profile/Profile";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -35,6 +36,7 @@ export const DASHBOARD_PATHS = {
   chooseChain: "/apps/chains",
   appCreated: "/apps/created",
   nodes: "/nodes",
+  profile: "/profile",
 };
 
 // Helper anonymous function to render routes within the dashboard router
@@ -129,6 +131,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Free tier",
     component: FreeTier,
+  },
+  {
+    path: DASHBOARD_PATHS.profile,
+    exact: true,
+    name: "User General",
+    component: General,
   },
 ];
 
