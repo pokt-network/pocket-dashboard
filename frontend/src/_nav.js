@@ -1,3 +1,28 @@
+export const profile = {
+  items: [
+    {
+      name: "General Information",
+      url: "/",
+      icon: "circle",
+    },
+    {
+      name: "Payment method",
+      url: "/payments",
+      icon: "circle",
+    },
+    {
+      name: "Payment History",
+      url: "/payments/history",
+      icon: "circle",
+    },
+    {
+      name: "Change your password",
+      url: "/password-change",
+      icon: "circle",
+    },
+  ],
+};
+
 export default {
   items: [
     {

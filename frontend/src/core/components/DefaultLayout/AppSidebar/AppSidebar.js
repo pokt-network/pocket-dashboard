@@ -10,7 +10,7 @@ class AppSidebar extends Component {
     return (
       <Sidebar xs={2} sm={2} lg={2}>
         <Row>
-          <ul id="app-sidebar">
+          <ul id="app-sidebar" className="sidebar-menu">
             {navRoutes.items.map((route, idx) => (
               <MenuItem
                 key={idx}
