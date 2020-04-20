@@ -9,11 +9,13 @@ import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
 import Dashboard from "./views/Dashboard/Dashboard";
 import AppsMain from "./views/Apps/AppsMain/AppsMain";
 import AppCreated from "./views/Apps/AppCreated/AppCreated";
-import CreateAppInfo from "./views/Apps/CreateAppInfo/CreateAppInfo";
+import CreateAppForm from "./views/Apps/CreateAppForm/CreateAppForm";
 import TierSelection from "./views/Apps/TierSelection/TierSelection";
 import FreeTier from "./views/FreeTier/FreeTier";
 import ChainList from "./views/Apps/ChainList/ChainList";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
+import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
+import NodesMain from "./views/Nodes/NodesMain/NodesMain";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -30,9 +32,11 @@ export const DASHBOARD_PATHS = {
   appDetail: "/apps/detail/:address",
   createAppInfo: "/apps/new",
   tierSelection: "/apps/tiers",
+  selectRelays: "/apps/relays",
   freeTier: "/apps/free-tier",
   chooseChain: "/apps/chains",
   appCreated: "/apps/created",
+  nodes: "/nodes",
 };
 
 // Helper anonymous function to render routes within the dashboard router
@@ -102,7 +106,13 @@ export const dashboardRoutes = [
     path: DASHBOARD_PATHS.createAppInfo,
     exact: true,
     name: "Create New App",
-    component: CreateAppInfo,
+    component: CreateAppForm,
+  },
+  {
+    path: DASHBOARD_PATHS.nodes,
+    exact: true,
+    name: "Nodes",
+    component: NodesMain,
   },
   {
     path: DASHBOARD_PATHS.chooseChain,
@@ -115,6 +125,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Tier Selection",
     component: TierSelection
+  },
+  {
+    path: DASHBOARD_PATHS.selectRelays,
+    exact: true,
+    name: "Relays Selection",
+    component: SelectRelays
   },
   {
     path: DASHBOARD_PATHS.freeTier,

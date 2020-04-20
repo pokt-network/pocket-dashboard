@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
-import {Alert, Button, Col, Row, Badge} from "react-bootstrap";
+import {Alert, Button, Col, Modal, Row, Badge} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
 import {NETWORK_TABLE_COLUMNS} from "../../../constants";
@@ -9,6 +9,10 @@ import ApplicationService, {
   PocketApplicationService,
 } from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
+import Loader from "../../../core/components/Loader";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
+import {copyToClickboard} from "../../../_helpers";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -18,8 +22,14 @@ class AppDetail extends Component {
       pocketApplication: {},
       networkData: {},
       chains: [],
-      freeTier: false,
+      aat: {},
+      loading: true,
+      showDeleteModal: false,
+      deleted: false,
     };
+
+    this.deleteApplication = this.deleteApplication.bind(this);
+    this.unstakeApplication = this.unstakeApplication.bind(this);
   }
 
   async componentDidMount() {
@@ -33,7 +43,48 @@ class AppDetail extends Component {
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
 
-    this.setState({pocketApplication, networkData, chains});
+    const {freeTier} = pocketApplication;
+
+    let aat;
+
+    if (freeTier) {
+      aat = await ApplicationService.getFreeTierAppAAT(networkData.address);
+    }
+
+    this.setState({
+      pocketApplication,
+      networkData,
+      chains,
+      aat,
+      loading: false,
+    });
+  }
+
+  async deleteApplication() {
+    const {address} = this.state.networkData;
+
+    const success = await ApplicationService.deleteAppFromDashboard(address);
+
+    if (success) {
+      this.setState({deleted: true});
+    }
+  }
+
+  async unstakeApplication() {
+    const {address} = this.state.networkData;
+    const {freeTier} = this.state.pocketApplication;
+
+    if (freeTier) {
+      const success = await ApplicationService.unstakeFreeTierApplication(
+        address
+      );
+
+      if (success) {
+        // TODO: Show message on frontend about success
+      }
+    } else {
+      // TODO: Integrate unstake for custom tier apps
+    }
   }
 
   render() {
@@ -43,6 +94,7 @@ class AppDetail extends Component {
       contactEmail,
       description,
       icon,
+      freeTier,
     } = this.state.pocketApplication;
     const {
       jailed,
@@ -53,15 +105,13 @@ class AppDetail extends Component {
       address,
     } = this.state.networkData;
 
-    const {freeTier} = this.state;
-
     let statusCapitalized = "";
 
     if (status) {
       statusCapitalized = status[0].toUpperCase() + status.slice(1);
     }
 
-    const {chains} = this.state;
+    const {chains, aat, loading, showDeleteModal, deleted} = this.state;
 
     const generalInfo = [
       {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
@@ -74,15 +124,25 @@ class AppDetail extends Component {
       {title: contactEmail, subtitle: "Email"},
     ];
 
-    // TODO: Get aat from backend
-    const aat = {
-      version: "0.0.1",
-      app_address: "bd4a...",
-      client_pub_key: "9948...",
-      signature: "a383...",
-    };
+    let aatStr = "";
 
-    const aatStr = JSON.stringify(aat, null, 2);
+    if (freeTier) {
+      aatStr = PocketApplicationService.parseAAT(aat);
+    }
+
+    if (loading) {
+      return <Loader />;
+    }
+
+    if (deleted) {
+      return (
+        <DeletedOverlay
+          text="You application was succesfully removed"
+          buttonText="Go to apps list"
+          buttonLink={_getDashboardPath(DASHBOARD_PATHS.apps)}
+        />
+      );
+    }
 
     return (
       <div id="app-detail">
@@ -135,7 +195,7 @@ class AppDetail extends Component {
           ))}
         </Row>
         <Row className="mt-3">
-          <Col>
+          <Col lg={freeTier ? 6 : 12} md={freeTier ? 6 : 12}>
             <div className="info-section">
               <h3>Address</h3>
               <Alert variant="dark">{address}</Alert>
@@ -146,7 +206,7 @@ class AppDetail extends Component {
             </div>
           </Col>
           {freeTier && (
-            <Col>
+            <Col lg="6" md="6">
               <div id="aat-info" className="mb-2">
                 <h3>AAT</h3>
                 <span>
@@ -162,7 +222,7 @@ class AppDetail extends Component {
                   </code>
                   <p
                     onClick={() =>
-                      PocketApplicationService.copyToClickboard(aatStr)
+                      copyToClickboard(JSON.stringify(aat, null, 2))
                     }
                   >
                     Copy
@@ -187,18 +247,57 @@ class AppDetail extends Component {
         <Row className="mt-3 mb-4">
           <Col className="action-buttons">
             <div className="main-options">
-              <Button variant="dark" className="pr-4 pl-4">
+              <Button
+                onClick={this.unstakeApplication}
+                variant="dark"
+                className="pr-4 pl-4"
+              >
                 Unstake
               </Button>
               <Button variant="secondary" className="ml-3 pr-4 pl-4">
                 New Purchase
               </Button>
             </div>
-            <Button href="#" variant="link" className="link mt-3">
+            <Button
+              onClick={() => this.setState({showDeleteModal: true})}
+              variant="link"
+              className="link mt-3"
+            >
               Delete App
             </Button>
           </Col>
         </Row>
+
+        <Modal
+          show={showDeleteModal}
+          onHide={() => this.setState({showDeleteModal: false})}
+          animation={false}
+          centered
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Are you sure you want to delete this App?</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            This action is irreversible, if you delete it you will never be able
+            to access it again
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="light"
+              className="pr-4 pl-4"
+              onClick={this.deleteApplication}
+            >
+              Delete
+            </Button>
+            <Button
+              variant="dark"
+              className="pr-4 pl-4"
+              onClick={() => this.setState({showDeleteModal: false})}
+            >
+              Cancel
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
