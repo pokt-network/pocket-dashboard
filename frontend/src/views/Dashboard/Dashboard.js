@@ -32,8 +32,7 @@ class Dashboard extends Component {
       "d9d77bce50d80e70026bd240fb0759f08aab7aee63d0a6d98c545f2b5ae0a0b8",
     ];
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail,
-      APPLICATIONS_LIMIT
+      userEmail, APPLICATIONS_LIMIT
     );
 
     // TODO: Replace sample data with actual data from backend
