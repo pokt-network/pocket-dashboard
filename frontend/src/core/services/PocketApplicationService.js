@@ -50,16 +50,6 @@ export class PocketApplicationService extends PocketBaseService {
     };
   }
 
-  static copyToClickboard(value) {
-    const el = document.createElement("textarea");
-
-    el.value = value;
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand("copy");
-    document.body.removeChild(el);
-  }
-
   static parseAAT(aat) {
     let aatParsed = {};
 
