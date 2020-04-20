@@ -12,6 +12,7 @@ import UserService from "./UserService";
 import bcrypt from "bcrypt";
 import bigInt from "big-integer";
 import {Configurations} from "../_configuration";
+import {Chains} from "../providers/NetworkChains";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -93,13 +94,20 @@ export default class ApplicationService extends BaseService {
   async __getExtendedPocketApplication(application) {
     /** @type {Application} */
     let networkApplication;
+    const networkChainHashes = Chains.map(_ => _.hash);
+    const appParameters = await this.pocketService.getApplicationParameters();
 
-    try {
-      networkApplication = await this.pocketService.getApplication(application.publicPocketAccount.address);
-    } catch (e) {
-      const appParameters = await this.pocketService.getApplicationParameters();
+    if (!application.freeTier) {
+      try {
+        networkApplication = await this.pocketService.getApplication(application.publicPocketAccount.address);
+      } catch (e) {
+        networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, networkChainHashes, appParameters);
+      }
+    } else {
+      const passPhrase = "PocketFreeTierAccount";
+      const freeTierAccount = await this.pocketService.getFreeTierAccount(passPhrase);
 
-      networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
+      networkApplication = ExtendedPocketApplication.createNetworkApplicationAsFreeTier(freeTierAccount, networkChainHashes, appParameters);
     }
 
     return ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
@@ -167,17 +175,25 @@ export default class ApplicationService extends BaseService {
    *
    * @param {string} applicationAccountPrivateKey Application account private key.
    *
-   * @returns {Promise<Application | boolean>} Application network data of false if account is not valid or not at network.
+   * @returns {Promise<Application>} Application network data of false if account is not valid or not at network.
+   * @throws Error If import account fails or Application does exist.
    * @async
    */
   async getApplicationNetworkData(applicationAccountPrivateKey) {
+    let applicationAccount = null;
+
     try {
       const passPhrase = "ApplicationNetworkData";
-      const applicationAccount = await this.pocketService.importAccount(applicationAccountPrivateKey, passPhrase);
 
+      applicationAccount = await this.pocketService.importAccount(applicationAccountPrivateKey, passPhrase);
+    } catch (e) {
+      throw Error("Application account is invalid");
+    }
+
+    try {
       return await this.pocketService.getApplication(applicationAccount.addressHex);
     } catch (e) {
-      return false;
+      throw Error("Application does not exist");
     }
   }
 
@@ -423,7 +439,8 @@ export default class ApplicationService extends BaseService {
         const appParameters = await this.pocketService.getApplicationParameters();
 
         const privateApplicationData = await ApplicationPrivatePocketAccount.createApplicationPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
-        const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
+        const networkChainHashes = Chains.map(_ => _.hash);
+        const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, networkChainHashes, appParameters);
 
         return {privateApplicationData, networkData};
       }

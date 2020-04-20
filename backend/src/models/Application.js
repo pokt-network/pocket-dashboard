@@ -1,7 +1,7 @@
 import {Account, Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
 import PocketService from "../services/PocketService";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
-import {Chains} from "../providers/NetworkChains";
+import {Configurations} from "../_configuration";
 
 
 export class ApplicationPublicPocketAccount {
@@ -173,16 +173,32 @@ export class ExtendedPocketApplication {
    * Convenient Factory method to create network application.
    *
    * @param {ApplicationPublicPocketAccount} publicPocketAccount Public pocket account.
+   * @param {string[]} chainHashes Network chain hashes.
    * @param {ApplicationParams} applicationParameters Application parameter from network.
    *
    * @returns {Application} Application.
    * @static
    */
-  static createNetworkApplication(publicPocketAccount, applicationParameters) {
+  static createNetworkApplication(publicPocketAccount, chainHashes, applicationParameters) {
     const {address, publicKey} = publicPocketAccount;
-    const chainHashes = Chains.map(chain => chain.hash);
 
     return new Application(address, publicKey, false, StakingStatus.Unstaked, chainHashes, 0n, applicationParameters.baseRelaysPerPokt, applicationParameters.unstakingTime);
+  }
+
+  /**
+   * Convenient Factory method to create network application as free tier.
+   *
+   * @param {Account} freeTierAccount Free tier account.
+   * @param {string[]} chainHashes Network chain hashes.
+   * @param {ApplicationParams} applicationParameters Application parameter from network.
+   *
+   * @returns {Application} Application.
+   * @static
+   */
+  static createNetworkApplicationAsFreeTier(freeTierAccount, chainHashes, applicationParameters) {
+    const publicKey = freeTierAccount.publicKey.toString("hex");
+
+    return new Application(freeTierAccount.addressHex, publicKey, false, StakingStatus.Staked, chainHashes, Configurations.pocket_network.free_tier.stake_amount, applicationParameters.baseRelaysPerPokt, applicationParameters.unstakingTime);
   }
 }
 
