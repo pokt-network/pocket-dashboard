@@ -1,0 +1,29 @@
+#payment-history {
+  .filters {
+    display: flex;
+    justify-content: space-around;
+
+    .filter {
+      p {
+        margin-bottom: 0;
+        font-size: 1.2em;
+        margin-right: 10px;
+      }
+
+      display: flex;
+      align-items: center;
+    }
+
+    .filter.sort {
+      min-width: 200px;
+    }
+  }
+
+  .export {
+    cursor: pointer;
+  }
+
+  .export:active {
+    color: gray;
+  }
+}

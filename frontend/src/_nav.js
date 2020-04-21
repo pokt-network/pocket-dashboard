@@ -12,7 +12,7 @@ export const profile = {
     },
     {
       name: "Payment History",
-      url: "/dashboard/payments/history",
+      url: "/dashboard/profile/payment-history",
       icon: "circle",
     },
     {

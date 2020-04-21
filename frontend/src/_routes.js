@@ -19,6 +19,7 @@ import NodesMain from "./views/Nodes/NodesMain/NodesMain";
 import General from "./views/User/General/General";
 import Profile from "./views/User/ProfileLayout/Profile";
 import ChangePassword from "./views/User/ChangePassword/ChangePassword";
+import PaymentHistory from "./views/User/PaymentHistory/PaymentHistory";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -46,6 +47,7 @@ export const DASHBOARD_PATHS = {
 export const PROFILE_PATHS = {
   general: "",
   changePassword: "/password-change",
+  paymentHistory: "/payment-history"
 };
 
 // Helper anonymous function to render routes within the dashboard router
@@ -167,6 +169,12 @@ export const profileRoutes = [
     exact: true,
     name: "Change password",
     component: ChangePassword
+  },
+  {
+    path: PROFILE_PATHS.paymentHistory,
+    exact: true,
+    name: "Payment history",
+    component: PaymentHistory
   },
 ];
 
