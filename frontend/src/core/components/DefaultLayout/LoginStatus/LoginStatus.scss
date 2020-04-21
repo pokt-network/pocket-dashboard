@@ -22,3 +22,18 @@
     align-self: center;
   }
 }
+
+.user-dropdown {
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    padding-right: 15px;
+
+    .icon {
+      color: gray;
+      margin-right: 15px;
+    }
+  }
+}
