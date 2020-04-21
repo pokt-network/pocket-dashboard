@@ -31,10 +31,12 @@ class SaveAndPayForm extends Component {
     PocketStripePaymentService.confirmPaymentWithNewCard(stripe, paymentIntentSecretID, card, billingDetails)
       .then(result => {
         if (result.error) {
+          // TODO: Show information to user in a proper way.
           console.log(result.error.message);
         }
 
         if (result.paymentIntent) {
+          // TODO: Show information to user in a proper way, and redirect to another path
           console.log(result.paymentIntent.status);
         }
       });
