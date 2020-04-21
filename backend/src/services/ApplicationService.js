@@ -180,20 +180,17 @@ export default class ApplicationService extends BaseService {
    * @async
    */
   async getApplicationNetworkData(applicationAccountPrivateKey) {
-    let applicationAccount = null;
+    const passPhrase = "ApplicationNetworkData";
+    const applicationAccount = await this.pocketService.importAccount(applicationAccountPrivateKey, passPhrase);
 
-    try {
-      const passPhrase = "ApplicationNetworkData";
-
-      applicationAccount = await this.pocketService.importAccount(applicationAccountPrivateKey, passPhrase);
-    } catch (e) {
-      throw Error("Application account is invalid");
+    if (applicationAccount instanceof Error) {
+      throw TypeError("Application account is invalid");
     }
 
     try {
-      return await this.pocketService.getApplication(applicationAccount.addressHex);
+      return this.pocketService.getApplication(applicationAccount.addressHex);
     } catch (e) {
-      throw Error("Application does not exist");
+      throw TypeError("Application does not exist");
     }
   }
 
