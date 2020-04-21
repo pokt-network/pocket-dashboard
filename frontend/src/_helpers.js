@@ -11,3 +11,11 @@ export const copyToClickboard = (value) => {
   document.execCommand("copy");
   document.body.removeChild(el);
 };
+
+export const isActiveExactUrl = (match, location) => {
+  if (!match) {
+    return false;
+  }
+
+  return match.url === location.pathname;
+};

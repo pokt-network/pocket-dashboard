@@ -1,8 +1,8 @@
 import React, {Component} from "react";
-import {Button, Col, Form, Row} from "react-bootstrap";
-import PocketUserService from "../../../core/services/PocketUserService";
+import "./ChangePassword.scss";
+import {Col, Button, Form, Row} from "react-bootstrap";
 
-class General extends Component {
+class ChangePassword extends Component {
   constructor(props, context) {
     super(props, context);
 
@@ -11,22 +11,16 @@ class General extends Component {
 
     this.state = {
       data: {
-        username: "",
-        email: "",
+        oldPassword: "",
+        password: "",
+        passwordConfirm: "",
       },
     };
   }
 
   handleSubmit(e) {
     e.preventDefault();
-
-    // TODO: Integrate logic of changing username/email
-  }
-
-  componentDidMount() {
-    const {name: username, email} = PocketUserService.getUserInfo();
-
-    this.setState({data: {username, email}});
+    // TODO: Integrate logic of changing password
   }
 
   handleChange({currentTarget: input}) {
@@ -37,27 +31,35 @@ class General extends Component {
   }
 
   render() {
-    const {username, email} = this.state.data;
+    const {oldPassword, password, passwordConfirm} = this.state.data;
 
     return (
       <Row>
         <Col lg="8" md="8" sm="8">
-          <h2>General Information</h2>
+          <h2>Password</h2>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
-              <Form.Label>Username</Form.Label>
+              <Form.Label>Old password</Form.Label>
               <Form.Control
-                name="username"
-                value={username}
+                name="oldPassword"
+                type="password"
+                value={oldPassword}
                 onChange={this.handleChange}
               />
             </Form.Group>
             <Form.Group>
-              <Form.Label>E-mail</Form.Label>
+              <Form.Label>Password</Form.Label>
               <Form.Control
-                type="email"
-                name="email"
-                value={email}
+                name="password"
+                value={password}
+                onChange={this.handleChange}
+              />
+            </Form.Group>
+            <Form.Group>
+              <Form.Label>Password Confirm</Form.Label>
+              <Form.Control
+                name="passwordConfirm"
+                value={passwordConfirm}
                 onChange={this.handleChange}
               />
             </Form.Group>
@@ -67,7 +69,7 @@ class General extends Component {
               variant="dark"
               size={"lg"}
             >
-              Save
+              Change
             </Button>
           </Form>
         </Col>
@@ -76,4 +78,4 @@ class General extends Component {
   }
 }
 
-export default General;
+export default ChangePassword;

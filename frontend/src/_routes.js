@@ -17,7 +17,8 @@ import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
 import General from "./views/User/General/General";
-import Profile from './views/User/ProfileLayout/Profile';
+import Profile from "./views/User/ProfileLayout/Profile";
+import ChangePassword from "./views/User/ChangePassword/ChangePassword";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -44,6 +45,7 @@ export const DASHBOARD_PATHS = {
 
 export const PROFILE_PATHS = {
   general: "",
+  changePassword: "/password-change",
 };
 
 // Helper anonymous function to render routes within the dashboard router
@@ -147,7 +149,7 @@ export const dashboardRoutes = [
   },
   {
     path: DASHBOARD_PATHS.profile,
-    exact: true,
+    exact: false,
     name: "User General",
     component: Profile,
   },
@@ -159,7 +161,13 @@ export const profileRoutes = [
     exact: true,
     name: "General Information",
     component: General
-  }
+  },
+  {
+    path: PROFILE_PATHS.changePassword,
+    exact: true,
+    name: "Change password",
+    component: ChangePassword
+  },
 ];
 
 const routes = pageRoutes.concat(authProviderRoutes);

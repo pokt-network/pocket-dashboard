@@ -17,7 +17,7 @@ export const profile = {
     },
     {
       name: "Change your password",
-      url: "/password-change",
+      url: "/dashboard/profile/password-change",
       icon: "circle",
     },
   ],

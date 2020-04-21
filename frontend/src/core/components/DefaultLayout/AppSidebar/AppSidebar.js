@@ -4,6 +4,7 @@ import {Row} from "react-bootstrap";
 import MenuItem from "./MenuItem/MenuItem";
 import "./AppSidebar.scss";
 import navRoutes from "../../../../_nav";
+import {DASHBOARD_PATHS} from "../../../../_routes";
 
 class AppSidebar extends Component {
   render() {
@@ -20,6 +21,12 @@ class AppSidebar extends Component {
                 isActive={(match, location) => {
                   if (!match) {
                     return false;
+                  }
+
+                  // When user is on a profile-related view, set the sidebar
+                  // link to active.
+                  if (match.url.includes(DASHBOARD_PATHS.profile)) {
+                    return true;
                   }
 
                   return match.url === location.pathname;
