@@ -16,10 +16,10 @@ import ChainList from "./views/Apps/ChainList/ChainList";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
-import General from "./views/User/General/General";
-import Profile from "./views/User/ProfileLayout/Profile";
-import ChangePassword from "./views/User/ChangePassword/ChangePassword";
-import PaymentHistory from "./views/User/PaymentHistory/PaymentHistory";
+import General from "./views/Profile/General/General";
+import Profile from "./views/Profile/ProfileLayout/ProfileLayout";
+import ChangePassword from "./views/Profile/ChangePassword/ChangePassword";
+import PaymentHistory from "./views/Profile/PaymentHistory/PaymentHistory";
 
 export const ROUTE_PATHS = {
   signup: "/signup",

@@ -1,9 +1,9 @@
 import React, {Component} from "react";
-import "./Profile.scss";
+import "./ProfileLayout.scss";
 import {Col, Row} from "react-bootstrap";
-import ProfileSidebar from "../ProfileSidebar/ProfileSidebar";
 import {Route} from "react-router-dom";
 import {profileRoutes} from "../../../_routes";
+import ProfileSidebar from "../../../core/components/ProfileSidebar/ProfileSidebar";
 
 class Profile extends Component {
   state = {};
