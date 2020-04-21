@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {NavLink} from "react-router-dom";
 
+
 library.add(fas);
 
 class MenuItem extends Component {

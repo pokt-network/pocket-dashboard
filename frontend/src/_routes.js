@@ -20,6 +20,8 @@ import General from "./views/Profile/General/General";
 import Profile from "./views/Profile/ProfileLayout/ProfileLayout";
 import ChangePassword from "./views/Profile/ChangePassword/ChangePassword";
 import PaymentHistory from "./views/Profile/PaymentHistory/PaymentHistory";
+import NodesCheckout from "./views/Nodes/NodesCheckout/NodesCheckout";
+
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -41,6 +43,7 @@ export const DASHBOARD_PATHS = {
   chooseChain: "/apps/chains",
   appCreated: "/apps/created",
   nodes: "/nodes",
+  nodesCheckout: "/nodes/checkout",
   profile: "/profile",
 };
 
@@ -90,7 +93,7 @@ const authProviderRoutes = [
  */
 export const dashboardRoutes = [
   {
-    path: DASHBOARD_PATHS.home,
+    path: "/",
     exact: true,
     name: "Home - Dashboard",
     component: Dashboard,
@@ -124,6 +127,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Nodes",
     component: NodesMain,
+  },
+  {
+    path: DASHBOARD_PATHS.nodesCheckout,
+    exact: true,
+    name: "Nodes Checkout",
+    component: NodesCheckout,
   },
   {
     path: DASHBOARD_PATHS.chooseChain,
