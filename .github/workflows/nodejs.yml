@@ -59,16 +59,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Build and Push
-        uses: docker/build-push-action@v1
-        with:
-          dockerfile: ./backend/Dockerfile
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: ${{ env.DOCKER_REPOSITORY }}
-          build_args: PORT=${{ env.DOCKER_BACKEND_PORT }}
-          tag_with_ref: true
-          always_pull: true
+      - uses: actions/checkout@v1
+      - name: Login to DockerHub Registry
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: Build the tagged Docker image
+        working-directory: backend
+        run: ls # docker build --build-args PORT=${{ env.DOCKER_BACKEND_PORT }} .
 
   # Frontend CI
   Frontend:
