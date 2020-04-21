@@ -9,12 +9,12 @@ library.add(fas);
 
 class MenuItem extends Component {
   render() {
-    const {url, label, icon, ...restProps} = this.props;
+    const {url, label, icon, size, ...restProps} = this.props;
 
     return (
       <NavLink to={url} {...restProps}>
         <li>
-          <FontAwesomeIcon icon={icon} size="2x" className="icon" />
+          <FontAwesomeIcon icon={icon} size={size} className="icon" />
           {label}
         </li>
       </NavLink>
@@ -25,12 +25,14 @@ class MenuItem extends Component {
 MenuItem.defaultProps = {
   url: "#",
   icon: "square",
+  size: "2x",
 };
 
 MenuItem.propTypes = {
   url: PropTypes.string,
   label: PropTypes.string,
   icon: PropTypes.string,
+  size: PropTypes.string,
 };
 
 export default MenuItem;
