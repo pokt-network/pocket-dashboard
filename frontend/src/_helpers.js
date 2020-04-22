@@ -1,4 +1,5 @@
 import numeral from "numeral";
+import {BONDSTATUS} from "./constants";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
@@ -18,4 +19,14 @@ export const isActiveExactUrl = (match, location) => {
   }
 
   return match.url === location.pathname;
+};
+
+export const mapStatusToApp = (app) => {
+  return {
+    ...app,
+    networkData: {
+      ...app.networkData,
+      status: BONDSTATUS[app.networkData.status],
+    },
+  };
 };

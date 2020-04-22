@@ -3,7 +3,7 @@ import {Dropdown} from "react-bootstrap";
 import PropTypes from "prop-types";
 import UserService from "../../../services/PocketUserService";
 import "./LoginStatus.scss";
-import {Redirect} from "react-router-dom";
+import {Redirect, withRouter} from "react-router-dom";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCircle} from "@fortawesome/free-solid-svg-icons";
 import {
@@ -78,7 +78,7 @@ class LoginStatus extends Component {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          <Dropdown.Item onClick={() => this.logout()}>
+          <Dropdown.Item onClick={() => this.goToProfile()}>
             <FontAwesomeIcon className="icon" icon={faCircle} size="1x" />
             User Profile
           </Dropdown.Item>
@@ -92,4 +92,4 @@ class LoginStatus extends Component {
   }
 }
 
-export default LoginStatus;
+export default withRouter(LoginStatus);
