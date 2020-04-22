@@ -9,6 +9,7 @@ module.exports = {
     server: "./src/App.js",
   },
   output: {
+    globalObject: "this",
     path: path.join(__dirname, "dist"),
     publicPath: "/",
     filename: "[name].js"
