@@ -11,7 +11,6 @@ COPY package.json $APP_HOME
 COPY yarn.lock $APP_HOME
 
 RUN yarn install
-RUN yarn global add pm2
 
 COPY . $APP_HOME
 
