@@ -10,6 +10,7 @@ import {NETWORK_TABLE_COLUMNS, APPLICATIONS_LIMIT} from "../../constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
+import {mapStatusToApp} from "../../_helpers";
 
 class Dashboard extends Component {
   constructor(props, context) {
@@ -38,7 +39,7 @@ class Dashboard extends Component {
   }
 
   render() {
-    const {alert, chains, loading, userApps} = this.state;
+    const {alert, chains, loading, userApps: allUserApps} = this.state;
 
     const cards = [
       {title: "US $0.60", subtitle: "POKT Price"},
@@ -58,11 +59,17 @@ class Dashboard extends Component {
         dataField: "networkData.address",
         text: "Address",
       },
+      {
+        dataField: "networkData.status",
+        text: "Status",
+      },
     ];
 
     if (loading) {
       return <Loader />;
     }
+
+    const userApps = allUserApps.map(mapStatusToApp);
 
     return (
       <div id="dashboard">

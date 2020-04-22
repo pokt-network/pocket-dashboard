@@ -12,6 +12,7 @@ import {APPLICATIONS_LIMIT, BONDSTATUS} from "../../../constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../components/Main/Main";
+import {mapStatusToApp} from "../../../_helpers";
 
 class AppsMain extends Main {
   constructor(props, context) {
@@ -63,7 +64,7 @@ class AppsMain extends Main {
       totalApplications,
       averageStaked,
       averageRelays,
-      registeredApps,
+      registeredApps: allRegisteredApps,
       loading,
     } = this.state;
 
@@ -76,7 +77,13 @@ class AppsMain extends Main {
         dataField: "pocketApplication.publicPocketAccount.address",
         text: "Address",
       },
+      {
+        dataField: "networkData.status",
+        text: "Status",
+      },
     ];
+
+    const registeredApps = allRegisteredApps.map(mapStatusToApp);
 
     const cards = [
       {title: totalApplications, subtitle: "Total of apps"},
@@ -145,14 +152,17 @@ class AppsMain extends Main {
                 </InputGroup>
               </Col>
               <Col sm="4" md="4" lg="4" className="order-by">
-                <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
+                <p style={{fontWeight: "bold", fontSize: "1.2em"}}>
+                  Filter by:
+                </p>
                 {/* TODO: Implement sorting on apps */}
                 <AppDropdown
                   onSelect={(t) => console.log(t)}
                   options={[
                     {text: "All", dataField: "all"},
-                    {text: "Newest", dataField: "newest"},
-                    {text: "Oldest", dataField: "oldest"},
+                    {text: "Bonded", dataField: "bonded"},
+                    {text: "Unbonding", dataField: "unbonding"},
+                    {text: "Unbonded", dataField: "unbonded"},
                   ]}
                 />
               </Col>
@@ -178,11 +188,16 @@ class AppsMain extends Main {
           <Col sm="4" md="4" lg="4">
             <h2>Registered apps</h2>
             <div className="order-by">
-              <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
+              <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Filter by:</p>
               {/* TODO: Implement sorting on apps */}
               <AppDropdown
                 onSelect={(t) => console.log(t)}
-                options={[{text: "All"}, {text: "Newest"}, {text: "Oldest"}]}
+                options={[
+                  {text: "All", dataField: "all"},
+                  {text: "Bonded", dataField: "bonded"},
+                  {text: "Unbonding", dataField: "unbonding"},
+                  {text: "Unbonded", dataField: "unbonded"},
+                ]}
               />
             </div>
             <BootstrapTable
