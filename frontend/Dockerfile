@@ -12,7 +12,7 @@ RUN yarn install
 
 COPY . $APP_HOME
 
-RUN yarn build:prod
+CMD yarn build:prod
 
 
 
