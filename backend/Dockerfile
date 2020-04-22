@@ -14,8 +14,6 @@ RUN yarn install
 
 COPY . $APP_HOME
 
-RUN yarn build:prod
-
 EXPOSE $PORT
 
-CMD yarn start:prod
+CMD yarn start:docker
