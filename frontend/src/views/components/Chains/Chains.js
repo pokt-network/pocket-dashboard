@@ -8,10 +8,16 @@ class Chains extends Component {
 
     this.onRowSelect = this.onRowSelect.bind(this);
     this.onRowSelectAll = this.onRowSelectAll.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleChainSearch = this.handleChainSearch.bind(this);
 
     this.state = {
       chains: [],
+      filteredChains: [],
       chosenChains: [],
+      data: {
+        searchChainQuery: "",
+      },
     };
   }
 
@@ -19,6 +25,24 @@ class Chains extends Component {
     const chains = await NetworkService.getAvailableNetworkChains();
 
     this.setState({chains});
+  }
+
+  handleChainSearch() {
+    const {chains} = this.state;
+    const {searchChainQuery} = this.state.data;
+
+    const filteredChains = chains.filter((c) =>
+      c.name.toLowerCase().includes(searchChainQuery.toLowerCase())
+    );
+
+    this.setState({filteredChains});
+  }
+
+  handleChange({currentTarget: input}) {
+    const data = {...this.state.data};
+
+    data[input.name] = input.value;
+    this.setState({data});
   }
 
   onRowSelect(row, isSelect, rowIndex, e) {

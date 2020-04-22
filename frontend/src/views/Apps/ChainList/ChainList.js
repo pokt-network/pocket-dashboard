@@ -25,7 +25,8 @@ class ChooseChain extends Chains {
   }
 
   render() {
-    const {chains} = this.state;
+    const {chains: allChains, filteredChains} = this.state;
+    const chains = filteredChains.length === 0 ? allChains : filteredChains;
 
     // BoostrapTable selectionParams
     const tableSelectOptions = {
@@ -54,7 +55,7 @@ class ChooseChain extends Chains {
             <InputGroup className="mb-3">
               <FormControl
                 placeholder="Search chain"
-                name="searchQuery"
+                name="searchChainQuery"
                 onChange={this.handleChange}
                 onKeyPress={({key}) => {
                   if (key === "Enter") {
