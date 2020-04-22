@@ -1,64 +1,33 @@
 import React, {Component} from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircle, faBell} from "@fortawesome/free-solid-svg-icons";
-import "./Notification.scss";
+import {faCircle} from "@fortawesome/free-solid-svg-icons";
+import "./Notifications.scss";
 import {PropTypes} from "prop-types";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {Dropdown} from "react-bootstrap";
 
-// eslint-disable-next-line react/display-name
-const NotificationToggle = React.forwardRef(({children, onClick}, ref) => (
-  <span
-    style={{cursor: "pointer"}}
-    className="notifications"
-    ref={ref}
-    onClick={(e) => {
-      e.preventDefault();
-      onClick(e);
-    }}
-  >
-    <span className="badge badge-secondary">{children}</span>
-    <FontAwesomeIcon size="2x" icon={faBell} />
-  </span>
-));
-
-NotificationToggle.propTypes = {
-  children: PropTypes.any,
-  onClick: PropTypes.func,
-};
-
-class NotificationIcon extends Component {
-  // TODO: Add functionality to connect to backend and display data
-
+class Notification extends Component {
   render() {
-    return (
-      <Dropdown
-        alignRight
-        className="user-dropdown"
-        id="dropdown-menu-align-right"
-      >
-        <Dropdown.Toggle as={NotificationToggle} id="dropdown-basic">
-          100
-        </Dropdown.Toggle>
+    const {children, time} = this.props;
 
-        <Dropdown.Menu>
-          <Dropdown.Item onClick={() => this.logout()}>
-            <FontAwesomeIcon className="icon" icon={faCircle} size="1x" />
-            <div className="notification">
-              <p>Your app APP_NAME is in the unbonding process</p>
-              <small>1 hour ago</small>
-            </div>
-          </Dropdown.Item>
-          <Dropdown.Item onClick={() => this.logout()}>
-            <FontAwesomeIcon className="icon" icon={faCircle} size="1x" />
-            <div className="notification">
-              <p>Your app APP_NAME is in the unbonding process</p>
-              <small>1 hour ago</small>
-            </div>
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
+    return (
+      <Dropdown.Item>
+        <FontAwesomeIcon className="icon" icon={faCircle} size="1x" />
+        <div className="notification">
+          {children}
+          <small>{time}</small>
+        </div>
+      </Dropdown.Item>
     );
   }
 }
 
-export default NotificationIcon;
+Notification.propTypes = {
+  children: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+  ]),
+  onClick: PropTypes.func,
+  time: PropTypes.string,
+};
+
+export default Notification;
