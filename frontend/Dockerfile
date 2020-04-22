@@ -11,5 +11,3 @@ COPY yarn.lock $APP_HOME
 RUN yarn install
 
 COPY . $APP_HOME
-
-RUN yarn build:prod
