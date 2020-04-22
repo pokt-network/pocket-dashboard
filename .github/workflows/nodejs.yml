@@ -11,10 +11,6 @@ on:
     branches:
       - master
 
-env:
-  DOCKER_REPOSITORY: poktnetwork/pocket-dashboard
-  DOCKER_BACKEND_PORT: 4200
-
 jobs:
   # Backend CI
   Backend:
@@ -54,20 +50,6 @@ jobs:
         working-directory: backend
         run: yarn build:prod
 
-  Backend-Docker:
-    needs: Backend
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Login to Docker Hub
-        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-      - name: Build Docker image
-        working-directory: backend
-        run: docker build --build-arg PORT=${{ env.DOCKER_BACKEND_PORT }} -t ${{ env.DOCKER_REPOSITORY }}:latest-backend .
-      - name: Push Docker image
-        run: docker push ${{ env.DOCKER_REPOSITORY }}:latest-backend
-
   # Frontend CI
   Frontend:
     runs-on: ubuntu-latest
@@ -98,17 +80,3 @@ jobs:
 
         env:
           CI: true
-
-  Frontend-Docker:
-    needs: Frontend
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Login to Docker Hub
-        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
-      - name: Build Docker image
-        working-directory: frontend
-        run: docker build --build-arg PORT=${{ env.DOCKER_BACKEND_PORT }} -t ${{ env.DOCKER_REPOSITORY }}:latest-frontend .
-      - name: Push Docker image
-        run: docker push ${{ env.DOCKER_REPOSITORY }}:latest-frontend
