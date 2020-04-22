@@ -3,11 +3,10 @@ import BootstrapTable from "react-bootstrap-table-next";
 import {Button, Col, Row, FormControl, InputGroup} from "react-bootstrap";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 import {NETWORK_TABLE_COLUMNS} from "../../../constants";
-import ApplicationService from "../../../core/services/PocketApplicationService";
-import {DASHBOARD_PATHS, _getDashboardPath} from "../../../_routes";
+import NetworkService from "../../../core/services/PocketNetworkService";
 import Chains from "../../components/Chains/Chains";
 
-class ChooseChain extends Chains {
+class NodeChainList extends Chains {
   constructor(props, context) {
     super(props, context);
 
@@ -15,13 +14,13 @@ class ChooseChain extends Chains {
   }
 
   handleChains() {
-    const {chosenChains} = this.state;
-    const chainsHashes = chosenChains.map((ch) => ch.hash);
+    // TODO: Handle chains on NODES
+  }
 
-    ApplicationService.saveAppInfoInCache({chains: chainsHashes});
+  async componentDidMount() {
+    const chains = await NetworkService.getAvailableNetworkChains();
 
-    // eslint-disable-next-line react/prop-types
-    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.tierSelection));
+    this.setState({chains});
   }
 
   render() {
@@ -92,11 +91,32 @@ class ChooseChain extends Chains {
               selectRow={tableSelectOptions}
               bordered={false}
             />
+            <InputGroup className="mt-5">
+              <FormControl
+                placeholder="Search service URL"
+                name="searchQuery"
+                onChange={this.handleChange}
+                onKeyPress={({key}) => {
+                  if (key === "Enter") {
+                    this.handleServiceNodeSearch();
+                  }
+                }}
+              />
+              <InputGroup.Append>
+                <Button
+                  type="submit"
+                  onClick={this.handleServiceNodeSearch}
+                  variant="dark"
+                >
+                  Search
+                </Button>
+              </InputGroup.Append>
+            </InputGroup>
             <Button
               onClick={this.handleChains}
               variant="dark"
               size={"lg"}
-              className="float-right mt-4 pl-5 pr-5"
+              className="float-right mb-5 mt-4 pl-5 pr-5"
             >
               Continue
             </Button>
@@ -107,4 +127,4 @@ class ChooseChain extends Chains {
   }
 }
 
-export default ChooseChain;
+export default NodeChainList;
