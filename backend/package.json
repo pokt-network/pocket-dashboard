@@ -16,6 +16,7 @@
     "build": "webpack --watch --mode development --config webpack.config.js",
     "build:prod": "webpack --mode production --config webpack.config.js",
     "start": "nodemon dist/server.js",
+    "start:prod": "node dist/server.js",
     "test": "mocha test",
     "test:services": "mocha test/services",
     "test:providers": "mocha test/providers",

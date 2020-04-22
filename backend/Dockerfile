@@ -18,4 +18,4 @@ RUN yarn build:prod
 
 EXPOSE $PORT
 
-CMD yarn start
+CMD yarn start:prod
