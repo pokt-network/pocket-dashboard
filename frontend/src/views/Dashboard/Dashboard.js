@@ -27,7 +27,8 @@ class Dashboard extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
+      userEmail,
+      APPLICATIONS_LIMIT
     );
 
     // TODO: Replace sample data with actual data from backend
@@ -131,7 +132,6 @@ class Dashboard extends Component {
         <Row>
           <Col lg="6">
             <SortableTable
-              className="table-responsive"
               keyField="hash"
               title="Supported Blockchains"
               columns={NETWORK_TABLE_COLUMNS}
@@ -140,7 +140,6 @@ class Dashboard extends Component {
           </Col>
           <Col lg="6">
             <SortableTable
-              className="table-responsive"
               keyField="hash"
               title="Most popular chains"
               columns={NETWORK_TABLE_COLUMNS}
