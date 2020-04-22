@@ -1,4 +1,4 @@
-FROM node:10 as builder
+FROM node:10
 
 ENV APP_HOME /app
 
@@ -12,4 +12,4 @@ RUN yarn install
 
 COPY . $APP_HOME
 
-CMD yarn start
+RUN yarn build:prod
