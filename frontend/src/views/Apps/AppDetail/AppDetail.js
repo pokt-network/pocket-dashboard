@@ -3,7 +3,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Button, Col, Modal, Row, Badge} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
-import {NETWORK_TABLE_COLUMNS} from "../../../constants";
+import {NETWORK_TABLE_COLUMNS, BONDSTATUS} from "../../../constants";
 import "./AppDetail.scss";
 import ApplicationService, {
   PocketApplicationService,
@@ -48,7 +48,9 @@ class AppDetail extends Component {
     let aat;
 
     if (freeTier) {
-      aat = await ApplicationService.getFreeTierAppAAT(networkData.address);
+      const {address} = pocketApplication.publicPocketAccount;
+
+      aat = await ApplicationService.getFreeTierAppAAT(address);
     }
 
     this.setState({
@@ -97,7 +99,6 @@ class AppDetail extends Component {
       freeTier,
     } = this.state.pocketApplication;
     const {
-      jailed,
       max_relays,
       staked_tokens,
       status,
@@ -105,17 +106,11 @@ class AppDetail extends Component {
       address,
     } = this.state.networkData;
 
-    let statusCapitalized = "";
-
-    if (status) {
-      statusCapitalized = status[0].toUpperCase() + status.slice(1);
-    }
-
     const {chains, aat, loading, deleteModal, deleted} = this.state;
 
     const generalInfo = [
       {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
-      {title: statusCapitalized, subtitle: "Stake status"},
+      {title: BONDSTATUS[status], subtitle: "Stake status"},
       {title: max_relays, subtitle: "Max Relays"},
     ];
 
@@ -172,14 +167,6 @@ class AppDetail extends Component {
               <InfoCard title={card.title} subtitle={card.subtitle} />
             </Col>
           ))}
-          <Col>
-            <InfoCard title={jailed === 1 ? "YES" : "NO"} subtitle={"Jailed"}>
-              {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-              <a className="link" href="#">
-                Take out of jail
-              </a>
-            </InfoCard>
-          </Col>
         </Row>
         <Row className="contact-info stats">
           {contactInfo.map((card, idx) => (
