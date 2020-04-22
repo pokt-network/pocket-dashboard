@@ -177,3 +177,32 @@ button, .btn {
     border-top: 0;
   }
 }
+
+.sidebar-menu {
+  list-style-type: none;
+  padding-left: 0;
+  width: 100%;
+
+
+  a {
+    color: #ffffff;
+    display: block;
+    font-size: 1.2em;
+
+    li {
+      display: flex;
+      align-items: center;
+      padding-left: 30px;
+      padding-top: 20px;
+      padding-bottom: 20px;
+
+      .icon {
+        margin-right: 20px;
+      }
+    }
+  }
+
+  a:hover {
+    text-decoration: none;
+  }
+}

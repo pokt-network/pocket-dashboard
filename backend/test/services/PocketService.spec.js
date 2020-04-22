@@ -5,9 +5,10 @@ import {Configurations} from "../../src/_configuration";
 import {StakingStatus} from "@pokt-network/pocket-js";
 
 /** @type {string} */
-const ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_ACCOUNT_PRIVATE_KEY_WITH_POKT;
+const ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.ACCOUNT_PRIVATE_KEY_WITH_POKT;
+const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
-const pocketService = new PocketService(Configurations.pocket_network.nodes.test, Configurations.pocket_network.nodes.test_rpc_provider);
+const pocketService = new PocketService(POCKET_NETWORK_CONFIGURATION.nodes.test, POCKET_NETWORK_CONFIGURATION.nodes.test_rpc_provider);
 
 describe("PocketService", () => {
 

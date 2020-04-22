@@ -6,15 +6,14 @@ import {Application, StakingStatus} from "@pokt-network/pocket-js";
 import {configureTestService} from "../setupTests";
 import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
 import sinon from "sinon";
+import {assert, expect} from "chai";
 
 /** @type {string} */
-const FREE_TIER_APPLICATION_PRIVATE_KEY = process.env.TEST_FREE_TIER_APPLICATION_PRIVATE_KEY;
-
+const FREE_TIER_APPLICATION_PRIVATE_KEY = process.env.FREE_TIER_APPLICATION_PRIVATE_KEY;
 /** @type {string} */
-const APPLICATION_PRIVATE_KEY_ON_NETWORK = process.env.TEST_APPLICATION_PRIVATE_KEY_ON_NETWORK;
-
+const APPLICATION_PRIVATE_KEY_ON_NETWORK = process.env.APPLICATION_PRIVATE_KEY_ON_NETWORK;
 /** @type {string} */
-const FREE_TIER_ADDRESS = process.env.TEST_FREE_TIER_ADDRESS;
+const FREE_TIER_ADDRESS = process.env.FREE_TIER_ADDRESS;
 
 const applicationService = new ApplicationService();
 
@@ -169,14 +168,14 @@ describe("ApplicationService", () => {
   }
 
   describe("getApplicationNetworkData with invalid address", () => {
-    it("Expect a false value", async () => {
+    it("Expect an error", async () => {
 
-      const applicationNetworkData = await applicationService.getApplicationNetworkData("NOT_VALID_ADDRESS");
-
-      // eslint-disable-next-line no-undef
-      should.exist(applicationNetworkData);
-
-      applicationNetworkData.should.be.false;
+      try {
+        await applicationService.getApplicationNetworkData("NOT_VALID_ADDRESS");
+        assert.fail();
+      } catch (e) {
+        expect(e.message).to.be.equal("Application account is invalid");
+      }
     });
   });
 

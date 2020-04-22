@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import {Link} from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import "./AppsMain.scss";
@@ -149,7 +149,11 @@ class AppsMain extends Main {
                 {/* TODO: Implement sorting on apps */}
                 <AppDropdown
                   onSelect={(t) => console.log(t)}
-                  options={["All", "Newest", "Oldest"]}
+                  options={[
+                    {text: "All", dataField: "all"},
+                    {text: "Newest", dataField: "newest"},
+                    {text: "Oldest", dataField: "oldest"},
+                  ]}
                 />
               </Col>
             </Row>
@@ -178,7 +182,7 @@ class AppsMain extends Main {
               {/* TODO: Implement sorting on apps */}
               <AppDropdown
                 onSelect={(t) => console.log(t)}
-                options={["All", "Newest", "Oldest"]}
+                options={[{text: "All"}, {text: "Newest"}, {text: "Oldest"}]}
               />
             </div>
             <BootstrapTable

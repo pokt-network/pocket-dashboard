@@ -25,19 +25,6 @@ if (Configurations.payment.test.client_id && Configurations.payment.test.client_
 
   describe("StripePaymentProvider", () => {
 
-    describe("createCardPaymentMethod", () => {
-      it("Created a card that don’t require authentication", async () => {
-
-        const methodMethod = await stripePaymentProvider.createCardPaymentMethod(TEST_CARDS.no_auth_visa);
-
-        // eslint-disable-next-line no-undef
-        should.exist(methodMethod);
-
-        methodMethod.should.be.an("object");
-        methodMethod.object.should.be.equal("payment_method");
-      });
-    });
-
     describe("makeIntentPayment that don’t require authentication", () => {
       it("Created a Payment with amount, currency, type type and description", async () => {
         const currency = PaymentCurrencies.usd;

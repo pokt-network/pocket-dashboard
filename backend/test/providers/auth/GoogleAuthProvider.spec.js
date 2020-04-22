@@ -6,7 +6,7 @@ import GoogleAuthProvider from "../../../src/providers/auth/GoogleAuthProvider";
 const googleAuthProvider = new GoogleAuthProvider();
 
 /** @type {string} */
-const GOOGLE_REFRESH_TOKEN = process.env.TEST_GOOGLE_REFRESH_TOKEN; // You can get yours using the getConsentURL of GoogleAuthProvider
+const GOOGLE_REFRESH_TOKEN = process.env.GOOGLE_REFRESH_TOKEN; // You can get yours using the getConsentURL of GoogleAuthProvider
 
 describe("GoogleAuthProvider", () => {
 

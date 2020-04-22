@@ -1,20 +1,25 @@
 const path = require("path");
 const nodeExternals = require("webpack-node-externals");
-const Dotenv = require('dotenv-webpack');
+const Dotenv = require("dotenv-webpack");
 const webpack = require("webpack");
 
 module.exports = {
   mode: "development",
   entry: {
-    server: './src/App.js',
+    server: "./src/App.js",
   },
   output: {
-    path: path.join(__dirname, 'dist'),
-    publicPath: '/',
-    filename: '[name].js'
+    path: path.join(__dirname, "dist"),
+    publicPath: "/",
+    filename: "[name].js"
   },
-  target: 'web',
-  devtool: 'inline-source-map',
+  optimization: {
+    splitChunks: {
+      chunks: "all"
+    }
+  },
+  target: "web",
+  devtool: "inline-source-map",
   node: {
     // Need this when working with express, otherwise the build fails
     __dirname: false,   // if you don't put this is, __dirname
