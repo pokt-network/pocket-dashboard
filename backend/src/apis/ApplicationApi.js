@@ -52,11 +52,33 @@ function getOptionalQueryOption(request, option) {
  */
 router.post("", async (request, response) => {
   try {
-    /** @type {{name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string }} */
+    /** @type {
+     * {application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}
+     *  imported: boolean, privateKey:string}
+     * } */
     const data = request.body;
     const application = await applicationService.createApplication(data);
 
     response.send(application);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Import application account.
+ */
+router.post("/import", async (request, response) => {
+  try {
+    /** @type {{applicationAccountPrivateKey:string}} */
+    const data = request.body;
+    const account = await applicationService.importApplicationNetworkAccount(data.applicationAccountPrivateKey);
+
+    response.send(account);
   } catch (e) {
     const error = {
       message: e.toString()
@@ -106,13 +128,13 @@ router.get("/summary/staked", async (request, response) => {
 });
 
 /**
- * Get application data by private key.
+ * Get application data from network.
  */
-router.post("/network/data", async (request, response) => {
+router.get("/network/:applicationAccountAddress", async (request, response) => {
   try {
-    /** @type {{applicationAccountPrivateKey:string}} */
+    /** @type {{applicationAccountAddress:string}} */
     const data = request.params;
-    const application = await applicationService.getApplicationNetworkData(data.applicationAccountPrivateKey);
+    const application = await applicationService.getApplicationFromNetwork(data.applicationAccountAddress);
 
     response.send(application);
   } catch (e) {
@@ -125,7 +147,7 @@ router.post("/network/data", async (request, response) => {
 });
 
 /**
- * Get application by address.
+ * Get application that is already on dashboard by address.
  */
 router.get("/:applicationAccountAddress", async (request, response) => {
   try {

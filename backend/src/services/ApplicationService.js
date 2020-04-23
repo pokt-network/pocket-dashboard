@@ -171,26 +171,49 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Get application network data.
+   * Import application account.
    *
    * @param {string} applicationAccountPrivateKey Application account private key.
    *
-   * @returns {Promise<Application>} Application network data of false if account is not valid or not at network.
-   * @throws Error If import account fails or Application does exist.
+   * @returns {Promise<ApplicationPublicPocketAccount>} a pocket account.
+   * @throws Error If account is invalid.
    * @async
    */
-  async getApplicationNetworkData(applicationAccountPrivateKey) {
-    const passPhrase = "ApplicationNetworkData";
+  async importApplicationNetworkAccount(applicationAccountPrivateKey) {
+    const passPhrase = "ApplicationNetworkAccount";
     const applicationAccount = await this.pocketService.importAccount(applicationAccountPrivateKey, passPhrase);
 
     if (applicationAccount instanceof Error) {
       throw TypeError("Application account is invalid");
     }
 
+    return ApplicationPublicPocketAccount.createApplicationPublicPocketAccount(applicationAccount);
+  }
+
+  /**
+   * Get application data from network.
+   *
+   * @param {string} applicationAddress Application address.
+   *
+   * @returns {Promise<Application>} Application data.
+   * @throws Error If application already exists on dashboard or application does exist on network.
+   * @async
+   */
+  async getApplicationFromNetwork(applicationAddress) {
+    const filter = {
+      "publicPocketAccount.address": applicationAddress
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (applicationDB) {
+      throw Error("Application already exists in dashboard");
+    }
+
     try {
-      return this.pocketService.getApplication(applicationAccount.addressHex);
+      return this.pocketService.getApplication(applicationAddress);
     } catch (e) {
-      throw TypeError("Application does not exist");
+      throw TypeError("Application does not exist on network");
     }
   }
 
@@ -416,34 +439,49 @@ export default class ApplicationService extends BaseService {
   /**
    * Create an application on network.
    *
-   * @param {object} applicationData Application to create.
-   * @param {string} applicationData.name Name.
-   * @param {string} applicationData.owner Owner.
-   * @param {string} applicationData.url URL.
-   * @param {string} applicationData.contactEmail E-mail.
-   * @param {string} applicationData.user User.
-   * @param {string} [applicationData.description] Description.
-   * @param {string} [applicationData.icon] Icon.
+   * @param {object} data Application data.
+   * @param {object} data.application Application to create.
+   * @param {string} data.application.name Name.
+   * @param {string} data.application.owner Owner.
+   * @param {string} data.application.url URL.
+   * @param {string} data.application.contactEmail E-mail.
+   * @param {string} data.application.user User.
+   * @param {string} [data.application.description] Description.
+   * @param {string} [data.application.icon] Icon.
+   * @param {boolean} data.imported If is imported or not.
+   * @param {string} [data.privateKey] Application private key if is imported.
    *
    * @returns {Promise<{privateApplicationData: ApplicationPrivatePocketAccount, networkData:Application}| boolean>} An application information or false if not.
    * @throws {Error} If validation fails or already exists.
    * @async
    */
-  async createApplication(applicationData) {
-    if (PocketApplication.validate(applicationData)) {
-      if (!await this.userService.userExists(applicationData.user)) {
+  async createApplication(data) {
+    if (PocketApplication.validate(data.application)) {
+      if (!await this.userService.userExists(data.application.user)) {
         throw new Error("User does not exist");
       }
 
-      const application = PocketApplication.createPocketApplication(applicationData);
+      const application = PocketApplication.createPocketApplication(data.application);
 
       if (await this.applicationExists(application)) {
         throw new Error("Application already exists");
       }
 
-      // Generate Pocket account for application.
       const passPhrase = await this.__generatePassphrase(application);
-      const pocketAccount = await this.__createPocketAccount(passPhrase);
+      let pocketAccount;
+
+      if (data.imported) {
+        const account = await this.pocketService.importAccount(data.privateKey, passPhrase);
+
+        if (account instanceof Error) {
+          throw Error("Imported account is invalid");
+        }
+
+        pocketAccount = account;
+      } else {
+        // Generate Pocket account for application.
+        pocketAccount = await this.__createPocketAccount(passPhrase);
+      }
 
       application.publicPocketAccount = ApplicationPublicPocketAccount.createApplicationPublicPocketAccount(pocketAccount);
 
