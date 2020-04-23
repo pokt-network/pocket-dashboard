@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, {Component} from "react";
 import {Dropdown} from "react-bootstrap";
 import PropTypes from "prop-types";
@@ -5,29 +6,29 @@ import UserService from "../../../services/PocketUserService";
 import "./LoginStatus.scss";
 import {Redirect} from "react-router-dom";
 import {ROUTE_PATHS} from "../../../../_routes";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
+import {STYLING} from "../../../../constants";
 
 // eslint-disable-next-line react/display-name
 const LabelToggle = React.forwardRef(({children, onClick}, ref) => (
-  <div id="login-status">
-    <span className="user-info">
-      <p id="info-msg">You are logged in as</p>
-      <p id="username">{children}</p>
-    </span>
-    <span id="down-arrow">
-      {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-      <a
-        style={{color: "black"}}
-        href=""
-        ref={ref}
-        onClick={e => {
-          e.preventDefault();
-          onClick(e);
-        }}
-      >
-        &#x25bc;
-      </a>
-    </span>
-  </div>
+  <a
+    id="login-status"
+    style={{color: "black"}}
+    href=""
+    ref={ref}
+    onClick={(e) => {
+      e.preventDefault();
+      onClick(e);
+    }}
+  >
+    <p id="username">{children}</p>
+    <FontAwesomeIcon
+      className="icon"
+      icon={faAngleDown}
+      color={STYLING.primaryColor}
+    />
+  </a>
 ));
 
 LabelToggle.propTypes = {

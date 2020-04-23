@@ -1,24 +1,27 @@
+@import "../../../../scss/Core.scss";
+
 #login-status {
-  display: flex;
+  border: 2px solid $primary-color;
+  padding: 8px 30px 8px 30px;
+  border-radius: $default-border-radius;
+  display: inline;
 
-  .user-info {
-    display: flex;
-    flex-direction: column;
-
-    #info-msg {
-      margin-bottom: 0;
-      font-size: 0.8em;
-    }
-
-    #username {
-      font-weight: bold;
-      margin-bottom: 0;
-      align-self: center;
-    }
+  * {
+    display: inline;
   }
 
-  #down-arrow {
-    margin-left: 5px;
-    align-self: center;
+  #username {
+    margin-bottom: 0;
+    margin-right: 18px;
+    font-weight: bold;
   }
+
+  .icon {
+    position: absolute;
+    margin-top: 5px;
+  }
+}
+
+#login-status:hover {
+  text-decoration: none;
 }

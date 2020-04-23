@@ -16,7 +16,7 @@ $table: (
   )
 );
 
-// colors: 
+// color variables: 
 $primary-color: #37aee1;
 
 // Font variables
@@ -31,6 +31,9 @@ $paragraph: (
   type: sans-serif,
   weight:400
 );
+
+// utils variables
+$default-border-radius: 25px;
 
 @mixin font-style($type) {
   font-family: map_get($type, font), map_get($type, type);
@@ -60,7 +63,7 @@ html, body {
 
 button, .btn {
   font-weight: 400;
-  border-radius: 25px;
+  border-radius: $default-border-radius;
   font-family: "Lato";
 }
 
@@ -163,12 +166,6 @@ a.link {
   overflow-x: hidden;
   overflow-x: auto;
   max-height: 60vh;
-}
-
-.general-info {
-  a {
-   // padding-top: 10px;
-  }
 }
 
 .sidebar-menu {

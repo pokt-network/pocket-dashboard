@@ -10,7 +10,7 @@ export default class HelpLink extends Component {
     const {link, size} = this.props;
 
     return (
-      <div className={"help"}>
+      <div style={{marginTop: "4px"}}>
         <Link to={link}>
           <FontAwesomeIcon
             size={size}
