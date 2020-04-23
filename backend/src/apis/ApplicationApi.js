@@ -150,10 +150,14 @@ router.get("", async (request, response) => {
   try {
 
     const limit = parseInt(getQueryOption(request, "limit"));
+
     const offsetData = getOptionalQueryOption(request, "offset");
     const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    const applications = await applicationService.getAllApplications(limit, offset);
+    const statusData = getOptionalQueryOption(request, "status");
+    const stakingStatus = statusData !== "" ? parseInt(statusData) : undefined;
+
+    const applications = await applicationService.getAllApplications(limit, offset, stakingStatus);
 
     response.send(applications);
   } catch (e) {
@@ -172,13 +176,17 @@ router.post("/user", async (request, response) => {
   try {
 
     const limit = parseInt(getQueryOption(request, "limit"));
+
     const offsetData = getOptionalQueryOption(request, "offset");
     const offset = offsetData !== "" ? parseInt(offsetData) : 0;
+
+    const statusData = getOptionalQueryOption(request, "status");
+    const stakingStatus = statusData !== "" ? parseInt(statusData) : undefined;
 
     /** @type {{user: string}} */
     const data = request.body;
 
-    const applications = await applicationService.getUserApplications(data.user, limit, offset);
+    const applications = await applicationService.getUserApplications(data.user, limit, offset, stakingStatus);
 
     response.send(applications);
   } catch (e) {

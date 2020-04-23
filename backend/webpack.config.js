@@ -9,14 +9,10 @@ module.exports = {
     server: "./src/App.js",
   },
   output: {
+    globalObject: "this",
     path: path.join(__dirname, "dist"),
     publicPath: "/",
     filename: "[name].js"
-  },
-  optimization: {
-    splitChunks: {
-      chunks: "all"
-    }
   },
   target: "web",
   devtool: "inline-source-map",
