@@ -154,10 +154,10 @@ describe("ApplicationService", () => {
   });
 
   if (APPLICATION_PRIVATE_KEY_ON_NETWORK) {
-    describe("getApplicationNetworkData", () => {
+    describe("importApplication", () => {
       it("Expect an application network data", async () => {
 
-        const applicationNetworkData = await applicationService.getApplicationNetworkData(APPLICATION_PRIVATE_KEY_ON_NETWORK);
+        const applicationNetworkData = await applicationService.importApplication(APPLICATION_PRIVATE_KEY_ON_NETWORK);
 
         // eslint-disable-next-line no-undef
         should.exist(applicationNetworkData);
@@ -167,11 +167,11 @@ describe("ApplicationService", () => {
     });
   }
 
-  describe("getApplicationNetworkData with invalid address", () => {
+  describe("importApplication with invalid address", () => {
     it("Expect an error", async () => {
 
       try {
-        await applicationService.getApplicationNetworkData("NOT_VALID_ADDRESS");
+        await applicationService.importApplication("NOT_VALID_ADDRESS");
         assert.fail();
       } catch (e) {
         expect(e.message).to.be.equal("Application account is invalid");
