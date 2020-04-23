@@ -2,6 +2,8 @@ import numeral from "numeral";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
+export const formatNumbers = (num) => numeral(num).format("0,0");
+
 export const copyToClickboard = (value) => {
   const el = document.createElement("textarea");
 

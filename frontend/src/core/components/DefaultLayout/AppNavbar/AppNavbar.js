@@ -13,9 +13,13 @@ class AppNavbar extends Component {
     return (
       <Row>
         <Col id={"app-navbar"}>
-          <NotificationIcon />
-          <HelpLink size={"2x"} link={helpLink} />
-          <LoginStatus />
+          <img src={"/logo.png"} alt="logo" id={"main-logo"} />
+
+          <span className="items">
+            <NotificationIcon />
+            <HelpLink size={"2x"} link={helpLink} />
+            <LoginStatus />
+          </span>
         </Col>
       </Row>
     );

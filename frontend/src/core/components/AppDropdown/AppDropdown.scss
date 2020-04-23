@@ -1,11 +1,20 @@
+@import "../../../scss/Core.scss";
+
 .app-dropdown {
   flex-grow: 2;
 
   button {
     width: 100%;
+    border-image-slice: 1;
     display: flex;
     align-items: center;
     justify-content: space-between;
+  }
+
+  button:hover,
+  button {
+    border-color: rgb(32, 141, 188);
+    background-color: transparent;
   }
 
   .dropdown-menu.show {

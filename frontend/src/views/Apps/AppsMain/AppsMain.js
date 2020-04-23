@@ -12,6 +12,7 @@ import {APPLICATIONS_LIMIT, BONDSTATUS} from "../../../constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../components/Main/Main";
+import {formatNumbers} from "../../../_helpers";
 
 class AppsMain extends Main {
   constructor(props, context) {
@@ -33,7 +34,8 @@ class AppsMain extends Main {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
+      userEmail,
+      APPLICATIONS_LIMIT
     );
 
     const {
@@ -79,9 +81,12 @@ class AppsMain extends Main {
     ];
 
     const cards = [
-      {title: totalApplications, subtitle: "Total of apps"},
-      {title: averageStaked, subtitle: "Average staked"},
-      {title: averageRelays, subtitle: "Average relays per application"},
+      {title: formatNumbers(totalApplications), subtitle: "Total of apps"},
+      {title: formatNumbers(averageStaked), subtitle: "Average staked"},
+      {
+        title: formatNumbers(averageRelays),
+        subtitle: "Average relays per application",
+      },
     ];
 
     if (loading) {
@@ -92,7 +97,7 @@ class AppsMain extends Main {
       <div>
         <Row>
           <Col sm="8" md="8" lg="8">
-            <h2 className="ml-1">General Apps Information</h2>
+            <h1 className="ml-1">General Apps Information</h1>
           </Col>
           <Col
             sm="4"
@@ -105,11 +110,11 @@ class AppsMain extends Main {
                 Create New App
               </Button>
             </Link>
-            {/* <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}> */}
-            <Button variant="primary" className="pl-4 pr-4">
-              Import App
-            </Button>
-            {/* </Link> */}
+            <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
+              <Button variant="primary" className="pl-4 pr-4">
+                Import App
+              </Button>
+            </Link>
           </Col>
         </Row>
         <Row className="stats mb-4">
