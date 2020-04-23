@@ -223,16 +223,23 @@ export default class ApplicationService extends BaseService {
    *
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
+   * @param {number} [stakingStatus] Staking status filter.
    *
    * @returns {ExtendedPocketApplication[]} List of applications.
    * @async
    */
-  async getAllApplications(limit, offset = 0) {
+  async getAllApplications(limit, offset = 0, stakingStatus = undefined) {
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, {}, limit, offset))
       .map(PocketApplication.createPocketApplication);
 
     if (applications) {
-      return this.__getExtendedPocketApplications(applications);
+      const extendedApplications = await this.__getExtendedPocketApplications(applications);
+
+      if (stakingStatus) {
+        return extendedApplications.filter((application) => application.networkData.status === StakingStatus.getStatus(stakingStatus));
+      }
+
+      return extendedApplications;
     }
 
     return [];
@@ -244,17 +251,27 @@ export default class ApplicationService extends BaseService {
    * @param {string} userEmail Email of user.
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
+   * @param {number} [stakingStatus] Staking status filter.
    *
    * @returns {Promise<ExtendedPocketApplication[]>} List of applications.
    * @async
    */
-  async getUserApplications(userEmail, limit, offset = 0) {
+  async getUserApplications(userEmail, limit, offset = 0, stakingStatus = undefined) {
     const filter = {user: userEmail};
-    /** @type {PocketApplication[]} */
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
       .map(PocketApplication.createPocketApplication);
 
-    return this.__getExtendedPocketApplications(applications);
+    if (applications) {
+      const extendedApplications = await this.__getExtendedPocketApplications(applications);
+
+      if (stakingStatus) {
+        return extendedApplications.filter((application) => application.networkData.status === StakingStatus.getStatus(stakingStatus));
+      }
+
+      return extendedApplications;
+    }
+
+    return [];
   }
 
   /**
