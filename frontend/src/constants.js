@@ -22,3 +22,7 @@ export const NETWORK_TABLE_COLUMNS = [
 ];
 
 export const MAX_RELAYS = 20000;
+
+export const STYLING = {
+  primaryColor: "#37aee1",
+};

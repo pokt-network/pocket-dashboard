@@ -101,17 +101,15 @@ class AppsMain extends Main {
             className="d-flex justify-content-end general-info"
           >
             <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
-              <Button
-                variant="dark"
-                size={"md"}
-                className="ml-4 pl-4 pr-4 mr-3"
-              >
-                Create new app
+              <Button variant="dark" className="ml-4 pl-4 pr-4 mr-3">
+                Create New App
               </Button>
             </Link>
-            <Button variant="secondary" size={"md"} className="pl-4 pr-4">
-              Import app
+            {/* <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}> */}
+            <Button variant="primary" className="pl-4 pr-4">
+              Import App
             </Button>
+            {/* </Link> */}
           </Col>
         </Row>
         <Row className="stats mb-4">

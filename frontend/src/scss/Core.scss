@@ -17,7 +17,7 @@ $table: (
 );
 
 // colors: 
-$primary-color: #54B9E6;
+$primary-color: #37aee1;
 
 // Font variables
 $title: (
@@ -60,6 +60,12 @@ html, body {
 
 button, .btn {
   font-weight: 400;
+  border-radius: 25px;
+  font-family: "Lato";
+}
+
+.btn-primary {
+  background-color: $primary-color;
 }
 
 .btn-dark {
@@ -68,12 +74,6 @@ button, .btn {
 
 #sidebar, #content {
   min-height: 100vh;
-}
-
-.help {
-  * {
-    color: theme-color("dark");
-  }
 }
 
 #sidebar {
@@ -113,10 +113,6 @@ button, .btn {
 a.link {
   color: #343A41;
   text-decoration: underline;
-}
-
-button, .btn {
-  font-weight: bold;
 }
 
 .app-table {
@@ -171,7 +167,7 @@ button, .btn {
 
 .general-info {
   a {
-    padding-top: 10px;
+   // padding-top: 10px;
   }
 }
 
