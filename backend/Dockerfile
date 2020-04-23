@@ -1,7 +1,5 @@
 FROM node:10
 
-ARG PORT
-
 ENV APP_HOME /app
 
 RUN mkdir $APP_HOME

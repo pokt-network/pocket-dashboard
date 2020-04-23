@@ -17,7 +17,6 @@
     "build:prod": "webpack --mode production --config webpack.config.js",
     "start": "pm2-dev dist/server.js",
     "start:prod": "pm2-runtime dist/server.js",
-    "start:docker": "webpack --mode production --config webpack.config.js && pm2-runtime dist/server.js",
     "test": "mocha test",
     "test:services": "mocha test/services",
     "test:providers": "mocha test/providers",
