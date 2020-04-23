@@ -199,7 +199,7 @@ export default class ApplicationService extends BaseService {
    * @throws Error If application already exists on dashboard or application does exist on network.
    * @async
    */
-  async getApplicationFromNetwork(applicationAddress) {
+  async importApplication(applicationAddress) {
     const filter = {
       "publicPocketAccount.address": applicationAddress
     };

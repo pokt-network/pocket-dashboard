@@ -125,13 +125,13 @@ router.get("/summary/staked", async (request, response) => {
 });
 
 /**
- * Get application data from network.
+ * Import application data from network.
  */
 router.get("/network/:applicationAccountAddress", async (request, response) => {
   try {
     /** @type {{applicationAccountAddress:string}} */
     const data = request.params;
-    const application = await applicationService.getApplicationFromNetwork(data.applicationAccountAddress);
+    const application = await applicationService.importApplication(data.applicationAccountAddress);
 
     response.send(application);
   } catch (e) {
