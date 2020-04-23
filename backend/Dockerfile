@@ -13,7 +13,3 @@ COPY yarn.lock $APP_HOME
 RUN yarn install
 
 COPY . $APP_HOME
-
-EXPOSE $PORT
-
-CMD yarn start:docker
