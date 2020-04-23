@@ -235,7 +235,7 @@ export default class ApplicationService extends BaseService {
     if (applications) {
       const extendedApplications = await this.__getExtendedPocketApplications(applications);
 
-      if (stakingStatus) {
+      if (stakingStatus !== undefined) {
         return extendedApplications.filter((application) => application.networkData.status === StakingStatus.getStatus(stakingStatus));
       }
 
@@ -264,7 +264,7 @@ export default class ApplicationService extends BaseService {
     if (applications) {
       const extendedApplications = await this.__getExtendedPocketApplications(applications);
 
-      if (stakingStatus) {
+      if (stakingStatus !== undefined) {
         return extendedApplications.filter((application) => application.networkData.status === StakingStatus.getStatus(stakingStatus));
       }
 
