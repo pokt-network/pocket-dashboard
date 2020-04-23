@@ -118,7 +118,7 @@ class AppsMain extends Main {
           <InfoCards cards={cards}></InfoCards>
         </Row>
         <Row className="mb-4">
-          <Col sm="8" md="8" lg="8">
+          <Col sm="6" md="6" lg="6">
             <h2 className="mb-3">My apps</h2>
             <Row>
               <Col sm="8" md="8" lg="8">
@@ -175,7 +175,7 @@ class AppsMain extends Main {
               })}
             </div>
           </Col>
-          <Col sm="4" md="4" lg="4">
+          <Col sm="6" md="6" lg="6">
             <h2>Registered apps</h2>
             <div className="order-by">
               <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>

@@ -1,5 +1,5 @@
 @import "node_modules/bootstrap/scss/bootstrap";
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;1,300&family=Open+Sans:wght@400;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300,400;1,300&family=Open+Sans:wght@400;800&display=swap');
 
 // Table variables
 $table: (
@@ -16,6 +16,8 @@ $table: (
   )
 );
 
+// colors: 
+$primary-color: #54B9E6;
 
 // Font variables
 $title: (
@@ -42,6 +44,10 @@ $paragraph: (
   }
 }
 
+h1, h2 {
+  color: $primary-color;
+}
+
 // Paragraphs, Labels, Links
 label, p, a {
   @include font-style($paragraph);
@@ -50,6 +56,14 @@ label, p, a {
 
 html, body {
   height: 100%;
+}
+
+button, .btn {
+  font-weight: 400;
+}
+
+.btn-dark {
+  background-color: #474747;
 }
 
 #sidebar, #content {
@@ -150,19 +164,12 @@ button, .btn {
   padding-top: 10px;
   padding-bottom: 10px;
   border-radius: 5px;
-  background-color: #e6e6e6;
   overflow-x: hidden;
   overflow-x: auto;
   max-height: 60vh;
 }
 
 .general-info {
-
-  button,
-  a {
-    font-weight: bold;
-  }
-
   a {
     padding-top: 10px;
   }

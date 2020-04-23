@@ -13,32 +13,40 @@
   flex-grow: 1;
 
   color: #ffffff;
-  background-color: theme-color("dark");
+  background-color: #07202E;
 
   p,
   h1 {
     margin-bottom: 0;
   }
 
-  h1 {
-    font-size: 1.5em;
-  }
-
   .p-card-body {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 10px 20px;
+    padding: 15px 20px;
 
     .detail {
       display: flex;
       flex-direction: row;
 
+      .info {
+        p:first-of-type {
+          font-size: 1.6em;
+          font-weight: 600;
+        }
+
+        p:last-of-type {
+          color: #848c94;
+          margin-top: -5px;
+        }
+      }
+
       img {
         height: 50px;
         width: 50px;
         border-radius: 50%;
-        margin-right: 20px;
+        margin-right: 15px;
       }
     }
 
@@ -46,6 +54,7 @@
       align-self: center;
 
       p {
+        color: $primary-color;
         font-weight: bold;
         font-size: 1.2em;
       }
