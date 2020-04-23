@@ -52,10 +52,7 @@ function getOptionalQueryOption(request, option) {
  */
 router.post("", async (request, response) => {
   try {
-    /** @type {
-     * {application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}
-     *  imported: boolean, privateKey:string}
-     * } */
+    /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}, privateKey:string}} */
     const data = request.body;
     const application = await applicationService.createApplication(data);
 

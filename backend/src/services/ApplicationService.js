@@ -448,7 +448,6 @@ export default class ApplicationService extends BaseService {
    * @param {string} data.application.user User.
    * @param {string} [data.application.description] Description.
    * @param {string} [data.application.icon] Icon.
-   * @param {boolean} data.imported If is imported or not.
    * @param {string} [data.privateKey] Application private key if is imported.
    *
    * @returns {Promise<{privateApplicationData: ApplicationPrivatePocketAccount, networkData:Application}| boolean>} An application information or false if not.
@@ -470,7 +469,7 @@ export default class ApplicationService extends BaseService {
       const passPhrase = await this.__generatePassphrase(application);
       let pocketAccount;
 
-      if (data.imported) {
+      if (data.privateKey) {
         const account = await this.pocketService.importAccount(data.privateKey, passPhrase);
 
         if (account instanceof Error) {
