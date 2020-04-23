@@ -27,9 +27,8 @@ class AppDropdown extends Component {
   }
 
   componentDidMount() {
-    const {options} = this.props;
-
-    const selected = options[0].text;
+    const {options, defaultText} = this.props;
+    const selected = defaultText ? defaultText : options[0].text;
 
     this.setState({selected});
   }
@@ -57,6 +56,7 @@ class AppDropdown extends Component {
 }
 
 AppDropdown.propTypes = {
+  defaultText: PropTypes.string,
   options: PropTypes.arrayOf(
     PropTypes.shape({
       dataField: PropTypes.string,

@@ -63,7 +63,7 @@ class AppDetail extends Component {
   }
 
   async deleteApplication() {
-    const {address} = this.state.networkData;
+    const {address} = this.state.pocketApplication.publicPocketAccount;
 
     const success = await ApplicationService.deleteAppFromDashboard(address);
 
@@ -73,7 +73,7 @@ class AppDetail extends Component {
   }
 
   async unstakeApplication() {
-    const {address} = this.state.networkData;
+    const {address} = this.state.pocketApplication.publicPocketAccount;
     const {freeTier} = this.state.pocketApplication;
 
     if (freeTier) {
@@ -97,14 +97,18 @@ class AppDetail extends Component {
       description,
       icon,
       freeTier,
+      publicPocketAccount,
     } = this.state.pocketApplication;
     const {
       max_relays,
       staked_tokens,
       status,
       public_key,
-      address,
     } = this.state.networkData;
+
+    const address = publicPocketAccount
+      ? publicPocketAccount.address
+      : undefined;
 
     const {chains, aat, loading, deleteModal, deleted} = this.state;
 

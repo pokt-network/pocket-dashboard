@@ -4,6 +4,12 @@ export const BONDSTATUS = {
   2: "Unbonded",
 };
 
+export const BOND_STATUS_STR = {
+  bonded: 0,
+  unbonding: 1,
+  unbonded: 2,
+};
+
 export const APPLICATIONS_LIMIT = 10;
 
 export const NETWORK_TABLE_COLUMNS = [
