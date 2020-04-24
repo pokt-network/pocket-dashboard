@@ -1,10 +1,27 @@
-export const BONDSTATUS = {
+export const BOND_STATUS = {
   0: "Bonded",
   1: "Unbonding",
   2: "Unbonded",
 };
 
 export const APPLICATIONS_LIMIT = 10;
+
+export const NETWORK_TABLE_COLUMNS = [
+  {
+    dataField: "name",
+    text: "Network",
+  },
+  {
+    dataField: "netID",
+    text: "Network Identifier (NetID)",
+  },
+  {
+    dataField: "hash",
+    text: "Hash",
+  },
+];
+
+export const MAX_RELAYS = 20000;
 
 export const PAYMENT_REGION_OR_COUNTRY = [
   {name: "Afghanistan", code: "AF"},

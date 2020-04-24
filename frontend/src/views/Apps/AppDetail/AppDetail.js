@@ -1,13 +1,11 @@
 import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
-import {Alert, Button, Col, Modal, Row, Badge} from "react-bootstrap";
+import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
-import {NETWORK_TABLE_COLUMNS} from "../../../constants";
+import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
 import "./AppDetail.scss";
-import ApplicationService, {
-  PocketApplicationService,
-} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {PocketApplicationService,} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -189,7 +187,7 @@ class AppDetail extends Component {
                 title={card.title}
                 subtitle={card.subtitle}
               >
-                <span></span>
+                <span/>
               </InfoCard>
             </Col>
           ))}
