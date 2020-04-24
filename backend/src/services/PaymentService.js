@@ -1,5 +1,5 @@
 import BaseService from "./BaseService";
-import {get_default_payment_provider} from "../providers/payment";
+import {get_default_payment_provider} from "../providers/payment/Index";
 import {CardPaymentMethod, Payment, PaymentCurrencies, PaymentResult} from "../providers/payment/BasePaymentProvider";
 import {BillingDetails, PaymentHistory, PaymentMethod} from "../models/Payment";
 

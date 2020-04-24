@@ -5,7 +5,7 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
 import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
 import "./AppDetail.scss";
-import ApplicationService, {PocketApplicationService,} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -129,7 +129,7 @@ class AppDetail extends Component {
     }
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     if (deleted) {
@@ -148,7 +148,7 @@ class AppDetail extends Component {
           <Col>
             <div className="head">
               {/* eslint-disable-next-line jsx-a11y/alt-text */}
-              <img src={icon} />
+              <img src={icon}/>
               <div className="info">
                 <h1 className="d-flex align-items-baseline">
                   {name}
@@ -167,7 +167,7 @@ class AppDetail extends Component {
         <Row className="mt-2 stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle} />
+              <InfoCard title={card.title} subtitle={card.subtitle}/>
             </Col>
           ))}
           <Col>
@@ -208,7 +208,7 @@ class AppDetail extends Component {
               <div id="aat-info" className="mb-2">
                 <h3>AAT</h3>
                 <span>
-                  <HelpLink size="2x" />
+                  <HelpLink size="2x"/>
                   <p>How to create an AAT?</p>
                 </span>
               </div>
