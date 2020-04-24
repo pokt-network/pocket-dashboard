@@ -52,9 +52,14 @@ function getOptionalQueryOption(request, option) {
  */
 router.post("", async (request, response) => {
   try {
-    /** @type {{name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string }} */
-    const data = request.body;
-    const application = await applicationService.createApplication(data);
+    /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}, privateKey?:string}} */
+    let data = request.body;
+
+    if (!("privateKey" in data)) {
+      data["privateKey"] = "";
+    }
+
+    const application = await applicationService.createApplication(data.application, data.privateKey);
 
     response.send(application);
   } catch (e) {
@@ -106,13 +111,13 @@ router.get("/summary/staked", async (request, response) => {
 });
 
 /**
- * Get application data by private key.
+ * Import application from network.
  */
-router.post("/network/data", async (request, response) => {
+router.get("import/:applicationAccountAddress", async (request, response) => {
   try {
-    /** @type {{applicationAccountPrivateKey:string}} */
+    /** @type {{applicationAccountAddress:string}} */
     const data = request.params;
-    const application = await applicationService.getApplicationNetworkData(data.applicationAccountPrivateKey);
+    const application = await applicationService.importApplication(data.applicationAccountAddress);
 
     response.send(application);
   } catch (e) {
@@ -125,7 +130,7 @@ router.post("/network/data", async (request, response) => {
 });
 
 /**
- * Get application by address.
+ * Get application that is already on dashboard by address.
  */
 router.get("/:applicationAccountAddress", async (request, response) => {
   try {
@@ -150,10 +155,14 @@ router.get("", async (request, response) => {
   try {
 
     const limit = parseInt(getQueryOption(request, "limit"));
+
     const offsetData = getOptionalQueryOption(request, "offset");
     const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    const applications = await applicationService.getAllApplications(limit, offset);
+    const statusData = getOptionalQueryOption(request, "status");
+    const stakingStatus = statusData !== "" ? parseInt(statusData) : undefined;
+
+    const applications = await applicationService.getAllApplications(limit, offset, stakingStatus);
 
     response.send(applications);
   } catch (e) {
@@ -172,13 +181,17 @@ router.post("/user", async (request, response) => {
   try {
 
     const limit = parseInt(getQueryOption(request, "limit"));
+
     const offsetData = getOptionalQueryOption(request, "offset");
     const offset = offsetData !== "" ? parseInt(offsetData) : 0;
+
+    const statusData = getOptionalQueryOption(request, "status");
+    const stakingStatus = statusData !== "" ? parseInt(statusData) : undefined;
 
     /** @type {{user: string}} */
     const data = request.body;
 
-    const applications = await applicationService.getUserApplications(data.user, limit, offset);
+    const applications = await applicationService.getUserApplications(data.user, limit, offset, stakingStatus);
 
     response.send(applications);
   } catch (e) {

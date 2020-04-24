@@ -227,9 +227,5 @@ build/
 .env
 .env.*
 
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
 
 # End of https://www.gitignore.io/api/node,intellij

@@ -1,61 +1,7 @@
-import {Account, Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
-import PocketService from "../services/PocketService";
+import {Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
+import {PublicPocketAccount} from "./Account";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
-import {Chains} from "../providers/NetworkChains";
-
-
-export class ApplicationPublicPocketAccount {
-
-  /**
-   * @param {string} address Address in Hex.
-   * @param {string} publicKey Public key in Hex.
-   */
-  constructor(address, publicKey) {
-    Object.assign(this, {address, publicKey});
-  }
-
-  /**
-   * Convenient Factory method to create a application public pocket account.
-   *
-   * @param {Account} account Pocket account.
-   *
-   * @returns {ApplicationPublicPocketAccount} A new application public pocket account.
-   * @static
-   */
-  static createApplicationPublicPocketAccount(account) {
-    const publicKey = account.publicKey.toString("hex");
-
-    return new ApplicationPublicPocketAccount(account.addressHex, publicKey);
-  }
-}
-
-export class ApplicationPrivatePocketAccount {
-
-  /**
-   * @param {string} address Address in Hex.
-   * @param {string} privateKey Unencrypted private key in Hex.
-   */
-  constructor(address, privateKey) {
-    Object.assign(this, {address, privateKey});
-  }
-
-  /**
-   * Convenient Factory method to create a application private pocket account.
-   *
-   * @param {PocketService} pocketService Pocket service used to get account.
-   * @param {Account} account Pocket account.
-   * @param {string} passPhrase Passphrase used to generate account.
-   *
-   * @returns {Promise<ApplicationPrivatePocketAccount>} A new application private pocket account.
-   * @static
-   * @async
-   */
-  static async createApplicationPrivatePocketAccount(pocketService, account, passPhrase) {
-    const privateKey = await pocketService.exportRawAccount(account.addressHex, passPhrase);
-
-    return Promise.resolve(new ApplicationPrivatePocketAccount(account.addressHex, privateKey));
-  }
-}
+import {Configurations} from "../_configuration";
 
 export class PocketApplication {
 
@@ -67,14 +13,15 @@ export class PocketApplication {
    * @param {string} user User that belong the application.
    * @param {string} [description] Description.
    * @param {string} [icon] Icon.
+   * @param {boolean} [freeTier] If is on free tier or not.
    */
-  constructor(name, owner, url, contactEmail, user, description, icon) {
+  constructor(name, owner, url, contactEmail, user, description, icon, freeTier) {
     Object.assign(this, {name, owner, url, contactEmail, user, description, icon});
 
-    /** @type {ApplicationPublicPocketAccount} */
+    /** @type {PublicPocketAccount} */
     this.publicPocketAccount = null;
 
-    this.freeTier = false;
+    this.freeTier = freeTier || false;
   }
 
   /**
@@ -129,14 +76,15 @@ export class PocketApplication {
    * @param {string} applicationData.user User.
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
-   * @param {ApplicationPublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
+   * @param {boolean} [applicationData.freeTier] Free tier status.
+   * @param {PublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
    *
    * @returns {PocketApplication} A new Pocket application.
    * @static
    */
   static createPocketApplication(applicationData) {
-    const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount} = applicationData;
-    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon);
+    const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount, freeTier} = applicationData;
+    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, freeTier);
 
     pocketApplication.publicPocketAccount = publicPocketAccount;
 
@@ -170,17 +118,49 @@ export class ExtendedPocketApplication {
   /**
    * Convenient Factory method to create network application.
    *
-   * @param {ApplicationPublicPocketAccount} publicPocketAccount Public pocket account.
+   * @param {PublicPocketAccount} publicPocketAccount Public pocket account.
    * @param {ApplicationParams} applicationParameters Application parameter from network.
    *
-   * @returns {Application} Application.
+   * @returns {{address:string, publicKey:string, jailed:boolean, status:StakingStatus, chains:string[], stakedTokens: number, maxRelays: bigint, unstakingCompletionTime?: string}} Application.
    * @static
    */
   static createNetworkApplication(publicPocketAccount, applicationParameters) {
     const {address, publicKey} = publicPocketAccount;
-    const chainHashes = Chains.map(chain => chain.hash);
 
-    return new Application(address, publicKey, false, StakingStatus.Unstaked, chainHashes, 0n, applicationParameters.baseRelaysPerPokt, applicationParameters.unstakingTime);
+    return {
+      address,
+      publicKey,
+      jailed: false,
+      status: StakingStatus.Unstaked,
+      chains: [],
+      stakedTokens: 0,
+      maxRelays: applicationParameters.baseRelaysPerPokt,
+      unstakingCompletionTime: applicationParameters.unstakingTime
+    };
+  }
+
+  /**
+   * Convenient Factory method to create network application as free tier.
+   *
+   * @param {PublicPocketAccount} publicPocketAccount Public pocket account.
+   * @param {ApplicationParams} applicationParameters Application parameter from network.
+   *
+   * @returns {{address:string, publicKey:string, jailed:boolean, status:StakingStatus, chains:string[], stakedTokens: number, maxRelays: bigint, unstakingCompletionTime?: string}} Application.
+   * @static
+   */
+  static createNetworkApplicationAsFreeTier(publicPocketAccount, applicationParameters) {
+    const {address, publicKey} = publicPocketAccount;
+
+    return {
+      address,
+      publicKey,
+      jailed: false,
+      status: StakingStatus.Staked,
+      chains: [],
+      stakedTokens: Configurations.pocket_network.free_tier.stake_amount,
+      maxRelays: applicationParameters.baseRelaysPerPokt,
+      unstakingCompletionTime: applicationParameters.unstakingTime
+    };
   }
 }
 

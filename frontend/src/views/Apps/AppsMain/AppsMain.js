@@ -1,57 +1,32 @@
-import React, {Component} from "react";
+import React from "react";
+import {Link} from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import "./AppsMain.scss";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
-import InfoCard from "../../../core/components/InfoCard/InfoCard";
+import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 import {APPLICATIONS_LIMIT, BONDSTATUS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import Loader from "../../../core/components/Loader";
+import Main from "../../components/Main/Main";
 
-class AppsMain extends Component {
+class AppsMain extends Main {
   constructor(props, context) {
     super(props, context);
 
-    this.handleAppSearch = this.handleAppSearch.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-
     this.state = {
+      ...this.state,
       registeredApps: [],
       userApps: [],
       filteredUserApps: [],
       totalApplications: 0,
       averageStaked: 0,
       averageRelays: 0,
-      data: {
-        searchQuery: "",
-      },
+      loading: true,
     };
-  }
-
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
-
-    data[input.name] = input.value;
-    this.setState({data});
-  }
-
-  handleAppSearch() {
-    const {userApps} = this.state;
-    const {searchQuery} = this.state.data;
-
-    let filteredUserApps = userApps;
-
-    if (searchQuery) {
-      filteredUserApps = userApps.filter((a) =>
-        a.pocketApplication.name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-      );
-    }
-
-    this.setState({filteredUserApps});
   }
 
   async componentDidMount() {
@@ -78,6 +53,7 @@ class AppsMain extends Component {
       averageRelays,
       averageStaked,
       registeredApps,
+      loading: false,
     });
   }
 
@@ -88,6 +64,7 @@ class AppsMain extends Component {
       averageStaked,
       averageRelays,
       registeredApps,
+      loading,
     } = this.state;
 
     const columns = [
@@ -101,6 +78,16 @@ class AppsMain extends Component {
       },
     ];
 
+    const cards = [
+      {title: totalApplications, subtitle: "Total of apps"},
+      {title: averageStaked, subtitle: "Average staked"},
+      {title: averageRelays, subtitle: "Average relays per application"},
+    ];
+
+    if (loading) {
+      return <Loader />;
+    }
+
     return (
       <div>
         <Row>
@@ -113,27 +100,22 @@ class AppsMain extends Component {
             lg="4"
             className="d-flex justify-content-end general-info"
           >
-            <Button href={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)} variant="dark" size={"md"} className="ml-4 pl-4 pr-4 mr-3">
-              Create new app
-            </Button>
+            <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
+              <Button
+                variant="dark"
+                size={"md"}
+                className="ml-4 pl-4 pr-4 mr-3"
+              >
+                Create new app
+              </Button>
+            </Link>
             <Button variant="secondary" size={"md"} className="pl-4 pr-4">
               Import app
             </Button>
           </Col>
         </Row>
         <Row className="stats mb-4">
-          <Col>
-            <InfoCard title={totalApplications} subtitle="Total of app" />
-          </Col>
-          <Col>
-            <InfoCard title={averageStaked} subtitle="Average staked" />
-          </Col>
-          <Col>
-            <InfoCard
-              title={averageRelays}
-              subtitle="Average relays per application"
-            />
-          </Col>
+          <InfoCards cards={cards}></InfoCards>
         </Row>
         <Row className="mb-4">
           <Col sm="8" md="8" lg="8">
@@ -167,11 +149,15 @@ class AppsMain extends Component {
                 {/* TODO: Implement sorting on apps */}
                 <AppDropdown
                   onSelect={(t) => console.log(t)}
-                  options={["All", "Newest", "Oldest"]}
+                  options={[
+                    {text: "All", dataField: "all"},
+                    {text: "Newest", dataField: "newest"},
+                    {text: "Oldest", dataField: "oldest"},
+                  ]}
                 />
               </Col>
             </Row>
-            <div className="apps-list">
+            <div className="main-list">
               {filteredUserApps.map((app, idx) => {
                 const {name, icon} = app.pocketApplication;
                 const {staked_tokens, status} = app.networkData;
@@ -196,12 +182,12 @@ class AppsMain extends Component {
               {/* TODO: Implement sorting on apps */}
               <AppDropdown
                 onSelect={(t) => console.log(t)}
-                options={["All", "Newest", "Oldest"]}
+                options={[{text: "All"}, {text: "Newest"}, {text: "Oldest"}]}
               />
             </div>
             <BootstrapTable
               classes="table app-table table-striped"
-              keyField="hash"
+              keyField="networkData.address"
               data={registeredApps}
               columns={columns}
               bordered={false}

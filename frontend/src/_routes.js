@@ -9,10 +9,19 @@ import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
 import Dashboard from "./views/Dashboard/Dashboard";
 import AppsMain from "./views/Apps/AppsMain/AppsMain";
 import AppCreated from "./views/Apps/AppCreated/AppCreated";
-import CreateAppInfo from "./views/Apps/CreateAppInfo/CreateAppInfo";
+import CreateAppForm from "./views/Apps/CreateAppForm/CreateAppForm";
 import TierSelection from "./views/Apps/TierSelection/TierSelection";
 import FreeTier from "./views/FreeTier/FreeTier";
 import ChainList from "./views/Apps/ChainList/ChainList";
+import AppDetail from "./views/Apps/AppDetail/AppDetail";
+import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
+import NodesMain from "./views/Nodes/NodesMain/NodesMain";
+import General from "./views/Profile/General/General";
+import Profile from "./views/Profile/ProfileLayout/ProfileLayout";
+import ChangePassword from "./views/Profile/ChangePassword/ChangePassword";
+import PaymentHistory from "./views/Profile/PaymentHistory/PaymentHistory";
+import NodesCheckout from "./views/Nodes/NodesCheckout/NodesCheckout";
+
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -26,11 +35,22 @@ export const ROUTE_PATHS = {
 export const DASHBOARD_PATHS = {
   home: "/",
   apps: "/apps",
+  appDetail: "/apps/detail/:address",
   createAppInfo: "/apps/new",
   tierSelection: "/apps/tiers",
+  selectRelays: "/apps/relays",
   freeTier: "/apps/free-tier",
   chooseChain: "/apps/chains",
   appCreated: "/apps/created",
+  nodes: "/nodes",
+  nodesCheckout: "/nodes/checkout",
+  profile: "/profile",
+};
+
+export const PROFILE_PATHS = {
+  general: "",
+  changePassword: "/password-change",
+  paymentHistory: "/payment-history"
 };
 
 // Helper anonymous function to render routes within the dashboard router
@@ -73,10 +93,22 @@ const authProviderRoutes = [
  */
 export const dashboardRoutes = [
   {
-    path: DASHBOARD_PATHS.home,
+    path: "/",
     exact: true,
     name: "Home - Dashboard",
     component: Dashboard,
+  },
+  {
+    path: DASHBOARD_PATHS.apps,
+    exact: true,
+    name: "Apps",
+    component: AppsMain,
+  },
+  {
+    path: DASHBOARD_PATHS.appDetail,
+    exact: true,
+    name: "App Detail",
+    component: AppDetail,
   },
   {
     path: DASHBOARD_PATHS.appCreated,
@@ -88,7 +120,19 @@ export const dashboardRoutes = [
     path: DASHBOARD_PATHS.createAppInfo,
     exact: true,
     name: "Create New App",
-    component: CreateAppInfo,
+    component: CreateAppForm,
+  },
+  {
+    path: DASHBOARD_PATHS.nodes,
+    exact: true,
+    name: "Nodes",
+    component: NodesMain,
+  },
+  {
+    path: DASHBOARD_PATHS.nodesCheckout,
+    exact: true,
+    name: "Nodes Checkout",
+    component: NodesCheckout,
   },
   {
     path: DASHBOARD_PATHS.chooseChain,
@@ -97,22 +141,49 @@ export const dashboardRoutes = [
     component: ChainList,
   },
   {
-    path: DASHBOARD_PATHS.apps,
-    exact: true,
-    name: "Apps",
-    component: AppsMain,
-  },
-  {
     path: DASHBOARD_PATHS.tierSelection,
     exact: true,
     name: "Tier Selection",
     component: TierSelection
   },
   {
+    path: DASHBOARD_PATHS.selectRelays,
+    exact: true,
+    name: "Relays Selection",
+    component: SelectRelays
+  },
+  {
     path: DASHBOARD_PATHS.freeTier,
     exact: true,
     name: "Free tier",
     component: FreeTier,
+  },
+  {
+    path: DASHBOARD_PATHS.profile,
+    exact: false,
+    name: "User General",
+    component: Profile,
+  },
+];
+
+export const profileRoutes = [
+  {
+    path: PROFILE_PATHS.general,
+    exact: true,
+    name: "General Information",
+    component: General
+  },
+  {
+    path: PROFILE_PATHS.changePassword,
+    exact: true,
+    name: "Change password",
+    component: ChangePassword
+  },
+  {
+    path: PROFILE_PATHS.paymentHistory,
+    exact: true,
+    name: "Payment history",
+    component: PaymentHistory
   },
 ];
 

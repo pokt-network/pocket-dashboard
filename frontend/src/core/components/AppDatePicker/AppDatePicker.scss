@@ -1,0 +1,19 @@
+.date-picker {
+  display: flex;
+  align-items: center;
+
+  .wrapper {
+    padding: 8px 14px;
+    background-color: #a1a1a1;
+    border-top-left-radius: 0.25em;
+    border-bottom-left-radius: 0.25em;
+  }
+
+  .form-control {
+    height: 50px;
+    font-size: 1.2em;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: 0;
+  }
+}
