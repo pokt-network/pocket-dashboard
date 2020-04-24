@@ -1,8 +1,7 @@
-import {Account, Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
+import {Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
 import {PublicPocketAccount} from "./Account";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
 import {Configurations} from "../_configuration";
-
 
 export class PocketApplication {
 
@@ -120,32 +119,48 @@ export class ExtendedPocketApplication {
    * Convenient Factory method to create network application.
    *
    * @param {PublicPocketAccount} publicPocketAccount Public pocket account.
-   * @param {string[]} chainHashes Network chain hashes.
    * @param {ApplicationParams} applicationParameters Application parameter from network.
    *
-   * @returns {Application} Application.
+   * @returns {{address:string, publicKey:string, jailed:boolean, status:StakingStatus, chains:string[], stakedTokens: number, maxRelays: bigint, unstakingCompletionTime?: string}} Application.
    * @static
    */
-  static createNetworkApplication(publicPocketAccount, chainHashes, applicationParameters) {
+  static createNetworkApplication(publicPocketAccount, applicationParameters) {
     const {address, publicKey} = publicPocketAccount;
 
-    return new Application(address, publicKey, false, StakingStatus.Unstaked, chainHashes, 0n, applicationParameters.baseRelaysPerPokt, applicationParameters.unstakingTime);
+    return {
+      address,
+      publicKey,
+      jailed: false,
+      status: StakingStatus.Unstaked,
+      chains: [],
+      stakedTokens: 0,
+      maxRelays: applicationParameters.baseRelaysPerPokt,
+      unstakingCompletionTime: applicationParameters.unstakingTime
+    };
   }
 
   /**
    * Convenient Factory method to create network application as free tier.
    *
-   * @param {Account} freeTierAccount Free tier account.
-   * @param {string[]} chainHashes Network chain hashes.
+   * @param {PublicPocketAccount} publicPocketAccount Public pocket account.
    * @param {ApplicationParams} applicationParameters Application parameter from network.
    *
-   * @returns {Application} Application.
+   * @returns {{address:string, publicKey:string, jailed:boolean, status:StakingStatus, chains:string[], stakedTokens: number, maxRelays: bigint, unstakingCompletionTime?: string}} Application.
    * @static
    */
-  static createNetworkApplicationAsFreeTier(freeTierAccount, chainHashes, applicationParameters) {
-    const publicKey = freeTierAccount.publicKey.toString("hex");
+  static createNetworkApplicationAsFreeTier(publicPocketAccount, applicationParameters) {
+    const {address, publicKey} = publicPocketAccount;
 
-    return new Application(freeTierAccount.addressHex, publicKey, false, StakingStatus.Staked, chainHashes, Configurations.pocket_network.free_tier.stake_amount, applicationParameters.baseRelaysPerPokt, applicationParameters.unstakingTime);
+    return {
+      address,
+      publicKey,
+      jailed: false,
+      status: StakingStatus.Staked,
+      chains: [],
+      stakedTokens: Configurations.pocket_network.free_tier.stake_amount,
+      maxRelays: applicationParameters.baseRelaysPerPokt,
+      unstakingCompletionTime: applicationParameters.unstakingTime
+    };
   }
 }
 

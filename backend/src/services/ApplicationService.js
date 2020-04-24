@@ -7,7 +7,6 @@ import UserService from "./UserService";
 import bcrypt from "bcrypt";
 import bigInt from "big-integer";
 import {Configurations} from "../_configuration";
-import {Chains} from "../providers/NetworkChains";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -89,20 +88,18 @@ export default class ApplicationService extends BaseService {
   async __getExtendedPocketApplication(application) {
     /** @type {Application} */
     let networkApplication;
-    const networkChainHashes = Chains.map(_ => _.hash);
     const appParameters = await this.pocketService.getApplicationParameters();
 
     if (!application.freeTier) {
       try {
         networkApplication = await this.pocketService.getApplication(application.publicPocketAccount.address);
       } catch (e) {
-        networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, networkChainHashes, appParameters);
+        // noinspection JSValidateTypes
+        networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
       }
     } else {
-      const passPhrase = "PocketFreeTierAccount";
-      const freeTierAccount = await this.pocketService.getFreeTierAccount(passPhrase);
-
-      networkApplication = ExtendedPocketApplication.createNetworkApplicationAsFreeTier(freeTierAccount, networkChainHashes, appParameters);
+      // noinspection JSValidateTypes
+      networkApplication = ExtendedPocketApplication.createNetworkApplicationAsFreeTier(application.publicPocketAccount, appParameters);
     }
 
     return ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
@@ -463,11 +460,9 @@ export default class ApplicationService extends BaseService {
       const appParameters = await this.pocketService.getApplicationParameters();
 
       const privateApplicationData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
+      const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
 
-      // TODO: Refactor this part.
-      const networkChainHashes = Chains.map(_ => _.hash);
-      const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, networkChainHashes, appParameters);
-
+      // noinspection JSValidateTypes
       return {privateApplicationData, networkData};
     }
   }
