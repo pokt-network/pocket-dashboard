@@ -121,7 +121,7 @@ export class ExtendedPocketApplication {
    * @param {PublicPocketAccount} publicPocketAccount Public pocket account.
    * @param {ApplicationParams} applicationParameters Application parameter from network.
    *
-   * @returns {{address:string, publicKey:string, jailed:boolean, status:StakingStatus, chains:string[], stakedTokens: number, maxRelays: bigint, unstakingCompletionTime?: string}} Application.
+   * @returns {{address:string, publicKey:string, jailed:boolean, status:StakingStatus, chains:string[], stakedTokens: string, maxRelays: string, unstakingCompletionTime?: string}} Application.
    * @static
    */
   static createNetworkApplication(publicPocketAccount, applicationParameters) {
@@ -133,8 +133,8 @@ export class ExtendedPocketApplication {
       jailed: false,
       status: StakingStatus.Unstaked,
       chains: [],
-      stakedTokens: 0,
-      maxRelays: applicationParameters.baseRelaysPerPokt,
+      stakedTokens: "0",
+      maxRelays: applicationParameters.baseRelaysPerPokt.toString(),
       unstakingCompletionTime: applicationParameters.unstakingTime
     };
   }
@@ -145,7 +145,7 @@ export class ExtendedPocketApplication {
    * @param {PublicPocketAccount} publicPocketAccount Public pocket account.
    * @param {ApplicationParams} applicationParameters Application parameter from network.
    *
-   * @returns {{address:string, publicKey:string, jailed:boolean, status:StakingStatus, chains:string[], stakedTokens: number, maxRelays: bigint, unstakingCompletionTime?: string}} Application.
+   * @returns {{address:string, publicKey:string, jailed:boolean, status:StakingStatus, chains:string[], stakedTokens: string, maxRelays: string, unstakingCompletionTime?: string}} Application.
    * @static
    */
   static createNetworkApplicationAsFreeTier(publicPocketAccount, applicationParameters) {
@@ -157,8 +157,8 @@ export class ExtendedPocketApplication {
       jailed: false,
       status: StakingStatus.Staked,
       chains: [],
-      stakedTokens: Configurations.pocket_network.free_tier.stake_amount,
-      maxRelays: applicationParameters.baseRelaysPerPokt,
+      stakedTokens: Configurations.pocket_network.free_tier.stake_amount.toString(),
+      maxRelays: applicationParameters.baseRelaysPerPokt.toString(),
       unstakingCompletionTime: applicationParameters.unstakingTime
     };
   }
