@@ -15,6 +15,7 @@ import Main from "../../components/Main/Main";
 import {formatNumbers} from "../../../_helpers";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSearch} from "@fortawesome/free-solid-svg-icons";
+import Segment from "../../../core/components/Segment/Segment";
 
 class AppsMain extends Main {
   constructor(props, context) {
@@ -124,79 +125,65 @@ class AppsMain extends Main {
         </Row>
         <Row className="mb-4">
           <Col sm="6" md="6" lg="6">
-            <h2 className="mb-3">My apps</h2>
-            <Row>
-              <Col sm="8" md="8" lg="8">
-                <InputGroup className="search-input mb-3">
-                  <FormControl
-                    placeholder="Search app"
-                    name="searchQuery"
-                    onChange={this.handleChange}
-                    onKeyPress={({key}) => {
-                      if (key === "Enter") {
-                        this.handleSearch();
-                      }
-                    }}
-                  />
-                  <InputGroup.Append>
-                    <Button
-                      type="submit"
-                      onClick={this.handleSearch}
-                      variant="outline-primary"
-                    >
-                      <FontAwesomeIcon icon={faSearch} />
-                    </Button>
-                  </InputGroup.Append>
-                </InputGroup>
-              </Col>
-              <Col sm="4" md="4" lg="4" className="order-by">
-                <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
-                {/* TODO: Implement sorting on apps */}
-                <AppDropdown
-                  onSelect={(t) => console.log(t)}
-                  options={[
-                    {text: "All", dataField: "all"},
-                    {text: "Newest", dataField: "newest"},
-                    {text: "Oldest", dataField: "oldest"},
-                  ]}
+            <Segment
+              label="MY APPS"
+              dropdownOnSelect={(t) => console.log(t)}
+              dropdownOptions={[
+                {text: "All", dataField: "all"},
+                {text: "Newest", dataField: "newest"},
+                {text: "Oldest", dataField: "oldest"},
+              ]}
+            >
+              <InputGroup className="search-input mb-3">
+                <FormControl
+                  placeholder="Search app"
+                  name="searchQuery"
+                  onChange={this.handleChange}
+                  onKeyPress={({key}) => {
+                    if (key === "Enter") {
+                      this.handleSearch();
+                    }
+                  }}
                 />
-              </Col>
-            </Row>
-            <div className="main-list">
-              {filteredUserApps.map((app, idx) => {
-                const {name, icon} = app.pocketApplication;
-                const {staked_tokens, status} = app.networkData;
+                <InputGroup.Append>
+                  <Button
+                    type="submit"
+                    onClick={this.handleSearch}
+                    variant="outline-primary"
+                  >
+                    <FontAwesomeIcon icon={faSearch} />
+                  </Button>
+                </InputGroup.Append>
+              </InputGroup>
+              <div className="main-list">
+                {filteredUserApps.map((app, idx) => {
+                  const {name, icon} = app.pocketApplication;
+                  const {staked_tokens, status} = app.networkData;
 
-                // TODO: Add network information
-                return (
-                  <PocketElementCard
-                    key={idx}
-                    title={name}
-                    subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                    status={BONDSTATUS[status]}
-                    iconURL={icon}
-                  />
-                );
-              })}
-            </div>
+                  // TODO: Add network information
+                  return (
+                    <PocketElementCard
+                      key={idx}
+                      title={name}
+                      subtitle={`Staked POKT: ${staked_tokens} POKT`}
+                      status={BONDSTATUS[status]}
+                      iconURL={icon}
+                    />
+                  );
+                })}
+              </div>
+            </Segment>
           </Col>
           <Col sm="6" md="6" lg="6">
-            <h2>Registered apps</h2>
-            <div className="order-by">
-              <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
-              {/* TODO: Implement sorting on apps */}
-              <AppDropdown
-                onSelect={(t) => console.log(t)}
-                options={[{text: "All"}, {text: "Newest"}, {text: "Oldest"}]}
+            <Segment label="REGISTERED APPS">
+              <BootstrapTable
+                classes="table app-table table-striped"
+                keyField="networkData.address"
+                data={registeredApps}
+                columns={columns}
+                bordered={false}
               />
-            </div>
-            <BootstrapTable
-              classes="table app-table table-striped"
-              keyField="networkData.address"
-              data={registeredApps}
-              columns={columns}
-              bordered={false}
-            />
+            </Segment>
           </Col>
         </Row>
       </div>
