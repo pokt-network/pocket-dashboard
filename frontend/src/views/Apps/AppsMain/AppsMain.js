@@ -8,10 +8,10 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {APPLICATIONS_LIMIT, BONDSTATUS} from "../../../constants";
+import {APPLICATIONS_LIMIT, BOND_STATUS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
-import Main from "../../components/Main/Main";
+import Main from "../../../core/components/Main/Main";
 
 class AppsMain extends Main {
   constructor(props, context) {
@@ -168,7 +168,7 @@ class AppsMain extends Main {
                     key={idx}
                     title={name}
                     subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                    status={BONDSTATUS[status]}
+                    status={BOND_STATUS[status]}
                     iconURL={icon}
                   />
                 );

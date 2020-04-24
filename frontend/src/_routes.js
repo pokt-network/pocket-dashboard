@@ -33,7 +33,7 @@ export const ROUTE_PATHS = {
 };
 
 export const DASHBOARD_PATHS = {
-  home: "/dashboard",
+  home: "/",
   apps: "/apps",
   appDetail: "/apps/detail/:address",
   createAppInfo: "/apps/new",
