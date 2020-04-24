@@ -414,28 +414,27 @@ export default class ApplicationService extends BaseService {
   /**
    * Create an application on network.
    *
-   * @param {object} data Application data.
-   * @param {object} data.application Application to create.
-   * @param {string} data.application.name Name.
-   * @param {string} data.application.owner Owner.
-   * @param {string} data.application.url URL.
-   * @param {string} data.application.contactEmail E-mail.
-   * @param {string} data.application.user User.
-   * @param {string} [data.application.description] Description.
-   * @param {string} [data.application.icon] Icon.
-   * @param {string} [data.privateKey] Application private key if is imported.
+   * @param {object} applicationData Application data.
+   * @param {string} applicationData.name Name.
+   * @param {string} applicationData.owner Owner.
+   * @param {string} applicationData.url URL.
+   * @param {string} applicationData.contactEmail E-mail.
+   * @param {string} applicationData.user User.
+   * @param {string} [applicationData.description] Description.
+   * @param {string} [applicationData.icon] Icon.
+   * @param {string} [privateKey] Application private key if is imported.
    *
-   * @returns {Promise<{privateApplicationData: PrivatePocketAccount, networkData:Application}| boolean>} An application information or false if not.
+   * @returns {Promise<{privateApplicationData: PrivatePocketAccount, networkData:Application}>} An application information.
    * @throws {Error} If validation fails or already exists.
    * @async
    */
-  async createApplication(data) {
-    if (PocketApplication.validate(data.application)) {
-      if (!await this.userService.userExists(data.application.user)) {
+  async createApplication(applicationData, privateKey = "") {
+    if (PocketApplication.validate(applicationData)) {
+      if (!await this.userService.userExists(applicationData.user)) {
         throw new Error("User does not exist");
       }
 
-      const application = PocketApplication.createPocketApplication(data.application);
+      const application = PocketApplication.createPocketApplication(applicationData);
 
       if (await this.applicationExists(application)) {
         throw new Error("Application already exists");
@@ -444,8 +443,8 @@ export default class ApplicationService extends BaseService {
       const passPhrase = await this.__generatePassphrase(application);
       let pocketAccount;
 
-      if (data.privateKey) {
-        const account = await this.pocketService.importAccount(data.privateKey, passPhrase);
+      if (privateKey) {
+        const account = await this.pocketService.importAccount(privateKey, passPhrase);
 
         if (account instanceof Error) {
           throw Error("Imported account is invalid");
@@ -459,19 +458,17 @@ export default class ApplicationService extends BaseService {
 
       application.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
 
-      const created = await this.__persistApplicationIfNotExists(application);
+      await this.__persistApplicationIfNotExists(application);
 
-      if (created) {
-        const appParameters = await this.pocketService.getApplicationParameters();
+      const appParameters = await this.pocketService.getApplicationParameters();
 
-        const privateApplicationData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
-        const networkChainHashes = Chains.map(_ => _.hash);
-        const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, networkChainHashes, appParameters);
+      const privateApplicationData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
 
-        return {privateApplicationData, networkData};
-      }
+      // TODO: Refactor this part.
+      const networkChainHashes = Chains.map(_ => _.hash);
+      const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, networkChainHashes, appParameters);
 
-      return false;
+      return {privateApplicationData, networkData};
     }
   }
 

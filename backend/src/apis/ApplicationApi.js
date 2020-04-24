@@ -52,9 +52,14 @@ function getOptionalQueryOption(request, option) {
  */
 router.post("", async (request, response) => {
   try {
-    /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}, privateKey:string}} */
-    const data = request.body;
-    const application = await applicationService.createApplication(data);
+    /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}, privateKey?:string}} */
+    let data = request.body;
+
+    if (!("privateKey" in data)) {
+      data["privateKey"] = "";
+    }
+
+    const application = await applicationService.createApplication(data.application, data.privateKey);
 
     response.send(application);
   } catch (e) {
