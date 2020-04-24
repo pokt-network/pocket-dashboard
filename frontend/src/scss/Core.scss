@@ -13,6 +13,7 @@ $table: (columns:(background-color: theme-color("dark"),
 $primary-color: #37aee1;
 $primary-color-darker: #1e95c8;
 $secondary-color: #474747;
+$dark-blue: #00212d;
 
 // Font variables
 $title: (font:"Open Sans",
@@ -124,6 +125,32 @@ input {
   border-radius: $default-border-radius;
 }
 
+.alert.alert-primary {
+  background-color: $dark-blue;
+  border-color: $dark-blue;
+  color: white;
+  font-weight: 300;
+  padding-left: 30px;
+  padding-bottom: 0px;
+  padding-top: 10px;
+  border-radius: $default-border-radius;
+
+  button {
+    min-width: unset;
+    padding: 0.2em 1.25rem;
+  }
+
+  button:hover {
+    color: white;
+  }
+
+  .alert-heading {
+    font-size: 1em;
+    font-weight: 300;
+    font-family: "Lato";
+  }
+}
+
 #sidebar,
 #content {
   min-height: 100vh;
@@ -186,6 +213,11 @@ a.link {
 
 }
 
+.main-list {
+  a:hover {
+    text-decoration: none;
+  }
+}
 
 // Spinner Loader
 .css-1skdk9r {
@@ -206,6 +238,25 @@ a.link {
 
   p {
     margin-right: 15px;
+  }
+}
+
+.empty-overlay {
+  background-color: #f5f5f5;
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+
+  .icon {
+    color: gray;
+  }
+
+  p {
+    font-size: 1.2em;
+    font-weight: 300;
   }
 }
 
@@ -241,7 +292,10 @@ a.link {
 .search-input.input-group {
   input {
     border-right-color: rgba(194, 194, 194, 0.5) !important;
+  }
 
+  input::placeholder {
+    font-weight: bold;
   }
 
   button {

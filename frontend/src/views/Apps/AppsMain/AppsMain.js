@@ -7,14 +7,13 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 import {APPLICATIONS_LIMIT, BONDSTATUS, STYLING} from "../../../constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../components/Main/Main";
 import {formatNumbers} from "../../../_helpers";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSearch} from "@fortawesome/free-solid-svg-icons";
+import {faSearch, faBoxOpen} from "@fortawesome/free-solid-svg-icons";
 import Segment from "../../../core/components/Segment/Segment";
 
 class AppsMain extends Main {
@@ -64,9 +63,9 @@ class AppsMain extends Main {
 
   render() {
     const {
-      filteredUserApps,
       totalApplications,
       averageStaked,
+      filteredUserApps,
       averageRelays,
       registeredApps: allRegisteredApps,
       loading,
@@ -90,6 +89,17 @@ class AppsMain extends Main {
         },
       },
     ];
+
+    const registeredApps = allRegisteredApps.map((app) => {
+      return {
+        ...app,
+        networkData: {
+          ...app.networkData,
+          status: BONDSTATUS[app.networkData.status],
+        },
+      };
+    });
+
     const cards = [
       {title: formatNumbers(totalApplications), subtitle: "Total of apps"},
       {title: formatNumbers(averageStaked), subtitle: "Average staked"},
@@ -163,21 +173,45 @@ class AppsMain extends Main {
                 </InputGroup.Append>
               </InputGroup>
               <div className="main-list">
-                {filteredUserApps.map((app, idx) => {
-                  const {name, icon} = app.pocketApplication;
-                  const {staked_tokens, status} = app.networkData;
+                {filteredUserApps.length > 0 ? (
+                  filteredUserApps.map((app, idx) => {
+                    const {name, icon} = app.pocketApplication;
+                    const {staked_tokens, status} = app.networkData;
+                    const {address} = app.pocketApplication.publicPocketAccount;
 
-                  // TODO: Add network information
-                  return (
-                    <PocketElementCard
-                      key={idx}
-                      title={name}
-                      subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                      status={BONDSTATUS[status]}
-                      iconURL={icon}
+                    // TODO: Add network information
+                    return (
+                      <Link
+                        key={idx}
+                        to={() => {
+                          const url = _getDashboardPath(
+                            DASHBOARD_PATHS.appDetail
+                          );
+
+                          return url.replace(":address", address);
+                        }}
+                      >
+                        <PocketElementCard
+                          title={name}
+                          subtitle={`Staked POKT: ${staked_tokens} POKT`}
+                          status={BONDSTATUS[status]}
+                          iconURL={icon}
+                        />
+                      </Link>
+                    );
+                  })
+                ) : (
+                  <div className="empty-overlay">
+                    <FontAwesomeIcon
+                      className="icon"
+                      size="7x"
+                      icon={faBoxOpen}
                     />
-                  );
-                })}
+                    <p>
+                      You have not created or <br /> imported any app yet!
+                    </p>
+                  </div>
+                )}
               </div>
             </Segment>
           </Col>
@@ -194,7 +228,7 @@ class AppsMain extends Main {
               <BootstrapTable
                 classes="app-table"
                 keyField="pocketApplication.publicPocketAccount.address"
-                data={[...registeredApps, ...registeredApps]}
+                data={registeredApps}
                 columns={columns}
                 bordered={false}
               />

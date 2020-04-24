@@ -67,7 +67,7 @@ class Dashboard extends Component {
       <div id="dashboard">
         {alert && (
           <Alert
-            variant="secondary"
+            variant="primary"
             onClose={() => this.setState({alert: false})}
             dismissible
           >
