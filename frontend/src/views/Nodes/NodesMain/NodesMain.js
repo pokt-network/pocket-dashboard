@@ -11,6 +11,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
 import InfoCards from "../../../core/components/InfoCards";
+import {mapStatusToApp} from "../../../_helpers";
 
 class NodesMain extends Main {
   constructor(props, context) {
@@ -18,7 +19,7 @@ class NodesMain extends Main {
 
     this.state = {
       ...this.state,
-      registeredApps: [],
+      registeredNodes: [],
       userNodes: [],
       filteredNodes: [],
       totalNodes: 0,
@@ -42,7 +43,7 @@ class NodesMain extends Main {
       averageStaked,
     } = await ApplicationService.getStakedApplicationSummary();
 
-    const registeredApps = await ApplicationService.getAllApplications(
+    const registeredNodes = await ApplicationService.getAllApplications(
       APPLICATIONS_LIMIT
     );
 
@@ -52,7 +53,7 @@ class NodesMain extends Main {
       totalApplications: totalNodes,
       averageRelays,
       averageStaked,
-      registeredApps,
+      registeredNodes,
       loading: false,
     });
   }
@@ -63,7 +64,7 @@ class NodesMain extends Main {
       totalApplications: totalNodes,
       averageStaked,
       averageRelays,
-      registeredApps,
+      registeredNodes: allRegisteredNodes,
       loading,
     } = this.state;
 
@@ -73,10 +74,17 @@ class NodesMain extends Main {
         text: "Name",
       },
       {
-        dataField: "networkData.address",
+        dataField: "pocketApplication.publicPocketAccount.address",
         text: "Address",
       },
+
+      {
+        dataField: "networkData.status",
+        text: "Status",
+      },
     ];
+
+    const registeredNodes = allRegisteredNodes.map(mapStatusToApp);
 
     const cards = [
       {title: totalNodes, subtitle: "Total of node"},
@@ -146,11 +154,18 @@ class NodesMain extends Main {
                 </InputGroup>
               </Col>
               <Col sm="4" md="4" lg="4" className="order-by">
-                <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
+                <p style={{fontWeight: "bold", fontSize: "1.2em"}}>
+                  Filter by:
+                </p>
                 {/* TODO: Implement sorting on apps */}
                 <AppDropdown
                   onSelect={(t) => console.log(t)}
-                  options={["All", "Newest", "Oldest"]}
+                  options={[
+                    {text: "All", dataField: "all"},
+                    {text: "Bonded", dataField: "bonded"},
+                    {text: "Unbonding", dataField: "unbonding"},
+                    {text: "Unbonded", dataField: "unbonded"},
+                  ]}
                 />
               </Col>
             </Row>
@@ -175,17 +190,22 @@ class NodesMain extends Main {
           <Col sm="4" md="4" lg="4">
             <h2>Registered Nodes</h2>
             <div className="order-by">
-              <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
+              <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Filter by:</p>
               {/* TODO: Implement sorting on apps */}
               <AppDropdown
                 onSelect={(t) => console.log(t)}
-                options={["All", "Newest", "Oldest"]}
+                options={[
+                  {text: "All", dataField: "all"},
+                  {text: "Bonded", dataField: "bonded"},
+                  {text: "Unbonding", dataField: "unbonding"},
+                  {text: "Unbonded", dataField: "unbonded"},
+                ]}
               />
             </div>
             <BootstrapTable
               classes="app-table table-striped"
-              keyField="networkData.address"
-              data={registeredApps}
+              keyField="pocketApplication.publicPocketAccount.address"
+              data={registeredNodes}
               columns={columns}
               bordered={false}
             />

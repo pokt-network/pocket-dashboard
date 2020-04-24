@@ -83,8 +83,8 @@ export class PocketApplicationService extends PocketBaseService {
    *
    * @return {Promise|Promise<Array.<*>>}
    */
-  getAllApplications(limit, offset = 0) {
-    const params = {limit, offset};
+  getAllApplications(limit, offset = 0, status=undefined) {
+    const params = {limit, offset, status};
 
     return axios.get(this._getURL(""), {params})
       .then(response => response.data);
@@ -99,7 +99,7 @@ export class PocketApplicationService extends PocketBaseService {
    *
    * @return {Promise|Promise<Array.<*>>}
    */
-  getAllUserApplications(user, limit, offset = 0) {
+  getAllUserApplications(user, limit, offset = 0, status=undefined) {
     // Axios options format to send both query parameters and body data
     return axios({
       method: "post",
@@ -109,7 +109,8 @@ export class PocketApplicationService extends PocketBaseService {
       },
       params: {
         limit,
-        offset
+        offset,
+        status,
       }
     }).then(response => response.data);
   }

@@ -6,6 +6,7 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import Loader from "../../../core/components/Loader";
+import {BOND_STATUS} from "../../../_constants";
 
 class AppCreated extends Component {
   constructor(props, context) {
@@ -16,7 +17,6 @@ class AppCreated extends Component {
       address: "",
       stakedTokens: 0,
       maxRelays: 0,
-      jailed: false,
       status: "",
       loading: true,
     };
@@ -28,14 +28,12 @@ class AppCreated extends Component {
     const {networkData} = await ApplicationService.getApplication(address);
 
     const {
-      jailed,
       status,
       max_relays: maxRelays,
       staked_tokens: stakedTokens,
     } = networkData;
 
     this.setState({
-      jailed,
       status,
       maxRelays,
       stakedTokens,
@@ -54,22 +52,14 @@ class AppCreated extends Component {
       privateKey,
       stakedTokens,
       maxRelays,
-      jailed,
       status,
       loading,
     } = this.state;
 
-    let statusCapitalized = "";
-
-    if (status) {
-      statusCapitalized = status[0].toUpperCase() + status.slice(1);
-    }
-
     const generalInfo = [
       {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
-      {title: statusCapitalized, subtitle: "Stake status"},
+      {title: BOND_STATUS[status], subtitle: "Stake status"},
       {title: maxRelays, subtitle: "Max Relays"},
-      {title: jailed === true ? "YES" : "NO", subtitle: "Jailed"},
     ];
 
     if (loading) {

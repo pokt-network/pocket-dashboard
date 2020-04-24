@@ -3,7 +3,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
-import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
+import {NETWORK_TABLE_COLUMNS, BOND_STATUS} from "../../../_constants";
 import "./AppDetail.scss";
 import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
@@ -22,7 +22,7 @@ class AppDetail extends Component {
       chains: [],
       aat: {},
       loading: true,
-      showDeleteModal: false,
+      deleteModal: false,
       deleted: false,
     };
 
@@ -46,7 +46,9 @@ class AppDetail extends Component {
     let aat;
 
     if (freeTier) {
-      aat = await ApplicationService.getFreeTierAppAAT(networkData.address);
+      const {address} = pocketApplication.publicPocketAccount;
+
+      aat = await ApplicationService.getFreeTierAppAAT(address);
     }
 
     this.setState({
@@ -59,7 +61,7 @@ class AppDetail extends Component {
   }
 
   async deleteApplication() {
-    const {address} = this.state.networkData;
+    const {address} = this.state.pocketApplication.publicPocketAccount;
 
     const success = await ApplicationService.deleteAppFromDashboard(address);
 
@@ -69,7 +71,7 @@ class AppDetail extends Component {
   }
 
   async unstakeApplication() {
-    const {address} = this.state.networkData;
+    const {address} = this.state.pocketApplication.publicPocketAccount;
     const {freeTier} = this.state.pocketApplication;
 
     if (freeTier) {
@@ -93,27 +95,24 @@ class AppDetail extends Component {
       description,
       icon,
       freeTier,
+      publicPocketAccount,
     } = this.state.pocketApplication;
     const {
-      jailed,
       max_relays,
       staked_tokens,
       status,
       public_key,
-      address,
     } = this.state.networkData;
 
-    let statusCapitalized = "";
+    const address = publicPocketAccount
+      ? publicPocketAccount.address
+      : undefined;
 
-    if (status) {
-      statusCapitalized = status[0].toUpperCase() + status.slice(1);
-    }
-
-    const {chains, aat, loading, showDeleteModal, deleted} = this.state;
+    const {chains, aat, loading, deleteModal, deleted} = this.state;
 
     const generalInfo = [
       {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
-      {title: statusCapitalized, subtitle: "Stake status"},
+      {title: BOND_STATUS[status], subtitle: "Stake status"},
       {title: max_relays, subtitle: "Max Relays"},
     ];
 
@@ -170,14 +169,6 @@ class AppDetail extends Component {
               <InfoCard title={card.title} subtitle={card.subtitle}/>
             </Col>
           ))}
-          <Col>
-            <InfoCard title={jailed === 1 ? "YES" : "NO"} subtitle={"Jailed"}>
-              {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-              <a className="link" href="#">
-                Take out of jail
-              </a>
-            </InfoCard>
-          </Col>
         </Row>
         <Row className="contact-info stats">
           {contactInfo.map((card, idx) => (
@@ -257,7 +248,7 @@ class AppDetail extends Component {
               </Button>
             </div>
             <Button
-              onClick={() => this.setState({showDeleteModal: true})}
+              onClick={() => this.setState({deleteModal: true})}
               variant="link"
               className="link mt-3"
             >
@@ -265,10 +256,10 @@ class AppDetail extends Component {
             </Button>
           </Col>
         </Row>
-
         <Modal
-          show={showDeleteModal}
-          onHide={() => this.setState({showDeleteModal: false})}
+          className="app-modal"
+          show={deleteModal}
+          onHide={() => this.setState({deleteModal: false})}
           animation={false}
           centered
         >
@@ -290,7 +281,7 @@ class AppDetail extends Component {
             <Button
               variant="dark"
               className="pr-4 pl-4"
-              onClick={() => this.setState({showDeleteModal: false})}
+              onClick={() => this.setState({deleteModal: false})}
             >
               Cancel
             </Button>

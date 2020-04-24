@@ -2,75 +2,38 @@ import React from "react";
 import {Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
-import Identicon from "identicon.js";
-import ApplicationService from "../../../core/services/PocketApplicationService";
-import UserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
 
-class CreateAppForm extends CreateForm {
+class CreateNodeForm extends CreateForm {
   constructor(props, context) {
     super(props, context);
 
     this.handleCreate = this.handleCreate.bind(this);
     this.state = {
       ...this.state,
+      data: {
+        ...this.state.data,
+        privateKey: "",
+      },
       applicationData: {},
     };
   }
 
   async handleCreate(e) {
     e.preventDefault();
-
-    const {name, owner, url, contactEmail, description} = this.state.data;
-    let {icon} = this.state;
-
-    // TODO: Show proper message on front end to user on validation error
-    if (name === "" || contactEmail === "" || owner === "") {
-      console.log("missing required field");
-    }
-
-    const currTime = new Date().getTime();
-
-    // Use current time as a 'hash' to generate icon of 250x250
-    const identicon = `data:image/png;base64,${new Identicon(
-      `${currTime}${currTime / 2}`, 250
-    ).toString()}`;
-
-    if (!icon) {
-      icon = identicon;
-    }
-
-    const user = UserService.getUserInfo().email;
-
-    const {success, data} = await ApplicationService.createApplication(
-      name, owner, url, contactEmail, description, icon, user
-    );
-
-    if (success) {
-      const {privateApplicationData, networkData} = data;
-      const applicationData = {
-        address: privateApplicationData.address,
-        privateKey: privateApplicationData.privateKey,
-        stakedTokens: networkData.staked_tokens,
-        maxRelays: networkData.max_relays,
-        status: networkData.status,
-        jailed: networkData.jailed,
-      };
-
-      ApplicationService.saveAppInfoInCache({
-        address: applicationData.address,
-        privateKey: applicationData.privateKey,
-      });
-      this.setState({applicationData, created: true});
-    } else {
-      // TODO: Show proper error message on front-end.
-      console.log(data.response.data.message);
-    }
+    // TODO: Integrate node creation with backend
   }
 
   render() {
-    const {name, owner, url, contactEmail, description} = this.state.data;
+    const {
+      name,
+      owner,
+      url,
+      contactEmail,
+      description,
+      privateKey,
+    } = this.state.data;
     const {created, applicationData} = this.state;
 
     if (created) {
@@ -88,7 +51,7 @@ class CreateAppForm extends CreateForm {
       <div id="create-form">
         <Row>
           <Col sm="3" md="3" lg="3">
-            <h1>App Information</h1>
+            <h1>Node Information</h1>
             <p>The fields with (*) are required to continue</p>
           </Col>
         </Row>
@@ -105,6 +68,14 @@ class CreateAppForm extends CreateForm {
                 <Form.Control
                   name="name"
                   value={name}
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Private key</Form.Label>
+                <Form.Control
+                  name="privateKey"
+                  value={privateKey}
                   onChange={this.handleChange}
                 />
               </Form.Group>
@@ -184,4 +155,4 @@ class CreateAppForm extends CreateForm {
   }
 }
 
-export default CreateAppForm;
+export default CreateNodeForm;

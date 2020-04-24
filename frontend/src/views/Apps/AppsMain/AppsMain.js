@@ -8,14 +8,24 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {APPLICATIONS_LIMIT, BOND_STATUS} from "../../../_constants";
+import {
+  APPLICATIONS_LIMIT,
+  BOND_STATUS,
+  BOND_STATUS_STR,
+} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
+import {mapStatusToApp} from "../../../_helpers";
+import overlayFactory from "react-bootstrap-table2-overlay";
+import LoadingOverlay from "react-loading-overlay";
 
 class AppsMain extends Main {
   constructor(props, context) {
     super(props, context);
+
+    this.handleAllAppsFilter = this.handleAllAppsFilter.bind(this);
+    this.handleUserAppsFilter = this.handleUserAppsFilter.bind(this);
 
     this.state = {
       ...this.state,
@@ -26,6 +36,8 @@ class AppsMain extends Main {
       averageStaked: 0,
       averageRelays: 0,
       loading: true,
+      allAppsTableLoading: false,
+      userAppsTableLoading: false,
     };
   }
 
@@ -57,14 +69,42 @@ class AppsMain extends Main {
     });
   }
 
+  async handleAllAppsFilter(option) {
+    this.setState({allAppsTableLoading: true});
+
+    const registeredApps = await ApplicationService.getAllApplications(
+      APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
+    );
+
+    this.setState({registeredApps, allAppsTableLoading: false});
+  }
+
+  async handleUserAppsFilter(option) {
+    this.setState({userAppsTableLoading: true});
+
+    const userEmail = UserService.getUserInfo().email;
+
+    const userApps = await ApplicationService.getAllUserApplications(
+      userEmail, APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
+    );
+
+    this.setState({
+      userApps,
+      filteredUserApps: userApps,
+      userAppsTableLoading: false,
+    });
+  }
+
   render() {
     const {
       filteredUserApps,
       totalApplications,
       averageStaked,
       averageRelays,
-      registeredApps,
+      registeredApps: allRegisteredApps,
       loading,
+      allAppsTableLoading,
+      userAppsTableLoading,
     } = this.state;
 
     const columns = [
@@ -73,10 +113,16 @@ class AppsMain extends Main {
         text: "Name",
       },
       {
-        dataField: "networkData.address",
+        dataField: "pocketApplication.publicPocketAccount.address",
         text: "Address",
       },
+      {
+        dataField: "networkData.status",
+        text: "Status",
+      },
     ];
+
+    const registeredApps = allRegisteredApps.map(mapStatusToApp);
 
     const cards = [
       {title: totalApplications, subtitle: "Total of apps"},
@@ -115,7 +161,7 @@ class AppsMain extends Main {
           </Col>
         </Row>
         <Row className="stats mb-4">
-          <InfoCards cards={cards}></InfoCards>
+          <InfoCards cards={cards} />
         </Row>
         <Row className="mb-4">
           <Col sm="8" md="8" lg="8">
@@ -145,52 +191,74 @@ class AppsMain extends Main {
                 </InputGroup>
               </Col>
               <Col sm="4" md="4" lg="4" className="order-by">
-                <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
+                <p style={{fontWeight: "bold", fontSize: "1.2em"}}>
+                  Filter by:
+                </p>
                 {/* TODO: Implement sorting on apps */}
                 <AppDropdown
-                  onSelect={(t) => console.log(t)}
+                  onSelect={(status) =>
+                    this.handleUserAppsFilter(status.dataField)
+                  }
                   options={[
-                    {text: "All", dataField: "all"},
-                    {text: "Newest", dataField: "newest"},
-                    {text: "Oldest", dataField: "oldest"},
+                    {text: "Bonded", dataField: "bonded"},
+                    {text: "Unbonding", dataField: "unbonding"},
+                    {text: "Unbonded", dataField: "unbonded"},
                   ]}
                 />
               </Col>
             </Row>
             <div className="main-list">
-              {filteredUserApps.map((app, idx) => {
-                const {name, icon} = app.pocketApplication;
-                const {staked_tokens, status} = app.networkData;
+              <LoadingOverlay active={userAppsTableLoading} spinner>
+                {filteredUserApps.map((app, idx) => {
+                  const {name, icon} = app.pocketApplication;
+                  const {staked_tokens, status} = app.networkData;
 
-                // TODO: Add network information
-                return (
-                  <PocketElementCard
-                    key={idx}
-                    title={name}
-                    subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                    status={BOND_STATUS[status]}
-                    iconURL={icon}
-                  />
-                );
-              })}
+                  // TODO: Add network information
+                  return (
+                    <PocketElementCard
+                      key={idx}
+                      title={name}
+                      subtitle={`Staked POKT: ${staked_tokens} POKT`}
+                      status={BOND_STATUS[status]}
+                      iconURL={icon}
+                    />
+                  );
+                })}
+              </LoadingOverlay>
             </div>
           </Col>
           <Col sm="4" md="4" lg="4">
             <h2>Registered apps</h2>
             <div className="order-by">
-              <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
-              {/* TODO: Implement sorting on apps */}
+              <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Filter by:</p>
               <AppDropdown
-                onSelect={(t) => console.log(t)}
-                options={[{text: "All"}, {text: "Newest"}, {text: "Oldest"}]}
+                onSelect={(status) =>
+                  this.handleAllAppsFilter(status.dataField)
+                }
+                options={[
+                  {text: "Bonded", dataField: "bonded"},
+                  {text: "Unbonding", dataField: "unbonding"},
+                  {text: "Unbonded", dataField: "unbonded"},
+                ]}
               />
             </div>
             <BootstrapTable
               classes="table app-table table-striped"
-              keyField="networkData.address"
+              keyField="pocketApplication.publicPocketAccount.address"
               data={registeredApps}
               columns={columns}
               bordered={false}
+              loading={allAppsTableLoading}
+              noDataIndication={"No apps found"}
+              overlay={overlayFactory({
+                spinner: true,
+                styles: {
+                  overlay: (base) => ({
+                    ...base,
+                    background: "rgba(0, 0, 0, 0.2)",
+                  }),
+                },
+              })}
             />
           </Col>
         </Row>

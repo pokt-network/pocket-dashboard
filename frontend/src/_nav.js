@@ -41,18 +41,8 @@ export default {
       icon: "square",
     },
     {
-      name: "User profile",
-      url: "/dashboard/profile",
-      icon: "square",
-    },
-    {
-      name: "Documentation",
+      name: "Support",
       url: "/dashboard/Documentation",
-      icon: "square",
-    },
-    {
-      name: "FAQ",
-      url: "/dashboard/faq",
       icon: "square",
     },
   ],
