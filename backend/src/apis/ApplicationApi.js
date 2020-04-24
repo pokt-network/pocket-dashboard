@@ -67,25 +67,6 @@ router.post("", async (request, response) => {
 });
 
 /**
- * Import application account.
- */
-router.post("/import", async (request, response) => {
-  try {
-    /** @type {{applicationAccountPrivateKey:string}} */
-    const data = request.body;
-    const account = await applicationService.importApplicationNetworkAccount(data.applicationAccountPrivateKey);
-
-    response.send(account);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
-
-/**
  * Delete an application from dashboard.
  */
 router.delete("/:applicationAccountAddress", async (request, response) => {
@@ -125,9 +106,9 @@ router.get("/summary/staked", async (request, response) => {
 });
 
 /**
- * Import application data from network.
+ * Import application from network.
  */
-router.get("/network/:applicationAccountAddress", async (request, response) => {
+router.get("import/:applicationAccountAddress", async (request, response) => {
   try {
     /** @type {{applicationAccountAddress:string}} */
     const data = request.params;

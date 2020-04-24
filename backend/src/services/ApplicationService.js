@@ -1,11 +1,6 @@
 import BaseService from "./BaseService";
-import {
-  ApplicationPrivatePocketAccount,
-  ApplicationPublicPocketAccount,
-  ExtendedPocketApplication,
-  PocketApplication,
-  StakedApplicationSummary
-} from "../models/Application";
+import {ExtendedPocketApplication, PocketApplication, StakedApplicationSummary} from "../models/Application";
+import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import PocketAAT from "@pokt-network/aat-js";
 import {Account, Application, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
@@ -171,27 +166,7 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Import application account.
-   *
-   * @param {string} applicationAccountPrivateKey Application account private key.
-   *
-   * @returns {Promise<ApplicationPublicPocketAccount>} a pocket account.
-   * @throws Error If account is invalid.
-   * @async
-   */
-  async importApplicationNetworkAccount(applicationAccountPrivateKey) {
-    const passPhrase = "ApplicationNetworkAccount";
-    const applicationAccount = await this.pocketService.importAccount(applicationAccountPrivateKey, passPhrase);
-
-    if (applicationAccount instanceof Error) {
-      throw TypeError("Application account is invalid");
-    }
-
-    return ApplicationPublicPocketAccount.createApplicationPublicPocketAccount(applicationAccount);
-  }
-
-  /**
-   * Get application data from network.
+   * Import application data from network.
    *
    * @param {string} applicationAddress Application address.
    *
@@ -450,7 +425,7 @@ export default class ApplicationService extends BaseService {
    * @param {string} [data.application.icon] Icon.
    * @param {string} [data.privateKey] Application private key if is imported.
    *
-   * @returns {Promise<{privateApplicationData: ApplicationPrivatePocketAccount, networkData:Application}| boolean>} An application information or false if not.
+   * @returns {Promise<{privateApplicationData: PrivatePocketAccount, networkData:Application}| boolean>} An application information or false if not.
    * @throws {Error} If validation fails or already exists.
    * @async
    */
@@ -482,14 +457,14 @@ export default class ApplicationService extends BaseService {
         pocketAccount = await this.__createPocketAccount(passPhrase);
       }
 
-      application.publicPocketAccount = ApplicationPublicPocketAccount.createApplicationPublicPocketAccount(pocketAccount);
+      application.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
 
       const created = await this.__persistApplicationIfNotExists(application);
 
       if (created) {
         const appParameters = await this.pocketService.getApplicationParameters();
 
-        const privateApplicationData = await ApplicationPrivatePocketAccount.createApplicationPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
+        const privateApplicationData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
         const networkChainHashes = Chains.map(_ => _.hash);
         const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, networkChainHashes, appParameters);
 
