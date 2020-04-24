@@ -52,9 +52,14 @@ function getOptionalQueryOption(request, option) {
  */
 router.post("", async (request, response) => {
   try {
-    /** @type {{name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string }} */
-    const data = request.body;
-    const application = await applicationService.createApplication(data);
+    /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}, privateKey?:string}} */
+    let data = request.body;
+
+    if (!("privateKey" in data)) {
+      data["privateKey"] = "";
+    }
+
+    const application = await applicationService.createApplication(data.application, data.privateKey);
 
     response.send(application);
   } catch (e) {
@@ -106,13 +111,13 @@ router.get("/summary/staked", async (request, response) => {
 });
 
 /**
- * Get application data by private key.
+ * Import application from network.
  */
-router.post("/network/data", async (request, response) => {
+router.get("import/:applicationAccountAddress", async (request, response) => {
   try {
-    /** @type {{applicationAccountPrivateKey:string}} */
+    /** @type {{applicationAccountAddress:string}} */
     const data = request.params;
-    const application = await applicationService.getApplicationNetworkData(data.applicationAccountPrivateKey);
+    const application = await applicationService.importApplication(data.applicationAccountAddress);
 
     response.send(application);
   } catch (e) {
@@ -125,7 +130,7 @@ router.post("/network/data", async (request, response) => {
 });
 
 /**
- * Get application by address.
+ * Get application that is already on dashboard by address.
  */
 router.get("/:applicationAccountAddress", async (request, response) => {
   try {

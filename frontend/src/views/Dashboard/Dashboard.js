@@ -6,7 +6,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
 import {Link} from "react-router-dom";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
 import SortableTable from "../../core/components/SortableTable";
-import {NETWORK_TABLE_COLUMNS, APPLICATIONS_LIMIT} from "../../constants";
+import {APPLICATIONS_LIMIT, NETWORK_TABLE_COLUMNS} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";

@@ -6,10 +6,10 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {APPLICATIONS_LIMIT, BONDSTATUS} from "../../../constants";
+import {APPLICATIONS_LIMIT, BOND_STATUS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
-import Main from "../../components/Main/Main";
+import Main from "../../../core/components/Main/Main";
 import InfoCards from "../../../core/components/InfoCards";
 import {mapStatusToApp} from "../../../_helpers";
 
@@ -124,7 +124,7 @@ class NodesMain extends Main {
           </Col>
         </Row>
         <Row className="stats mb-4">
-          <InfoCards cards={cards}></InfoCards>
+          <InfoCards cards={cards}/>
         </Row>
         <Row className="mb-4">
           <Col sm="8" md="8" lg="8">
@@ -180,7 +180,7 @@ class NodesMain extends Main {
                     key={idx}
                     title={name}
                     subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                    status={BONDSTATUS[status]}
+                    status={BOND_STATUS[status]}
                     iconURL={icon}
                   />
                 );

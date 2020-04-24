@@ -6,26 +6,17 @@ export const PaymentTypes = {
   card: "card"
 };
 
-export const CardBrands = {
-  unknown: "Unknown",
-  visa: "Visa",
-  mastercard: "Mastercard",
-  american_express: "American Express",
-  discover: "Discover",
-  diners_club: "Diners Club",
-  jcb: "JCB",
-  union_pay: "UnionPay"
-};
-
-export class PaymentRecipient {
+export class CardPaymentMethod {
 
   /**
-   * @param {string} name Name of Recipient.
-   * @param {string} [email] Email address that the receipt for the resulting payment will be sent to.
-   * @param {string} [number] Number of Recipient.
+   * @param {string} id ID of card payment method.
+   * @param {string} lastDigits Last digits of card.
+   * @param {number} expirationMonth Expiration month.
+   * @param {number} expirationYear Expiration year.
+   * @param {object} billingDetails Billing details.
    */
-  constructor(name, email, number) {
-    Object.assign(this, {name, email, number});
+  constructor(id, lastDigits, expirationMonth, expirationYear, billingDetails) {
+    Object.assign(this, {id, lastDigits, expirationMonth, expirationYear, billingDetails});
   }
 }
 
@@ -39,20 +30,56 @@ export class PaymentResult {
    * @param {number} amount Amount of payment.
    */
   constructor(id, createdDate, paymentNumber, currency, amount) {
-    Object.assign(this, {createdDate, amount, currency, paymentNumber});
+    Object.assign(this, {id, createdDate, amount, currency, paymentNumber});
   }
 }
 
-export class PaymentCard {
+export class Payment {
 
   /**
-   * @param {string} brandName Brand name.
-   * @param {string} number Number of card.
-   * @param {string} cvc CVC of card.
-   * @param {Date} expirationDate Expiration expirationDate of card.
+   * Validate payment data.
+   *
+   * @param {object} paymentData Payment data to validate.
+   * @param {string} paymentData.type Type of payment.
+   * @param {string} paymentData.currency Three-letter ISO currency code, in lowercase.
+   * @param {*} paymentData.item Item to pay.
+   * @param {number} paymentData.amount Amount intended to be collected by this payment.
+   *
+   * @returns {boolean} True is validation is success.
+   * @throws Error if validation fails.
    */
-  constructor(brandName, number, cvc, expirationDate) {
-    Object.assign(this, {brandName, number, cvc, expirationDate});
+  static validate(paymentData) {
+
+    if (!paymentData.type) {
+      throw Error("Type is required");
+    }
+
+    if (!paymentData.currency) {
+      throw Error("Currency is required");
+    }
+
+    if (paymentData.amount === 0) {
+      throw Error("Amount is invalid");
+    }
+
+    if (!paymentData.item) {
+      throw Error("Item is required");
+    } else {
+
+      if (!paymentData.item.account) {
+        throw Error("Item account is required");
+      }
+
+      if (!paymentData.item.name) {
+        throw Error("Item name is required");
+      }
+
+      if (!paymentData.item.pokt) {
+        throw Error("Item pokt is required");
+      }
+    }
+
+    return true;
   }
 }
 
@@ -69,31 +96,42 @@ export default class BasePaymentProvider {
   }
 
   /**
-   * Make a intent of payment.
+   * Create an intent of payment.
    *
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
+   * @param {*} item Item to pay.
    * @param {number} amount Amount intended to be collected by this payment.
    * @param {string} description An arbitrary string attached to the object. Often useful for displaying to users.
-   * @param {object} [metadata] Set of key-value pairs that you can attach to an object.
-   * @param {PaymentRecipient} [receipt] Payment receipt.
    *
    * @returns {Promise<PaymentResult>} Payment result.
    * @async
    * @abstract
    */
-  async makeIntentPayment(type, currency, amount, description, metadata = undefined, receipt = undefined) {
+  async createPaymentIntent(type, currency, item, amount, description) {
   }
 
   /**
-   * Create card payment method.
+   * Retrieve card payment method data.
    *
-   * @param {PaymentCard} card PaymentCard to create a payment method.
+   * @param {string} paymentMethodID Card payment method ID.
    *
-   * @returns {Promise<*>} A card payment method.
+   * @returns {Promise<CardPaymentMethod>} Card payment method.
    * @async
    * @abstract
    */
-  async createCardPaymentMethod(card) {
+  async retrieveCardPaymentMethod(paymentMethodID) {
+  }
+
+  /**
+   * Retrieve list of card payment method data.
+   *
+   * @param {string[]} paymentMethodIDs Card payment method IDs.
+   *
+   * @returns {Promise<CardPaymentMethod[]>} List of card payment method.
+   * @async
+   * @abstract
+   */
+  async retrieveCardPaymentMethods(paymentMethodIDs) {
   }
 }

@@ -83,7 +83,6 @@ export const Configurations = {
         "http://node9.testnet.pokt.network",
         "http://node10.testnet.pokt.network"
       ],
-      // TODO: Change to main chain
       rpc_provider: "http://node4.testnet.pokt.network",
       main: [
         "http://node1.testnet.pokt.network",
