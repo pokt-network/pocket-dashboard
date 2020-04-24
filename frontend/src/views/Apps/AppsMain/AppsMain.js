@@ -13,6 +13,8 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../components/Main/Main";
 import {formatNumbers} from "../../../_helpers";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSearch} from "@fortawesome/free-solid-svg-icons";
 
 class AppsMain extends Main {
   constructor(props, context) {
@@ -125,24 +127,24 @@ class AppsMain extends Main {
             <h2 className="mb-3">My apps</h2>
             <Row>
               <Col sm="8" md="8" lg="8">
-                <InputGroup className="mb-3">
+                <InputGroup className="search-input mb-3">
                   <FormControl
                     placeholder="Search app"
                     name="searchQuery"
                     onChange={this.handleChange}
                     onKeyPress={({key}) => {
                       if (key === "Enter") {
-                        this.handleAppSearch();
+                        this.handleSearch();
                       }
                     }}
                   />
                   <InputGroup.Append>
                     <Button
                       type="submit"
-                      onClick={this.handleAppSearch}
-                      variant="dark"
+                      onClick={this.handleSearch}
+                      variant="outline-primary"
                     >
-                      Search
+                      <FontAwesomeIcon icon={faSearch} />
                     </Button>
                   </InputGroup.Append>
                 </InputGroup>
