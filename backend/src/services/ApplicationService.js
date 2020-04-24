@@ -12,7 +12,6 @@ const APPLICATION_COLLECTION_NAME = "Applications";
 
 export default class ApplicationService extends BaseService {
 
-
   constructor() {
     super();
 
