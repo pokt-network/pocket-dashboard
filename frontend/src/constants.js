@@ -13,7 +13,7 @@ export const NETWORK_TABLE_COLUMNS = [
   },
   {
     dataField: "netID",
-    text: "Network Identifier (NetID)",
+    text: "Network ID",
   },
   {
     dataField: "hash",

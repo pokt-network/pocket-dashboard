@@ -1,13 +1,29 @@
+@import "../../../scss/Core.scss";
+
 #app-detail {
+  .name {
+    margin-bottom: 0;
+  }
 
   .info-section:last-of-type {
     margin-top: 50px;
   }
 
   h3 {
+    color: #000000;
     font-weight: bold;
     font-size: 1.3em;
     margin-bottom: 15px;
+  }
+
+  .owner {
+    font-size: 1em;
+    color: $primary-color;
+    margin-left: 2px;
+  }
+
+  .description {
+    font-weight: 300;
   }
 
   .head {
@@ -15,18 +31,15 @@
     align-items: center;
 
     img {
-      height: 130px;
-      width: 130px;
+      height: 70px;
+      width: 70px;
       border-radius: 50%;
+      box-shadow: 0 0 10px rgba(33, 33, 33, 0.25);
     }
 
     .info {
       .badge {
         font-size: 0.4em;
-      }
-
-      p {
-        width: 600px;
       }
     }
   }
@@ -52,11 +65,13 @@
     pre {
       display: flex;
       justify-content: space-between;
-      background-color: #d6d8d9;
-      border: 1px solid #c6c8ca;
-      border-radius: 0.25rem;
       padding: 15px;
-      font-weight: bold;
+
+      code {
+        font-family: "Lato";
+        font-weight: 400;
+        color: rgba(0, 0, 0, 0.5);
+      }
     }
 
     p {
@@ -64,10 +79,11 @@
       cursor: pointer;
       font-weight: bold;
       font-size: 1.1em;
+      color: rgba(0, 0, 0, 0.5);
     }
 
     p:active {
-      color: white;
+      color: #000000;
     }
   }
 

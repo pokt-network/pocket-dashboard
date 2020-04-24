@@ -14,6 +14,7 @@ $primary-color: #37aee1;
 $primary-color-darker: #1e95c8;
 $secondary-color: #474747;
 $dark-blue: #00212d;
+$light-gray: #f5f5f5;
 
 // Font variables
 $title: (font:"Open Sans",
@@ -41,13 +42,15 @@ $gradient: linear-gradient(180deg, rgba(32, 141, 188, 1) 12%, rgba(0, 50, 66, 1)
   }
 }
 
+@for $i from 2 through 6 {
+  h#{$i} {
+    color: $primary-color;
+  }
+}
+
 h1 {
   font-size: 2em;
   color: $secondary-color;
-}
-
-h2 {
-  color: $primary-color
 }
 
 // Paragraphs, Labels, Links
@@ -125,11 +128,20 @@ input {
   border-radius: $default-border-radius;
 }
 
+.alert {
+  font-family: "Open Sans";
+  font-weight: 300;
+}
+
+.alert.alert-light {
+  background-color: $light-gray;
+  color: rgba(0, 0, 0, 0.7);
+}
+
 .alert.alert-primary {
   background-color: $dark-blue;
   border-color: $dark-blue;
   color: white;
-  font-weight: 300;
   padding-left: 30px;
   padding-bottom: 0px;
   padding-top: 10px;
@@ -149,6 +161,14 @@ input {
     font-weight: 300;
     font-family: "Lato";
   }
+}
+
+.badge,
+.badge-primary {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-weight: 300;
+  background-color: $primary-color;
 }
 
 #sidebar,
@@ -208,6 +228,7 @@ a.link {
 
     td {
       border-top: 1px solid transparent;
+        overflow-wrap: anywhere;
     }
   }
 
@@ -242,7 +263,7 @@ a.link {
 }
 
 .empty-overlay {
-  background-color: #f5f5f5;
+  background-color: $light-gray;
   height: 50vh;
   display: flex;
   flex-direction: column;
