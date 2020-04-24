@@ -1,10 +1,10 @@
 import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
-import {Button, Col, Row, FormControl, InputGroup} from "react-bootstrap";
+import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {NETWORK_TABLE_COLUMNS} from "../../../constants";
+import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
-import Chains from "../../components/Chains/Chains";
+import Chains from "../../../core/components/Chains/Chains";
 
 class NodeChainList extends Chains {
   constructor(props, context) {

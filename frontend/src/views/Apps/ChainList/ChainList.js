@@ -1,13 +1,11 @@
 import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
-import {Button, Col, Row, FormControl, InputGroup} from "react-bootstrap";
-import "./ChainList.scss";
+import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
-import NetworkService from "../../../core/services/PocketNetworkService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
-import {DASHBOARD_PATHS, _getDashboardPath} from "../../../_routes";
-import Chains from "../../components/Chains/Chains";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import Chains from "../../../core/components/Chains/Chains";
 
 class ChooseChain extends Chains {
   constructor(props, context) {

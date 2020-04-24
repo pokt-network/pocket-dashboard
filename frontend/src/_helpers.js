@@ -1,5 +1,5 @@
 import numeral from "numeral";
-import {BONDSTATUS} from "./constants";
+import {BOND_STATUS} from "./_constants";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
@@ -26,7 +26,7 @@ export const mapStatusToApp = (app) => {
     ...app,
     networkData: {
       ...app.networkData,
-      status: BONDSTATUS[app.networkData.status],
+      status: BOND_STATUS[app.networkData.status],
     },
   };
 };

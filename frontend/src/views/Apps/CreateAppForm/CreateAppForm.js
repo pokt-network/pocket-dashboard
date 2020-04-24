@@ -6,7 +6,7 @@ import Identicon from "identicon.js";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import CreateForm from "../../components/CreateForm/CreateForm";
+import CreateForm from "../../../core/components/CreateForm/CreateForm";
 
 class CreateAppForm extends CreateForm {
   constructor(props, context) {

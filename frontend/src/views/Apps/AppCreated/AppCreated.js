@@ -6,7 +6,7 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import Loader from "../../../core/components/Loader";
-import {BONDSTATUS} from "../../../constants";
+import {BOND_STATUS} from "../../../_constants";
 
 class AppCreated extends Component {
   constructor(props, context) {
@@ -58,7 +58,7 @@ class AppCreated extends Component {
 
     const generalInfo = [
       {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
-      {title: BONDSTATUS[status], subtitle: "Stake status"},
+      {title: BOND_STATUS[status], subtitle: "Stake status"},
       {title: maxRelays, subtitle: "Max Relays"},
     ];
 

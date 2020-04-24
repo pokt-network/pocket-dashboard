@@ -1,5 +1,5 @@
 import {Component} from "react";
-import NetworkService from "../../../core/services/PocketNetworkService";
+import NetworkService from "../../services/PocketNetworkService";
 import "./Chains.scss";
 
 class Chains extends Component {
