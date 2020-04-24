@@ -8,7 +8,6 @@
     align-items: center;
     padding-top: 25px;
     padding-bottom: 25px;
-    margin-bottom: 25px;
 
     .title {
       margin-left: 50px;
@@ -22,8 +21,11 @@
   }
 
   .body {
-    margin-left: 10px;
-    margin-right: 10px;
+    padding-top: 25px;
+    box-shadow: 1px 15px 53px -26px rgba(33, 33, 33, .1);
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 15px;
     overflow-x: hidden;
     overflow-x: auto;
     max-height: 60vh;

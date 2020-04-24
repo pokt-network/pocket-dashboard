@@ -165,20 +165,25 @@ a.link {
 
 .app-table {
   thead {
-    background-color: map_get(map_get($table, columns), background-color);
-    color: map_get(map_get($table, columns), color);
+    text-transform: uppercase;
+    color: #000000;
     border: 2px solid transparent;
 
-    th:first-child {
-      border-top-left-radius: 10px;
-      border-top-color: transparent;
-    }
-
-    th:last-child {
-      border-top-right-radius: 10px;
-      border-top-color: transparent;
+    th {
+      border-color: transparent;
     }
   }
+
+  tbody {
+    tr {
+      color: gray;
+    }
+
+    td {
+      border-top: 1px solid transparent;
+    }
+  }
+
 }
 
 

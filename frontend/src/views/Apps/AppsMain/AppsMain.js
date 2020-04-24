@@ -8,7 +8,7 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {APPLICATIONS_LIMIT, BONDSTATUS} from "../../../constants";
+import {APPLICATIONS_LIMIT, BONDSTATUS, STYLING} from "../../../constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../components/Main/Main";
@@ -68,7 +68,7 @@ class AppsMain extends Main {
       totalApplications,
       averageStaked,
       averageRelays,
-      registeredApps,
+      registeredApps: allRegisteredApps,
       loading,
     } = this.state;
 
@@ -78,11 +78,18 @@ class AppsMain extends Main {
         text: "Name",
       },
       {
-        dataField: "networkData.address",
+        dataField: "pocketApplication.publicPocketAccount.address",
         text: "Address",
       },
+      {
+        dataField: "networkData.status",
+        text: "Status",
+        style: {
+          color: STYLING.primaryColor,
+          fontWeight: "bold",
+        },
+      },
     ];
-
     const cards = [
       {title: formatNumbers(totalApplications), subtitle: "Total of apps"},
       {title: formatNumbers(averageStaked), subtitle: "Average staked"},
@@ -175,11 +182,19 @@ class AppsMain extends Main {
             </Segment>
           </Col>
           <Col sm="6" md="6" lg="6">
-            <Segment label="REGISTERED APPS">
+            <Segment
+              label="REGISTERED APPS"
+              dropdownOnSelect={(t) => console.log(t)}
+              dropdownOptions={[
+                {text: "All", dataField: "all"},
+                {text: "Newest", dataField: "newest"},
+                {text: "Oldest", dataField: "oldest"},
+              ]}
+            >
               <BootstrapTable
-                classes="table app-table table-striped"
-                keyField="networkData.address"
-                data={registeredApps}
+                classes="app-table"
+                keyField="pocketApplication.publicPocketAccount.address"
+                data={[...registeredApps, ...registeredApps]}
                 columns={columns}
                 bordered={false}
               />
