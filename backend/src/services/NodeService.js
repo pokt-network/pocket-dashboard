@@ -1,9 +1,9 @@
 import BaseService from "./BaseService";
 import UserService from "./UserService";
-import {Account, Node} from "@pokt-network/pocket-js";
+import {Node} from "@pokt-network/pocket-js";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import {ExtendedPocketNode, PocketNode} from "../models/Node";
-import bcrypt from "bcrypt";
+import AccountService from "./AccountService";
 
 const NODE_COLLECTION_NAME = "Nodes";
 
@@ -13,24 +13,6 @@ export default class NodeService extends BaseService {
     super();
 
     this.userService = new UserService();
-  }
-
-  /**
-   * Generate a random passphrase.
-   *
-   * @param {PocketNode} node Node.
-   *
-   * @returns {string} A passphrase.
-   * @private
-   * @async
-   */
-  async __generatePassphrase(node) {
-    const seed = 10;
-
-    const now = new Date();
-    const data = `${node.name} + ${now.toUTCString()}`;
-
-    return await bcrypt.hash(data, seed);
   }
 
   /**
@@ -54,24 +36,6 @@ export default class NodeService extends BaseService {
     return false;
   }
 
-  /**
-   * Create a pocket account in the network.
-   *
-   * @param {string} passPhrase Passphrase used to create pocket account.
-   *
-   * @returns {Promise<Account> | Error} A Pocket account created successfully.
-   * @throws {Error} If creation of account fails.
-   * @private
-   */
-  async __createPocketAccount(passPhrase) {
-    const account = await this.pocketService.createAccount(passPhrase);
-
-    if (account instanceof Error) {
-      throw account;
-    }
-
-    return account;
-  }
 
   /**
    * Check if node exists on DB.
@@ -116,22 +80,9 @@ export default class NodeService extends BaseService {
       if (await this.nodeExists(node)) {
         throw new Error("Node already exists");
       }
-
-      const passPhrase = await this.__generatePassphrase(node);
-      let pocketAccount;
-
-      if (privateKey) {
-        const account = await this.pocketService.importAccount(privateKey, passPhrase);
-
-        if (account instanceof Error) {
-          throw Error("Imported account is invalid");
-        }
-
-        pocketAccount = account;
-      } else {
-        // Generate Pocket account for node.
-        pocketAccount = await this.__createPocketAccount(passPhrase);
-      }
+      const accountService = new AccountService();
+      const passPhrase = accountService.generatePassphrase(node.name);
+      const pocketAccount = await accountService.createPocketAccount(passPhrase, privateKey);
 
       node.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
 

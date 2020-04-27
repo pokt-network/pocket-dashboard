@@ -7,6 +7,7 @@ import UserService from "./UserService";
 import bcrypt from "bcrypt";
 import bigInt from "big-integer";
 import {Configurations} from "../_configuration";
+import AccountService from "./AccountService";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -436,21 +437,9 @@ export default class ApplicationService extends BaseService {
         throw new Error("Application already exists");
       }
 
-      const passPhrase = await this.__generatePassphrase(application);
-      let pocketAccount;
-
-      if (privateKey) {
-        const account = await this.pocketService.importAccount(privateKey, passPhrase);
-
-        if (account instanceof Error) {
-          throw Error("Imported account is invalid");
-        }
-
-        pocketAccount = account;
-      } else {
-        // Generate Pocket account for application.
-        pocketAccount = await this.__createPocketAccount(passPhrase);
-      }
+      const accountService = new AccountService();
+      const passPhrase = accountService.generatePassphrase(application.name);
+      const pocketAccount = await accountService.createPocketAccount(passPhrase, privateKey);
 
       application.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
 
