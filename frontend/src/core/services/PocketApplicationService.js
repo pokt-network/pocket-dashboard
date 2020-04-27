@@ -214,6 +214,20 @@ export class PocketApplicationService extends PocketBaseService {
       .post(this._getURL("/freetier/unstake"), {applicationAccountAddress})
       .then((response) => response.data);
   }
+
+ 
+  /**
+   * Get application data from network
+   * 
+   * @param {string} applicationAccountAddress Application account address.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getNetworkAppInfo(applicationAccountAddress) {
+    return axios
+      .get(this._getURL(`import/${applicationAccountAddress}`))
+      .then((response) => response.data);
+  }
 }
 
 export default new PocketApplicationService();

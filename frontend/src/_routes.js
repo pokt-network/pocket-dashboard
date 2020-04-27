@@ -13,7 +13,7 @@ import CreateAppForm from "./views/Apps/CreateAppForm/CreateAppForm";
 import TierSelection from "./views/Apps/TierSelection/TierSelection";
 import FreeTier from "./views/FreeTier/FreeTier";
 import ChainList from "./views/Apps/ChainList/ChainList";
-import Import from "./views/Apps/Import/Import";
+import Import from "./views/Apps/Import/ImportApp";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
