@@ -4,7 +4,6 @@ import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import PocketAAT from "@pokt-network/aat-js";
 import {Account, Application, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
-import bcrypt from "bcrypt";
 import bigInt from "big-integer";
 import {Configurations} from "../_configuration";
 import AccountService from "./AccountService";
@@ -17,24 +16,6 @@ export default class ApplicationService extends BaseService {
     super();
 
     this.userService = new UserService();
-  }
-
-  /**
-   * Generate a random passphrase.
-   *
-   * @param {PocketApplication} application Application.
-   *
-   * @returns {string} A passphrase.
-   * @private
-   * @async
-   */
-  async __generatePassphrase(application) {
-    const seed = 10;
-
-    const now = new Date();
-    const data = `${application.name} + ${now.toUTCString()}`;
-
-    return await bcrypt.hash(data, seed);
   }
 
   /**
@@ -56,25 +37,6 @@ export default class ApplicationService extends BaseService {
     }
 
     return false;
-  }
-
-  /**
-   * Create a pocket account in the network.
-   *
-   * @param {string} passPhrase Passphrase used to create pocket account.
-   *
-   * @returns {Promise<Account> | Error} A Pocket account created successfully.
-   * @throws {Error} If creation of account fails.
-   * @private
-   */
-  async __createPocketAccount(passPhrase) {
-    const account = await this.pocketService.createAccount(passPhrase);
-
-    if (account instanceof Error) {
-      throw account;
-    }
-
-    return account;
   }
 
   /**
