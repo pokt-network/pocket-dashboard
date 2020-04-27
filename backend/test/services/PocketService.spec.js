@@ -2,7 +2,6 @@ import {describe, it} from "mocha";
 import "chai/register-should";
 import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
-import {StakingStatus} from "@pokt-network/pocket-js";
 
 /** @type {string} */
 const ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.ACCOUNT_PRIVATE_KEY_WITH_POKT;
@@ -101,7 +100,7 @@ describe("PocketService", () => {
 
   describe("getApplications", () => {
     it("Expected applications data successfully retrieved", async () => {
-      const applicationsData = await pocketService.getApplications(StakingStatus.Staked);
+      const applicationsData = await pocketService.getApplications("staked");
 
 
       // eslint-disable-next-line no-undef

@@ -277,7 +277,7 @@ export default class ApplicationService extends BaseService {
   async getStakedApplicationSummary() {
     try {
       /** @type {Application[]} */
-      const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
+      const stakedApplications = await this.pocketService.getApplications("staked");
 
       // noinspection JSValidateTypes
       const totalApplications = bigInt(stakedApplications.length);

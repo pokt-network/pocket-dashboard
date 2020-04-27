@@ -101,7 +101,7 @@ export default class NodeService extends BaseService {
    * @param {string} [nodeData.icon] Icon.
    * @param {string} [privateKey] Application private key if is imported.
    *
-   * @returns {Promise<{privateApplicationData: PrivatePocketAccount, networkData:Node}>} Node information.
+   * @returns {Promise<{privateNodeData: PrivatePocketAccount, networkData:Node}>} Node information.
    * @throws {Error} If validation fails or already exists.
    * @async
    */
