@@ -29,5 +29,24 @@ router.post("", async (request, response) => {
   }
 });
 
+/**
+ * Import node from network.
+ */
+router.get("import/:nodeAccountAddress", async (request, response) => {
+  try {
+    /** @type {{nodeAccountAddress:string}} */
+    const data = request.params;
+    const node = await nodeService.importNode(data.nodeAccountAddress);
+
+    response.send(node);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
 
 export default router;
