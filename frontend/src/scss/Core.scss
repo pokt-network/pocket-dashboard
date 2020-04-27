@@ -96,7 +96,7 @@ html, body {
   }
 }
 
-a.link {
+a.link, button.link {
   color: #343A41;
   text-decoration: underline;
 }
@@ -120,6 +120,10 @@ button, .btn {
       border-top-right-radius: 10px;
       border-top-color: transparent;
     }
+  }
+
+  td {
+    overflow-wrap: anywhere;
   }
 }
 
@@ -165,5 +169,44 @@ button, .btn {
 
   a {
     padding-top: 10px;
+  }
+}
+
+.app-modal {
+  .modal-header {
+    border-bottom: 0;
+  }
+
+  .modal-footer {
+    border-top: 0;
+  }
+}
+
+.sidebar-menu {
+  list-style-type: none;
+  padding-left: 0;
+  width: 100%;
+
+
+  a {
+    color: #ffffff;
+    display: block;
+    font-size: 1.2em;
+
+    li {
+      display: flex;
+      align-items: center;
+      padding-left: 30px;
+      padding-top: 20px;
+      padding-bottom: 20px;
+
+      .icon {
+        margin-right: 20px;
+      }
+    }
+  }
+
+  a:hover {
+    text-decoration: none;
   }
 }

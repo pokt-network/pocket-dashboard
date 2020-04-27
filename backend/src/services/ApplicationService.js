@@ -1,18 +1,12 @@
 import BaseService from "./BaseService";
-import {
-  ApplicationPrivatePocketAccount,
-  ApplicationPublicPocketAccount,
-  ExtendedPocketApplication,
-  PocketApplication,
-  StakedApplicationSummary
-} from "../models/Application";
+import {ExtendedPocketApplication, PocketApplication, StakedApplicationSummary} from "../models/Application";
+import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import PocketAAT from "@pokt-network/aat-js";
 import {Account, Application, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import bcrypt from "bcrypt";
 import bigInt from "big-integer";
 import {Configurations} from "../_configuration";
-import {Chains} from "../providers/NetworkChains";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -94,20 +88,18 @@ export default class ApplicationService extends BaseService {
   async __getExtendedPocketApplication(application) {
     /** @type {Application} */
     let networkApplication;
-    const networkChainHashes = Chains.map(_ => _.hash);
     const appParameters = await this.pocketService.getApplicationParameters();
 
     if (!application.freeTier) {
       try {
         networkApplication = await this.pocketService.getApplication(application.publicPocketAccount.address);
       } catch (e) {
-        networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, networkChainHashes, appParameters);
+        // noinspection JSValidateTypes
+        networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
       }
     } else {
-      const passPhrase = "PocketFreeTierAccount";
-      const freeTierAccount = await this.pocketService.getFreeTierAccount(passPhrase);
-
-      networkApplication = ExtendedPocketApplication.createNetworkApplicationAsFreeTier(freeTierAccount, networkChainHashes, appParameters);
+      // noinspection JSValidateTypes
+      networkApplication = ExtendedPocketApplication.createNetworkApplicationAsFreeTier(application.publicPocketAccount, appParameters);
     }
 
     return ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
@@ -171,29 +163,29 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Get application network data.
+   * Import application data from network.
    *
-   * @param {string} applicationAccountPrivateKey Application account private key.
+   * @param {string} applicationAddress Application address.
    *
-   * @returns {Promise<Application>} Application network data of false if account is not valid or not at network.
-   * @throws Error If import account fails or Application does exist.
+   * @returns {Promise<Application>} Application data.
+   * @throws Error If application already exists on dashboard or application does exist on network.
    * @async
    */
-  async getApplicationNetworkData(applicationAccountPrivateKey) {
-    let applicationAccount = null;
+  async importApplication(applicationAddress) {
+    const filter = {
+      "publicPocketAccount.address": applicationAddress
+    };
 
-    try {
-      const passPhrase = "ApplicationNetworkData";
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
-      applicationAccount = await this.pocketService.importAccount(applicationAccountPrivateKey, passPhrase);
-    } catch (e) {
-      throw Error("Application account is invalid");
+    if (applicationDB) {
+      throw Error("Application already exists in dashboard");
     }
 
     try {
-      return await this.pocketService.getApplication(applicationAccount.addressHex);
+      return this.pocketService.getApplication(applicationAddress);
     } catch (e) {
-      throw Error("Application does not exist");
+      throw TypeError("Application does not exist on network");
     }
   }
 
@@ -226,16 +218,23 @@ export default class ApplicationService extends BaseService {
    *
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
+   * @param {number} [stakingStatus] Staking status filter.
    *
    * @returns {ExtendedPocketApplication[]} List of applications.
    * @async
    */
-  async getAllApplications(limit, offset = 0) {
+  async getAllApplications(limit, offset = 0, stakingStatus = undefined) {
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, {}, limit, offset))
       .map(PocketApplication.createPocketApplication);
 
     if (applications) {
-      return this.__getExtendedPocketApplications(applications);
+      const extendedApplications = await this.__getExtendedPocketApplications(applications);
+
+      if (stakingStatus !== undefined) {
+        return extendedApplications.filter((application) => application.networkData.status === StakingStatus.getStatus(stakingStatus));
+      }
+
+      return extendedApplications;
     }
 
     return [];
@@ -247,17 +246,27 @@ export default class ApplicationService extends BaseService {
    * @param {string} userEmail Email of user.
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
+   * @param {number} [stakingStatus] Staking status filter.
    *
    * @returns {Promise<ExtendedPocketApplication[]>} List of applications.
    * @async
    */
-  async getUserApplications(userEmail, limit, offset = 0) {
+  async getUserApplications(userEmail, limit, offset = 0, stakingStatus = undefined) {
     const filter = {user: userEmail};
-    /** @type {PocketApplication[]} */
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
       .map(PocketApplication.createPocketApplication);
 
-    return this.__getExtendedPocketApplications(applications);
+    if (applications) {
+      const extendedApplications = await this.__getExtendedPocketApplications(applications);
+
+      if (stakingStatus !== undefined) {
+        return extendedApplications.filter((application) => application.networkData.status === StakingStatus.getStatus(stakingStatus));
+      }
+
+      return extendedApplications;
+    }
+
+    return [];
   }
 
   /**
@@ -402,7 +411,7 @@ export default class ApplicationService extends BaseService {
   /**
    * Create an application on network.
    *
-   * @param {object} applicationData Application to create.
+   * @param {object} applicationData Application data.
    * @param {string} applicationData.name Name.
    * @param {string} applicationData.owner Owner.
    * @param {string} applicationData.url URL.
@@ -410,12 +419,13 @@ export default class ApplicationService extends BaseService {
    * @param {string} applicationData.user User.
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
+   * @param {string} [privateKey] Application private key if is imported.
    *
-   * @returns {Promise<{privateApplicationData: ApplicationPrivatePocketAccount, networkData:Application}| boolean>} An application information or false if not.
+   * @returns {Promise<{privateApplicationData: PrivatePocketAccount, networkData:Application}>} An application information.
    * @throws {Error} If validation fails or already exists.
    * @async
    */
-  async createApplication(applicationData) {
+  async createApplication(applicationData, privateKey = "") {
     if (PocketApplication.validate(applicationData)) {
       if (!await this.userService.userExists(applicationData.user)) {
         throw new Error("User does not exist");
@@ -427,25 +437,33 @@ export default class ApplicationService extends BaseService {
         throw new Error("Application already exists");
       }
 
-      // Generate Pocket account for application.
       const passPhrase = await this.__generatePassphrase(application);
-      const pocketAccount = await this.__createPocketAccount(passPhrase);
+      let pocketAccount;
 
-      application.publicPocketAccount = ApplicationPublicPocketAccount.createApplicationPublicPocketAccount(pocketAccount);
+      if (privateKey) {
+        const account = await this.pocketService.importAccount(privateKey, passPhrase);
 
-      const created = await this.__persistApplicationIfNotExists(application);
+        if (account instanceof Error) {
+          throw Error("Imported account is invalid");
+        }
 
-      if (created) {
-        const appParameters = await this.pocketService.getApplicationParameters();
-
-        const privateApplicationData = await ApplicationPrivatePocketAccount.createApplicationPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
-        const networkChainHashes = Chains.map(_ => _.hash);
-        const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, networkChainHashes, appParameters);
-
-        return {privateApplicationData, networkData};
+        pocketAccount = account;
+      } else {
+        // Generate Pocket account for application.
+        pocketAccount = await this.__createPocketAccount(passPhrase);
       }
 
-      return false;
+      application.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
+
+      await this.__persistApplicationIfNotExists(application);
+
+      const appParameters = await this.pocketService.getApplicationParameters();
+
+      const privateApplicationData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
+      const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
+
+      // noinspection JSValidateTypes
+      return {privateApplicationData, networkData};
     }
   }
 

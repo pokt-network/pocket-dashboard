@@ -17,7 +17,13 @@ import Import from "./views/Apps/Import/Import";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
+import General from "./views/Profile/General/General";
+import Profile from "./views/Profile/ProfileLayout/ProfileLayout";
+import ChangePassword from "./views/Profile/ChangePassword/ChangePassword";
+import PaymentHistory from "./views/Profile/PaymentHistory/PaymentHistory";
 import NodesCheckout from "./views/Nodes/NodesCheckout/NodesCheckout";
+import CreateNodeForm from "./views/Nodes/CreateNodeForm/CreateNodeForm";
+import NodeChainList from "./views/Nodes/NodeChainList/NodeChainList";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -29,7 +35,7 @@ export const ROUTE_PATHS = {
 };
 
 export const DASHBOARD_PATHS = {
-  home: "/dashboard",
+  home: "/",
   apps: "/apps",
   appDetail: "/apps/detail/:address",
   createAppInfo: "/apps/new",
@@ -41,11 +47,20 @@ export const DASHBOARD_PATHS = {
   appCreated: "/apps/created",
   nodes: "/nodes",
   nodesCheckout: "/nodes/checkout",
+  profile: "/profile",
+  createNodeForm: "/nodes/new",
+  nodeChainList: "/nodes/chains",
+};
+
+export const PROFILE_PATHS = {
+  general: "",
+  changePassword: "/password-change",
+  paymentHistory: "/payment-history"
 };
 
 // Helper anonymous function to render routes within the dashboard router
 export const _getDashboardPath = (path) => {
-  return `${DASHBOARD_PATHS.home}${path}`;
+  return `${ROUTE_PATHS.home}${path}`;
 };
 
 /**
@@ -83,7 +98,7 @@ const authProviderRoutes = [
  */
 export const dashboardRoutes = [
   {
-    path: DASHBOARD_PATHS.home,
+    path: "/",
     exact: true,
     name: "Home - Dashboard",
     component: Dashboard,
@@ -111,6 +126,18 @@ export const dashboardRoutes = [
     exact: true,
     name: "Create New App",
     component: CreateAppForm,
+  },
+  {
+    path: DASHBOARD_PATHS.createNodeForm,
+    exact: true,
+    name: "Create New Node",
+    component: CreateNodeForm,
+  },
+  {
+    path: DASHBOARD_PATHS.nodeChainList,
+    exact: true,
+    name: "Nodes Chain List",
+    component: NodeChainList,
   },
   {
     path: DASHBOARD_PATHS.nodes,
@@ -153,6 +180,33 @@ export const dashboardRoutes = [
     exact: true,
     name: "Free tier",
     component: FreeTier,
+  },
+  {
+    path: DASHBOARD_PATHS.profile,
+    exact: false,
+    name: "User General",
+    component: Profile,
+  },
+];
+
+export const profileRoutes = [
+  {
+    path: PROFILE_PATHS.general,
+    exact: true,
+    name: "General Information",
+    component: General
+  },
+  {
+    path: PROFILE_PATHS.changePassword,
+    exact: true,
+    name: "Change password",
+    component: ChangePassword
+  },
+  {
+    path: PROFILE_PATHS.paymentHistory,
+    exact: true,
+    name: "Payment history",
+    component: PaymentHistory
   },
 ];
 

@@ -17,17 +17,18 @@ class AppDropdown extends Component {
   handleSelect({target: input}) {
     const selected = input.text;
 
-    const {onSelect} = this.props;
+    const {onSelect, options} = this.props;
 
     this.setState({selected});
 
-    onSelect(selected);
+    const idx = options.map((op) => op.text).indexOf(selected);
+
+    onSelect(options[idx]);
   }
 
   componentDidMount() {
-    const {options} = this.props;
-
-    const selected = options[0];
+    const {options, defaultText} = this.props;
+    const selected = defaultText ? defaultText : options[0].text;
 
     this.setState({selected});
   }
@@ -43,9 +44,9 @@ class AppDropdown extends Component {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          {options.map(op => (
-            <Dropdown.Item onClick={this.handleSelect} key={op}>
-              {op}
+          {options.map((op) => (
+            <Dropdown.Item onClick={this.handleSelect} key={op.text}>
+              {op.text}
             </Dropdown.Item>
           ))}
         </Dropdown.Menu>
@@ -55,7 +56,13 @@ class AppDropdown extends Component {
 }
 
 AppDropdown.propTypes = {
-  options: PropTypes.array,
+  defaultText: PropTypes.string,
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      dataField: PropTypes.string,
+      text: PropTypes.string,
+    })
+  ),
   onSelect: PropTypes.func,
 };
 

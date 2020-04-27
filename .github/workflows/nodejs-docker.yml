@@ -1,0 +1,41 @@
+# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Docker CI
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  DOCKER_REPOSITORY: poktnetwork/pocket-dashboard
+
+jobs:
+  # Backend CI
+  Backend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: Build Docker image
+        working-directory: backend
+        run: docker build -t ${{ env.DOCKER_REPOSITORY }}:latest-backend .
+      - name: Push Docker image
+        run: docker push ${{ env.DOCKER_REPOSITORY }}:latest-backend
+
+  # Frontend CI
+  Frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Docker Hub
+        run: echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+      - name: Build Docker image
+        working-directory: frontend
+        run: docker build -t ${{ env.DOCKER_REPOSITORY }}:latest-frontend .
+      - name: Push Docker image
+        run: docker push ${{ env.DOCKER_REPOSITORY }}:latest-frontend

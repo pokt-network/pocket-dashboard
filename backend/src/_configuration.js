@@ -15,8 +15,8 @@ export const Configurations = {
       options: {}
     },
     test: {
-      client_id: process.env.TEST_PAYMENT_DEFAULT_CLIENT_ID,
-      client_secret: process.env.TEST_PAYMENT_DEFAULT_CLIENT_SECRET,
+      client_id: process.env.PAYMENT_DEFAULT_CLIENT_ID,
+      client_secret: process.env.PAYMENT_DEFAULT_CLIENT_SECRET,
       options: {}
     }
   },
@@ -83,7 +83,6 @@ export const Configurations = {
         "http://node9.testnet.pokt.network",
         "http://node10.testnet.pokt.network"
       ],
-      // TODO: Change to main chain
       rpc_provider: "http://node4.testnet.pokt.network",
       main: [
         "http://node1.testnet.pokt.network",

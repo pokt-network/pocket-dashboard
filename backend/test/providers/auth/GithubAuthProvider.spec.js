@@ -6,8 +6,7 @@ import GithubAuthProvider from "../../../src/providers/auth/GithubAuthProvider";
 const githubProvider = new GithubAuthProvider();
 
 /** @type {string} */
-const GITHUB_ACCESS_TOKEN = process.env.TEST_GITHUB_ACCESS_TOKEN; // You can get yours using the getConsentURL of GithubAuthProvider
-
+const GITHUB_ACCESS_TOKEN = process.env.GITHUB_ACCESS_TOKEN; // You can get yours using the getConsentURL of GithubAuthProvider
 
 describe("GithubAuthProvider", () => {
 

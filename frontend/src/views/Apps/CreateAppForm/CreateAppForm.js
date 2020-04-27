@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import {Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
@@ -6,50 +6,17 @@ import Identicon from "identicon.js";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import "./CreateAppForm.scss";
+import CreateForm from "../../../core/components/CreateForm/CreateForm";
 
-class CreateAppForm extends Component {
+class CreateAppForm extends CreateForm {
   constructor(props, context) {
     super(props, context);
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleDrop = this.handleDrop.bind(this);
     this.handleCreate = this.handleCreate.bind(this);
-
     this.state = {
-      data: {
-        name: "",
-        owner: "",
-        url: "",
-        contactEmail: "",
-        description: "",
-      },
-      icon: "",
+      ...this.state,
       applicationData: {},
-      created: false,
     };
-  }
-
-  async handleDrop(img) {
-    // Fetch image blob data and converts it to base64
-    const blob = await fetch(img).then((r) => r.blob());
-
-    const reader = new FileReader();
-
-    reader.readAsDataURL(blob);
-
-    reader.onloadend = () => {
-      const base64data = reader.result;
-
-      this.setState({icon: base64data});
-    };
-  }
-
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
-
-    data[input.name] = input.value;
-    this.setState({data});
   }
 
   async handleCreate(e) {
@@ -102,7 +69,6 @@ class CreateAppForm extends Component {
     }
   }
 
-  state = {};
   render() {
     const {name, owner, url, contactEmail, description} = this.state.data;
     const {created, applicationData} = this.state;
@@ -111,7 +77,7 @@ class CreateAppForm extends Component {
       return (
         <Redirect
           to={{
-            pathname:_getDashboardPath(DASHBOARD_PATHS.chooseChain),
+            pathname: _getDashboardPath(DASHBOARD_PATHS.chooseChain),
             state: {applicationData},
           }}
         />
@@ -119,7 +85,7 @@ class CreateAppForm extends Component {
     }
 
     return (
-      <div id="create-app-info">
+      <div id="create-form">
         <Row>
           <Col sm="3" md="3" lg="3">
             <h1>App Information</h1>
@@ -205,7 +171,9 @@ class CreateAppForm extends Component {
                   By continuing you agree to Pocket&apos;s <br />
                   {/*TODO: Add terms and conditions link*/}
                   {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-                  <a className="link" href="#">Terms and conditions</a>
+                  <a className="link" href="#">
+                    Terms and conditions
+                  </a>
                 </p>
               </div>
             </Form>

@@ -11,23 +11,17 @@ export class PocketApplicationService extends PocketBaseService {
     this.ls = new SecureLS(Configurations.secureLS);
   }
 
-  /**
-   * Save application address and chains in local storage encrypted.
-   *
-   * @param {address:string} address Pocket application address
-   * @param {address:string} address Pocket application privateKey
-   * @param {Array<string>} chains Pocket application chosen chains.
-   */
-  saveAppInfoInCache({address, privateKey, chains}) {
-    if (address) {
-      this.ls.set("app_address", {data: address});
+  static parseAAT(aat) {
+    let aatParsed = {
+      version: aat.version
+    };
+
+    delete aat.version;
+
+    for (let [key, value] of Object.entries(aat)) {
+      aatParsed[key] = `${value.slice(0, 15)}...`;
     }
-    if (privateKey) {
-      this.ls.set("app_private_key", {data: privateKey});
-    }
-    if (chains) {
-      this.ls.set("app_chains", {data: chains});
-    }
+    return JSON.stringify(aatParsed, null, 2);
   }
 
   /**
@@ -50,16 +44,23 @@ export class PocketApplicationService extends PocketBaseService {
     };
   }
 
-  static parseAAT(aat) {
-    let aatParsed = {};
-
-    aatParsed["version"] = aat.version;
-    delete aat.version;
-
-    for (let [key, value] of Object.entries(aat)) {
-      aatParsed[key] = `${value.slice(0, 15)}...`;
+  /**
+   * Save application address and chains in local storage encrypted.
+   *
+   * @param {string} address Pocket application address
+   * @param {string} privateKey Pocket application private key
+   * @param {Array<string>} chains Pocket application chosen chains.
+   */
+  saveAppInfoInCache({address, privateKey, chains}) {
+    if (address) {
+      this.ls.set("app_address", {data: address});
     }
-    return JSON.stringify(aatParsed, null, 2);
+    if (privateKey) {
+      this.ls.set("app_private_key", {data: privateKey});
+    }
+    if (chains) {
+      this.ls.set("app_chains", {data: chains});
+    }
   }
 
   /**
@@ -82,8 +83,8 @@ export class PocketApplicationService extends PocketBaseService {
    *
    * @return {Promise|Promise<Array.<*>>}
    */
-  getAllApplications(limit, offset = 0) {
-    const params = {limit, offset};
+  getAllApplications(limit, offset = 0, status=undefined) {
+    const params = {limit, offset, status};
 
     return axios.get(this._getURL(""), {params})
       .then(response => response.data);
@@ -98,7 +99,7 @@ export class PocketApplicationService extends PocketBaseService {
    *
    * @return {Promise|Promise<Array.<*>>}
    */
-  getAllUserApplications(user, limit, offset = 0) {
+  getAllUserApplications(user, limit, offset = 0, status=undefined) {
     // Axios options format to send both query parameters and body data
     return axios({
       method: "post",
@@ -108,7 +109,8 @@ export class PocketApplicationService extends PocketBaseService {
       },
       params: {
         limit,
-        offset
+        offset,
+        status,
       }
     }).then(response => response.data);
   }
@@ -188,10 +190,10 @@ export class PocketApplicationService extends PocketBaseService {
   }
 
   /**
-   * Delete an application from dashboard (but not from the network). 
-   * 
+   * Delete an application from dashboard (but not from the network).
+   *
    * @param {string} applicationAccountAddress Application account address.
-   * 
+   *
    * @returns {Promise|Promise<*>}
    */
   deleteAppFromDashboard(applicationAccountAddress) {
@@ -201,10 +203,10 @@ export class PocketApplicationService extends PocketBaseService {
   }
 
   /**
-   * Unstake a free tier application. 
-   * 
+   * Unstake a free tier application.
+   *
    * @param {string} applicationAccountAddress Application account address.
-   * 
+   *
    * @returns {Promise|Promise<*>}
    */
   unstakeFreeTierApplication(applicationAccountAddress) {

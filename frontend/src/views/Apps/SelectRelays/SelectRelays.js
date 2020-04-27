@@ -1,11 +1,11 @@
 import React, {Component} from "react";
 import "./SelectRelays.scss";
-import {Alert, Row, Col, Button} from "react-bootstrap";
+import {Alert, Button, Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import AppSlider from "../../../core/components/AppSlider";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {MAX_RELAYS} from "../../../constants";
+import {MAX_RELAYS} from "../../../_constants";
 import {formatCurrency} from "../../../_helpers";
 
 class SelectRelays extends Component {
@@ -82,14 +82,14 @@ class SelectRelays extends Component {
                   title={relays}
                   subtitle="Relays per session"
                 >
-                  <span></span>
+                  <span/>
                 </InfoCard>
                 <InfoCard
                   className="text-center"
                   title={total}
                   subtitle="Total amount"
                 >
-                  <span></span>
+                  <span/>
                 </InfoCard>
               </div>
             </div>

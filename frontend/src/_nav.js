@@ -1,3 +1,28 @@
+export const profile = {
+  items: [
+    {
+      name: "General Information",
+      url: "/dashboard/profile",
+      icon: "circle",
+    },
+    {
+      name: "Payment method",
+      url: "/dashboard/profile/payments",
+      icon: "circle",
+    },
+    {
+      name: "Payment History",
+      url: "/dashboard/profile/payment-history",
+      icon: "circle",
+    },
+    {
+      name: "Change your password",
+      url: "/dashboard/profile/password-change",
+      icon: "circle",
+    },
+  ],
+};
+
 export default {
   items: [
     {
@@ -16,18 +41,8 @@ export default {
       icon: "square",
     },
     {
-      name: "User profile",
-      url: "/dashboard/profile",
-      icon: "square",
-    },
-    {
-      name: "Documentation",
+      name: "Support",
       url: "/dashboard/Documentation",
-      icon: "square",
-    },
-    {
-      name: "FAQ",
-      url: "/dashboard/faq",
       icon: "square",
     },
   ],
