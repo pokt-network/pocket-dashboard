@@ -5,10 +5,9 @@ import {
   CoinDenom,
   Configuration,
   HttpRpcProvider,
+  Node,
   NodeParams,
   Pocket,
-  QueryAppResponse,
-  QueryAppsResponse,
   RawTxResponse
 } from "@pokt-network/pocket-js";
 import {PocketAAT} from "@pokt-network/aat-js";
@@ -192,7 +191,6 @@ export default class PocketService {
    * @async
    */
   async getApplication(addressHex) {
-    /** @type {QueryAppResponse} */
     const applicationResponse = await this.__pocket.rpc().query.getApp(addressHex);
 
     if (applicationResponse instanceof Error) {
@@ -200,6 +198,25 @@ export default class PocketService {
     }
 
     return applicationResponse.application;
+  }
+
+  /**
+   * Get node data.
+   *
+   * @param {string} addressHex Account address.
+   *
+   * @returns {Node} The account data.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getNode(addressHex) {
+    const nodeResponse = await this.__pocket.rpc().query.getNode(addressHex);
+
+    if (nodeResponse instanceof Error) {
+      throw nodeResponse;
+    }
+
+    return nodeResponse.node;
   }
 
   /**
@@ -212,7 +229,6 @@ export default class PocketService {
    * @async
    */
   async getApplications(status) {
-    /** @type {QueryAppsResponse} */
     const applicationsResponse = await this.__pocket.rpc().query.getApps(status);
 
     if (applicationsResponse instanceof Error) {

@@ -5,6 +5,9 @@ import {Configurations} from "../../src/_configuration";
 
 /** @type {string} */
 const ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.ACCOUNT_PRIVATE_KEY_WITH_POKT;
+/** @type {string} */
+const NODE_ACCOUNT_IN_NETWORK = process.env.TEST_NODE_ACCOUNT_IN_NETWORK;
+
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
 const pocketService = new PocketService(POCKET_NETWORK_CONFIGURATION.nodes.test, POCKET_NETWORK_CONFIGURATION.nodes.test_rpc_provider);
@@ -98,10 +101,19 @@ describe("PocketService", () => {
     });
   });
 
+  if (NODE_ACCOUNT_IN_NETWORK) {
+    describe("getNode", () => {
+      it("Expected node data successfully retrieved", async () => {
+        const nodeData = await pocketService.getNode(NODE_ACCOUNT_IN_NETWORK);
+
+        // eslint-disable-next-line no-undef
+        should.exist(nodeData);
+      });
+    });
+  }
   describe("getApplications", () => {
     it("Expected applications data successfully retrieved", async () => {
       const applicationsData = await pocketService.getApplications("staked");
-
 
       // eslint-disable-next-line no-undef
       should.exist(applicationsData);
@@ -110,6 +122,7 @@ describe("PocketService", () => {
       applicationsData.length.should.be.greaterThan(0);
     });
   });
+
   if (ACCOUNT_PRIVATE_KEY_WITH_POKT) {
     describe("stakeApplication", () => {
       it("Expected a transaction hash successfully", async () => {
