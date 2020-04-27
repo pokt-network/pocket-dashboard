@@ -5,7 +5,9 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
 import {NETWORK_TABLE_COLUMNS, BOND_STATUS} from "../../../_constants";
 import "./AppDetail.scss";
-import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {
+  PocketApplicationService,
+} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -24,6 +26,8 @@ class AppDetail extends Component {
       loading: true,
       deleteModal: false,
       deleted: false,
+      message: "",
+      purchase: true,
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -31,6 +35,17 @@ class AppDetail extends Component {
   }
 
   async componentDidMount() {
+    let message;
+    let purchase = true;
+
+    // eslint-disable-next-line react/prop-types
+    if (this.props.location.state) {
+      // eslint-disable-next-line react/prop-types
+      message = this.props.location.state.message;
+      // eslint-disable-next-line react/prop-types
+      purchase = this.props.location.purchase;
+    }
+
     // eslint-disable-next-line react/prop-types
     const {address} = this.props.match.params;
 
@@ -52,6 +67,8 @@ class AppDetail extends Component {
     }
 
     this.setState({
+      message,
+      purchase,
       pocketApplication,
       networkData,
       chains,
@@ -97,18 +114,25 @@ class AppDetail extends Component {
       freeTier,
       publicPocketAccount,
     } = this.state.pocketApplication;
+    const {max_relays, staked_tokens, status} = this.state.networkData;
+
+    let address;
+    let publicKey;
+
+    if (publicPocketAccount) {
+      address = publicPocketAccount.address;
+      publicKey = publicPocketAccount.publicKey;
+    }
+
     const {
-      max_relays,
-      staked_tokens,
-      status,
-      public_key,
-    } = this.state.networkData;
-
-    const address = publicPocketAccount
-      ? publicPocketAccount.address
-      : undefined;
-
-    const {chains, aat, loading, deleteModal, deleted} = this.state;
+      chains,
+      aat,
+      loading,
+      deleteModal,
+      deleted,
+      purchase,
+      message,
+    } = this.state;
 
     const generalInfo = [
       {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
@@ -128,7 +152,7 @@ class AppDetail extends Component {
     }
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     if (deleted) {
@@ -145,9 +169,18 @@ class AppDetail extends Component {
       <div id="app-detail">
         <Row>
           <Col>
+            {message && (
+              <Alert
+                variant="secondary"
+                onClose={() => this.setState({message: ""})}
+                dismissible
+              >
+                {message}
+              </Alert>
+            )}
             <div className="head">
               {/* eslint-disable-next-line jsx-a11y/alt-text */}
-              <img src={icon}/>
+              <img src={icon} />
               <div className="info">
                 <h1 className="d-flex align-items-baseline">
                   {name}
@@ -166,7 +199,7 @@ class AppDetail extends Component {
         <Row className="mt-2 stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle}/>
+              <InfoCard title={card.title} subtitle={card.subtitle} />
             </Col>
           ))}
         </Row>
@@ -178,7 +211,7 @@ class AppDetail extends Component {
                 title={card.title}
                 subtitle={card.subtitle}
               >
-                <span/>
+                <span />
               </InfoCard>
             </Col>
           ))}
@@ -191,7 +224,7 @@ class AppDetail extends Component {
             </div>
             <div className="info-section">
               <h3>Public Key</h3>
-              <Alert variant="dark">{public_key}</Alert>
+              <Alert variant="dark">{publicKey}</Alert>
             </div>
           </Col>
           {freeTier && (
@@ -199,7 +232,7 @@ class AppDetail extends Component {
               <div id="aat-info" className="mb-2">
                 <h3>AAT</h3>
                 <span>
-                  <HelpLink size="2x"/>
+                  <HelpLink size="2x" />
                   <p>How to create an AAT?</p>
                 </span>
               </div>
@@ -227,6 +260,7 @@ class AppDetail extends Component {
             <BootstrapTable
               classes="table app-table table-striped"
               keyField="hash"
+              Purch
               data={chains}
               columns={NETWORK_TABLE_COLUMNS}
               bordered={false}
@@ -243,7 +277,11 @@ class AppDetail extends Component {
               >
                 Unstake
               </Button>
-              <Button variant="secondary" className="ml-3 pr-4 pl-4">
+              <Button
+                variant="secondary"
+                className="ml-3 pr-4 pl-4"
+                disabled={!purchase}
+              >
                 New Purchase
               </Button>
             </div>

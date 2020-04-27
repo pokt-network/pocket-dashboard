@@ -140,9 +140,11 @@ export class PocketApplicationService extends PocketBaseService {
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async createApplication(name, owner, url, contactEmail, description, icon, user) {
-    const data = {name, owner, url, contactEmail, description, icon, user};
-
+  async createApplication(applicationData, privateKey=undefined) {
+    const data = privateKey
+    ? {application: applicationData, privateKey}
+    : {application: applicationData};
+   
     return axios.post(this._getURL(""), data)
       .then(response => {
         if (response.status === 200) {
@@ -158,7 +160,7 @@ export class PocketApplicationService extends PocketBaseService {
       }).catch(err => {
         return {
           success: false,
-          data: err
+          data: err.response.data.message,
         };
       });
   }

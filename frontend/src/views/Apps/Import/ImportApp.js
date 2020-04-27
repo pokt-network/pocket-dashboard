@@ -189,7 +189,7 @@ class Import extends Component {
             pathname: _getDashboardPath(DASHBOARD_PATHS.createAppInfo),
             state: {
               imported: imported,
-              stakeStatus: stakeStatus,
+              stakeStatus: status,
               address: address,
               privateKey: privateKey,
             },
