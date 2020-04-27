@@ -97,4 +97,31 @@ export default class NodeService extends BaseService {
       return {privateNodeData, networkData};
     }
   }
+
+  /**
+   * Import node data from network.
+   *
+   * @param {string} nodeAddress Node address.
+   *
+   * @returns {Promise<Node>} Node data.
+   * @throws Error If node already exists on dashboard or node does exist on network.
+   * @async
+   */
+  async importNode(nodeAddress) {
+    const filter = {
+      "publicPocketAccount.address": nodeAddress
+    };
+
+    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+
+    if (nodeDB) {
+      throw Error("Node already exists in dashboard");
+    }
+
+    try {
+      return this.pocketService.getNode(nodeAddress);
+    } catch (e) {
+      throw TypeError("Node does not exist on network");
+    }
+  }
 }

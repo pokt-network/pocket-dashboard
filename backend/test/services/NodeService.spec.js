@@ -5,8 +5,12 @@ import {PrivatePocketAccount} from "../../src/models/Account";
 import {Node, StakingStatus} from "@pokt-network/pocket-js";
 import {configureTestService} from "../setupTests";
 import {PocketNode} from "../../src/models/Node";
+import {assert, expect} from "chai";
 
 const nodeService = new NodeService();
+
+/** @type {string} */
+const NODE_PRIVATE_KEY_ON_NETWORK = process.env.TEST_NODE_PRIVATE_KEY_ON_NETWORK;
 
 before(() => {
   configureTestService(nodeService);
@@ -58,6 +62,32 @@ describe("NodeService", () => {
       const exists = await nodeService.nodeExists(node);
 
       exists.should.be.equal(true);
+    });
+  });
+
+  if (NODE_PRIVATE_KEY_ON_NETWORK) {
+    describe("importNode", () => {
+      it("Expect an node network data", async () => {
+
+        const applicationNetworkData = await nodeService.importNode(NODE_PRIVATE_KEY_ON_NETWORK);
+
+        // eslint-disable-next-line no-undef
+        should.exist(applicationNetworkData);
+
+        applicationNetworkData.should.be.an("object");
+      });
+    });
+  }
+
+  describe("importNode with invalid address", () => {
+    it("Expect an error", async () => {
+
+      try {
+        await nodeService.importNode("NOT_VALID_ADDRESS");
+        assert.fail();
+      } catch (e) {
+        expect(e.message).to.be.equal("Invalid Address Hex");
+      }
     });
   });
 });
