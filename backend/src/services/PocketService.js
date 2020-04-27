@@ -283,6 +283,34 @@ export default class PocketService {
   }
 
   /**
+   * Stake a node in pocket network.
+   *
+   * @param {Account} nodeAccount Node account to stake.
+   * @param {string} passPhrase Passphrase used to import the account.
+   * @param {string} uPoktAmount uPocket amount to stake.
+   * @param {URL} serviceURL Service URL.
+   * @param {string[]} networkChains Network Chains to stake.
+   *
+   * @returns {Promise<RawTxResponse>} Raw transaction data
+   * @throws Error if transaction fails.
+   */
+  async stakeNode(nodeAccount, passPhrase, uPoktAmount, serviceURL, networkChains) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const publicKey = nodeAccount.publicKey.toString("hex");
+
+    const transactionSender = await this.__pocket.withImportedAccount(nodeAccount.address, passPhrase);
+
+    const transactionResponse = await transactionSender.nodeStake(publicKey, networkChains, uPoktAmount, serviceURL)
+      .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake a node");
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse;
+  }
+
+  /**
    * Unstake an application in pocket network.
    *
    * @param {Account} applicationAccount Application account to unstake.
