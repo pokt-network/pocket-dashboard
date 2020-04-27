@@ -5,6 +5,7 @@ import {
   CoinDenom,
   Configuration,
   HttpRpcProvider,
+  NodeParams,
   Pocket,
   QueryAppResponse,
   QueryAppsResponse,
@@ -212,9 +213,8 @@ export default class PocketService {
    * @async
    */
   async getApplications(status) {
-    // TODO: Change the status string for StakingStatus parameter
     /** @type {QueryAppsResponse} */
-    const applicationsResponse = await this.__pocket.rpc().query.getApps("staked");
+    const applicationsResponse = await this.__pocket.rpc().query.getApps(status);
 
     if (applicationsResponse instanceof Error) {
       throw applicationsResponse;
@@ -288,5 +288,22 @@ export default class PocketService {
     }
 
     return transactionResponse;
+  }
+
+  /**
+   * Get Node Parameters data.
+   *
+   * @returns {Promise<NodeParams>} The node parameters.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getNodeParameters() {
+    const nodeParametersResponse = await this.__pocket.rpc().query.getNodeParams();
+
+    if (nodeParametersResponse instanceof Error) {
+      throw nodeParametersResponse;
+    }
+
+    return nodeParametersResponse.nodeParams;
   }
 }
