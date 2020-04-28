@@ -279,4 +279,36 @@ export default class NodeService extends BaseService {
       return false;
     }
   }
+
+  /**
+   * Unstake node.
+   *
+   * @param {string} nodeAccountAddress Node account address.
+   *
+   * @returns {Promise<boolean>} If node was unstaked or not.
+   * @async
+   */
+  async unstakeNode(nodeAccountAddress) {
+    const filter = {
+      "publicPocketAccount.address": nodeAccountAddress
+    };
+
+    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+
+    if (!nodeDB) {
+      return false;
+    }
+
+    try {
+      const passphrase = "UnstakeNode";
+      const nodeAccount = await this.pocketService.getAccount(nodeAccountAddress);
+
+      // Unstake node
+      await this.pocketService.unstakeNode(nodeAccount, passphrase);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }

@@ -154,5 +154,26 @@ router.post("/stake", async (request, response) => {
   }
 });
 
+/**
+ * Unstake a node.
+ */
+router.post("/unstake", async (request, response) => {
+  try {
+
+    /** @type {{nodeAccountAddress: string}} */
+    const data = request.body;
+
+    const unstaked = await nodeService.unstakeNode(data.nodeAccountAddress);
+
+    response.send(unstaked);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
 
 export default router;
