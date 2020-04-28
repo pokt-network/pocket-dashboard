@@ -6,16 +6,22 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {APPLICATIONS_LIMIT, BOND_STATUS} from "../../../_constants";
+import {BOND_STATUS, NODES_LIMIT, BOND_STATUS_STR} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
 import InfoCards from "../../../core/components/InfoCards";
 import {mapStatusToApp} from "../../../_helpers";
+import NodeService from "../../../core/services/PocketNodeService";
+import overlayFactory from "react-bootstrap-table2-overlay";
+import LoadingOverlay from "react-loading-overlay";
 
 class NodesMain extends Main {
   constructor(props, context) {
     super(props, context);
+
+    this.handleAllNodesFilter = this.handleAllNodesFilter.bind(this);
+    this.handleUserNodesFilter = this.handleUserNodesFilter.bind(this);
 
     this.state = {
       ...this.state,
@@ -26,16 +32,47 @@ class NodesMain extends Main {
       averageStaked: 0,
       averageRelays: 0,
       loading: true,
+      allNodesTableLoading: false,
+      userNodesTableLoading: false,
     };
+  }
+
+  async handleAllNodesFilter(option) {
+    this.setState({allNodesTableLoading: true});
+
+    const registeredNodes = await NodeService.getAllNodes(
+      NODES_LIMIT,
+      0,
+      BOND_STATUS_STR[option]
+    );
+
+    this.setState({registeredNodes, allNodesTableLoading: false});
+  }
+
+  async handleUserNodesFilter(option) {
+    this.setState({userNodesTableLoading: true});
+
+    const userEmail = UserService.getUserInfo().email;
+
+    const userNodes = await NodeService.getAllUserNodes(
+      userEmail,
+      NODES_LIMIT,
+      0,
+      BOND_STATUS_STR[option]
+    );
+
+    this.setState({
+      userNodes,
+      filteredNodes: userNodes,
+      userNodesTableLoading: false,
+    });
   }
 
   async componentDidMount() {
     // TODO: Replace this object job to retrieve data from nodes instead of apps
     const userEmail = UserService.getUserInfo().email;
 
-    const userNodes = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
-    );
+    const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
 
     const {
       totalApplications: totalNodes,
@@ -43,9 +80,7 @@ class NodesMain extends Main {
       averageStaked,
     } = await ApplicationService.getStakedApplicationSummary();
 
-    const registeredNodes = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT
-    );
+    const registeredNodes = await NodeService.getAllNodes(NODES_LIMIT);
 
     this.setState({
       userNodes,
@@ -66,15 +101,17 @@ class NodesMain extends Main {
       averageRelays,
       registeredNodes: allRegisteredNodes,
       loading,
+      allNodesTableLoading,
+      userNodesTableLoading,
     } = this.state;
 
     const columns = [
       {
-        dataField: "pocketApplication.name",
+        dataField: "pocketNode.name",
         text: "Name",
       },
       {
-        dataField: "pocketApplication.publicPocketAccount.address",
+        dataField: "pocketNode.publicPocketAccount.address",
         text: "Address",
       },
 
@@ -124,7 +161,7 @@ class NodesMain extends Main {
           </Col>
         </Row>
         <Row className="stats mb-4">
-          <InfoCards cards={cards}/>
+          <InfoCards cards={cards} />
         </Row>
         <Row className="mb-4">
           <Col sm="8" md="8" lg="8">
@@ -157,11 +194,11 @@ class NodesMain extends Main {
                 <p style={{fontWeight: "bold", fontSize: "1.2em"}}>
                   Filter by:
                 </p>
-                {/* TODO: Implement sorting on apps */}
                 <AppDropdown
-                  onSelect={(t) => console.log(t)}
+                  onSelect={(status) =>
+                    this.handleUserNodesFilter(status.dataField)
+                  }
                   options={[
-                    {text: "All", dataField: "all"},
                     {text: "Bonded", dataField: "bonded"},
                     {text: "Unbonding", dataField: "unbonding"},
                     {text: "Unbonded", dataField: "unbonded"},
@@ -170,32 +207,34 @@ class NodesMain extends Main {
               </Col>
             </Row>
             <div className="main-list">
-              {filteredNodes.map((app, idx) => {
-                const {name, icon} = app.pocketApplication;
-                const {staked_tokens, status} = app.networkData;
+              <LoadingOverlay active={userNodesTableLoading} spinner>
+                {filteredNodes.map((app, idx) => {
+                  const {name, icon} = app.pocketNode;
+                  const {staked_tokens, status} = app.networkData;
 
-                // TODO: Add network information
-                return (
-                  <PocketElementCard
-                    key={idx}
-                    title={name}
-                    subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                    status={BOND_STATUS[status]}
-                    iconURL={icon}
-                  />
-                );
-              })}
+                  // TODO: Add network information
+                  return (
+                    <PocketElementCard
+                      key={idx}
+                      title={name}
+                      subtitle={`Staked POKT: ${staked_tokens} POKT`}
+                      status={BOND_STATUS[status]}
+                      iconURL={icon}
+                    />
+                  );
+                })}
+              </LoadingOverlay>
             </div>
           </Col>
           <Col sm="4" md="4" lg="4">
             <h2>Registered Nodes</h2>
             <div className="order-by">
               <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Filter by:</p>
-              {/* TODO: Implement sorting on apps */}
               <AppDropdown
-                onSelect={(t) => console.log(t)}
+                onSelect={(status) =>
+                  this.handleAllNodesFilter(status.dataField)
+                }
                 options={[
-                  {text: "All", dataField: "all"},
                   {text: "Bonded", dataField: "bonded"},
                   {text: "Unbonding", dataField: "unbonding"},
                   {text: "Unbonded", dataField: "unbonded"},
@@ -204,10 +243,21 @@ class NodesMain extends Main {
             </div>
             <BootstrapTable
               classes="app-table table-striped"
-              keyField="pocketApplication.publicPocketAccount.address"
+              keyField="pocketNode.publicPocketAccount.address"
               data={registeredNodes}
               columns={columns}
               bordered={false}
+              loading={allNodesTableLoading}
+              noDataIndication={"No nodes found"}
+              overlay={overlayFactory({
+                spinner: true,
+                styles: {
+                  overlay: (base) => ({
+                    ...base,
+                    background: "rgba(0, 0, 0, 0.2)",
+                  }),
+                },
+              })}
             />
           </Col>
         </Row>

@@ -12,6 +12,8 @@ export const BOND_STATUS_STR = {
 
 export const APPLICATIONS_LIMIT = 10;
 
+export const NODES_LIMIT = 10;
+
 export const NETWORK_TABLE_COLUMNS = [
   {
     dataField: "name",
@@ -266,5 +268,5 @@ export const PAYMENT_REGION_OR_COUNTRY = [
   {name: "Western Sahara", code: "EH"},
   {name: "Yemen", code: "YE"},
   {name: "Zambia", code: "ZM"},
-  {name: "Zimbabwe", code: "ZW"}
+  {name: "Zimbabwe", code: "ZW"},
 ];
