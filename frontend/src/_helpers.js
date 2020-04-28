@@ -1,5 +1,6 @@
 import numeral from "numeral";
 import {BOND_STATUS} from "./_constants";
+import Identicon from "identicon.js";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
@@ -29,4 +30,15 @@ export const mapStatusToApp = (app) => {
       status: BOND_STATUS[app.networkData.status],
     },
   };
+};
+
+export const generateIdenticon = () => {
+  const currTime = new Date().getTime();
+
+  // Use current time as a 'hash' to generate icon of 250x250
+  const identicon = `data:image/png;base64,${new Identicon(
+    `${currTime}${currTime / 2}`, 250
+  ).toString()}`;
+
+  return identicon;
 };

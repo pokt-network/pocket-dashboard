@@ -4,6 +4,9 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
+import {generateIdenticon} from "../../../_helpers";
+import UserService from "../../../core/services/PocketUserService";
+import NodeService from "../../../core/services/PocketNodeService";
 
 class CreateNodeForm extends CreateForm {
   constructor(props, context) {
@@ -16,32 +19,54 @@ class CreateNodeForm extends CreateForm {
         ...this.state.data,
         privateKey: "",
       },
-      applicationData: {},
+      nodeData: {},
     };
   }
 
   async handleCreate(e) {
+    // TODO: Implement app import
+
     e.preventDefault();
-    // TODO: Integrate node creation with backend
+    const {name, owner, contactEmail, description} = this.state.data;
+    const icon = this.state.icon ? this.state.icon : generateIdenticon();
+    const user = UserService.getUserInfo().email;
+
+    // TODO: Show proper message on front end to user on validation error
+    if (name === "" || contactEmail === "" || owner === "") {
+      console.log("missing required field");
+      return;
+    }
+
+    const {success, data} = await NodeService.createNode({
+      name,
+      owner,
+      contactEmail,
+      description,
+      icon,
+      user,
+    });
+
+    if (success) {
+      const {privateNodeData} = data;
+      const {address, privateKey} = privateNodeData;
+
+      NodeService.saveNodeInfoInCache({address, privateKey});
+      this.setState({created: true});
+    } else {
+      // TODO: Show proper error message on front-end.
+      console.log(data.message);
+    }
   }
 
   render() {
-    const {
-      name,
-      owner,
-      url,
-      contactEmail,
-      description,
-      privateKey,
-    } = this.state.data;
-    const {created, applicationData} = this.state;
+    const {name, owner, contactEmail, description} = this.state.data;
+    const {created} = this.state;
 
     if (created) {
       return (
         <Redirect
           to={{
-            pathname: _getDashboardPath(DASHBOARD_PATHS.chooseChain),
-            state: {applicationData},
+            pathname: _getDashboardPath(DASHBOARD_PATHS.nodeChainList),
           }}
         />
       );
@@ -71,27 +96,19 @@ class CreateNodeForm extends CreateForm {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <Form.Group>
+              {/* <Form.Group>
                 <Form.Label>Private key</Form.Label>
                 <Form.Control
                   name="privateKey"
                   value={privateKey}
                   onChange={this.handleChange}
                 />
-              </Form.Group>
+              </Form.Group> */}
               <Form.Group>
                 <Form.Label>Application Developer*</Form.Label>
                 <Form.Control
                   name="owner"
                   value={owner}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>URL</Form.Label>
-                <Form.Control
-                  name="url"
-                  value={url}
                   onChange={this.handleChange}
                 />
               </Form.Group>

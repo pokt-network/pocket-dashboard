@@ -2,11 +2,11 @@ import React from "react";
 import {Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
-import Identicon from "identicon.js";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
+import { generateIdenticon } from "../../../_helpers";
 
 class CreateAppForm extends CreateForm {
   constructor(props, context) {
@@ -30,15 +30,8 @@ class CreateAppForm extends CreateForm {
       console.log("missing required field");
     }
 
-    const currTime = new Date().getTime();
-
-    // Use current time as a 'hash' to generate icon of 250x250
-    const identicon = `data:image/png;base64,${new Identicon(
-      `${currTime}${currTime / 2}`, 250
-    ).toString()}`;
-
     if (!icon) {
-      icon = identicon;
+      icon = generateIdenticon();
     }
 
     const user = UserService.getUserInfo().email;

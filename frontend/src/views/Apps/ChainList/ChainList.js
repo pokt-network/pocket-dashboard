@@ -1,7 +1,6 @@
 import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
-import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -51,7 +50,7 @@ class ChooseChain extends Chains {
           </Col>
         </Row>
         <Row>
-          <Col sm="7" md="7" lg="7">
+          <Col>
             <InputGroup className="mb-3">
               <FormControl
                 placeholder="Search chain"
@@ -73,14 +72,6 @@ class ChooseChain extends Chains {
                 </Button>
               </InputGroup.Append>
             </InputGroup>
-          </Col>
-          <Col sm="5" md="5" lg="5" className="order-by">
-            <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Order by:</p>
-            {/* TODO: Implement sorting on chains */}
-            <AppDropdown
-              onSelect={(t) => console.log(t)}
-              options={["All", "Newest", "Oldest"]}
-            />
           </Col>
         </Row>
         <Row>
