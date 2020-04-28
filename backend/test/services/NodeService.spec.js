@@ -63,7 +63,38 @@ describe("NodeService", () => {
       const node = PocketNode.createPocketNode(nodeData);
       const exists = await nodeService.nodeExists(node);
 
-      exists.should.be.equal(true);
+      exists.should.be.true;
+    });
+  });
+
+  describe("deleteNode", () => {
+    const address = "bc28256f5c58611e96d13996cf535bdc0204366a";
+
+    const resultData = {
+      result: {
+        ok: 1
+      }
+    };
+
+    it("Expect success", async () => {
+
+      const persistenceService = sinon.createStubInstance(PersistenceProvider);
+      const stubFilter = {
+        "publicPocketAccount.address": address
+      };
+
+      persistenceService.deleteEntities
+        .withArgs("Nodes", stubFilter)
+        .returns(Promise.resolve(resultData));
+
+      sinon.stub(nodeService, "persistenceService").value(persistenceService);
+
+      const deleted = await nodeService.deleteNode(address);
+
+      // eslint-disable-next-line no-undef
+      should.exist(deleted);
+
+      deleted.should.be.true;
     });
   });
 

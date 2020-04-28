@@ -52,6 +52,27 @@ router.get("import/:nodeAccountAddress", async (request, response) => {
 });
 
 /**
+ * Delete a node from dashboard.
+ */
+router.delete("/:nodeAccountAddress", async (request, response) => {
+  try {
+
+    /** @type {{nodeAccountAddress:string}} */
+    const data = request.params;
+
+    const deleted = await nodeService.deleteNode(data.nodeAccountAddress);
+
+    response.send(deleted);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
  * Get node that is already on dashboard by address.
  */
 router.get("/:nodeAccountAddress", async (request, response) => {
