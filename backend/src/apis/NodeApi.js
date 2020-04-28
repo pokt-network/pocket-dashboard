@@ -1,10 +1,12 @@
 import express from "express";
 import NodeService from "../services/NodeService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
+import PaymentService from "../services/PaymentService";
 
 const router = express.Router();
 
 const nodeService = new NodeService();
+const paymentService = new PaymentService();
 
 /**
  * Create new node.
@@ -115,6 +117,34 @@ router.post("/user", async (request, response) => {
     const nodes = await nodeService.getUserNodes(data.user, limit, offset, stakingStatus);
 
     response.send(nodes);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Stake a node.
+ */
+router.post("/stake", async (request, response) => {
+  try {
+
+    /** @type {{node: {privateKey: string, networkChains: string[], serviceURL: string}, payment:{id: string}}} */
+    const data = request.body;
+    const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
+
+    if (paymentHistory.isSuccessPayment(true)) {
+
+      if (paymentHistory.isNodePaymentItem(true)) {
+        const item = paymentHistory.getItem();
+        const staked = await nodeService.stakeNode(data.node, item.pokt);
+
+        response.send(staked);
+      }
+    }
   } catch (e) {
     const error = {
       message: e.toString()

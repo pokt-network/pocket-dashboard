@@ -4,7 +4,9 @@ import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
 
 /** @type {string} */
-const ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.ACCOUNT_PRIVATE_KEY_WITH_POKT;
+const APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT;
+/** @type {string} */
+const NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT;
 /** @type {string} */
 const NODE_ACCOUNT_IN_NETWORK = process.env.TEST_NODE_ACCOUNT_IN_NETWORK;
 
@@ -123,11 +125,11 @@ describe("PocketService", () => {
     });
   });
 
-  if (ACCOUNT_PRIVATE_KEY_WITH_POKT) {
+  if (APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT) {
     describe("stakeApplication", () => {
       it("Expected a transaction hash successfully", async () => {
         const passPhrase = "testPassphrase";
-        const account = await pocketService.importAccount(ACCOUNT_PRIVATE_KEY_WITH_POKT, passPhrase);
+        const account = await pocketService.importAccount(APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT, passPhrase);
         const poktToStake = "10000000";
         const networkChains = [
           "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
@@ -149,9 +151,52 @@ describe("PocketService", () => {
     describe("unstakeApplication", () => {
       it("Expected a transaction hash successfully", async () => {
         const passPhrase = "testPassphrase";
-        const account = await pocketService.importAccount(ACCOUNT_PRIVATE_KEY_WITH_POKT, passPhrase);
+        const account = await pocketService.importAccount(APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT, passPhrase);
 
         const transaction = await pocketService.unstakeApplication(account, passPhrase);
+
+        // eslint-disable-next-line no-undef
+        should.exist(transaction);
+
+        transaction.should.be.an("object");
+        transaction.logs.should.be.an("array");
+
+        transaction.logs.should.not.to.be.empty;
+        transaction.logs[0].success.should.to.be.true;
+      });
+    });
+  }
+
+  if (NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT) {
+    describe("stakeNode", () => {
+      it("Expected a transaction hash successfully", async () => {
+        const passPhrase = "testPassphrase";
+        const account = await pocketService.importAccount(NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT, passPhrase);
+        const poktToStake = "10000000";
+        const serviceURL = new URL("https://www.pokt.network/");
+        const networkChains = [
+          "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
+        ];
+
+        const transaction = await pocketService.stakeNode(account, passPhrase, poktToStake, networkChains, serviceURL);
+
+        // eslint-disable-next-line no-undef
+        should.exist(transaction);
+
+        transaction.should.be.an("object");
+        transaction.logs.should.be.an("array");
+
+        transaction.logs.should.not.to.be.empty;
+        transaction.logs[0].success.should.to.be.true;
+      });
+    });
+
+    describe("unstakeNode", () => {
+      it("Expected a transaction hash successfully", async () => {
+        const passPhrase = "testPassphrase";
+        const account = await pocketService.importAccount(NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT, passPhrase);
+
+        const transaction = await pocketService.unstakeNode(account, passPhrase);
 
         // eslint-disable-next-line no-undef
         should.exist(transaction);

@@ -242,4 +242,41 @@ export default class NodeService extends BaseService {
 
     return [];
   }
+
+
+  /**
+   * Stake a node on network.
+   *
+   * @param {{privateKey: string, networkChains: string[], serviceURL: string}} node Node to stake.
+   * @param {string} uPoktAmount uPokt amount used to stake.
+   *
+   * @returns {Promise<boolean>} If was staked or not.
+   * @throws Error If private key is not valid or node does not exists on dashboard.
+   */
+  async stakeNode(node, uPoktAmount) {
+    const accountService = new AccountService();
+    const passPhrase = "StakePocketNode";
+
+    const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, passPhrase, node.privateKey);
+
+    const filter = {
+      "publicPocketAccount.address": nodeAccount.addressHex
+    };
+
+    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+
+    if (!nodeDB) {
+      throw Error("Node does not exists on dashboard");
+    }
+
+    try {
+      // Stake node
+      const serviceURL = new URL(node.serviceURL);
+      const transaction = await this.pocketService.stakeNode(nodeAccount, passPhrase, uPoktAmount, node.networkChains, serviceURL);
+
+      return transaction.tx !== undefined;
+    } catch (e) {
+      return false;
+    }
+  }
 }

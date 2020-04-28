@@ -12,7 +12,7 @@ import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
 const nodeService = new NodeService();
 
 /** @type {string} */
-const NODE_PRIVATE_KEY_ON_NETWORK = process.env.TEST_NODE_PRIVATE_KEY_ON_NETWORK;
+const NODE_ACCOUNT_IN_NETWORK = process.env.TEST_NODE_ACCOUNT_IN_NETWORK;
 
 before(() => {
   configureTestService(nodeService);
@@ -67,11 +67,11 @@ describe("NodeService", () => {
     });
   });
 
-  if (NODE_PRIVATE_KEY_ON_NETWORK) {
+  if (NODE_ACCOUNT_IN_NETWORK) {
     describe("importNode", () => {
-      it("Expect an node network data", async () => {
+      it("Expect a node network data", async () => {
 
-        const nodeNetworkData = await nodeService.importNode(NODE_PRIVATE_KEY_ON_NETWORK);
+        const nodeNetworkData = await nodeService.importNode(NODE_ACCOUNT_IN_NETWORK);
 
         // eslint-disable-next-line no-undef
         should.exist(nodeNetworkData);
