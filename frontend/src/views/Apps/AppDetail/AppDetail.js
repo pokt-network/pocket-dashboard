@@ -1,9 +1,9 @@
 import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
-import {Alert, Button, Col, Modal, Row, Badge} from "react-bootstrap";
+import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
-import {NETWORK_TABLE_COLUMNS, BONDSTATUS} from "../../../constants";
+import {NETWORK_TABLE_COLUMNS, BOND_STATUS} from "../../../_constants";
 import "./AppDetail.scss";
 import ApplicationService, {
   PocketApplicationService,
@@ -24,8 +24,10 @@ class AppDetail extends Component {
       chains: [],
       aat: {},
       loading: true,
-      showDeleteModal: false,
+      deleteModal: false,
       deleted: false,
+      message: "",
+      purchase: true,
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -33,6 +35,17 @@ class AppDetail extends Component {
   }
 
   async componentDidMount() {
+    let message;
+    let purchase = true;
+
+    // eslint-disable-next-line react/prop-types
+    if (this.props.location.state) {
+      // eslint-disable-next-line react/prop-types
+      message = this.props.location.state.message;
+      // eslint-disable-next-line react/prop-types
+      purchase = this.props.location.purchase;
+    }
+
     // eslint-disable-next-line react/prop-types
     const {address} = this.props.match.params;
 
@@ -48,12 +61,14 @@ class AppDetail extends Component {
     let aat;
 
     if (freeTier) {
-      aat = await ApplicationService.getFreeTierAppAAT(
-        pocketApplication.publicPocketAccount.address
-      );
+      const {address} = pocketApplication.publicPocketAccount;
+
+      aat = await ApplicationService.getFreeTierAppAAT(address);
     }
 
     this.setState({
+      message,
+      purchase,
       pocketApplication,
       networkData,
       chains,
@@ -63,7 +78,7 @@ class AppDetail extends Component {
   }
 
   async deleteApplication() {
-    const {address} = this.state.networkData;
+    const {address} = this.state.pocketApplication.publicPocketAccount;
 
     const success = await ApplicationService.deleteAppFromDashboard(address);
 
@@ -73,7 +88,7 @@ class AppDetail extends Component {
   }
 
   async unstakeApplication() {
-    const {address} = this.state.networkData;
+    const {address} = this.state.pocketApplication.publicPocketAccount;
     const {freeTier} = this.state.pocketApplication;
 
     if (freeTier) {
@@ -98,22 +113,32 @@ class AppDetail extends Component {
       description,
       icon,
       freeTier,
+      publicPocketAccount,
     } = this.state.pocketApplication;
-    const {
-      jailed,
-      max_relays,
-      staked_tokens,
-      status,
-      public_key,
-      address,
-    } = this.state.networkData;
+    const {maxRelays, stakedTokens, status} = this.state.networkData;
 
-    const {chains, aat, loading, showDeleteModal, deleted} = this.state;
+    let address;
+    let publicKey;
+
+    if (publicPocketAccount) {
+      address = publicPocketAccount.address;
+      publicKey = publicPocketAccount.publicKey;
+    }
+
+    const {
+      chains,
+      aat,
+      loading,
+      deleteModal,
+      deleted,
+      purchase,
+      message,
+    } = this.state;
 
     const generalInfo = [
-      {title: `${formatNumbers(staked_tokens)} POKT`, subtitle: "Stake tokens"},
-      {title: BONDSTATUS[status], subtitle: "Stake status"},
-      {title: formatNumbers(max_relays), subtitle: "Max Relays"},
+      {title: `${formatNumbers(stakedTokens)} POKT`, subtitle: "Stake tokens"},
+      {title: BOND_STATUS[status], subtitle: "Stake status"},
+      {title: formatNumbers(maxRelays), subtitle: "Max Relays"},
     ];
 
     const contactInfo = [
@@ -145,6 +170,15 @@ class AppDetail extends Component {
       <div id="app-detail">
         <Row>
           <Col>
+            {message && (
+              <Alert
+                variant="secondary"
+                onClose={() => this.setState({message: ""})}
+                dismissible
+              >
+                {message}
+              </Alert>
+            )}
             <div className="head">
               {/* eslint-disable-next-line jsx-a11y/alt-text */}
               <img src={icon} className="mr-3" />
@@ -170,14 +204,6 @@ class AppDetail extends Component {
               <InfoCard title={card.title} subtitle={card.subtitle} />
             </Col>
           ))}
-          <Col>
-            <InfoCard title={jailed === 1 ? "YES" : "NO"} subtitle={"Jailed"}>
-              {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-              <a className="link" href="#">
-                Take out of jail
-              </a>
-            </InfoCard>
-          </Col>
         </Row>
         <Row className="contact-info stats">
           {contactInfo.map((card, idx) => (
@@ -187,7 +213,7 @@ class AppDetail extends Component {
                 title={card.title}
                 subtitle={card.subtitle}
               >
-                <span></span>
+                <span />
               </InfoCard>
             </Col>
           ))}
@@ -200,7 +226,7 @@ class AppDetail extends Component {
             </div>
             <div className="info-section">
               <h3>Public Key</h3>
-              <Alert variant="light">{public_key}</Alert>
+              <Alert variant="dark">{publicKey}</Alert>
             </div>
           </Col>
           {freeTier && (
@@ -236,6 +262,7 @@ class AppDetail extends Component {
             <BootstrapTable
               classes="app-table"
               keyField="hash"
+              Purch
               data={chains}
               columns={NETWORK_TABLE_COLUMNS}
               bordered={false}
@@ -252,12 +279,16 @@ class AppDetail extends Component {
               >
                 Unstake
               </Button>
-              <Button variant="secondary" className="ml-3 pr-4 pl-4">
+              <Button
+                variant="secondary"
+                className="ml-3 pr-4 pl-4"
+                disabled={!purchase}
+              >
                 New Purchase
               </Button>
             </div>
             <Button
-              onClick={() => this.setState({showDeleteModal: true})}
+              onClick={() => this.setState({deleteModal: true})}
               variant="link"
               className="link mt-3"
             >
@@ -265,10 +296,10 @@ class AppDetail extends Component {
             </Button>
           </Col>
         </Row>
-
         <Modal
-          show={showDeleteModal}
-          onHide={() => this.setState({showDeleteModal: false})}
+          className="app-modal"
+          show={deleteModal}
+          onHide={() => this.setState({deleteModal: false})}
           animation={false}
           centered
         >
@@ -290,7 +321,7 @@ class AppDetail extends Component {
             <Button
               variant="dark"
               className="pr-4 pl-4"
-              onClick={() => this.setState({showDeleteModal: false})}
+              onClick={() => this.setState({deleteModal: false})}
             >
               Cancel
             </Button>

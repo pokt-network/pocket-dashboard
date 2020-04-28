@@ -13,6 +13,7 @@ import CreateAppForm from "./views/Apps/CreateAppForm/CreateAppForm";
 import TierSelection from "./views/Apps/TierSelection/TierSelection";
 import FreeTier from "./views/FreeTier/FreeTier";
 import ChainList from "./views/Apps/ChainList/ChainList";
+import Import from "./views/Apps/Import/ImportApp";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
@@ -21,7 +22,8 @@ import Profile from "./views/Profile/ProfileLayout/ProfileLayout";
 import ChangePassword from "./views/Profile/ChangePassword/ChangePassword";
 import PaymentHistory from "./views/Profile/PaymentHistory/PaymentHistory";
 import NodesCheckout from "./views/Nodes/NodesCheckout/NodesCheckout";
-
+import CreateNodeForm from "./views/Nodes/CreateNodeForm/CreateNodeForm";
+import NodeChainList from "./views/Nodes/NodeChainList/NodeChainList";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -33,10 +35,11 @@ export const ROUTE_PATHS = {
 };
 
 export const DASHBOARD_PATHS = {
-  home: "/dashboard",
+  home: "/",
   apps: "/apps",
   appDetail: "/apps/detail/:address",
   createAppInfo: "/apps/new",
+  importApp: "/apps/import",
   tierSelection: "/apps/tiers",
   selectRelays: "/apps/relays",
   freeTier: "/apps/free-tier",
@@ -45,6 +48,8 @@ export const DASHBOARD_PATHS = {
   nodes: "/nodes",
   nodesCheckout: "/nodes/checkout",
   profile: "/profile",
+  createNodeForm: "/nodes/new",
+  nodeChainList: "/nodes/chains",
 };
 
 export const PROFILE_PATHS = {
@@ -55,7 +60,7 @@ export const PROFILE_PATHS = {
 
 // Helper anonymous function to render routes within the dashboard router
 export const _getDashboardPath = (path) => {
-  return `${DASHBOARD_PATHS.home}${path}`;
+  return `${ROUTE_PATHS.home}${path}`;
 };
 
 /**
@@ -123,6 +128,18 @@ export const dashboardRoutes = [
     component: CreateAppForm,
   },
   {
+    path: DASHBOARD_PATHS.createNodeForm,
+    exact: true,
+    name: "Create New Node",
+    component: CreateNodeForm,
+  },
+  {
+    path: DASHBOARD_PATHS.nodeChainList,
+    exact: true,
+    name: "Nodes Chain List",
+    component: NodeChainList,
+  },
+  {
     path: DASHBOARD_PATHS.nodes,
     exact: true,
     name: "Nodes",
@@ -133,6 +150,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Nodes Checkout",
     component: NodesCheckout,
+  },
+  {
+    path: DASHBOARD_PATHS.importApp,
+    exact: true,
+    name: "Import App",
+    component: Import,
   },
   {
     path: DASHBOARD_PATHS.chooseChain,

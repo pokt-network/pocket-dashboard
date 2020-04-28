@@ -1,0 +1,14 @@
+$payment-input-colors: (
+  border: #ced4da
+);
+
+.payment-container {
+  .payment-input {
+    height: 38px;
+    border: 1px solid map_get($payment-input-colors, border);
+    border-radius: 0.25rem;
+
+    padding: 11px 15px 11px 11px;
+  }
+}
+

@@ -9,8 +9,9 @@
     }
   }
 
-  .table {
+  .react-bootstrap-table {
     max-height: 55vh;
-    overflow-y: scroll;
+    overflow: hidden;
+    overflow-y: auto;
   }
 }

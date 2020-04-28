@@ -205,7 +205,8 @@ input {
   }
 }
 
-a.link {
+a.link,
+button.link {
   color: #343A41;
   text-decoration: underline;
 }
@@ -228,7 +229,7 @@ a.link {
 
     td {
       border-top: 1px solid transparent;
-        overflow-wrap: anywhere;
+      overflow-wrap: anywhere;
     }
   }
 
@@ -278,6 +279,16 @@ a.link {
   p {
     font-size: 1.2em;
     font-weight: 300;
+  }
+}
+
+.app-modal {
+  .modal-header {
+    border-bottom: 0;
+  }
+
+  .modal-footer {
+    border-top: 0;
   }
 }
 

@@ -2,7 +2,7 @@
 import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
-import {STYLING} from "../../../constants";
+import {STYLING} from "../../../_constants";
 import PropTypes from "prop-types";
 import "./LabelToggle.scss";
 

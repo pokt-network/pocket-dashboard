@@ -14,11 +14,6 @@ module.exports = {
     publicPath: "/",
     filename: "[name].js"
   },
-  optimization: {
-    splitChunks: {
-      chunks: "all"
-    }
-  },
   target: "web",
   devtool: "inline-source-map",
   node: {

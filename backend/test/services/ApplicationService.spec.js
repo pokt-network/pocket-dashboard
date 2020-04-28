@@ -1,12 +1,13 @@
 import {before, describe, it} from "mocha";
 import "chai/register-should";
 import ApplicationService from "../../src/services/ApplicationService";
-import {ApplicationPrivatePocketAccount, PocketApplication} from "../../src/models/Application";
+import {PrivatePocketAccount} from "../../src/models/Account";
 import {Application, StakingStatus} from "@pokt-network/pocket-js";
 import {configureTestService} from "../setupTests";
 import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
 import sinon from "sinon";
 import {assert, expect} from "chai";
+import {PocketApplication} from "../../src/models/Application";
 
 /** @type {string} */
 const FREE_TIER_APPLICATION_PRIVATE_KEY = process.env.FREE_TIER_APPLICATION_PRIVATE_KEY;
@@ -25,7 +26,7 @@ describe("ApplicationService", () => {
 
   describe("createApplication", () => {
     it("Expect an application successfully created", async () => {
-      const applicationData = {
+      const data = {
         name: "Test application",
         owner: "Tester",
         url: "http://example.com",
@@ -34,8 +35,8 @@ describe("ApplicationService", () => {
         description: "A test application"
       };
 
-      /** @type {{privateApplicationData: ApplicationPrivatePocketAccount, networkData:Application}} */
-      const applicationResult = await applicationService.createApplication(applicationData) || false;
+      /** @type {{privateApplicationData: PrivatePocketAccount, networkData:Application}} */
+      const applicationResult = await applicationService.createApplication(data);
 
       // eslint-disable-next-line no-undef
       should.exist(applicationResult);
@@ -154,10 +155,10 @@ describe("ApplicationService", () => {
   });
 
   if (APPLICATION_PRIVATE_KEY_ON_NETWORK) {
-    describe("getApplicationNetworkData", () => {
+    describe("importApplication", () => {
       it("Expect an application network data", async () => {
 
-        const applicationNetworkData = await applicationService.getApplicationNetworkData(APPLICATION_PRIVATE_KEY_ON_NETWORK);
+        const applicationNetworkData = await applicationService.importApplication(APPLICATION_PRIVATE_KEY_ON_NETWORK);
 
         // eslint-disable-next-line no-undef
         should.exist(applicationNetworkData);
@@ -167,14 +168,14 @@ describe("ApplicationService", () => {
     });
   }
 
-  describe("getApplicationNetworkData with invalid address", () => {
+  describe("importApplication with invalid address", () => {
     it("Expect an error", async () => {
 
       try {
-        await applicationService.getApplicationNetworkData("NOT_VALID_ADDRESS");
+        await applicationService.importApplication("NOT_VALID_ADDRESS");
         assert.fail();
       } catch (e) {
-        expect(e.message).to.be.equal("Application account is invalid");
+        expect(e.message).to.be.equal("Invalid Address Hex");
       }
     });
   });

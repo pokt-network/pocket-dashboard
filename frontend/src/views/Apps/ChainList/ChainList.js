@@ -1,25 +1,17 @@
-import React, {Component} from "react";
+import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
-import "./ChainList.scss";
-import {Button, Col, Row, FormControl, InputGroup} from "react-bootstrap";
+import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {NETWORK_TABLE_COLUMNS} from "../../../constants";
-import NetworkService from "../../../core/services/PocketNetworkService";
+import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
 import ApplicationService from "../../../core/services/PocketApplicationService";
-import {DASHBOARD_PATHS, _getDashboardPath} from "../../../_routes";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import Chains from "../../../core/components/Chains/Chains";
 
-class ChooseChain extends Component {
+class ChooseChain extends Chains {
   constructor(props, context) {
     super(props, context);
 
-    this.onRowSelect = this.onRowSelect.bind(this);
-    this.onRowSelectAll = this.onRowSelectAll.bind(this);
     this.handleChains = this.handleChains.bind(this);
-
-    this.state = {
-      chains: [],
-      chosenChains: [],
-    };
   }
 
   handleChains() {
@@ -32,38 +24,9 @@ class ChooseChain extends Component {
     this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.tierSelection));
   }
 
-  async componentDidMount() {
-    const chains = await NetworkService.getAvailableNetworkChains();
-
-    this.setState({chains});
-  }
-
-  onRowSelect(row, isSelect, rowIndex, e) {
-    let {chosenChains} = this.state;
-
-    if (isSelect) {
-      chosenChains = [...chosenChains, row];
-    } else {
-      chosenChains = chosenChains.filter((chain) => chain.hash !== row.hash);
-    }
-
-    this.setState({chosenChains});
-  }
-
-  onRowSelectAll(isSelect, rows, e) {
-    let {chosenChains} = this.state;
-
-    if (isSelect) {
-      chosenChains = rows;
-    } else {
-      chosenChains = [];
-    }
-
-    this.setState({chosenChains});
-  }
-
   render() {
-    const {chains} = this.state;
+    const {chains: allChains, filteredChains} = this.state;
+    const chains = filteredChains.length === 0 ? allChains : filteredChains;
 
     // BoostrapTable selectionParams
     const tableSelectOptions = {
@@ -91,19 +54,19 @@ class ChooseChain extends Component {
           <Col sm="7" md="7" lg="7">
             <InputGroup className="mb-3">
               <FormControl
-                placeholder="Search app"
-                name="searchQuery"
+                placeholder="Search chain"
+                name="searchChainQuery"
                 onChange={this.handleChange}
                 onKeyPress={({key}) => {
                   if (key === "Enter") {
-                    this.handleAppSearch();
+                    this.handleChainSearch();
                   }
                 }}
               />
               <InputGroup.Append>
                 <Button
                   type="submit"
-                  onClick={this.handleAppSearch}
+                  onClick={this.handleChainSearch}
                   variant="dark"
                 >
                   Search

@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React from "react";
 import {Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
@@ -6,50 +6,59 @@ import Identicon from "identicon.js";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import "./CreateAppForm.scss";
+import CreateForm from "../../../core/components/CreateForm/CreateForm";
+import {BOND_STATUS_STR} from "../../../_constants";
 
-class CreateAppForm extends Component {
+class CreateAppForm extends CreateForm {
   constructor(props, context) {
     super(props, context);
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleDrop = this.handleDrop.bind(this);
     this.handleCreate = this.handleCreate.bind(this);
-
+    this.createApplication = this.createApplication.bind(this);
     this.state = {
-      data: {
-        name: "",
-        owner: "",
-        url: "",
-        contactEmail: "",
-        description: "",
-      },
-      icon: "",
+      ...this.state,
       applicationData: {},
-      created: false,
+      redirectPath: "",
+      redirectParams: {},
     };
   }
 
-  async handleDrop(img) {
-    // Fetch image blob data and converts it to base64
-    const blob = await fetch(img).then((r) => r.blob());
+  async createApplication(applicationData) {
+    const {
+      imported,
+      stakeStatus,
+      address,
+      privateKey,
+    } = this.props.location.state;
 
-    const reader = new FileReader();
+    const {success, data} = imported
+      ? await ApplicationService.createApplication(applicationData, privateKey)
+      : await ApplicationService.createApplication(applicationData);
 
-    reader.readAsDataURL(blob);
+    const unstakedApp =
+      !imported ||
+      (imported &&
+        (stakeStatus === BOND_STATUS_STR.unbonded ||
+          stakeStatus === BOND_STATUS_STR.unbonding));
 
-    reader.onloadend = () => {
-      const base64data = reader.result;
+    if (unstakedApp) {
+      this.setState({
+        redirectPath: _getDashboardPath(DASHBOARD_PATHS.chooseChain),
+      });
+    } else {
+      const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
 
-      this.setState({icon: base64data});
-    };
-  }
+      const detail = url.replace(":address", address);
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
-
-    data[input.name] = input.value;
-    this.setState({data});
+      this.setState({
+        redirectPath: detail,
+        redirectParams: {
+          message: "For new purchase first unstake please!",
+          purchase: false,
+        },
+      });
+    }
+    return {success, data};
   }
 
   async handleCreate(e) {
@@ -76,50 +85,45 @@ class CreateAppForm extends Component {
 
     const user = UserService.getUserInfo().email;
 
-    const {success, data} = await ApplicationService.createApplication(
-      name, owner, url, contactEmail, description, icon, user
-    );
+    const {success, data} = await this.createApplication({
+      name,
+      owner,
+      url,
+      contactEmail,
+      description,
+      icon,
+      user,
+    });
 
     if (success) {
-      const {privateApplicationData, networkData} = data;
-      const applicationData = {
-        address: privateApplicationData.address,
-        privateKey: privateApplicationData.privateKey,
-        stakedTokens: networkData.staked_tokens,
-        maxRelays: networkData.max_relays,
-        status: networkData.status,
-        jailed: networkData.jailed,
-      };
+      const {privateApplicationData} = data;
+      const {address, privateKey} = privateApplicationData;
 
-      ApplicationService.saveAppInfoInCache({
-        address: applicationData.address,
-        privateKey: applicationData.privateKey,
-      });
-      this.setState({applicationData, created: true});
+      ApplicationService.saveAppInfoInCache({address, privateKey});
+      this.setState({created: true});
     } else {
       // TODO: Show proper error message on front-end.
-      console.log(data.response.data.message);
+      console.log(data);
     }
   }
 
-  state = {};
   render() {
     const {name, owner, url, contactEmail, description} = this.state.data;
-    const {created, applicationData} = this.state;
+    const {created, redirectPath, redirectParams} = this.state;
 
     if (created) {
       return (
         <Redirect
           to={{
-            pathname:_getDashboardPath(DASHBOARD_PATHS.chooseChain),
-            state: {applicationData},
+            pathname: redirectPath,
+            state: redirectParams,
           }}
         />
       );
     }
 
     return (
-      <div id="create-app-info">
+      <div id="create-form">
         <Row>
           <Col sm="3" md="3" lg="3">
             <h1>App Information</h1>
@@ -205,7 +209,9 @@ class CreateAppForm extends Component {
                   By continuing you agree to Pocket&apos;s <br />
                   {/*TODO: Add terms and conditions link*/}
                   {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-                  <a className="link" href="#">Terms and conditions</a>
+                  <a className="link" href="#">
+                    Terms and conditions
+                  </a>
                 </p>
               </div>
             </Form>

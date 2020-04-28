@@ -7,18 +7,24 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {APPLICATIONS_LIMIT, BONDSTATUS, STYLING} from "../../../constants";
+import {APPLICATIONS_LIMIT, BOND_STATUS, STYLING} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
-import Main from "../../components/Main/Main";
-import {formatNumbers} from "../../../_helpers";
+import Main from "../../../core/components/Main/Main";
+import {formatNumbers, mapStatusToApp} from "../../../_helpers";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSearch, faBoxOpen} from "@fortawesome/free-solid-svg-icons";
 import Segment from "../../../core/components/Segment/Segment";
+import {BOND_STATUS_STR} from "../../../_constants";
+import overlayFactory from "react-bootstrap-table2-overlay";
+import LoadingOverlay from "react-loading-overlay";
 
 class AppsMain extends Main {
   constructor(props, context) {
     super(props, context);
+
+    this.handleAllAppsFilter = this.handleAllAppsFilter.bind(this);
+    this.handleUserAppsFilter = this.handleUserAppsFilter.bind(this);
 
     this.state = {
       ...this.state,
@@ -29,6 +35,8 @@ class AppsMain extends Main {
       averageStaked: 0,
       averageRelays: 0,
       loading: true,
+      allAppsTableLoading: false,
+      userAppsTableLoading: false,
     };
   }
 
@@ -36,8 +44,7 @@ class AppsMain extends Main {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail,
-      APPLICATIONS_LIMIT
+      userEmail, APPLICATIONS_LIMIT
     );
 
     const {
@@ -61,6 +68,32 @@ class AppsMain extends Main {
     });
   }
 
+  async handleAllAppsFilter(option) {
+    this.setState({allAppsTableLoading: true});
+
+    const registeredApps = await ApplicationService.getAllApplications(
+      APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
+    );
+
+    this.setState({registeredApps, allAppsTableLoading: false});
+  }
+
+  async handleUserAppsFilter(option) {
+    this.setState({userAppsTableLoading: true});
+
+    const userEmail = UserService.getUserInfo().email;
+
+    const userApps = await ApplicationService.getAllUserApplications(
+      userEmail, APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
+    );
+
+    this.setState({
+      userApps,
+      filteredUserApps: userApps,
+      userAppsTableLoading: false,
+    });
+  }
+
   render() {
     const {
       totalApplications,
@@ -69,6 +102,8 @@ class AppsMain extends Main {
       averageRelays,
       registeredApps: allRegisteredApps,
       loading,
+      allAppsTableLoading,
+      userAppsTableLoading,
     } = this.state;
 
     const columns = [
@@ -90,15 +125,7 @@ class AppsMain extends Main {
       },
     ];
 
-    const registeredApps = allRegisteredApps.map((app) => {
-      return {
-        ...app,
-        networkData: {
-          ...app.networkData,
-          status: BONDSTATUS[app.networkData.status],
-        },
-      };
-    });
+    const registeredApps = allRegisteredApps.map(mapStatusToApp);
 
     const cards = [
       {title: formatNumbers(totalApplications), subtitle: "Total of apps"},
@@ -135,20 +162,27 @@ class AppsMain extends Main {
                 Import App
               </Button>
             </Link>
+            <Link to={_getDashboardPath(DASHBOARD_PATHS.importApp)}>
+              <Button variant="secondary" size={"md"} className="pl-4 pr-4">
+                Import app
+              </Button>
+            </Link>
           </Col>
         </Row>
         <Row className="stats mb-4">
-          <InfoCards cards={cards}></InfoCards>
+          <InfoCards cards={cards} />
         </Row>
         <Row className="mb-4">
           <Col sm="6" md="6" lg="6">
             <Segment
               label="MY APPS"
-              dropdownOnSelect={(t) => console.log(t)}
+              dropdownOnSelect={(status) =>
+                this.handleUserAppsFilter(status.dataField)
+              }
               dropdownOptions={[
-                {text: "All", dataField: "all"},
-                {text: "Newest", dataField: "newest"},
-                {text: "Oldest", dataField: "oldest"},
+                {text: "Bonded", dataField: "bonded"},
+                {text: "Unbonding", dataField: "unbonding"},
+                {text: "Unbonded", dataField: "unbonded"},
               ]}
             >
               <InputGroup className="search-input mb-3">
@@ -173,6 +207,7 @@ class AppsMain extends Main {
                 </InputGroup.Append>
               </InputGroup>
               <div className="main-list">
+              <LoadingOverlay active={userAppsTableLoading} spinner>
                 {filteredUserApps.length > 0 ? (
                   filteredUserApps.map((app, idx) => {
                     const {name, icon} = app.pocketApplication;
@@ -194,7 +229,7 @@ class AppsMain extends Main {
                         <PocketElementCard
                           title={name}
                           subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                          status={BONDSTATUS[status]}
+                          status={BOND_STATUS[status]}
                           iconURL={icon}
                         />
                       </Link>
@@ -212,26 +247,40 @@ class AppsMain extends Main {
                     </p>
                   </div>
                 )}
+                </LoadingOverlay>
               </div>
             </Segment>
           </Col>
           <Col sm="6" md="6" lg="6">
             <Segment
               label="REGISTERED APPS"
-              dropdownOnSelect={(t) => console.log(t)}
+              dropdownOnSelect={(status) =>
+                this.handleAllAppsFilter(status.dataField)
+              }
               dropdownOptions={[
-                {text: "All", dataField: "all"},
-                {text: "Newest", dataField: "newest"},
-                {text: "Oldest", dataField: "oldest"},
+                {text: "Bonded", dataField: "bonded"},
+                {text: "Unbonding", dataField: "unbonding"},
+                {text: "Unbonded", dataField: "unbonded"},
               ]}
             >
-              <BootstrapTable
-                classes="app-table"
-                keyField="pocketApplication.publicPocketAccount.address"
-                data={registeredApps}
-                columns={columns}
-                bordered={false}
-              />
+            <BootstrapTable
+              classes="table app-table table-striped"
+              keyField="pocketApplication.publicPocketAccount.address"
+              data={registeredApps}
+              columns={columns}
+              bordered={false}
+              loading={allAppsTableLoading}
+              noDataIndication={"No apps found"}
+              overlay={overlayFactory({
+                spinner: true,
+                styles: {
+                  overlay: (base) => ({
+                    ...base,
+                    background: "rgba(0, 0, 0, 0.2)",
+                  }),
+                },
+              })}
+            />
             </Segment>
           </Col>
         </Row>
