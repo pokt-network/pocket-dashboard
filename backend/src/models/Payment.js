@@ -186,7 +186,7 @@ export class PaymentHistory {
   }
 
   /**
-   * @returns {{account: string, name: string, pokt: number, type: string}} Payment item.
+   * @returns {{account: string, name: string, pokt: string, type: string}} Payment item.
    */
   getItem() {
     return this.item;

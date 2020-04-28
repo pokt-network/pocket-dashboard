@@ -70,7 +70,7 @@ router.post("/payment_methods", async (request, response) => {
  */
 router.post("/new_intent/apps", async (request, response) => {
   try {
-    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, pokt:number}, amount: number}} */
+    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, pokt:string}, amount: number}} */
     const data = request.body;
 
     const paymentIntent = await paymentService.createPocketPaymentIntentForApps(data.type, data.currency, data.item, data.amount);
