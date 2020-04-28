@@ -113,7 +113,7 @@ router.get("/summary/staked", async (request, response) => {
 /**
  * Import application from network.
  */
-router.get("import/:applicationAccountAddress", async (request, response) => {
+router.get("/import/:applicationAccountAddress", async (request, response) => {
   try {
     /** @type {{applicationAccountAddress:string}} */
     const data = request.params;
