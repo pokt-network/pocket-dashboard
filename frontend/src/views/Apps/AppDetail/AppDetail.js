@@ -114,7 +114,7 @@ class AppDetail extends Component {
       freeTier,
       publicPocketAccount,
     } = this.state.pocketApplication;
-    const {max_relays, staked_tokens, status} = this.state.networkData;
+    const {maxRelays, stakedTokens, status} = this.state.networkData;
 
     let address;
     let publicKey;
@@ -135,9 +135,9 @@ class AppDetail extends Component {
     } = this.state;
 
     const generalInfo = [
-      {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
+      {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
       {title: BOND_STATUS[status], subtitle: "Stake status"},
-      {title: max_relays, subtitle: "Max Relays"},
+      {title: maxRelays, subtitle: "Max Relays"},
     ];
 
     const contactInfo = [
