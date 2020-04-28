@@ -216,4 +216,22 @@ export default class PaymentService extends BaseService {
     return [];
   }
 
+  /**
+   * Get Payment data from history.
+   *
+   * @param {string} paymentID Payment ID.
+   *
+   * @returns {Promise<PaymentHistory>} Payment data of the payment id.
+   * @async
+   */
+  async getPaymentFromHistory(paymentID) {
+    const filter = {paymentID};
+    const dbPaymentHistory = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
+
+    if (dbPaymentHistory) {
+      return PaymentHistory.createPaymentHistory(dbPaymentHistory);
+    }
+
+    return null;
+  }
 }

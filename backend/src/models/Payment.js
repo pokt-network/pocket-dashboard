@@ -167,13 +167,62 @@ export class PaymentHistory {
    * @param {number} paymentHistoryData.amount Amount.
    * @param {*} paymentHistoryData.item Item
    * @param {string} paymentHistoryData.user User.
+   * @param {string} [paymentHistoryData.paymentMethodID] User.
+   * @param {BillingDetails} [paymentHistoryData.billingDetails] Billing details.
+   * @param {string} [paymentHistoryData.status] Status.
    *
    * @returns {PaymentHistory} A new Payment history.
    * @static
    */
   static createPaymentHistory(paymentHistoryData) {
-    const {createdDate, paymentID, currency, amount, item, user} = paymentHistoryData;
+    const {createdDate, paymentID, currency, amount, item, user, paymentMethodID, billingDetails, status} = paymentHistoryData;
+    const paymentHistory = new PaymentHistory(createdDate, paymentID, currency, amount, item, user);
 
-    return new PaymentHistory(createdDate, paymentID, currency, amount, item, user);
+    paymentHistory.paymentMethodID = paymentMethodID;
+    paymentHistory.billingDetails = billingDetails;
+    paymentHistory.status = status;
+
+    return paymentHistory;
+  }
+
+  /**
+   * @returns {{account: string, name: string, pokt: number, type: string}} Payment item.
+   */
+  getItem() {
+    return this.item;
+  }
+
+  /**
+   * @param {boolean} throwError Throw an error if item is not a node.
+   *
+   * @returns {boolean} If payment item is a node or not.
+   * @throws Error if throwError is true and payment item is not a node.
+   */
+  isNodePaymentItem(throwError = false) {
+    /** @type {string} */
+    const type = this.item.type;
+    const isNode = type.toLowerCase() === "node";
+
+    if (throwError && !isNode) {
+      throw Error("The payment item is not a node");
+    }
+
+    return isNode;
+  }
+
+  /**
+   * @param {boolean} throwError Throw an error if is not succeed.
+   *
+   * @returns {boolean} If payment was succeeded or not.
+   * @throws Error if throwError is true and payment is not success.
+   */
+  isSuccessPayment(throwError = false) {
+    const succeeded = this.status === "succeeded";
+
+    if (throwError && !succeeded) {
+      throw Error("The payment is not succeed");
+    }
+
+    return succeeded;
   }
 }
