@@ -1,10 +1,11 @@
 import React, {Component} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBell} from "@fortawesome/free-solid-svg-icons";
+import {faBell} from "@fortawesome/free-regular-svg-icons";
 import "./Notifications.scss";
 import {PropTypes} from "prop-types";
 import {Dropdown} from "react-bootstrap";
 import Notification from "./Notification";
+import {STYLING} from "../../../_constants";
 
 // eslint-disable-next-line react/display-name
 const NotificationToggle = React.forwardRef(({children, onClick}, ref) => (
@@ -18,7 +19,7 @@ const NotificationToggle = React.forwardRef(({children, onClick}, ref) => (
     }}
   >
     <span className="badge badge-secondary">{children}</span>
-    <FontAwesomeIcon size="2x" icon={faBell} />
+    <FontAwesomeIcon size="2x" color={STYLING.primaryColor} icon={faBell} />
   </span>
 ));
 
@@ -41,7 +42,7 @@ class NotificationIcon extends Component {
           2
         </Dropdown.Toggle>
 
-        <Dropdown.Menu>
+        <Dropdown.Menu className="notifications">
           <Notification time="1 hour ago">
             <p>Your app APP_NAME is in the unbonding process</p>
           </Notification>

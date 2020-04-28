@@ -7,9 +7,16 @@
     left: 40px;
     bottom: 0;
   }
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .notification {
+  margin-left: 15px;
+
   p {
     margin-bottom: 0;
   }

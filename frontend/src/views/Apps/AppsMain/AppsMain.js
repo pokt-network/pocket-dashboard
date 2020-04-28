@@ -18,6 +18,7 @@ import Segment from "../../../core/components/Segment/Segment";
 import {BOND_STATUS_STR} from "../../../_constants";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
+import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 
 class AppsMain extends Main {
   constructor(props, context) {
@@ -136,6 +137,26 @@ class AppsMain extends Main {
       },
     ];
 
+    const filterOptions = [
+      {text: "Bonded", dataField: "bonded"},
+      {text: "Unbonding", dataField: "unbonding"},
+      {text: "Unbonded", dataField: "unbonded"},
+    ];
+
+    const userAppsDropdown = (
+      <AppDropdown
+        onSelect={(status) => this.handleUserAppsFilter(status.dataField)}
+        options={filterOptions}
+      />
+    );
+
+    const allAppsDropdown = (
+      <AppDropdown
+        onSelect={(status) => this.handleAllAppsFilter(status.dataField)}
+        options={filterOptions}
+      />
+    );
+
     if (loading) {
       return <Loader />;
     }
@@ -157,13 +178,8 @@ class AppsMain extends Main {
                 Create New App
               </Button>
             </Link>
-            <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
-              <Button variant="primary" className="pl-4 pr-4">
-                Import App
-              </Button>
-            </Link>
             <Link to={_getDashboardPath(DASHBOARD_PATHS.importApp)}>
-              <Button variant="secondary" size={"md"} className="pl-4 pr-4">
+              <Button variant="primary" size={"md"} className="pl-4 pr-4">
                 Import app
               </Button>
             </Link>
@@ -174,17 +190,7 @@ class AppsMain extends Main {
         </Row>
         <Row className="mb-4">
           <Col sm="6" md="6" lg="6">
-            <Segment
-              label="MY APPS"
-              dropdownOnSelect={(status) =>
-                this.handleUserAppsFilter(status.dataField)
-              }
-              dropdownOptions={[
-                {text: "Bonded", dataField: "bonded"},
-                {text: "Unbonding", dataField: "unbonding"},
-                {text: "Unbonded", dataField: "unbonded"},
-              ]}
-            >
+            <Segment label="MY APPS" sideItem={userAppsDropdown}>
               <InputGroup className="search-input mb-3">
                 <FormControl
                   placeholder="Search app"
@@ -207,80 +213,72 @@ class AppsMain extends Main {
                 </InputGroup.Append>
               </InputGroup>
               <div className="main-list">
-              <LoadingOverlay active={userAppsTableLoading} spinner>
-                {filteredUserApps.length > 0 ? (
-                  filteredUserApps.map((app, idx) => {
-                    const {name, icon} = app.pocketApplication;
-                    const {staked_tokens, status} = app.networkData;
-                    const {address} = app.pocketApplication.publicPocketAccount;
+                <LoadingOverlay active={userAppsTableLoading} spinner>
+                  {filteredUserApps.length > 0 ? (
+                    filteredUserApps.map((app, idx) => {
+                      const {name, icon} = app.pocketApplication;
+                      const {staked_tokens, status} = app.networkData;
+                      const {
+                        address,
+                      } = app.pocketApplication.publicPocketAccount;
 
-                    // TODO: Add network information
-                    return (
-                      <Link
-                        key={idx}
-                        to={() => {
-                          const url = _getDashboardPath(
-                            DASHBOARD_PATHS.appDetail
-                          );
+                      // TODO: Add network information
+                      return (
+                        <Link
+                          key={idx}
+                          to={() => {
+                            const url = _getDashboardPath(
+                              DASHBOARD_PATHS.appDetail
+                            );
 
-                          return url.replace(":address", address);
-                        }}
-                      >
-                        <PocketElementCard
-                          title={name}
-                          subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                          status={BOND_STATUS[status]}
-                          iconURL={icon}
-                        />
-                      </Link>
-                    );
-                  })
-                ) : (
-                  <div className="empty-overlay">
-                    <FontAwesomeIcon
-                      className="icon"
-                      size="7x"
-                      icon={faBoxOpen}
-                    />
-                    <p>
-                      You have not created or <br /> imported any app yet!
-                    </p>
-                  </div>
-                )}
+                            return url.replace(":address", address);
+                          }}
+                        >
+                          <PocketElementCard
+                            title={name}
+                            subtitle={`Staked POKT: ${staked_tokens} POKT`}
+                            status={BOND_STATUS[status]}
+                            iconURL={icon}
+                          />
+                        </Link>
+                      );
+                    })
+                  ) : (
+                    <div className="empty-overlay">
+                      <FontAwesomeIcon
+                        className="icon"
+                        size="7x"
+                        icon={faBoxOpen}
+                      />
+                      <p>
+                        You have not created or <br /> imported any app yet!
+                      </p>
+                    </div>
+                  )}
                 </LoadingOverlay>
               </div>
             </Segment>
           </Col>
           <Col sm="6" md="6" lg="6">
-            <Segment
-              label="REGISTERED APPS"
-              dropdownOnSelect={(status) =>
-                this.handleAllAppsFilter(status.dataField)
-              }
-              dropdownOptions={[
-                {text: "Bonded", dataField: "bonded"},
-                {text: "Unbonding", dataField: "unbonding"},
-                {text: "Unbonded", dataField: "unbonded"},
-              ]}
-            >
-            <BootstrapTable
-              classes="table app-table table-striped"
-              keyField="pocketApplication.publicPocketAccount.address"
-              data={registeredApps}
-              columns={columns}
-              bordered={false}
-              loading={allAppsTableLoading}
-              noDataIndication={"No apps found"}
-              overlay={overlayFactory({
-                spinner: true,
-                styles: {
-                  overlay: (base) => ({
-                    ...base,
-                    background: "rgba(0, 0, 0, 0.2)",
-                  }),
-                },
-              })}
-            />
+            <Segment label="REGISTERED APPS" sideItem={allAppsDropdown}>
+              <BootstrapTable
+                classes="table app-table table-striped"
+                keyField="pocketApplication.publicPocketAccount.address"
+                data={registeredApps}
+                columns={columns}
+                bordered={false}
+                loading={allAppsTableLoading}
+                noDataIndication={"No apps found"}
+                overlay={overlayFactory({
+                  spinner: true,
+                  styles: {
+                    overlay: (base) => ({
+                      ...base,
+                      background: "rgba(0, 0, 0, 0.2)",
+                    }),
+                  },
+                })}
+              />
             </Segment>
           </Col>
         </Row>
