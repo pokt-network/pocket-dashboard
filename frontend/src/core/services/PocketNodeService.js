@@ -77,6 +77,19 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
+   * Get node.
+   *
+   * @param {string} nodeAddress Node address in hex.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getNode(nodeAddress) {
+    return axios
+      .get(this._getURL(`${nodeAddress}`))
+      .then((response) => response.data);
+  }
+
+  /**
    * Get all available applications.
    *
    * @param {number} limit Limit of query.

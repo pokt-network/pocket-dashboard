@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
 import "./NodesMain.scss";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
@@ -136,14 +137,15 @@ class NodesMain extends Main {
             lg="4"
             className="d-flex justify-content-end general-info"
           >
-            <Button
-              href={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}
-              variant="dark"
-              size={"md"}
-              className="ml-4 pl-4 pr-4 mr-3"
-            >
-              Create new node
-            </Button>
+            <Link to={_getDashboardPath(DASHBOARD_PATHS.createNodeForm)}>
+              <Button
+                variant="dark"
+                size={"md"}
+                className="ml-4 pl-4 pr-4 mr-3"
+              >
+                Create new node
+              </Button>
+            </Link>
             <Button variant="secondary" size={"md"} className="pl-4 pr-4">
               Import node
             </Button>
@@ -199,14 +201,14 @@ class NodesMain extends Main {
               <LoadingOverlay active={userItemsTableLoading} spinner>
                 {filteredItems.map((app, idx) => {
                   const {name, icon} = app.pocketNode;
-                  const {staked_tokens, status} = app.networkData;
+                  const {stakedTokens, status} = app.networkData;
 
                   // TODO: Add network information
                   return (
                     <PocketElementCard
                       key={idx}
                       title={name}
-                      subtitle={`Staked POKT: ${staked_tokens} POKT`}
+                      subtitle={`Staked POKT: ${stakedTokens} POKT`}
                       status={BOND_STATUS[status]}
                       iconURL={icon}
                     />

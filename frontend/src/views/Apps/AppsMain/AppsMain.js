@@ -212,14 +212,14 @@ class AppsMain extends Main {
               <LoadingOverlay active={userItemsTableLoading} spinner>
                 {filteredItems.map((app, idx) => {
                   const {name, icon} = app.pocketApplication;
-                  const {staked_tokens, status} = app.networkData;
+                  const {stakedTokens, status} = app.networkData;
 
                   // TODO: Add network information
                   return (
                     <PocketElementCard
                       key={idx}
                       title={name}
-                      subtitle={`Staked POKT: ${staked_tokens} POKT`}
+                      subtitle={`Staked POKT: ${stakedTokens} POKT`}
                       status={BOND_STATUS[status]}
                       iconURL={icon}
                     />
