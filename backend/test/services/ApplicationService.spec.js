@@ -10,11 +10,11 @@ import {assert, expect} from "chai";
 import {PocketApplication} from "../../src/models/Application";
 
 /** @type {string} */
-const FREE_TIER_APPLICATION_PRIVATE_KEY = process.env.FREE_TIER_APPLICATION_PRIVATE_KEY;
+const FREE_TIER_APPLICATION_PRIVATE_KEY = process.env.TEST_FREE_TIER_APPLICATION_PRIVATE_KEY;
 /** @type {string} */
-const APPLICATION_PRIVATE_KEY_ON_NETWORK = process.env.APPLICATION_PRIVATE_KEY_ON_NETWORK;
+const FREE_TIER_ADDRESS = process.env.TEST_FREE_TIER_ADDRESS;
 /** @type {string} */
-const FREE_TIER_ADDRESS = process.env.FREE_TIER_ADDRESS;
+const APPLICATION_ACCOUNT_IN_NETWORK = process.env.TEST_APPLICATION_ACCOUNT_IN_NETWORK;
 
 const applicationService = new ApplicationService();
 
@@ -154,11 +154,11 @@ describe("ApplicationService", () => {
     });
   });
 
-  if (APPLICATION_PRIVATE_KEY_ON_NETWORK) {
+  if (APPLICATION_ACCOUNT_IN_NETWORK) {
     describe("importApplication", () => {
       it("Expect an application network data", async () => {
 
-        const applicationNetworkData = await applicationService.importApplication(APPLICATION_PRIVATE_KEY_ON_NETWORK);
+        const applicationNetworkData = await applicationService.importApplication(APPLICATION_ACCOUNT_IN_NETWORK);
 
         // eslint-disable-next-line no-undef
         should.exist(applicationNetworkData);

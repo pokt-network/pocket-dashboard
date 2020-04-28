@@ -8,6 +8,8 @@ const APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_APPLICATION_A
 /** @type {string} */
 const NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT;
 /** @type {string} */
+const APPLICATION_ACCOUNT_IN_NETWORK = process.env.TEST_APPLICATION_ACCOUNT_IN_NETWORK;
+/** @type {string} */
 const NODE_ACCOUNT_IN_NETWORK = process.env.TEST_NODE_ACCOUNT_IN_NETWORK;
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
@@ -102,6 +104,17 @@ describe("PocketService", () => {
       attToken.should.be.an("object");
     });
   });
+
+  if (APPLICATION_ACCOUNT_IN_NETWORK) {
+    describe("getApplication", () => {
+      it("Expected application data successfully retrieved", async () => {
+        const nodeData = await pocketService.getApplication(APPLICATION_ACCOUNT_IN_NETWORK);
+
+        // eslint-disable-next-line no-undef
+        should.exist(nodeData);
+      });
+    });
+  }
 
   if (NODE_ACCOUNT_IN_NETWORK) {
     describe("getNode", () => {
