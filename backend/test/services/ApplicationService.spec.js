@@ -74,6 +74,7 @@ describe("ApplicationService", () => {
   });
 
   if (FREE_TIER_APPLICATION_PRIVATE_KEY && FREE_TIER_ADDRESS) {
+    // FIXME: Fix this unit test
     describe("createFreeTierApplication", () => {
 
       const applicationData = {
@@ -114,6 +115,8 @@ describe("ApplicationService", () => {
         aat.should.be.an("object");
       });
     });
+
+    // TODO: Add unit test for unstake free tier app.
   }
 
   describe("getApplication", () => {

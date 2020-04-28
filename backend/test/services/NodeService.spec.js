@@ -231,5 +231,7 @@ describe("NodeService", () => {
       nodes.length.should.be.greaterThan(0);
     });
   });
+  // TODO: Add unit test for stake a node. Do we need use private key or account address?
 
+  // TODO: Add unit test for unstake a node. Do we need use private key or account address?
 });

@@ -139,6 +139,7 @@ describe("PocketService", () => {
   });
 
   if (APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT) {
+    // FIXME: Fix these unit tests, we think the issue is from library.
     describe("stakeApplication", () => {
       it("Expected a transaction hash successfully", async () => {
         const passPhrase = "testPassphrase";
@@ -181,6 +182,7 @@ describe("PocketService", () => {
   }
 
   if (NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT) {
+    // FIXME: Fix these unit tests, we think the issue is from library.
     describe("stakeNode", () => {
       it("Expected a transaction hash successfully", async () => {
         const passPhrase = "testPassphrase";
