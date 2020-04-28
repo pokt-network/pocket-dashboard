@@ -19,7 +19,7 @@ describe("AccountService", () => {
     describe("importAccountFromNetwork", () => {
       it("Expect an account successfully imported", async () => {
 
-        const publicAccount = await accountService.importAccountFromNetwork(APPLICATION_PRIVATE_KEY_ON_NETWORK);
+        const publicAccount = await accountService.importDashboardAccountToNetwork(APPLICATION_PRIVATE_KEY_ON_NETWORK);
 
         // eslint-disable-next-line no-undef
         should.exist(publicAccount);
