@@ -400,8 +400,8 @@ export default class ApplicationService extends BaseService {
       }
 
       const accountService = new AccountService();
-      const passPhrase = accountService.generatePassphrase(application.name);
-      const pocketAccount = await accountService.createPocketAccount(passPhrase, privateKey);
+      const passPhrase = await accountService.generatePassphrase(application.name);
+      const pocketAccount = await accountService.createPocketAccount(this.pocketService, passPhrase, privateKey);
 
       application.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
 

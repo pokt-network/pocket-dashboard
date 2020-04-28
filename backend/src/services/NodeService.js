@@ -119,8 +119,8 @@ export default class NodeService extends BaseService {
         throw new Error("Node already exists");
       }
       const accountService = new AccountService();
-      const passPhrase = accountService.generatePassphrase(node.name);
-      const pocketAccount = await accountService.createPocketAccount(passPhrase, privateKey);
+      const passPhrase = await accountService.generatePassphrase(node.name);
+      const pocketAccount = await accountService.createPocketAccount(this.pocketService, passPhrase, privateKey);
 
       node.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
 

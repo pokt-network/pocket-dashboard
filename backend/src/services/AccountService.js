@@ -2,6 +2,7 @@ import BaseService from "./BaseService";
 import {PublicPocketAccount} from "../models/Account";
 import {Account} from "@pokt-network/pocket-js";
 import bcrypt from "bcrypt";
+import PocketService from "./PocketService";
 
 export default class AccountService extends BaseService {
 
@@ -29,15 +30,16 @@ export default class AccountService extends BaseService {
   /**
    * Create a pocket account in the network.
    *
+   * @param {PocketService} pocketService Pocket service used to get account.
    * @param {string} passPhrase Passphrase used to create pocket account.
    * @param {string} [privateKey] Private key used to import pocket account.
    *
    * @returns {Promise<Account> | Error} A Pocket account created successfully.
    * @throws {Error} If creation of account fails.
    */
-  async createPocketAccount(passPhrase, privateKey) {
+  async createPocketAccount(pocketService, passPhrase, privateKey) {
     if (privateKey) {
-      const importedAccount = await this.pocketService.importAccount(privateKey, passPhrase);
+      const importedAccount = await pocketService.importAccount(privateKey, passPhrase);
 
       if (importedAccount instanceof Error) {
         throw Error("Imported account is invalid");
@@ -46,7 +48,7 @@ export default class AccountService extends BaseService {
       return importedAccount;
     } else {
       // Generate Pocket account for item.
-      const account = await this.pocketService.createAccount(passPhrase);
+      const account = await pocketService.createAccount(passPhrase);
 
       if (account instanceof Error) {
         throw account;
