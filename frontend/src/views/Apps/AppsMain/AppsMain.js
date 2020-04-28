@@ -25,26 +25,25 @@ class AppsMain extends Main {
     super(props, context);
 
     this.handleAllAppsFilter = this.handleAllAppsFilter.bind(this);
-    this.handleUserAppsFilter = this.handleUserAppsFilter.bind(this);
+    this.handleuserItemsFilter = this.handleuserItemsFilter.bind(this);
 
     this.state = {
       ...this.state,
-      registeredApps: [],
-      userApps: [],
-      filteredUserApps: [],
-      totalApplications: 0,
+      userItems: [],
+      filteredItems: [],
+      total: 0,
       averageStaked: 0,
       averageRelays: 0,
       loading: true,
-      allAppsTableLoading: false,
-      userAppsTableLoading: false,
+      allItemsTableLoading: false,
+      userItemsTableLoading: false,
     };
   }
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
 
-    const userApps = await ApplicationService.getAllUserApplications(
+    const userItems = await ApplicationService.getAllUserApplications(
       userEmail, APPLICATIONS_LIMIT
     );
 
@@ -54,57 +53,57 @@ class AppsMain extends Main {
       averageStaked,
     } = await ApplicationService.getStakedApplicationSummary();
 
-    const registeredApps = await ApplicationService.getAllApplications(
+    const registeredItems = await ApplicationService.getAllApplications(
       APPLICATIONS_LIMIT
     );
 
     this.setState({
-      userApps,
-      filteredUserApps: userApps,
-      totalApplications,
+      userItems,
+      filteredItems: userItems,
+      total: totalApplications,
       averageRelays,
       averageStaked,
-      registeredApps,
+      registeredItems,
       loading: false,
     });
   }
 
   async handleAllAppsFilter(option) {
-    this.setState({allAppsTableLoading: true});
+    this.setState({allItemspsTableLoading: true});
 
-    const registeredApps = await ApplicationService.getAllApplications(
+    const registeredItems = await ApplicationService.getAllApplications(
       APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
     );
 
-    this.setState({registeredApps, allAppsTableLoading: false});
+    this.setState({registeredItems, allItemspsTableLoading: false});
   }
 
-  async handleUserAppsFilter(option) {
-    this.setState({userAppsTableLoading: true});
+  async handleuserItemsFilter(option) {
+    this.setState({userItemsTableLoading: true});
 
     const userEmail = UserService.getUserInfo().email;
 
-    const userApps = await ApplicationService.getAllUserApplications(
+    const userItems = await ApplicationService.getAllUserApplications(
       userEmail, APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
     );
 
     this.setState({
-      userApps,
-      filteredUserApps: userApps,
-      userAppsTableLoading: false,
+      userItems,
+      filteredItems: userItems,
+      userItemsTableLoading: false,
     });
   }
 
   render() {
     const {
-      filteredUserApps,
-      totalApplications,
+      filteredItems,
+      total,
       averageStaked,
       averageRelays,
-      registeredApps: allRegisteredApps,
+      registeredItems: allregisteredItems,
       loading,
-      allAppsTableLoading,
-      userAppsTableLoading,
+      allItemsTableLoading,
+      userItemsTableLoading,
     } = this.state;
 
     const columns = [
@@ -122,10 +121,10 @@ class AppsMain extends Main {
       },
     ];
 
-    const registeredApps = allRegisteredApps.map(mapStatusToApp);
+    const registeredItems = allregisteredItems.map(mapStatusToApp);
 
     const cards = [
-      {title: totalApplications, subtitle: "Total of apps"},
+      {title: total, subtitle: "Total of apps"},
       {title: averageStaked, subtitle: "Average staked"},
       {title: averageRelays, subtitle: "Average relays per application"},
     ];
@@ -175,14 +174,16 @@ class AppsMain extends Main {
                     onChange={this.handleChange}
                     onKeyPress={({key}) => {
                       if (key === "Enter") {
-                        this.handleAppSearch();
+                        this.handleSearch("pocketApplication.name");
                       }
                     }}
                   />
                   <InputGroup.Append>
                     <Button
                       type="submit"
-                      onClick={this.handleAppSearch}
+                      onClick={() =>
+                        this.handleSearch("pocketApplication.name")
+                      }
                       variant="dark"
                     >
                       Search
@@ -197,7 +198,7 @@ class AppsMain extends Main {
                 {/* TODO: Implement sorting on apps */}
                 <AppDropdown
                   onSelect={(status) =>
-                    this.handleUserAppsFilter(status.dataField)
+                    this.handleuserItemsFilter(status.dataField)
                   }
                   options={[
                     {text: "Bonded", dataField: "bonded"},
@@ -208,8 +209,8 @@ class AppsMain extends Main {
               </Col>
             </Row>
             <div className="main-list">
-              <LoadingOverlay active={userAppsTableLoading} spinner>
-                {filteredUserApps.map((app, idx) => {
+              <LoadingOverlay active={userItemsTableLoading} spinner>
+                {filteredItems.map((app, idx) => {
                   const {name, icon} = app.pocketApplication;
                   const {staked_tokens, status} = app.networkData;
 
@@ -245,10 +246,10 @@ class AppsMain extends Main {
             <BootstrapTable
               classes="table app-table table-striped"
               keyField="pocketApplication.publicPocketAccount.address"
-              data={registeredApps}
+              data={registeredItems}
               columns={columns}
               bordered={false}
-              loading={allAppsTableLoading}
+              loading={allItemsTableLoading}
               noDataIndication={"No apps found"}
               overlay={overlayFactory({
                 spinner: true,

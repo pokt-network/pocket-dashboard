@@ -20,89 +20,78 @@ class NodesMain extends Main {
   constructor(props, context) {
     super(props, context);
 
-    this.handleAllNodesFilter = this.handleAllNodesFilter.bind(this);
-    this.handleUserNodesFilter = this.handleUserNodesFilter.bind(this);
+    this.handleUserItemsFilter = this.handleUserItemsFilter.bind(this);
+    this.handleAllItemsFilter = this.handleAllItemsFilter.bind(this);
 
     this.state = {
       ...this.state,
-      registeredNodes: [],
-      userNodes: [],
-      filteredNodes: [],
-      totalNodes: 0,
+      total: 0,
       averageStaked: 0,
       averageRelays: 0,
       loading: true,
-      allNodesTableLoading: false,
-      userNodesTableLoading: false,
     };
   }
 
-  async handleAllNodesFilter(option) {
-    this.setState({allNodesTableLoading: true});
-
-    const registeredNodes = await NodeService.getAllNodes(
-      NODES_LIMIT,
-      0,
-      BOND_STATUS_STR[option]
-    );
-
-    this.setState({registeredNodes, allNodesTableLoading: false});
-  }
-
-  async handleUserNodesFilter(option) {
-    this.setState({userNodesTableLoading: true});
+  async handleUserItemsFilter(option) {
+    this.setState({userItemsTableLoading: true});
 
     const userEmail = UserService.getUserInfo().email;
 
-    const userNodes = await NodeService.getAllUserNodes(
-      userEmail,
-      NODES_LIMIT,
-      0,
-      BOND_STATUS_STR[option]
+    const userItems = await NodeService.getAllUserNodes(
+      userEmail, NODES_LIMIT, 0, BOND_STATUS_STR[option]
     );
 
     this.setState({
-      userNodes,
-      filteredNodes: userNodes,
-      userNodesTableLoading: false,
+      userItems,
+      filteredItems: userItems,
+      userItemsTableLoading: false,
     });
   }
 
+  async handleAllItemsFilter(option) {
+    this.setState({allItemsTableLoading: true});
+
+    const registeredItems = await NodeService.getAllNodes(
+      NODES_LIMIT, 0, BOND_STATUS_STR[option]
+    );
+
+    this.setState({allItemsTableLoading: false, registeredItems});
+  }
+
   async componentDidMount() {
-    // TODO: Replace this object job to retrieve data from nodes instead of apps
     const userEmail = UserService.getUserInfo().email;
 
-    const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
+    const userItems = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
 
     const {
-      totalApplications: totalNodes,
+      totalApplications,
       averageRelays,
       averageStaked,
     } = await ApplicationService.getStakedApplicationSummary();
 
-    const registeredNodes = await NodeService.getAllNodes(NODES_LIMIT);
+    const registeredItems = await NodeService.getAllNodes(NODES_LIMIT);
 
     this.setState({
-      userNodes,
-      filteredNodes: userNodes,
-      totalApplications: totalNodes,
+      userItems,
+      filteredItems: userItems,
+      total: totalApplications,
       averageRelays,
       averageStaked,
-      registeredNodes,
+      registeredItems,
       loading: false,
     });
   }
 
   render() {
     const {
-      filteredNodes,
-      totalApplications: totalNodes,
+      filteredItems,
+      total,
       averageStaked,
       averageRelays,
-      registeredNodes: allRegisteredNodes,
+      registeredItems: allRegisteredItems,
       loading,
-      allNodesTableLoading,
-      userNodesTableLoading,
+      allItemsTableLoading,
+      userItemsTableLoading,
     } = this.state;
 
     const columns = [
@@ -121,10 +110,10 @@ class NodesMain extends Main {
       },
     ];
 
-    const registeredNodes = allRegisteredNodes.map(mapStatusToApp);
+    const registeredItems = allRegisteredItems.map(mapStatusToApp);
 
     const cards = [
-      {title: totalNodes, subtitle: "Total of node"},
+      {title: total, subtitle: "Total of node"},
       {title: averageStaked, subtitle: "Average staked"},
       {title: averageRelays, subtitle: "Average relays per node"},
       {title: 23867, subtitle: "Max Staked"},
@@ -175,14 +164,14 @@ class NodesMain extends Main {
                     onChange={this.handleChange}
                     onKeyPress={({key}) => {
                       if (key === "Enter") {
-                        this.handleSearch();
+                        this.handleSearch("pocketNode.name");
                       }
                     }}
                   />
                   <InputGroup.Append>
                     <Button
                       type="submit"
-                      onClick={this.handleSearch}
+                      onClick={() => this.handleSearch("pocketNode.name")}
                       variant="dark"
                     >
                       Search
@@ -196,7 +185,7 @@ class NodesMain extends Main {
                 </p>
                 <AppDropdown
                   onSelect={(status) =>
-                    this.handleUserNodesFilter(status.dataField)
+                    this.handleUserItemsFilter(status.dataField)
                   }
                   options={[
                     {text: "Bonded", dataField: "bonded"},
@@ -207,8 +196,8 @@ class NodesMain extends Main {
               </Col>
             </Row>
             <div className="main-list">
-              <LoadingOverlay active={userNodesTableLoading} spinner>
-                {filteredNodes.map((app, idx) => {
+              <LoadingOverlay active={userItemsTableLoading} spinner>
+                {filteredItems.map((app, idx) => {
                   const {name, icon} = app.pocketNode;
                   const {staked_tokens, status} = app.networkData;
 
@@ -232,7 +221,7 @@ class NodesMain extends Main {
               <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Filter by:</p>
               <AppDropdown
                 onSelect={(status) =>
-                  this.handleAllNodesFilter(status.dataField)
+                  this.handleAllItemsFilter(status.dataField)
                 }
                 options={[
                   {text: "Bonded", dataField: "bonded"},
@@ -244,10 +233,10 @@ class NodesMain extends Main {
             <BootstrapTable
               classes="app-table table-striped"
               keyField="pocketNode.publicPocketAccount.address"
-              data={registeredNodes}
+              data={registeredItems}
               columns={columns}
               bordered={false}
-              loading={allNodesTableLoading}
+              loading={allItemsTableLoading}
               noDataIndication={"No nodes found"}
               overlay={overlayFactory({
                 spinner: true,
