@@ -59,27 +59,7 @@ export default class AccountService extends BaseService {
   }
 
   /**
-   * Import account.
-   *
-   * @param {string} accountPrivateKey Account private key.
-   *
-   * @returns {Promise<PublicPocketAccount>} a pocket account.
-   * @throws Error If account is invalid.
-   * @async
-   */
-  async importDashboardAccountToNetwork(accountPrivateKey) {
-    const passPhrase = "DashboardAccount";
-    const applicationAccount = await this.pocketService.importAccount(accountPrivateKey, passPhrase);
-
-    if (applicationAccount instanceof Error) {
-      throw TypeError("Account is invalid");
-    }
-
-    return PublicPocketAccount.createPublicPocketAccount(applicationAccount);
-  }
-
-  /**
-   * Import account.
+   * Import account into network.
    *
    * @param {PocketService} pocketService Pocket service used to import account.
    * @param {string} passPhrase Passphrase used to import pocket account.
@@ -97,5 +77,25 @@ export default class AccountService extends BaseService {
     }
 
     return applicationAccount;
+  }
+
+  /**
+   * Import account into network.
+   *
+   * @param {string} accountPrivateKey Account private key.
+   *
+   * @returns {Promise<PublicPocketAccount>} a pocket account.
+   * @throws Error If account is invalid.
+   * @async
+   */
+  async importDashboardAccountToNetwork(accountPrivateKey) {
+    const passPhrase = "DashboardAccount";
+    const applicationAccount = await this.pocketService.importAccount(accountPrivateKey, passPhrase);
+
+    if (applicationAccount instanceof Error) {
+      throw TypeError("Account is invalid");
+    }
+
+    return PublicPocketAccount.createPublicPocketAccount(applicationAccount);
   }
 }
