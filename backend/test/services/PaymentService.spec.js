@@ -70,7 +70,7 @@ describe("PaymentService", () => {
       const paymentMethod = PaymentMethod.createPaymentMethod(paymentMethodData);
       const exists = await paymentService.paymentMethodExists(paymentMethod);
 
-      exists.should.be.equal(true);
+      exists.should.be.true;
     });
   });
 
@@ -85,7 +85,7 @@ describe("PaymentService", () => {
       const item = {
         "account": "b9628a13220f049b93fdefe4fb9ca2bca10fe460",
         "name": "My App",
-        "pokt": 346
+        "pokt": "346"
       };
 
       const saved = await paymentService.savePaymentHistory(createdDate, paymentID, currency, amount, item, user);
@@ -109,14 +109,27 @@ describe("PaymentService", () => {
         item: {
           "account": "b9628a13220f049b93fdefe4fb9ca2bca10fe460",
           "name": "My App",
-          "pokt": 346
+          "pokt": "346"
         }
       };
 
       const paymentHistory = PaymentHistory.createPaymentHistory(paymentHistoryData);
       const exists = await paymentService.paymentHistoryExists(paymentHistory);
 
-      exists.should.be.equal(true);
+      exists.should.be.true;
+    });
+  });
+
+  describe("getPaymentHistory", () => {
+    it("Expect a list of payments", async () => {
+
+      const user = "tester@testing.com";
+      const limit = 10;
+
+      const paymentHistory = await paymentService.getPaymentHistory(user, limit);
+
+      paymentHistory.should.be.an("array");
+      paymentHistory.length.should.be.greaterThan(0);
     });
   });
 

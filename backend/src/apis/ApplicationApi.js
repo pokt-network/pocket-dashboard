@@ -1,51 +1,11 @@
 import express from "express";
 import ApplicationService from "../services/ApplicationService";
+import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 
 const router = express.Router();
 
 const applicationService = new ApplicationService();
 
-/**
- * @param {{query:object}} request Request.
- * @param {string} option Option.
- *
- * @returns {string} Query option value.
- */
-function getQueryOption(request, option) {
-  const parsedData = request.query;
-
-  // eslint-disable-next-line no-prototype-builtins
-  if (!parsedData.hasOwnProperty(option)) {
-    throw Error(`${option} query parameter is required.`);
-  }
-
-  if (parsedData[option] === undefined) {
-    throw Error(`${option} query parameter cannot be null.`);
-  }
-
-  return parsedData[option];
-}
-
-/**
- * @param {{query:object}} request Request.
- * @param {string} option Option.
- *
- * @returns {string} Query option value.
- */
-function getOptionalQueryOption(request, option) {
-  const parsedData = request.query;
-
-  // eslint-disable-next-line no-prototype-builtins
-  if (!parsedData.hasOwnProperty(option)) {
-    return "";
-  }
-
-  if (parsedData[option] === undefined) {
-    return "";
-  }
-
-  return parsedData[option];
-}
 
 /**
  * Create new application.
