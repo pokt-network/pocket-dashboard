@@ -1,5 +1,6 @@
 import express from "express";
 import ApplicationService from "../services/ApplicationService";
+import {PublicPocketAccount} from "../models/Account";
 
 const router = express.Router();
 
@@ -62,6 +63,36 @@ router.post("", async (request, response) => {
     const application = await applicationService.createApplication(data.application, data.privateKey);
 
     response.send(application);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Update an application.
+ */
+router.put("/:applicationAccountAddress", async (request, response) => {
+  try {
+    /** @type {{name:string, owner:string, url:string, contactEmail:string, user:string, publicPocketAccount: PublicPocketAccount, description:string, icon:string}} */
+    let data = request.body;
+
+    /** @type {{applicationAccountAddress:string}} */
+    const params = request.params;
+
+    if (data) {
+      data["publicPocketAccount"] = {
+        address: params.applicationAccountAddress,
+        publicKey: ""
+      };
+    }
+
+    const updated = await applicationService.updateApplication(data);
+
+    response.send(updated);
   } catch (e) {
     const error = {
       message: e.toString()
