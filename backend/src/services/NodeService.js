@@ -107,7 +107,7 @@ export default class NodeService extends BaseService {
    * @async
    */
   async nodeExists(node) {
-    let filter = {operator: node.operator};
+    let filter = {};
 
     if (node.publicPocketAccount) {
       filter["publicPocketAccount.address"] = node.publicPocketAccount.address;
