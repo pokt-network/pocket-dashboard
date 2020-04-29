@@ -59,6 +59,30 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
+   * Update application on db if exists.
+   *
+   * @param {PocketApplication} application Application to update.
+   *
+   * @returns {Promise<boolean>} If application was updated or not.
+   * @private
+   * @async
+   */
+  async __updatePersistedApplication(application) {
+    if (await this.applicationExists(application)) {
+      const filter = {
+        "publicPocketAccount.address": application.publicPocketAccount.address
+      };
+
+      /** @type {{result: {n:number, ok: number}}} */
+      const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
+
+      return result.result.ok === 1;
+    }
+
+    return false;
+  }
+
+  /**
    * Create a pocket account in the network.
    *
    * @param {string} passPhrase Passphrase used to create pocket account.
@@ -156,7 +180,14 @@ export default class ApplicationService extends BaseService {
    * @async
    */
   async applicationExists(application) {
-    const filter = {name: application.name, owner: application.owner};
+    let filter = {owner: application.owner};
+
+    if (application.publicPocketAccount) {
+      filter["publicPocketAccount.address"] = application.publicPocketAccount.address;
+    } else {
+      filter["name"] = application.name;
+    }
+
     const dbApplication = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
     return dbApplication !== undefined;
@@ -486,4 +517,36 @@ export default class ApplicationService extends BaseService {
     return result.result.ok === 1;
   }
 
+  /**
+   * Update an application on network.
+   *
+   * @param {object} applicationData Application data.
+   * @param {string} applicationData.name Name.
+   * @param {string} applicationData.owner Owner.
+   * @param {string} applicationData.url URL.
+   * @param {string} applicationData.contactEmail E-mail.
+   * @param {string} applicationData.user User.
+   * @param {PublicPocketAccount} applicationData.publicPocketAccount Public pocket account.
+   * @param {string} [applicationData.description] Description.
+   * @param {string} [applicationData.icon] Icon.
+   *
+   * @returns {Promise<boolean>} If was updated or not.
+   * @throws {Error} If validation fails or does not exists.
+   * @async
+   */
+  async updateApplication(applicationData) {
+    if (PocketApplication.validate(applicationData)) {
+      if (!await this.userService.userExists(applicationData.user)) {
+        throw new Error("User does not exists");
+      }
+
+      const application = PocketApplication.createPocketApplication(applicationData);
+
+      if (!await this.applicationExists(application)) {
+        throw new Error("Application does not exists");
+      }
+
+      return this.__updatePersistedApplication(application);
+    }
+  }
 }
