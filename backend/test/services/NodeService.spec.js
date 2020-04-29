@@ -12,7 +12,7 @@ import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
 const nodeService = new NodeService();
 
 /** @type {string} */
-const NODE_PRIVATE_KEY_ON_NETWORK = process.env.TEST_NODE_PRIVATE_KEY_ON_NETWORK;
+const NODE_ACCOUNT_IN_NETWORK = process.env.TEST_NODE_ACCOUNT_IN_NETWORK;
 
 before(() => {
   configureTestService(nodeService);
@@ -63,15 +63,46 @@ describe("NodeService", () => {
       const node = PocketNode.createPocketNode(nodeData);
       const exists = await nodeService.nodeExists(node);
 
-      exists.should.be.equal(true);
+      exists.should.be.true;
     });
   });
 
-  if (NODE_PRIVATE_KEY_ON_NETWORK) {
-    describe("importNode", () => {
-      it("Expect an node network data", async () => {
+  describe("deleteNode", () => {
+    const address = "bc28256f5c58611e96d13996cf535bdc0204366a";
 
-        const nodeNetworkData = await nodeService.importNode(NODE_PRIVATE_KEY_ON_NETWORK);
+    const resultData = {
+      result: {
+        ok: 1
+      }
+    };
+
+    it("Expect success", async () => {
+
+      const persistenceService = sinon.createStubInstance(PersistenceProvider);
+      const stubFilter = {
+        "publicPocketAccount.address": address
+      };
+
+      persistenceService.deleteEntities
+        .withArgs("Nodes", stubFilter)
+        .returns(Promise.resolve(resultData));
+
+      sinon.stub(nodeService, "persistenceService").value(persistenceService);
+
+      const deleted = await nodeService.deleteNode(address);
+
+      // eslint-disable-next-line no-undef
+      should.exist(deleted);
+
+      deleted.should.be.true;
+    });
+  });
+
+  if (NODE_ACCOUNT_IN_NETWORK) {
+    describe("importNode", () => {
+      it("Expect a node network data", async () => {
+
+        const nodeNetworkData = await nodeService.importNode(NODE_ACCOUNT_IN_NETWORK);
 
         // eslint-disable-next-line no-undef
         should.exist(nodeNetworkData);
@@ -231,5 +262,7 @@ describe("NodeService", () => {
       nodes.length.should.be.greaterThan(0);
     });
   });
+  // TODO: Add unit test for stake a node. Do we need use private key or account address?
 
+  // TODO: Add unit test for unstake a node. Do we need use private key or account address?
 });

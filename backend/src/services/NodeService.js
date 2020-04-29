@@ -241,4 +241,92 @@ export default class NodeService extends BaseService {
 
     return [];
   }
+
+
+  /**
+   * Stake a node on network.
+   *
+   * @param {{privateKey: string, networkChains: string[], serviceURL: string}} node Node to stake.
+   * @param {string} uPoktAmount uPokt amount used to stake.
+   *
+   * @returns {Promise<boolean>} If was staked or not.
+   * @throws Error If private key is not valid or node does not exists on dashboard.
+   */
+  async stakeNode(node, uPoktAmount) {
+    const accountService = new AccountService();
+    const passPhrase = "StakePocketNode";
+
+    const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, passPhrase, node.privateKey);
+
+    const filter = {
+      "publicPocketAccount.address": nodeAccount.addressHex
+    };
+
+    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+
+    if (!nodeDB) {
+      throw Error("Node does not exists on dashboard");
+    }
+
+    try {
+      // Stake node
+      const serviceURL = new URL(node.serviceURL);
+      const transaction = await this.pocketService.stakeNode(nodeAccount, passPhrase, uPoktAmount, node.networkChains, serviceURL);
+
+      return transaction.tx !== undefined;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Unstake node.
+   *
+   * @param {string} nodeAccountAddress Node account address.
+   *
+   * @returns {Promise<boolean>} If node was unstaked or not.
+   * @async
+   */
+  async unstakeNode(nodeAccountAddress) {
+    const filter = {
+      "publicPocketAccount.address": nodeAccountAddress
+    };
+
+    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+
+    if (!nodeDB) {
+      return false;
+    }
+
+    try {
+      const passphrase = "UnstakeNode";
+      const nodeAccount = await this.pocketService.getAccount(nodeAccountAddress);
+
+      // Unstake node
+      await this.pocketService.unstakeNode(nodeAccount, passphrase);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Delete a node from dashboard(not from network).
+   *
+   * @param {string} nodeAccountAddress Node account address.
+   *
+   * @returns {Promise<boolean>} If node was deleted or not.
+   * @async
+   */
+  async deleteNode(nodeAccountAddress) {
+    const filter = {
+      "publicPocketAccount.address": nodeAccountAddress
+    };
+
+    /** @type {{result: {n:number, ok: number}}} */
+    const result = await this.persistenceService.deleteEntities(NODE_COLLECTION_NAME, filter);
+
+    return result.result.ok === 1;
+  }
 }

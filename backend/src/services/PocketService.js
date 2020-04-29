@@ -260,7 +260,7 @@ export default class PocketService {
    *
    * @param {Account} applicationAccount Application account to stake.
    * @param {string} passPhrase Passphrase used to import the account.
-   * @param {string} uPoktAmount uPocket amount to stake.
+   * @param {string} uPoktAmount uPokt amount to stake.
    * @param {string[]} networkChains Network Chains to stake.
    *
    * @returns {Promise<RawTxResponse>} Raw transaction data
@@ -287,14 +287,14 @@ export default class PocketService {
    *
    * @param {Account} nodeAccount Node account to stake.
    * @param {string} passPhrase Passphrase used to import the account.
-   * @param {string} uPoktAmount uPocket amount to stake.
-   * @param {URL} serviceURL Service URL.
-   * @param {string[]} networkChains Network Chains to stake.
+   * @param {string} uPoktAmount uPokt amount to stake.
    *
+   * @param {string[]} networkChains Network Chains to stake.
+   * @param {URL} serviceURL Service URL.
    * @returns {Promise<RawTxResponse>} Raw transaction data
    * @throws Error if transaction fails.
    */
-  async stakeNode(nodeAccount, passPhrase, uPoktAmount, serviceURL, networkChains) {
+  async stakeNode(nodeAccount, passPhrase, uPoktAmount, networkChains, serviceURL) {
     const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
     const publicKey = nodeAccount.publicKey.toString("hex");
 
@@ -324,6 +324,29 @@ export default class PocketService {
     const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.addressHex, passPhrase);
 
     const transactionResponse = await transactionSender.appUnstake(applicationAccount.addressHex)
+      .submit(chain_id, transaction_fee);
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse;
+  }
+
+  /**
+   * Unstake a node in pocket network.
+   *
+   * @param {Account} nodeAccount Node account to unstake.
+   * @param {string} passPhrase Passphrase used to import the account.
+   *
+   * @returns {Promise<RawTxResponse>} Raw transaction data
+   * @throws Error if transaction fails.
+   */
+  async unstakeNode(nodeAccount, passPhrase) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const transactionSender = await this.__pocket.withImportedAccount(nodeAccount.addressHex, passPhrase);
+
+    const transactionResponse = await transactionSender.nodeUnstake(nodeAccount.addressHex)
       .submit(chain_id, transaction_fee);
 
     if (transactionResponse instanceof Error) {
