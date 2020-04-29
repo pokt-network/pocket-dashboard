@@ -16,6 +16,10 @@ class EditNode extends CreateForm {
       ...this.state,
       loading: true,
       success: false,
+      data: {
+        ...this.state.data,
+        operator: "",
+      },
     };
   }
 
@@ -101,7 +105,7 @@ class EditNode extends CreateForm {
               <Form.Group>
                 <Form.Label>Node Operator</Form.Label>
                 <Form.Control
-                  name="owner"
+                  name="operator"
                   value={owner}
                   onChange={this.handleChange}
                 />
