@@ -25,7 +25,6 @@ export default class NodeService extends BaseService {
    * @async
    */
   async __persistNodeIfNotExists(node) {
-
     if (!await this.nodeExists(node)) {
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this.persistenceService.saveEntity(NODE_COLLECTION_NAME, node);
@@ -365,11 +364,11 @@ export default class NodeService extends BaseService {
   /**
    * Update a node on network.
    *
+   * @param {string} nodeAccountAddress Node account address.
    * @param {object} nodeData Node data.
    * @param {string} nodeData.name Name.
    * @param {string} nodeData.contactEmail E-mail.
    * @param {string} nodeData.user User.
-   * @param {PublicPocketAccount} nodeData.publicPocketAccount Public pocket account.
    * @param {string} [nodeData.operator] Operator.
    * @param {string} [nodeData.description] Description.
    * @param {string} [nodeData.icon] Icon.
@@ -378,20 +377,31 @@ export default class NodeService extends BaseService {
    * @throws {Error} If validation fails or does not exists.
    * @async
    */
-  async updateNode(nodeData) {
+  async updateNode(nodeAccountAddress, nodeData) {
     if (PocketNode.validate(nodeData)) {
       if (!await this.userService.userExists(nodeData.user)) {
         throw new Error("User does not exists");
       }
 
       const node = PocketNode.createPocketNode(nodeData);
+      const filter = {
+        "publicPocketAccount.address": nodeAccountAddress
+      };
 
-      if (!await this.nodeExists(node)) {
+      const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+
+      if (!nodeDB) {
         throw new Error("Node does not exists");
       }
 
-      return this.__updatePersistedNode(node);
+      const nodeToEdit = {
+        ...node,
+        publicPocketAccount: nodeDB.publicPocketAccount
+      };
+
+      return this.__updatePersistedNode(nodeToEdit);
     }
+    return false;
   }
 
 }

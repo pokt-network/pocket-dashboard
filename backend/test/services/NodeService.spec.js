@@ -80,14 +80,10 @@ describe("NodeService", () => {
       const nodeResult = await nodeService.createNode(nodeData);
       const nodeToEdit = {
         ...nodeData,
-        name: "To Update",
-        publicPocketAccount: {
-          address: nodeResult.networkData.address,
-          publicKey: nodeResult.networkData.publicKey
-        }
+        name: "To Update"
       };
 
-      const updated = await nodeService.updateNode(nodeToEdit);
+      const updated = await nodeService.updateNode(nodeResult.networkData.address, nodeToEdit);
 
       updated.should.be.true;
     });
