@@ -24,6 +24,7 @@ import PaymentHistory from "./views/Profile/PaymentHistory/PaymentHistory";
 import NodesCheckout from "./views/Nodes/NodesCheckout/NodesCheckout";
 import CreateNodeForm from "./views/Nodes/CreateNodeForm/CreateNodeForm";
 import NodeChainList from "./views/Nodes/NodeChainList/NodeChainList";
+import EditApp from "./views/Apps/EditApp/EditApp";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -38,6 +39,7 @@ export const DASHBOARD_PATHS = {
   home: "/",
   apps: "/apps",
   appDetail: "/apps/detail/:address",
+  editApp: "/apps/edit/:address",
   createAppInfo: "/apps/new",
   importApp: "/apps/import",
   tierSelection: "/apps/tiers",
@@ -120,6 +122,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "App creation",
     component: AppCreated,
+  },
+  {
+    path: DASHBOARD_PATHS.editApp,
+    exact: true,
+    name: "App Edit",
+    component: EditApp,
   },
   {
     path: DASHBOARD_PATHS.createAppInfo,
