@@ -141,7 +141,7 @@ class EditApp extends CreateForm {
 
               <div className="submit float-right mt-2">
                 <Button variant="dark" size="lg" type="submit">
-                  Continue
+                  Save
                 </Button>
               </div>
             </Form>
