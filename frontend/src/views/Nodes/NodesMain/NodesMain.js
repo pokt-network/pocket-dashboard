@@ -141,10 +141,12 @@ class NodesMain extends Main {
               >
                 Create new node
               </Button>
-            </Link>
+              </Link>
+            <Link to={_getDashboardPath(DASHBOARD_PATHS.importNode)}>
             <Button variant="secondary" size={"md"} className="pl-4 pr-4">
               Import node
             </Button>
+            </Link>
           </Col>
         </Row>
         <Row className="stats mb-4">

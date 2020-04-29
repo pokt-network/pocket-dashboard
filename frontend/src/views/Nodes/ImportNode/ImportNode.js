@@ -148,7 +148,7 @@ class ImportNode extends Component {
               />
               <InputGroup.Append>
                 <Button
-                  className="pr-5 pl-5 pt-3 pb-3"
+                  className="pr-5 pl-5"
                   type="submit"
                   onClick={this.handleAppImport}
                   variant="dark"

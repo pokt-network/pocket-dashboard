@@ -5,6 +5,7 @@ import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Chains from "../../../core/components/Chains/Chains";
 import NodeService from "../../../core/services/PocketNodeService";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 
 class NodeChainList extends Chains {
   constructor(props, context) {
@@ -19,9 +20,13 @@ class NodeChainList extends Chains {
 
     NodeService.saveNodeInfoInCache({chains: chainsHashes});
 
-    // eslint-disable-next-line react/prop-types
-
     // TODO: Redirect to tier selection when available
+    const {address} = NodeService.getNodeInfo();
+    const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail).replace(
+      ":address", address );
+
+    // eslint-disable-next-line react/prop-types
+    this.props.history.push(url);
   }
 
   async componentDidMount() {
