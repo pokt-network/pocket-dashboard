@@ -77,6 +77,35 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
+   * Edit node application
+   * @param {string} nodeAccountAddress Node address.
+   * @param {Object} nodeData Node information
+   * @param {string} nodeData.name - Name.
+   * @param {string} nodeData.operator Operator.
+   * @param {string} nodeData.contactEmail Contact Email.
+   * @param {string} nodeData.description Description.
+   * @param {string} nodeData.icon Icon (string in base64 format).
+   * @param {string} nodeData.user User Email.
+   * @param {string} privateKey Private Key (if node is imported).
+   */
+  editNode(nodeAccountAddress, nodeData) {
+    const data = {...nodeData};
+
+    return axios
+      .put(this._getURL(`/${nodeAccountAddress}`), data)
+      .then((response) => {
+        if (response.status === 200) {
+          return {success: true, data: response.data};
+        }
+
+        return {success: false};
+      })
+      .catch((err) => {
+        return {success: false, data: err.response.data};
+      });
+  }
+
+  /**
    * Get node.
    *
    * @param {string} nodeAddress Node address in hex.
