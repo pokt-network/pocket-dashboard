@@ -179,6 +179,19 @@ class PocketNodeService extends PocketBaseService {
       .then((response) => response.data)
       .catch((err) => err.response);
   }
+
+  /**
+   * Get node data from network
+   *
+   * @param {string} nodeAccountAddress Application account address.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getNetworkNodeInfo(nodeAccountAddress) {
+    return axios
+      .get(this._getURL(`import/${nodeAccountAddress}`))
+      .then((response) => response.data);
+  }
 }
 
 export default new PocketNodeService();

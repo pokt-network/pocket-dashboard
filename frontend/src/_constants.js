@@ -11,9 +11,9 @@ export const STAKE_STATUS = {
 };
 
 export const BOND_STATUS_STR = {
-  bonded: 0,
+  bonded: 2,
   unbonding: 1,
-  unbonded: 2,
+  unbonded: 0,
 };
 
 export const APPLICATIONS_LIMIT = 10;

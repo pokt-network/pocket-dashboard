@@ -25,6 +25,7 @@ import CreateNodeForm from "./views/Nodes/CreateNodeForm/CreateNodeForm";
 import NodeChainList from "./views/Nodes/NodeChainList/NodeChainList";
 import NodeDetail from "./views/Nodes/NodeDetail/NodeDetail";
 import EditNode from "./views/Nodes/EditNode/EditNode";
+import ImportNode from "./views/Nodes/ImportNode/ImportNode";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -52,6 +53,7 @@ export const DASHBOARD_PATHS = {
   profile: "/profile",
   createNodeForm: "/nodes/new",
   nodeChainList: "/nodes/chains",
+  importNode: "/nodes/import",
 };
 
 export const PROFILE_PATHS = {
@@ -152,6 +154,13 @@ export const dashboardRoutes = [
     exact: true,
     name: "Node Detail",
     component: NodeDetail,
+  },
+  {
+    path: DASHBOARD_PATHS.importNode,
+    exact: true,
+
+    name: "Node Detail",
+    component: ImportNode,
   },
   {
     path: DASHBOARD_PATHS.nodeEdit,
