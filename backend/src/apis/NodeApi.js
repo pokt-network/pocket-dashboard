@@ -33,6 +33,29 @@ router.post("", async (request, response) => {
 });
 
 /**
+ * Update a node.
+ */
+router.put("/:nodeAccountAddress", async (request, response) => {
+  try {
+    /** @type {{name:string, contactEmail:string, user:string, operator:string, description:string, icon:string}} */
+    let data = request.body;
+
+    /** @type {{nodeAccountAddress: string}} */
+    const params = request.params;
+
+    const updated = await nodeService.updateNode(params.nodeAccountAddress, data);
+
+    response.send(updated);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
  * Import node from network.
  */
 router.get("import/:nodeAccountAddress", async (request, response) => {
