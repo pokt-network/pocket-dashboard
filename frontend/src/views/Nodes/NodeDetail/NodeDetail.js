@@ -15,6 +15,9 @@ class NodeDetail extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.deleteNode = this.deleteNode.bind(this);
+    this.unstakeNode = this.unstakeNode.bind(this);
+
     this.state = {
       pocketNode: {},
       networkData: {},
@@ -23,6 +26,27 @@ class NodeDetail extends Component {
       deleteModal: false,
       deleted: false,
     };
+  }
+
+  async deleteNode() {
+    const {address} = this.state.pocketNode.publicPocketAccount;
+
+    const success = await NodeService.deleteNodeFromDashboard(address);
+
+    if (success) {
+      this.setState({deleted: true});
+    }
+  }
+
+  async unstakeNode() {
+    const {address} = this.state.pocketNode.publicPocketAccount;
+
+    const success = NodeService.unstakeNode(address);
+
+    /* TOOD: Show message on success/failure */
+    if (success) {
+    } else {
+    }
   }
 
   async componentDidMount() {
@@ -185,7 +209,11 @@ class NodeDetail extends Component {
             to access it again
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="light" className="pr-4 pl-4">
+            <Button
+              variant="light"
+              className="pr-4 pl-4"
+              onClick={this.deleteNode}
+            >
               Delete
             </Button>
             <Button

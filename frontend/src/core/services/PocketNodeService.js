@@ -121,6 +121,35 @@ class PocketNodeService extends PocketBaseService {
       },
     }).then((response) => response.data);
   }
+
+  /**
+   * Delete a node from dashboard (but not from the network).
+   *
+   * @param {string} applicationAccountAddress Node account address.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  deleteNodeFromDashboard(nodeAccountAddress) {
+    return axios
+      .delete(this._getURL(`/${nodeAccountAddress}`))
+      .then((response) => response.data);
+  }
+
+  /**
+   * Delete a node from dashboard (but not from the network).
+   *
+   * @param {string} applicationAccountAddress Node account address.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  unstakeNode(nodeAccountAddress) {
+    const data = {nodeAccountAddress};
+
+    return axios
+      .post(this._getURL("/unstake"), data)
+      .then((response) => response.data)
+      .catch((err) => err.response);
+  }
 }
 
 export default new PocketNodeService();

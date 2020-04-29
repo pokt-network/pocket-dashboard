@@ -12,7 +12,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
 import InfoCards from "../../../core/components/InfoCards";
-import {mapStatusToApp} from "../../../_helpers";
+import {mapStatusToApp, getBondStatus} from "../../../_helpers";
 import NodeService from "../../../core/services/PocketNodeService";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
@@ -205,7 +205,7 @@ class NodesMain extends Main {
                       key={idx}
                       title={name}
                       subtitle={`Staked POKT: ${stakedTokens} POKT`}
-                      status={BOND_STATUS[status]}
+                      status={getBondStatus(status)}
                       iconURL={icon}
                     />
                   );
