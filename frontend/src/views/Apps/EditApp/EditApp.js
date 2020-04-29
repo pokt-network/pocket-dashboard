@@ -1,9 +1,10 @@
 import React from "react";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {Form, Button, Row, Col} from "react-bootstrap";
+import {Alert, Form, Button, Row, Col} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import Loader from "../../../core/components/Loader";
+import UserService from "../../../core/services/PocketUserService";
 
 class EditApp extends CreateForm {
   constructor(props, context) {
@@ -14,6 +15,7 @@ class EditApp extends CreateForm {
     this.state = {
       ...this.state,
       loading: true,
+      success: false,
     };
   }
 
@@ -27,11 +29,42 @@ class EditApp extends CreateForm {
 
     this.setState({loading: false, icon, data: {...appData}});
   }
-  handleEdit() {}
+
+  async handleEdit(e) {
+    e.preventDefault();
+
+    this.setState({success: false});
+    const user = UserService.getUserInfo().email;
+    const {address} = this.props.match.params;
+    const {name, owner, contactEmail, description, url} = this.state.data;
+    const {icon} = this.state;
+
+    // TODO: Show proper message on front end to user on validation error
+    if (name === "" || contactEmail === "" || owner === "") {
+      console.log("missing required field");
+    }
+
+    const {success, data} = await ApplicationService.editApplication(address, {
+      name,
+      contactEmail,
+      description,
+      owner,
+      url,
+      icon,
+      user,
+    });
+
+    if (success) {
+      this.setState({success: true});
+    } else {
+      // TODO: Show frontend message
+      console.log(data);
+    }
+  }
 
   render() {
     const {name, owner, url, contactEmail, description} = this.state.data;
-    const {loading, icon} = this.state;
+    const {loading, icon, success} = this.state;
 
     if (loading) {
       return <Loader />;
@@ -39,6 +72,15 @@ class EditApp extends CreateForm {
 
     return (
       <div id="create-form">
+        {success && (
+          <Alert
+            onClose={() => this.setState({success: false})}
+            dismissible
+            variant="success"
+          >
+            Your app changes were successfully saved
+          </Alert>
+        )}
         <Row>
           <Col sm="3" md="3" lg="3">
             <h1>Edit you application</h1>
@@ -52,7 +94,7 @@ class EditApp extends CreateForm {
             />
           </Col>
           <Col sm="9" md="9" lg="9">
-            <Form onSubmit={this.handleCreate}>
+            <Form onSubmit={this.handleEdit}>
               <Form.Group>
                 <Form.Label>Name</Form.Label>
                 <Form.Control

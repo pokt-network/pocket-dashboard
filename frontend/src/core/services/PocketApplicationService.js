@@ -184,7 +184,7 @@ export class PocketApplicationService extends PocketBaseService {
   async editApplication(applicationAccountAddress, applicationData) {
     const data = {applicationData};
 
-    return axios.post(this._getURL(""), data)
+    return axios.put(this._getURL(`${applicationAccountAddress}`), data)
       .then(response => {
         if (response.status === 200) {
           return {
