@@ -19,6 +19,7 @@ class Main extends Component {
       averageRelays: 0,
       allItemsTableLoading: false,
       userItemsTableLoading: false,
+      loading: true,
     };
   }
 

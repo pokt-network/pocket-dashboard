@@ -3,14 +3,16 @@ import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
-import {NETWORK_TABLE_COLUMNS, BOND_STATUS} from "../../../_constants";
+import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
 import "./AppDetail.scss";
-import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {
+  PocketApplicationService,
+} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {copyToClickboard} from "../../../_helpers";
+import {copyToClickboard, getBondStatus} from "../../../_helpers";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -97,12 +99,7 @@ class AppDetail extends Component {
       freeTier,
       publicPocketAccount,
     } = this.state.pocketApplication;
-    const {
-      max_relays,
-      staked_tokens,
-      status,
-      public_key,
-    } = this.state.networkData;
+    const {maxRelays, stakedTokens, status, publicKey} = this.state.networkData;
 
     const address = publicPocketAccount
       ? publicPocketAccount.address
@@ -111,9 +108,9 @@ class AppDetail extends Component {
     const {chains, aat, loading, deleteModal, deleted} = this.state;
 
     const generalInfo = [
-      {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
-      {title: BOND_STATUS[status], subtitle: "Stake status"},
-      {title: max_relays, subtitle: "Max Relays"},
+      {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
+      {title: getBondStatus(status), subtitle: "Stake status"},
+      {title: maxRelays, subtitle: "Max Relays"},
     ];
 
     const contactInfo = [
@@ -128,7 +125,7 @@ class AppDetail extends Component {
     }
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     if (deleted) {
@@ -147,7 +144,7 @@ class AppDetail extends Component {
           <Col>
             <div className="head">
               {/* eslint-disable-next-line jsx-a11y/alt-text */}
-              <img src={icon}/>
+              <img src={icon} />
               <div className="info">
                 <h1 className="d-flex align-items-baseline">
                   {name}
@@ -166,7 +163,7 @@ class AppDetail extends Component {
         <Row className="mt-2 stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle}/>
+              <InfoCard title={card.title} subtitle={card.subtitle} />
             </Col>
           ))}
         </Row>
@@ -178,7 +175,7 @@ class AppDetail extends Component {
                 title={card.title}
                 subtitle={card.subtitle}
               >
-                <span/>
+                <span />
               </InfoCard>
             </Col>
           ))}
@@ -191,7 +188,7 @@ class AppDetail extends Component {
             </div>
             <div className="info-section">
               <h3>Public Key</h3>
-              <Alert variant="dark">{public_key}</Alert>
+              <Alert variant="dark">{publicKey}</Alert>
             </div>
           </Col>
           {freeTier && (
@@ -199,7 +196,7 @@ class AppDetail extends Component {
               <div id="aat-info" className="mb-2">
                 <h3>AAT</h3>
                 <span>
-                  <HelpLink size="2x"/>
+                  <HelpLink size="2x" />
                   <p>How to create an AAT?</p>
                 </span>
               </div>

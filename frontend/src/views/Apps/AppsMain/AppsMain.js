@@ -8,15 +8,11 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {
-  APPLICATIONS_LIMIT,
-  BOND_STATUS,
-  BOND_STATUS_STR,
-} from "../../../_constants";
+import {APPLICATIONS_LIMIT, BOND_STATUS_STR} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {mapStatusToApp} from "../../../_helpers";
+import {mapStatusToApp, getBondStatus} from "../../../_helpers";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 
@@ -29,14 +25,6 @@ class AppsMain extends Main {
 
     this.state = {
       ...this.state,
-      userItems: [],
-      filteredItems: [],
-      total: 0,
-      averageStaked: 0,
-      averageRelays: 0,
-      loading: true,
-      allItemsTableLoading: false,
-      userItemsTableLoading: false,
     };
   }
 
@@ -69,13 +57,13 @@ class AppsMain extends Main {
   }
 
   async handleAllAppsFilter(option) {
-    this.setState({allItemspsTableLoading: true});
+    this.setState({allItemsTableLoading: true});
 
     const registeredItems = await ApplicationService.getAllApplications(
       APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
     );
 
-    this.setState({registeredItems, allItemspsTableLoading: false});
+    this.setState({registeredItems, allItemsTableLoading: false});
   }
 
   async handleuserItemsFilter(option) {
@@ -214,13 +202,12 @@ class AppsMain extends Main {
                   const {name, icon} = app.pocketApplication;
                   const {stakedTokens, status} = app.networkData;
 
-                  // TODO: Add network information
                   return (
                     <PocketElementCard
                       key={idx}
                       title={name}
                       subtitle={`Staked POKT: ${stakedTokens} POKT`}
-                      status={BOND_STATUS[status]}
+                      status={getBondStatus(status)}
                       iconURL={icon}
                     />
                   );
@@ -244,7 +231,7 @@ class AppsMain extends Main {
               />
             </div>
             <BootstrapTable
-              classes="table app-table table-striped"
+              classes="app-table table-striped"
               keyField="pocketApplication.publicPocketAccount.address"
               data={registeredItems}
               columns={columns}

@@ -26,10 +26,6 @@ class NodesMain extends Main {
 
     this.state = {
       ...this.state,
-      total: 0,
-      averageStaked: 0,
-      averageRelays: 0,
-      loading: true,
     };
   }
 

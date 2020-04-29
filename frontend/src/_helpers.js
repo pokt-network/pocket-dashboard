@@ -1,5 +1,5 @@
 import numeral from "numeral";
-import {BOND_STATUS} from "./_constants";
+import {BOND_STATUS, STAKE_STATUS} from "./_constants";
 import Identicon from "identicon.js";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
@@ -27,7 +27,7 @@ export const mapStatusToApp = (app) => {
     ...app,
     networkData: {
       ...app.networkData,
-      status: BOND_STATUS[app.networkData.status],
+      status: getBondStatus(app.networkData.status),
     },
   };
 };
@@ -41,4 +41,10 @@ export const generateIdenticon = () => {
   ).toString()}`;
 
   return identicon;
+};
+
+export const getBondStatus = (status) => {
+  return typeof status === "string"
+    ? STAKE_STATUS[status]
+    : BOND_STATUS[status];
 };

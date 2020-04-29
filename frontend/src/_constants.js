@@ -1,7 +1,13 @@
 export const BOND_STATUS = {
-  0: "Bonded",
+  2: "Bonded",
   1: "Unbonding",
-  2: "Unbonded",
+  0: "Unbonded",
+};
+
+export const STAKE_STATUS = {
+  Staked: "Bonded",
+  Unstaking: "Bonding",
+  Unstaked: "Unbonded",
 };
 
 export const BOND_STATUS_STR = {
