@@ -173,8 +173,8 @@ export class PocketApplicationService extends PocketBaseService {
    *
    * @returns {Promise|Promise<*>}
    */
-  createFreeTierApplication(applicationAccountAddress, networkChains) {
-    return axios.post(this._getURL("/freetier"), {applicationAccountAddress, networkChains})
+  stakeFreeTierApplication(applicationAccountAddress, networkChains) {
+    return axios.post(this._getURL("/freetier/stake"), {applicationAccountAddress, networkChains})
       .then(response => response.data);
   }
 
