@@ -219,5 +219,26 @@ router.post("/unstake", async (request, response) => {
   }
 });
 
+/**
+ * UnJail a node.
+ */
+router.post("/unjail", async (request, response) => {
+  try {
+
+    /** @type {{nodeAccountAddress: string}} */
+    const data = request.body;
+
+    const unJailed = await nodeService.unJailNode(data.nodeAccountAddress);
+
+    response.send(unJailed);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
 
 export default router;

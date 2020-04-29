@@ -357,6 +357,29 @@ export default class PocketService {
   }
 
   /**
+   * UnJail a node in pocket network.
+   *
+   * @param {Account} nodeAccount Node account to unJail.
+   * @param {string} passPhrase Passphrase used to import the account.
+   *
+   * @returns {Promise<RawTxResponse>} Raw transaction data
+   * @throws Error if transaction fails.
+   */
+  async unJailNode(nodeAccount, passPhrase) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const transactionSender = await this.__pocket.withImportedAccount(nodeAccount.addressHex, passPhrase);
+
+    const transactionResponse = await transactionSender.nodeUnjail(nodeAccount.addressHex)
+      .submit(chain_id, transaction_fee);
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse;
+  }
+
+  /**
    * Get Node Parameters data.
    *
    * @returns {Promise<NodeParams>} The node parameters.
