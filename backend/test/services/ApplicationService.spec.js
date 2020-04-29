@@ -86,13 +86,9 @@ describe("ApplicationService", () => {
       const applicationToEdit = {
         ...applicationData,
         name: "To Update",
-        publicPocketAccount: {
-          address: applicationResult.networkData.address,
-          publicKey: applicationResult.networkData.publicKey
-        }
       };
 
-      const updated = await applicationService.updateApplication(applicationToEdit);
+      const updated = await applicationService.updateApplication(applicationResult.networkData.address, applicationToEdit);
 
       updated.should.be.true;
     });

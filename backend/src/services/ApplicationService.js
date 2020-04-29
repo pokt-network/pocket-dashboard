@@ -47,7 +47,6 @@ export default class ApplicationService extends BaseService {
    * @async
    */
   async __persistApplicationIfNotExists(application) {
-
     if (!await this.applicationExists(application)) {
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this.persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, application);
@@ -520,13 +519,13 @@ export default class ApplicationService extends BaseService {
   /**
    * Update an application on network.
    *
+   * @param {string} applicationAccountAddress Application account address.
    * @param {object} applicationData Application data.
    * @param {string} applicationData.name Name.
    * @param {string} applicationData.owner Owner.
    * @param {string} applicationData.url URL.
    * @param {string} applicationData.contactEmail E-mail.
    * @param {string} applicationData.user User.
-   * @param {PublicPocketAccount} applicationData.publicPocketAccount Public pocket account.
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
    *
@@ -534,19 +533,31 @@ export default class ApplicationService extends BaseService {
    * @throws {Error} If validation fails or does not exists.
    * @async
    */
-  async updateApplication(applicationData) {
+  async updateApplication(applicationAccountAddress, applicationData) {
     if (PocketApplication.validate(applicationData)) {
       if (!await this.userService.userExists(applicationData.user)) {
         throw new Error("User does not exists");
       }
 
       const application = PocketApplication.createPocketApplication(applicationData);
+      const filter = {
+        "publicPocketAccount.address": applicationAccountAddress
+      };
 
-      if (!await this.applicationExists(application)) {
+      const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+      if (!applicationDB) {
         throw new Error("Application does not exists");
       }
 
-      return this.__updatePersistedApplication(application);
+      const applicationToEdit = {
+        ...application,
+        publicPocketAccount: applicationDB.publicPocketAccount
+      };
+
+      return this.__updatePersistedApplication(applicationToEdit);
     }
+
+    return false;
   }
 }
