@@ -38,6 +38,7 @@ class AppsMain extends Main {
       loading: true,
       allAppsTableLoading: false,
       userAppsTableLoading: false,
+      hasApps: false,
     };
   }
 
@@ -66,6 +67,7 @@ class AppsMain extends Main {
       averageStaked,
       registeredApps,
       loading: false,
+      hasApps: userApps.length > 0
     });
   }
 
@@ -105,6 +107,7 @@ class AppsMain extends Main {
       loading,
       allAppsTableLoading,
       userAppsTableLoading,
+      hasApps,
     } = this.state;
 
     const columns = [
@@ -190,7 +193,10 @@ class AppsMain extends Main {
         </Row>
         <Row className="mb-4">
           <Col sm="6" md="6" lg="6">
-            <Segment label="MY APPS" sideItem={userAppsDropdown}>
+           <Segment
+              label="MY APPS"
+              sideItem={hasApps ? userAppsDropdown : undefined}
+            >
               <InputGroup className="search-input mb-3">
                 <FormControl
                   placeholder="Search app"
@@ -214,7 +220,7 @@ class AppsMain extends Main {
               </InputGroup>
               <div className="main-list">
                 <LoadingOverlay active={userAppsTableLoading} spinner>
-                  {filteredUserApps.length > 0 ? (
+                  {hasApps ? (
                     filteredUserApps.map((app, idx) => {
                       const {name, icon} = app.pocketApplication;
                       const {staked_tokens, status} = app.networkData;
