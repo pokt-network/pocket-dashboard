@@ -59,7 +59,7 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Update application on db if not exists.
+   * Update application on db if exists.
    *
    * @param {PocketApplication} application Application to update.
    *
