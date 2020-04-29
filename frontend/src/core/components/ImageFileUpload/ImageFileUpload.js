@@ -37,8 +37,7 @@ function ImageFileUpload(props) {
   useEffect(
     () => () => {
       files.forEach((file) => URL.revokeObjectURL(file.preview));
-    },
-    [files]
+    }, [files]
   );
 
   const renderDropZone = () => {
