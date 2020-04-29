@@ -179,7 +179,7 @@ export default class ApplicationService extends BaseService {
    * @async
    */
   async applicationExists(application) {
-    let filter = {owner: application.owner};
+    let filter = {};
 
     if (application.publicPocketAccount) {
       filter["publicPocketAccount.address"] = application.publicPocketAccount.address;
