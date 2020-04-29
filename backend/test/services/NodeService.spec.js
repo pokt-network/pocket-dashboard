@@ -67,6 +67,32 @@ describe("NodeService", () => {
     });
   });
 
+  describe("updateNode", () => {
+    it("Expect a true value", async () => {
+      const nodeData = {
+        name: "Test node to edit",
+        operator: "Tester",
+        contactEmail: "tester@node.com",
+        user: "tester@node.com",
+        description: "A test node"
+      };
+
+      const nodeResult = await nodeService.createNode(nodeData);
+      const nodeToEdit = {
+        ...nodeData,
+        name: "To Update",
+        publicPocketAccount: {
+          address: nodeResult.networkData.address,
+          publicKey: nodeResult.networkData.publicKey
+        }
+      };
+
+      const updated = await nodeService.updateNode(nodeToEdit);
+
+      updated.should.be.true;
+    });
+  });
+
   describe("deleteNode", () => {
     const address = "bc28256f5c58611e96d13996cf535bdc0204366a";
 

@@ -2,6 +2,7 @@ import express from "express";
 import NodeService from "../services/NodeService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import PaymentService from "../services/PaymentService";
+import {PublicPocketAccount} from "../models/Account";
 
 const router = express.Router();
 
@@ -23,6 +24,36 @@ router.post("", async (request, response) => {
     const node = await nodeService.createNode(data.node, data.privateKey);
 
     response.send(node);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Update a node.
+ */
+router.put("/:nodeAccountAddress", async (request, response) => {
+  try {
+    /** @type {{name:string, contactEmail:string, user:string , publicPocketAccount: PublicPocketAccount, operator:string, description:string, icon:string}} */
+    let data = request.body;
+
+    /** @type {{nodeAccountAddress:string}} */
+    const params = request.params;
+
+    if (data) {
+      data["publicPocketAccount"] = {
+        address: params.nodeAccountAddress,
+        publicKey: ""
+      };
+    }
+
+    const updated = await nodeService.updateNode(data);
+
+    response.send(updated);
   } catch (e) {
     const error = {
       message: e.toString()
