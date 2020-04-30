@@ -4,7 +4,7 @@ import Identicon from "identicon.js";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
-export const copyToClickboard = (value) => {
+export const copyToClipboard = (value) => {
   const el = document.createElement("textarea");
 
   el.value = value;

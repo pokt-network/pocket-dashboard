@@ -5,14 +5,12 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
 import {TABLE_COLUMNS} from "../../../_constants";
 import "./AppDetail.scss";
-import ApplicationService, {
-  PocketApplicationService,
-} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {PocketApplicationService,} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {copyToClickboard, getBondStatus} from "../../../_helpers";
+import {copyToClipboard, getBondStatus} from "../../../_helpers";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -244,7 +242,7 @@ class AppDetail extends Component {
                   </code>
                   <p
                     onClick={() =>
-                      copyToClickboard(JSON.stringify(aat, null, 2))
+                      copyToClipboard(JSON.stringify(aat, null, 2))
                     }
                   >
                     Copy

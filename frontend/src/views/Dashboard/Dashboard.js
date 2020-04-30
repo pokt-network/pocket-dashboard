@@ -6,7 +6,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
 import {Link} from "react-router-dom";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
 import SortableTable from "../../core/components/SortableTable";
-import {APPLICATIONS_LIMIT, TABLE_COLUMNS, NODES_LIMIT} from "../../_constants";
+import {APPLICATIONS_LIMIT, NODES_LIMIT, TABLE_COLUMNS} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
@@ -30,8 +30,7 @@ class Dashboard extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail,
-      APPLICATIONS_LIMIT
+      userEmail, APPLICATIONS_LIMIT
     );
 
     const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
