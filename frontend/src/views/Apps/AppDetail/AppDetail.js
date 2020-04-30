@@ -135,9 +135,9 @@ class AppDetail extends Component {
     } = this.state;
 
     const generalInfo = [
-      {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
+      {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
       {title: getBondStatus(status), subtitle: "Stake status"},
-      {title: max_relays, subtitle: "Max Relays"},
+      {title: maxRelays, subtitle: "Max Relays"},
     ];
 
     const contactInfo = [

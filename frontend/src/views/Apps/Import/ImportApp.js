@@ -12,7 +12,7 @@ import {
 } from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {
-  NETWORK_TABLE_COLUMNS,
+  TABLE_COLUMNS,
   BOND_STATUS,
   BOND_STATUS_STR,
 } from "../../../_constants";
@@ -179,7 +179,7 @@ class Import extends Component {
               classes="table app-table table-striped"
               keyField="hash"
               data={chains}
-              columns={NETWORK_TABLE_COLUMNS}
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
               bordered={false}
             />
           </Col>
