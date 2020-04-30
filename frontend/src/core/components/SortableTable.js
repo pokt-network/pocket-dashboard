@@ -10,22 +10,6 @@ class SortableTable extends Component {
 
     this.handleSortChange = this.handleSortChange.bind(this);
 
-    this.NETWORK_TABLE_COLUMNS = [
-      {
-        dataField: "name",
-        text: "Network",
-        sort: true,
-      },
-      {
-        dataField: "netID",
-        text: "Network Identifier (NetID)",
-      },
-      {
-        dataField: "hash",
-        text: "Hash",
-      },
-    ];
-
     this.state = {
       field: "",
       order: "asc",

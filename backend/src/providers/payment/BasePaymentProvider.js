@@ -102,13 +102,13 @@ export default class BasePaymentProvider {
    * @param {string} currency Three-letter ISO currency code, in lowercase.
    * @param {*} item Item to pay.
    * @param {number} amount Amount intended to be collected by this payment.
-   * @param {string} description An arbitrary string attached to the object. Often useful for displaying to users.
+   * @param {string} [description] An arbitrary string attached to the object. Often useful for displaying to users.
    *
    * @returns {Promise<PaymentResult>} Payment result.
    * @async
    * @abstract
    */
-  async createPaymentIntent(type, currency, item, amount, description) {
+  async createPaymentIntent(type, currency, item, amount, description = "") {
   }
 
   /**

@@ -96,6 +96,32 @@ router.post("/new_intent/apps", async (request, response) => {
  * Create a new intent of payment for nodes.
  */
 router.post("/new_intent/nodes", async (request, response) => {
+  try {
+    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, pokt:string}, amount: number}} */
+    const data = request.body;
+
+    const paymentIntent = await paymentService.createPocketPaymentIntentForNodes(data.type, data.currency, data.item, data.amount);
+
+    if (paymentIntent) {
+      const {id, createdDate, currency, amount} = paymentIntent;
+
+      await paymentService.savePaymentHistory(createdDate, id, currency, amount, data.item, data.user);
+    }
+
+    response.send(paymentIntent);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Create a new intent of payment for nodes.
+ */
+router.post("/new_intent/nodes", async (request, response) => {
   response.send("// TODO: Implement this endpoint");
 });
 

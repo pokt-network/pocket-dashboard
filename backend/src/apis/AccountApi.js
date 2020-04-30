@@ -12,7 +12,7 @@ router.post("/import", async (request, response) => {
   try {
     /** @type {{accountPrivateKey:string}} */
     const data = request.body;
-    const account = await accountService.importAccountFromNetwork(data.accountPrivateKey);
+    const account = await accountService.importDashboardAccountToNetwork(data.accountPrivateKey);
 
     response.send(account);
   } catch (e) {

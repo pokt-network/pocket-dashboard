@@ -2,46 +2,114 @@ import React from "react";
 import {Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
+import {BOND_STATUS_STR} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
+import {generateIcon} from "../../../_helpers";
+import UserService from "../../../core/services/PocketUserService";
+import NodeService from "../../../core/services/PocketNodeService";
 
 class CreateNodeForm extends CreateForm {
   constructor(props, context) {
     super(props, context);
 
     this.handleCreate = this.handleCreate.bind(this);
+    this.createNode = this.createNode.bind(this);
     this.state = {
       ...this.state,
       data: {
         ...this.state.data,
+        operator: "",
         privateKey: "",
       },
-      applicationData: {},
+      nodeData: {},
     };
+  }
+
+  async createNode(nodeData) {
+    let imported;
+    let stakeStatus; 
+    let address; 
+    let privateKey;
+    
+    if (this.props.location.state !== undefined) {
+      stakeStatus = this.props.location.state.stakeStatus;
+      address = this.props.location.state.address;
+      privateKey = this.props.location.state.privateKey;
+      imported = this.props.location.state.imported;
+    } else {
+      imported = false;
+    }
+
+
+    const {success, data} = imported
+      ? await NodeService.createNode(nodeData, privateKey)
+      : await NodeService.createNode(nodeData);
+    const unstakedNode =
+      !imported ||
+      (imported &&
+        (stakeStatus === BOND_STATUS_STR.unbonded ||
+          stakeStatus === BOND_STATUS_STR.unbonding));
+
+    if (unstakedNode) {
+      this.setState({
+        redirectPath: _getDashboardPath(DASHBOARD_PATHS.chooseChain),
+      });
+    } else {
+      const url = _getDashboardPath(DASHBOARD_PATHS.nodeChainList);
+
+      const detail = url.replace(":address", address);
+
+      this.setState({
+        redirectPath: detail,
+      });
+    }
+    return {success, data};
   }
 
   async handleCreate(e) {
     e.preventDefault();
-    // TODO: Integrate node creation with backend
+    
+    const {name, contactEmail, description, operator} = this.state.data;
+    const icon = this.state.icon ? this.state.icon : generateIcon();
+    const user = UserService.getUserInfo().email;
+
+    // TODO: Show proper message on front end to user on validation error
+    if (name === "" || contactEmail === "") {
+      console.log("missing required field");
+      return;
+    }
+
+    const {success, data} = await this.createNode({
+      name,
+      operator,
+      contactEmail,
+      description,
+      icon,
+      user,
+    });
+
+    if (success) {
+      const {privateNodeData} = data;
+      const {address, privateKey} = privateNodeData;
+
+      NodeService.saveNodeInfoInCache({address, privateKey});
+      this.setState({created: true});
+    } else {
+      // TODO: Show proper error message on front-end.
+      console.log(data.message);
+    }
   }
 
   render() {
-    const {
-      name,
-      owner,
-      url,
-      contactEmail,
-      description,
-      privateKey,
-    } = this.state.data;
-    const {created, applicationData} = this.state;
+    const {name, operator, contactEmail, description} = this.state.data;
+    const {created} = this.state;
 
     if (created) {
       return (
         <Redirect
           to={{
-            pathname: _getDashboardPath(DASHBOARD_PATHS.chooseChain),
-            state: {applicationData},
+            pathname: _getDashboardPath(DASHBOARD_PATHS.nodeChainList),
           }}
         />
       );
@@ -72,26 +140,10 @@ class CreateNodeForm extends CreateForm {
                 />
               </Form.Group>
               <Form.Group>
-                <Form.Label>Private key</Form.Label>
+                <Form.Label>Operator*</Form.Label>
                 <Form.Control
-                  name="privateKey"
-                  value={privateKey}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Application Developer*</Form.Label>
-                <Form.Control
-                  name="owner"
-                  value={owner}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>URL</Form.Label>
-                <Form.Control
-                  name="url"
-                  value={url}
+                  name="operator"
+                  value={operator}
                   onChange={this.handleChange}
                 />
               </Form.Group>

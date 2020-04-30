@@ -1,4 +1,5 @@
 import {Component} from "react";
+import _ from "lodash";
 
 class Main extends Component {
   constructor(props, context) {
@@ -10,6 +11,15 @@ class Main extends Component {
       data: {
         searchQuery: "",
       },
+      registeredItems: [],
+      userItems: [],
+      filteredItems: [],
+      total: 0,
+      averageStaked: 0,
+      averageRelays: 0,
+      allItemsTableLoading: false,
+      userItemsTableLoading: false,
+      loading: true,
     };
   }
 
@@ -20,21 +30,19 @@ class Main extends Component {
     this.setState({data});
   }
 
-  handleSearch() {
-    const {userNodes} = this.state;
+  handleSearch(dataField) {
+    const {userItems} = this.state;
     const {searchQuery} = this.state.data;
 
-    let filteredNodesApps = userNodes;
+    let filteredItems = userItems;
 
     if (searchQuery) {
-      filteredNodesApps = userNodes.filter((a) =>
-        a.pocketApplication.name
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
+      filteredItems = userItems.filter((it) =>
+        _.get(it, dataField).toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    this.setState({filteredNodesApps});
+    this.setState({filteredItems});
   }
 }
 

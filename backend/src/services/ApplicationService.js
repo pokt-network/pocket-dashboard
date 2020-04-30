@@ -4,37 +4,18 @@ import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import PocketAAT from "@pokt-network/aat-js";
 import {Account, Application, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
-import bcrypt from "bcrypt";
 import bigInt from "big-integer";
 import {Configurations} from "../_configuration";
+import AccountService from "./AccountService";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
 export default class ApplicationService extends BaseService {
 
-
   constructor() {
     super();
 
     this.userService = new UserService();
-  }
-
-  /**
-   * Generate a random passphrase.
-   *
-   * @param {PocketApplication} application Application.
-   *
-   * @returns {string} A passphrase.
-   * @private
-   * @async
-   */
-  async __generatePassphrase(application) {
-    const seed = 10;
-
-    const now = new Date();
-    const data = `${application.name} + ${now.toUTCString()}`;
-
-    return await bcrypt.hash(data, seed);
   }
 
   /**
@@ -308,7 +289,7 @@ export default class ApplicationService extends BaseService {
   async getStakedApplicationSummary() {
     try {
       /** @type {Application[]} */
-      const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
+      const stakedApplications = await this.pocketService.getApplications("staked");
 
       // noinspection JSValidateTypes
       const totalApplications = bigInt(stakedApplications.length);
@@ -467,21 +448,9 @@ export default class ApplicationService extends BaseService {
         throw new Error("Application already exists");
       }
 
-      const passPhrase = await this.__generatePassphrase(application);
-      let pocketAccount;
-
-      if (privateKey) {
-        const account = await this.pocketService.importAccount(privateKey, passPhrase);
-
-        if (account instanceof Error) {
-          throw Error("Imported account is invalid");
-        }
-
-        pocketAccount = account;
-      } else {
-        // Generate Pocket account for application.
-        pocketAccount = await this.__createPocketAccount(passPhrase);
-      }
+      const accountService = new AccountService();
+      const passPhrase = await accountService.generatePassphrase(application.name);
+      const pocketAccount = await accountService.createPocketAccount(this.pocketService, passPhrase, privateKey);
 
       application.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
 

@@ -8,15 +8,11 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {
-  APPLICATIONS_LIMIT,
-  BOND_STATUS,
-  BOND_STATUS_STR,
-} from "../../../_constants";
+import {APPLICATIONS_LIMIT, BOND_STATUS_STR, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {mapStatusToApp} from "../../../_helpers";
+import {mapStatusToField, getBondStatus} from "../../../_helpers";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 
@@ -25,26 +21,17 @@ class AppsMain extends Main {
     super(props, context);
 
     this.handleAllAppsFilter = this.handleAllAppsFilter.bind(this);
-    this.handleUserAppsFilter = this.handleUserAppsFilter.bind(this);
+    this.handleuserItemsFilter = this.handleuserItemsFilter.bind(this);
 
     this.state = {
       ...this.state,
-      registeredApps: [],
-      userApps: [],
-      filteredUserApps: [],
-      totalApplications: 0,
-      averageStaked: 0,
-      averageRelays: 0,
-      loading: true,
-      allAppsTableLoading: false,
-      userAppsTableLoading: false,
     };
   }
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
 
-    const userApps = await ApplicationService.getAllUserApplications(
+    const userItems = await ApplicationService.getAllUserApplications(
       userEmail, APPLICATIONS_LIMIT
     );
 
@@ -54,78 +41,63 @@ class AppsMain extends Main {
       averageStaked,
     } = await ApplicationService.getStakedApplicationSummary();
 
-    const registeredApps = await ApplicationService.getAllApplications(
+    const registeredItems = await ApplicationService.getAllApplications(
       APPLICATIONS_LIMIT
     );
 
     this.setState({
-      userApps,
-      filteredUserApps: userApps,
-      totalApplications,
+      userItems,
+      filteredItems: userItems,
+      total: totalApplications,
       averageRelays,
       averageStaked,
-      registeredApps,
+      registeredItems,
       loading: false,
     });
   }
 
   async handleAllAppsFilter(option) {
-    this.setState({allAppsTableLoading: true});
+    this.setState({allItemsTableLoading: true});
 
-    const registeredApps = await ApplicationService.getAllApplications(
+    const registeredItems = await ApplicationService.getAllApplications(
       APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
     );
 
-    this.setState({registeredApps, allAppsTableLoading: false});
+    this.setState({registeredItems, allItemsTableLoading: false});
   }
 
-  async handleUserAppsFilter(option) {
-    this.setState({userAppsTableLoading: true});
+  async handleuserItemsFilter(option) {
+    this.setState({userItemsTableLoading: true});
 
     const userEmail = UserService.getUserInfo().email;
 
-    const userApps = await ApplicationService.getAllUserApplications(
+    const userItems = await ApplicationService.getAllUserApplications(
       userEmail, APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
     );
 
     this.setState({
-      userApps,
-      filteredUserApps: userApps,
-      userAppsTableLoading: false,
+      userItems,
+      filteredItems: userItems,
+      userItemsTableLoading: false,
     });
   }
 
   render() {
     const {
-      filteredUserApps,
-      totalApplications,
+      filteredItems,
+      total,
       averageStaked,
       averageRelays,
-      registeredApps: allRegisteredApps,
+      registeredItems: allregisteredItems,
       loading,
-      allAppsTableLoading,
-      userAppsTableLoading,
+      allItemsTableLoading,
+      userItemsTableLoading,
     } = this.state;
 
-    const columns = [
-      {
-        dataField: "pocketApplication.name",
-        text: "Name",
-      },
-      {
-        dataField: "pocketApplication.publicPocketAccount.address",
-        text: "Address",
-      },
-      {
-        dataField: "networkData.status",
-        text: "Status",
-      },
-    ];
-
-    const registeredApps = allRegisteredApps.map(mapStatusToApp);
+    const registeredItems = allregisteredItems.map(mapStatusToField);
 
     const cards = [
-      {title: totalApplications, subtitle: "Total of apps"},
+      {title: total, subtitle: "Total of apps"},
       {title: averageStaked, subtitle: "Average staked"},
       {title: averageRelays, subtitle: "Average relays per application"},
     ];
@@ -177,14 +149,16 @@ class AppsMain extends Main {
                     onChange={this.handleChange}
                     onKeyPress={({key}) => {
                       if (key === "Enter") {
-                        this.handleAppSearch();
+                        this.handleSearch("pocketApplication.name");
                       }
                     }}
                   />
                   <InputGroup.Append>
                     <Button
                       type="submit"
-                      onClick={this.handleAppSearch}
+                      onClick={() =>
+                        this.handleSearch("pocketApplication.name")
+                      }
                       variant="dark"
                     >
                       Search
@@ -199,7 +173,7 @@ class AppsMain extends Main {
                 {/* TODO: Implement sorting on apps */}
                 <AppDropdown
                   onSelect={(status) =>
-                    this.handleUserAppsFilter(status.dataField)
+                    this.handleuserItemsFilter(status.dataField)
                   }
                   options={[
                     {text: "Bonded", dataField: "bonded"},
@@ -210,18 +184,17 @@ class AppsMain extends Main {
               </Col>
             </Row>
             <div className="main-list">
-              <LoadingOverlay active={userAppsTableLoading} spinner>
-                {filteredUserApps.map((app, idx) => {
+              <LoadingOverlay active={userItemsTableLoading} spinner>
+                {filteredItems.map((app, idx) => {
                   const {name, icon} = app.pocketApplication;
-                  const {staked_tokens, status} = app.networkData;
+                  const {stakedTokens, status} = app.networkData;
 
-                  // TODO: Add network information
                   return (
                     <PocketElementCard
                       key={idx}
                       title={name}
-                      subtitle={`Staked POKT: ${staked_tokens} POKT`}
-                      status={BOND_STATUS[status]}
+                      subtitle={`Staked POKT: ${stakedTokens} POKT`}
+                      status={getBondStatus(status)}
                       iconURL={icon}
                     />
                   );
@@ -245,12 +218,12 @@ class AppsMain extends Main {
               />
             </div>
             <BootstrapTable
-              classes="table app-table table-striped"
+              classes="app-table table-striped"
               keyField="pocketApplication.publicPocketAccount.address"
-              data={registeredApps}
-              columns={columns}
+              data={registeredItems}
+              columns={TABLE_COLUMNS.APPS}
               bordered={false}
-              loading={allAppsTableLoading}
+              loading={allItemsTableLoading}
               noDataIndication={"No apps found"}
               overlay={overlayFactory({
                 spinner: true,
