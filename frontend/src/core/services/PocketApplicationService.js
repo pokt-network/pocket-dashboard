@@ -140,9 +140,11 @@ export class PocketApplicationService extends PocketBaseService {
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async createApplication(name, owner, url, contactEmail, description, icon, user) {
-    const data = {name, owner, url, contactEmail, description, icon, user};
-
+  async createApplication(applicationData, privateKey=undefined) {
+    const data = privateKey
+    ? {application: applicationData, privateKey}
+    : {application: applicationData};
+   
     return axios.post(this._getURL(""), data)
       .then(response => {
         if (response.status === 200) {
@@ -158,7 +160,7 @@ export class PocketApplicationService extends PocketBaseService {
       }).catch(err => {
         return {
           success: false,
-          data: err
+          data: err.response.data.message,
         };
       });
   }
@@ -171,8 +173,8 @@ export class PocketApplicationService extends PocketBaseService {
    *
    * @returns {Promise|Promise<*>}
    */
-  createFreeTierApplication(applicationAccountAddress, networkChains) {
-    return axios.post(this._getURL("/freetier"), {applicationAccountAddress, networkChains})
+  stakeFreeTierApplication(applicationAccountAddress, networkChains) {
+    return axios.post(this._getURL("/freetier/stake"), {applicationAccountAddress, networkChains})
       .then(response => response.data);
   }
 
@@ -185,7 +187,7 @@ export class PocketApplicationService extends PocketBaseService {
    */
   getFreeTierAppAAT(applicationAccountAddress) {
     return axios
-      .get(this._getURL(`/freetier/aat/${applicationAccountAddress}`))
+      .get(this._getURL(`freetier/aat/${applicationAccountAddress}`))
       .then((response) => response.data);
   }
 
@@ -212,6 +214,20 @@ export class PocketApplicationService extends PocketBaseService {
   unstakeFreeTierApplication(applicationAccountAddress) {
     return axios
       .post(this._getURL("/freetier/unstake"), {applicationAccountAddress})
+      .then((response) => response.data);
+  }
+
+ 
+  /**
+   * Get application data from network
+   * 
+   * @param {string} applicationAccountAddress Application account address.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getNetworkAppInfo(applicationAccountAddress) {
+    return axios
+      .get(this._getURL(`import/${applicationAccountAddress}`))
       .then((response) => response.data);
   }
 }

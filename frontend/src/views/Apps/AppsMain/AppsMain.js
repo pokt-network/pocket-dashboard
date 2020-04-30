@@ -127,9 +127,11 @@ class AppsMain extends Main {
                 Create new app
               </Button>
             </Link>
-            <Button variant="secondary" size={"md"} className="pl-4 pr-4">
-              Import app
-            </Button>
+            <Link to={_getDashboardPath(DASHBOARD_PATHS.importApp)}>
+              <Button variant="secondary" size={"md"} className="pl-4 pr-4">
+                Import app
+              </Button>
+            </Link>
           </Col>
         </Row>
         <Row className="stats mb-4">

@@ -73,7 +73,7 @@ router.get("/summary/staked", async (request, response) => {
 /**
  * Import application from network.
  */
-router.get("import/:applicationAccountAddress", async (request, response) => {
+router.get("/import/:applicationAccountAddress", async (request, response) => {
   try {
     /** @type {{applicationAccountAddress:string}} */
     const data = request.params;
@@ -164,15 +164,15 @@ router.post("/user", async (request, response) => {
 });
 
 /**
- * Mark as a free tier application.
+ * Stake a free tier application.
  */
-router.post("/freetier", async (request, response) => {
+router.post("/freetier/stake", async (request, response) => {
   try {
 
     /** @type {{applicationAccountAddress: string, networkChains: string[]}} */
     const data = request.body;
 
-    const aat = await applicationService.markAsFreeTierApplication(data.applicationAccountAddress, data.networkChains);
+    const aat = await applicationService.stakeFreeTierApplication(data.applicationAccountAddress, data.networkChains);
 
     response.send(aat);
   } catch (e) {

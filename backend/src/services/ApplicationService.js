@@ -330,7 +330,7 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Create free tier application.
+   * Stake a free tier application.
    *
    * @param {string} applicationAccountAddress Application account address.
    * @param {string[]} networkChains Network chains to stake application.
@@ -338,7 +338,7 @@ export default class ApplicationService extends BaseService {
    * @returns {Promise<PocketAAT | boolean>} If application was created or not.
    * @async
    */
-  async markAsFreeTierApplication(applicationAccountAddress, networkChains) {
+  async stakeFreeTierApplication(applicationAccountAddress, networkChains) {
     const passphrase = "FreeTierApplication";
     const filter = {
       "publicPocketAccount.address": applicationAccountAddress

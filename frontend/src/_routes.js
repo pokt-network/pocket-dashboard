@@ -13,6 +13,7 @@ import CreateAppForm from "./views/Apps/CreateAppForm/CreateAppForm";
 import TierSelection from "./views/Apps/TierSelection/TierSelection";
 import FreeTier from "./views/FreeTier/FreeTier";
 import ChainList from "./views/Apps/ChainList/ChainList";
+import Import from "./views/Apps/Import/ImportApp";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
@@ -41,6 +42,7 @@ export const DASHBOARD_PATHS = {
   apps: "/apps",
   appDetail: "/apps/detail/:address",
   createAppInfo: "/apps/new",
+  importApp: "/apps/import",
   tierSelection: "/apps/tiers",
   selectRelays: "/apps/relays",
   freeTier: "/apps/free-tier",
@@ -173,6 +175,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Nodes Checkout",
     component: NodesCheckout,
+  },
+  {
+    path: DASHBOARD_PATHS.importApp,
+    exact: true,
+    name: "Import App",
+    component: Import,
   },
   {
     path: DASHBOARD_PATHS.chooseChain,
