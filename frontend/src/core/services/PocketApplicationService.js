@@ -165,6 +165,45 @@ export class PocketApplicationService extends PocketBaseService {
       });
   }
 
+    /**
+   * Edit application.
+   *
+   * @param {string} applicationAccountAddress Application address.
+   * @param {Object} applicationData Application data.
+   * @param {string} applicationData.name Name.
+   * @param {string} applicationData.owner Owner.
+   * @param {string} applicationData.url URL.
+   * @param {string} applicationData.contactEmail Contact email.
+   * @param {string} applicationData.description Description.
+   * @param {string} applicationData.icon Icon (string is in base64 format).
+   * @param {string} applicationData.user User email.
+   *
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   * @async
+   */
+  async editApplication(applicationAccountAddress, applicationData) {
+    const data = {...applicationData};
+
+    return axios.put(this._getURL(`${applicationAccountAddress}`), data)
+      .then(response => {
+        if (response.status === 200) {
+          return {
+            success: true,
+            data: response.data
+          };
+        }
+
+        return {
+          success: false
+        };
+      }).catch(err => {
+        return {
+          success: false,
+          data: err.response.data.message,
+        };
+      });
+  }
+
   /**
    * Create free tier application.
    *
@@ -173,8 +212,8 @@ export class PocketApplicationService extends PocketBaseService {
    *
    * @returns {Promise|Promise<*>}
    */
-  createFreeTierApplication(applicationAccountAddress, networkChains) {
-    return axios.post(this._getURL("/freetier"), {applicationAccountAddress, networkChains})
+  stakeFreeTierApplication(applicationAccountAddress, networkChains) {
+    return axios.post(this._getURL("/freetier/stake"), {applicationAccountAddress, networkChains})
       .then(response => response.data);
   }
 

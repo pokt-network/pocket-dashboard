@@ -1,8 +1,7 @@
 import {before, describe, it} from "mocha";
 import "chai/register-should";
 import ApplicationService from "../../src/services/ApplicationService";
-import {PrivatePocketAccount} from "../../src/models/Account";
-import {Application, StakingStatus} from "@pokt-network/pocket-js";
+import {StakingStatus} from "@pokt-network/pocket-js";
 import {configureTestService} from "../setupTests";
 import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
 import sinon from "sinon";
@@ -35,7 +34,6 @@ describe("ApplicationService", () => {
         description: "A test application"
       };
 
-      /** @type {{privateApplicationData: PrivatePocketAccount, networkData:Application}} */
       const applicationResult = await applicationService.createApplication(data);
 
       // eslint-disable-next-line no-undef
@@ -73,8 +71,31 @@ describe("ApplicationService", () => {
     });
   });
 
+  describe("updateApplication", () => {
+    it("Expect a true value", async () => {
+      const applicationData = {
+        name: "Test application to edit",
+        owner: "Tester",
+        url: "http://example.com",
+        contactEmail: "tester@app.com",
+        user: "tester@app.com",
+        description: "A test application"
+      };
+
+      const applicationResult = await applicationService.createApplication(applicationData);
+      const applicationToEdit = {
+        ...applicationData,
+        name: "To Update",
+      };
+
+      const updated = await applicationService.updateApplication(applicationResult.networkData.address, applicationToEdit);
+
+      updated.should.be.true;
+    });
+  });
+
   if (FREE_TIER_APPLICATION_PRIVATE_KEY && FREE_TIER_ADDRESS) {
-    describe("createFreeTierApplication", () => {
+    describe("stakeFreeTierApplication", () => {
 
       const applicationData = {
         name: "Test application 999",
@@ -106,7 +127,7 @@ describe("ApplicationService", () => {
           "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
         ];
 
-        const aat = await applicationService.markAsFreeTierApplication(FREE_TIER_APPLICATION_PRIVATE_KEY, networkChains);
+        const aat = await applicationService.stakeFreeTierApplication(FREE_TIER_APPLICATION_PRIVATE_KEY, networkChains);
 
         // eslint-disable-next-line no-undef
         should.exist(aat);

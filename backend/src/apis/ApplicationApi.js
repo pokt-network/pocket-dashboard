@@ -1,51 +1,11 @@
 import express from "express";
 import ApplicationService from "../services/ApplicationService";
+import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 
 const router = express.Router();
 
 const applicationService = new ApplicationService();
 
-/**
- * @param {{query:object}} request Request.
- * @param {string} option Option.
- *
- * @returns {string} Query option value.
- */
-function getQueryOption(request, option) {
-  const parsedData = request.query;
-
-  // eslint-disable-next-line no-prototype-builtins
-  if (!parsedData.hasOwnProperty(option)) {
-    throw Error(`${option} query parameter is required.`);
-  }
-
-  if (parsedData[option] === undefined) {
-    throw Error(`${option} query parameter cannot be null.`);
-  }
-
-  return parsedData[option];
-}
-
-/**
- * @param {{query:object}} request Request.
- * @param {string} option Option.
- *
- * @returns {string} Query option value.
- */
-function getOptionalQueryOption(request, option) {
-  const parsedData = request.query;
-
-  // eslint-disable-next-line no-prototype-builtins
-  if (!parsedData.hasOwnProperty(option)) {
-    return "";
-  }
-
-  if (parsedData[option] === undefined) {
-    return "";
-  }
-
-  return parsedData[option];
-}
 
 /**
  * Create new application.
@@ -62,6 +22,29 @@ router.post("", async (request, response) => {
     const application = await applicationService.createApplication(data.application, data.privateKey);
 
     response.send(application);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Update an application.
+ */
+router.put("/:applicationAccountAddress", async (request, response) => {
+  try {
+    /** @type {{name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}} */
+    let data = request.body;
+
+    /** @type {{applicationAccountAddress:string}} */
+    const params = request.params;
+
+    const updated = await applicationService.updateApplication(params.applicationAccountAddress, data);
+
+    response.send(updated);
   } catch (e) {
     const error = {
       message: e.toString()
@@ -204,15 +187,15 @@ router.post("/user", async (request, response) => {
 });
 
 /**
- * Mark as a free tier application.
+ * Stake a free tier application.
  */
-router.post("/freetier", async (request, response) => {
+router.post("/freetier/stake", async (request, response) => {
   try {
 
     /** @type {{applicationAccountAddress: string, networkChains: string[]}} */
     const data = request.body;
 
-    const aat = await applicationService.markAsFreeTierApplication(data.applicationAccountAddress, data.networkChains);
+    const aat = await applicationService.stakeFreeTierApplication(data.applicationAccountAddress, data.networkChains);
 
     response.send(aat);
   } catch (e) {

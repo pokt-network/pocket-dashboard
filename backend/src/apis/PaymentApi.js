@@ -1,5 +1,6 @@
 import express from "express";
 import PaymentService from "../services/PaymentService";
+import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 
 const router = express.Router();
 
@@ -70,7 +71,7 @@ router.post("/payment_methods", async (request, response) => {
  */
 router.post("/new_intent/apps", async (request, response) => {
   try {
-    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, pokt:number}, amount: number}} */
+    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, pokt:string}, amount: number}} */
     const data = request.body;
 
     const paymentIntent = await paymentService.createPocketPaymentIntentForApps(data.type, data.currency, data.item, data.amount);
@@ -101,8 +102,27 @@ router.post("/new_intent/nodes", async (request, response) => {
 /**
  * Retrieve history information about payments.
  */
-router.get("/history", (request, response) => {
-  response.send("// TODO: Implement this endpoint");
+router.post("/history", async (request, response) => {
+  try {
+    const limit = parseInt(getQueryOption(request, "limit"));
+
+    const offsetData = getOptionalQueryOption(request, "offset");
+    const offset = offsetData !== "" ? parseInt(offsetData) : 0;
+
+    /** @type {{user:string}} */
+    const data = request.body;
+
+    const paymentHistory = await paymentService.getPaymentHistory(data.user, limit, offset);
+
+    response.send(paymentHistory);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+
 });
 
 /**

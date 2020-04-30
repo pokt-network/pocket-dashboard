@@ -8,9 +8,9 @@ function ImageFileUpload(props) {
   const [files, setFiles] = useState([]);
   const {getRootProps, getInputProps} = useDropzone({
     accept: "image/*",
-    onDrop: acceptedFiles => {
+    onDrop: (acceptedFiles) => {
       setFiles(
-        acceptedFiles.map(file =>
+        acceptedFiles.map((file) =>
           Object.assign(file, {
             preview: URL.createObjectURL(file),
           })
@@ -21,6 +21,12 @@ function ImageFileUpload(props) {
     multiple: false,
   });
 
+  useEffect(() => {
+    if (props.defaultImg) {
+      setFiles([{preview: props.defaultImg}]);
+    }
+  }, [props.defaultImg]);
+
   const thumbs = files.map((file, idx) => (
     <React.Fragment key={idx}>
       {/*eslint-disable-next-line jsx-a11y/alt-text*/}
@@ -30,7 +36,7 @@ function ImageFileUpload(props) {
 
   useEffect(
     () => () => {
-      files.forEach(file => URL.revokeObjectURL(file.preview));
+      files.forEach((file) => URL.revokeObjectURL(file.preview));
     }, [files]
   );
 
@@ -63,6 +69,7 @@ function ImageFileUpload(props) {
 
 ImageFileUpload.propTypes = {
   handleDrop: PropTypes.func,
+  defaultImg: PropTypes.string,
 };
 
 export default ImageFileUpload;

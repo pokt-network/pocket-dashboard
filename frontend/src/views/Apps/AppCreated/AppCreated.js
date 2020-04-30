@@ -29,7 +29,7 @@ class AppCreated extends Component {
 
     const {
       status,
-      max_relays: maxRelays,
+      maxRelays,
       staked_tokens: stakedTokens,
     } = networkData;
 
