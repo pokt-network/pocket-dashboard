@@ -967,10 +967,10 @@
     bindings "^1.2.1"
     nan "^2.0.9"
 
-"@pokt-network/pocket-js@^0.2.2-rc":
-  version "0.2.2-rc"
-  resolved "https://registry.yarnpkg.com/@pokt-network/pocket-js/-/pocket-js-0.2.2-rc.tgz#71ae34aea6d9a6e06eb01b9e5869fb374dd53d5c"
-  integrity sha512-/iwhCVXF2+HmxgZ43bhs0NbxqH1waYU7Ejz6CqVqbN2i8imzheUzMiCBatOuMYRBewVcAGF0L9com+l7hfrNyA==
+"@pokt-network/pocket-js@^0.2.3-rc":
+  version "0.2.3-rc"
+  resolved "https://registry.yarnpkg.com/@pokt-network/pocket-js/-/pocket-js-0.2.3-rc.tgz#d08cdf302f0f8fcf497e5ac96cbc9f7528618704"
+  integrity sha512-hk2Vz/srTDwoBOm+c6p7uxMa2z69TpaVxqq0JG842ERInIPvw2DAd7kKTAsqz/JdY1r5WQRe32iibu2wbvxUCw==
   dependencies:
     "@pokt-network/aat-js" "0.1.0-rc"
     "@pokt-network/amino-js" "0.7.3-alpha.1"

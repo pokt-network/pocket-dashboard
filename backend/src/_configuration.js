@@ -15,8 +15,8 @@ export const Configurations = {
       options: {}
     },
     test: {
-      client_id: process.env.PAYMENT_DEFAULT_CLIENT_ID,
-      client_secret: process.env.PAYMENT_DEFAULT_CLIENT_SECRET,
+      client_id: process.env.TEST_PAYMENT_DEFAULT_CLIENT_ID,
+      client_secret: process.env.TEST_PAYMENT_DEFAULT_CLIENT_SECRET,
       options: {}
     }
   },
