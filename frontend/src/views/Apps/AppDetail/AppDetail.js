@@ -26,6 +26,8 @@ class AppDetail extends Component {
       loading: true,
       deleteModal: false,
       deleted: false,
+      message: "",
+      purchase: true,
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -33,6 +35,17 @@ class AppDetail extends Component {
   }
 
   async componentDidMount() {
+    let message;
+    let purchase = true;
+
+    // eslint-disable-next-line react/prop-types
+    if (this.props.location.state) {
+      // eslint-disable-next-line react/prop-types
+      message = this.props.location.state.message;
+      // eslint-disable-next-line react/prop-types
+      purchase = this.props.location.purchase;
+    }
+
     // eslint-disable-next-line react/prop-types
     const {address} = this.props.match.params;
 
@@ -54,6 +67,8 @@ class AppDetail extends Component {
     }
 
     this.setState({
+      message,
+      purchase,
       pocketApplication,
       networkData,
       chains,
@@ -99,18 +114,25 @@ class AppDetail extends Component {
       freeTier,
       publicPocketAccount,
     } = this.state.pocketApplication;
+    const {maxRelays, stakedTokens, status} = this.state.networkData;
+
+    let address;
+    let publicKey;
+
+    if (publicPocketAccount) {
+      address = publicPocketAccount.address;
+      publicKey = publicPocketAccount.publicKey;
+    }
+
     const {
-      max_relays,
-      staked_tokens,
-      status,
-      public_key,
-    } = this.state.networkData;
-
-    const address = publicPocketAccount
-      ? publicPocketAccount.address
-      : undefined;
-
-    const {chains, aat, loading, deleteModal, deleted} = this.state;
+      chains,
+      aat,
+      loading,
+      deleteModal,
+      deleted,
+      purchase,
+      message,
+    } = this.state;
 
     const generalInfo = [
       {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
@@ -147,6 +169,15 @@ class AppDetail extends Component {
       <div id="app-detail">
         <Row>
           <Col>
+            {message && (
+              <Alert
+                variant="secondary"
+                onClose={() => this.setState({message: ""})}
+                dismissible
+              >
+                {message}
+              </Alert>
+            )}
             <div className="head">
               {/* eslint-disable-next-line jsx-a11y/alt-text */}
               <img src={icon} />
@@ -193,7 +224,7 @@ class AppDetail extends Component {
             </div>
             <div className="info-section">
               <h3>Public Key</h3>
-              <Alert variant="dark">{public_key}</Alert>
+              <Alert variant="dark">{publicKey}</Alert>
             </div>
           </Col>
           {freeTier && (
@@ -229,6 +260,7 @@ class AppDetail extends Component {
             <BootstrapTable
               classes="table app-table table-striped"
               keyField="hash"
+              Purch
               data={chains}
               columns={TABLE_COLUMNS.NETWORK_CHAINS}
               bordered={false}
@@ -245,7 +277,11 @@ class AppDetail extends Component {
               >
                 Unstake
               </Button>
-              <Button variant="secondary" className="ml-3 pr-4 pl-4">
+              <Button
+                variant="secondary"
+                className="ml-3 pr-4 pl-4"
+                disabled={!purchase}
+              >
                 New Purchase
               </Button>
             </div>
