@@ -1,13 +1,13 @@
 export const BOND_STATUS = {
-  0: "Bonded",
+  0: "Unbonded",
   1: "Unbonding",
-  2: "Unbonded",
+  2: "Bonded",
 };
 
 export const BOND_STATUS_STR = {
-  bonded: 0,
+  unbonded: 0,
   unbonding: 1,
-  unbonded: 2,
+  bonded: 2,
 };
 
 export const APPLICATIONS_LIMIT = 10;
@@ -266,5 +266,5 @@ export const PAYMENT_REGION_OR_COUNTRY = [
   {name: "Western Sahara", code: "EH"},
   {name: "Yemen", code: "YE"},
   {name: "Zambia", code: "ZM"},
-  {name: "Zimbabwe", code: "ZW"}
+  {name: "Zimbabwe", code: "ZW"},
 ];

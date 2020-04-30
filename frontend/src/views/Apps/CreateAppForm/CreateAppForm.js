@@ -7,16 +7,58 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import UserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
+import {BOND_STATUS_STR} from "../../../_constants";
 
 class CreateAppForm extends CreateForm {
   constructor(props, context) {
     super(props, context);
 
     this.handleCreate = this.handleCreate.bind(this);
+    this.createApplication = this.createApplication.bind(this);
     this.state = {
       ...this.state,
       applicationData: {},
+      redirectPath: "",
+      redirectParams: {},
     };
+  }
+
+  async createApplication(applicationData) {
+    const {
+      imported,
+      stakeStatus,
+      address,
+      privateKey,
+    } = this.props.location.state;
+
+    const {success, data} = imported
+      ? await ApplicationService.createApplication(applicationData, privateKey)
+      : await ApplicationService.createApplication(applicationData);
+
+    const unstakedApp =
+      !imported ||
+      (imported &&
+        (stakeStatus === BOND_STATUS_STR.unbonded ||
+          stakeStatus === BOND_STATUS_STR.unbonding));
+
+    if (unstakedApp) {
+      this.setState({
+        redirectPath: _getDashboardPath(DASHBOARD_PATHS.chooseChain),
+      });
+    } else {
+      const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
+
+      const detail = url.replace(":address", address);
+
+      this.setState({
+        redirectPath: detail,
+        redirectParams: {
+          message: "For new purchase first unstake please!",
+          purchase: false,
+        },
+      });
+    }
+    return {success, data};
   }
 
   async handleCreate(e) {
@@ -43,42 +85,38 @@ class CreateAppForm extends CreateForm {
 
     const user = UserService.getUserInfo().email;
 
-    const {success, data} = await ApplicationService.createApplication(
-      name, owner, url, contactEmail, description, icon, user
-    );
+    const {success, data} = await this.createApplication({
+      name,
+      owner,
+      url,
+      contactEmail,
+      description,
+      icon,
+      user,
+    });
 
     if (success) {
-      const {privateApplicationData, networkData} = data;
-      const applicationData = {
-        address: privateApplicationData.address,
-        privateKey: privateApplicationData.privateKey,
-        stakedTokens: networkData.staked_tokens,
-        maxRelays: networkData.max_relays,
-        status: networkData.status,
-        jailed: networkData.jailed,
-      };
+      const {privateApplicationData} = data;
+      const {address, privateKey} = privateApplicationData;
 
-      ApplicationService.saveAppInfoInCache({
-        address: applicationData.address,
-        privateKey: applicationData.privateKey,
-      });
-      this.setState({applicationData, created: true});
+      ApplicationService.saveAppInfoInCache({address, privateKey});
+      this.setState({created: true});
     } else {
       // TODO: Show proper error message on front-end.
-      console.log(data.response.data.message);
+      console.log(data);
     }
   }
 
   render() {
     const {name, owner, url, contactEmail, description} = this.state.data;
-    const {created, applicationData} = this.state;
+    const {created, redirectPath, redirectParams} = this.state;
 
     if (created) {
       return (
         <Redirect
           to={{
-            pathname: _getDashboardPath(DASHBOARD_PATHS.chooseChain),
-            state: {applicationData},
+            pathname: redirectPath,
+            state: redirectParams,
           }}
         />
       );

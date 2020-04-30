@@ -75,7 +75,7 @@ describe("ApplicationService", () => {
 
   if (FREE_TIER_APPLICATION_PRIVATE_KEY && FREE_TIER_ADDRESS) {
     // FIXME: Fix this unit test
-    describe("createFreeTierApplication", () => {
+    describe("stakeFreeTierApplication", () => {
 
       const applicationData = {
         name: "Test application 999",
@@ -107,7 +107,7 @@ describe("ApplicationService", () => {
           "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
         ];
 
-        const aat = await applicationService.markAsFreeTierApplication(FREE_TIER_APPLICATION_PRIVATE_KEY, networkChains);
+        const aat = await applicationService.stakeFreeTierApplication(FREE_TIER_APPLICATION_PRIVATE_KEY, networkChains);
 
         // eslint-disable-next-line no-undef
         should.exist(aat);

@@ -28,11 +28,36 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async __createPocketPaymentIntent(type, currency, item, amount, to) {
-    const description = `Acquire pokt for ${to}`;
+    const description = `Acquiring POKT for ${to}`;
 
     return this._paymentProvider.createPaymentIntent(type, currency, item, amount, description);
   }
 
+  /**
+   * Create an payment intent for item.
+   *
+   * @param {string} type Type of payment.
+   * @param {string} currency Three-letter ISO currency code, in lowercase.
+   * @param {*} item Item to pay.
+   * @param {number} amount Amount intended to be collected by this payment.
+   * @param {string} itemType Item type for payment.
+   *
+   * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
+   * @throws Error if validation fails.
+   * @async
+   */
+  async __createPocketPaymentForItem(type, currency, item, amount, itemType) {
+    if (!Payment.validate({type, currency, item, amount})) {
+      return false;
+    }
+
+    const paymentItem = {
+      ...item,
+      type: itemType
+    };
+
+    return this.__createPocketPaymentIntent(type, currency, paymentItem, amount, itemType);
+  }
 
   /**
    * Get available currencies.
@@ -115,26 +140,39 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async createPocketPaymentIntentForApps(type, currency, item, amount) {
-
-    if (!Payment.validate({type, currency, item, amount})) {
-      return false;
-    }
-
-    const appItem = {
-      ...item,
-      type: "Application"
-    };
-
-    return this.__createPocketPaymentIntent(type, currency, appItem, amount, "apps");
+    return this.__createPocketPaymentForItem(type, currency, item, amount, "Application");
   }
 
-
-  async createPocketPaymentForNodes() {
-    // TODO: Implement this method.
+  /**
+   * Create an payment intent for node.
+   *
+   * @param {string} type Type of payment.
+   * @param {string} currency Three-letter ISO currency code, in lowercase.
+   * @param {*} item Item to pay.
+   * @param {number} amount Amount intended to be collected by this payment.
+   *
+   * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
+   * @throws Error if validation fails.
+   * @async
+   */
+  async createPocketPaymentIntentForNodes(type, currency, item, amount) {
+    return this.__createPocketPaymentForItem(type, currency, item, amount, "Node");
   }
 
-  async getPaymentHistory() {
-    // TODO: Implement this method.
+  /**
+   * Get payment history.
+   *
+   * @param {string} user User that belongs payments.
+   * @param {number} limit Limit of query.
+   * @param {number} [offset] Offset of query.
+   *
+   * @returns {Promise<PaymentHistory[]>} List of Payment history.
+   */
+  async getPaymentHistory(user, limit, offset = 0) {
+    const filter = {user};
+
+    return (await this.persistenceService.getEntities(PAYMENT_HISTORY_COLLECTION_NAME, filter, limit, offset))
+      .map(PaymentHistory.createPaymentHistory);
   }
 
   /**
