@@ -237,7 +237,6 @@ export default class NodeService extends BaseService {
       if (stakingStatus !== undefined) {
         return extendedNodes.filter((node) => node.networkData.status === StakingStatus.getStatus(stakingStatus));
       }
-
       return extendedNodes;
     }
 

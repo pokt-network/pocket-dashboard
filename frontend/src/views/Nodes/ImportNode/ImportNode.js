@@ -1,3 +1,4 @@
+// TODO: Refactor app-import/node-import to eliminate duplication
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -11,18 +12,13 @@ import {
   Spinner,
 } from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {
-  TABLE_COLUMNS,
-  BOND_STATUS,
-  BOND_STATUS_STR,
-} from "../../../_constants";
-import "./ImportApp.scss";
-import ApplicationService from "../../../core/services/PocketApplicationService";
+import {TABLE_COLUMNS, BOND_STATUS, BOND_STATUS_STR} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import AccountService from "../../../core/services/PocketAccountService";
 import NetworkService from "../../../core/services/PocketNetworkService";
+import NodeService from "../../../core/services/PocketNodeService";
 
-class Import extends Component {
+class ImportNode extends Component {
   constructor(props, context) {
     super(props, context);
 
@@ -69,11 +65,19 @@ class Import extends Component {
         max_relays: maxRelays,
         status: stakeStatus,
         staked_tokens: stakedTokens,
-      } = await ApplicationService.getNetworkAppInfo(address);
+        jailed,
+      } = await NodeService.getNetworkNodeInfo(address);
 
       const chains = await NetworkService.getNetworkChains(allChains);
 
-      this.setState({chains, address, stakedTokens, maxRelays, stakeStatus});
+      this.setState({
+        jailed: jailed === true ? "YES" : "NO",
+        chains,
+        address,
+        stakedTokens,
+        maxRelays,
+        stakeStatus,
+      });
     } catch {
       // Unstaked/Unbonded application
       this.setState({
@@ -81,6 +85,7 @@ class Import extends Component {
         stakeStatus: BOND_STATUS_STR.unbonded,
         stakedTokens: 0,
         maxRelays: "--",
+        jailed: "--",
       });
     }
     this.setState({
@@ -103,6 +108,7 @@ class Import extends Component {
       poktBalance,
       stakeStatus: status,
       maxRelays,
+      jailed,
       address,
       chains,
       loading,
@@ -117,13 +123,14 @@ class Import extends Component {
       {title: `${poktBalance} POKT`, subtitle: "Balance"},
       {title: stakeStatus, subtitle: "Stake status"},
       {title: maxRelays, subtitle: "Max Relays"},
+      {title: jailed, subtitle: "Jailed"},
     ];
 
     return (
       <div id="import-app">
         <Row>
           <Col id="head">
-            <h1>We are ready to import your app</h1>
+            <h1>We are ready to import your node</h1>
             <p className="sub">Please enter your private key</p>
             <InputGroup className="mb-3 import-input" size="lg">
               <FormControl
@@ -137,7 +144,7 @@ class Import extends Component {
               />
               <InputGroup.Append>
                 <Button
-                  className="pr-5 pl-5 pt-3 pb-3"
+                  className="pr-5 pl-5"
                   type="submit"
                   onClick={this.handleAppImport}
                   variant="dark"
@@ -186,7 +193,7 @@ class Import extends Component {
         </Row>
         <Link
           to={{
-            pathname: _getDashboardPath(DASHBOARD_PATHS.createAppInfo),
+            pathname: _getDashboardPath(DASHBOARD_PATHS.createNodeForm),
             state: {
               imported: imported,
               stakeStatus: status,
@@ -209,4 +216,4 @@ class Import extends Component {
   }
 }
 
-export default Import;
+export default ImportNode;

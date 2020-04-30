@@ -24,6 +24,9 @@ import PaymentHistory from "./views/Profile/PaymentHistory/PaymentHistory";
 import NodesCheckout from "./views/Nodes/NodesCheckout/NodesCheckout";
 import CreateNodeForm from "./views/Nodes/CreateNodeForm/CreateNodeForm";
 import NodeChainList from "./views/Nodes/NodeChainList/NodeChainList";
+import NodeDetail from "./views/Nodes/NodeDetail/NodeDetail";
+import EditNode from "./views/Nodes/EditNode/EditNode";
+import ImportNode from "./views/Nodes/ImportNode/ImportNode";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -46,10 +49,13 @@ export const DASHBOARD_PATHS = {
   chooseChain: "/apps/chains",
   appCreated: "/apps/created",
   nodes: "/nodes",
+  nodeDetail: "/nodes/detail/:address",
+  nodeEdit: "/nodes/edit/:address",
   nodesCheckout: "/nodes/checkout",
   profile: "/profile",
   createNodeForm: "/nodes/new",
   nodeChainList: "/nodes/chains",
+  importNode: "/nodes/import",
 };
 
 export const PROFILE_PATHS = {
@@ -144,6 +150,25 @@ export const dashboardRoutes = [
     exact: true,
     name: "Nodes",
     component: NodesMain,
+  },
+  {
+    path: DASHBOARD_PATHS.nodeDetail,
+    exact: true,
+    name: "Node Detail",
+    component: NodeDetail,
+  },
+  {
+    path: DASHBOARD_PATHS.importNode,
+    exact: true,
+
+    name: "Node Detail",
+    component: ImportNode,
+  },
+  {
+    path: DASHBOARD_PATHS.nodeEdit,
+    exact: true,
+    name: "Node Edit",
+    component: EditNode,
   },
   {
     path: DASHBOARD_PATHS.nodesCheckout,
