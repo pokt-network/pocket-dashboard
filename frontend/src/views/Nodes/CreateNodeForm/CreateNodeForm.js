@@ -27,12 +27,20 @@ class CreateNodeForm extends CreateForm {
   }
 
   async createNode(nodeData) {
-    const {
-      imported,
-      stakeStatus,
-      address,
-      privateKey,
-    } = this.props.location.state;
+    let imported;
+    let stakeStatus; 
+    let address; 
+    let privateKey;
+    
+    if (this.props.location.state !== undefined) {
+      stakeStatus = this.props.location.state.stakeStatus;
+      address = this.props.location.state.address;
+      privateKey = this.props.location.state.privateKey;
+      imported = this.props.location.state.imported;
+    } else {
+      imported = false;
+    }
+
 
     const {success, data} = imported
       ? await NodeService.createNode(nodeData, privateKey)
