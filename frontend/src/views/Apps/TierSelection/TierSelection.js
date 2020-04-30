@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Button, Card, Col, Modal, Row} from "react-bootstrap";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import "./TierSelection.scss";
-import {DASHBOARD_PATHS, _getDashboardPath} from "../../../_routes";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 
 class TierSelection extends Component {
   constructor(props, context) {
@@ -20,7 +20,7 @@ class TierSelection extends Component {
     if (isFreeTier) {
       const {address, chains} = ApplicationService.getAppAInfo();
 
-      const data = await ApplicationService.createFreeTierApplication(
+      const data = await ApplicationService.stakeFreeTierApplication(
         address, chains
       );
 

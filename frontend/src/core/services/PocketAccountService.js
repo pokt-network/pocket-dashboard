@@ -2,7 +2,6 @@ import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
 
 export class PocketAccountService extends PocketBaseService {
-
   constructor() {
     super("api/accounts");
   }
@@ -16,11 +15,13 @@ export class PocketAccountService extends PocketBaseService {
    */
   importAccount(accountPrivateKey) {
     const data = {
-      accountPrivateKey
+      accountPrivateKey,
     };
 
-    return axios.post(this._getURL("/import"), data)
-      .then(response => response.data);
+    return axios
+      .post(this._getURL("import"), data)
+      .then((response) => response.data)
+      .catch((err) => err.response.data);
   }
 }
 

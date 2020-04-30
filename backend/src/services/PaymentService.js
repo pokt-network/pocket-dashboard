@@ -133,8 +133,20 @@ export default class PaymentService extends BaseService {
     // TODO: Implement this method.
   }
 
-  async getPaymentHistory() {
-    // TODO: Implement this method.
+  /**
+   * Get payment history.
+   *
+   * @param {string} user User that belongs payments.
+   * @param {number} limit Limit of query.
+   * @param {number} [offset] Offset of query.
+   *
+   * @returns {Promise<PaymentHistory[]>} List of Payment history.
+   */
+  async getPaymentHistory(user, limit, offset = 0) {
+    const filter = {user};
+
+    return (await this.persistenceService.getEntities(PAYMENT_HISTORY_COLLECTION_NAME, filter, limit, offset))
+      .map(PaymentHistory.createPaymentHistory);
   }
 
   /**
