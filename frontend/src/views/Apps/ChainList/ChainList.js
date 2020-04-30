@@ -1,7 +1,7 @@
 import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
-import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
+import {TABLE_COLUMNS} from "../../../_constants";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
@@ -80,7 +80,7 @@ class ChooseChain extends Chains {
               classes="table app-table table-striped"
               keyField="hash"
               data={chains}
-              columns={NETWORK_TABLE_COLUMNS}
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
               selectRow={tableSelectOptions}
               bordered={false}
             />

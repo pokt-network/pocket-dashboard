@@ -3,7 +3,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
-import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
+import {TABLE_COLUMNS} from "../../../_constants";
 import "./AppDetail.scss";
 import ApplicationService, {
   PocketApplicationService,
@@ -99,7 +99,12 @@ class AppDetail extends Component {
       freeTier,
       publicPocketAccount,
     } = this.state.pocketApplication;
-    const {maxRelays, stakedTokens, status, publicKey} = this.state.networkData;
+    const {
+      max_relays,
+      staked_tokens,
+      status,
+      public_key,
+    } = this.state.networkData;
 
     const address = publicPocketAccount
       ? publicPocketAccount.address
@@ -108,9 +113,9 @@ class AppDetail extends Component {
     const {chains, aat, loading, deleteModal, deleted} = this.state;
 
     const generalInfo = [
-      {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
+      {title: `${staked_tokens} POKT`, subtitle: "Stake tokens"},
       {title: getBondStatus(status), subtitle: "Stake status"},
-      {title: maxRelays, subtitle: "Max Relays"},
+      {title: max_relays, subtitle: "Max Relays"},
     ];
 
     const contactInfo = [
@@ -188,7 +193,7 @@ class AppDetail extends Component {
             </div>
             <div className="info-section">
               <h3>Public Key</h3>
-              <Alert variant="dark">{publicKey}</Alert>
+              <Alert variant="dark">{public_key}</Alert>
             </div>
           </Col>
           {freeTier && (
@@ -225,7 +230,7 @@ class AppDetail extends Component {
               classes="table app-table table-striped"
               keyField="hash"
               data={chains}
-              columns={NETWORK_TABLE_COLUMNS}
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
               bordered={false}
             />
           </Col>

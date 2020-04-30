@@ -20,20 +20,51 @@ export const APPLICATIONS_LIMIT = 10;
 
 export const NODES_LIMIT = 10;
 
-export const NETWORK_TABLE_COLUMNS = [
-  {
-    dataField: "name",
-    text: "Network",
-  },
-  {
-    dataField: "netID",
-    text: "Network Identifier (NetID)",
-  },
-  {
-    dataField: "hash",
-    text: "Hash",
-  },
-];
+export const TABLE_COLUMNS = {
+  NETWORK_CHAINS: [
+    {
+      dataField: "name",
+      text: "Network",
+    },
+    {
+      dataField: "netID",
+      text: "Network Identifier (NetID)",
+    },
+    {
+      dataField: "hash",
+      text: "Hash",
+    },
+  ],
+  APPS: [
+    {
+      dataField: "pocketApplication.name",
+      text: "Name",
+    },
+    {
+      dataField: "pocketApplication.publicPocketAccount.address",
+      text: "Address",
+    },
+    {
+      dataField: "networkData.status",
+      text: "Status",
+    },
+  ],
+  NODES: [
+    {
+      dataField: "pocketNode.name",
+      text: "Name",
+    },
+    {
+      dataField: "pocketNode.publicPocketAccount.address",
+      text: "Address",
+    },
+
+    {
+      dataField: "networkData.status",
+      text: "Status",
+    },
+  ],
+};
 
 export const MAX_RELAYS = 20000;
 

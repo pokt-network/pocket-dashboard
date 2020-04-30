@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
+import {TABLE_COLUMNS} from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -189,7 +189,7 @@ class NodeDetail extends Component {
               classes="app-table table-striped"
               keyField="hash"
               data={chains}
-              columns={NETWORK_TABLE_COLUMNS}
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
               bordered={false}
             />
           </Col>

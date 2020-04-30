@@ -6,7 +6,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
 import {Link} from "react-router-dom";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
 import SortableTable from "../../core/components/SortableTable";
-import {APPLICATIONS_LIMIT, NETWORK_TABLE_COLUMNS} from "../../_constants";
+import {APPLICATIONS_LIMIT, TABLE_COLUMNS} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
@@ -140,7 +140,7 @@ class Dashboard extends Component {
             <SortableTable
               keyField="hash"
               title="Supported Blockchains"
-              columns={NETWORK_TABLE_COLUMNS}
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
               data={chains}
             />
           </Col>
@@ -148,7 +148,7 @@ class Dashboard extends Component {
             <SortableTable
               keyField="hash"
               title="Most popular chains"
-              columns={NETWORK_TABLE_COLUMNS}
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
               data={chains}
             />
           </Col>

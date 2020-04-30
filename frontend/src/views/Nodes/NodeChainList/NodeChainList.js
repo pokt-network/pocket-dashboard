@@ -1,7 +1,7 @@
 import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
-import {NETWORK_TABLE_COLUMNS} from "../../../_constants";
+import {TABLE_COLUMNS} from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Chains from "../../../core/components/Chains/Chains";
 import NodeService from "../../../core/services/PocketNodeService";
@@ -92,7 +92,7 @@ class NodeChainList extends Chains {
               classes="table app-table table-striped"
               keyField="hash"
               data={chains}
-              columns={NETWORK_TABLE_COLUMNS}
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
               selectRow={tableSelectOptions}
               bordered={false}
             />

@@ -12,11 +12,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {
-  NETWORK_TABLE_COLUMNS,
-  BOND_STATUS,
-  BOND_STATUS_STR,
-} from "../../../_constants";
+import {TABLE_COLUMNS, BOND_STATUS, BOND_STATUS_STR} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import AccountService from "../../../core/services/PocketAccountService";
 import NetworkService from "../../../core/services/PocketNetworkService";
@@ -190,7 +186,7 @@ class ImportNode extends Component {
               classes="table app-table table-striped"
               keyField="hash"
               data={chains}
-              columns={NETWORK_TABLE_COLUMNS}
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
               bordered={false}
             />
           </Col>

@@ -8,7 +8,7 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {APPLICATIONS_LIMIT, BOND_STATUS_STR} from "../../../_constants";
+import {APPLICATIONS_LIMIT, BOND_STATUS_STR, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
@@ -93,21 +93,6 @@ class AppsMain extends Main {
       allItemsTableLoading,
       userItemsTableLoading,
     } = this.state;
-
-    const columns = [
-      {
-        dataField: "pocketApplication.name",
-        text: "Name",
-      },
-      {
-        dataField: "pocketApplication.publicPocketAccount.address",
-        text: "Address",
-      },
-      {
-        dataField: "networkData.status",
-        text: "Status",
-      },
-    ];
 
     const registeredItems = allregisteredItems.map(mapStatusToApp);
 
@@ -234,7 +219,7 @@ class AppsMain extends Main {
               classes="app-table table-striped"
               keyField="pocketApplication.publicPocketAccount.address"
               data={registeredItems}
-              columns={columns}
+              columns={TABLE_COLUMNS.APPS}
               bordered={false}
               loading={allItemsTableLoading}
               noDataIndication={"No apps found"}
