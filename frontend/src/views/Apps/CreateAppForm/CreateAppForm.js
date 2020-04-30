@@ -24,12 +24,18 @@ class CreateAppForm extends CreateForm {
   }
 
   async createApplication(applicationData) {
-    const {
-      imported,
-      stakeStatus,
-      address,
-      privateKey,
-    } = this.props.location.state;
+    let imported;
+    let stakeStatus; 
+    let address; 
+    let privateKey;
+    if (this.props.location.state !== undefined) {
+      stakeStatus = this.props.location.state.stakeStatus;
+      address = this.props.location.state.address;
+      privateKey = this.props.location.state.privateKey;
+      imported = this.props.location.state.imported;
+    } else {
+      imported = false;
+    }
 
     const {success, data} = imported
       ? await ApplicationService.createApplication(applicationData, privateKey)
@@ -76,8 +82,7 @@ class CreateAppForm extends CreateForm {
 
     // Use current time as a 'hash' to generate icon of 250x250
     const identicon = `data:image/png;base64,${new Identicon(
-      `${currTime}${currTime / 2}`, 250
-    ).toString()}`;
+      `${currTime}${currTime / 2}`, 250).toString()}`;
 
     if (!icon) {
       icon = identicon;
