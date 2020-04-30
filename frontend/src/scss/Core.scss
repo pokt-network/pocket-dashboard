@@ -1,15 +1,22 @@
 @import "node_modules/bootstrap/scss/bootstrap";
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&display=swap");
 
 // Table variables
-$table: (columns:(background-color: theme-color("dark"),
-    color: white),
-  data: (odd: "",
-    even:""
+$table: (
+  columns: (
+    background-color: theme-color("dark"),
+    color: white,
   ),
-  selected-item: (background-color: rgba(0, 0, 0, 0.075)));
+  data: (
+    odd: "",
+    even: "",
+  ),
+  selected-item: (
+    background-color: rgba(0, 0, 0, 0.075),
+  ),
+);
 
-// color variables: 
+// color variables:
 $primary-color: #37aee1;
 $primary-color-darker: #1e95c8;
 $secondary-color: #474747;
@@ -17,18 +24,26 @@ $dark-blue: #00212d;
 $light-gray: #f5f5f5;
 
 // Font variables
-$title: (font:"Open Sans",
+$title: (
+  font: "Open Sans",
   type: sans-serif,
-  weight:800);
+  weight: 800,
+);
 
-$paragraph: (font:"Lato",
+$paragraph: (
+  font: "Lato",
   type: sans-serif,
-  weight:400);
+  weight: 400,
+);
 
 // utils variables
 $default-border-radius: 25px;
 
-$gradient: linear-gradient(180deg, rgba(32, 141, 188, 1) 12%, rgba(0, 50, 66, 1) 88%);
+$gradient: linear-gradient(
+  180deg,
+  rgba(32, 141, 188, 1) 12%,
+  rgba(0, 50, 66, 1) 88%
+);
 
 @mixin font-style($type) {
   font-family: map_get($type, font), map_get($type, type);
@@ -38,7 +53,7 @@ $gradient: linear-gradient(180deg, rgba(32, 141, 188, 1) 12%, rgba(0, 50, 66, 1)
 // Headers
 @for $i from 1 through 6 {
   h#{$i} {
-    @include font-style($title)
+    @include font-style($title);
   }
 }
 
@@ -60,13 +75,11 @@ a {
   @include font-style($paragraph);
 }
 
-
 html,
 body {
   height: 100%;
 }
 
-button,
 .btn {
   min-width: 180px;
   font-weight: 400;
@@ -74,8 +87,11 @@ button,
   font-family: "Lato";
 }
 
-form {
+.btn.dropdown-toggle-split {
+  width: 10px !important;
+}
 
+form {
   input,
   textarea {
     border-color: $primary-color;
@@ -210,7 +226,7 @@ input {
 
 a.link,
 button.link {
-  color: #343A41;
+  color: #343a41;
   text-decoration: underline;
 }
 
@@ -235,7 +251,6 @@ button.link {
       overflow-wrap: anywhere;
     }
   }
-
 }
 
 .main-list {
@@ -300,7 +315,6 @@ button.link {
   padding-left: 0;
   width: 100%;
 
-
   a {
     color: #ffffff;
     display: block;
@@ -344,31 +358,31 @@ button.link {
 /* total width */
 ::-webkit-scrollbar {
   background-color: #fff;
-  width: 16px
+  width: 16px;
 }
 
 /* background of the scrollbar except button or resizer */
 ::-webkit-scrollbar-track {
-  background-color: #fff
+  background-color: #fff;
 }
 
 ::-webkit-scrollbar-track:hover {
-  background-color: #f4f4f4
+  background-color: #f4f4f4;
 }
 
 /* scrollbar itself */
 ::-webkit-scrollbar-thumb {
   background-color: #ceced4;
   border-radius: 16px;
-  border: 5px solid #fff
+  border: 5px solid #fff;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background-color: #a5a5ac;
-  border: 4px solid #f4f4f4
+  border: 4px solid #f4f4f4;
 }
 
 /* set button(top and bottom of the scrollbar) */
 ::-webkit-scrollbar-button {
-  display: none
+  display: none;
 }
