@@ -49,7 +49,7 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
-   * Create a new node application
+   * Create a new node
    * @param {Object} nodeData Node information
    * @param {string} nodeData.name - Name.
    * @param {string} nodeData.owner Owner.
@@ -77,7 +77,7 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
-   * Edit node application
+   * Edit node
    * @param {string} nodeAccountAddress Node address.
    * @param {Object} nodeData Node information
    * @param {string} nodeData.name - Name.
@@ -119,7 +119,7 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
-   * Get all available applications.
+   * Get all available nodes.
    *
    * @param {number} limit Limit of query.
    * @param {number} offset Offset of query.
@@ -154,7 +154,7 @@ class PocketNodeService extends PocketBaseService {
   /**
    * Delete a node from dashboard (but not from the network).
    *
-   * @param {string} applicationAccountAddress Node account address.
+   * @param {string} nodeAccountAddress Node account address.
    *
    * @returns {Promise|Promise<*>}
    */
@@ -167,7 +167,7 @@ class PocketNodeService extends PocketBaseService {
   /**
    * Delete a node from dashboard (but not from the network).
    *
-   * @param {string} applicationAccountAddress Node account address.
+   * @param {string} nodeAccountAddress Node account address.
    *
    * @returns {Promise|Promise<*>}
    */
@@ -181,15 +181,17 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
-   * Get node data from network
+   * Unjail a jailed node
    *
-   * @param {string} nodeAccountAddress Application account address.
+   * @param {string} nodeAccountAddress Node account address.
    *
    * @returns {Promise|Promise<*>}
    */
-  getNetworkNodeInfo(nodeAccountAddress) {
+  unjailNode(nodeAccountAddress) {
+    const data = {nodeAccountAddress};
+
     return axios
-      .get(this._getURL(`import/${nodeAccountAddress}`))
+      .post(this._getURL("/unjail"), data)
       .then((response) => response.data);
   }
 }

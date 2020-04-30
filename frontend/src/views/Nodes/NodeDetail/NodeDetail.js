@@ -17,6 +17,7 @@ class NodeDetail extends Component {
 
     this.deleteNode = this.deleteNode.bind(this);
     this.unstakeNode = this.unstakeNode.bind(this);
+    this.unjailNode = this.unjailNode.bind(this);
 
     this.state = {
       pocketNode: {},
@@ -26,6 +27,19 @@ class NodeDetail extends Component {
       deleteModal: false,
       deleted: false,
     };
+  }
+
+  async unjailNode() {
+    const {address} = this.state.pocketNode.publicPocketAccount;
+
+    const {success} = await NodeService.unjailNode(address);
+
+    // TODO: Show message on frontend on success/failure
+    if (success) {
+      console.log("Node successfully unjailed");
+    } else {
+      console.log("There was an error unjailing the node");
+    }
   }
 
   async deleteNode() {
@@ -129,10 +143,17 @@ class NodeDetail extends Component {
           ))}
           <Col>
             <InfoCard title={jailed === 1 ? "YES" : "NO"} subtitle={"Jailed"}>
-              {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-              <a className="link" href="#">
-                Take out of jail
-              </a>
+              {jailed ? (
+                <Button
+                  variant="link"
+                  onClick={this.unjailNode}
+                  className="link pt-0 pb-0"
+                >
+                  Take out of jail
+                </Button>
+              ) : (
+                <br />
+              )}
             </InfoCard>
           </Col>
         </Row>
