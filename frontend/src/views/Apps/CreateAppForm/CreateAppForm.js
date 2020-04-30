@@ -6,7 +6,7 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import UserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import { generateIdenticon } from "../../../_helpers";
+import {generateIcon} from "../../../_helpers";
 
 class CreateAppForm extends CreateForm {
   constructor(props, context) {
@@ -31,7 +31,7 @@ class CreateAppForm extends CreateForm {
     }
 
     if (!icon) {
-      icon = generateIdenticon();
+      icon = generateIcon();
     }
 
     const user = UserService.getUserInfo().email;

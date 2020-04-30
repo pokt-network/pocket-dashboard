@@ -5,7 +5,7 @@ import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileU
 import {BOND_STATUS_STR} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {generateIdenticon} from "../../../_helpers";
+import {generateIcon} from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
 import NodeService from "../../../core/services/PocketNodeService";
 
@@ -68,11 +68,10 @@ class CreateNodeForm extends CreateForm {
   }
 
   async handleCreate(e) {
-    // TODO: Implement app import
-
     e.preventDefault();
+    
     const {name, contactEmail, description, operator} = this.state.data;
-    const icon = this.state.icon ? this.state.icon : generateIdenticon();
+    const icon = this.state.icon ? this.state.icon : generateIcon();
     const user = UserService.getUserInfo().email;
 
     // TODO: Show proper message on front end to user on validation error

@@ -32,14 +32,12 @@ export const mapStatusToField = (app) => {
   };
 };
 
-export const generateIdenticon = () => {
+export const generateIcon = () => {
   const currTime = new Date().getTime();
 
   // Use current time as a 'hash' to generate icon of 250x250
   const identicon = `data:image/png;base64,${new Identicon(
-    `${currTime}${currTime / 2}`,
-    250
-  ).toString()}`;
+    `${currTime}${currTime / 2}`, 250).toString()}`;
 
   return identicon;
 };
