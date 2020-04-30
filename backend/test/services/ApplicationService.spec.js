@@ -1,8 +1,7 @@
 import {before, describe, it} from "mocha";
 import "chai/register-should";
 import ApplicationService from "../../src/services/ApplicationService";
-import {PrivatePocketAccount} from "../../src/models/Account";
-import {Application, StakingStatus} from "@pokt-network/pocket-js";
+import {StakingStatus} from "@pokt-network/pocket-js";
 import {configureTestService} from "../setupTests";
 import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
 import sinon from "sinon";
@@ -35,7 +34,6 @@ describe("ApplicationService", () => {
         description: "A test application"
       };
 
-      /** @type {{privateApplicationData: PrivatePocketAccount, networkData:Application}} */
       const applicationResult = await applicationService.createApplication(data);
 
       // eslint-disable-next-line no-undef
@@ -70,6 +68,29 @@ describe("ApplicationService", () => {
       const exists = await applicationService.applicationExists(application);
 
       exists.should.be.equal(true);
+    });
+  });
+
+  describe("updateApplication", () => {
+    it("Expect a true value", async () => {
+      const applicationData = {
+        name: "Test application to edit",
+        owner: "Tester",
+        url: "http://example.com",
+        contactEmail: "tester@app.com",
+        user: "tester@app.com",
+        description: "A test application"
+      };
+
+      const applicationResult = await applicationService.createApplication(applicationData);
+      const applicationToEdit = {
+        ...applicationData,
+        name: "To Update",
+      };
+
+      const updated = await applicationService.updateApplication(applicationResult.networkData.address, applicationToEdit);
+
+      updated.should.be.true;
     });
   });
 

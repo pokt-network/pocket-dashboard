@@ -32,6 +32,29 @@ router.post("", async (request, response) => {
 });
 
 /**
+ * Update an application.
+ */
+router.put("/:applicationAccountAddress", async (request, response) => {
+  try {
+    /** @type {{name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}} */
+    let data = request.body;
+
+    /** @type {{applicationAccountAddress:string}} */
+    const params = request.params;
+
+    const updated = await applicationService.updateApplication(params.applicationAccountAddress, data);
+
+    response.send(updated);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
  * Delete an application from dashboard.
  */
 router.delete("/:applicationAccountAddress", async (request, response) => {
