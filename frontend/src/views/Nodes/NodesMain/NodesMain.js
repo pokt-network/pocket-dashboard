@@ -12,7 +12,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
 import InfoCards from "../../../core/components/InfoCards";
-import {mapStatusToApp, getBondStatus} from "../../../_helpers";
+import {mapStatusToField, getBondStatus} from "../../../_helpers";
 import NodeService from "../../../core/services/PocketNodeService";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
@@ -91,7 +91,7 @@ class NodesMain extends Main {
       userItemsTableLoading,
     } = this.state;
 
-    const registeredItems = allRegisteredItems.map(mapStatusToApp);
+    const registeredItems = allRegisteredItems.map(mapStatusToField);
 
     const cards = [
       {title: total, subtitle: "Total of node"},

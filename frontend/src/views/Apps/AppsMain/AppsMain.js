@@ -12,7 +12,7 @@ import {APPLICATIONS_LIMIT, BOND_STATUS_STR, TABLE_COLUMNS} from "../../../_cons
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {mapStatusToApp, getBondStatus} from "../../../_helpers";
+import {mapStatusToField, getBondStatus} from "../../../_helpers";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 
@@ -94,7 +94,7 @@ class AppsMain extends Main {
       userItemsTableLoading,
     } = this.state;
 
-    const registeredItems = allregisteredItems.map(mapStatusToApp);
+    const registeredItems = allregisteredItems.map(mapStatusToField);
 
     const cards = [
       {title: total, subtitle: "Total of apps"},

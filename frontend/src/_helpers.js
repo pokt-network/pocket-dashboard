@@ -22,7 +22,7 @@ export const isActiveExactUrl = (match, location) => {
   return match.url === location.pathname;
 };
 
-export const mapStatusToApp = (app) => {
+export const mapStatusToField = (app) => {
   return {
     ...app,
     networkData: {
@@ -37,7 +37,8 @@ export const generateIdenticon = () => {
 
   // Use current time as a 'hash' to generate icon of 250x250
   const identicon = `data:image/png;base64,${new Identicon(
-    `${currTime}${currTime / 2}`, 250
+    `${currTime}${currTime / 2}`,
+    250
   ).toString()}`;
 
   return identicon;
