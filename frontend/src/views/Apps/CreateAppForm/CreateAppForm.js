@@ -28,6 +28,7 @@ class CreateAppForm extends CreateForm {
     let stakeStatus; 
     let address; 
     let privateKey;
+    
     if (this.props.location.state !== undefined) {
       stakeStatus = this.props.location.state.stakeStatus;
       address = this.props.location.state.address;
