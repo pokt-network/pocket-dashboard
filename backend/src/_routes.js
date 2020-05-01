@@ -4,6 +4,7 @@ import Account from "./apis/AccountApi";
 import SecurityQuestion from "./apis/SecurityQuestionApi";
 import Payment from "./apis/PaymentApi";
 import Application from "./apis/ApplicationApi";
+import Node from "./apis/NodeApi";
 import Network from "./apis/NetworkApi";
 
 /**
@@ -27,6 +28,9 @@ export function configureRoutes(expressApp) {
 
   // Applications API
   expressApp.use("/api/applications", Application);
+
+  // Nodes API
+  expressApp.use("/api/nodes", Node);
 
   // Network API
   expressApp.use("/api/network", Network);

@@ -1,31 +1,70 @@
 export const BOND_STATUS = {
-  0: "Unbonded",
-  1: "Unbonding",
   2: "Bonded",
+  1: "Unbonding",
+  0: "Unbonded",
+};
+
+export const STAKE_STATUS = {
+  Staked: "Bonded",
+  Unstaking: "Bonding",
+  Unstaked: "Unbonded",
 };
 
 export const BOND_STATUS_STR = {
-  unbonded: 0,
-  unbonding: 1,
   bonded: 2,
+  unbonding: 1,
+  unbonded: 0,
 };
 
 export const APPLICATIONS_LIMIT = 10;
 
-export const NETWORK_TABLE_COLUMNS = [
-  {
-    dataField: "name",
-    text: "Network",
-  },
-  {
-    dataField: "netID",
-    text: "Network Identifier (NetID)",
-  },
-  {
-    dataField: "hash",
-    text: "Hash",
-  },
-];
+export const NODES_LIMIT = 10;
+
+export const TABLE_COLUMNS = {
+  NETWORK_CHAINS: [
+    {
+      dataField: "name",
+      text: "Network",
+    },
+    {
+      dataField: "netID",
+      text: "Network Identifier (NetID)",
+    },
+    {
+      dataField: "hash",
+      text: "Hash",
+    },
+  ],
+  APPS: [
+    {
+      dataField: "pocketApplication.name",
+      text: "Name",
+    },
+    {
+      dataField: "pocketApplication.publicPocketAccount.address",
+      text: "Address",
+    },
+    {
+      dataField: "networkData.status",
+      text: "Status",
+    },
+  ],
+  NODES: [
+    {
+      dataField: "pocketNode.name",
+      text: "Name",
+    },
+    {
+      dataField: "pocketNode.publicPocketAccount.address",
+      text: "Address",
+    },
+
+    {
+      dataField: "networkData.status",
+      text: "Status",
+    },
+  ],
+};
 
 export const MAX_RELAYS = 20000;
 

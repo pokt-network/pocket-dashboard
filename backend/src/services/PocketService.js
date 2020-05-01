@@ -5,11 +5,10 @@ import {
   CoinDenom,
   Configuration,
   HttpRpcProvider,
+  Node,
+  NodeParams,
   Pocket,
-  QueryAppResponse,
-  QueryAppsResponse,
-  RawTxResponse,
-  StakingStatus
+  RawTxResponse
 } from "@pokt-network/pocket-js";
 import {PocketAAT} from "@pokt-network/aat-js";
 import {Configurations} from "../_configuration";
@@ -192,7 +191,6 @@ export default class PocketService {
    * @async
    */
   async getApplication(addressHex) {
-    /** @type {QueryAppResponse} */
     const applicationResponse = await this.__pocket.rpc().query.getApp(addressHex);
 
     if (applicationResponse instanceof Error) {
@@ -203,18 +201,35 @@ export default class PocketService {
   }
 
   /**
+   * Get node data.
+   *
+   * @param {string} addressHex Account address.
+   *
+   * @returns {Node} The account data.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getNode(addressHex) {
+    const nodeResponse = await this.__pocket.rpc().query.getNode(addressHex);
+
+    if (nodeResponse instanceof Error) {
+      throw nodeResponse;
+    }
+
+    return nodeResponse.node;
+  }
+
+  /**
    * Get Applications data.
    *
-   * @param {StakingStatus} status Status of the apps to retrieve.
+   * @param {string} status Status of the apps to retrieve.
    *
    * @returns {Promise<Application[]>} The applications data.
    * @throws Error If Query fails.
    * @async
    */
   async getApplications(status) {
-    // TODO: Change the status string for StakingStatus parameter
-    /** @type {QueryAppsResponse} */
-    const applicationsResponse = await this.__pocket.rpc().query.getApps("staked");
+    const applicationsResponse = await this.__pocket.rpc().query.getApps(status);
 
     if (applicationsResponse instanceof Error) {
       throw applicationsResponse;
@@ -245,7 +260,7 @@ export default class PocketService {
    *
    * @param {Account} applicationAccount Application account to stake.
    * @param {string} passPhrase Passphrase used to import the account.
-   * @param {string} uPoktAmount uPocket amount to stake.
+   * @param {string} uPoktAmount uPokt amount to stake.
    * @param {string[]} networkChains Network Chains to stake.
    *
    * @returns {Promise<RawTxResponse>} Raw transaction data
@@ -259,6 +274,34 @@ export default class PocketService {
 
     const transactionResponse = await transactionSender.appStake(publicKey, networkChains, uPoktAmount)
       .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake an application");
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse;
+  }
+
+  /**
+   * Stake a node in pocket network.
+   *
+   * @param {Account} nodeAccount Node account to stake.
+   * @param {string} passPhrase Passphrase used to import the account.
+   * @param {string} uPoktAmount uPokt amount to stake.
+   *
+   * @param {string[]} networkChains Network Chains to stake.
+   * @param {URL} serviceURL Service URL.
+   * @returns {Promise<RawTxResponse>} Raw transaction data
+   * @throws Error if transaction fails.
+   */
+  async stakeNode(nodeAccount, passPhrase, uPoktAmount, networkChains, serviceURL) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const publicKey = nodeAccount.publicKey.toString("hex");
+
+    const transactionSender = await this.__pocket.withImportedAccount(nodeAccount.address, passPhrase);
+
+    const transactionResponse = await transactionSender.nodeStake(publicKey, networkChains, uPoktAmount, serviceURL)
+      .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake a node");
 
     if (transactionResponse instanceof Error) {
       throw transactionResponse;
@@ -288,5 +331,68 @@ export default class PocketService {
     }
 
     return transactionResponse;
+  }
+
+  /**
+   * Unstake a node in pocket network.
+   *
+   * @param {Account} nodeAccount Node account to unstake.
+   * @param {string} passPhrase Passphrase used to import the account.
+   *
+   * @returns {Promise<RawTxResponse>} Raw transaction data
+   * @throws Error if transaction fails.
+   */
+  async unstakeNode(nodeAccount, passPhrase) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const transactionSender = await this.__pocket.withImportedAccount(nodeAccount.addressHex, passPhrase);
+
+    const transactionResponse = await transactionSender.nodeUnstake(nodeAccount.addressHex)
+      .submit(chain_id, transaction_fee);
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse;
+  }
+
+  /**
+   * UnJail a node in pocket network.
+   *
+   * @param {Account} nodeAccount Node account to unJail.
+   * @param {string} passPhrase Passphrase used to import the account.
+   *
+   * @returns {Promise<RawTxResponse>} Raw transaction data
+   * @throws Error if transaction fails.
+   */
+  async unJailNode(nodeAccount, passPhrase) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const transactionSender = await this.__pocket.withImportedAccount(nodeAccount.addressHex, passPhrase);
+
+    const transactionResponse = await transactionSender.nodeUnjail(nodeAccount.addressHex)
+      .submit(chain_id, transaction_fee);
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse;
+  }
+
+  /**
+   * Get Node Parameters data.
+   *
+   * @returns {Promise<NodeParams>} The node parameters.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getNodeParameters() {
+    const nodeParametersResponse = await this.__pocket.rpc().query.getNodeParams();
+
+    if (nodeParametersResponse instanceof Error) {
+      throw nodeParametersResponse;
+    }
+
+    return nodeParametersResponse.nodeParams;
   }
 }

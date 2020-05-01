@@ -4,8 +4,7 @@ import {configureTestService} from "../setupTests";
 import AccountService from "../../src/services/AccountService";
 
 /** @type {string} */
-const APPLICATION_PRIVATE_KEY_ON_NETWORK = process.env.APPLICATION_PRIVATE_KEY_ON_NETWORK;
-
+const ACCOUNT_PRIVATE_KEY_ON_NETWORK = process.env.TEST_ACCOUNT_PRIVATE_KEY_ON_NETWORK;
 
 const accountService = new AccountService();
 
@@ -15,11 +14,11 @@ before(() => {
 
 describe("AccountService", () => {
 
-  if (APPLICATION_PRIVATE_KEY_ON_NETWORK) {
+  if (ACCOUNT_PRIVATE_KEY_ON_NETWORK) {
     describe("importAccountFromNetwork", () => {
       it("Expect an account successfully imported", async () => {
 
-        const publicAccount = await accountService.importAccountFromNetwork(APPLICATION_PRIVATE_KEY_ON_NETWORK);
+        const publicAccount = await accountService.importDashboardAccountToNetwork(ACCOUNT_PRIVATE_KEY_ON_NETWORK);
 
         // eslint-disable-next-line no-undef
         should.exist(publicAccount);

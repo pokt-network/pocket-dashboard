@@ -3,16 +3,14 @@ import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
-import {NETWORK_TABLE_COLUMNS, BOND_STATUS} from "../../../_constants";
+import {TABLE_COLUMNS} from "../../../_constants";
 import "./AppDetail.scss";
-import ApplicationService, {
-  PocketApplicationService,
-} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {copyToClickboard, formatNumbers} from "../../../_helpers";
+import {copyToClipboard, getBondStatus, formatNumbers} from "../../../_helpers";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -137,7 +135,7 @@ class AppDetail extends Component {
 
     const generalInfo = [
       {title: `${formatNumbers(stakedTokens)} POKT`, subtitle: "Stake tokens"},
-      {title: BOND_STATUS[status], subtitle: "Stake status"},
+      {title:  getBondStatus(status), subtitle: "Stake status"},
       {title: formatNumbers(maxRelays), subtitle: "Max Relays"},
     ];
 
@@ -246,7 +244,7 @@ class AppDetail extends Component {
                   </code>
                   <p
                     onClick={() =>
-                      copyToClickboard(JSON.stringify(aat, null, 2))
+                      copyToClipboard(JSON.stringify(aat, null, 2))
                     }
                   >
                     Copy
@@ -264,7 +262,7 @@ class AppDetail extends Component {
               keyField="hash"
               Purch
               data={chains}
-              columns={NETWORK_TABLE_COLUMNS}
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
               bordered={false}
             />
           </Col>
