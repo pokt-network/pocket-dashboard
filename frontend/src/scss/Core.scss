@@ -25,6 +25,7 @@ $title: (font: "Open Sans",
   weight: 800,
 );
 
+
 $paragraph: (font: "Lato",
   type: sans-serif,
   weight: 400,
@@ -33,6 +34,12 @@ $paragraph: (font: "Lato",
 // utils variables
 $default-border-radius: 25px;
 $default-box-shadow: 1px 15px 53px -26px rgba(33, 33, 33, .1);
+
+@mixin bordered-layout {
+  border: 2px solid $primary-color;
+  padding: 10px 30px 7px 30px;
+  border-radius: $default-border-radius;
+}
 
 $gradient: linear-gradient(180deg,
   rgba(32, 141, 188, 1) 12%,

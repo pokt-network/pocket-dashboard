@@ -1,29 +1,31 @@
+@import "../../../scss/Core";
+
 #payment-history {
   .filters {
     display: flex;
     justify-content: space-around;
 
     .filter {
+      margin-right: 20px;
+
       p {
         margin-bottom: 0;
         font-size: 1.2em;
         margin-right: 10px;
       }
-
-      display: flex;
-      align-items: center;
     }
 
-    .filter.sort {
-      min-width: 200px;
+    .filter.search {
+      flex-grow: 2;
     }
   }
 
   .export {
     cursor: pointer;
+    color: $primary-color;
   }
 
   .export:active {
-    color: gray;
+    color: $primary-color-darker;
   }
 }

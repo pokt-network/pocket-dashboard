@@ -1,17 +1,18 @@
 import React, {Component} from "react";
-import {Col, Row} from "react-bootstrap";
+import {Col, Button, Row, FormControl, InputGroup} from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import "./PaymentHistory.scss";
 import AppDatePicker from "../../../core/components/AppDatePicker/AppDatePicker";
-import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
 import BootstrapTable from "react-bootstrap-table-next";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSearch, faDownload} from "@fortawesome/free-solid-svg-icons";
 
 // TODO: Remove dummy data and connect to backend
 const dummyData = [
-  {name: "Example name 1", amount: 200, date: "20-04-2020"},
-  {name: "Example name 2", amount: 300, date: "21-04-2020"},
-  {name: "Example name 3", amount: 500, date: "22-04-2020"},
-  {name: "Example name 4", amount: 100, date: "23-04-2020"},
+  {name: "Example name 1", amount: 200, ref: "INVO-001", date: "20-04-2020"},
+  {name: "Example name 2", amount: 300, ref: "INVO-002", date: "21-04-2020"},
+  {name: "Example name 3", amount: 500, ref: "INVO-003", date: "22-04-2020"},
+  {name: "Example name 4", amount: 100, ref: "INVO-004", date: "23-04-2020"},
 ];
 
 class PaymentHistory extends Component {
@@ -35,9 +36,9 @@ class PaymentHistory extends Component {
 
   renderExport(cell, row) {
     return (
-      <p className="export" onClick={() => this.handleExport(row)}>
-        Export
-      </p>
+      <span className="export" onClick={() => this.handleExport(row)}>
+        <FontAwesomeIcon icon={faDownload} />
+      </span>
     );
   }
 
@@ -50,6 +51,7 @@ class PaymentHistory extends Component {
       {dataField: "name", text: "App/Node name"},
       {dataField: "amount", text: "Amount"},
       {dataField: "date", text: "Date"},
+      {dataField: "ref", text: "Invoice ref"},
       {dataField: "export", text: "", formatter: this.renderExport},
     ];
 
@@ -61,30 +63,42 @@ class PaymentHistory extends Component {
           <h2>Payment history</h2>
           <div className="filters mt-4">
             <span className="filter">
-              <p>To:</p>
               <AppDatePicker
-                text="To:"
                 onChange={(date) => this.handleDateChange(date, "startDate")}
               />
             </span>
             <span className="filter">
-              <p>From:</p>
               <AppDatePicker
-                text="From:"
                 onChange={(date) => this.handleDateChange(date, "endDate")}
               />
             </span>
-            <span className="filter sort">
-              <p>Filter By:</p>
-              <AppDropdown
-                options={["All", "Oldest", "Newest"]}
-                onSelect={(val) => console.log(val)}
-              />
+            <span className="filter search">
+              <InputGroup className="search-input mb-3">
+                <FormControl
+                  placeholder="Search invoice"
+                  name="searchQuery"
+                  onChange={this.handleChange}
+                  onKeyPress={({key}) => {
+                    if (key === "Enter") {
+                      this.handleSearch();
+                    }
+                  }}
+                />
+                <InputGroup.Append>
+                  <Button
+                    type="submit"
+                    onClick={this.handleSearch}
+                    variant="outline-primary"
+                  >
+                    <FontAwesomeIcon icon={faSearch} />
+                  </Button>
+                </InputGroup.Append>
+              </InputGroup>
             </span>
           </div>
           <div className="payments mt-3">
             <BootstrapTable
-              classes="app-table table-striped"
+              classes="app-table"
               keyField="name"
               data={dummyData}
               bordered={false}
