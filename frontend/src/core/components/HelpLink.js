@@ -2,16 +2,21 @@ import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faQuestionCircle} from "@fortawesome/free-solid-svg-icons";
+import {faQuestionCircle} from "@fortawesome/free-regular-svg-icons";
+import {STYLING} from "../../_constants";
 
 export default class HelpLink extends Component {
   render() {
     const {link, size} = this.props;
 
     return (
-      <div className={"help"}>
+      <div style={{marginTop: "4px"}}>
         <Link to={link}>
-          <FontAwesomeIcon size={size} icon={faQuestionCircle} />
+          <FontAwesomeIcon
+            size={size}
+            color={STYLING.primaryColor}
+            icon={faQuestionCircle}
+          />
         </Link>
       </div>
     );

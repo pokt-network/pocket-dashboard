@@ -1,11 +1,23 @@
 @import "../../../../scss/Core.scss";
 
 #app-sidebar {
+  margin-top: 50px;
+
+  a {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  a>li {
+    margin-left: 10px;
+    font-weight: bold;
+  }
+
   a:hover {
-    background-color: #2d3239;
+    background-color: #007293;
   }
 
   a.active {
-    background-color: #262a30;
+    background-color: #006480;
   }
 }

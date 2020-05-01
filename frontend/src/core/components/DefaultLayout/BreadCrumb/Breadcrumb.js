@@ -1,13 +1,14 @@
 import React, {Component} from "react";
 import {Breadcrumb} from "react-bootstrap";
 import PropTypes from "prop-types";
+import "./BreadCrumb.scss";
 
 class Breadcrumbs extends Component {
   render() {
     const {links} = this.props;
 
     return (
-      <div style={{width: "100%"}}>
+      <div id="breadcrumbs" style={{width: "100%"}}>
         <Breadcrumb>
           {links.map((link, idx) => (
             <Breadcrumb.Item

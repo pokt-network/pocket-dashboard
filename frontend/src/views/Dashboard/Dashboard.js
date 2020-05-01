@@ -1,17 +1,17 @@
 import React, {Component} from "react";
 import UserService from "../../core/services/PocketUserService";
-import {Alert, Button, ButtonGroup, Col, Dropdown, Row} from "react-bootstrap";
+import {Alert, Col, Dropdown, Row} from "react-bootstrap";
 import "./Dashboard.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
-import {Link} from "react-router-dom";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
-import SortableTable from "../../core/components/SortableTable";
 import {APPLICATIONS_LIMIT, NODES_LIMIT, TABLE_COLUMNS} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
 import {mapStatusToField} from "../../_helpers";
 import NodeService from "../../core/services/PocketNodeService";
+import Segment from "../../core/components/Segment/Segment";
+import BootstrapTable from "react-bootstrap-table-next";
 
 class Dashboard extends Component {
   constructor(props, context) {
@@ -30,8 +30,7 @@ class Dashboard extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
-    );
+      userEmail, APPLICATIONS_LIMIT);
 
     const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
 
@@ -70,7 +69,7 @@ class Dashboard extends Component {
       <div id="dashboard">
         {alert && (
           <Alert
-            variant="secondary"
+            variant="primary"
             onClose={() => this.setState({alert: false})}
             dismissible
           >
@@ -83,43 +82,63 @@ class Dashboard extends Component {
           <Col sm="8" md="8" lg="8">
             <h2 className="ml-1">Network Information</h2>
           </Col>
-          <Col
-            sm="4"
-            md="4"
-            lg="4"
-            className="d-flex justify-content-end general-info"
-          >
-            <Dropdown as={ButtonGroup} className="cta">
-              <Button variant="dark" className="ml-4 pl-5 pr-5">
+          <Col sm="4" md="4" lg="4" className="d-flex justify-content-end">
+            <Dropdown className="cta mr-2">
+              <Dropdown.Toggle variant="primary" id="dropdown-basic">
                 Apps
-              </Button>
-
-              <Dropdown.Toggle split variant="dark" id="dropdown-split-basic" />
+              </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
-                  <Dropdown.Item as="button">Create new app</Dropdown.Item>
-                </Link>
-                <Dropdown.Item href="#/action-2">Import app</Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() =>
+                    // eslint-disable-next-line react/prop-types
+                    this.props.history.push(
+                      _getDashboardPath(DASHBOARD_PATHS.createAppInfo)
+                    )
+                  }
+                >
+                  Create
+                </Dropdown.Item>
+
+                <Dropdown.Item
+                  onClick={() =>
+                    // eslint-disable-next-line react/prop-types
+                    this.props.history.push(
+                      _getDashboardPath(DASHBOARD_PATHS.importApp)
+                    )
+                  }
+                >
+                  Import
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-
-            <Dropdown as={ButtonGroup} className="cta">
-              <Button variant="secondary" className="ml-4 pl-5 pr-5">
+            <Dropdown className="cta">
+              <Dropdown.Toggle variant="dark" id="dropdown-basic">
                 Nodes
-              </Button>
-
-              <Dropdown.Toggle
-                split
-                variant="secondary"
-                id="dropdown-split-basic"
-              />
+              </Dropdown.Toggle>
 
               <Dropdown.Menu>
-                <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
-                  <Dropdown.Item as="button">Create new node</Dropdown.Item>
-                </Link>
-                <Dropdown.Item href="#/action-2">Import node</Dropdown.Item>
+                <Dropdown.Item
+                  onClick={() =>
+                    // eslint-disable-next-line react/prop-types
+                    this.props.history.push(
+                      _getDashboardPath(DASHBOARD_PATHS.createNodeForm)
+                    )
+                  }
+                >
+                  Create
+                </Dropdown.Item>
+
+                <Dropdown.Item
+                  onClick={() =>
+                    // eslint-disable-next-line react/prop-types
+                    this.props.history.push(
+                      _getDashboardPath(DASHBOARD_PATHS.importNode)
+                    )
+                  }
+                >
+                  Import
+                </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Col>
@@ -132,39 +151,51 @@ class Dashboard extends Component {
           ))}
         </Row>
         <Row>
-          <Col lg="6">
-            <SortableTable
-              keyField="hash"
-              title="Supported Blockchains"
-              columns={TABLE_COLUMNS.NETWORK_CHAINS}
-              data={chains}
-            />
+          <Col lg="6" md="6" sm="6">
+            <Segment label="Supported Blockchains">
+              <BootstrapTable
+                classes="app-table table-striped"
+                keyField="hash"
+                data={chains}
+                columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                bordered={false}
+              />
+            </Segment>
           </Col>
-          <Col lg="6">
-            <SortableTable
-              keyField="hash"
-              title="Most popular chains"
-              columns={TABLE_COLUMNS.NETWORK_CHAINS}
-              data={chains}
-            />
+          <Col lg="6" md="6" sm="6">
+            <Segment label="Most popular chains">
+              <BootstrapTable
+                classes="app-table table-striped"
+                keyField="hash"
+                data={chains}
+                columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                bordered={false}
+              />
+            </Segment>
           </Col>
         </Row>
         <Row className="mt-5 mb-4">
-          <Col lg="6">
-            <SortableTable
-              keyField="hash"
-              title="Registered  Nodes"
-              columns={TABLE_COLUMNS.NODES}
-              data={userNodes}
-            />
+          <Col lg="6" md="6" sm="6">
+            <Segment label="Registered Nodes">
+              <BootstrapTable
+                classes="app-table table-striped"
+                keyField="pocketNode.publicPocketAccount.address"
+                data={userNodes}
+                columns={TABLE_COLUMNS.NODES}
+                bordered={false}
+              />
+            </Segment>
           </Col>
-          <Col lg="6">
-            <SortableTable
-              title="Registered Apps"
-              keyField="networkData.address"
-              columns={TABLE_COLUMNS.APPS}
-              data={userApps}
-            />
+          <Col lg="6" md="6" sm="6">
+            <Segment label="Registered Apps">
+              <BootstrapTable
+                classes="app-table table-striped"
+                keyField="pocketApplication.publicPocketAccount.address"
+                data={userApps}
+                columns={TABLE_COLUMNS.APPS}
+                bordered={false}
+              />
+            </Segment>
           </Col>
         </Row>
       </div>

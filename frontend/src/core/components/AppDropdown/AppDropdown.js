@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Dropdown} from "react-bootstrap";
 import {PropTypes} from "prop-types";
 import "./AppDropdown.scss";
+import LabelToggle from "../LabelToggle/LabelToggle";
 
 class AppDropdown extends Component {
   constructor(props, context) {
@@ -38,8 +39,8 @@ class AppDropdown extends Component {
     const {selected} = this.state;
 
     return (
-      <Dropdown className="app-dropdown">
-        <Dropdown.Toggle variant="light" id="dropdown-basic">
+      <Dropdown alignRight className="app-dropdown">
+        <Dropdown.Toggle as={LabelToggle} id="dropdown-basic">
           {selected}
         </Dropdown.Toggle>
 

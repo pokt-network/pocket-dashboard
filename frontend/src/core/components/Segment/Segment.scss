@@ -1,0 +1,34 @@
+@import "../../../scss/Core.scss";
+
+.app-segment {
+  .head {
+    background-color: $light-gray;
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 25px;
+    padding-bottom: 15px;
+
+    .title {
+      margin-left: 25px;
+      text-transform: uppercase;
+      font-size: 1.7em;
+    }
+
+    .app-dropdown {
+      margin-right: 30px;
+    }
+  }
+
+  .body {
+    padding-top: 25px;
+    box-shadow: 1px 15px 53px -26px rgba(33, 33, 33, .1);
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 15px;
+    overflow-x: auto;
+    max-height: 60vh;
+  }
+}

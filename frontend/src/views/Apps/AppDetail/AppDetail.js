@@ -10,7 +10,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {copyToClipboard, getBondStatus} from "../../../_helpers";
+import {copyToClipboard, getBondStatus, formatNumbers} from "../../../_helpers";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -107,6 +107,7 @@ class AppDetail extends Component {
       name,
       url,
       contactEmail,
+      owner,
       description,
       icon,
       freeTier,
@@ -133,9 +134,9 @@ class AppDetail extends Component {
     } = this.state;
 
     const generalInfo = [
-      {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
-      {title: getBondStatus(status), subtitle: "Stake status"},
-      {title: maxRelays, subtitle: "Max Relays"},
+      {title: `${formatNumbers(stakedTokens)} POKT`, subtitle: "Stake tokens"},
+      {title:  getBondStatus(status), subtitle: "Stake status"},
+      {title: formatNumbers(maxRelays), subtitle: "Max Relays"},
     ];
 
     const contactInfo = [
@@ -178,22 +179,23 @@ class AppDetail extends Component {
             )}
             <div className="head">
               {/* eslint-disable-next-line jsx-a11y/alt-text */}
-              <img src={icon} />
+              <img src={icon} className="mr-3" />
               <div className="info">
-                <h1 className="d-flex align-items-baseline">
+                <h1 className="name d-flex align-items-center">
                   {name}
                   {freeTier && (
-                    <Badge variant="dark" className="ml-2 pt-2 pb-2 pl-3 pr-3">
+                    <Badge variant="primary" className="ml-2 pl-3 pr-3">
                       Free Tier
                     </Badge>
                   )}
                 </h1>
+                <p className="owner mb-1">{owner}</p>
                 <p className="description">{description}</p>
               </div>
             </div>
           </Col>
         </Row>
-        <h2 className="mt-4">General Information</h2>
+        <h1 className="mt-4">GENERAL INFORMATION</h1>
         <Row className="mt-2 stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
@@ -218,7 +220,7 @@ class AppDetail extends Component {
           <Col lg={freeTier ? 6 : 12} md={freeTier ? 6 : 12}>
             <div className="info-section">
               <h3>Address</h3>
-              <Alert variant="dark">{address}</Alert>
+              <Alert variant="light">{address}</Alert>
             </div>
             <div className="info-section">
               <h3>Public Key</h3>
@@ -234,7 +236,7 @@ class AppDetail extends Component {
                   <p>How to create an AAT?</p>
                 </span>
               </div>
-              <div className="aat-code">
+              <Alert variant="light" className="aat-code">
                 <pre>
                   <code className="language-html" data-lang="html">
                     {"# Returns\n"}
@@ -248,7 +250,7 @@ class AppDetail extends Component {
                     Copy
                   </p>
                 </pre>
-              </div>
+              </Alert>
             </Col>
           )}
         </Row>
@@ -256,7 +258,7 @@ class AppDetail extends Component {
           <Col>
             <h3>Networks</h3>
             <BootstrapTable
-              classes="table app-table table-striped"
+              classes="app-table"
               keyField="hash"
               Purch
               data={chains}

@@ -1,0 +1,28 @@
+@import "../../../scss/Core.scss";
+
+.label-dropdown {
+  border: 2px solid $primary-color;
+  padding: 10px 30px 7px 30px;
+  border-radius: $default-border-radius;
+  display: inline;
+
+  * {
+    display: inline;
+  }
+
+  #label {
+    margin-bottom: 0;
+    margin-right: 18px;
+    font-weight: bold;
+  }
+
+  .icon {
+    position: absolute;
+    margin-top: 5px;
+  }
+}
+
+.label-dropdown:hover {
+  text-decoration: none;
+  background-color: aliceblue;
+}

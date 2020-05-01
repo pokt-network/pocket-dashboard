@@ -1,23 +1,16 @@
 #dashboard {
-  .alert {
-    padding-top: 30px;
-    padding-bottom: 25px;
-    padding-left: 25px;
-  }
-
   .dropdown.cta {
     button {
+      padding-left: 150px;
       border-right: 1px solid #ffffff;
+    }
+
+    .dropdown-item {
+      padding-right: 130px;
     }
 
     button.dropdown-toggle {
       border-left: 1px solid #ffffff;
     }
-  }
-
-  .react-bootstrap-table {
-    max-height: 55vh;
-    overflow: hidden;
-    overflow-y: auto;
   }
 }

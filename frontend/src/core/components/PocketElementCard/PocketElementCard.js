@@ -12,7 +12,7 @@ class PocketElementCard extends Component {
           <div className="detail">
             <img src={iconURL} alt="" />
             <div className="info">
-              <h1>{title}</h1>
+              <p>{title}</p>
               <p>{subtitle}</p>
             </div>
           </div>
@@ -29,7 +29,7 @@ PocketElementCard.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
   iconURL: PropTypes.string,
-  status: PropTypes.string
+  status: PropTypes.string,
 };
 
 export default PocketElementCard;

@@ -4,15 +4,27 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  justify-content: space-between;
+  box-shadow: 0px -12px 21px 1px rgba(0, 0, 0, 0.4);
 
-  >* {
-    margin-right: 20px;
+  #main-logo {
+    width: 7%;
+    margin-left: 20px;
   }
 
-  >:last-child {
-    margin-right: 50px;
-  }
+  .items {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
 
+    >* {
+      margin-right: 35px;
+    }
+
+    >:last-child {
+      margin-right: 25px;
+    }
+
+  }
 }

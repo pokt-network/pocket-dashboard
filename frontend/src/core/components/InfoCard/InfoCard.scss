@@ -1,20 +1,24 @@
+@import "../../../scss/Core.scss";
+
 .p-badge {
   margin: 10px;
   padding: 10px;
-  border: 1px solid rgba(0, 0, 0, .125);
   border-radius: 5px;
-  box-shadow: 0 0px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 6px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 1px 15px 53px -26px rgba(33, 33, 33, .1);
   display: flex;
   flex-direction: column;
   justify-content: center;
   flex-grow: 1;
 
   h1 {
-    margin-bottom: 0
+    margin-bottom: 0;
+    color: $primary-color;
   }
 
   p {
+    font-weight: 300;
     margin-bottom: 0;
     font-size: 1.2em;
+    color: gray;
   }
 }

@@ -1,34 +1,41 @@
 @import "node_modules/bootstrap/scss/bootstrap";
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;1,300&family=Open+Sans:wght@400;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&display=swap");
 
 // Table variables
-$table: (
-  columns:(
-    background-color: theme-color("dark"),
-    color: white
+$table: (columns: (background-color: theme-color("dark"),
+    color: white,
   ),
-  data: (
-    odd: "",
-    even:""
+  data: (odd: "",
+    even: "",
   ),
-  selected-item: (
-    background-color: rgba(0, 0, 0, 0.075)
-  )
+  selected-item: (background-color: rgba(0, 0, 0, 0.075),
+  ),
 );
 
+// color variables:
+$primary-color: #37aee1;
+$primary-color-darker: #1e95c8;
+$secondary-color: #474747;
+$dark-blue: #00212d;
+$light-gray: #f5f5f5;
 
 // Font variables
-$title: (
-  font:"Open Sans",
+$title: (font: "Open Sans",
   type: sans-serif,
-  weight:800
+  weight: 800,
 );
 
-$paragraph: (
-  font:"Lato",
+$paragraph: (font: "Lato",
   type: sans-serif,
-  weight:400
+  weight: 400,
 );
+
+// utils variables
+$default-border-radius: 25px;
+
+$gradient: linear-gradient(180deg,
+  rgba(32, 141, 188, 1) 12%,
+  rgba(0, 50, 66, 1) 88%);
 
 @mixin font-style($type) {
   font-family: map_get($type, font), map_get($type, type);
@@ -38,39 +45,159 @@ $paragraph: (
 // Headers
 @for $i from 1 through 6 {
   h#{$i} {
-    @include font-style($title)
+    @include font-style($title);
   }
+}
+
+@for $i from 2 through 6 {
+  h#{$i} {
+    color: $primary-color;
+  }
+}
+
+h1 {
+  font-size: 2em;
+  color: $secondary-color;
 }
 
 // Paragraphs, Labels, Links
-label, p, a {
+label,
+p,
+a {
   @include font-style($paragraph);
 }
 
-
-html, body {
+html,
+body {
   height: 100%;
 }
 
-#sidebar, #content {
-  min-height: 100vh;
+.btn {
+  // min-width: 180px;
+  font-weight: 400;
+  border-radius: $default-border-radius;
+  font-family: "Lato";
 }
 
-.help {
-  * {
-    color: theme-color("dark");
+.btn.dropdown-toggle-split {
+  width: 10px !important;
+}
+
+form {
+
+  input,
+  textarea {
+    border-color: $primary-color;
   }
+
+  input {
+    border-radius: $default-border-radius !important;
+  }
+
+  textarea {
+    border-radius: 15px !important;
+  }
+}
+
+.input-group {
+  input.form-control {
+    border-color: $primary-color !important;
+    border-top-left-radius: $default-border-radius;
+    border-bottom-left-radius: $default-border-radius;
+  }
+}
+
+.input-group-append {
+  button {
+    min-width: auto;
+  }
+}
+
+.btn-primary,
+.btn-outline-primary {
+  border-color: $primary-color;
+}
+
+.btn-primary {
+  background-color: $primary-color;
+}
+
+.btn-outline-primary:hover,
+.btn-primary:hover,
+.btn-outline-primary:focus,
+.btn-primary:focus,
+.btn-outline-primary:active,
+.btn-primary:active,
+.show>.btn-primary.dropdown-toggle,
+.btn-primary:not(:disabled):not(.disabled):active {
+  background-color: $primary-color-darker;
+  border-color: $primary-color-darker;
+}
+
+.btn-dark {
+  background-color: $secondary-color;
+  border-color: $secondary-color;
+}
+
+input {
+  border-radius: $default-border-radius;
+}
+
+.alert {
+  font-family: "Open Sans";
+  font-weight: 300;
+}
+
+.alert.alert-light {
+  background-color: $light-gray;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.alert.alert-primary {
+  background-color: $dark-blue;
+  border-color: $dark-blue;
+  color: white;
+  padding-left: 30px;
+  padding-bottom: 0px;
+  padding-top: 10px;
+  border-radius: $default-border-radius;
+
+  button {
+    min-width: unset;
+    padding: 0.2em 1.25rem;
+  }
+
+  button:hover {
+    color: white;
+  }
+
+  .alert-heading {
+    font-size: 1em;
+    font-weight: 300;
+    font-family: "Lato";
+  }
+}
+
+.badge,
+.badge-primary {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-weight: 300;
+}
+
+.badge.badge-primary {
+  background-color: $primary-color;
+}
+
+#sidebar,
+#content {
+  min-height: 100vh;
 }
 
 #sidebar {
   padding-top: 5px;
-  background: theme-color("dark");
+  background: $gradient;
   color: color("white");
-
-  #main-logo {
-    width: 70%;
-    padding-left: 60px;
-  }
 
   #title {
     margin-top: 50px;
@@ -96,42 +223,45 @@ html, body {
   }
 }
 
-a.link, button.link {
-  color: #343A41;
+a.link,
+button.link {
+  color: #343a41;
   text-decoration: underline;
-}
-
-button, .btn {
-  font-weight: bold;
 }
 
 .app-table {
   thead {
-    background-color: map_get(map_get($table, columns), background-color);
-    color: map_get(map_get($table, columns), color);
+    text-transform: uppercase;
+    color: #000000;
     border: 2px solid transparent;
 
-    th:first-child {
-      border-top-left-radius: 10px;
-      border-top-color: transparent;
-    }
-
-    th:last-child {
-      border-top-right-radius: 10px;
-      border-top-color: transparent;
+    th {
+      border-color: transparent;
     }
   }
 
-  td {
-    overflow-wrap: anywhere;
+  tbody {
+    tr {
+      color: gray;
+    }
+
+    td {
+      border-top: 1px solid transparent;
+      overflow-wrap: anywhere;
+    }
   }
 }
 
+.main-list {
+  a:hover {
+    text-decoration: none;
+  }
+}
 
 // Spinner Loader
 .css-1skdk9r {
-    display: block;
-    margin: 0 auto;
+  display: block;
+  margin: 0 auto;
 }
 
 .stats {
@@ -150,25 +280,22 @@ button, .btn {
   }
 }
 
-.main-list {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  border-radius: 5px;
-  background-color: #e6e6e6;
-  overflow-x: hidden;
-  overflow-x: auto;
-  max-height: 60vh;
-}
+.empty-overlay {
+  background-color: $light-gray;
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
 
-.general-info {
-
-  button,
-  a {
-    font-weight: bold;
+  .icon {
+    color: gray;
   }
 
-  a {
-    padding-top: 10px;
+  p {
+    font-size: 1.2em;
+    font-weight: 300;
   }
 }
 
@@ -186,7 +313,6 @@ button, .btn {
   list-style-type: none;
   padding-left: 0;
   width: 100%;
-
 
   a {
     color: #ffffff;
@@ -209,4 +335,57 @@ button, .btn {
   a:hover {
     text-decoration: none;
   }
+}
+
+.search-input.input-group {
+  input {
+    border-right-color: rgba(194, 194, 194, 0.5) !important;
+  }
+
+  input::placeholder {
+    font-weight: bold;
+  }
+
+  button {
+    color: $primary-color;
+    border-left-color: rgba(194, 194, 194, 0.5);
+  }
+
+  button:hover {
+    color: #fff;
+  }
+}
+
+/* Custom scroll bar. Not supports in Firefox and IE */
+
+/* total width */
+::-webkit-scrollbar {
+  background-color: #fff;
+  width: 16px;
+}
+
+/* background of the scrollbar except button or resizer */
+::-webkit-scrollbar-track {
+  background-color: #fff;
+}
+
+::-webkit-scrollbar-track:hover {
+  background-color: #f4f4f4;
+}
+
+/* scrollbar itself */
+::-webkit-scrollbar-thumb {
+  background-color: #ceced4;
+  border-radius: 16px;
+  border: 5px solid #fff;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a5a5ac;
+  border: 4px solid #f4f4f4;
+}
+
+/* set button(top and bottom of the scrollbar) */
+::-webkit-scrollbar-button {
+  display: none;
 }

@@ -7,15 +7,27 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {NODES_LIMIT, BOND_STATUS_STR, TABLE_COLUMNS} from "../../../_constants";
+import {
+  NODES_LIMIT,
+  BOND_STATUS_STR,
+  TABLE_COLUMNS,
+  FILTER_OPTIONS,
+} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
 import InfoCards from "../../../core/components/InfoCards";
-import {mapStatusToField, getBondStatus} from "../../../_helpers";
+import {
+  mapStatusToField,
+  getBondStatus,
+  formatNumbers,
+} from "../../../_helpers";
 import NodeService from "../../../core/services/PocketNodeService";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
+import Segment from "../../../core/components/Segment/Segment";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSearch} from "@fortawesome/free-solid-svg-icons";
 
 class NodesMain extends Main {
   constructor(props, context) {
@@ -26,6 +38,7 @@ class NodesMain extends Main {
 
     this.state = {
       ...this.state,
+      hasNodes: false,
     };
   }
 
@@ -35,8 +48,7 @@ class NodesMain extends Main {
     const userEmail = UserService.getUserInfo().email;
 
     const userItems = await NodeService.getAllUserNodes(
-      userEmail, NODES_LIMIT, 0, BOND_STATUS_STR[option]
-    );
+      userEmail, NODES_LIMIT, 0, BOND_STATUS_STR[option]);
 
     this.setState({
       userItems,
@@ -76,6 +88,7 @@ class NodesMain extends Main {
       averageStaked,
       registeredItems,
       loading: false,
+      hasNodes: userItems.length > 0,
     });
   }
 
@@ -89,17 +102,35 @@ class NodesMain extends Main {
       loading,
       allItemsTableLoading,
       userItemsTableLoading,
+      hasNodes,
     } = this.state;
 
     const registeredItems = allRegisteredItems.map(mapStatusToField);
 
     const cards = [
-      {title: total, subtitle: "Total of node"},
-      {title: averageStaked, subtitle: "Average staked"},
-      {title: averageRelays, subtitle: "Average relays per node"},
-      {title: 23867, subtitle: "Max Staked"},
-      {title: 10345, subtitle: "Min staked"},
+      {title: formatNumbers(total), subtitle: "Total of node"},
+      {title: formatNumbers(averageStaked), subtitle: "Average staked"},
+      {
+        title: formatNumbers(averageRelays),
+        subtitle: "Average relays per node",
+      },
+      {title: formatNumbers(23867), subtitle: "Max Staked"},
+      {title: formatNumbers(10345), subtitle: "Min staked"},
     ];
+
+    const userNodesDropdown = (
+      <AppDropdown
+        onSelect={(status) => this.handleUserItemsFilter(status.dataField)}
+        options={FILTER_OPTIONS}
+      />
+    );
+
+    const allNodesDropdown = (
+      <AppDropdown
+        onSelect={(status) => this.handleAllItemsFilter(status.dataField)}
+        options={FILTER_OPTIONS}
+      />
+    );
 
     if (loading) {
       return <Loader />;
@@ -115,7 +146,7 @@ class NodesMain extends Main {
             sm="4"
             md="4"
             lg="4"
-            className="d-flex justify-content-end general-info"
+            className="d-flex justify-content-end"
           >
             <Link to={_getDashboardPath(DASHBOARD_PATHS.createNodeForm)}>
               <Button
@@ -125,11 +156,11 @@ class NodesMain extends Main {
               >
                 Create new node
               </Button>
-              </Link>
+            </Link>
             <Link to={_getDashboardPath(DASHBOARD_PATHS.importNode)}>
-            <Button variant="secondary" size={"md"} className="pl-4 pr-4">
-              Import node
-            </Button>
+              <Button variant="secondary" size={"md"} className="pl-4 pr-4">
+                Import node
+              </Button>
             </Link>
           </Col>
         </Row>
@@ -137,101 +168,74 @@ class NodesMain extends Main {
           <InfoCards cards={cards} />
         </Row>
         <Row className="mb-4">
-          <Col sm="8" md="8" lg="8">
-            <h2 className="mb-3">My nodes</h2>
-            <Row>
-              <Col sm="8" md="8" lg="8">
-                <InputGroup className="mb-3">
-                  <FormControl
-                    placeholder="Search node"
-                    name="searchQuery"
-                    onChange={this.handleChange}
-                    onKeyPress={({key}) => {
-                      if (key === "Enter") {
-                        this.handleSearch("pocketNode.name");
-                      }
-                    }}
-                  />
-                  <InputGroup.Append>
-                    <Button
-                      type="submit"
-                      onClick={() => this.handleSearch("pocketNode.name")}
-                      variant="dark"
-                    >
-                      Search
-                    </Button>
-                  </InputGroup.Append>
-                </InputGroup>
-              </Col>
-              <Col sm="4" md="4" lg="4" className="order-by">
-                <p style={{fontWeight: "bold", fontSize: "1.2em"}}>
-                  Filter by:
-                </p>
-                <AppDropdown
-                  onSelect={(status) =>
-                    this.handleUserItemsFilter(status.dataField)
-                  }
-                  options={[
-                    {text: "Bonded", dataField: "bonded"},
-                    {text: "Unbonding", dataField: "unbonding"},
-                    {text: "Unbonded", dataField: "unbonded"},
-                  ]}
+          <Col sm="6" md="6" lg="6">
+            <Segment
+              label="MY NODES"
+              sideItem={hasNodes ? userNodesDropdown : undefined}
+            >
+              <InputGroup className="search-input mb-3">
+                <FormControl
+                  placeholder="Search app"
+                  name="searchQuery"
+                  onChange={this.handleChange}
+                  onKeyPress={({key}) => {
+                    if (key === "Enter") {
+                      this.handleSearch();
+                    }
+                  }}
                 />
-              </Col>
-            </Row>
-            <div className="main-list">
-              <LoadingOverlay active={userItemsTableLoading} spinner>
-                {filteredItems.map((app, idx) => {
-                  const {name, icon} = app.pocketNode;
-                  const {stakedTokens, status} = app.networkData;
+                <InputGroup.Append>
+                  <Button
+                    type="submit"
+                    onClick={this.handleSearch}
+                    variant="outline-primary"
+                  >
+                    <FontAwesomeIcon icon={faSearch} />
+                  </Button>
+                </InputGroup.Append>
+              </InputGroup>
+              <div className="main-list">
+                <LoadingOverlay active={userItemsTableLoading} spinner>
+                  {filteredItems.map((app, idx) => {
+                    const {name, icon} = app.pocketNode;
+                    const {stakedTokens, status} = app.networkData;
 
-                  // TODO: Add network information
-                  return (
-                    <PocketElementCard
-                      key={idx}
-                      title={name}
-                      subtitle={`Staked POKT: ${stakedTokens} POKT`}
-                      status={getBondStatus(status)}
-                      iconURL={icon}
-                    />
-                  );
-                })}
-              </LoadingOverlay>
-            </div>
+                    // TODO: Add network information
+                    return (
+                      <PocketElementCard
+                        key={idx}
+                        title={name}
+                        subtitle={`Staked POKT: ${stakedTokens} POKT`}
+                        status={getBondStatus(status)}
+                        iconURL={icon}
+                      />
+                    );
+                  })}
+                </LoadingOverlay>
+              </div>
+            </Segment>
           </Col>
-          <Col sm="4" md="4" lg="4">
-            <h2>Registered Nodes</h2>
-            <div className="order-by">
-              <p style={{fontWeight: "bold", fontSize: "1.2em"}}>Filter by:</p>
-              <AppDropdown
-                onSelect={(status) =>
-                  this.handleAllItemsFilter(status.dataField)
-                }
-                options={[
-                  {text: "Bonded", dataField: "bonded"},
-                  {text: "Unbonding", dataField: "unbonding"},
-                  {text: "Unbonded", dataField: "unbonded"},
-                ]}
+          <Col sm="6" md="6" lg="6">
+            <Segment label="REGISTERED NODES" sideItem={allNodesDropdown}>
+              <BootstrapTable
+                classes="app-table table-striped"
+                keyField="pocketNode.publicPocketAccount.address"
+                data={registeredItems}
+                columns={TABLE_COLUMNS.NODES}
+                bordered={false}
+                loading={allItemsTableLoading}
+                noDataIndication={"No nodes found"}
+                overlay={overlayFactory({
+                  spinner: true,
+                  styles: {
+                    overlay: (base) => ({
+                      ...base,
+                      background: "rgba(0, 0, 0, 0.2)",
+                    }),
+                  },
+                })}
               />
-            </div>
-            <BootstrapTable
-              classes="app-table table-striped"
-              keyField="pocketNode.publicPocketAccount.address"
-              data={registeredItems}
-              columns={TABLE_COLUMNS.NODES}
-              bordered={false}
-              loading={allItemsTableLoading}
-              noDataIndication={"No nodes found"}
-              overlay={overlayFactory({
-                spinner: true,
-                styles: {
-                  overlay: (base) => ({
-                    ...base,
-                    background: "rgba(0, 0, 0, 0.2)",
-                  }),
-                },
-              })}
-            />
+            </Segment>
           </Col>
         </Row>
       </div>

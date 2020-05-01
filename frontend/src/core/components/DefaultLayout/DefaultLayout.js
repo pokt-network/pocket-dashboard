@@ -3,7 +3,7 @@ import {Col, Container, Row} from "react-bootstrap";
 import {Redirect, Route} from "react-router-dom";
 import AppSidebar from "./AppSidebar/AppSidebar";
 import AppNavbar from "./AppNavbar/AppNavbar";
-import Breadcrumbs from "./Breadcrumb";
+import Breadcrumbs from "./BreadCrumb/Breadcrumb";
 import {dashboardRoutes, ROUTE_PATHS} from "../../../_routes";
 import UserService from "../../services/PocketUserService";
 
@@ -13,15 +13,19 @@ class DefaultLayout extends Component {
     const {path} = this.props.match;
 
     if (!UserService.isLoggedIn()) {
-      return <Redirect to={ROUTE_PATHS.login}/>;
+      return <Redirect to={ROUTE_PATHS.login} />;
     }
 
     return (
       <Container fluid className={"auth-page"}>
         <Row>
-          <AppSidebar/>
+          <Col lg="12">
+            <AppNavbar />
+          </Col>
+        </Row>
+        <Row>
+          <AppSidebar />
           <Col>
-            <AppNavbar/>
             <Row>
               {/* TODO: Remove manually written links for testing purposes */}
               <Breadcrumbs
