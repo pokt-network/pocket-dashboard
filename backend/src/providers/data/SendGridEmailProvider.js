@@ -14,8 +14,8 @@ export class SendGridEmailProvider {
   /**
    * Send email using a template.
    *
-   * @param {string} templateID Template ID used toEmail send email.
-   * @param {string} toEmail Recipient toEmail send email.
+   * @param {string} templateID Template ID used __toEmail send email.
+   * @param {string} toEmail Recipient __toEmail send email.
    * @param {string} fromEmail From where send email.
    * @param {object} templateData Template data.
    *
