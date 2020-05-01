@@ -7,11 +7,20 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {APPLICATIONS_LIMIT, BOND_STATUS_STR, TABLE_COLUMNS, STYLING} from "../../../_constants";
+import {
+  APPLICATIONS_LIMIT,
+  BOND_STATUS_STR,
+  TABLE_COLUMNS,
+  FILTER_OPTIONS,
+} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {formatNumbers, mapStatusToField, getBondStatus} from "../../../_helpers";
+import {
+  formatNumbers,
+  mapStatusToField,
+  getBondStatus,
+} from "../../../_helpers";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSearch, faBoxOpen} from "@fortawesome/free-solid-svg-icons";
 import Segment from "../../../core/components/Segment/Segment";
@@ -28,7 +37,7 @@ class AppsMain extends Main {
 
     this.state = {
       ...this.state,
-      hasApps: false
+      hasApps: false,
     };
   }
 
@@ -57,7 +66,7 @@ class AppsMain extends Main {
       averageStaked,
       registeredItems,
       loading: false,
-      hasApps: userItems.length > 0
+      hasApps: userItems.length > 0,
     });
   }
 
@@ -97,41 +106,31 @@ class AppsMain extends Main {
       loading,
       allItemsTableLoading,
       userItemsTableLoading,
-      hasApps
+      hasApps,
     } = this.state;
-
-    const filterOptions = [
-      {text: "Bonded", dataField: "bonded"},
-      {text: "Unbonding", dataField: "unbonding"},
-      {text: "Unbonded", dataField: "unbonded"},
-    ];
 
     const registeredItems = allregisteredItems.map(mapStatusToField);
 
     const cards = [
       {title: formatNumbers(total), subtitle: "Total of apps"},
       {title: formatNumbers(averageStaked), subtitle: "Average staked"},
-      {title: formatNumbers(averageRelays), subtitle: "Average relays per application"},
+      {
+        title: formatNumbers(averageRelays),
+        subtitle: "Average relays per application",
+      },
     ];
-
-    const appColumns = (TABLE_COLUMNS.APPS.find(
-      (col) => col.text === "Status"
-    ).style = {
-      color: STYLING.primaryColor,
-      fontWeight: "bold",
-    });
 
     const userAppsDropdown = (
       <AppDropdown
         onSelect={(status) => this.handleUserAppsFilter(status.dataField)}
-        options={filterOptions}
+        options={FILTER_OPTIONS}
       />
     );
 
     const allAppsDropdown = (
       <AppDropdown
         onSelect={(status) => this.handleAllAppsFilter(status.dataField)}
-        options={filterOptions}
+        options={FILTER_OPTIONS}
       />
     );
 
@@ -149,7 +148,7 @@ class AppsMain extends Main {
             sm="4"
             md="4"
             lg="4"
-            className="d-flex justify-content-end general-info"
+            className="d-flex justify-content-end"
           >
             <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
               <Button variant="dark" className="ml-4 pl-4 pr-4 mr-3">
@@ -168,7 +167,7 @@ class AppsMain extends Main {
         </Row>
         <Row className="mb-4">
           <Col sm="6" md="6" lg="6">
-           <Segment
+            <Segment
               label="MY APPS"
               sideItem={hasApps ? userAppsDropdown : undefined}
             >
@@ -243,10 +242,10 @@ class AppsMain extends Main {
           <Col sm="6" md="6" lg="6">
             <Segment label="REGISTERED APPS" sideItem={allAppsDropdown}>
               <BootstrapTable
-                classes="table app-table table-striped"
+                classes="app-table table-striped"
                 keyField="pocketApplication.publicPocketAccount.address"
                 data={registeredItems}
-                columns={appColumns}
+                columns={TABLE_COLUMNS.APPS}
                 bordered={false}
                 loading={allItemsTableLoading}
                 noDataIndication={"No apps found"}

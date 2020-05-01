@@ -2,17 +2,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Open+Sans:wght@300;400;700&display=swap");
 
 // Table variables
-$table: (
-  columns: (
-    background-color: theme-color("dark"),
+$table: (columns: (background-color: theme-color("dark"),
     color: white,
   ),
-  data: (
-    odd: "",
+  data: (odd: "",
     even: "",
   ),
-  selected-item: (
-    background-color: rgba(0, 0, 0, 0.075),
+  selected-item: (background-color: rgba(0, 0, 0, 0.075),
   ),
 );
 
@@ -24,14 +20,12 @@ $dark-blue: #00212d;
 $light-gray: #f5f5f5;
 
 // Font variables
-$title: (
-  font: "Open Sans",
+$title: (font: "Open Sans",
   type: sans-serif,
   weight: 800,
 );
 
-$paragraph: (
-  font: "Lato",
+$paragraph: (font: "Lato",
   type: sans-serif,
   weight: 400,
 );
@@ -39,11 +33,9 @@ $paragraph: (
 // utils variables
 $default-border-radius: 25px;
 
-$gradient: linear-gradient(
-  180deg,
+$gradient: linear-gradient(180deg,
   rgba(32, 141, 188, 1) 12%,
-  rgba(0, 50, 66, 1) 88%
-);
+  rgba(0, 50, 66, 1) 88%);
 
 @mixin font-style($type) {
   font-family: map_get($type, font), map_get($type, type);
@@ -81,7 +73,7 @@ body {
 }
 
 .btn {
-  min-width: 180px;
+  // min-width: 180px;
   font-weight: 400;
   border-radius: $default-border-radius;
   font-family: "Lato";
@@ -92,6 +84,7 @@ body {
 }
 
 form {
+
   input,
   textarea {
     border-color: $primary-color;
@@ -130,7 +123,14 @@ form {
 }
 
 .btn-outline-primary:hover,
-.btn-primary:hover {
+.btn-primary:hover,
+.btn-outline-primary,
+.btn-outline-primary:focus,
+.btn-primary:focus,
+.btn-outline-primary:active,
+.btn-primary:active,
+.show>.btn-primary.dropdown-toggle,
+.btn-primary:not(:disabled):not(.disabled):active {
   background-color: $primary-color-darker;
   border-color: $primary-color-darker;
 }

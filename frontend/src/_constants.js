@@ -20,6 +20,10 @@ export const APPLICATIONS_LIMIT = 10;
 
 export const NODES_LIMIT = 10;
 
+export const STYLING = {
+  primaryColor: "#37aee1",
+};
+
 export const TABLE_COLUMNS = {
   NETWORK_CHAINS: [
     {
@@ -28,7 +32,10 @@ export const TABLE_COLUMNS = {
     },
     {
       dataField: "netID",
-      text: "Network Identifier (NetID)",
+      text: "Network ID",
+      headerStyle: {
+        whiteSpace: "nowrap",
+      },
     },
     {
       dataField: "hash",
@@ -47,6 +54,10 @@ export const TABLE_COLUMNS = {
     {
       dataField: "networkData.status",
       text: "Status",
+      style: {
+        color: STYLING.primaryColor,
+        fontWeight: "bold",
+      },
     },
   ],
   NODES: [
@@ -62,15 +73,21 @@ export const TABLE_COLUMNS = {
     {
       dataField: "networkData.status",
       text: "Status",
+      style: {
+        color: STYLING.primaryColor,
+        fontWeight: "bold",
+      },
     },
   ],
 };
 
-export const MAX_RELAYS = 20000;
+export const FILTER_OPTIONS = [
+  {text: "Bonded", dataField: "bonded"},
+  {text: "Unbonding", dataField: "unbonding"},
+  {text: "Unbonded", dataField: "unbonded"},
+];
 
-export const STYLING = {
-  primaryColor: "#37aee1",
-};
+export const MAX_RELAYS = 20000;
 
 export const PAYMENT_REGION_OR_COUNTRY = [
   {name: "Afghanistan", code: "AF"},
