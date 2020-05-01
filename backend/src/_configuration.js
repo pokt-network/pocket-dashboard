@@ -41,6 +41,10 @@ export const Configurations = {
       }
     }
   },
+  email: {
+    api_key: process.env.EMAIL_API_KEY,
+    from_email: "dashboard@pokt.network"
+  },
   persistence: {
     default: {
       url: process.env.DATABASE_URL,
