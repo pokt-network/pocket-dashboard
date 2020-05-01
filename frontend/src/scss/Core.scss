@@ -124,7 +124,6 @@ form {
 
 .btn-outline-primary:hover,
 .btn-primary:hover,
-.btn-outline-primary,
 .btn-outline-primary:focus,
 .btn-primary:focus,
 .btn-outline-primary:active,
@@ -350,6 +349,10 @@ button.link {
   button {
     color: $primary-color;
     border-left-color: rgba(194, 194, 194, 0.5);
+  }
+
+  button:hover {
+    color: #fff;
   }
 }
 
