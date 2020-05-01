@@ -28,10 +28,11 @@ $title: (font: "Open Sans",
 $paragraph: (font: "Lato",
   type: sans-serif,
   weight: 400,
-);
+  color: #535353);
 
 // utils variables
 $default-border-radius: 25px;
+$default-box-shadow: 1px 15px 53px -26px rgba(33, 33, 33, .1);
 
 $gradient: linear-gradient(180deg,
   rgba(32, 141, 188, 1) 12%,
@@ -122,6 +123,15 @@ form {
   background-color: $primary-color;
 }
 
+.btn-link {
+  color: $primary-color;
+}
+
+.btn-link:hover {
+  color: $primary-color-darker;
+  text-decoration: none;
+}
+
 .btn-outline-primary:hover,
 .btn-primary:hover,
 .btn-outline-primary:focus,
@@ -191,7 +201,7 @@ input {
 
 #sidebar,
 #content {
-  min-height: 100vh;
+  min-height: calc(100vh - 87px);
 }
 
 #sidebar {
