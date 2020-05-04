@@ -28,26 +28,29 @@ export default class EmailService {
    * @param {string} templateID Template ID
    * @param {object} templateData Template data.
    *
-   * @returns {Promise<*>} Email response.
+   * @returns {Promise<boolean>} Email response.
    * @async
    * @private
    */
   async __sendEmail(templateID, templateData) {
     const fromEmail = Configurations.email.from_email;
 
-    return this.emailProvider.sendEmailWithTemplate(templateID, this.__toEmail, fromEmail, templateData);
+    /** @type {{statusCode: number}[]} */
+    const emailResponse = await this.emailProvider.sendEmailWithTemplate(templateID, this.__toEmail, fromEmail, templateData);
+
+    return emailResponse[0].statusCode === 202;
   }
 
   /**
    * Send test email.
    *
-   * @returns {Promise<*>} Email response.
+   * @param {string} templateID Template test ID.
+   *
+   * @returns {Promise<boolean>} Email response.
    * @async
    */
-  async sendTestEmail() {
-    const testEmailTemplateID = Configurations.email.test_template_id;
-
-    return this.__sendEmail(testEmailTemplateID, {});
+  async sendTestEmail(templateID) {
+    return this.__sendEmail(templateID, {TEST: "Yes"});
   }
 
 }

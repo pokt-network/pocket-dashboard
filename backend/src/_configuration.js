@@ -43,8 +43,7 @@ export const Configurations = {
   },
   email: {
     api_key: process.env.EMAIL_API_KEY,
-    test_template_id: process.env.TEST_TEMPLATE_ID,
-    from_email: "dashboard@pokt.network"
+    from_email: process.env.EMAIL_FROM
   },
   persistence: {
     default: {
