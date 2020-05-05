@@ -46,6 +46,14 @@ export class PocketApplication {
       throw Error("Name is not valid.");
     }
 
+    if (applicationData.name.length > 20) {
+      throw Error("Name length should not be greater than 20 character.");
+    }
+
+    if (applicationData.description !== "" && applicationData.description.length > 150) {
+      throw Error("Description length should not be greater than 150 character.");
+    }
+
     if (applicationData.owner === "") {
       throw Error("Owner is not valid.");
     }
