@@ -64,3 +64,17 @@ export const appFormSchema = yup.object().shape({
     .required(VALIDATION_MESSAGES.REQUIRED),
   description: yup.string().max(150, VALIDATION_MESSAGES.MAX(150)),
 });
+
+export const nodeFormSchema = yup.object().shape({
+  name: yup
+    .string()
+    .max(20, VALIDATION_MESSAGES.MAX(20))
+    .required(VALIDATION_MESSAGES.REQUIRED),
+  operator: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+  url: yup.string().url(VALIDATION_MESSAGES.URL),
+  contactEmail: yup
+    .string()
+    .email(VALIDATION_MESSAGES.EMAIL)
+    .required(VALIDATION_MESSAGES.REQUIRED),
+  description: yup.string().max(150, VALIDATION_MESSAGES.MAX(150)),
+});
