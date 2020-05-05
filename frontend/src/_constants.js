@@ -20,6 +20,8 @@ export const APPLICATIONS_LIMIT = 10;
 
 export const NODES_LIMIT = 10;
 
+export const PAYMENT_HISTORY_LIMIT = 10;
+
 export const STYLING = {
   primaryColor: "#37aee1",
 };
