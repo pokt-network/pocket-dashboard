@@ -1,6 +1,7 @@
 import numeral from "numeral";
-import {BOND_STATUS, STAKE_STATUS} from "./_constants";
+import {BOND_STATUS, STAKE_STATUS, VALIDATION_MESSAGES} from "./_constants";
 import Identicon from "identicon.js";
+import * as yup from "yup";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
@@ -49,3 +50,17 @@ export const getBondStatus = (status) => {
     ? STAKE_STATUS[status]
     : BOND_STATUS[status];
 };
+
+export const appFormSchema = yup.object().shape({
+  name: yup
+    .string()
+    .max(20, VALIDATION_MESSAGES.MAX(20))
+    .required(VALIDATION_MESSAGES.REQUIRED),
+  owner: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+  url: yup.string().url(VALIDATION_MESSAGES.URL),
+  contactEmail: yup
+    .string()
+    .email(VALIDATION_MESSAGES.EMAIL)
+    .required(VALIDATION_MESSAGES.REQUIRED),
+  description: yup.string().max(150, VALIDATION_MESSAGES.MAX(150)),
+});

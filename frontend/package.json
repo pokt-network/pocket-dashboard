@@ -20,6 +20,7 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
+    "formik": "^2.1.4",
     "identicon.js": "^2.3.3",
     "lodash": "^4.17.15",
     "numeral": "^2.0.6",
@@ -37,7 +38,8 @@
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.0",
     "react-spinners": "^0.8.1",
-    "secure-ls": "^1.2.6"
+    "secure-ls": "^1.2.6",
+    "yup": "^0.28.5"
   },
   "eslintConfig": {
     "env": {

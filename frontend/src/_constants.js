@@ -89,6 +89,16 @@ export const FILTER_OPTIONS = [
 
 export const MAX_RELAYS = 20000;
 
+export const VALIDATION_MESSAGES = {
+  REQUIRED: "This field is required.",
+  MAX: (max) =>
+    max ? `Exceeded character limit of ${max}` : "Exceeded character limit",
+  MIN: (min) =>
+    min ? `Minimun ${min} characters required` : "More characters required",
+  URL: "Invalid URL",
+  EMAIL: "Invalid email address",
+};
+
 export const PAYMENT_REGION_OR_COUNTRY = [
   {name: "Afghanistan", code: "AF"},
   {name: "Åland Islands", code: "AX"},
