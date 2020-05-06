@@ -197,7 +197,7 @@ class AppsMain extends Main {
                   {hasApps ? (
                     filteredItems.map((app, idx) => {
                       const {name, icon} = app.pocketApplication;
-                      const {staked_tokens, status} = app.networkData;
+                      const {stakedTokens, status} = app.networkData;
                       const {
                         address,
                       } = app.pocketApplication.publicPocketAccount;
@@ -216,7 +216,7 @@ class AppsMain extends Main {
                         >
                           <PocketElementCard
                             title={name}
-                            subtitle={`Staked POKT: ${staked_tokens} POKT`}
+                            subtitle={`Staked POKT: ${stakedTokens} POKT`}
                             status={getBondStatus(status)}
                             iconURL={icon}
                           />

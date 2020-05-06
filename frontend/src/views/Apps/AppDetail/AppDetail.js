@@ -3,14 +3,17 @@ import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
-import {TABLE_COLUMNS} from "../../../_constants";
+import {TABLE_COLUMNS, STAKE_STATUS} from "../../../_constants";
 import "./AppDetail.scss";
-import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {
+  PocketApplicationService,
+} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
 import {copyToClipboard, getBondStatus, formatNumbers} from "../../../_helpers";
+import {Link} from "react-router-dom";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -30,6 +33,7 @@ class AppDetail extends Component {
 
     this.deleteApplication = this.deleteApplication.bind(this);
     this.unstakeApplication = this.unstakeApplication.bind(this);
+    this.stakeApplication = this.stakeApplication.bind(this);
   }
 
   async componentDidMount() {
@@ -102,6 +106,10 @@ class AppDetail extends Component {
     }
   }
 
+  async stakeApplication() {
+    // TOOD: Implement
+  }
+
   render() {
     const {
       name,
@@ -113,7 +121,14 @@ class AppDetail extends Component {
       freeTier,
       publicPocketAccount,
     } = this.state.pocketApplication;
-    const {maxRelays, stakedTokens, status} = this.state.networkData;
+    const {
+      maxRelays,
+      stakedTokens,
+      status: bondStatus,
+    } = this.state.networkData;
+    const status = getBondStatus(bondStatus);
+    const isStaked =
+      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
     let address;
     let publicKey;
@@ -135,7 +150,7 @@ class AppDetail extends Component {
 
     const generalInfo = [
       {title: `${formatNumbers(stakedTokens)} POKT`, subtitle: "Stake tokens"},
-      {title:  getBondStatus(status), subtitle: "Stake status"},
+      {title: status, subtitle: "Stake status"},
       {title: formatNumbers(maxRelays), subtitle: "Max Relays"},
     ];
 
@@ -270,12 +285,25 @@ class AppDetail extends Component {
         <Row className="mt-3 mb-4">
           <Col className="action-buttons">
             <div className="main-options">
+              <Link
+                to={() => {
+                  const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
+
+                  return url.replace(":address", address);
+                }}
+              >
+                <Button variant="dark" className="pr-4 pl-4 mr-3">
+                  Edit
+                </Button>
+              </Link>
               <Button
-                onClick={this.unstakeApplication}
+                onClick={
+                  isStaked ? this.unstakeApplication : this.stakeApplication
+                }
                 variant="dark"
                 className="pr-4 pl-4"
               >
-                Unstake
+                {isStaked ? "Unstake" : "Stake"}
               </Button>
               <Button
                 variant="secondary"
@@ -290,7 +318,7 @@ class AppDetail extends Component {
               variant="link"
               className="link mt-3"
             >
-              Delete App
+              Delete
             </Button>
           </Col>
         </Row>
