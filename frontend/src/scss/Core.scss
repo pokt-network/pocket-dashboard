@@ -64,7 +64,6 @@ $gradient: linear-gradient(180deg,
 }
 
 h1 {
-  font-size: 2em;
   color: $secondary-color;
 }
 
@@ -73,6 +72,10 @@ label,
 p,
 a {
   @include font-style($paragraph);
+}
+
+a {
+  color: $primary-color;
 }
 
 html,
@@ -168,7 +171,7 @@ input {
   padding-left: 30px;
   padding-bottom: 0px;
   padding-top: 10px;
-  border-radius: $default-border-radius;
+  border-radius: 15px;
 
   button {
     min-width: unset;
@@ -184,6 +187,10 @@ input {
     font-weight: 300;
     font-family: "Lato";
   }
+}
+
+label.form-label {
+  font-weight: 300;
 }
 
 .badge,
@@ -368,6 +375,28 @@ button.link {
     color: #fff;
   }
 }
+
+.divider {
+  display: flex;
+  flex-direction: row;
+}
+
+.divider:before,
+.divider:after {
+  content: "";
+  flex: 1 1;
+  border-bottom: 2px solid $primary-color;
+  margin: auto;
+}
+
+.divider:before {
+  margin-right: 25px !important;
+}
+
+.divider:after {
+  margin-left: 25px !important;
+}
+
 
 /* Custom scroll bar. Not supports in Firefox and IE */
 

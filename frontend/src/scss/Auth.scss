@@ -2,7 +2,21 @@
 
 .auth-page {
   .content {
+    p,
+    a {
+      font-weight: 300;
+      font-size: 1.1em;
+    }
+
     background: theme-color("light");
+
+    .change {
+      margin-top: 50px;
+      margin-bottom: 50px;
+      margin-right: 30px;
+      display: flex;
+      justify-content: flex-end;
+    }
 
     .help {
       padding-top: 20px;
@@ -10,16 +24,8 @@
     }
 
     div.main {
-      padding-top: 20px;
-      padding-left: 20%;
-      padding-right: 20%;
-
-      h1 {
+      h2 {
         text-transform: uppercase;
-      }
-
-      button, input {
-        height: 55px;
       }
 
       #provider-buttons {
@@ -27,13 +33,13 @@
           margin-top: 5px;
           margin-bottom: 5px;
         }
+
+        .brand svg {
+          margin: 0;
+        }
       }
 
       #main-form {
-        button {
-          margin-top: 35px;
-        }
-
         div:last-child {
           margin-top: 10px;
           text-align: center;
