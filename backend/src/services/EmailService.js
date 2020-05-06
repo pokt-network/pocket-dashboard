@@ -54,6 +54,21 @@ export default class EmailService {
   }
 
   /**
+   * Send email when user sign up.
+   *
+   * @param {string} userName User name.
+   * @param {string} postValidationLink Link to post validation when sign up.
+   */
+  async sendSignUpEmail(userName, postValidationLink) {
+    const data = {
+      USER_NAME: userName,
+      POST_VALIDATION_LINK: postValidationLink
+    };
+
+    await this.__sendEmail(Configurations.email.template_ids.SignUp, data);
+  }
+
+  /**
    * Send email to change user email.
    *
    * @param {string} userName User name.

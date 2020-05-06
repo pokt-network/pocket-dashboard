@@ -45,6 +45,7 @@ export const Configurations = {
     api_key: process.env.EMAIL_API_KEY,
     from_email: process.env.EMAIL_FROM,
     template_ids: {
+      SignUp: "d-7c3bdbf20cb842eebc2ee076078b2f69",
       EmailChanged: "d-7c3bdbf20cb842eebc2ee076078b2f69",
       PasswordChanged: "d-de0b42109c4f48b98ea27203c59fc233",
       CreateOrImportNode: "d-b12c1a006ab34e3ba6a480bbb4137a1a",
