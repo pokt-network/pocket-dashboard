@@ -23,15 +23,16 @@ class CreateNodeForm extends CreateForm {
         privateKey: "",
       },
       nodeData: {},
+      agreeTerms: false,
     };
   }
 
   async createNode(nodeData) {
     let imported;
-    let stakeStatus; 
-    let address; 
+    let stakeStatus;
+    let address;
     let privateKey;
-    
+
     if (this.props.location.state !== undefined) {
       stakeStatus = this.props.location.state.stakeStatus;
       address = this.props.location.state.address;
@@ -40,7 +41,6 @@ class CreateNodeForm extends CreateForm {
     } else {
       imported = false;
     }
-
 
     const {success, data} = imported
       ? await NodeService.createNode(nodeData, privateKey)
@@ -69,7 +69,7 @@ class CreateNodeForm extends CreateForm {
 
   async handleCreate(e) {
     e.preventDefault();
-    
+
     const {name, contactEmail, description, operator} = this.state.data;
     const icon = this.state.icon ? this.state.icon : generateIcon();
     const user = UserService.getUserInfo().email;
@@ -103,7 +103,7 @@ class CreateNodeForm extends CreateForm {
 
   render() {
     const {name, operator, contactEmail, description} = this.state.data;
-    const {created} = this.state;
+    const {created, agreeTerms} = this.state;
 
     if (created) {
       return (
@@ -186,18 +186,23 @@ class CreateNodeForm extends CreateForm {
                 </p>
               </div>
 
-              <div className="submit float-right mt-2">
-                <Button variant="dark" size="lg" type="submit">
+              <div className="submit mt-2 mb-4 d-flex justify-content-between">
+                <Form.Check
+                  custom
+                  checked={agreeTerms}
+                  onChange={() => this.setState({agreeTerms: !agreeTerms})}
+                  id="terms-checkbox"
+                  type="checkbox"
+                  label="I agree with these terms and conditions."
+                />
+                <Button
+                  disabled={!agreeTerms}
+                  variant="dark"
+                  size="lg"
+                  type="submit"
+                >
                   Continue
                 </Button>
-                <p>
-                  By continuing you agree to Pocket&apos;s <br />
-                  {/*TODO: Add terms and conditions link*/}
-                  {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-                  <a className="link" href="#">
-                    Terms and conditions
-                  </a>
-                </p>
               </div>
             </Form>
           </Col>
