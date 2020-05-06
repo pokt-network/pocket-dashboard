@@ -377,19 +377,22 @@ export default class NodeService extends BaseService {
    * Delete a node from dashboard(not from network).
    *
    * @param {string} nodeAccountAddress Node account address.
+   * @param {string} user Owner email of node.
    *
-   * @returns {Promise<boolean>} If node was deleted or not.
+   * @returns {Promise<*>} The deleted node.
    * @async
    */
-  async deleteNode(nodeAccountAddress) {
+  async deleteNode(nodeAccountAddress, user) {
     const filter = {
-      "publicPocketAccount.address": nodeAccountAddress
+      "publicPocketAccount.address": nodeAccountAddress,
+      "user": user
     };
 
-    /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.deleteEntities(NODE_COLLECTION_NAME, filter);
+    const node = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
 
-    return result.result.ok === 1;
+    await this.persistenceService.deleteEntities(NODE_COLLECTION_NAME, filter);
+
+    return node;
   }
 
   /**

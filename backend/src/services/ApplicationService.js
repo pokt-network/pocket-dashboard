@@ -470,19 +470,22 @@ export default class ApplicationService extends BaseService {
    * Delete an application from dashboard(not from network).
    *
    * @param {string} applicationAccountAddress Application account address.
+   * @param {string} user Owner email of application.
    *
-   * @returns {Promise<boolean>} If application was deleted or not.
+   * @returns {Promise<*>} The deleted application.
    * @async
    */
-  async deleteApplication(applicationAccountAddress) {
+  async deleteApplication(applicationAccountAddress, user) {
     const filter = {
-      "publicPocketAccount.address": applicationAccountAddress
+      "publicPocketAccount.address": applicationAccountAddress,
+      "user": user
     };
 
-    /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
+    const application = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
-    return result.result.ok === 1;
+    await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
+
+    return application;
   }
 
   /**
