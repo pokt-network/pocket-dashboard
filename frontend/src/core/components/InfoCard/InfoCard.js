@@ -25,7 +25,7 @@ class InfoCard extends Component {
     return (
       <div className={"p-badge " + className}>
         <div className="p-badge-body">
-          <h1>{title}</h1>
+          <h2>{title}</h2>
           <p>{subtitle}</p>
           {this.renderChildren()}
         </div>
