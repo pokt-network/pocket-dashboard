@@ -25,7 +25,7 @@ class DefaultLayout extends Component {
         </Row>
         <Row>
           <AppSidebar />
-          <Col>
+          <Col id="default-layout">
             <Row>
               {/* TODO: Remove manually written links for testing purposes */}
               <Breadcrumbs

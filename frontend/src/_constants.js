@@ -1,13 +1,13 @@
 export const BOND_STATUS = {
-  2: "Bonded",
-  1: "Unbonding",
-  0: "Unbonded",
+  2: "Staked",
+  1: "Unstaking",
+  0: "Unstaked",
 };
 
 export const STAKE_STATUS = {
-  Staked: "Bonded",
-  Unstaking: "Bonding",
-  Unstaked: "Unbonded",
+  Staked: "Staked",
+  Unstaking: "Unstaking",
+  Unstaked: "Unstaked",
 };
 
 export const BOND_STATUS_STR = {
@@ -82,9 +82,9 @@ export const TABLE_COLUMNS = {
 };
 
 export const FILTER_OPTIONS = [
-  {text: "Bonded", dataField: "bonded"},
-  {text: "Unbonding", dataField: "unbonding"},
-  {text: "Unbonded", dataField: "unbonded"},
+  {text: "Staked", dataField: "bonded"},
+  {text: "Unstaking", dataField: "unbonding"},
+  {text: "Unstaked", dataField: "unbonded"},
 ];
 
 export const MAX_RELAYS = 20000;
