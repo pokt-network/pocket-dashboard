@@ -5,6 +5,8 @@ import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileU
 import Loader from "../../../core/components/Loader";
 import NodeService from "../../../core/services/PocketNodeService";
 import UserService from "../../../core/services/PocketUserService";
+import {Formik} from "formik";
+import {nodeFormSchema} from "../../../_helpers";
 
 class EditNode extends CreateForm {
   constructor(props, context) {
@@ -32,19 +34,12 @@ class EditNode extends CreateForm {
     this.setState({loading: false, icon, data: {...appData}});
   }
 
-  async handleEdit(e) {
-    e.preventDefault();
-
+  async handleEdit() {
     this.setState({success: false});
     const user = UserService.getUserInfo().email;
     const {address} = this.props.match.params;
-    const {name, owner, contactEmail, description} = this.state.data;
+    const {name, operator, contactEmail, description} = this.state.data;
     const {icon} = this.state;
-
-    // TODO: Show proper message on front end to user on validation error
-    if (name === "" || contactEmail === "" || owner === "") {
-      console.log("missing required field");
-    }
 
     const {success, data} = await NodeService.editNode(address, {
       name,
@@ -52,6 +47,7 @@ class EditNode extends CreateForm {
       description,
       icon,
       user,
+      operator
     });
 
     if (success) {
@@ -63,8 +59,7 @@ class EditNode extends CreateForm {
   }
 
   render() {
-    const {name, owner, contactEmail, description} = this.state.data;
-    const {loading, success} = this.state;
+    const {loading, icon, success} = this.state;
 
     if (loading) {
       return <Loader />;
@@ -89,53 +84,84 @@ class EditNode extends CreateForm {
         <Row>
           <Col sm="3" md="3" lg="3">
             <ImageFileUpload
+              defaultImg={icon}
               handleDrop={(img) => this.handleDrop(img.preview)}
             />
           </Col>
           <Col sm="9" md="9" lg="9">
-            <Form onSubmit={this.handleEdit}>
-              <Form.Group>
-                <Form.Label>Name</Form.Label>
-                <Form.Control
-                  name="name"
-                  value={name}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Node Operator</Form.Label>
-                <Form.Control
-                  name="operator"
-                  value={owner}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Contact email</Form.Label>
-                <Form.Control
-                  name="contactEmail"
-                  type="email"
-                  value={contactEmail}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows="6"
-                  name="description"
-                  value={description}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
+            <Formik
+              validationSchema={nodeFormSchema}
+              onSubmit={(data) => {
+                this.setState({data});
+                this.handleEdit();
+              }}
+              initialValues={this.state.data}
+              values={this.state.data}
+              validateOnChange={false}
+              validateOnBlur={false}
+            >
+              {({handleSubmit, handleChange, values, errors}) => (
+                <Form noValidate onSubmit={handleSubmit}>
+                  <Form.Group>
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control
+                      name="name"
+                      value={values.name}
+                      onChange={handleChange}
+                      isInvalid={!!errors.name}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.name}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Node operator</Form.Label>
+                    <Form.Control
+                      name="operator"
+                      value={values.operator}
+                      onChange={handleChange}
+                      isInvalid={!!errors.operator}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.operator}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Contact email</Form.Label>
+                    <Form.Control
+                      name="contactEmail"
+                      type="email"
+                      value={values.contactEmail}
+                      onChange={handleChange}
+                      isInvalid={!!errors.contactEmail}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.contactEmail}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows="6"
+                      name="description"
+                      value={values.description}
+                      onChange={handleChange}
+                      isInvalid={!!errors.description}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.description}
+                    </Form.Control.Feedback>
+                  </Form.Group>
 
-              <div className="submit float-right mt-2">
-                <Button variant="dark" size="lg" type="submit">
-                  Save
-                </Button>
-              </div>
-            </Form>
+                  <div className="submit float-right mt-2">
+                    <Button variant="dark" size="lg" type="submit">
+                      Save
+                    </Button>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </Col>
         </Row>
       </div>
