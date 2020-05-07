@@ -1,0 +1,10 @@
+@import "../../../scss/Core.scss";
+
+#payment-methods {
+  box-shadow: $default-box-shadow;
+
+  #cards {
+    max-height: 60vh;
+    overflow-x: auto;
+  }
+}

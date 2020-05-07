@@ -28,6 +28,7 @@ import EditApp from "./views/Apps/EditApp/EditApp";
 import NodeDetail from "./views/Nodes/NodeDetail/NodeDetail";
 import EditNode from "./views/Nodes/EditNode/EditNode";
 import ImportNode from "./views/Nodes/ImportNode/ImportNode";
+import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -63,7 +64,8 @@ export const DASHBOARD_PATHS = {
 export const PROFILE_PATHS = {
   general: "",
   changePassword: "/password-change",
-  paymentHistory: "/payment-history"
+  paymentHistory: "/payment-history",
+  paymentMethods: "/payments",
 };
 
 // Helper anonymous function to render routes within the dashboard router
@@ -240,6 +242,12 @@ export const profileRoutes = [
     exact: true,
     name: "Payment history",
     component: PaymentHistory
+  },
+  {
+    path: PROFILE_PATHS.paymentMethods,
+    exact: true,
+    name: "Payment methods",
+    component: PaymentMethods
   },
 ];
 
