@@ -27,6 +27,12 @@ class PocketPaymentService extends PocketBaseService {
       },
     }).then((response) => response.data);
   }
+
+  getPaymentMethods(user) {
+    return axios
+      .post(this._getURL("payment_methods"), {user})
+      .then((response) => response.data);
+  }
 }
 
 export default new PocketPaymentService();
