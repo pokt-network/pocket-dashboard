@@ -32,7 +32,7 @@ import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
-  login: "/logiimport PaymentMethods from './views/Profile/PaymentMethods/PaymentMethods';n",
+  login: "/login",
   home: "/dashboard",
   forgot_password: "/forgot-password",
   security_questions: "/security-questions",

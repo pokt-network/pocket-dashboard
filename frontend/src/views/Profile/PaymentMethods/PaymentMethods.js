@@ -3,6 +3,7 @@ import "./PaymentMethods.scss";
 import {Col, Row} from "react-bootstrap";
 import CardDisplay from "../../../core/components/CardDisplay/CardDisplay";
 
+// TODO: Remove dummy data when integrated
 const dummy_card_data = [
   {
     cardData: "Visa **** **** **** 1183",
