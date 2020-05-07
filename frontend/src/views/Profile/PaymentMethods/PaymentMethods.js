@@ -2,8 +2,10 @@ import React, {Component} from "react";
 import "./PaymentMethods.scss";
 import {Col, Row} from "react-bootstrap";
 import CardDisplay from "../../../core/components/CardDisplay/CardDisplay";
-import PocketPaymentService from "../../../core/services/PocketPaymentService";
-import PocketUserService from "../../../core/services/PocketUserService";
+import PaymentService from "../../../core/services/PocketPaymentService";
+import UserService from "../../../core/services/PocketUserService";
+import StripePaymentService from "../../../core/services/PocketStripePaymentService";
+import NewCardForm from "../../../core/components/Payment/Stripe/NewCardForm";
 
 class PaymentMethods extends Component {
   constructor(props, context) {
@@ -15,10 +17,50 @@ class PaymentMethods extends Component {
   }
 
   async componentDidMount() {
-    const user = PocketUserService.getUserInfo().email;
-    const paymentMethods = await PocketPaymentService.getPaymentMethods(user);
+    const user = UserService.getUserInfo().email;
+    const paymentMethods = await PaymentService.getPaymentMethods(user);
 
     this.setState({paymentMethods});
+  }
+
+  saveNewCard(e, cardData, stripe) {
+    e.preventDefault();
+    {
+      const {
+        cardHolderName: name,
+        billingAddressLine1: line1,
+        zipCode: postal_code,
+        country,
+      } = cardData;
+
+      const billingDetails = {
+        name,
+        address: {line1, postal_code, country},
+      };
+
+      stripe
+        .createPaymentMethod({
+          type: "card",
+          card: cardData.card,
+          billing_details: billingDetails,
+        })
+        .then(async function (result) {
+          console.log(result);
+          if (result.errors) {
+            // TODO: Show message to frontend
+            console.log(result.errors);
+            return;
+          }
+
+          const {id} = result.paymentMethod;
+
+          const saved = await StripePaymentService.__savePaymentMethod(
+            id, billingDetails);
+
+          // TODO: Show message to frontend
+          console.log(saved);
+        });
+    }
   }
 
   deleteCard() {
@@ -56,6 +98,9 @@ class PaymentMethods extends Component {
                 />
               );
             })}
+          </div>
+          <div id="card-form">
+            <NewCardForm formActionHandler={this.saveNewCard} />
           </div>
         </Col>
       </Row>
