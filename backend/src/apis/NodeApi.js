@@ -195,7 +195,7 @@ router.post("/user", async (request, response) => {
 router.post("/stake", async (request, response) => {
   try {
 
-    /** @type {{node: {privateKey: string, networkChains: string[], serviceURL: string}, payment:{id: string}}} */
+    /** @type {{node: {privateKey: string, networkChains: string[], serviceURL: string}, payment:{id: string}, nodeLink: string}} */
     const data = request.body;
     const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
@@ -203,9 +203,26 @@ router.post("/stake", async (request, response) => {
 
       if (paymentHistory.isNodePaymentItem(true)) {
         const item = paymentHistory.getItem();
-        const staked = await nodeService.stakeNode(data.node, item.pokt);
+        const node = await nodeService.stakeNode(data.node, item.pokt);
 
-        response.send(staked);
+        if (node) {
+          const nodeEmailData = {
+            name: node.name,
+            link: data.nodeLink
+          };
+
+          const paymentEmailData = {
+            amountPaid: paymentHistory.amount,
+            validatorPower: item.validatorPower,
+            poktStaked: item.pokt
+          };
+
+          await EmailService.to(node.user).sendStakeNodeEmail(node.user, nodeEmailData, paymentEmailData);
+
+          response.send(true);
+        } else {
+          response.send(false);
+        }
       }
     }
   } catch (e) {
@@ -223,12 +240,23 @@ router.post("/stake", async (request, response) => {
 router.post("/unstake", async (request, response) => {
   try {
 
-    /** @type {{nodeAccountAddress: string}} */
+    /** @type {{nodeAccountAddress: string, user: string, nodeLink: string}} */
     const data = request.body;
 
-    const unstaked = await nodeService.unstakeNode(data.nodeAccountAddress);
+    const node = await nodeService.unstakeNode(data.nodeAccountAddress, data.user);
 
-    response.send(unstaked);
+    if (node) {
+      const nodeEmailData = {
+        name: node.name,
+        link: data.nodeLink
+      };
+
+      await EmailService.to(data.user).sendUnstakeNodeEmail(data.user, nodeEmailData);
+
+      response.send(true);
+    } else {
+      response.send(false);
+    }
   } catch (e) {
     const error = {
       message: e.toString()

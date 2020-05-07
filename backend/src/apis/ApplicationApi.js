@@ -232,12 +232,23 @@ router.post("/freetier/stake", async (request, response) => {
 router.post("/freetier/unstake", async (request, response) => {
   try {
 
-    /** @type {{applicationAccountAddress: string}} */
+    /** @type {{applicationAccountAddress: string, user: string, appLink: string}} */
     const data = request.body;
 
-    const unstaked = await applicationService.unstakeFreeTierApplication(data.applicationAccountAddress);
+    const application = await applicationService.unstakeFreeTierApplication(data.applicationAccountAddress, data.user);
 
-    response.send(unstaked);
+    if (application) {
+      const applicationEmailData = {
+        name: application.name,
+        link: data.appLink
+      };
+
+      await EmailService.to(data.user).sendUnstakeAppEmail(data.user, applicationEmailData);
+
+      response.send(true);
+    } else {
+      response.send(false);
+    }
   } catch (e) {
     const error = {
       message: e.toString()

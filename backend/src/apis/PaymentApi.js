@@ -71,7 +71,7 @@ router.post("/payment_methods", async (request, response) => {
  */
 router.post("/new_intent/apps", async (request, response) => {
   try {
-    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, pokt:string}, amount: number}} */
+    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, pokt:string, maxRelay: string}, amount: number}} */
     const data = request.body;
 
     const paymentIntent = await paymentService.createPocketPaymentIntentForApps(data.type, data.currency, data.item, data.amount);
@@ -97,7 +97,7 @@ router.post("/new_intent/apps", async (request, response) => {
  */
 router.post("/new_intent/nodes", async (request, response) => {
   try {
-    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, pokt:string}, amount: number}} */
+    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, pokt:string, validatorPower: string}, amount: number}} */
     const data = request.body;
 
     const paymentIntent = await paymentService.createPocketPaymentIntentForNodes(data.type, data.currency, data.item, data.amount);
@@ -116,13 +116,6 @@ router.post("/new_intent/nodes", async (request, response) => {
 
     response.status(400).send(error);
   }
-});
-
-/**
- * Create a new intent of payment for nodes.
- */
-router.post("/new_intent/nodes", async (request, response) => {
-  response.send("// TODO: Implement this endpoint");
 });
 
 /**

@@ -151,14 +151,14 @@ export default class EmailService {
    *
    * @param {string} userName User name.
    * @param {{name: string, link: string}} nodeData Node data.
-   * @param {{amountPaid: string, validatorPower: string, poktStaked: string}} paymentData Payment data.
+   * @param {{amountPaid: number, validatorPower: string, poktStaked: string}} paymentData Payment data.
    */
   async sendStakeNodeEmail(userName, nodeData, paymentData) {
     const data = {
       USER_NAME: userName,
       NODE_NAME: nodeData.name,
       NODE_LINK: nodeData.link,
-      PAY_AMOUNT: paymentData.amountPaid,
+      PAY_AMOUNT: paymentData.amountPaid.toString(),
       VALIDATOR_POWER: paymentData.validatorPower,
       POKT_STAKED: paymentData.poktStaked
     };
