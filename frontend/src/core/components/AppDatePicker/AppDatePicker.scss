@@ -1,19 +1,28 @@
+@import "../../../scss/Core.scss";
+
 .date-picker {
-  display: flex;
-  align-items: center;
 
   .wrapper {
     padding: 8px 14px;
-    background-color: #a1a1a1;
-    border-top-left-radius: 0.25em;
-    border-bottom-left-radius: 0.25em;
+    color: $primary-color;
+    @include bordered-layout;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: 0;
+    padding: 8px 0 8px 10px;
   }
 
   .form-control {
-    height: 50px;
+    cursor: pointer;
+    @include bordered-layout;
+    width: 150px;
+    text-align: right;
+    padding: 0 10px 0 0 !important;
+    height: 37px;
     font-size: 1.2em;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
     border-left: 0;
+    padding: 0;
   }
 }
