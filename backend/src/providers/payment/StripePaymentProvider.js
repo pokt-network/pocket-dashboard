@@ -10,6 +10,9 @@ class StripePaymentProvider extends BasePaymentProvider {
 
     /** {Stripe} */
     this._stripeAPIClient = new Stripe(paymentProviderConfiguration.client_secret, paymentProviderConfiguration.options);
+
+    this.retrieveCardPaymentMethod = this.retrieveCardPaymentMethod.bind(this);
+    this.createPaymentIntent =  this.createPaymentIntent.bind(this);
   }
 
   async createPaymentIntent(type, currency, item, amount, description = "") {
