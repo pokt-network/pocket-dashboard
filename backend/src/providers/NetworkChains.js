@@ -1,5 +1,6 @@
 /** @type {{netID:string, name:string, hash:string}[]} */
 export const Chains = [
+  // TODO: Adding description and Ticker
   {netID: "mainnet", name: "POKT-mainnet", hash: "0001"},
   {netID: "testnet", name: "POKT-testnet", hash: "0002"},
   {netID: "32", name: "AION-32", hash: "0003"},
