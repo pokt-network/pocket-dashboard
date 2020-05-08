@@ -1,5 +1,6 @@
 import express from "express";
 import UserService from "../services/UserService";
+import EmailService from "../services/EmailService";
 
 const router = express.Router();
 
@@ -57,10 +58,17 @@ router.post("/auth/login", async (request, response) => {
  */
 router.post("/auth/signup", async (request, response) => {
   try {
-    /** @type {{email:string, username:string, password1:string, password2:string}} */
+    /** @type {{email:string, username:string, password1:string, password2:string, postValidationLink:string}} */
     const data = request.body;
 
     const result = await userService.signupUser(data);
+
+    if (result) {
+      // TODO: Generate jwt with time
+      const postValidationLink = `${data.postValidationLink}/`;
+
+      await EmailService.to(data.email).sendSignUpEmail(data.username, postValidationLink);
+    }
 
     response.send(result);
   } catch (e) {
