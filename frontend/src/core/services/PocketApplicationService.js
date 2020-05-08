@@ -31,6 +31,7 @@ export class PocketApplicationService extends PocketBaseService {
     this.ls.remove("app_address");
     this.ls.remove("app_private_key");
     this.ls.remove("app_chains");
+    this.ls.remove("app_data");
   }
 
   /**
@@ -41,6 +42,7 @@ export class PocketApplicationService extends PocketBaseService {
       address: this.ls.get("app_address").data,
       privateKey: this.ls.get("app_private_key").data,
       chains: this.ls.get("app_chains").data,
+      data: this.ls.get("app_data").data,
     };
   }
 
@@ -50,8 +52,9 @@ export class PocketApplicationService extends PocketBaseService {
    * @param {string} address Pocket application address
    * @param {string} privateKey Pocket application private key
    * @param {Array<string>} chains Pocket application chosen chains.
+   * @param {Array<string>} data Pocket application dashboard data.
    */
-  saveAppInfoInCache({address, privateKey, chains}) {
+  saveAppInfoInCache({address, privateKey, chains, data}) {
     if (address) {
       this.ls.set("app_address", {data: address});
     }
@@ -60,6 +63,9 @@ export class PocketApplicationService extends PocketBaseService {
     }
     if (chains) {
       this.ls.set("app_chains", {data: chains});
+    }
+    if (data) {
+      this.ls.set("app_data", {data: data});
     }
   }
 

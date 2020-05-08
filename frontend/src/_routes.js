@@ -29,6 +29,7 @@ import NodeDetail from "./views/Nodes/NodeDetail/NodeDetail";
 import EditNode from "./views/Nodes/EditNode/EditNode";
 import ImportNode from "./views/Nodes/ImportNode/ImportNode";
 import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
+import OrderSummary from "./views/Apps/OrderSummary/OrderSummary";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -44,12 +45,13 @@ export const DASHBOARD_PATHS = {
   apps: "/apps",
   appDetail: "/apps/detail/:address",
   editApp: "/apps/edit/:address",
-  createAppInfo: "/apps/new",
   importApp: "/apps/import",
-  tierSelection: "/apps/tiers",
-  selectRelays: "/apps/relays",
+  createAppInfo: "/apps/new",
+  chooseChain: "/apps/new/chains",
+  tierSelection: "/apps/new/tiers",
+  selectRelays: "/apps/new/relays",
+  appOrderSummary: "/apps/new/summary",
   freeTier: "/apps/free-tier",
-  chooseChain: "/apps/chains",
   appCreated: "/apps/created",
   nodes: "/nodes",
   nodeDetail: "/nodes/detail/:address",
@@ -209,6 +211,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Relays Selection",
     component: SelectRelays
+  },
+  {
+    path: DASHBOARD_PATHS.appOrderSummary,
+    exact: true,
+    name: "App Order Summary",
+    component: OrderSummary
   },
   {
     path: DASHBOARD_PATHS.freeTier,

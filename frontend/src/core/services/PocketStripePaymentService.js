@@ -1,6 +1,7 @@
 import PocketBaseService from "./PocketBaseService";
 import PocketUserService from "./PocketUserService";
 import axios from "axios";
+import {ITEM_TYPES} from "../../_constants";
 
 class PocketStripePaymentService extends PocketBaseService {
 
@@ -79,6 +80,41 @@ class PocketStripePaymentService extends PocketBaseService {
         }
 
         return result;
+      });
+  }
+
+    /**
+   * Create new payment intent for purchase.
+   *
+   * @param {string} stripe type of item (e.x. application, node).
+   * @param {object} item item to purchase data.
+   * @param {string} currency currency.
+   * @param {number} amount amount to pay.
+   *
+   * @return {Promise<*>}
+   * @async
+   */
+  async createNewPaymentIntent(type, item, currency, amount) {
+    const user = PocketUserService.getUserInfo().email;
+    const data = {type: "card", user, item, currency, amount};
+
+    let path;
+
+    if (type === ITEM_TYPES.APPLICATION) {
+      path = "apps";
+    } else if (type === ITEM_TYPES.NODE) {
+      path = "nodes";
+    } else {
+      throw new Error("Invalid item type");
+    }
+
+    return axios
+      .post(this._getURL(`new_intent/${path}`), data)
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {success: false, data: err.response};
       });
   }
 }

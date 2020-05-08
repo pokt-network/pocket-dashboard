@@ -5,10 +5,14 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import AppSlider from "../../../core/components/AppSlider";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {MAX_RELAYS} from "../../../_constants";
+import {MAX_RELAYS, ITEM_TYPES} from "../../../_constants";
 import {formatCurrency} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import ApplicationService from "../../../core/services/PocketApplicationService";
+import UserService from "../../../core/services/PocketUserService";
+import StripePaymentService from "../../../core/services/PocketStripePaymentService";
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -38,15 +42,51 @@ class SelectRelays extends Component {
     this.setState({relays: value, total: value * poktPrice});
   }
 
-  goToCheckout() {
-    const {relays, total: totalPrice} = this.state;
+  async createPaymentIntent(amount, currency, pokt) {
+    const item = {
+      account: UserService.getUserInfo().email,
+      name: ApplicationService.getAppAInfo().data.name,
+      pokt,
+    };
+
+    const {success, data} = await StripePaymentService.createNewPaymentIntent(
+      ITEM_TYPES.APPLICATION, item, currency, amount);
+
+    return {success, data};
+  }
+
+  async goToCheckout() {
+    const {relays, currencies, total: totalPrice} = this.state;
+
+    // At the moment the only available currency is USD.
+    const usd = currencies[0];
 
     // Avoiding floating point precision errors.
     const total = parseFloat(numeral(totalPrice).format("0.00"));
 
+    // TODO: Calculate pokt from formula
+    const {success, data: paymentIntentData} = await this.createPaymentIntent(
+      total, usd, relays);
+
+    if (!success) {
+      // TODO: Display message on frontend
+      console.log(success, paymentIntentData);
+      return;
+    }
+    console.log(success, paymentIntentData);
+
     PaymentService.savePurchaseInfoInCache({relays, costPerRelay: total});
 
-    // this.props.history.match();
+    // eslint-disable-next-line react/prop-types
+    this.props.history.push({
+      pathname: _getDashboardPath(DASHBOARD_PATHS.appOrderSummary),
+      state: {
+        type: "application",
+        paymentIntent: paymentIntentData,
+        quantity: 0,
+        total: 0,
+      },
+    });
   }
 
   render() {

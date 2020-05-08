@@ -16,6 +16,11 @@ export const BOND_STATUS_STR = {
   unbonded: 0,
 };
 
+export const ITEM_TYPES = {
+  APPLICATION: "application",
+  NODE: "node",
+};
+
 export const APPLICATIONS_LIMIT = 10;
 
 export const NODES_LIMIT = 10;
