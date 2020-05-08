@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import "./SelectRelays.scss";
-import {Alert, Button, Col, Row} from "react-bootstrap";
+import {Alert, Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import AppSlider from "../../../core/components/AppSlider";
@@ -13,6 +13,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
+import LoadingButton from "../../../core/components/LoadingButton";
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -27,6 +28,7 @@ class SelectRelays extends Component {
       poktPrice: 0.06,
       total: 0,
       currencies: [],
+      loading: false,
     };
   }
 
@@ -56,13 +58,14 @@ class SelectRelays extends Component {
   }
 
   async goToCheckout() {
-    const {relays, currencies, total: totalPrice} = this.state;
+    this.setState({loading: true});
+    const {relays, poktPrice, currencies, total: totalPrice} = this.state;
 
     // At the moment the only available currency is USD.
     const usd = currencies[0];
 
     // Avoiding floating point precision errors.
-    const total = parseFloat(numeral(totalPrice).format("0.00"));
+    const total = parseFloat(numeral(totalPrice).format("0.00")).toFixed(2);
 
     // TODO: Calculate pokt from formula
     const {success, data: paymentIntentData} = await this.createPaymentIntent(
@@ -71,9 +74,9 @@ class SelectRelays extends Component {
     if (!success) {
       // TODO: Display message on frontend
       console.log(success, paymentIntentData);
+      this.setState({loading: false});
       return;
     }
-    console.log(success, paymentIntentData);
 
     PaymentService.savePurchaseInfoInCache({relays, costPerRelay: total});
 
@@ -81,16 +84,17 @@ class SelectRelays extends Component {
     this.props.history.push({
       pathname: _getDashboardPath(DASHBOARD_PATHS.appOrderSummary),
       state: {
-        type: "application",
+        type: ITEM_TYPES.APPLICATION,
         paymentIntent: paymentIntentData,
-        quantity: 0,
-        total: 0,
+        quantity: {number: relays, description: "Relays per session"},
+        cost: {number: poktPrice, description: "replays per session cost"},
+        total: total,
       },
     });
   }
 
   render() {
-    const {alert, relays, poktPrice, total: currentTotal} = this.state;
+    const {alert, relays, poktPrice, total: currentTotal, loading} = this.state;
 
     const total = formatCurrency(currentTotal);
 
@@ -165,13 +169,16 @@ class SelectRelays extends Component {
         </Row>
         <Row>
           <Col>
-            <Button
-              onClick={this.goToCheckout}
-              variant="dark"
-              className="mt-3 pl-5 pr-5 font-weight-bold float-right"
+            <LoadingButton
+              loading={loading}
+              buttonProps={{
+                onClick: this.goToCheckout,
+                variant: "dark",
+                className: "mt-3 pl-5 pr-5 font-weight-bold float-right",
+              }}
             >
               Checkout
-            </Button>
+            </LoadingButton>
           </Col>
         </Row>
         {alert && (
