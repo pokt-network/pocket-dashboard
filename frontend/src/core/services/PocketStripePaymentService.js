@@ -83,10 +83,42 @@ class PocketStripePaymentService extends PocketBaseService {
       });
   }
 
+  /**
+   * Confirm payment with a saved card.
+   *
+   * @param {string} stripe Stripe object.
+   * @param {string} paymentIntentSecretID Payment intent to confirm.
+   * @param {string} paymentMethodId saved card id for purchase.
+   * @param {{name:string, [address]:{line1:string, [postal_code]:string, 
+   *         country:string}}} billingDetails Billing details about card.
+   * @return {Promise<*>}
+   * @async
+   */
+  async confirmPaymentWithSavedCard(
+    stripe,
+    paymentIntentSecretId,
+    paymentMethodId,
+    billingDetails
+  ) {
+    return stripe.confirmCardPayment(paymentIntentSecretId, {
+      payment_method: paymentMethodId,
+    }).then(result => {
+      if (result.paymentIntent) {
+        const paymentIntent = result.paymentIntent;
+
+        if (paymentIntent.status.toLowerCase() === "succeeded") {
+          this.__markPaymentAsSuccess(paymentIntent.id, paymentIntent.payment_method, billingDetails);
+        }
+      }
+
+      return result;
+    });
+  }
+
     /**
    * Create new payment intent for purchase.
    *
-   * @param {string} stripe type of item (e.x. application, node).
+   * @param {string} type type of item (e.x. application, node).
    * @param {object} item item to purchase data.
    * @param {string} currency currency.
    * @param {number} amount amount to pay.

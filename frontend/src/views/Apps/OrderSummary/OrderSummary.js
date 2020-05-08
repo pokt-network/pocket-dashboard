@@ -10,6 +10,9 @@ import PaymentService from "../../../core/services/PocketPaymentService";
 import "./OrderSummary.scss";
 import Loader from "../../../core/components/Loader";
 import SaveAndPayForm from "../../../core/components/Payment/Stripe/SaveAndPayForm";
+import {ElementsConsumer} from "@stripe/react-stripe-js";
+import PaymentContainer from "../../../core/components/Payment/Stripe/PaymentContainer";
+import StripePaymentService from "../../../core/services/PocketStripePaymentService";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -71,8 +74,19 @@ class OrderSummary extends Component {
     });
   }
 
-  makePurchase() {
+  async makePurchase(e, stripe) {
+    e.preventDefault();
+
     const {paymentIntent, selectedPaymentMethod} = this.state;
+
+    const result = await StripePaymentService.confirmPaymentWithSavedCard(
+      // eslint-disable-next-line function-call-argument-newline
+      stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id,
+      selectedPaymentMethod.billingDetails
+    );
+
+    // TODO: Redirect user to invoice view
+    console.log(result);
   }
 
   render() {
@@ -138,7 +152,7 @@ class OrderSummary extends Component {
                 <SaveAndPayForm paymentIntentSecretID={paymentIntent.id} />
               )}
               <div>
-                <Form onSubmit={this.makePurchase}>
+                <Form>
                   {paymentMethods.map((card, idx) => {
                     const {cardData, holder} = card;
 
@@ -170,25 +184,34 @@ class OrderSummary extends Component {
         </Row>
         <Row className="mt-4">
           <Col>
-            <Form className="d-flex justify-content-between">
-              <Form.Check
-                custom
-                checked={agreeTerms}
-                onChange={() => this.setState({agreeTerms: !agreeTerms})}
-                id="terms-checkbox"
-                type="checkbox"
-                label="By paying I agree to Pocket Network purchase terms and conditions."
-              />
+            <PaymentContainer>
+              <ElementsConsumer>
+                {({_, stripe}) => (
+                  <Form
+                    onSubmit={(e) => this.makePurchase(e, stripe)}
+                    className="d-flex justify-content-between"
+                  >
+                    <Form.Check
+                      custom
+                      checked={agreeTerms}
+                      onChange={() => this.setState({agreeTerms: !agreeTerms})}
+                      id="terms-checkbox"
+                      type="checkbox"
+                      label="By paying I agree to Pocket Network purchase terms and conditions."
+                    />
 
-              <Button
-                disabled={!agreeTerms}
-                variant="primary"
-                className="pr-5 pl-5"
-                type="submit"
-              >
-                Confirm payment
-              </Button>
-            </Form>
+                    <Button
+                      disabled={!agreeTerms}
+                      variant="primary"
+                      className="pr-5 pl-5"
+                      type="submit"
+                    >
+                      Confirm payment
+                    </Button>
+                  </Form>
+                )}
+              </ElementsConsumer>
+            </PaymentContainer>
           </Col>
         </Row>
       </div>
