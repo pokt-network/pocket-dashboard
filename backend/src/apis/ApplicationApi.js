@@ -2,11 +2,12 @@ import express from "express";
 import ApplicationService from "../services/ApplicationService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import EmailService from "../services/EmailService";
+import PaymentService from "../services/PaymentService";
 
 const router = express.Router();
 
 const applicationService = new ApplicationService();
-
+const paymentService = new PaymentService();
 
 /**
  * Create new application.
@@ -27,7 +28,7 @@ router.post("", async (request, response) => {
       link: `${data.applicationBaseLink}/${application.privateApplicationData.address}`
     };
 
-    await EmailService.to(data.application.contactEmail).sendCreateOrImportNodeEmail(emailAction, data.application.user, applicationEmailData);
+    await EmailService.to(data.application.contactEmail).sendCreateOrImportAppEmail(emailAction, data.application.user, applicationEmailData);
 
     response.send(application);
   } catch (e) {
@@ -244,6 +245,83 @@ router.post("/freetier/unstake", async (request, response) => {
       };
 
       await EmailService.to(data.user).sendUnstakeAppEmail(data.user, applicationEmailData);
+
+      response.send(true);
+    } else {
+      response.send(false);
+    }
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Stake an application.
+ */
+router.post("/stake", async (request, response) => {
+  try {
+
+    /** @type {{application: {privateKey: string, passPhrase: string, networkChains: string[]}, payment:{id: string}, applicationLink: string}} */
+    const data = request.body;
+    const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
+
+    if (paymentHistory.isSuccessPayment(true)) {
+
+      if (paymentHistory.isApplicationPaymentItem(true)) {
+        const item = paymentHistory.getItem();
+        const application = await applicationService.stakeApplication(data.application, item.pokt);
+
+        if (application) {
+          const applicationEmailData = {
+            name: application.name,
+            link: data.applicationLink
+          };
+
+          const paymentEmailData = {
+            amountPaid: paymentHistory.amount,
+            maxRelayPerDayAmount: item.maxRelay,
+            poktStaked: item.pokt
+          };
+
+          await EmailService.to(application.user).sendStakeAppEmail(application.user, applicationEmailData, paymentEmailData);
+
+          response.send(true);
+        } else {
+          response.send(false);
+        }
+      }
+    }
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Unstake an application.
+ */
+router.post("/unstake", async (request, response) => {
+  try {
+
+    /** @type {{application:{privateKey:string, passPhrase:string, accountAddress: string}, applicationLink: string}} */
+    const data = request.body;
+
+    const application = await applicationService.unstakeApplication(data.application);
+
+    if (application) {
+      const applicationEmailData = {
+        name: application.name,
+        link: data.applicationLink
+      };
+
+      await EmailService.to(application.user).sendUnstakeAppEmail(application.user, applicationEmailData);
 
       response.send(true);
     } else {

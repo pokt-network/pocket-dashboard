@@ -63,25 +63,6 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Create a pocket account in the network.
-   *
-   * @param {string} passPhrase Passphrase used to create pocket account.
-   *
-   * @returns {Promise<Account> | Error} A Pocket account created successfully.
-   * @throws {Error} If creation of account fails.
-   * @private
-   */
-  async __createPocketAccount(passPhrase) {
-    const account = await this.pocketService.createAccount(passPhrase);
-
-    if (account instanceof Error) {
-      throw account;
-    }
-
-    return account;
-  }
-
-  /**
    *
    * @param {PocketApplication} application Application to add pocket data.
    *
@@ -416,6 +397,72 @@ export default class ApplicationService extends BaseService {
 
       return aat;
 
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Stake an application on network.
+   *
+   * @param {{privateKey: string, passPhrase:string, networkChains: string[]}} application Application to stake.
+   * @param {string} uPoktAmount uPokt amount used to stake.
+   *
+   * @returns {Promise<PocketApplication | boolean>} If was staked return the application, if not return false.
+   * @throws Error If private key is not valid or application does not exists on dashboard.
+   */
+  async stakeApplication(application, uPoktAmount) {
+    const accountService = new AccountService();
+
+    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, application.passPhrase, application.privateKey);
+
+    const filter = {
+      "publicPocketAccount.address": applicationAccount.addressHex
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (!applicationDB) {
+      throw Error("Application does not exists on dashboard");
+    }
+
+    try {
+      // Stake application
+      const transaction = await this.pocketService.stakeApplication(applicationAccount, application.passPhrase, uPoktAmount, application.networkChains);
+
+      return transaction.tx !== undefined ? PocketApplication.createPocketApplication(applicationDB) : false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Unstake application.
+   *
+   * @param {{privateKey:string, passPhrase:string, accountAddress: string}} applicationData Application data.
+   *
+   * @returns {Promise<PocketApplication | boolean>} If application was unstaked return application, if not return false.
+   * @async
+   */
+  async unstakeApplication(applicationData) {
+    const filter = {
+      "publicPocketAccount.address": applicationData.accountAddress
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (!applicationDB) {
+      return false;
+    }
+    const accountService = new AccountService();
+
+    try {
+      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.passPhrase, applicationData.privateKey);
+
+      // Unstake application
+      const transaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passPhrase);
+
+      return transaction.tx !== undefined ? PocketApplication.createPocketApplication(applicationDB) : false;
     } catch (e) {
       return false;
     }

@@ -134,13 +134,13 @@ export default class EmailService {
    * Send email when node was out of jail.
    *
    * @param {string} userName User name.
-   * @param {{name: string, nodeLink: string}} nodeData Node data.
+   * @param {{name: string, link: string}} nodeData Node data.
    */
   async sendNodeUnJailedEmail(userName, nodeData) {
     const data = {
       USER_NAME: userName,
       NODE_NAME: nodeData.name,
-      NODE_LINK: nodeData.nodeLink
+      NODE_LINK: nodeData.link
     };
 
     await this.__sendEmail(Configurations.email.template_ids.NodeUnJailed, data);
@@ -151,7 +151,7 @@ export default class EmailService {
    *
    * @param {string} userName User name.
    * @param {{name: string, link: string}} nodeData Node data.
-   * @param {{amountPaid: number, validatorPower: string, poktStaked: string}} paymentData Payment data.
+   * @param {{amountPaid: number, validatorPowerAmount: string, poktStaked: string}} paymentData Payment data.
    */
   async sendStakeNodeEmail(userName, nodeData, paymentData) {
     const data = {
@@ -159,7 +159,7 @@ export default class EmailService {
       NODE_NAME: nodeData.name,
       NODE_LINK: nodeData.link,
       PAY_AMOUNT: paymentData.amountPaid.toString(),
-      VALIDATOR_POWER: paymentData.validatorPower,
+      VALIDATOR_POWER: paymentData.validatorPowerAmount,
       POKT_STAKED: paymentData.poktStaked
     };
 
@@ -221,14 +221,14 @@ export default class EmailService {
    *
    * @param {string} userName User name.
    * @param {{name: string, link: string}} applicationData Application data.
-   * @param {{amountPaid: string, maxRelayPerDayAmount: string, poktStaked: string}} paymentData Payment data.
+   * @param {{amountPaid: number, maxRelayPerDayAmount: string, poktStaked: string}} paymentData Payment data.
    */
   async sendStakeAppEmail(userName, applicationData, paymentData) {
     const data = {
       USER_NAME: userName,
       APP_NAME: applicationData.name,
       APP_LINK: applicationData.link,
-      PAY_AMOUNT: paymentData.amountPaid,
+      PAY_AMOUNT: paymentData.amountPaid.toString(),
       MAX_RELAYS_PER_DAY_AMOUNT: paymentData.maxRelayPerDayAmount,
       POKT_STAKED: paymentData.poktStaked
     };
@@ -249,7 +249,7 @@ export default class EmailService {
       APP_LINK: applicationData.link
     };
 
-    await this.__sendEmail(Configurations.email.template_ids.UnstakeNode, data);
+    await this.__sendEmail(Configurations.email.template_ids.UnstakeApp, data);
   }
 
   /**
