@@ -1,118 +1,110 @@
-/** @type {{name:string, netID:string, hash:string}[]} */
+/** @type {{netID:string, name:string, hash:string}[]} */
 export const Chains = [
-  {
-    name: "Aion Testnet Network",
-    netID: "32",
-    hash: "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
-  },
-  {
-    name: "Aion Mainnet Network",
-    netID: "256",
-    hash: "8ef9a7c67f6f8ad14f82c1f340963951245f912f037a7087f3f2d2f9f9ee38a8"
-  },
-  {
-    name: "Ethereum Mainnet Network",
-    netID: "1",
-    hash: "0de3141aec1e69aea9d45d9156269b81a3ab4ead314fbf45a8007063879e743b"
-  },
-  {
-    name: "Ethereum Rinkeby Network",
-    netID: "4",
-    hash: "8cf7f8799c5b30d36c86d18f0f4ca041cf1803e0414ed9e9fd3a19ba2f0938ff"
-  },
-  {
-    name: "Ethereum Ropsten Network",
-    netID: "3",
-    hash: "10d1290eee169e3970afb106fe5417a11b81676ce1e2119a0292df29f0445d30"
-  },
-  {
-    name: "Ethereum Goerli Network",
-    netID: "5",
-    hash: "4ae7539e01ad2c42528b6a697f118a3535e404fe65999b2c6fee506465390367"
-  },
-  {
-    name: "DAPS Mainnet",
-    netID: "MAINNET",
-    hash: "0070eebec778ea95ef9c75551888971c27cce222e00b2f3f79168078b8a77ff9"
-  },
-  {
-    name: "Lightchain Mainnet",
-    netID: "162",
-    hash: "dcc98e38e1edb55a97265efca6c34f21e55f683abdded0aa71df3958a49c8b69"
-  },
-  {
-    name: "Lightchain Testnet",
-    netID: "163",
-    hash: "26a2800156f76b66bcb5661f2988a9d09e76caaffd053fe17bf20d251b4cb823"
-  },
-  {
-    name: "Particl Mainnet",
-    netID: "MAINNET",
-    hash: "73d8dd1b7d8aa02254e75936b09780447c06729f3e55f7ae5eb94ab732c1ec05"
-  },
-  {
-    name: "Pivx Mainnet",
-    netID: "MAINNET",
-    hash: "6cbb58da0b05d23022557dd2e479dd5cdf2441f20507b37383467d837ad40f5e"
-  },
-  {
-    name: "POA Network",
-    netID: "99",
-    hash: "54cb0d71117aa644e74bdea848d61bd2fd410d3d4a3ed92b46b0847769dc132e"
-  },
-  {
-    name: "POA Kovan Network",
-    netID: "42",
-    hash: "cb92cb81d6f72f55114140a7bbe5e0f63524d1200fe63250f58dfe5d907032bf"
-  },
-  {
-    name: "POA Sokol Network",
-    netID: "77",
-    hash: "e458822c5f4d927c29aa4240a34647e11aff75232ccb9ffb50af06dc4469a5fa"
-  },
-  {
-    name: "POA xDai Network",
-    netID: "100",
-    hash: "0dfcabfb7f810f96cde01d65f775a565d3a60ad9e15575dfe3d188ff506c35a0"
-  },
-  {
-    name: "Stellar Lumens Mainnet",
-    netID: "MAINNET",
-    hash: "866d7183a24fad1d0a32c399cf2a1101f3a3bdfdff999e142bd8f49b2ebc45d4"
-  },
-  {
-    name: "Tezos Alphanet(Babylon)",
-    netID: "ALPHANET",
-    hash: "4c0437dda63eff39f85c60d62ac936045da5e610aca97a3793771e271578c534"
-  },
-  {
-    name: "Tezos Mainnet",
-    netID: "MAINNET",
-    hash: "773eda9368243afe027062d771b08cebddf22e03451e0eb5ed0ff4460288847e"
-  },
-  {
-    name: "Tomochain Mainnet",
-    netID: "MAINNET",
-    hash: "d5ddbb1ca49249438f552dccfd01918ee1fbdc6457997a142c8cfd144b40cd15"
-  },
-  {
-    name: "Waves Mainnet",
-    netID: "W",
-    hash: "4ecc78e62904c833ad5b727b9abf343a17d0d24fb27e9b5d2dd8c34361c23156"
-  },
-  {
-    name: "Zcoin Mainnet",
-    netID: "MAINNET",
-    hash: "d754973bdeab17eaed47729ee074ad87737c3ce51198263b8c4781568ea39e72"
-  },
-  {
-    name: "ICON Mainnet",
-    netID: "1",
-    hash: "d9d669583c2d2a88e54c0120be6f8195b2575192f178f925099813ff9095d139"
-  },
-  {
-    name: "ICON Testnet",
-    netID: "3",
-    hash: "d9d77bce50d80e70026bd240fb0759f08aab7aee63d0a6d98c545f2b5ae0a0b8"
-  }
+  {netID: "mainnet", name: "POKT-mainnet", hash: "0001"},
+  {netID: "testnet", name: "POKT-testnet", hash: "0002"},
+  {netID: "32", name: "AION-32", hash: "0003"},
+  {netID: "256", name: "AION-256", hash: "0004"},
+  {netID: "mainnet", name: "v1.0 ALGO-mainnet-v1.0", hash: "0005"},
+  {netID: "testnet", name: "v1.0 ALGO-testnet-v1.0", hash: "0006"},
+  {netID: "betanet", name: "v1.0 ALGO-betanet-v1.0", hash: "0007"},
+  {netID: "mainnet", name: "ANT-mainnet", hash: "0008"},
+  {netID: "testnet", name: "ANT-testnet", hash: "0009"},
+  {netID: "mainnet", name: "AR-mainnet", hash: "000A"},
+  {netID: "mainnet", name: "BCH-mainnet", hash: "000B"},
+  {netID: "testnet", name: "BCH-testnet", hash: "000C"},
+  {netID: "mainnet", name: "BSV-mainnet", hash: "000D"},
+  {netID: "testnet", name: "BSV-testnet", hash: "000E"},
+  {netID: "stn", name: "BSV-stn", hash: "000F"},
+  {netID: "mainnet", name: "BTC-mainnet", hash: "0010"},
+  {netID: "testnet", name: "BTC-testnet", hash: "0011"},
+  {netID: "testnet", name: "BTG-testnet", hash: "0012"},
+  {netID: "mainnet", name: "BTG-mainnet", hash: "0013"},
+  {netID: "mainnet", name: "DAPS-mainnet", hash: "0014"},
+  {netID: "testnet", name: "DASH-testnet", hash: "0015"},
+  {netID: "mainnet", name: "DASH-mainnet", hash: "0016"},
+  {netID: "mainnet", name: "DGB-mainnet", hash: "0018"},
+  {netID: "mainnet", name: "DOGE-mainnet", hash: "0019"},
+  {netID: "mainnet", name: "DOGE-mainnet", hash: "001A"},
+  {netID: "main", name: "EOS-main", hash: "001C"},
+  {netID: "jungle", name: "EOS-jungle", hash: "001D"},
+  {netID: "61", name: "ETC-61", hash: "001E"},
+  {netID: "6", name: "ETC-6", hash: "001F"},
+  {netID: "5", name: "ETH-5", hash: "0020"},
+  {netID: "1", name: "ETH-1", hash: "0021"},
+  {netID: "4", name: "ETH-4", hash: "0022"},
+  {netID: "3", name: "ETH-3", hash: "0023"},
+  {netID: "mainnet", name: "FIL-mainnet", hash: "0024"},
+  {netID: "testnet", name: "FIL-testnet", hash: "0025"},
+  {netID: "mainnet", name: "FLOW-mainnet", hash: "0026"},
+  {netID: "testnet", name: "FLOW-testnet", hash: "0027"},
+  {netID: "alpha", name: "FLOW-alpha", hash: "0028"},
+  {netID: "testnet", name: "FTC-testnet", hash: "0029"},
+  {netID: "mainnet", name: "FTC-mainnet", hash: "002A"},
+  {netID: "mainnet", name: "FTM-mainnet", hash: "002B"},
+  {netID: "FTM", name: "testnet	FTM-testnet", hash: "002C"},
+  {netID: "mainnet", name: "HERC-mainnet", hash: "002E"},
+  {netID: "mainnet", name: "HOT-mainnet", hash: "002F"},
+  {netID: "testnet", name: "HOT-testnet", hash: "0030"},
+  {netID: "1", name: "ICX-1", hash: "0031"},
+  {netID: "3", name: "ICX-3", hash: "0032"},
+  {netID: "mainnet", name: "IPFS-mainnet", hash: "006B"},
+  {netID: "mainnet", name: "IND-mainnet", hash: "0033"},
+  {netID: "testnet", name: "IND-testnet", hash: "0034"},
+  {netID: "testnet", name: "LTC-testnet", hash: "0035"},
+  {netID: "mainet", name: "LTC-mainet", hash: "0036"},
+  {netID: "mainnet", name: "MATIC-mainnet", hash: "0037"},
+  {netID: "mainnet", name: "N/A-mainnet", hash: "0038"},
+  {netID: "testnet", name: "N/A-testnet", hash: "0039"},
+  {netID: "binance", name: "chain-tigris(mainnet) N/A-binance-chain-tigris(mainnet)", hash: "003A"},
+  {netID: "binance", name: "chain-nile(testnet)	N/A-binance-chain-nile(testnet)", hash: "003B"},
+  {netID: "mainnet", name: "NEO-mainnet", hash: "003C"},
+  {netID: "testnet", name: "NEO-testnet", hash: "003D"},
+  {netID: "mainnet", name: "PART-mainnet", hash: "003E"},
+  {netID: "162", name: "PHT-162", hash: "003F"},
+  {netID: "163", name: "PHT-163", hash: "0040"},
+  {netID: "mainnet", name: "PIVX-mainnet", hash: "0041"},
+  {netID: "99", name: "POA-99", hash: "0042"},
+  {netID: "42", name: "POA-42", hash: "0043"},
+  {netID: "77", name: "POA-77", hash: "0044"},
+  {netID: "100", name: "POA-100", hash: "0045"},
+  {netID: "mainnet", name: "POKT-mainnet", hash: "0046"},
+  {netID: "testnet", name: "POKT-testnet", hash: "0047"},
+  {netID: "mainnet", name: "QTUM-mainnet", hash: "0048"},
+  {netID: "testnet", name: "QTUM-testnet", hash: "0049"},
+  {netID: "mainnet", name: "REN-mainnet", hash: "004A"},
+  {netID: "testnet", name: "REN-testnet", hash: "004B"},
+  {netID: "mainnet", name: "RSK-mainnet", hash: "004C"},
+  {netID: "testnet", name: "RSK-testnet", hash: "004D"},
+  {netID: "testnet", name: "RVN-testnet", hash: "004E"},
+  {netID: "mainnet", name: "RVN-mainnet", hash: "004F"},
+  {netID: "testnet", name: "SMART-testnet", hash: "0050"},
+  {netID: "mainnet", name: "SMART-mainnet", hash: "0051"},
+  {netID: "mainnet", name: "SOL-mainnet", hash: "0052"},
+  {netID: "mainnet", name: "beta SOL-mainnet_beta", hash: "0053"},
+  {netID: "testnet", name: "SOL-testnet", hash: "0054"},
+  {netID: "devnet", name: "SOL-devnet", hash: "0055"},
+  {netID: "mainnet", name: "TOMO-mainnet", hash: "0056"},
+  {netID: "mainnet", name: "TRX-mainnet", hash: "0057"},
+  {netID: "shasta", name: "TRX-shasta", hash: "0058"},
+  {netID: "mainnet", name: "UFO-mainnet", hash: "0059"},
+  {netID: "mainnet", name: "VTC-mainnet", hash: "005A"},
+  {netID: "w", name: "WAVES-w", hash: "005B"},
+  {netID: "testnet", name: "horizon) XLM-testnet(horizon)", hash: "005C"},
+  {netID: "mainnet", name: "XLM-mainnet", hash: "005D"},
+  {netID: "mainnet", name: "XMR-mainnet", hash: "005E"},
+  {netID: "stagenet", name: "XMR-stagenet", hash: "005F"},
+  {netID: "testnet", name: "XMR-testnet", hash: "0060"},
+  {netID: "devnet", name: "XRP-devnet", hash: "0061"},
+  {netID: "testnet", name: "XRP-testnet", hash: "0062"},
+  {netID: "mainnet", name: "XRP-mainnet", hash: "0063"},
+  {netID: "carthagenet", name: "XTZ-carthagenet", hash: "0064"},
+  {netID: "mainnet", name: "XTZ-mainnet", hash: "0065"},
+  {netID: "mainnet", name: "XZC-mainnet", hash: "0066"},
+  {netID: "mainnet", name: "XZC-mainnet", hash: "0067"},
+  {netID: "testnet", name: "XZC-testnet", hash: "0068"},
+  {netID: "mainnet", name: "ZIL-mainnet", hash: "0069"},
+  {netID: "devnet", name: "ZIL-devnet", hash: "006A"},
+  {netID: "testnet", name: "DGB-testnet", hash: "0017"},
+  {netID: "n/a", name: "EBST-n/a", hash: "001B"},
+  {netID: "???", name: "GRS-???", hash: "002D"}
 ];
