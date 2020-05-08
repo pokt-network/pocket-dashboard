@@ -22,7 +22,7 @@ class PocketStripePaymentService extends PocketBaseService {
     const data = {id: paymentMethodID, user, billingDetails};
 
     return axios.post(this._getURL("payment_method"), data)
-      .then(response => response.data);
+      .then(response => response.data).catch(err => err.response);
   }
 
   /**

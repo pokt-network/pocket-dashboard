@@ -7,25 +7,46 @@ import AppSlider from "../../../core/components/AppSlider";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {MAX_RELAYS} from "../../../_constants";
 import {formatCurrency} from "../../../_helpers";
+import PaymentService from "../../../core/services/PocketPaymentService";
+import numeral from "numeral";
 
 class SelectRelays extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.onSliderChange = this.onSliderChange.bind(this);
+    this.goToCheckout = this.goToCheckout.bind(this);
 
     this.state = {
       alert: true,
-      relays: 0,
+      relays: 1,
       poktPrice: 0.06,
       total: 0,
+      currencies: [],
     };
+  }
+
+  async componentDidMount() {
+    const currencies = await PaymentService.getAvailableCurrencies();
+
+    this.setState({currencies});
   }
 
   onSliderChange(value) {
     const {poktPrice} = this.state;
 
     this.setState({relays: value, total: value * poktPrice});
+  }
+
+  goToCheckout() {
+    const {relays, total: totalPrice} = this.state;
+
+    // Avoiding floating point precision errors.
+    const total = parseFloat(numeral(totalPrice).format("0.00"));
+
+    PaymentService.savePurchaseInfoInCache({relays, costPerRelay: total});
+
+    // this.props.history.match();
   }
 
   render() {
@@ -71,8 +92,8 @@ class SelectRelays extends Component {
               <div className="slider-wrapper">
                 <AppSlider
                   onChange={this.onSliderChange}
-                  marks={{0: "0", [MAX_RELAYS]: MAX_RELAYS}}
-                  min={0}
+                  marks={{1: "1", [MAX_RELAYS]: MAX_RELAYS}}
+                  min={1}
                   max={MAX_RELAYS}
                 />
               </div>
@@ -82,14 +103,21 @@ class SelectRelays extends Component {
                   title={relays}
                   subtitle="Relays per session"
                 >
-                  <span/>
+                  <span />
                 </InfoCard>
                 <InfoCard
                   className="text-center"
                   title={total}
-                  subtitle="Total amount"
+                  subtitle="Total  amount"
                 >
-                  <span/>
+                  <span />
+                </InfoCard>
+                <InfoCard
+                  className="text-center"
+                  title={poktPrice}
+                  subtitle="Relays per session cost"
+                >
+                  <span />
                 </InfoCard>
               </div>
             </div>
@@ -98,6 +126,7 @@ class SelectRelays extends Component {
         <Row>
           <Col>
             <Button
+              onClick={this.goToCheckout}
               variant="dark"
               className="mt-3 pl-5 pr-5 font-weight-bold float-right"
             >
