@@ -1,12 +1,16 @@
 import React, {Component} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import "./Login.scss";
-import {AuthProviderButton, AuthProviderType} from "../../../core/components/AuthProviderButton";
-import HelpLink from "../../../core/components/HelpLink";
+import {
+  AuthProviderButton,
+  AuthProviderType,
+} from "../../../core/components/AuthProviderButton";
 import UserService from "../../../core/services/PocketUserService";
 import {ROUTE_PATHS} from "../../../_routes";
 import {Link, Redirect} from "react-router-dom";
-import AuthSidebar from "../../../core/components/AuthSidebar";
+import AuthSidebar from "../../../core/components/AuthSidebar/AuthSidebar";
+import {faGithub} from "@fortawesome/free-brands-svg-icons";
+import {faGoogle} from "@fortawesome/free-brands-svg-icons";
 
 class Login extends Component {
   constructor(props, context) {
@@ -20,14 +24,14 @@ class Login extends Component {
       loggedIn: false,
       data: {
         username: "",
-        password: ""
-      }
+        password: "",
+      },
     };
   }
 
   componentDidMount() {
     /** @type {UserService} */
-    UserService.getAuthProviders().then(providers => {
+    UserService.getAuthProviders().then((providers) => {
       this.setState({authProviders: providers});
     });
   }
@@ -82,49 +86,75 @@ class Login extends Component {
     const {username, password} = data;
 
     if (loggedIn) {
-      return <Redirect to={home}/>;
+      return <Redirect to={home} />;
     }
 
     return (
-      <Container fluid className={"auth-page"}>
+      <Container fluid className={"auth-page"} id="login">
         <Row>
-          <AuthSidebar/>
+          <AuthSidebar />
           <Col className={"content"}>
-            <HelpLink/>
-
-            <div className={"main"}>
-              <h1>Login</h1>
-              <div id={"provider-buttons"}>
-                <AuthProviderButton type={AuthProviderType.login}
-                                    authProvider={UserService.getAuthProvider(this.state.authProviders, "google")}
-                />
-                <AuthProviderButton type={AuthProviderType.login}
-                                    authProvider={UserService.getAuthProvider(this.state.authProviders, "github")}
-                />
-              </div>
-              <hr/>
-              <Form onSubmit={this.handleLogin} id={"main-form"}>
-                <Form.Group>
-                  <Form.Label>Username or E-mail</Form.Label>
-                  <Form.Control name="username" value={username} onChange={this.handleChange}/>
-                </Form.Group>
-                <Form.Group>
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control type="password" name="password" value={password} onChange={this.handleChange}/>
-                </Form.Group>
-                <p>
-                  Forgot your password? <Link to={forgot_password}>click here</Link>
-                </p>
-
-                <Button type="submit" variant="dark" size={"lg"} block>
-                  Login
-                </Button>
-                <div>
-                  {/* eslint-disable-next-line */}
-                  <Link to={signup}>You don't have an account?</Link>
-                </div>
-              </Form>
+            <div className="change">
+              <p>
+                New in Pocket Dashboard?{" "}
+                <Link to={signup}>Create an account</Link>
+              </p>
             </div>
+            <Row>
+              <Col lg={{span: 5, offset: 3}}>
+                <div className={"main"}>
+                  <h2>Login</h2>
+                  <Form onSubmit={this.handleLogin} id={"main-form"}>
+                    <Form.Group>
+                      <Form.Label>Email</Form.Label>
+                      <Form.Control
+                        name="username"
+                        value={username}
+                        onChange={this.handleChange}
+                      />
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Label>Password</Form.Label>
+                      <Form.Control
+                        type="password"
+                        name="password"
+                        placeholder="**************"
+                        value={password}
+                        onChange={this.handleChange}
+                      />
+                    </Form.Group>
+                    <p>
+                      <Link to={forgot_password}>Forgot your password?</Link>
+                    </p>
+
+                    <Button type="submit" size="lg" variant="primary" block>
+                      Sign in
+                    </Button>
+                    <div className="divider mt-4 mb-3">Or</div>
+                    <div id={"provider-buttons"}>
+                      <AuthProviderButton
+                        block={false}
+                        className="brand pl-5 pr-5 mr-3"
+                        icon={faGoogle}
+                        type={AuthProviderType.login}
+                        authProvider={UserService.getAuthProvider(
+                          this.state.authProviders, "google"
+                        )}
+                      />
+                      <AuthProviderButton
+                        block={false}
+                        className="brand pl-5 pr-5"
+                        icon={faGithub}
+                        type={AuthProviderType.login}
+                        authProvider={UserService.getAuthProvider(
+                          this.state.authProviders, "github"
+                        )}
+                      />
+                    </div>
+                  </Form>
+                </div>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Container>

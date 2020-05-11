@@ -2,16 +2,16 @@
 
 .app-segment {
   .head {
-    background-color: $light-gray;
     border-top-right-radius: 15px;
     border-top-left-radius: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding-top: 25px;
-    padding-bottom: 15px;
+    padding-bottom: 5px;
 
     .title {
+      color: $secondary-color;
       margin-left: 25px;
       text-transform: uppercase;
       font-size: 1.7em;
@@ -23,9 +23,9 @@
   }
 
   .body {
-    padding-top: 25px;
+    padding-top: 5px;
     box-shadow: 1px 15px 53px -26px rgba(33, 33, 33, .1);
-    padding-left: 10px;
+    padding-left: 30px;
     padding-right: 10px;
     padding-bottom: 15px;
     overflow-x: auto;

@@ -1,12 +1,15 @@
 import React, {Component} from "react";
 import {Link, Redirect} from "react-router-dom";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {AuthProviderButton, AuthProviderType} from "../../../core/components/AuthProviderButton";
+import {
+  AuthProviderButton,
+  AuthProviderType,
+} from "../../../core/components/AuthProviderButton";
 import HelpLink from "../../../core/components/HelpLink";
 import UserService from "../../../core/services/PocketUserService";
 import "./SignUp.scss";
 import {ROUTE_PATHS} from "../../../_routes";
-import AuthSidebar from "../../../core/components/AuthSidebar";
+import AuthSidebar from "../../../core/components/AuthSidebar/AuthSidebar";
 
 class SignUp extends Component {
   constructor(props, context) {
@@ -23,13 +26,13 @@ class SignUp extends Component {
         email: "",
         password1: "",
         password2: "",
-      }
+      },
     };
   }
 
   componentDidMount() {
     /** @type {UserService} */
-    UserService.getAuthProviders().then(providers => {
+    UserService.getAuthProviders().then((providers) => {
       this.setState({authProviders: providers});
     });
   }
@@ -46,7 +49,8 @@ class SignUp extends Component {
     e.preventDefault();
     const {username, email, password1, password2} = this.state.data;
 
-    const validationMsg = this.validateSignUp(username, email, password1, password2);
+    const validationMsg = this.validateSignUp(
+      username, email, password1, password2);
 
     if (validationMsg !== "") {
       // TODO: Show proper message on front end to user.
@@ -54,7 +58,8 @@ class SignUp extends Component {
       return;
     }
 
-    const {success, data: error} = await UserService.signUp(username, email, password1, password2);
+    const {success, data: error} = await UserService.signUp(
+      username, email, password1, password2);
 
     if (!success) {
       // TODO: Show proper message on front end to user.
@@ -62,8 +67,7 @@ class SignUp extends Component {
     }
 
     this.setState({signedIn: success});
-  };
-
+  }
 
   handleChange({currentTarget: input}) {
     const data = {...this.state.data};
@@ -72,32 +76,39 @@ class SignUp extends Component {
     this.setState({data});
   }
 
-
   render() {
     const {login, verify_email} = ROUTE_PATHS;
     const {signedIn, data} = this.state;
     const {username, email, password1, password2} = data;
 
     if (signedIn) {
-      return <Redirect to={verify_email}/>;
+      return <Redirect to={verify_email} />;
     }
 
     return (
       <Container fluid className={"Auth-page"}>
         <Row>
-          <AuthSidebar/>
+          <AuthSidebar />
           <Col className={"content"}>
-            <HelpLink/>
+            <HelpLink />
 
             <div className={"main"}>
               <h1>Create Account</h1>
               <div id={"provider-buttons"}>
-                <AuthProviderButton type={AuthProviderType.signup}
-                                    authProvider={UserService.getAuthProvider(this.state.authProviders, "google")}/>
-                <AuthProviderButton type={AuthProviderType.signup}
-                                    authProvider={UserService.getAuthProvider(this.state.authProviders, "github")}/>
+                <AuthProviderButton
+                  type={AuthProviderType.signup}
+                  authProvider={UserService.getAuthProvider(
+                    this.state.authProviders, "google"
+                  )}
+                />
+                <AuthProviderButton
+                  type={AuthProviderType.signup}
+                  authProvider={UserService.getAuthProvider(
+                    this.state.authProviders, "github"
+                  )}
+                />
               </div>
-              <hr/>
+              <hr />
               <Form onSubmit={this.handleSignUp} id={"main-form"}>
                 <Form.Group>
                   <Form.Label>E-mail</Form.Label>
@@ -105,14 +116,16 @@ class SignUp extends Component {
                     type="email"
                     name="email"
                     value={email}
-                    onChange={this.handleChange}/>
+                    onChange={this.handleChange}
+                  />
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Username</Form.Label>
                   <Form.Control
                     name="username"
                     value={username}
-                    onChange={this.handleChange}/>
+                    onChange={this.handleChange}
+                  />
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Password</Form.Label>
@@ -120,7 +133,8 @@ class SignUp extends Component {
                     type="password"
                     name="password1"
                     value={password1}
-                    onChange={this.handleChange}/>
+                    onChange={this.handleChange}
+                  />
                 </Form.Group>
                 <Form.Group>
                   <Form.Label>Confirm password</Form.Label>
@@ -128,7 +142,8 @@ class SignUp extends Component {
                     type="password"
                     name="password2"
                     value={password2}
-                    onChange={this.handleChange}/>
+                    onChange={this.handleChange}
+                  />
                 </Form.Group>
 
                 <Button type="submit" variant="dark" size={"lg"} block>

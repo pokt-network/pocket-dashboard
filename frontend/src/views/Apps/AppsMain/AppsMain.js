@@ -32,8 +32,8 @@ class AppsMain extends Main {
   constructor(props, context) {
     super(props, context);
 
-    this.handleAllAppsFilter = this.handleAllAppsFilter.bind(this);
-    this.handleuserItemsFilter = this.handleuserItemsFilter.bind(this);
+    this.handleAllItemsFilter = this.handleAllItemsFilter.bind(this);
+    this.handleUserItemsFilter = this.handleUserItemsFilter.bind(this);
 
     this.state = {
       ...this.state,
@@ -70,7 +70,7 @@ class AppsMain extends Main {
     });
   }
 
-  async handleAllAppsFilter(option) {
+  async handleAllItemsFilter(option) {
     this.setState({allItemsTableLoading: true});
 
     const registeredItems = await ApplicationService.getAllApplications(
@@ -80,7 +80,7 @@ class AppsMain extends Main {
     this.setState({registeredItems, allItemsTableLoading: false});
   }
 
-  async handleuserItemsFilter(option) {
+  async handleUserItemsFilter(option) {
     this.setState({userItemsTableLoading: true});
 
     const userEmail = UserService.getUserInfo().email;
@@ -122,14 +122,14 @@ class AppsMain extends Main {
 
     const userAppsDropdown = (
       <AppDropdown
-        onSelect={(status) => this.handleUserAppsFilter(status.dataField)}
+        onSelect={(status) => this.handleUserItemsFilter(status.dataField)}
         options={FILTER_OPTIONS}
       />
     );
 
     const allAppsDropdown = (
       <AppDropdown
-        onSelect={(status) => this.handleAllAppsFilter(status.dataField)}
+        onSelect={(status) => this.handleAllItemsFilter(status.dataField)}
         options={FILTER_OPTIONS}
       />
     );
@@ -197,7 +197,7 @@ class AppsMain extends Main {
                   {hasApps ? (
                     filteredItems.map((app, idx) => {
                       const {name, icon} = app.pocketApplication;
-                      const {staked_tokens, status} = app.networkData;
+                      const {stakedTokens, status} = app.networkData;
                       const {
                         address,
                       } = app.pocketApplication.publicPocketAccount;
@@ -216,7 +216,7 @@ class AppsMain extends Main {
                         >
                           <PocketElementCard
                             title={name}
-                            subtitle={`Staked POKT: ${staked_tokens} POKT`}
+                            subtitle={`Staked POKT: ${stakedTokens} POKT`}
                             status={getBondStatus(status)}
                             iconURL={icon}
                           />

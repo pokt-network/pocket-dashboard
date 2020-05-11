@@ -1,0 +1,20 @@
+#auth-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+
+  h1 {
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 25px;
+  }
+
+  p {
+    font-size: 18px;
+  }
+
+  .row:last-of-type {
+    padding-bottom: 135px;
+  }
+}

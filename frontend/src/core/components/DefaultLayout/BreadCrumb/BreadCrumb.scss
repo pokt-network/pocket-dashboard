@@ -1,8 +1,14 @@
+@import "../../../../scss/Core.scss";
+
 #breadcrumbs {
-  font-weight: 300;
+  font-weight: 400;
   font-family: "Open Sans";
 
   .breadcrumb {
     background-color: transparent;
+
+    li {
+      color: $dark-gray;
+    }
   }
 }

@@ -5,12 +5,10 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 export const AuthProviderType = {
   login: "Login",
-  signup: "Sign up"
+  signup: "Sign up",
 };
 
 export class AuthProviderButton extends Component {
-
-
   constructor(props, context) {
     super(props, context);
 
@@ -27,8 +25,15 @@ export class AuthProviderButton extends Component {
     const {block, icon, className, authProvider, type} = this.props;
 
     return (
-      <Button variant="outline-secondary" className={className} size={"lg"} block={block} onClick={this.onButtonClick}>
-        {icon ? <FontAwesomeIcon icon={icon}/> : null} {type} with {authProvider.name}
+      <Button
+        variant="dark"
+        className={className}
+        size={"lg"}
+        block={block}
+        onClick={this.onButtonClick}
+      >
+        {icon ? <FontAwesomeIcon icon={icon} /> : null} {type} with{" "}
+        {authProvider.name}
       </Button>
     );
   }
@@ -39,8 +44,8 @@ AuthProviderButton.defaultProps = {
   className: "rounded-pill",
   authProvider: {
     name: "",
-    consent_url: ""
-  }
+    consent_url: "",
+  },
 };
 
 AuthProviderButton.propTypes = {
@@ -50,6 +55,6 @@ AuthProviderButton.propTypes = {
   icon: PropTypes.object,
   authProvider: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    consent_url: PropTypes.string.isRequired
-  })
+    consent_url: PropTypes.string.isRequired,
+  }),
 };

@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {TABLE_COLUMNS} from "../../../_constants";
+import {TABLE_COLUMNS, STAKE_STATUS} from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -17,6 +17,7 @@ class NodeDetail extends Component {
 
     this.deleteNode = this.deleteNode.bind(this);
     this.unstakeNode = this.unstakeNode.bind(this);
+    this.stakeNode = this.stakeNode.bind(this);
     this.unjailNode = this.unjailNode.bind(this);
 
     this.state = {
@@ -63,6 +64,10 @@ class NodeDetail extends Component {
     }
   }
 
+  async stakeNode() {
+    // TODO: Implement
+  }
+
   async componentDidMount() {
     // eslint-disable-next-line react/prop-types
     const {address} = this.props.match.params;
@@ -87,7 +92,10 @@ class NodeDetail extends Component {
       icon,
       publicPocketAccount,
     } = this.state.pocketNode;
-    const {stakedTokens, status, jailed} = this.state.networkData;
+    const {stakedTokens, status: bondStatus, jailed} = this.state.networkData;
+    const status = getBondStatus(bondStatus);
+    const isStaked =
+      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
     const address = publicPocketAccount
       ? publicPocketAccount.address
@@ -101,7 +109,7 @@ class NodeDetail extends Component {
 
     const generalInfo = [
       {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
-      {title: getBondStatus(status), subtitle: "Stake status"},
+      {title: status, subtitle: "Stake status"},
     ];
 
     const contactInfo = [{title: contactEmail, subtitle: "Email"}];
@@ -197,8 +205,12 @@ class NodeDetail extends Component {
         <Row className="mt-3 mb-4">
           <Col className="action-buttons">
             <div className="main-options">
-              <Button variant="dark" className="pr-4 pl-4">
-                Unstake
+              <Button
+                onClick={isStaked ? this.unstakeNode : this.stakeNode}
+                variant="dark"
+                className="pr-4 pl-4"
+              >
+                {isStaked ? "Unstake" : "Stake"}
               </Button>
               <Button variant="secondary" className="ml-3 pr-4 pl-4">
                 New Purchase

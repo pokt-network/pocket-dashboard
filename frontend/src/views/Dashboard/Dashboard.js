@@ -28,9 +28,9 @@ class Dashboard extends Component {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
-
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT);
+      userEmail, APPLICATIONS_LIMIT
+    );
 
     const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
 
@@ -73,14 +73,14 @@ class Dashboard extends Component {
             onClose={() => this.setState({alert: false})}
             dismissible
           >
-            <Alert.Heading>
-              Welcome back {UserService.getUserInfo().name}!
-            </Alert.Heading>
+            <h4 className="font-weight-bold ml-3 mt-2 mb-4">
+              WELCOME BACK {UserService.getUserInfo().name}!
+            </h4>
           </Alert>
         )}
         <Row>
           <Col sm="8" md="8" lg="8">
-            <h2 className="ml-1">Network Information</h2>
+            <h1 className="ml-1">NETWORK INFORMATION</h1>
           </Col>
           <Col sm="4" md="4" lg="4" className="d-flex justify-content-end">
             <Dropdown className="cta mr-2">
@@ -154,7 +154,7 @@ class Dashboard extends Component {
           <Col lg="6" md="6" sm="6">
             <Segment label="Supported Blockchains">
               <BootstrapTable
-                classes="app-table table-striped"
+                classes="app-table"
                 keyField="hash"
                 data={chains}
                 columns={TABLE_COLUMNS.NETWORK_CHAINS}
@@ -165,7 +165,7 @@ class Dashboard extends Component {
           <Col lg="6" md="6" sm="6">
             <Segment label="Most popular chains">
               <BootstrapTable
-                classes="app-table table-striped"
+                classes="app-table"
                 keyField="hash"
                 data={chains}
                 columns={TABLE_COLUMNS.NETWORK_CHAINS}
@@ -178,7 +178,7 @@ class Dashboard extends Component {
           <Col lg="6" md="6" sm="6">
             <Segment label="Registered Nodes">
               <BootstrapTable
-                classes="app-table table-striped"
+                classes="app-table"
                 keyField="pocketNode.publicPocketAccount.address"
                 data={userNodes}
                 columns={TABLE_COLUMNS.NODES}
@@ -189,7 +189,7 @@ class Dashboard extends Component {
           <Col lg="6" md="6" sm="6">
             <Segment label="Registered Apps">
               <BootstrapTable
-                classes="app-table table-striped"
+                classes="app-table"
                 keyField="pocketApplication.publicPocketAccount.address"
                 data={userApps}
                 columns={TABLE_COLUMNS.APPS}
