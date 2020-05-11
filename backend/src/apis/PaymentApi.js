@@ -44,6 +44,26 @@ router.post("/payment_method", async (request, response) => {
   }
 });
 
+/**
+ * Delete a payment method.
+ */
+router.delete("/payment_method/:paymentMethodID", async (request, response) => {
+  try {
+    /** @type {{paymentMethodID: string}} */
+    const data = request.params;
+
+    const deleted = await paymentService.deletePaymentMethod(data.paymentMethodID);
+
+    response.send(deleted);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
 
 /**
  * Get user payment methods.
@@ -141,7 +161,6 @@ router.post("/history", async (request, response) => {
 
     response.status(400).send(error);
   }
-
 });
 
 /**
@@ -162,7 +181,6 @@ router.get("/history/:paymentID", async (request, response) => {
 
     response.status(400).send(error);
   }
-
 });
 
 /**

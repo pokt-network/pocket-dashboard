@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import "./PaymentMethods.scss";
 import {Col, Row} from "react-bootstrap";
-import CardDisplay from "../../../core/components/CardDisplay/CardDisplay";
+import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDisplay";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import UserService from "../../../core/services/PocketUserService";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
@@ -25,42 +25,33 @@ class PaymentMethods extends Component {
 
   saveNewCard(e, cardData, stripe) {
     e.preventDefault();
-    {
-      const {
-        cardHolderName: name,
-        billingAddressLine1: line1,
-        zipCode: postal_code,
-        country,
-      } = cardData;
 
-      const billingDetails = {
-        name,
-        address: {line1, postal_code, country},
-      };
+    const {
+      cardHolderName: name,
+      billingAddressLine1: line1,
+      zipCode: postal_code,
+      country,
+    } = cardData;
 
-      stripe
-        .createPaymentMethod({
-          type: "card",
-          card: cardData.card,
-          billing_details: billingDetails,
-        })
-        .then(async function (result) {
-          console.log(result);
-          if (result.errors) {
-            // TODO: Show message to frontend
-            console.log(result.errors);
-            return;
-          }
+    const billingDetails = {
+      name,
+      address: {line1, postal_code, country},
+    };
 
-          const {id} = result.paymentMethod;
+    StripePaymentService.createPaymentMethod(stripe, cardData.card, billingDetails)
+      .then(result => {
 
-          const saved = await StripePaymentService.__savePaymentMethod(
-            id, billingDetails);
-
+        if (result.errors) {
           // TODO: Show message to frontend
-          console.log(saved);
-        });
-    }
+          console.log(result.errors);
+          return;
+        }
+
+        if (result.paymentMethod) {
+          // TODO: Show message to frontend
+          console.log(true);
+        }
+      });
   }
 
   deleteCard() {
@@ -100,7 +91,7 @@ class PaymentMethods extends Component {
             })}
           </div>
           <div id="card-form">
-            <NewCardForm formActionHandler={this.saveNewCard} />
+            <NewCardForm formActionHandler={this.saveNewCard}/>
           </div>
         </Col>
       </Row>
