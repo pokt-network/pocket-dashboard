@@ -5,7 +5,6 @@ import {
   AuthProviderButton,
   AuthProviderType,
 } from "../../../core/components/AuthProviderButton";
-import HelpLink from "../../../core/components/HelpLink";
 import UserService from "../../../core/services/PocketUserService";
 import {ROUTE_PATHS} from "../../../_routes";
 import {Link, Redirect} from "react-router-dom";

@@ -103,7 +103,7 @@ class CreateAppForm extends CreateForm {
   }
 
   render() {
-    const {created, redirectPath, redirectParams} = this.state;
+    const {created, redirectPath, redirectParams, agreeTerms} = this.state;
 
     if (created) {
       return (
@@ -228,18 +228,23 @@ class CreateAppForm extends CreateForm {
                     </p>
                   </div>
 
-                  <div className="submit float-right mt-2">
-                    <Button variant="dark" size="lg" type="submit">
+                  <div className="submit mt-2 mb-4 d-flex justify-content-between">
+                    <Form.Check
+                      custom
+                      checked={agreeTerms}
+                      onChange={() => this.setState({agreeTerms: !agreeTerms})}
+                      id="terms-checkbox"
+                      type="checkbox"
+                      label="I agree with these terms and conditions."
+                    />
+                    <Button
+                      disabled={!agreeTerms}
+                      variant="dark"
+                      size="lg"
+                      type="submit"
+                    >
                       Continue
                     </Button>
-                    <p>
-                      By continuing you agree to Pocket&apos;s <br />
-                      {/*TODO: Add terms and conditions link*/}
-                      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-                      <a className="link" href="#">
-                        Terms and conditions
-                      </a>
-                    </p>
                   </div>
                 </Form>
               )}
