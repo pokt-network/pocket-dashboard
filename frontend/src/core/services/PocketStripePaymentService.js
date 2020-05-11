@@ -45,6 +45,37 @@ class PocketStripePaymentService extends PocketBaseService {
   }
 
   /**
+   * Create a new payment method.
+   *
+   * @param {object} stripe Stripe object.
+   * @param {object} card Card used to confirm payment.
+   * @param {{name:string, [address]:{line1:string, [postal_code]:string, country:string}}} billingDetails Billing details about card.
+   *
+   * @return {Promise<*>}
+   * @async
+   */
+  async createPaymentMethod(stripe, card, billingDetails) {
+    if (!stripe || !card) {
+      return false;
+    }
+
+    const cardData = {
+      type: "card",
+      card: card,
+      billing_details: billingDetails
+    };
+
+    return stripe.createPaymentMethod(cardData)
+      .then(result => {
+        if (result.paymentMethod) {
+          this.__savePaymentMethod(result.paymentMethod.id, billingDetails);
+        }
+
+        return result;
+      });
+  }
+
+  /**
    * Confirm payment with new card.
    * If payment is success, the payment method will save for later and mark payment success on history.
    *
@@ -86,23 +117,24 @@ class PocketStripePaymentService extends PocketBaseService {
   /**
    * Confirm payment with a saved card.
    *
-   * @param {string} stripe Stripe object.
+   * @param {object} stripe Stripe object.
    * @param {string} paymentIntentSecretID Payment intent to confirm.
-   * @param {string} paymentMethodId saved card id for purchase.
-   * @param {{name:string, [address]:{line1:string, [postal_code]:string, 
+   * @param {string} paymentMethodID saved card id for purchase.
+   * @param {{name:string, [address]:{line1:string, [postal_code]:string,
    *         country:string}}} billingDetails Billing details about card.
    * @return {Promise<*>}
    * @async
    */
-  async confirmPaymentWithSavedCard(
-    stripe,
-    paymentIntentSecretId,
-    paymentMethodId,
-    billingDetails
-  ) {
-    return stripe.confirmCardPayment(paymentIntentSecretId, {
-      payment_method: paymentMethodId,
-    }).then(result => {
+  async confirmPaymentWithSavedCard(stripe, paymentIntentSecretID, paymentMethodID, billingDetails) {
+    if (!stripe || !paymentIntentSecretID || !paymentMethodID) {
+      return false;
+    }
+
+    const cardPaymentData = {
+      payment_method: paymentMethodID,
+    };
+
+    return stripe.confirmCardPayment(paymentIntentSecretID, cardPaymentData).then(result => {
       if (result.paymentIntent) {
         const paymentIntent = result.paymentIntent;
 
@@ -115,7 +147,7 @@ class PocketStripePaymentService extends PocketBaseService {
     });
   }
 
-    /**
+  /**
    * Create new payment intent for purchase.
    *
    * @param {string} type type of item (e.x. application, node).

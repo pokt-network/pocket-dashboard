@@ -2,9 +2,9 @@
 import React, {Component} from "react";
 import {formatCurrency} from "../../../_helpers";
 import InfoCards from "../../../core/components/InfoCards";
-import {Button, Col, Row, Form} from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import Segment from "../../../core/components/Segment/Segment";
-import CardDisplay from "../../../core/components/CardDisplay/CardDisplay";
+import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDisplay";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import "./OrderSummary.scss";
