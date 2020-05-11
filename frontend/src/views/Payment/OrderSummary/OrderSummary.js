@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, {Component} from "react";
-import {formatCurrency} from "../../../_helpers";
+import {formatCurrency, formatNumbers} from "../../../_helpers";
 import InfoCards from "../../../core/components/InfoCards";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import Segment from "../../../core/components/Segment/Segment";
@@ -13,7 +13,6 @@ import SaveAndPayForm from "../../../core/components/Payment/Stripe/SaveAndPayFo
 import {ElementsConsumer} from "@stripe/react-stripe-js";
 import PaymentContainer from "../../../core/components/Payment/Stripe/PaymentContainer";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
-import {Redirect} from "react-router-dom";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 
 class OrderSummary extends Component {
@@ -108,9 +107,7 @@ class OrderSummary extends Component {
 
     const result = await StripePaymentService.confirmPaymentWithSavedCard(
       // eslint-disable-next-line function-call-argument-newline
-      stripe,
-      paymentIntent.paymentNumber,
-      selectedPaymentMethod.id,
+      stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id,
       selectedPaymentMethod.billingDetails
     );
 
@@ -121,10 +118,7 @@ class OrderSummary extends Component {
   async makePurchaseWithNewCard({success, data}) {
     if (success) {
       // TODO: Show information to user in a proper way, and redirect to another path
-      console.log("going to invoice");
-      console.log(data);
       this.goToInvoice();
-      console.log("went to invoice");
     } else {
       // TODO: Show information to user in a proper way.
       console.log(data);
@@ -146,7 +140,7 @@ class OrderSummary extends Component {
     } = this.state;
 
     const cards = [
-      {title: formatCurrency(quantity.number), subtitle: quantity.description},
+      {title: formatNumbers(quantity.number), subtitle: quantity.description},
       {title: formatCurrency(cost.number), subtitle: cost.description},
       {
         title: `-${formatCurrency(balance)}`,

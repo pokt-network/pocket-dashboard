@@ -21,7 +21,7 @@ import General from "./views/Profile/General/General";
 import Profile from "./views/Profile/ProfileLayout/ProfileLayout";
 import ChangePassword from "./views/Profile/ChangePassword/ChangePassword";
 import PaymentHistory from "./views/Profile/PaymentHistory/PaymentHistory";
-import NodesCheckout from "./views/Nodes/NodesCheckout/NodesCheckout";
+import Checkout from "./views/Payment/Checkout/Checkout";
 import CreateNodeForm from "./views/Nodes/CreateNodeForm/CreateNodeForm";
 import NodeChainList from "./views/Nodes/NodeChainList/NodeChainList";
 import EditApp from "./views/Apps/EditApp/EditApp";
@@ -29,7 +29,7 @@ import NodeDetail from "./views/Nodes/NodeDetail/NodeDetail";
 import EditNode from "./views/Nodes/EditNode/EditNode";
 import ImportNode from "./views/Nodes/ImportNode/ImportNode";
 import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
-import OrderSummary from "./views/Apps/OrderSummary/OrderSummary";
+import OrderSummary from "./views/Payment/OrderSummary/OrderSummary";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -37,7 +37,7 @@ export const ROUTE_PATHS = {
   home: "/dashboard",
   forgot_password: "/forgot-password",
   security_questions: "/security-questions",
-  verify_email: "/verify-email"
+  verify_email: "/verify-email",
 };
 
 export const DASHBOARD_PATHS = {
@@ -80,11 +80,31 @@ export const _getDashboardPath = (path) => {
  */
 const pageRoutes = [
   {path: ROUTE_PATHS.login, exact: true, name: "Login", component: Login},
-  {path: ROUTE_PATHS.forgot_password, exact: true, name: "Forgot Password", component: ForgotPassword},
-  {path: ROUTE_PATHS.security_questions, exact: true, name: "Security Questions", component: SecurityQuestions},
+  {
+    path: ROUTE_PATHS.forgot_password,
+    exact: true,
+    name: "Forgot Password",
+    component: ForgotPassword,
+  },
+  {
+    path: ROUTE_PATHS.security_questions,
+    exact: true,
+    name: "Security Questions",
+    component: SecurityQuestions,
+  },
   {path: ROUTE_PATHS.signup, exact: true, name: "Sign Up", component: SignUp},
-  {path: ROUTE_PATHS.verify_email, exact: true, name: "Verify Email", component: VerifyEMail},
-  {path: ROUTE_PATHS.home, exact: false, name: "Home", component: DefaultLayout},
+  {
+    path: ROUTE_PATHS.verify_email,
+    exact: true,
+    name: "Verify Email",
+    component: VerifyEMail,
+  },
+  {
+    path: ROUTE_PATHS.home,
+    exact: false,
+    name: "Home",
+    component: DefaultLayout,
+  },
 ];
 
 /**
@@ -95,14 +115,14 @@ const authProviderRoutes = [
     path: "/api/auth/provider/github",
     exact: true,
     name: "Github",
-    component: GithubAuthProviderHook
+    component: GithubAuthProviderHook,
   },
   {
     path: "/api/auth/provider/google",
     exact: true,
     name: "Google",
-    component: GoogleAuthProviderHook
-  }
+    component: GoogleAuthProviderHook,
+  },
 ];
 
 /**
@@ -186,7 +206,7 @@ export const dashboardRoutes = [
     path: DASHBOARD_PATHS.nodesCheckout,
     exact: true,
     name: "Nodes Checkout",
-    component: NodesCheckout,
+    component: Checkout,
   },
   {
     path: DASHBOARD_PATHS.importApp,
@@ -204,19 +224,19 @@ export const dashboardRoutes = [
     path: DASHBOARD_PATHS.tierSelection,
     exact: true,
     name: "Tier Selection",
-    component: TierSelection
+    component: TierSelection,
   },
   {
     path: DASHBOARD_PATHS.selectRelays,
     exact: true,
     name: "Relays Selection",
-    component: SelectRelays
+    component: SelectRelays,
   },
   {
     path: DASHBOARD_PATHS.appOrderSummary,
     exact: true,
     name: "App Order Summary",
-    component: OrderSummary
+    component: OrderSummary,
   },
   {
     path: DASHBOARD_PATHS.freeTier,
@@ -237,25 +257,25 @@ export const profileRoutes = [
     path: PROFILE_PATHS.general,
     exact: true,
     name: "General Information",
-    component: General
+    component: General,
   },
   {
     path: PROFILE_PATHS.changePassword,
     exact: true,
     name: "Change password",
-    component: ChangePassword
+    component: ChangePassword,
   },
   {
     path: PROFILE_PATHS.paymentHistory,
     exact: true,
     name: "Payment history",
-    component: PaymentHistory
+    component: PaymentHistory,
   },
   {
     path: PROFILE_PATHS.paymentMethods,
     exact: true,
     name: "Payment methods",
-    component: PaymentMethods
+    component: PaymentMethods,
   },
 ];
 

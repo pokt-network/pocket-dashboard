@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, {Component} from "react";
-import "./NodesCheckout.scss";
+import "./Checkout.scss";
 import {Button, Col, Row} from "react-bootstrap";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
 import Invoice from "./Invoice";
@@ -12,18 +12,20 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import NodeService from "../../../core/services/PocketNodeService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
+import Loader from "react-spinners/DotLoader";
 
-class NodesCheckout extends Component {
+class Checkout extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
+      loading: false,
       type: "",
       invoice: {
-        owner: "Test",
-        id: "1001",
-        date: "15-4-2020",
-        card: "Visa ****2345",
+        owner: "",
+        id: "",
+        date: "",
+        card: "",
       },
       detail: [],
       total: 0,
@@ -32,7 +34,7 @@ class NodesCheckout extends Component {
   }
 
   async componentDidMount() {
-    // this.setState({loading: true});
+    this.setState({loading: true});
     if (this.props.location.state === undefined) {
       // TODO: Show message on frontend
       console.log("Error: you are not authorized to do this action");
@@ -40,12 +42,10 @@ class NodesCheckout extends Component {
     }
 
     const {type, paymentId, paymentMethod, detail} = this.props.location.state;
-
     const address =
       type === ITEM_TYPES.APPLICATION
         ? ApplicationService.getAppAInfo().address
         : NodeService.getNodeInfo().address;
-
     const {
       paymentID: id,
       createdDate: date,
@@ -60,11 +60,19 @@ class NodesCheckout extends Component {
       card: `${paymentMethod.brand} **** **** **** ${paymentMethod.lastDigits}`,
     };
 
-    this.setState({type, address, invoice, total, detail, paymentMethod});
+    this.setState({
+      loading: false,
+      type,
+      address,
+      invoice,
+      total,
+      detail,
+      paymentMethod,
+    });
   }
   render() {
     const {owner, id, date, card} = this.state.invoice;
-    const {detail, total: totalCost, type, address} = this.state;
+    const {detail, total: totalCost, type, address, loading} = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
     // TODO: Remove dummy data when integrating with backend.
@@ -84,6 +92,10 @@ class NodesCheckout extends Component {
     });
 
     const total = formatCurrency(totalCost);
+
+    if (loading) {
+      return <Loader />;
+    }
 
     const detailButton = (
       <Link
@@ -142,4 +154,4 @@ class NodesCheckout extends Component {
   }
 }
 
-export default NodesCheckout;
+export default Checkout;
