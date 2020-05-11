@@ -1,9 +1,17 @@
+/* eslint-disable react/prop-types */
 import React, {Component} from "react";
 import "./NodesCheckout.scss";
 import {Button, Col, Row} from "react-bootstrap";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
 import Invoice from "./Invoice";
 import {formatCurrency} from "../../../_helpers";
+import PaymentService from "../../../core/services/PocketPaymentService";
+import moment from "moment";
+import {ITEM_TYPES} from "../../../_constants";
+import ApplicationService from "../../../core/services/PocketApplicationService";
+import NodeService from "../../../core/services/PocketNodeService";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import {Link} from "react-router-dom";
 
 class NodesCheckout extends Component {
   constructor(props, context) {
@@ -17,43 +25,85 @@ class NodesCheckout extends Component {
         date: "15-4-2020",
         card: "Visa ****2345",
       },
-      detail: {},
+      detail: [],
+      total: 0,
+      address: "",
     };
   }
 
   async componentDidMount() {
     // this.setState({loading: true});
-    // eslint-disable-next-line react/prop-types
     if (this.props.location.state === undefined) {
       // TODO: Show message on frontend
       console.log("Error: you are not authorized to do this action");
       return;
     }
 
-    // eslint-disable-next-line react/prop-types
-    const {type, detail, invoice} = this.props.location.state;
-  }
+    const {type, paymentId, paymentMethod, detail} = this.props.location.state;
 
+    const address =
+      type === ITEM_TYPES.APPLICATION
+        ? ApplicationService.getAppAInfo().address
+        : NodeService.getNodeInfo().address;
+
+    const {
+      paymentID: id,
+      createdDate: date,
+      item,
+      amount: total,
+    } = await PaymentService.getPaymentDetail(paymentId);
+
+    const invoice = {
+      id,
+      date: moment(date).format("DD MM YYYY"),
+      owner: item.account,
+      card: `${paymentMethod.brand} **** **** **** ${paymentMethod.lastDigits}`,
+    };
+
+    this.setState({type, address, invoice, total, detail, paymentMethod});
+  }
   render() {
     const {owner, id, date, card} = this.state.invoice;
+    const {detail, total: totalCost, type, address} = this.state;
+    const isApp = type === ITEM_TYPES.APPLICATION;
 
     // TODO: Remove dummy data when integrating with backend.
     const information = [
+      {text: "Date", value: date},
       {text: "Bill To", value: owner},
       {text: "Invoice", value: id},
-      {text: "Date", value: date},
       {text: "Card Detail", value: card},
     ];
 
     const items = [
-      {text: "Purchase detail 1", value: 2500},
-      {text: "Purchase detail 2", value: 1500},
-      {text: "Balance", value: 5500},
+      ...detail,
+      // TODO: Get balance
+      {text: "Balance", value: 1500},
     ].map((it) => {
       return {text: it.text, value: formatCurrency(it.value)};
     });
 
-    const total = formatCurrency(400);
+    const total = formatCurrency(totalCost);
+
+    const detailButton = (
+      <Link
+        to={() => {
+          const route = isApp
+            ? DASHBOARD_PATHS.appDetail
+            : DASHBOARD_PATHS.nodeDetail;
+          const url = _getDashboardPath(route);
+
+          return url.replace(":address", address);
+        }}
+      >
+        <Button
+          variant="dark pl-4"
+          className="mt-3 pr-4 float-right font-weight-bold"
+        >
+          Go to {isApp ? "apps" : "nodes"} detail
+        </Button>
+      </Link>
+    );
 
     return (
       <div id="nodes-checkout">
@@ -69,21 +119,22 @@ class NodesCheckout extends Component {
                 "Successfull Node stake",
               ]}
             />
-            <Button
-              variant="dark pl-4"
-              className="mt-3 pr-4 float-right font-weight-bold"
-            >
-              Go to node detail
-            </Button>
+            {detailButton}
           </Col>
         </Row>
         <Row className="segment mb-2">
-          <Invoice information={information} items={items} total={total} />
+          <Invoice
+            title={`Invoice ${id}`}
+            information={information}
+            items={items}
+            total={total}
+          />
         </Row>
         <Button
           variant="dark pl-4"
           className="mt-3 mb-5 mr-3 pr-5 pl-5 float-right font-weight-bold"
         >
+          {/* TODO: Add invoice print functionality */}
           Print
         </Button>
       </div>

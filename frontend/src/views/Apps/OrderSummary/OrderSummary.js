@@ -22,6 +22,7 @@ class OrderSummary extends Component {
 
     this.makePurchaseWithSavedCard = this.makePurchaseWithSavedCard.bind(this);
     this.makePurchaseWithNewCard = this.makePurchaseWithNewCard.bind(this);
+    this.goToInvoice = this.goToInvoice.bind(this);
 
     this.state = {
       type: "",
@@ -78,16 +79,26 @@ class OrderSummary extends Component {
   }
 
   goToInvoice() {
-    const invoice = {};
+    const {
+      paymentIntent,
+      type,
+      selectedPaymentMethod,
+      quantity,
+      cost,
+    } = this.state;
 
-    return (
-      <Redirect
-        to={{
-          pathname: _getDashboardPath(DASHBOARD_PATHS.nodesCheckout),
-          state: {},
-        }}
-      />
-    );
+    return this.props.history.replace({
+      pathname: _getDashboardPath(DASHBOARD_PATHS.nodesCheckout),
+      state: {
+        type,
+        paymentId: paymentIntent.id,
+        paymentMethod: selectedPaymentMethod,
+        detail: [
+          {value: quantity.number, text: quantity.description},
+          {value: cost.number, text: cost.description},
+        ],
+      },
+    });
   }
 
   async makePurchaseWithSavedCard(e, stripe) {
@@ -110,8 +121,10 @@ class OrderSummary extends Component {
   async makePurchaseWithNewCard({success, data}) {
     if (success) {
       // TODO: Show information to user in a proper way, and redirect to another path
-
+      console.log("going to invoice");
       console.log(data);
+      this.goToInvoice();
+      console.log("went to invoice");
     } else {
       // TODO: Show information to user in a proper way.
       console.log(data);

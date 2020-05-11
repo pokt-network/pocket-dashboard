@@ -88,6 +88,19 @@ class PocketPaymentService extends PocketBaseService {
   }
 
   /**
+   * Get payment history.
+   *
+   * @param {number} paymentId Stripe payment ID.
+   *
+   * @return {Promise|Promise<Array.<*>>}
+   */
+  getPaymentDetail(paymentId) {
+    return axios
+      .get(this._getURL(`history/${paymentId}`))
+      .then((response) => response.data);
+  }
+
+  /**
    * Get user available payment methods
    *
    * @param {string} user User email

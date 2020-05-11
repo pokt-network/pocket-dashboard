@@ -119,13 +119,6 @@ router.post("/new_intent/nodes", async (request, response) => {
 });
 
 /**
- * Create a new intent of payment for nodes.
- */
-router.post("/new_intent/nodes", async (request, response) => {
-  response.send("// TODO: Implement this endpoint");
-});
-
-/**
  * Retrieve history information about payments.
  */
 router.post("/history", async (request, response) => {
