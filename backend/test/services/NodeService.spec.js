@@ -91,6 +91,7 @@ describe("NodeService", () => {
 
   describe("deleteNode", () => {
     const address = "bc28256f5c58611e96d13996cf535bdc0204366a";
+    const user = "tester@node.com";
 
     const resultData = {
       result: {
@@ -102,7 +103,8 @@ describe("NodeService", () => {
 
       const persistenceService = sinon.createStubInstance(PersistenceProvider);
       const stubFilter = {
-        "publicPocketAccount.address": address
+        "publicPocketAccount.address": address,
+        user
       };
 
       persistenceService.deleteEntities
@@ -111,7 +113,7 @@ describe("NodeService", () => {
 
       sinon.stub(nodeService, "persistenceService").value(persistenceService);
 
-      const deleted = await nodeService.deleteNode(address);
+      const deleted = await nodeService.deleteNode(address, user);
 
       // eslint-disable-next-line no-undef
       should.exist(deleted);
@@ -284,7 +286,7 @@ describe("NodeService", () => {
       nodes.length.should.be.greaterThan(0);
     });
   });
-  // TODO: Add unit test for stake a node. Do we need use private key or account address?
+  // TODO: Add unit test for stake a node.
 
-  // TODO: Add unit test for unstake a node. Do we need use private key or account address?
+  // TODO: Add unit test for unstake a node.
 });

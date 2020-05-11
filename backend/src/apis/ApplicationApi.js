@@ -1,18 +1,20 @@
 import express from "express";
 import ApplicationService from "../services/ApplicationService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
+import EmailService from "../services/EmailService";
+import PaymentService from "../services/PaymentService";
 
 const router = express.Router();
 
 const applicationService = new ApplicationService();
-
+const paymentService = new PaymentService();
 
 /**
  * Create new application.
  */
 router.post("", async (request, response) => {
   try {
-    /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}, privateKey?:string}} */
+    /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}, privateKey?:string, applicationBaseLink:string}} */
     let data = request.body;
 
     if (!("privateKey" in data)) {
@@ -20,6 +22,13 @@ router.post("", async (request, response) => {
     }
 
     const application = await applicationService.createApplication(data.application, data.privateKey);
+    const emailAction = data.privateKey ? "imported" : "created";
+    const applicationEmailData = {
+      name: data.node.name,
+      link: `${data.applicationBaseLink}/${application.privateApplicationData.address}`
+    };
+
+    await EmailService.to(data.application.contactEmail).sendCreateOrImportAppEmail(emailAction, data.application.user, applicationEmailData);
 
     response.send(application);
   } catch (e) {
@@ -57,15 +66,26 @@ router.put("/:applicationAccountAddress", async (request, response) => {
 /**
  * Delete an application from dashboard.
  */
-router.delete("/:applicationAccountAddress", async (request, response) => {
+router.post("/:applicationAccountAddress", async (request, response) => {
   try {
 
     /** @type {{applicationAccountAddress:string}} */
     const data = request.params;
+    /** @type {{user:string, appsLink:string}} */
+    const bodyData = request.body;
 
-    const deleted = await applicationService.deleteApplication(data.applicationAccountAddress);
+    const application = await applicationService.deleteApplication(data.applicationAccountAddress, bodyData.user);
 
-    response.send(deleted);
+    if (application) {
+      const applicationEmailData = {
+        name: application.name,
+        appsLink: bodyData.appsLink
+      };
+
+      await EmailService.to(bodyData.user).sendAppDeletedEmail(bodyData.user, applicationEmailData);
+    }
+
+    response.send(application !== undefined);
   } catch (e) {
     const error = {
       message: e.toString()
@@ -213,12 +233,100 @@ router.post("/freetier/stake", async (request, response) => {
 router.post("/freetier/unstake", async (request, response) => {
   try {
 
-    /** @type {{applicationAccountAddress: string}} */
+    /** @type {{applicationAccountAddress: string, user: string, appLink: string}} */
     const data = request.body;
 
-    const unstaked = await applicationService.unstakeFreeTierApplication(data.applicationAccountAddress);
+    const application = await applicationService.unstakeFreeTierApplication(data.applicationAccountAddress, data.user);
 
-    response.send(unstaked);
+    if (application) {
+      const applicationEmailData = {
+        name: application.name,
+        link: data.appLink
+      };
+
+      await EmailService.to(data.user).sendUnstakeAppEmail(data.user, applicationEmailData);
+
+      response.send(true);
+    } else {
+      response.send(false);
+    }
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Stake an application.
+ */
+router.post("/stake", async (request, response) => {
+  try {
+
+    /** @type {{application: {privateKey: string, passPhrase: string, networkChains: string[]}, payment:{id: string}, applicationLink: string}} */
+    const data = request.body;
+    const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
+
+    if (paymentHistory.isSuccessPayment(true)) {
+
+      if (paymentHistory.isApplicationPaymentItem(true)) {
+        const item = paymentHistory.getItem();
+        const application = await applicationService.stakeApplication(data.application, item.pokt);
+
+        if (application) {
+          const applicationEmailData = {
+            name: application.name,
+            link: data.applicationLink
+          };
+
+          const paymentEmailData = {
+            amountPaid: paymentHistory.amount,
+            maxRelayPerDayAmount: item.maxRelay,
+            poktStaked: item.pokt
+          };
+
+          await EmailService.to(application.user).sendStakeAppEmail(application.user, applicationEmailData, paymentEmailData);
+
+          response.send(true);
+        } else {
+          response.send(false);
+        }
+      }
+    }
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Unstake an application.
+ */
+router.post("/unstake", async (request, response) => {
+  try {
+
+    /** @type {{application:{privateKey:string, passPhrase:string, accountAddress: string}, applicationLink: string}} */
+    const data = request.body;
+
+    const application = await applicationService.unstakeApplication(data.application);
+
+    if (application) {
+      const applicationEmailData = {
+        name: application.name,
+        link: data.applicationLink
+      };
+
+      await EmailService.to(application.user).sendUnstakeAppEmail(application.user, applicationEmailData);
+
+      response.send(true);
+    } else {
+      response.send(false);
+    }
   } catch (e) {
     const error = {
       message: e.toString()

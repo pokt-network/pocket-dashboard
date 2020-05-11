@@ -63,25 +63,6 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Create a pocket account in the network.
-   *
-   * @param {string} passPhrase Passphrase used to create pocket account.
-   *
-   * @returns {Promise<Account> | Error} A Pocket account created successfully.
-   * @throws {Error} If creation of account fails.
-   * @private
-   */
-  async __createPocketAccount(passPhrase) {
-    const account = await this.pocketService.createAccount(passPhrase);
-
-    if (account instanceof Error) {
-      throw account;
-    }
-
-    return account;
-  }
-
-  /**
    *
    * @param {PocketApplication} application Application to add pocket data.
    *
@@ -350,14 +331,16 @@ export default class ApplicationService extends BaseService {
    * Unstake free tier application.
    *
    * @param {string} applicationAccountAddress Application account address.
+   * @param {string} user Owner of application.
    *
-   * @returns {Promise<boolean>} If application was unstaked or not.
+   * @returns {Promise<PocketApplication | boolean>} If application was unstaked return the application, if not return false.
    * @async
    */
-  async unstakeFreeTierApplication(applicationAccountAddress) {
+  async unstakeFreeTierApplication(applicationAccountAddress, user) {
     const passphrase = "UnstakeFreeTierApplication";
     const filter = {
-      "publicPocketAccount.address": applicationAccountAddress
+      "publicPocketAccount.address": applicationAccountAddress,
+      user
     };
 
     const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
@@ -372,7 +355,7 @@ export default class ApplicationService extends BaseService {
       // Unstake application using free tier account
       await this.pocketService.unstakeApplication(freeTierAccount, passphrase);
 
-      return true;
+      return PocketApplication.createPocketApplication(applicationDB);
     } catch (e) {
       return false;
     }
@@ -414,6 +397,72 @@ export default class ApplicationService extends BaseService {
 
       return aat;
 
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Stake an application on network.
+   *
+   * @param {{privateKey: string, passPhrase:string, networkChains: string[]}} application Application to stake.
+   * @param {string} uPoktAmount uPokt amount used to stake.
+   *
+   * @returns {Promise<PocketApplication | boolean>} If was staked return the application, if not return false.
+   * @throws Error If private key is not valid or application does not exists on dashboard.
+   */
+  async stakeApplication(application, uPoktAmount) {
+    const accountService = new AccountService();
+
+    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, application.passPhrase, application.privateKey);
+
+    const filter = {
+      "publicPocketAccount.address": applicationAccount.addressHex
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (!applicationDB) {
+      throw Error("Application does not exists on dashboard");
+    }
+
+    try {
+      // Stake application
+      const transaction = await this.pocketService.stakeApplication(applicationAccount, application.passPhrase, uPoktAmount, application.networkChains);
+
+      return transaction.tx !== undefined ? PocketApplication.createPocketApplication(applicationDB) : false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Unstake application.
+   *
+   * @param {{privateKey:string, passPhrase:string, accountAddress: string}} applicationData Application data.
+   *
+   * @returns {Promise<PocketApplication | boolean>} If application was unstaked return application, if not return false.
+   * @async
+   */
+  async unstakeApplication(applicationData) {
+    const filter = {
+      "publicPocketAccount.address": applicationData.accountAddress
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (!applicationDB) {
+      return false;
+    }
+    const accountService = new AccountService();
+
+    try {
+      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.passPhrase, applicationData.privateKey);
+
+      // Unstake application
+      const transaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passPhrase);
+
+      return transaction.tx !== undefined ? PocketApplication.createPocketApplication(applicationDB) : false;
     } catch (e) {
       return false;
     }
@@ -470,19 +519,22 @@ export default class ApplicationService extends BaseService {
    * Delete an application from dashboard(not from network).
    *
    * @param {string} applicationAccountAddress Application account address.
+   * @param {string} user Owner email of application.
    *
-   * @returns {Promise<boolean>} If application was deleted or not.
+   * @returns {Promise<*>} The deleted application.
    * @async
    */
-  async deleteApplication(applicationAccountAddress) {
+  async deleteApplication(applicationAccountAddress, user) {
     const filter = {
-      "publicPocketAccount.address": applicationAccountAddress
+      "publicPocketAccount.address": applicationAccountAddress,
+      user
     };
 
-    /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
+    const application = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
-    return result.result.ok === 1;
+    await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
+
+    return application;
   }
 
   /**
