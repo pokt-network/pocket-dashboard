@@ -11,6 +11,8 @@ class PaymentMethods extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.deleteCard = this.deleteCard.bind(this);
+
     this.state = {
       paymentMethods: [],
     };
@@ -38,24 +40,38 @@ class PaymentMethods extends Component {
       address: {line1, postal_code, country},
     };
 
-    StripePaymentService.createPaymentMethod(stripe, cardData.card, billingDetails)
-      .then(result => {
+    StripePaymentService.createPaymentMethod(
+      stripe,
+      cardData.card,
+      billingDetails
+    ).then((result) => {
+      if (result.errors) {
+        // TODO: Show message to frontend
+        console.log(result.errors);
+        return;
+      }
 
-        if (result.errors) {
-          // TODO: Show message to frontend
-          console.log(result.errors);
-          return;
-        }
-
-        if (result.paymentMethod) {
-          // TODO: Show message to frontend
-          console.log(true);
-        }
-      });
+      if (result.paymentMethod) {
+        // TODO: Show message to frontend
+        console.log(true);
+      }
+    });
   }
 
-  deleteCard() {
-    // TODO: Implement
+  async deleteCard(paymentMehodId) {
+    const {paymentMethods: allPaymentMethods} = this.state;
+
+    const paymentMethods = allPaymentMethods.filter(
+      (m) => m.id !== paymentMehodId
+    );
+
+    const success = await PaymentService.deletePaymentMethod(paymentMehodId);
+
+    if (success) {
+      this.setState({paymentMethods});
+    } else {
+      // TODO: Show message on frontend.
+    }
   }
 
   render() {
@@ -85,13 +101,15 @@ class PaymentMethods extends Component {
                   key={idx}
                   cardData={cardData}
                   holder={holder}
-                  onDelete={this.deleteCard}
+                  onDelete={() => {
+                    this.deleteCard(card.id);
+                  }}
                 />
               );
             })}
           </div>
           <div id="card-form">
-            <NewCardForm formActionHandler={this.saveNewCard}/>
+            <NewCardForm formActionHandler={this.saveNewCard} />
           </div>
         </Col>
       </Row>

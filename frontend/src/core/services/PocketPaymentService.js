@@ -111,6 +111,12 @@ class PocketPaymentService extends PocketBaseService {
       .then((response) => response.data);
   }
 
+  deletePaymentMethod(paymentMethodID) {
+    return axios
+      .delete(this._getURL(`payment_method/${paymentMethodID}`))
+      .then((response) => response.data);
+  }
+
   /**
    * Get user available payment methods
    *
