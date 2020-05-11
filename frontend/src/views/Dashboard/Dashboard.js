@@ -28,7 +28,6 @@ class Dashboard extends Component {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
-
     const userApps = await ApplicationService.getAllUserApplications(
       userEmail, APPLICATIONS_LIMIT
     );
