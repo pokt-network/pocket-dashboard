@@ -13,6 +13,8 @@ import SaveAndPayForm from "../../../core/components/Payment/Stripe/SaveAndPayFo
 import {ElementsConsumer} from "@stripe/react-stripe-js";
 import PaymentContainer from "../../../core/components/Payment/Stripe/PaymentContainer";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
+import {Redirect} from "react-router-dom";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -75,6 +77,19 @@ class OrderSummary extends Component {
     });
   }
 
+  goToInvoice() {
+    const invoice = {};
+
+    return (
+      <Redirect
+        to={{
+          pathname: _getDashboardPath(DASHBOARD_PATHS.nodesCheckout),
+          state: {},
+        }}
+      />
+    );
+  }
+
   async makePurchaseWithSavedCard(e, stripe) {
     e.preventDefault();
 
@@ -82,7 +97,9 @@ class OrderSummary extends Component {
 
     const result = await StripePaymentService.confirmPaymentWithSavedCard(
       // eslint-disable-next-line function-call-argument-newline
-      stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id,
+      stripe,
+      paymentIntent.paymentNumber,
+      selectedPaymentMethod.id,
       selectedPaymentMethod.billingDetails
     );
 

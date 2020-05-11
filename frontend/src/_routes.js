@@ -56,7 +56,7 @@ export const DASHBOARD_PATHS = {
   nodes: "/nodes",
   nodeDetail: "/nodes/detail/:address",
   nodeEdit: "/nodes/edit/:address",
-  nodesCheckout: "/nodes/checkout",
+  nodesCheckout: "/apps/new/checkout",
   profile: "/profile",
   createNodeForm: "/nodes/new",
   nodeChainList: "/nodes/chains",

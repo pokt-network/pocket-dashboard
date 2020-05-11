@@ -10,22 +10,32 @@ class NodesCheckout extends Component {
     super(props, context);
 
     this.state = {
-      invoiceData: {
+      type: "",
+      invoice: {
         owner: "Test",
         id: "1001",
         date: "15-4-2020",
         card: "Visa ****2345",
       },
-      purchaseDetail: {
-        relays: "100",
-        cost: "100",
-        balance: "50",
-      },
+      detail: {},
     };
   }
 
+  async componentDidMount() {
+    // this.setState({loading: true});
+    // eslint-disable-next-line react/prop-types
+    if (this.props.location.state === undefined) {
+      // TODO: Show message on frontend
+      console.log("Error: you are not authorized to do this action");
+      return;
+    }
+
+    // eslint-disable-next-line react/prop-types
+    const {type, detail, invoice} = this.props.location.state;
+  }
+
   render() {
-    const {owner, id, date, card} = this.state.invoiceData;
+    const {owner, id, date, card} = this.state.invoice;
 
     // TODO: Remove dummy data when integrating with backend.
     const information = [
