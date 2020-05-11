@@ -10,6 +10,9 @@ class StripePaymentProvider extends BasePaymentProvider {
 
     /** {Stripe} */
     this._stripeAPIClient = new Stripe(paymentProviderConfiguration.client_secret, paymentProviderConfiguration.options);
+
+    this.retrieveCardPaymentMethod = this.retrieveCardPaymentMethod.bind(this);
+    this.createPaymentIntent = this.createPaymentIntent.bind(this);
   }
 
   async createPaymentIntent(type, currency, item, amount, description = "") {
@@ -46,9 +49,9 @@ class StripePaymentProvider extends BasePaymentProvider {
     }
 
     const {id, card, billing_details} = paymentMethodData;
-    const {last4, exp_month, exp_year} = card;
+    const {brand, last4, exp_month, exp_year} = card;
 
-    return new CardPaymentMethod(id, last4, exp_month, exp_year, billing_details);
+    return new CardPaymentMethod(id, brand, last4, exp_month, exp_year, billing_details);
   }
 
   async retrieveCardPaymentMethods(paymentMethodIDs) {

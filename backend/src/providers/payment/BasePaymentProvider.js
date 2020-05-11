@@ -10,13 +10,15 @@ export class CardPaymentMethod {
 
   /**
    * @param {string} id ID of card payment method.
+   * @param {string} brand Card brand.
    * @param {string} lastDigits Last digits of card.
    * @param {number} expirationMonth Expiration month.
    * @param {number} expirationYear Expiration year.
    * @param {object} billingDetails Billing details.
    */
-  constructor(id, lastDigits, expirationMonth, expirationYear, billingDetails) {
-    Object.assign(this, {id, lastDigits, expirationMonth, expirationYear, billingDetails});
+
+  constructor(id, brand, lastDigits, expirationMonth, expirationYear, billingDetails) {
+    Object.assign(this, {id, brand, lastDigits, expirationMonth, expirationYear, billingDetails});
   }
 }
 
