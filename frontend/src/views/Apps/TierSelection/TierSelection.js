@@ -21,8 +21,7 @@ class TierSelection extends Component {
     const {address, chains} = ApplicationService.getAppAInfo();
 
     const data = await ApplicationService.stakeFreeTierApplication(
-      address,
-      chains
+      address, chains
     );
 
     // TODO: Notify of errors on the frontend
