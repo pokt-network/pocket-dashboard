@@ -18,7 +18,8 @@ class OrderSummary extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.makePurchase = this.makePurchase.bind(this);
+    this.makePurchaseWithSavedCard = this.makePurchaseWithSavedCard.bind(this);
+    this.makePurchaseWithNewCard = this.makePurchaseWithNewCard.bind(this);
 
     this.state = {
       type: "",
@@ -74,7 +75,7 @@ class OrderSummary extends Component {
     });
   }
 
-  async makePurchase(e, stripe) {
+  async makePurchaseWithSavedCard(e, stripe) {
     e.preventDefault();
 
     const {paymentIntent, selectedPaymentMethod} = this.state;
@@ -87,6 +88,17 @@ class OrderSummary extends Component {
 
     // TODO: Redirect user to invoice view
     console.log(result);
+  }
+
+  async makePurchaseWithNewCard({success, data}) {
+    if (success) {
+      // TODO: Show information to user in a proper way, and redirect to another path
+
+      console.log(data);
+    } else {
+      // TODO: Show information to user in a proper way.
+      console.log(data);
+    }
   }
 
   render() {
@@ -149,7 +161,10 @@ class OrderSummary extends Component {
               }
             >
               {newCardForm && (
-                <SaveAndPayForm paymentIntentSecretID={paymentIntent.id} />
+                <SaveAndPayForm
+                  handleAfterPayment={this.makePurchaseWithNewCard}
+                  paymentIntentSecretID={paymentIntent.paymentNumber}
+                />
               )}
               <div>
                 <Form>
@@ -188,7 +203,7 @@ class OrderSummary extends Component {
               <ElementsConsumer>
                 {({_, stripe}) => (
                   <Form
-                    onSubmit={(e) => this.makePurchase(e, stripe)}
+                    onSubmit={(e) => this.makePurchaseWithSavedCard(e, stripe)}
                     className="d-flex justify-content-between"
                   >
                     <Form.Check
