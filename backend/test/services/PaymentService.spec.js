@@ -74,6 +74,16 @@ describe("PaymentService", () => {
     });
   });
 
+  describe("deletePaymentMethod", () => {
+    it("Expect a true value", async () => {
+
+      const id = "paymentMethodTestID";
+      const deleted = await paymentService.deletePaymentMethod(id);
+
+      deleted.should.be.true;
+    });
+  });
+
   describe("savePaymentHistory", () => {
     it("Save a payment history without error", async () => {
 
@@ -130,6 +140,17 @@ describe("PaymentService", () => {
 
       paymentHistory.should.be.an("array");
       paymentHistory.length.should.be.greaterThan(0);
+    });
+  });
+
+  describe("getPaymentHistoryByID", () => {
+    it("Expect a payment", async () => {
+
+      const paymentMethodID = "paymentMethodTestID";
+
+      const paymentHistory = await paymentService.getPaymentFromHistory(paymentMethodID);
+
+      paymentHistory.should.be.an("object");
     });
   });
 

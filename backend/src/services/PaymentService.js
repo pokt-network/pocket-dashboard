@@ -128,6 +128,23 @@ export default class PaymentService extends BaseService {
   }
 
   /**
+   * Delete a payment method from DB.
+   *
+   * @param {string} paymentMethodID Payment method ID
+   *
+   * @returns {Promise<boolean>} If was deleted or not.
+   * @async
+   */
+  async deletePaymentMethod(paymentMethodID) {
+    const filter = {id: paymentMethodID};
+
+    /** @type {{result: {n:number, ok: number}}} */
+    const result = await this.persistenceService.deleteEntities(PAYMENT_METHOD_COLLECTION_NAME, filter);
+
+    return result.result.ok === 1;
+  }
+
+  /**
    * Create an payment intent for application.
    *
    * @param {string} type Type of payment.
