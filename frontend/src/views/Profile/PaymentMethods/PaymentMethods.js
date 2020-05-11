@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import "./PaymentMethods.scss";
 import {Col, Row} from "react-bootstrap";
-import CardDisplay from "../../../core/components/CardDisplay/CardDisplay";
+import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDisplay";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import UserService from "../../../core/services/PocketUserService";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";

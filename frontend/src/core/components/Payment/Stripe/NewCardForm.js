@@ -3,9 +3,9 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 import PaymentContainer from "./PaymentContainer";
 import {CardCVCNumberInput, CardExpirationDateInput, CardNumberInput} from "./FormComponents";
 import {CardNumberElement, ElementsConsumer} from "@stripe/react-stripe-js";
-import "../Payment.scss";
 import PropTypes from "prop-types";
 import {PAYMENT_REGION_OR_COUNTRY} from "../../../../_constants";
+import "../Payment.scss";
 
 class NewCardForm extends Component {
 
@@ -39,7 +39,7 @@ class NewCardForm extends Component {
    * @return {boolean} If validation was succeeded or not.
    * @throws Error If validation fails.
    */
-  validateLogin() {
+  validateForm() {
     const {cardHolderName, billingAddressLine1, zipCode, country} = this.state.data;
 
     if (!cardHolderName) {
@@ -66,7 +66,7 @@ class NewCardForm extends Component {
     e.preventDefault();
 
     try {
-      this.validateLogin();
+      this.validateForm();
 
       const cardNumber = stripeElements.getElement(CardNumberElement);
       const {cardHolderName, billingAddressLine1, zipCode, country} = this.state.data;
