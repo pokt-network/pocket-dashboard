@@ -44,6 +44,16 @@ class PocketStripePaymentService extends PocketBaseService {
       .then(response => response.data);
   }
 
+  /**
+   * Create a new payment method.
+   *
+   * @param {object} stripe Stripe object.
+   * @param {object} card Card used to confirm payment.
+   * @param {{name:string, [address]:{line1:string, [postal_code]:string, country:string}}} billingDetails Billing details about card.
+   *
+   * @return {Promise<*>}
+   * @async
+   */
   async createPaymentMethod(stripe, card, billingDetails) {
     if (!stripe || !card) {
       return false;
