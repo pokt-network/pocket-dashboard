@@ -107,9 +107,10 @@ describe("PaymentService", () => {
         currency: "usd",
         amount: 1000,
         item: {
-          "account": "b9628a13220f049b93fdefe4fb9ca2bca10fe460",
-          "name": "My App",
-          "pokt": "346"
+          account: "b9628a13220f049b93fdefe4fb9ca2bca10fe460",
+          name: "My App",
+          maxRelay: "3243",
+          pokt: "346"
         }
       };
 

@@ -31,7 +31,7 @@ class AppDatePicker extends Component {
     return (
       <span className="date-picker">
         <span className="wrapper">
-          <FontAwesomeIcon icon={faCalendarAlt} size="2x" />
+          <FontAwesomeIcon icon={faCalendarAlt} />
         </span>
         <DatePicker
           {...props}

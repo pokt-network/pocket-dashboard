@@ -1,0 +1,11 @@
+.card-display {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  border-bottom: 1px solid rgba(90, 90, 90, 0.1);
+
+  .name {
+    font-weight: 300;
+  }
+}

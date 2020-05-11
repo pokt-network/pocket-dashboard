@@ -5,9 +5,10 @@ import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileU
 import {BOND_STATUS_STR} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {generateIcon} from "../../../_helpers";
+import {generateIcon, nodeFormSchema} from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
 import NodeService from "../../../core/services/PocketNodeService";
+import {Formik} from "formik";
 
 class CreateNodeForm extends CreateForm {
   constructor(props, context) {
@@ -67,18 +68,11 @@ class CreateNodeForm extends CreateForm {
     return {success, data};
   }
 
-  async handleCreate(e) {
-    e.preventDefault();
 
+  async handleCreate() {
     const {name, contactEmail, description, operator} = this.state.data;
     const icon = this.state.icon ? this.state.icon : generateIcon();
     const user = UserService.getUserInfo().email;
-
-    // TODO: Show proper message on front end to user on validation error
-    if (name === "" || contactEmail === "") {
-      console.log("missing required field");
-      return;
-    }
 
     const {success, data} = await this.createNode({
       name,
@@ -102,7 +96,6 @@ class CreateNodeForm extends CreateForm {
   }
 
   render() {
-    const {name, operator, contactEmail, description} = this.state.data;
     const {created, agreeTerms} = this.state;
 
     if (created) {
@@ -130,81 +123,107 @@ class CreateNodeForm extends CreateForm {
             />
           </Col>
           <Col sm="9" md="9" lg="9">
-            <Form onSubmit={this.handleCreate}>
-              <Form.Group>
-                <Form.Label>Name*</Form.Label>
-                <Form.Control
-                  name="name"
-                  value={name}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Operator*</Form.Label>
-                <Form.Control
-                  name="operator"
-                  value={operator}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Contact email*</Form.Label>
-                <Form.Control
-                  name="contactEmail"
-                  type="email"
-                  value={contactEmail}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows="6"
-                  name="description"
-                  value={description}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
+            <Formik
+              validationSchema={nodeFormSchema}
+              onSubmit={(data) => {
+                this.setState({data});
+                this.handleCreate();
+              }}
+              initialValues={this.state.data}
+              values={this.state.data}
+              validateOnChange={false}
+              validateOnBlur={false}
+            >
+              {({handleSubmit, handleChange, values, errors}) => (
+                <Form noValidate onSubmit={handleSubmit}>
+                  <Form.Group>
+                    <Form.Label>Name*</Form.Label>
+                    <Form.Control
+                      name="name"
+                      value={values.name}
+                      onChange={handleChange}
+                      isInvalid={!!errors.name}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.name}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Node operator*</Form.Label>
+                    <Form.Control
+                      name="operator"
+                      value={values.operator}
+                      onChange={handleChange}
+                      isInvalid={!!errors.operator}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.operator}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Contact email*</Form.Label>
+                    <Form.Control
+                      name="contactEmail"
+                      type="email"
+                      value={values.contactEmail}
+                      onChange={handleChange}
+                      isInvalid={!!errors.contactEmail}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.contactEmail}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows="6"
+                      name="description"
+                      value={values.description}
+                      onChange={handleChange}
+                      isInvalid={!!errors.description}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.description}
+                    </Form.Control.Feedback>
+                  </Form.Group>
 
-              <div className="legal-info">
-                <p>
-                  - Purchasers are not buying POKT as an investment with the
-                  expectation of profit or appreciation - Purcharsers are buying
-                  POKT to use it.
-                </p>
-                <p>
-                  - To ensure purchasers are bona fide and not investors, the
-                  Company has set a purchase maximun per user and requires users
-                  must hold POKT for 4 weeks and use (bond and stake) it before
-                  transferring to another wallet or selling.
-                </p>
-                <p>
-                  - Purchasers are acquiring POKT for their own account and use,
-                  and not with an intention to re-sell or distribute POKT to
-                  others.
-                </p>
-              </div>
+                  <div className="legal-info">
+                    <p>
+                      - Purchasers are not buying POKT as an investment with the
+                      expectation of profit or appreciation - Purcharsers are
+                      buying POKT to use it.
+                    </p>
+                    <p>
+                      - To ensure purchasers are bona fide and not investors,
+                      the Company has set a purchase maximun per user and
+                      requires users must hold POKT for 4 weeks and use (bond
+                      and stake) it before transferring to another wallet or
+                      selling.
+                    </p>
+                    <p>
+                      - Purchasers are acquiring POKT for their own account and
+                      use, and not with an intention to re-sell or distribute
+                      POKT to others.
+                    </p>
+                  </div>
 
-              <div className="submit mt-2 mb-4 d-flex justify-content-between">
-                <Form.Check
-                  custom
-                  checked={agreeTerms}
-                  onChange={() => this.setState({agreeTerms: !agreeTerms})}
-                  id="terms-checkbox"
-                  type="checkbox"
-                  label="I agree with these terms and conditions."
-                />
-                <Button
-                  disabled={!agreeTerms}
-                  variant="dark"
-                  size="lg"
-                  type="submit"
-                >
-                  Continue
-                </Button>
-              </div>
-            </Form>
+                  <div className="submit float-right mt-2">
+                    <Button variant="dark" size="lg" type="submit">
+                      Save
+                    </Button>
+                    <p>
+                      By continuing you agree to Pocket&apos;s <br />
+                      {/*TODO: Add terms and conditions link*/}
+                      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
+                      <a className="link" href="#">
+                        Terms and conditions
+                      </a>
+                    </p>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </Col>
         </Row>
       </div>

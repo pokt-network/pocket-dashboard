@@ -350,14 +350,16 @@ export default class ApplicationService extends BaseService {
    * Unstake free tier application.
    *
    * @param {string} applicationAccountAddress Application account address.
+   * @param {string} user Owner of application.
    *
-   * @returns {Promise<boolean>} If application was unstaked or not.
+   * @returns {Promise<PocketApplication | boolean>} If application was unstaked return the application, if not return false.
    * @async
    */
-  async unstakeFreeTierApplication(applicationAccountAddress) {
+  async unstakeFreeTierApplication(applicationAccountAddress, user) {
     const passphrase = "UnstakeFreeTierApplication";
     const filter = {
-      "publicPocketAccount.address": applicationAccountAddress
+      "publicPocketAccount.address": applicationAccountAddress,
+      user
     };
 
     const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
@@ -372,7 +374,7 @@ export default class ApplicationService extends BaseService {
       // Unstake application using free tier account
       await this.pocketService.unstakeApplication(freeTierAccount, passphrase);
 
-      return true;
+      return PocketApplication.createPocketApplication(applicationDB);
     } catch (e) {
       return false;
     }
@@ -470,19 +472,22 @@ export default class ApplicationService extends BaseService {
    * Delete an application from dashboard(not from network).
    *
    * @param {string} applicationAccountAddress Application account address.
+   * @param {string} user Owner email of application.
    *
-   * @returns {Promise<boolean>} If application was deleted or not.
+   * @returns {Promise<*>} The deleted application.
    * @async
    */
-  async deleteApplication(applicationAccountAddress) {
+  async deleteApplication(applicationAccountAddress, user) {
     const filter = {
-      "publicPocketAccount.address": applicationAccountAddress
+      "publicPocketAccount.address": applicationAccountAddress,
+      user
     };
 
-    /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
+    const application = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
-    return result.result.ok === 1;
+    await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
+
+    return application;
   }
 
   /**

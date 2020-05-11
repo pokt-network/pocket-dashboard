@@ -182,7 +182,7 @@ export default class PaymentService extends BaseService {
    * @param {string} paymentID Payment ID.
    * @param {string} currency Currency.
    * @param {number} amount Amount.
-   * @param {*} item Bought item.
+   * @param {*} item Item bought.
    * @param {string} user User that belongs the payment.
    *
    * @returns {Promise<boolean>} If payment was saved or not.
