@@ -41,6 +41,25 @@ export const Configurations = {
       }
     }
   },
+  email: {
+    api_key: process.env.EMAIL_API_KEY,
+    from_email: process.env.EMAIL_FROM,
+    template_ids: {
+      SignUp: "d-7c3bdbf20cb842eebc2ee076078b2f69",
+      EmailChanged: "d-7c3bdbf20cb842eebc2ee076078b2f69",
+      PasswordChanged: "d-de0b42109c4f48b98ea27203c59fc233",
+      CreateOrImportNode: "d-b12c1a006ab34e3ba6a480bbb4137a1a",
+      NodeDeleted: "d-d557d6aa6b94474fae2d4b70c27cd3ab",
+      NodeUnJailed: "d-6f96b3e8ec3b48a6a232953f924927b8",
+      StakeNode: "d-30be85ce84d843d6ba894de5989d26c9",
+      UnstakeNode: "d-32f6e4d914064ca49cdda0dfac7518f8",
+      CreateOrImportApp: "d-b24fb0e9349f402bb173d1b370875e54",
+      AppDeleted: "d-7dbd41a3f2d447c68669a3ccfad91d69",
+      StakeApp: "d-524c799dd69741d08da0b461193f8f56",
+      UnstakeApp: "d-43a51e9535a94c8c96a8546212115c3b",
+      PaymentDeclined: "d-dd1a7b11445f471184beb8024f637d75"
+    }
+  },
   persistence: {
     default: {
       url: process.env.DATABASE_URL,

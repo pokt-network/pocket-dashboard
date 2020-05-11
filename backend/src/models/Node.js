@@ -40,6 +40,14 @@ export class PocketNode {
       throw Error("Name is not valid.");
     }
 
+    if (nodeData.name.length > 20) {
+      throw Error("Name length should not be greater than 20 character.");
+    }
+
+    if (nodeData.description !== "" && nodeData.description.length > 150) {
+      throw Error("Description length should not be greater than 150 character.");
+    }
+
     if (!EMAIL_REGEX.test(nodeData.contactEmail)) {
       throw Error("Contact email address is not valid.");
     }

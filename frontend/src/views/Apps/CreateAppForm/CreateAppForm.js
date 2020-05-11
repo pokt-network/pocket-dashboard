@@ -6,8 +6,9 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import UserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {generateIcon} from "../../../_helpers";
+import {generateIcon, appFormSchema} from "../../../_helpers";
 import {BOND_STATUS_STR} from "../../../_constants";
+import {Formik} from "formik";
 
 class CreateAppForm extends CreateForm {
   constructor(props, context) {
@@ -69,16 +70,9 @@ class CreateAppForm extends CreateForm {
     return {success, data};
   }
 
-  async handleCreate(e) {
-    e.preventDefault();
-
+  async handleCreate() {
     const {name, owner, url, contactEmail, description} = this.state.data;
     let {icon} = this.state;
-
-    // TODO: Show proper message on front end to user on validation error
-    if (name === "" || contactEmail === "" || owner === "") {
-      console.log("missing required field");
-    }
 
     if (!icon) {
       icon = generateIcon();
@@ -109,8 +103,7 @@ class CreateAppForm extends CreateForm {
   }
 
   render() {
-    const {name, owner, url, contactEmail, description} = this.state.data;
-    const {created, redirectPath, redirectParams, agreeTerms} = this.state;
+    const {created, redirectPath, redirectParams} = this.state;
 
     if (created) {
       return (
@@ -138,89 +131,119 @@ class CreateAppForm extends CreateForm {
             />
           </Col>
           <Col sm="9" md="9" lg="9">
-            <Form onSubmit={this.handleCreate}>
-              <Form.Group>
-                <Form.Label>Name*</Form.Label>
-                <Form.Control
-                  name="name"
-                  value={name}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Application Developer*</Form.Label>
-                <Form.Control
-                  name="owner"
-                  value={owner}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>URL</Form.Label>
-                <Form.Control
-                  name="url"
-                  value={url}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Contact email*</Form.Label>
-                <Form.Control
-                  name="contactEmail"
-                  type="email"
-                  value={contactEmail}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Description</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows="6"
-                  name="description"
-                  value={description}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
+            <Formik
+              validationSchema={appFormSchema}
+              onSubmit={(data) => {
+                this.setState({data});
+                this.handleCreate();
+              }}
+              initialValues={this.state.data}
+              values={this.state.data}
+              validateOnChange={false}
+              validateOnBlur={false}
+            >
+              {({handleSubmit, handleChange, values, errors}) => (
+                <Form noValidate onSubmit={handleSubmit}>
+                  <Form.Group>
+                    <Form.Label>Name*</Form.Label>
+                    <Form.Control
+                      name="name"
+                      value={values.name}
+                      onChange={handleChange}
+                      isInvalid={!!errors.name}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.name}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Application Developer*</Form.Label>
+                    <Form.Control
+                      name="owner"
+                      value={values.owner}
+                      onChange={handleChange}
+                      isInvalid={!!errors.owner}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.owner}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>URL</Form.Label>
+                    <Form.Control
+                      name="url"
+                      value={values.url}
+                      onChange={handleChange}
+                      isInvalid={!!errors.url}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.url}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Contact email*</Form.Label>
+                    <Form.Control
+                      name="contactEmail"
+                      type="email"
+                      value={values.contactEmail}
+                      onChange={handleChange}
+                      isInvalid={!!errors.contactEmail}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.contactEmail}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows="6"
+                      name="description"
+                      value={values.description}
+                      onChange={handleChange}
+                      isInvalid={!!errors.description}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.description}
+                    </Form.Control.Feedback>
+                  </Form.Group>
 
-              <div className="legal-info">
-                <p>
-                  - Purchasers are not buying POKT as an investment with the
-                  expectation of profit or appreciation - Purcharsers are buying
-                  POKT to use it.
-                </p>
-                <p>
-                  - To ensure purchasers are bona fide and not investors, the
-                  Company has set a purchase maximun per user and requires users
-                  must hold POKT for 4 weeks and use (bond and stake) it before
-                  transferring to another wallet or selling.
-                </p>
-                <p>
-                  - Purchasers are acquiring POKT for their own account and use,
-                  and not with an intention to re-sell or distribute POKT to
-                  others.
-                </p>
-              </div>
+                  <div className="legal-info">
+                    <p>
+                      - Purchasers are not buying POKT as an investment with the
+                      expectation of profit or appreciation - Purcharsers are
+                      buying POKT to use it.
+                    </p>
+                    <p>
+                      - To ensure purchasers are bona fide and not investors,
+                      the Company has set a purchase maximun per user and
+                      requires users must hold POKT for 4 weeks and use (bond
+                      and stake) it before transferring to another wallet or
+                      selling.
+                    </p>
+                    <p>
+                      - Purchasers are acquiring POKT for their own account and
+                      use, and not with an intention to re-sell or distribute
+                      POKT to others.
+                    </p>
+                  </div>
 
-              <div className="submit mt-2 mb-4 d-flex justify-content-between">
-                <Form.Check
-                  custom
-                  checked={agreeTerms}
-                  onChange={() => this.setState({agreeTerms: !agreeTerms})}
-                  id="terms-checkbox"
-                  type="checkbox"
-                  label="I agree with these terms and conditions."
-                />
-                <Button
-                  disabled={!agreeTerms}
-                  variant="dark"
-                  size="lg"
-                  type="submit"
-                >
-                  Continue
-                </Button>
-              </div>
-            </Form>
+                  <div className="submit float-right mt-2">
+                    <Button variant="dark" size="lg" type="submit">
+                      Continue
+                    </Button>
+                    <p>
+                      By continuing you agree to Pocket&apos;s <br />
+                      {/*TODO: Add terms and conditions link*/}
+                      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
+                      <a className="link" href="#">
+                        Terms and conditions
+                      </a>
+                    </p>
+                  </div>
+                </Form>
+              )}
+            </Formik>
           </Col>
         </Row>
       </div>

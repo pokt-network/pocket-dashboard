@@ -33,13 +33,21 @@ $title: (font: "Open Sans",
   weight: 800,
 );
 
+
 $paragraph: (font: "Lato",
   type: sans-serif,
   weight: 400,
-);
+  color: #535353);
 
 // utils variables
 $default-border-radius: 25px;
+$default-box-shadow: 1px 15px 53px -26px rgba(33, 33, 33, .1);
+
+@mixin bordered-layout {
+  border: 2px solid $primary-color;
+  padding: 10px 30px 7px 30px;
+  border-radius: $default-border-radius;
+}
 
 $gradient: linear-gradient(180deg,
   rgba(6, 32, 46, 1) -20%,
@@ -133,6 +141,15 @@ form {
   background-color: $primary-color;
 }
 
+.btn-link {
+  color: $primary-color;
+}
+
+.btn-link:hover {
+  color: $primary-color-darker;
+  text-decoration: none;
+}
+
 .btn-outline-primary:hover,
 .btn-primary:hover,
 .btn-outline-primary:focus,
@@ -206,7 +223,7 @@ label.form-label {
 
 #sidebar,
 #content {
-  min-height: 90vh;
+  min-height: calc(100vh - 87px);
 }
 
 #sidebar {
@@ -397,6 +414,9 @@ button.link {
   margin-left: 25px !important;
 }
 
+.invalid-feedback {
+  margin-left: 10px;
+}
 
 /* Custom scroll bar. Not supports in Firefox and IE */
 

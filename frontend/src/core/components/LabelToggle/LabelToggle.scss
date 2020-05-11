@@ -1,9 +1,7 @@
 @import "../../../scss/Core.scss";
 
 .label-dropdown {
-  border: 2px solid $primary-color;
-  padding: 10px 30px 7px 30px;
-  border-radius: $default-border-radius;
+  @include bordered-layout;
   display: inline;
 
   * {
