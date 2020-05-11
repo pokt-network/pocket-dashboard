@@ -3,12 +3,14 @@ import {Chains} from "../providers/NetworkChains";
 export class NetworkChain {
 
   /**
-   * @param {string} name Name.
    * @param {string} netID Network Identifier.
+   * @param {string} ticker Ticker.
+   * @param {string} name Name.
+   * @param {string} description Description.
    * @param {string} hash Hash.
    */
-  constructor(name, netID, hash) {
-    Object.assign(this, {name, netID, hash});
+  constructor(netID, ticker, name, description, hash) {
+    Object.assign(this, {netID, ticker, name, description, hash});
   }
 
   /**
@@ -18,7 +20,7 @@ export class NetworkChain {
    * @static
    */
   static getAvailableNetworkChains() {
-    return Chains.map(chain => new NetworkChain(chain.name, chain.netID, chain.hash));
+    return Chains.map(chain => new NetworkChain(chain.netID, chain.ticker, chain.name, chain.description, chain.hash));
   }
 
   /**
@@ -32,6 +34,6 @@ export class NetworkChain {
   static getNetworkChains(networkHashes) {
     return Chains
       .filter(chain => networkHashes.includes(chain.hash))
-      .map(chain => new NetworkChain(chain.name, chain.netID, chain.hash));
+      .map(chain => new NetworkChain(chain.netID, chain.ticker, chain.name, chain.description, chain.hash));
   }
 }
