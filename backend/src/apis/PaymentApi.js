@@ -145,6 +145,27 @@ router.post("/history", async (request, response) => {
 });
 
 /**
+ * Retrieve history information about payments.
+ */
+router.get("/history/:paymentID", async (request, response) => {
+  try {
+    /** @type {{paymentID:string}} */
+    const data = request.params;
+
+    const paymentHistory = await paymentService.getPaymentFromHistory(data.paymentID);
+
+    response.send(paymentHistory);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+
+});
+
+/**
  * Mark payment as success on history.
  */
 router.put("/history", async (request, response) => {
