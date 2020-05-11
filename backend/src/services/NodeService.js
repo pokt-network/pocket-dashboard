@@ -276,7 +276,7 @@ export default class NodeService extends BaseService {
   /**
    * Stake a node on network.
    *
-   * @param {{privateKey: string, networkChains: string[], serviceURL: string}} node Node to stake.
+   * @param {{privateKey: string, passPhrase:string, networkChains: string[], serviceURL: string}} node Node to stake.
    * @param {string} uPoktAmount uPokt amount used to stake.
    *
    * @returns {Promise<PocketNode | boolean>} If was staked return the node, if not return false.
@@ -284,9 +284,8 @@ export default class NodeService extends BaseService {
    */
   async stakeNode(node, uPoktAmount) {
     const accountService = new AccountService();
-    const passPhrase = "StakePocketNode";
 
-    const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, passPhrase, node.privateKey);
+    const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, node.passPhrase, node.privateKey);
 
     const filter = {
       "publicPocketAccount.address": nodeAccount.addressHex
@@ -301,7 +300,7 @@ export default class NodeService extends BaseService {
     try {
       // Stake node
       const serviceURL = new URL(node.serviceURL);
-      const transaction = await this.pocketService.stakeNode(nodeAccount, passPhrase, uPoktAmount, node.networkChains, serviceURL);
+      const transaction = await this.pocketService.stakeNode(nodeAccount, node.passPhrase, uPoktAmount, node.networkChains, serviceURL);
 
       return transaction.tx !== undefined ? PocketNode.createPocketNode(nodeDB) : false;
     } catch (e) {
@@ -312,16 +311,14 @@ export default class NodeService extends BaseService {
   /**
    * Unstake node.
    *
-   * @param {string} nodeAccountAddress Node account address.
-   * @param {string} user Owner of node.
+   * @param {{privateKey:string, passPhrase:string, accountAddress: string}} nodeData Node data.
    *
    * @returns {Promise<PocketNode | boolean>} If node was unstaked return node, if not return false.
    * @async
    */
-  async unstakeNode(nodeAccountAddress, user) {
+  async unstakeNode(nodeData) {
     const filter = {
-      "publicPocketAccount.address": nodeAccountAddress,
-      user
+      "publicPocketAccount.address": nodeData.accountAddress
     };
 
     const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
@@ -329,13 +326,13 @@ export default class NodeService extends BaseService {
     if (!nodeDB) {
       return false;
     }
+    const accountService = new AccountService();
 
     try {
-      const passphrase = "UnstakeNode";
-      const nodeAccount = await this.pocketService.getAccount(nodeAccountAddress);
+      const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, nodeData.passPhrase, nodeData.privateKey);
 
       // Unstake node
-      const transaction = await this.pocketService.unstakeNode(nodeAccount, passphrase);
+      const transaction = await this.pocketService.unstakeNode(nodeAccount, nodeData.passPhrase);
 
       return transaction.tx !== undefined ? PocketNode.createPocketNode(nodeDB) : false;
     } catch (e) {
@@ -346,14 +343,14 @@ export default class NodeService extends BaseService {
   /**
    * UnJail node.
    *
-   * @param {string} nodeAccountAddress Node account address.
+   * @param {{privateKey:string, passPhrase:string, accountAddress: string}} nodeData Node data.
    *
-   * @returns {Promise<boolean>} If node was unJail or not.
+   * @returns {Promise<PocketNode | boolean>} If node was unJail return node, if not return false.
    * @async
    */
-  async unJailNode(nodeAccountAddress) {
+  async unJailNode(nodeData) {
     const filter = {
-      "publicPocketAccount.address": nodeAccountAddress
+      "publicPocketAccount.address": nodeData.accountAddress
     };
 
     const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
@@ -362,14 +359,16 @@ export default class NodeService extends BaseService {
       return false;
     }
 
+    const accountService = new AccountService();
+
     try {
-      const passphrase = "UnJailNode";
-      const nodeAccount = await this.pocketService.getAccount(nodeAccountAddress);
+
+      const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, nodeData.passPhrase, nodeData.privateKey);
 
       // UnJail node
-      const transaction = await this.pocketService.unJailNode(nodeAccount, passphrase);
+      const transaction = await this.pocketService.unJailNode(nodeAccount, nodeData.passPhrase);
 
-      return transaction.tx !== undefined;
+      return transaction.tx !== undefined ? PocketNode.createPocketNode(nodeDB) : false;
     } catch (e) {
       return false;
     }

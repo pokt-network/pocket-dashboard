@@ -195,7 +195,7 @@ router.post("/user", async (request, response) => {
 router.post("/stake", async (request, response) => {
   try {
 
-    /** @type {{node: {privateKey: string, networkChains: string[], serviceURL: string}, payment:{id: string}, nodeLink: string}} */
+    /** @type {{node: {privateKey: string, passPhrase: string, networkChains: string[], serviceURL: string}, payment:{id: string}, nodeLink: string}} */
     const data = request.body;
     const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
@@ -213,7 +213,7 @@ router.post("/stake", async (request, response) => {
 
           const paymentEmailData = {
             amountPaid: paymentHistory.amount,
-            validatorPower: item.validatorPower,
+            validatorPowerAmount: item.validatorPower,
             poktStaked: item.pokt
           };
 
@@ -240,10 +240,10 @@ router.post("/stake", async (request, response) => {
 router.post("/unstake", async (request, response) => {
   try {
 
-    /** @type {{nodeAccountAddress: string, user: string, nodeLink: string}} */
+    /** @type {{node:{privateKey:string, passPhrase:string, accountAddress: string}, nodeLink: string}} */
     const data = request.body;
 
-    const node = await nodeService.unstakeNode(data.nodeAccountAddress, data.user);
+    const node = await nodeService.unstakeNode(data.node);
 
     if (node) {
       const nodeEmailData = {
@@ -251,7 +251,7 @@ router.post("/unstake", async (request, response) => {
         link: data.nodeLink
       };
 
-      await EmailService.to(data.user).sendUnstakeNodeEmail(data.user, nodeEmailData);
+      await EmailService.to(node.user).sendUnstakeNodeEmail(node.user, nodeEmailData);
 
       response.send(true);
     } else {
@@ -272,12 +272,23 @@ router.post("/unstake", async (request, response) => {
 router.post("/unjail", async (request, response) => {
   try {
 
-    /** @type {{nodeAccountAddress: string}} */
+    /** @type {{node:{privateKey:string, passPhrase:string, accountAddress: string}, nodeLink: string}} */
     const data = request.body;
 
-    const unJailed = await nodeService.unJailNode(data.nodeAccountAddress);
+    const node = await nodeService.unJailNode(data.node);
 
-    response.send(unJailed);
+    if (node) {
+      const nodeEmailData = {
+        name: node.name,
+        link: data.nodeLink
+      };
+
+      await EmailService.to(node.user).sendNodeUnJailedEmail(node.user, nodeEmailData);
+
+      response.send(true);
+    } else {
+      response.send(false);
+    }
   } catch (e) {
     const error = {
       message: e.toString()

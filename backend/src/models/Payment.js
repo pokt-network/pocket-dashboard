@@ -201,13 +201,39 @@ export class PaymentHistory {
   isNodePaymentItem(throwError = false) {
     /** @type {string} */
     const type = this.item.type;
-    const isNode = type.toLowerCase() === "node";
+
+    /** @type {string} */
+    const validatorPower = this.item.validatorPower;
+
+    const isNode = type.toLowerCase() === "node" && validatorPower !== undefined;
 
     if (throwError && !isNode) {
       throw Error("The payment item is not a node");
     }
 
     return isNode;
+  }
+
+  /**
+   * @param {boolean} throwError Throw an error if item is not an application.
+   *
+   * @returns {boolean} If payment item is an application or not.
+   * @throws Error if throwError is true and payment item is not application.
+   */
+  isApplicationPaymentItem(throwError = false) {
+    /** @type {string} */
+    const type = this.item.type;
+
+    /** @type {string} */
+    const maxRelay = this.item.maxRelay;
+
+    const isApplication = type.toLowerCase() === "application" && maxRelay !== undefined;
+
+    if (throwError && !isApplication) {
+      throw Error("The payment item is not an application");
+    }
+
+    return isApplication;
   }
 
   /**

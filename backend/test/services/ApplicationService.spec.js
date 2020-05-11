@@ -138,6 +138,10 @@ describe("ApplicationService", () => {
     });
 
     // TODO: Add unit test for unstake free tier app.
+
+    // TODO: Add unit test for stake an application.
+
+    // TODO: Add unit test for unstake an application.
   }
 
   describe("getApplication", () => {
@@ -206,6 +210,7 @@ describe("ApplicationService", () => {
 
   describe("deleteApplication", () => {
     const address = "bc28256f5c58611e96d13996cf535bdc0204366a";
+    const user = "tester@app.com";
 
     const resultData = {
       result: {
@@ -217,7 +222,8 @@ describe("ApplicationService", () => {
 
       const persistenceService = sinon.createStubInstance(PersistenceProvider);
       const stubFilter = {
-        "publicPocketAccount.address": address
+        "publicPocketAccount.address": address,
+        user
       };
 
       persistenceService.deleteEntities
@@ -226,7 +232,7 @@ describe("ApplicationService", () => {
 
       sinon.stub(applicationService, "persistenceService").value(persistenceService);
 
-      const deleted = await applicationService.deleteApplication(address);
+      const deleted = await applicationService.deleteApplication(address, user);
 
       // eslint-disable-next-line no-undef
       should.exist(deleted);
