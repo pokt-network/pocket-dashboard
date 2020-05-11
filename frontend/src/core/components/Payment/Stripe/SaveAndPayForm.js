@@ -16,6 +16,7 @@ class SaveAndPayForm extends Component {
 
   handleSaveAndPayMethod(e, formData, stripe) {
     e.preventDefault();
+    const {handleAfterPayment} = this.props;
 
     const {paymentIntentSecretID} = this.props;
     const {card, cardHolderName, billingAddressLine1, zipCode, country} = formData;
@@ -32,12 +33,12 @@ class SaveAndPayForm extends Component {
       .then(result => {
         if (result.error) {
           // TODO: Show information to user in a proper way.
-          console.log(result.error.message);
+          handleAfterPayment({success: false, data: result.error});
         }
 
         if (result.paymentIntent) {
           // TODO: Show information to user in a proper way, and redirect to another path
-          console.log(result.paymentIntent.status);
+          handleAfterPayment({success: true, data: result.paymentIntent.status});
         }
       });
   }
@@ -50,7 +51,8 @@ class SaveAndPayForm extends Component {
 }
 
 SaveAndPayForm.propTypes = {
-  paymentIntentSecretID: PropTypes.string
+  paymentIntentSecretID: PropTypes.string,
+  handleAfterPayment: PropTypes.func,
 };
 
 export default SaveAndPayForm;

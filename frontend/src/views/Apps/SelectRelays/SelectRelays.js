@@ -1,25 +1,41 @@
 import React, {Component} from "react";
 import "./SelectRelays.scss";
-import {Alert, Button, Col, Row} from "react-bootstrap";
+import {Alert, Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import AppSlider from "../../../core/components/AppSlider";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {MAX_RELAYS} from "../../../_constants";
+import {MAX_RELAYS, ITEM_TYPES} from "../../../_constants";
 import {formatCurrency} from "../../../_helpers";
+import PaymentService from "../../../core/services/PocketPaymentService";
+import numeral from "numeral";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import ApplicationService from "../../../core/services/PocketApplicationService";
+import UserService from "../../../core/services/PocketUserService";
+import StripePaymentService from "../../../core/services/PocketStripePaymentService";
+import LoadingButton from "../../../core/components/LoadingButton";
 
 class SelectRelays extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.onSliderChange = this.onSliderChange.bind(this);
+    this.goToCheckout = this.goToCheckout.bind(this);
 
     this.state = {
       alert: true,
-      relays: 0,
+      relays: 1,
       poktPrice: 0.06,
       total: 0,
+      currencies: [],
+      loading: false,
     };
+  }
+
+  async componentDidMount() {
+    const currencies = await PaymentService.getAvailableCurrencies();
+
+    this.setState({currencies});
   }
 
   onSliderChange(value) {
@@ -28,8 +44,57 @@ class SelectRelays extends Component {
     this.setState({relays: value, total: value * poktPrice});
   }
 
+  async createPaymentIntent(amount, currency, pokt) {
+    const item = {
+      account: UserService.getUserInfo().email,
+      name: ApplicationService.getAppAInfo().data.name,
+      pokt,
+    };
+
+    const {success, data} = await StripePaymentService.createNewPaymentIntent(
+      ITEM_TYPES.APPLICATION, item, currency, amount);
+
+    return {success, data};
+  }
+
+  async goToCheckout() {
+    this.setState({loading: true});
+    const {relays, poktPrice, currencies, total: totalPrice} = this.state;
+
+    // At the moment the only available currency is USD.
+    const usd = currencies[0];
+
+    // Avoiding floating point precision errors.
+    const total = parseFloat(numeral(totalPrice).format("0.00")).toFixed(2);
+
+    // TODO: Calculate pokt from formula
+    const {success, data: paymentIntentData} = await this.createPaymentIntent(
+      total, usd, relays);
+
+    if (!success) {
+      // TODO: Display message on frontend
+      console.log(success, paymentIntentData);
+      this.setState({loading: false});
+      return;
+    }
+
+    PaymentService.savePurchaseInfoInCache({relays, costPerRelay: total});
+
+    // eslint-disable-next-line react/prop-types
+    this.props.history.push({
+      pathname: _getDashboardPath(DASHBOARD_PATHS.appOrderSummary),
+      state: {
+        type: ITEM_TYPES.APPLICATION,
+        paymentIntent: paymentIntentData,
+        quantity: {number: relays, description: "Relays per session"},
+        cost: {number: poktPrice, description: "replays per session cost"},
+        total: total,
+      },
+    });
+  }
+
   render() {
-    const {alert, relays, poktPrice, total: currentTotal} = this.state;
+    const {alert, relays, poktPrice, total: currentTotal, loading} = this.state;
 
     const total = formatCurrency(currentTotal);
 
@@ -71,8 +136,8 @@ class SelectRelays extends Component {
               <div className="slider-wrapper">
                 <AppSlider
                   onChange={this.onSliderChange}
-                  marks={{0: "0", [MAX_RELAYS]: MAX_RELAYS}}
-                  min={0}
+                  marks={{1: "1", [MAX_RELAYS]: MAX_RELAYS}}
+                  min={1}
                   max={MAX_RELAYS}
                 />
               </div>
@@ -82,14 +147,21 @@ class SelectRelays extends Component {
                   title={relays}
                   subtitle="Relays per session"
                 >
-                  <span/>
+                  <span />
                 </InfoCard>
                 <InfoCard
                   className="text-center"
                   title={total}
-                  subtitle="Total amount"
+                  subtitle="Total  amount"
                 >
-                  <span/>
+                  <span />
+                </InfoCard>
+                <InfoCard
+                  className="text-center"
+                  title={poktPrice}
+                  subtitle="Relays per session cost"
+                >
+                  <span />
                 </InfoCard>
               </div>
             </div>
@@ -97,12 +169,16 @@ class SelectRelays extends Component {
         </Row>
         <Row>
           <Col>
-            <Button
-              variant="dark"
-              className="mt-3 pl-5 pr-5 font-weight-bold float-right"
+            <LoadingButton
+              loading={loading}
+              buttonProps={{
+                onClick: this.goToCheckout,
+                variant: "dark",
+                className: "mt-3 pl-5 pr-5 font-weight-bold float-right",
+              }}
             >
               Checkout
-            </Button>
+            </LoadingButton>
           </Col>
         </Row>
         {alert && (

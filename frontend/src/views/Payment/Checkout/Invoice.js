@@ -5,11 +5,11 @@ import {PropTypes} from "prop-types";
 class Invoice extends Component {
   state = {};
   render() {
-    const {information, items, total} = this.props;
+    const {information, items, total, title} = this.props;
 
     return (
       <Col>
-        <h2>Your invoice</h2>
+        <h2>{title}</h2>
         <hr />
         <div className="invoice">
           {information.map((item, idx) => (
@@ -49,6 +49,7 @@ Invoice.propTypes = {
     })
   ),
   total: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  title: PropTypes.string,
 };
 
 export default Invoice;

@@ -1,6 +1,7 @@
 import PocketBaseService from "./PocketBaseService";
 import PocketUserService from "./PocketUserService";
 import axios from "axios";
+import {ITEM_TYPES} from "../../_constants";
 
 class PocketStripePaymentService extends PocketBaseService {
 
@@ -22,7 +23,7 @@ class PocketStripePaymentService extends PocketBaseService {
     const data = {id: paymentMethodID, user, billingDetails};
 
     return axios.post(this._getURL("payment_method"), data)
-      .then(response => response.data);
+      .then(response => response.data).catch(err => err.response);
   }
 
   /**
@@ -41,6 +42,37 @@ class PocketStripePaymentService extends PocketBaseService {
 
     return axios.put(this._getURL("history"), data)
       .then(response => response.data);
+  }
+
+  /**
+   * Create a new payment method.
+   *
+   * @param {object} stripe Stripe object.
+   * @param {object} card Card used to confirm payment.
+   * @param {{name:string, [address]:{line1:string, [postal_code]:string, country:string}}} billingDetails Billing details about card.
+   *
+   * @return {Promise<*>}
+   * @async
+   */
+  async createPaymentMethod(stripe, card, billingDetails) {
+    if (!stripe || !card) {
+      return false;
+    }
+
+    const cardData = {
+      type: "card",
+      card: card,
+      billing_details: billingDetails
+    };
+
+    return stripe.createPaymentMethod(cardData)
+      .then(result => {
+        if (result.paymentMethod) {
+          this.__savePaymentMethod(result.paymentMethod.id, billingDetails);
+        }
+
+        return result;
+      });
   }
 
   /**
@@ -79,6 +111,74 @@ class PocketStripePaymentService extends PocketBaseService {
         }
 
         return result;
+      });
+  }
+
+  /**
+   * Confirm payment with a saved card.
+   *
+   * @param {object} stripe Stripe object.
+   * @param {string} paymentIntentSecretID Payment intent to confirm.
+   * @param {string} paymentMethodID saved card id for purchase.
+   * @param {{name:string, [address]:{line1:string, [postal_code]:string,
+   *         country:string}}} billingDetails Billing details about card.
+   * @return {Promise<*>}
+   * @async
+   */
+  async confirmPaymentWithSavedCard(stripe, paymentIntentSecretID, paymentMethodID, billingDetails) {
+    if (!stripe || !paymentIntentSecretID || !paymentMethodID) {
+      return false;
+    }
+
+    const cardPaymentData = {
+      payment_method: paymentMethodID,
+    };
+
+    return stripe.confirmCardPayment(paymentIntentSecretID, cardPaymentData).then(result => {
+      if (result.paymentIntent) {
+        const paymentIntent = result.paymentIntent;
+
+        if (paymentIntent.status.toLowerCase() === "succeeded") {
+          this.__markPaymentAsSuccess(paymentIntent.id, paymentIntent.payment_method, billingDetails);
+        }
+      }
+
+      return result;
+    });
+  }
+
+  /**
+   * Create new payment intent for purchase.
+   *
+   * @param {string} type type of item (e.x. application, node).
+   * @param {object} item item to purchase data.
+   * @param {string} currency currency.
+   * @param {number} amount amount to pay.
+   *
+   * @return {Promise<*>}
+   * @async
+   */
+  async createNewPaymentIntent(type, item, currency, amount) {
+    const user = PocketUserService.getUserInfo().email;
+    const data = {type: "card", user, item, currency, amount};
+
+    let path;
+
+    if (type === ITEM_TYPES.APPLICATION) {
+      path = "apps";
+    } else if (type === ITEM_TYPES.NODE) {
+      path = "nodes";
+    } else {
+      throw new Error("Invalid item type");
+    }
+
+    return axios
+      .post(this._getURL(`new_intent/${path}`), data)
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {success: false, data: err.response};
       });
   }
 }

@@ -10,19 +10,26 @@ class CardDisplay extends Component {
     return (
       <div className="card-display">
         <div className="info">
-          <strong>{cardData}</strong>
+          <strong>
+            {cardData.type} {cardData.digits}
+          </strong>
           <p className="name">{holder}</p>
         </div>
-        <Button variant="link" onClick={() => onDelete(cardData)}>
-          Delete Card
-        </Button>
+        {onDelete && (
+          <Button variant="link" onClick={() => onDelete(cardData)}>
+            Delete Card
+          </Button>
+        )}
       </div>
     );
   }
 }
 
 CardDisplay.propTypes = {
-  cardData: PropTypes.string,
+  cardData: PropTypes.shape({
+    type: PropTypes.string,
+    digits: PropTypes.string,
+  }),
   holder: PropTypes.string,
   onDelete: PropTypes.func,
 };

@@ -93,7 +93,11 @@ class CreateAppForm extends CreateForm {
       const {privateApplicationData} = data;
       const {address, privateKey} = privateApplicationData;
 
-      ApplicationService.saveAppInfoInCache({address, privateKey});
+      ApplicationService.saveAppInfoInCache({
+        address,
+        privateKey,
+        data: {name},
+      });
       this.setState({created: true});
     } else {
       // TODO: Show proper error message on front-end.

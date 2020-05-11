@@ -151,6 +151,13 @@ form {
   border-color: $primary-color-darker;
 }
 
+.btn-primary.disabled,
+.btn-primary:disabled {
+  color: #fff;
+  background-color: #4bbef0;
+  border-color: #4bbef0;
+}
+
 .btn-dark {
   background-color: $secondary-color;
   border-color: $secondary-color;

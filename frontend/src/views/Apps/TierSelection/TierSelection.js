@@ -3,12 +3,13 @@ import {Button, Card, Col, Modal, Row} from "react-bootstrap";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import "./TierSelection.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import {Link} from "react-router-dom";
 
 class TierSelection extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.handleTierSelection = this.handleTierSelection.bind(this);
+    this.createFreeTierItem = this.createFreeTierItem.bind(this);
 
     this.state = {
       freeTierModal: false,
@@ -16,21 +17,17 @@ class TierSelection extends Component {
     };
   }
 
-  async handleTierSelection(isFreeTier) {
-    if (isFreeTier) {
-      const {address, chains} = ApplicationService.getAppAInfo();
+  async createFreeTierItem() {
+    const {address, chains} = ApplicationService.getAppAInfo();
 
-      const data = await ApplicationService.stakeFreeTierApplication(
-        address, chains
-      );
+    const data = await ApplicationService.stakeFreeTierApplication(
+      address, chains
+    );
 
-      // TODO: Notify of errors on the frontend
-      if (data !== false) {
-        // eslint-disable-next-line react/prop-types
-        this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.appCreated));
-      }
-    } else {
-      // TODO: Handle Custom tier
+    // TODO: Notify of errors on the frontend
+    if (data !== false) {
+      // eslint-disable-next-line react/prop-types
+      this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.appCreated));
     }
   }
 
@@ -64,7 +61,7 @@ class TierSelection extends Component {
                 </Button>
                 <br />
                 <Button
-                  onClick={() => this.handleTierSelection(true)}
+                  onClick={() => this.createFreeTierItem()}
                   size="lg"
                   variant="dark"
                   className="pr-5 pl-5 mt-3"
@@ -98,9 +95,12 @@ class TierSelection extends Component {
                 >
                   Learn more
                 </Button>
-                <Button size="lg" variant="dark" className="pr-5 pl-5 mt-3">
-                  Customize your tier
-                </Button>
+                <br />
+                <Link to={_getDashboardPath(DASHBOARD_PATHS.selectRelays)}>
+                  <Button size="lg" variant="dark" className="pr-5 pl-5 mt-3">
+                    Customize your tier
+                  </Button>
+                </Link>
               </Card.Body>
             </Card>
           </Col>
