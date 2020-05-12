@@ -148,6 +148,9 @@ export default class UserService extends BaseService {
       throw Error("Passwords do not match");
     }
 
+    // Update last login of user on DB.
+    await this.__updateLastLogin(pocketUser);
+
     return PocketUser.removeSensitiveFields(pocketUser);
   }
 
