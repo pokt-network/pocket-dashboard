@@ -11,8 +11,6 @@ class Navbar extends Component {
       <Row>
         <Col id={"navbar"}>
           <img src={"/logo.png"} alt="logo" id={"main-logo"}/>
-
-          <HelpLink link={helpLink}/>
         </Col>
       </Row>
     );

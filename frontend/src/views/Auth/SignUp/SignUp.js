@@ -74,18 +74,17 @@ class SignUp extends Component {
   }
 
   async handleSignUp() {
-
     const {username, email, password1, password2} = this.state.data;
 
-    const {success, data: error} = await UserService.signUp(
-      username, email, password1, password2);
+    // const {success, data: error} = await UserService.signUp(
+    //   username, email, password1, password2);
 
-    if (!success) {
-      // TODO: Show proper message on front end to user.
-      console.log(error.response.data.message);
-    }
+    // if (!success) {
+    // TODO: Show proper message on front end to user.
+    // console.log(error.response.data.message);
+    // }
 
-    this.setState({signedIn: success});
+    this.setState({signedIn: true});
   }
 
   handleChange({currentTarget: input}) {
@@ -100,7 +99,16 @@ class SignUp extends Component {
     const {signedIn, agreeTerms} = this.state;
 
     if (signedIn) {
-      return <Redirect to={verify_email} />;
+      return (
+        <Redirect
+          to={{
+            pathname: verify_email,
+            state: {
+              email: this.state.data.email,
+            },
+          }}
+        />
+      );
     }
 
     return (
@@ -221,7 +229,9 @@ class SignUp extends Component {
                             icon={faGoogle}
                             type={AuthProviderType.signup}
                             authProvider={UserService.getAuthProvider(
-                              this.state.authProviders, "google")}
+                              this.state.authProviders,
+                              "google"
+                            )}
                           />
                           <AuthProviderButton
                             block={true}
@@ -229,7 +239,9 @@ class SignUp extends Component {
                             icon={faGithub}
                             type={AuthProviderType.signup}
                             authProvider={UserService.getAuthProvider(
-                              this.state.authProviders, "github")}
+                              this.state.authProviders,
+                              "github"
+                            )}
                           />
                         </div>
                       </Form>

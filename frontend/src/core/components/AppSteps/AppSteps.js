@@ -7,13 +7,13 @@ import {PropTypes} from "prop-types";
 class AppSteps extends Component {
   state = {};
   render() {
-    const {current, steps} = this.props;
+    const {current, steps, icons} = this.props;
 
     return (
       <span className="app-steps">
         <Steps labelPlacement="vertical" current={current}>
           {steps.map((step, idx) => (
-            <Step key={idx} title={step} />
+            <Step key={idx} title={step} icon={icons[idx]} />
           ))}
         </Steps>
       </span>
@@ -24,6 +24,7 @@ class AppSteps extends Component {
 AppSteps.propTypes = {
   current: PropTypes.number,
   steps: PropTypes.arrayOf(PropTypes.string),
+  icons: PropTypes.arrayOf(PropTypes.node),
 };
 
 export default AppSteps;

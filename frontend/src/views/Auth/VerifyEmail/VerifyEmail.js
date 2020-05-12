@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 import "./VerifyEmail.scss";
@@ -5,47 +6,82 @@ import {Button, Col, Container, Row} from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
+import {ReactComponent as UserIcon} from "../../../scss/svg/user.svg";
+import {ReactComponent as MailIcon} from "../../../scss/svg/mail.svg";
+import {ReactComponent as KeyIcon} from "../../../scss/svg/key.svg";
+import {Link} from "react-router-dom";
 
 class VerifyEmail extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.state = {
-      email: "justaname94@outlook.com",
+      email: "",
     };
   }
 
   componentDidMount() {
-    // TODO Obtain email from backend
+    // eslint-disable-next-line react/prop-types
+    if (this.props.location.state === undefined) {
+      // TODO: Show message on frontend
+      console.log("Error: you are not authorized to do this action");
+      return;
+    }
+
+    // eslint-disable-next-line react/prop-types
+    const {email} = this.props.location.state;
+
+    this.setState({email});
   }
 
   render() {
     const {email} = this.state;
 
+    const icons = [
+      <img key={0} src="/assets/user.svg" className="step-icon" />,
+      <img key={1} src="/assets/mail.svg" className="step-icon" />,
+      <img key={2} src="/assets/key.svg" className="step-icon" />,
+    ];
+
     return (
       <Container fluid id="verify-email-page">
         <Navbar />
-        <Row className="mb-3">
-          <Col lg={{span: 6, offset: 3}}>
+        <Row className="mt-5 mb-3">
+          <Col lg={{span: 8, offset: 2}}>
             <AppSteps
+              icons={icons}
               steps={[
                 "Account Created",
                 "Email Verified",
                 "Security Questions",
               ]}
-              current={0}
+              current={1}
             />
           </Col>
         </Row>
         <Row></Row>
-        <Row>
-          <Col id="main" md={{span: 8, offset: 2}} lg={{span: 4, offset: 4}}>
+        <Row className="content">
+          <Col id="main" md={{span: 8, offset: 2}} lg={{span: 5, offset: 4}}>
             <h1>
-              We send an email to this address <br />
-              {PocketUserService.formatEmail(email)}
+              We sent an email to this address <br />
             </h1>
-            <p>You did not receive it?</p>
-            <Button variant="dark" size={"lg"} block>
+            <h2 className="mt-4">{email}</h2>
+            <p>
+              <Link className="font-weight-light" to={"/todo"}>
+                This is not my email.
+              </Link>
+            </p>
+
+            <p>
+              Check your junk folder, just to be sure to mark it as no spam to
+              avoid any problems with notifications from dashboard
+            </p>
+            <p>Did you not receive it?</p>
+            <Button
+              className="font-weight-light pt-2 pb-2 pl-5 pr-5"
+              variant="primary"
+              size={"md"}
+            >
               Resend
             </Button>
           </Col>
