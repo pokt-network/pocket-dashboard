@@ -80,7 +80,7 @@ export default class UserService extends BaseService {
     const filter = {email: userEmail};
     const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
-    return dbUser !== null;
+    return dbUser !== undefined;
   }
 
   /**

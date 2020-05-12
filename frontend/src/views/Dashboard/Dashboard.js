@@ -59,7 +59,7 @@ class Dashboard extends Component {
     ];
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     const userApps = allUserApps.map(mapStatusToField);
@@ -146,7 +146,7 @@ class Dashboard extends Component {
         <Row className="stats mt-3 mb-4">
           {cards.map((card) => (
             <Col key={card.title}>
-              <InfoCard title={card.title} subtitle={card.subtitle} />
+              <InfoCard title={card.title} subtitle={card.subtitle}/>
             </Col>
           ))}
         </Row>

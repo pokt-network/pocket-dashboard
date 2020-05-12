@@ -139,7 +139,7 @@ class PocketNodeService extends PocketBaseService {
     // Axios options format to send both query parameters and body data
     return axios({
       method: "post",
-      url: this._getURL("user"),
+      url: this._getURL("user/all"),
       data: {
         user,
       },
