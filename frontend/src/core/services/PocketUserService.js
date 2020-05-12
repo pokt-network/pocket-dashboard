@@ -61,6 +61,24 @@ class PocketUserService extends PocketBaseService {
   }
 
   /**
+   * Validate a token.
+   *
+   * @param {string} token Token to validate.
+   *
+   * @return {Promise<*>}
+   */
+  validateToken(token) {
+    return axios.post(this._getURL("validate_token"), {token})
+      .then(response => response.data)
+      .catch(err => {
+        return {
+          success: false,
+          data: err
+        };
+      });
+  }
+
+  /**
    * Get available Auth Providers.
    *
    * @return {Promise|Promise<Array.<{name:string, consent_url:string}>>}

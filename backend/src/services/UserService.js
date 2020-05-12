@@ -86,6 +86,21 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * Get User from DB.
+   *
+   * @param {string} email User email.
+   *
+   * @returns {Promise<PocketUser>} Pocket user.
+   * @async
+   */
+  async getUser(email) {
+    const filter = {email};
+    const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    return PocketUser.createPocketUserFromDB(dbUser);
+  }
+
+  /**
    * Get consent provider Auth urls.
    *
    * @returns {{name:string, consent_url:string}[]} The consent url for all Auth provider available.
@@ -226,7 +241,7 @@ export default class UserService extends BaseService {
    * @async
    */
   async generateToken(userEmail) {
-    const payload = {userEmail};
+    const payload = {email: userEmail};
 
     return jwt.sign(payload, Configurations.auth.jwt.secret_key);
   }
