@@ -217,6 +217,7 @@ input {
 .form-control {
   border: 1px solid $border-blue;
   height: calc(1.5em + 1.00rem + 2px);
+  border-radius: 25px;
 }
 
 label.form-label {

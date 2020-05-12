@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, {Component} from "react";
 import "./SecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import SecurityQuestionsService from "../../../core/services/PocketSecurityQuestionsService";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
+import {DASHBOARD_PATHS, _getDashboardPath} from "../../../_routes";
 
 const QUESTIONS_QUANTITY = 3;
 
@@ -32,7 +34,7 @@ class SecurityQuestions extends Component {
 
   componentDidMount() {
     SecurityQuestionsService.getSecurityQuestions().then((questions) => {
-      const securityQuestions = ["Select one", ...questions];
+      const securityQuestions = ["Select Question", ...questions];
 
       this.setState({securityQuestions});
     });
@@ -66,21 +68,27 @@ class SecurityQuestions extends Component {
       success,
       data: error,
     } = await SecurityQuestionsService.saveSecurityQuestionAnswers(
-      email, questions
-    );
+      email, questions);
 
     if (!success) {
       // TODO: Properly log error in frontend
       console.log(error.data.message);
       return;
     }
-    // TODO: Remove and redirect user to proper page (could it be /dashboard?)
-    console.log(success);
+
+    // eslint-disable-next-line react/prop-types
+    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.home));
   }
 
   render() {
     const {securityQuestions} = this.state;
     const {answer1, answer2, answer3} = this.state.data;
+
+    const icons = [
+      <img key={0} src="/assets/user.svg" className="step-icon" />,
+      <img key={1} src="/assets/mail.svg" className="step-icon" />,
+      <img key={2} src="/assets/key.svg" className="step-icon" />,
+    ];
 
     return (
       <Container fluid id={"security-questions-page"}>
@@ -88,17 +96,21 @@ class SecurityQuestions extends Component {
         <Row className="mb-3">
           <Col lg={{span: 8, offset: 2}}>
             <AppSteps
+              icons={icons}
               steps={[
                 "Account Created",
                 "Email Verified",
                 "Security Questions",
               ]}
-              current={1}
+              current={2}
             />
           </Col>
         </Row>
-        <Row>
-          <Col id="main" md={{span: 8, offset: 2}} lg={{span: 6, offset: 3}}>
+        <Row className="mt-5">
+          <Col id="main" md={{span: 6, offset: 2}} lg={{span: 4, offset: 4}}>
+            <h1 className="text-uppercase">
+              Please answer the security questions befere creating a new account
+            </h1>
             <Form onSubmit={this.sendQuestions}>
               <Form.Group>
                 <Form.Label>Question 1</Form.Label>
@@ -117,7 +129,6 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <hr />
               <Form.Group>
                 <Form.Label>Question 2</Form.Label>
                 <Form.Control
@@ -135,7 +146,6 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <hr />
               <Form.Group>
                 <Form.Label>Question 3</Form.Label>
                 <Form.Control
@@ -153,8 +163,13 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <Button type="submit" variant="dark" size={"lg"} block>
-                Save
+              <Button
+                className="font-weight-light mb-5 pt-2 pb-2 pl-5 pr-5"
+                type="submit"
+                variant="primary"
+                size={"md"}
+              >
+                Continue
               </Button>
             </Form>
           </Col>
