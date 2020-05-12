@@ -4,11 +4,7 @@ import PropTypes from "prop-types";
 import "./VerifyEmail.scss";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
-import PocketUserService from "../../../core/services/PocketUserService";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
-import {ReactComponent as UserIcon} from "../../../scss/svg/user.svg";
-import {ReactComponent as MailIcon} from "../../../scss/svg/mail.svg";
-import {ReactComponent as KeyIcon} from "../../../scss/svg/key.svg";
 import {Link} from "react-router-dom";
 
 class VerifyEmail extends Component {

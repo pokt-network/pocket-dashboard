@@ -35,6 +35,7 @@ class SignUp extends Component {
         .required(VALIDATION_MESSAGES.REQUIRED),
       password2: yup
         .string()
+
         .required(VALIDATION_MESSAGES.REQUIRED)
         .oneOf([yup.ref("password1"), null], "Passwords must match"),
     });
@@ -76,15 +77,15 @@ class SignUp extends Component {
   async handleSignUp() {
     const {username, email, password1, password2} = this.state.data;
 
-    // const {success, data: error} = await UserService.signUp(
-    //   username, email, password1, password2);
+    const {success, data: error} = await UserService.signUp(
+      username, email, password1, password2);
 
-    // if (!success) {
+    if (!success) {
     // TODO: Show proper message on front end to user.
-    // console.log(error.response.data.message);
-    // }
+    console.log(error.response.data.message);
+    }
 
-    this.setState({signedIn: true});
+    this.setState({signedIn: success});
   }
 
   handleChange({currentTarget: input}) {
@@ -229,8 +230,7 @@ class SignUp extends Component {
                             icon={faGoogle}
                             type={AuthProviderType.signup}
                             authProvider={UserService.getAuthProvider(
-                              this.state.authProviders,
-                              "google"
+                              this.state.authProviders, "google"
                             )}
                           />
                           <AuthProviderButton
@@ -239,8 +239,7 @@ class SignUp extends Component {
                             icon={faGithub}
                             type={AuthProviderType.signup}
                             authProvider={UserService.getAuthProvider(
-                              this.state.authProviders,
-                              "github"
+                              this.state.authProviders, "github"
                             )}
                           />
                         </div>
