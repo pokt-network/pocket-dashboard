@@ -176,7 +176,7 @@ class PocketUserService extends PocketBaseService {
    * Register new user.
    *
    * @param {string} username Username of user to login.
-   * @param {string} email Wmail of user.
+   * @param {string} email Email of user.
    * @param {string} password1 Password of user.
    * @param {string} password2 Repeated password of user.
    * @param {string} securityQuestionPageLink Link to security question page.
@@ -203,6 +203,33 @@ class PocketUserService extends PocketBaseService {
 
         return {
           success: false
+        };
+      }).catch(err => {
+        return {
+          success: false,
+          data: err
+        };
+      });
+  }
+
+  /**
+   * Resend sign up email.
+   *
+   * @param {string} email Email of user.
+   * @param {string} securityQuestionPageLink Link to security question page.
+   *
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   */
+  resendSignUpEmail(email, securityQuestionPageLink) {
+    const data = {
+      email,
+      postValidationBaseLink: securityQuestionPageLink
+    };
+
+    return axios.post(this._getURL("auth/resend_signup_email"), data)
+      .then(response => {
+        return {
+          success: response.data
         };
       }).catch(err => {
         return {

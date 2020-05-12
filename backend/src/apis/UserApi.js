@@ -81,6 +81,33 @@ router.post("/auth/signup", async (request, response) => {
 });
 
 /**
+ * User sign up using email.
+ */
+router.post("/auth/resend_signup_email", async (request, response) => {
+  try {
+    /** @type {{email:string, postValidationBaseLink:string}} */
+    const data = request.body;
+
+    const user = await userService.getUser(data.email);
+
+    if (user) {
+      const postValidationLink = `${data.postValidationBaseLink}?d=${await userService.generateToken(data.email)}`;
+
+      await EmailService.to(data.email).sendSignUpEmail(user.username, postValidationLink);
+    }
+
+    response.send(user !== undefined);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+
+});
+
+/**
  * Validate token.
  */
 router.post("/validate_token", async (request, response) => {

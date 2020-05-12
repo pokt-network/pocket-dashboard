@@ -5,6 +5,7 @@ import {Button, Col, Container, Row} from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
+import {ROUTE_PATHS} from "../../../_routes";
 
 class VerifyEmail extends Component {
 
@@ -14,6 +15,8 @@ class VerifyEmail extends Component {
     this.state = {
       email: ""
     };
+
+    this.resendEmail = this.resendEmail.bind(this);
   }
 
   componentDidMount() {
@@ -27,6 +30,15 @@ class VerifyEmail extends Component {
     const {email} = this.props.location.state;
 
     this.setState({email});
+  }
+
+  resendEmail(e) {
+    const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
+
+    PocketUserService.resendSignUpEmail(this.state.email, securityQuestionLinkPage)
+      .then(result => {
+        console.log(result);
+      });
   }
 
   render() {
@@ -55,7 +67,7 @@ class VerifyEmail extends Component {
               {PocketUserService.formatEmail(email)}
             </h1>
             <p>You did not receive it?</p>
-            <Button variant="dark" size={"lg"} block>
+            <Button variant="dark" size={"lg"} block onClick={this.resendEmail}>
               Resend
             </Button>
           </Col>
