@@ -3,6 +3,8 @@ import {get_auth_providers, getAuthProvider} from "../providers/auth/Index";
 import {AuthProviderUser, EmailUser, PocketUser} from "../models/User";
 import {AnsweredSecurityQuestion} from "../models/SecurityQuestion";
 import BaseAuthProvider from "../providers/auth/BaseAuthProvider";
+import {Configurations} from "../_configuration";
+import jwt from "jsonwebtoken";
 
 const AUTH_TOKEN_TYPE = "access_token";
 const USER_COLLECTION_NAME = "Users";
@@ -213,6 +215,32 @@ export default class UserService extends BaseService {
     const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, filter, data);
 
     return result.result.ok === 1;
+  }
+
+  /**
+   * Generate token encapsulating the user email.
+   *
+   * @param {string} userEmail User email to encapsulate.
+   *
+   * @returns {Promise<string>} The token generated.
+   * @async
+   */
+  async generateToken(userEmail) {
+    const payload = {userEmail};
+
+    return jwt.sign(payload, Configurations.auth.jwt.secret_key);
+  }
+
+  /**
+   * Decode a token.
+   *
+   * @param {string} token Token to decode.
+   *
+   * @returns {Promise<*>} The token payload.
+   * @async
+   */
+  decodeToken(token) {
+    return jwt.verify(token, Configurations.auth.jwt.secret_key);
   }
 }
 

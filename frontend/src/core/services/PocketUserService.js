@@ -161,16 +161,18 @@ class PocketUserService extends PocketBaseService {
    * @param {string} email Wmail of user.
    * @param {string} password1 Password of user.
    * @param {string} password2 Repeated password of user.
+   * @param {string} securityQuestionPageLink Link to security question page.
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async signUp(username, email, password1, password2) {
+  async signUp(username, email, password1, password2, securityQuestionPageLink) {
     const data = {
       username,
       email,
       password1,
-      password2
+      password2,
+      postValidationBaseLink: securityQuestionPageLink
     };
 
     return axios.post(this._getURL("auth/signup"), data)

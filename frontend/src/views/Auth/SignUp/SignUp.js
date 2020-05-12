@@ -54,8 +54,10 @@ class SignUp extends Component {
       return;
     }
 
+    const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
+
     const {success, data: error} = await UserService.signUp(
-      username, email, password1, password2);
+      username, email, password1, password2, securityQuestionLinkPage);
 
     if (!success) {
       // TODO: Show proper message on front end to user.
