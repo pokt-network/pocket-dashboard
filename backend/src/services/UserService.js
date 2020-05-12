@@ -161,11 +161,15 @@ export default class UserService extends BaseService {
    * @param {string} userData.password2 Password to validate against Password1.
    *
    * @returns {Promise<boolean>} If user was created or not.
-   * @throws {Error} If validation fails.
+   * @throws {Error} If validation fails or already exists.
    * @async
    */
   async signupUser(userData) {
     if (EmailUser.validate(userData)) {
+      if (await this.userExists(userData.email)) {
+        throw Error("This email is already registered");
+      }
+
       const emailPocketUser = await EmailUser.createEmailUserWithEncryptedPassword(userData.email, userData.username, userData.password1);
 
       // Create the user if not exists on DB.
