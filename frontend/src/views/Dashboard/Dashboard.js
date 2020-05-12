@@ -28,13 +28,8 @@ class Dashboard extends Component {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
-    const userApps = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
-    );
-
+    const userApps = await ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT);
     const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
-
-    // TODO: Replace sample data with actual data from backend
     const chains = await NetworkService.getAvailableNetworkChains();
 
     this.setState({userApps, userNodes, chains, loading: false});
@@ -49,6 +44,7 @@ class Dashboard extends Component {
       userNodes: allUserNodes,
     } = this.state;
 
+    // TODO: Integrate this data with backend.
     const cards = [
       {title: "US $0.60", subtitle: "POKT Price"},
       {title: "33,456", subtitle: "Total Staked Tokens"},
