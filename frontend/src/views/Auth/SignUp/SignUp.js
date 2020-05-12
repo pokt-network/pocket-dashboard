@@ -1,10 +1,7 @@
 import React, {Component} from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {
-  AuthProviderButton,
-  AuthProviderType,
-} from "../../../core/components/AuthProviderButton";
+import {AuthProviderButton, AuthProviderType,} from "../../../core/components/AuthProviderButton";
 import HelpLink from "../../../core/components/HelpLink";
 import UserService from "../../../core/services/PocketUserService";
 import "./SignUp.scss";
@@ -20,7 +17,6 @@ class SignUp extends Component {
 
     this.state = {
       authProviders: [],
-      signedIn: false,
       data: {
         username: "",
         email: "",
@@ -64,9 +60,15 @@ class SignUp extends Component {
     if (!success) {
       // TODO: Show proper message on front end to user.
       console.log(error.response.data.message);
+    } else {
+      // eslint-disable-next-line react/prop-types
+      this.props.history.push({
+        pathname: ROUTE_PATHS.verify_email,
+        state: {
+          email
+        }
+      });
     }
-
-    this.setState({signedIn: success});
   }
 
   handleChange({currentTarget: input}) {
@@ -77,20 +79,16 @@ class SignUp extends Component {
   }
 
   render() {
-    const {login, verify_email} = ROUTE_PATHS;
-    const {signedIn, data} = this.state;
+    const {login} = ROUTE_PATHS;
+    const {data} = this.state;
     const {username, email, password1, password2} = data;
-
-    if (signedIn) {
-      return <Redirect to={verify_email} />;
-    }
 
     return (
       <Container fluid className={"Auth-page"}>
         <Row>
-          <AuthSidebar />
+          <AuthSidebar/>
           <Col className={"content"}>
-            <HelpLink />
+            <HelpLink/>
 
             <div className={"main"}>
               <h1>Create Account</h1>
@@ -108,7 +106,7 @@ class SignUp extends Component {
                   )}
                 />
               </div>
-              <hr />
+              <hr/>
               <Form onSubmit={this.handleSignUp} id={"main-form"}>
                 <Form.Group>
                   <Form.Label>E-mail</Form.Label>

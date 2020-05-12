@@ -7,16 +7,26 @@ import PocketUserService from "../../../core/services/PocketUserService";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
 
 class VerifyEmail extends Component {
+
   constructor(props, context) {
     super(props, context);
 
     this.state = {
-      email: "justaname94@outlook.com",
+      email: ""
     };
   }
 
   componentDidMount() {
-    // TODO Obtain email from backend
+    // eslint-disable-next-line react/prop-types
+    if (this.props.location.state === undefined) {
+      // TODO: Show message on frontend
+      console.log("Error: you are not authorized to do this action");
+      return;
+    }
+    // eslint-disable-next-line react/prop-types
+    const {email} = this.props.location.state;
+
+    this.setState({email});
   }
 
   render() {
@@ -24,7 +34,7 @@ class VerifyEmail extends Component {
 
     return (
       <Container fluid id="verify-email-page">
-        <Navbar />
+        <Navbar/>
         <Row className="mb-3">
           <Col lg={{span: 6, offset: 3}}>
             <AppSteps
@@ -41,7 +51,7 @@ class VerifyEmail extends Component {
         <Row>
           <Col id="main" md={{span: 8, offset: 2}} lg={{span: 4, offset: 4}}>
             <h1>
-              We send an email to this address <br />
+              We send an email to this address <br/>
               {PocketUserService.formatEmail(email)}
             </h1>
             <p>You did not receive it?</p>
