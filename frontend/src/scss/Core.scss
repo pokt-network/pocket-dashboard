@@ -415,7 +415,7 @@ button.link {
 .divider:after {
   content: "";
   flex: 1 1;
-  border-bottom: 2px solid $primary-color;
+  border-bottom: 2px solid $border-blue;
   margin: auto;
 }
 
@@ -436,6 +436,11 @@ button.link {
   text-align: right;
   padding-right: 10px;
   color: #fc635f;
+}
+
+.text {
+  font-weight: 300;
+  font-size: 14;
 }
 
 /* Custom scroll bar. Not supports in Firefox and IE */

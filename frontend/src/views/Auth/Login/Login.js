@@ -13,6 +13,7 @@ import {faGithub, faGoogle} from "@fortawesome/free-brands-svg-icons";
 import {Formik} from "formik";
 import * as yup from "yup";
 import {VALIDATION_MESSAGES} from "../../../_constants";
+import {validateYup} from "../../../_helpers";
 
 class Login extends Component {
   constructor(props, context) {
@@ -20,6 +21,15 @@ class Login extends Component {
 
     this.handleLogin = this.handleLogin.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.validate = this.validate.bind(this);
+
+    this.schema = yup.object().shape({
+      email: yup
+        .string()
+        .email(VALIDATION_MESSAGES.EMAIL)
+        .required(VALIDATION_MESSAGES.REQUIRED),
+      password: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+    });
 
     this.state = {
       authProviders: [],
@@ -38,7 +48,6 @@ class Login extends Component {
     });
   }
 
-
   async handleLogin(e) {
     e.preventDefault();
 
@@ -54,19 +63,24 @@ class Login extends Component {
 
   async validate(values) {
     let errors = {};
+    let yupErr;
+
+    yupErr = await validateYup(values, this.schema);
+
+    if (yupErr) {
+      return yupErr;
+    }
 
     const {success, data: error} = await UserService.login(
-      values.email, values.password
-    );
+      values.email, values.password);
 
     if (!success) {
       const {message: err} = error.response.data;
 
-      if (
-        err === "Error: Passwords do not match" ||
-        err === "Error: Invalid username."
-      ) {
+      if (err === "Error: Passwords do not match") {
         errors.password = "Wrong password";
+      } else if (err === "Error: Invalid username.") {
+        errors.email = "invalid email.";
       }
     }
 
@@ -76,14 +90,6 @@ class Login extends Component {
   render() {
     const {home, signup, forgot_password} = ROUTE_PATHS;
     const {loggedIn} = this.state;
-
-    const schema = yup.object().shape({
-      email: yup
-        .string()
-        .email(VALIDATION_MESSAGES.EMAIL)
-        .required(VALIDATION_MESSAGES.REQUIRED),
-      password: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
-    });
 
     if (loggedIn) {
       return <Redirect to={home} />;
@@ -106,7 +112,7 @@ class Login extends Component {
                   <h2>Login</h2>
                   <Formik
                     validate={this.validate}
-                    validationSchema={schema}
+                    // validationSchema={this.schema}
                     onSubmit={() => {
                       this.setState({loggedIn: true});
                     }}

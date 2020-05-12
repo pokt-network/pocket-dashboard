@@ -5,11 +5,15 @@ import {
   AuthProviderButton,
   AuthProviderType,
 } from "../../../core/components/AuthProviderButton";
-import HelpLink from "../../../core/components/HelpLink";
 import UserService from "../../../core/services/PocketUserService";
 import "./SignUp.scss";
 import {ROUTE_PATHS} from "../../../_routes";
 import AuthSidebar from "../../../core/components/AuthSidebar/AuthSidebar";
+import {Formik} from "formik";
+import * as yup from "yup";
+import {VALIDATION_MESSAGES} from "../../../_constants";
+import {faGithub, faGoogle} from "@fortawesome/free-brands-svg-icons";
+import {validateYup} from "../../../_helpers";
 
 class SignUp extends Component {
   constructor(props, context) {
@@ -17,9 +21,27 @@ class SignUp extends Component {
 
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.validate = this.validate.bind(this);
+
+    this.schema = yup.object().shape({
+      email: yup
+        .string()
+        .email(VALIDATION_MESSAGES.EMAIL)
+        .required(VALIDATION_MESSAGES.REQUIRED),
+      username: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+      password1: yup
+        .string()
+        .min(8, VALIDATION_MESSAGES.MIN(8))
+        .required(VALIDATION_MESSAGES.REQUIRED),
+      password2: yup
+        .string()
+        .required(VALIDATION_MESSAGES.REQUIRED)
+        .oneOf([yup.ref("password1"), null], "Passwords must match"),
+    });
 
     this.state = {
       authProviders: [],
+      agreeTerms: false,
       signedIn: false,
       data: {
         username: "",
@@ -37,26 +59,23 @@ class SignUp extends Component {
     });
   }
 
-  validateSignUp(username, email, password1, password2) {
-    // TODO: Add more validations.
-    if (password1 !== password2) {
-      return "Passwords don't match";
+  async validate(values) {
+    let errors = {};
+    let yupErr;
+
+    yupErr = await validateYup(values, this.schema);
+
+    if (yupErr) {
+      return yupErr;
     }
-    return "";
+
+    // TODO: Handle backend errors
+    return errors;
   }
 
-  async handleSignUp(e) {
-    e.preventDefault();
+  async handleSignUp() {
+
     const {username, email, password1, password2} = this.state.data;
-
-    const validationMsg = this.validateSignUp(
-      username, email, password1, password2);
-
-    if (validationMsg !== "") {
-      // TODO: Show proper message on front end to user.
-      console.log(validationMsg);
-      return;
-    }
 
     const {success, data: error} = await UserService.signUp(
       username, email, password1, password2);
@@ -78,82 +97,147 @@ class SignUp extends Component {
 
   render() {
     const {login, verify_email} = ROUTE_PATHS;
-    const {signedIn, data} = this.state;
-    const {username, email, password1, password2} = data;
+    const {signedIn, agreeTerms} = this.state;
 
     if (signedIn) {
       return <Redirect to={verify_email} />;
     }
 
     return (
-      <Container fluid className={"Auth-page"}>
+      <Container fluid className={"auth-page"}>
         <Row>
           <AuthSidebar />
           <Col className={"content"}>
-            <HelpLink />
-
-            <div className={"main"}>
-              <h1>Create Account</h1>
-              <div id={"provider-buttons"}>
-                <AuthProviderButton
-                  type={AuthProviderType.signup}
-                  authProvider={UserService.getAuthProvider(
-                    this.state.authProviders, "google"
-                  )}
-                />
-                <AuthProviderButton
-                  type={AuthProviderType.signup}
-                  authProvider={UserService.getAuthProvider(
-                    this.state.authProviders, "github"
-                  )}
-                />
-              </div>
-              <hr />
-              <Form onSubmit={this.handleSignUp} id={"main-form"}>
-                <Form.Group>
-                  <Form.Label>E-mail</Form.Label>
-                  <Form.Control
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={this.handleChange}
-                  />
-                </Form.Group>
-                <Form.Group>
-                  <Form.Label>Username</Form.Label>
-                  <Form.Control
-                    name="username"
-                    value={username}
-                    onChange={this.handleChange}
-                  />
-                </Form.Group>
-                <Form.Group>
-                  <Form.Label>Password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    name="password1"
-                    value={password1}
-                    onChange={this.handleChange}
-                  />
-                </Form.Group>
-                <Form.Group>
-                  <Form.Label>Confirm password</Form.Label>
-                  <Form.Control
-                    type="password"
-                    name="password2"
-                    value={password2}
-                    onChange={this.handleChange}
-                  />
-                </Form.Group>
-
-                <Button type="submit" variant="dark" size={"lg"} block>
-                  Sign up
-                </Button>
-                <div>
-                  <Link to={login}>Do you have an account?</Link>
-                </div>
-              </Form>
+            <div className="change">
+              <p>
+                Do you have an account? <Link to={login}>Login</Link>
+              </p>
             </div>
+
+            <Row>
+              <Col lg={{span: 5, offset: 3}}>
+                <div className={"main"}>
+                  <h2>Sign up</h2>
+                  <Formik
+                    validate={this.validate}
+                    validationSchema={this.schema}
+                    onSubmit={(data) => {
+                      this.setState({data});
+                      this.handleSignUp();
+                    }}
+                    initialValues={this.state.data}
+                    values={this.state.data}
+                    validateOnChange={false}
+                    validateOnBlur={false}
+                  >
+                    {({handleSubmit, handleChange, values, errors}) => (
+                      <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
+                        <Form.Group>
+                          <Form.Label>Email</Form.Label>
+
+                          <Form.Control
+                            name="email"
+                            placeholder="example@email.com"
+                            value={values.email}
+                            onChange={handleChange}
+                            isInvalid={!!errors.email}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {errors.email}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group>
+                          <Form.Label>Username</Form.Label>
+
+                          <Form.Control
+                            name="username"
+                            placeholder="username"
+                            value={values.username}
+                            onChange={handleChange}
+                            isInvalid={!!errors.username}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {errors.username}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group>
+                          <Form.Label>Password</Form.Label>
+                          <Form.Control
+                            type="password"
+                            name="password1"
+                            placeholder="**************"
+                            value={values.password1}
+                            onChange={handleChange}
+                            isInvalid={!!errors.password1}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {errors.password1}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group>
+                          <Form.Label>Confirm Password</Form.Label>
+                          <Form.Control
+                            type="password"
+                            name="password2"
+                            placeholder="**************"
+                            value={values.password2}
+                            onChange={handleChange}
+                            isInvalid={!!errors.password2}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {errors.password2}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Check
+                          custom
+                          checked={agreeTerms}
+                          onChange={() =>
+                            this.setState({agreeTerms: !agreeTerms})
+                          }
+                          id="terms-checkbox"
+                          type="checkbox"
+                          label={
+                            <span className="text">
+                              I agree to Pocket Dashboard{" "}
+                              <Link to={login}>Privacy Policy.</Link>
+                            </span>
+                          }
+                        />
+                        <br />
+                        <Button
+                          disabled={!agreeTerms}
+                          type="submit"
+                          size="md"
+                          variant="primary"
+                          block
+                        >
+                          Sign up
+                        </Button>
+                        <div className="divider mt-4 mb-3">Or</div>
+                        <div id={"provider-buttons"}>
+                          <AuthProviderButton
+                            block={true}
+                            className="brand pl-5 pr-5 mr-3"
+                            icon={faGoogle}
+                            type={AuthProviderType.signup}
+                            authProvider={UserService.getAuthProvider(
+                              this.state.authProviders, "google")}
+                          />
+                          <AuthProviderButton
+                            block={true}
+                            className="brand pl-4 pr-4"
+                            icon={faGithub}
+                            type={AuthProviderType.signup}
+                            authProvider={UserService.getAuthProvider(
+                              this.state.authProviders, "github")}
+                          />
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
+                </div>
+              </Col>
+            </Row>
           </Col>
         </Row>
       </Container>
