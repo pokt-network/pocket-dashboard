@@ -89,6 +89,7 @@ class VerifyEmail extends Component {
               className="font-weight-light pt-2 pb-2 pl-5 pr-5"
               variant="primary"
               size={"md"}
+              onClick={this.resendEmail}
             >
               Resend
             </Button>

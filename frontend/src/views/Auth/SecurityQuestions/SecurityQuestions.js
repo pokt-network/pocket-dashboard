@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
 import React, {Component} from "react";
 import "./SecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
@@ -142,9 +141,11 @@ class SecurityQuestions extends Component {
     const {answer1, answer2, answer3} = this.state.data;
 
     const icons = [
+      /* eslint-disable jsx-a11y/alt-text */
       <img key={0} src="/assets/user.svg" className="step-icon" />,
       <img key={1} src="/assets/mail.svg" className="step-icon" />,
       <img key={2} src="/assets/key.svg" className="step-icon" />,
+      /* eslint-enable jsx-a11y/alt-text */
     ];
 
     return (
