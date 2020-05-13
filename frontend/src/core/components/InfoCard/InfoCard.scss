@@ -10,9 +10,11 @@
   justify-content: center;
   flex-grow: 1;
 
-  h1 {
+  h2 {
     margin-bottom: 0;
     color: $primary-color;
+    font-weight: 700;
+    font-family: "Lato";
   }
 
   p {

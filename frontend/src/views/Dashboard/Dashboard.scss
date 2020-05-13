@@ -1,16 +1,15 @@
+@import "../../scss/Core.scss";
+
 #dashboard {
   .dropdown.cta {
-    button {
-      padding-left: 150px;
-      border-right: 1px solid #ffffff;
+
+    .dropdown-menu.show {
+      border-radius: 15px;
+      box-shadow: 0px 1px 9px 1px rgba(33, 33, 33, 0.2);
     }
 
     .dropdown-item {
-      padding-right: 130px;
-    }
-
-    button.dropdown-toggle {
-      border-left: 1px solid #ffffff;
+      padding-right: 0;
     }
   }
 }
