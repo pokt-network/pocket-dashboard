@@ -1,25 +1,40 @@
+@import "../../../scss/Core.scss";
+
 .dropzone {
+  width: 0;
+  cursor: pointer;
+
   .drop {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
+    img.icon {
+      width: 35%;
+    }
+
     p {
       width: 200px;
-      font-weight: bold;
       text-align: center;
+      color: $primary-color;
+
+      span.alt {
+        color: $light-gray;
+      }
     }
   }
 
-  .drop-border {
-    border: 2px dashed gray;
-    height: 275px;
-    width: 275px;
+
+
+  .drop.drop-border {
+    border: 3px solid $primary-color;
+    height: 200px;
+    width: 200px;
     border-radius: 50%;
   }
 
   img {
-    cursor: pointer;
+    width: 100%;
   }
 }

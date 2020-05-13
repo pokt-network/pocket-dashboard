@@ -1,24 +1,30 @@
 #create-form {
   h1 {
     font-size: 2em;
+    font-weight: 800;
+  }
+
+  .info {
+    font-size: 1.2em;
+    font-weight: 300;
+    ;
   }
 
   .legal-info {
-    p {
+    max-width: 600px;
+
+    ul>li {
       margin-bottom: 10px;
+      font-weight: 300;
+    }
+
+    .custom-checkbox {
+      padding-left: 45px;
+
+      .custom-control-label {
+        font-weight: 300;
+      }
     }
   }
 
-  .submit {
-    button[type=submit] {
-      font-weight: bold;
-      padding-left: 50px;
-      padding-right: 50px;
-    }
-
-    p {
-      margin-top: 5px;
-      font-size: 0.7em;
-    }
-  }
 }

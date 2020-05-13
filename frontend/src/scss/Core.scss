@@ -79,7 +79,8 @@ h1 {
 // Paragraphs, Labels, Links
 label,
 p,
-a {
+a,
+li {
   @include font-style($paragraph);
 }
 
@@ -418,6 +419,12 @@ button.link {
   }
 }
 
+
+input.form-control::placeholder,
+textarea.form-control::placeholder {
+  color: rgba(0, 0, 0, 0.2);
+}
+
 #default-layout {
   max-height: 90vh;
   overflow-x: auto;
@@ -430,6 +437,8 @@ button.link {
 
   input::placeholder {
     font-weight: bold;
+    color: red;
+    color: rgba(230, 230, 230, 0.1);
   }
 
   button {

@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {useDropzone} from "react-dropzone";
-import {Button} from "react-bootstrap";
 import "./ImageFileUpload.scss";
 import {PropTypes} from "prop-types";
 
@@ -37,7 +36,8 @@ function ImageFileUpload(props) {
   useEffect(
     () => () => {
       files.forEach((file) => URL.revokeObjectURL(file.preview));
-    }, [files]
+    },
+    [files]
   );
 
   const renderDropZone = () => {
@@ -46,10 +46,13 @@ function ImageFileUpload(props) {
     } else {
       return (
         <>
-          <p className="mt-3">Drag and drop an icon or upload from your PC</p>
-          <Button className="pr-5 pl-5" variant="dark">
-            Upload
-          </Button>
+          <img src="/assets/user_icon_circle.svg" className="icon" alt="" />
+          <p className="mt-3">
+            Drag and drop an icon{" "}
+            <span className="alt">
+              <br></br>or upload from your computer
+            </span>
+          </p>
         </>
       );
     }

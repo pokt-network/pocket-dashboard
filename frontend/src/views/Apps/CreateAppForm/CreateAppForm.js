@@ -123,18 +123,16 @@ class CreateAppForm extends CreateForm {
     return (
       <div id="create-form">
         <Row>
-          <Col sm="3" md="3" lg="3">
-            <h1>App Information</h1>
-            <p>The fields with (*) are required to continue</p>
+          <Col sm="12" md="12" lg="12">
+            <h1 className="text-uppercase">App Information</h1>
+            <p className="info">
+              Fill in these quick questions to idenfity your app on the
+              dashbord. Fields marked with * are required to continue.
+            </p>
           </Col>
         </Row>
-        <Row>
-          <Col sm="3" md="3" lg="3">
-            <ImageFileUpload
-              handleDrop={(img) => this.handleDrop(img.preview)}
-            />
-          </Col>
-          <Col sm="9" md="9" lg="9">
+        <Row className="mt-3">
+          <Col sm="5" md="5" lg="5">
             <Formik
               validationSchema={appFormSchema}
               onSubmit={(data) => {
@@ -149,9 +147,10 @@ class CreateAppForm extends CreateForm {
               {({handleSubmit, handleChange, values, errors}) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
-                    <Form.Label>Name*</Form.Label>
+                    <Form.Label>Application Name*</Form.Label>
                     <Form.Control
                       name="name"
+                      placeholder="maximum of 20 characters"
                       value={values.name}
                       onChange={handleChange}
                       isInvalid={!!errors.name}
@@ -161,9 +160,12 @@ class CreateAppForm extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Application Developer*</Form.Label>
+                    <Form.Label>
+                      Application Developer or Company name*
+                    </Form.Label>
                     <Form.Control
                       name="owner"
+                      placeholder="maximum of 20 characters"
                       value={values.owner}
                       onChange={handleChange}
                       isInvalid={!!errors.owner}
@@ -173,20 +175,9 @@ class CreateAppForm extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>URL</Form.Label>
+                    <Form.Label>Contact Email*</Form.Label>
                     <Form.Control
-                      name="url"
-                      value={values.url}
-                      onChange={handleChange}
-                      isInvalid={!!errors.url}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.url}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Contact email*</Form.Label>
-                    <Form.Control
+                      placeholder="hello@example.com"
                       name="contactEmail"
                       type="email"
                       value={values.contactEmail}
@@ -198,8 +189,22 @@ class CreateAppForm extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
+                    <Form.Label>Website</Form.Label>
+                    <Form.Control
+                      placeholder="www.example.com"
+                      name="url"
+                      value={values.url}
+                      onChange={handleChange}
+                      isInvalid={!!errors.url}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.url}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
                     <Form.Label>Description</Form.Label>
                     <Form.Control
+                      placeholder="maximum of 150 characters"
                       as="textarea"
                       rows="6"
                       name="description"
@@ -211,40 +216,12 @@ class CreateAppForm extends CreateForm {
                       {errors.description}
                     </Form.Control.Feedback>
                   </Form.Group>
-
-                  <div className="legal-info">
-                    <p>
-                      - Purchasers are not buying POKT as an investment with the
-                      expectation of profit or appreciation - Purcharsers are
-                      buying POKT to use it.
-                    </p>
-                    <p>
-                      - To ensure purchasers are bona fide and not investors,
-                      the Company has set a purchase maximun per user and
-                      requires users must hold POKT for 4 weeks and use (bond
-                      and stake) it before transferring to another wallet or
-                      selling.
-                    </p>
-                    <p>
-                      - Purchasers are acquiring POKT for their own account and
-                      use, and not with an intention to re-sell or distribute
-                      POKT to others.
-                    </p>
-                  </div>
-
-                  <div className="submit mt-2 mb-4 d-flex justify-content-between">
-                    <Form.Check
-                      custom
-                      checked={agreeTerms}
-                      onChange={() => this.setState({agreeTerms: !agreeTerms})}
-                      id="terms-checkbox"
-                      type="checkbox"
-                      label="I agree with these terms and conditions."
-                    />
+                  <div className="submit mt-2 mb-4">
                     <Button
+                      className="pl-5 pr-5"
                       disabled={!agreeTerms}
-                      variant="dark"
-                      size="lg"
+                      variant="primary"
+                      size="md"
                       type="submit"
                     >
                       Continue
@@ -253,6 +230,46 @@ class CreateAppForm extends CreateForm {
                 </Form>
               )}
             </Formik>
+          </Col>
+          <Col sm="7" md="7" lg="7">
+            <div className="ml-5 mt-4">
+              <ImageFileUpload
+                handleDrop={(img) => this.handleDrop(img.preview)}
+              />
+
+              <div className="legal-info">
+                <ul className="mt-5">
+                  <li>
+                    <strong>Purchasers</strong> are not buying POKT as an
+                    investment with the expectation of profit or appreciation
+                  </li>
+                  <li>
+                    <strong>Purcharsers</strong> are buying POKT to use it.
+                  </li>
+                  <li>
+                    To ensure <strong>purchasers</strong> are bona fide and not
+                    investors, the Company has set a purchase maximum per user
+                    and requires users must hold POKT for 4 weeks and use (bond
+                    and stake) it before transferring to another wallet or
+                    selling.
+                  </li>
+                  <li>
+                    <strong>Purchasers</strong> are acquiring POKT for their own
+                    account and use, and not with an intention to re-sell or
+                    distribute POKT to others.
+                  </li>
+                </ul>
+
+                <Form.Check
+                  custom
+                  checked={agreeTerms}
+                  onChange={() => this.setState({agreeTerms: !agreeTerms})}
+                  id="terms-checkbox"
+                  type="checkbox"
+                  label="I agree with these terms and conditions."
+                />
+              </div>
+            </div>
           </Col>
         </Row>
       </div>
