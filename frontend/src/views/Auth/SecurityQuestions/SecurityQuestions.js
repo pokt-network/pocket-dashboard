@@ -58,6 +58,40 @@ class SecurityQuestions extends Component {
     });
   }
 
+
+  validateQuestion(ordinalNumber, question) {
+    if (question.question === undefined) {
+      return `${ordinalNumber} question cannot be empty`;
+    }
+
+    if (question.answer === "") {
+      return `${ordinalNumber} answer cannot be empty`;
+    }
+
+    return "";
+  }
+
+
+  validateQuestions(questions) {
+    const firstQuestion = this.validateQuestion("First", questions[0]);
+    const secondQuestion = this.validateQuestion("Second", questions[1]);
+    const thirdQuestion = this.validateQuestion("Third", questions[2]);
+
+    if (firstQuestion !== "") {
+      return firstQuestion;
+    }
+
+    if (secondQuestion !== "") {
+      return secondQuestion;
+    }
+
+    if (thirdQuestion !== "") {
+      return thirdQuestion;
+    }
+
+    return "";
+  }
+
   handleSelect(e, index) {
     const chosenQuestions = [...this.state.chosenQuestions];
 
@@ -81,6 +115,14 @@ class SecurityQuestions extends Component {
       {question: chosenQuestions[1], answer: answer2},
       {question: chosenQuestions[2], answer: answer3},
     ];
+
+    const validationMsg = this.validateQuestions(questions);
+
+    if (validationMsg !== "") {
+      // TODO: Show proper message on front end to user.
+      console.log(validationMsg);
+      return;
+    }
 
     const {
       success,
