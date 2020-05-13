@@ -7,7 +7,7 @@ class Navbar extends Component {
     return (
       <Row>
         <Col id={"navbar"}>
-          <img src={"/logo.png"} alt="logo" id={"main-logo"}/>
+          <img src={"/assets/logo-dashboard.svg"} alt="logo" id={"main-logo"} />
         </Col>
       </Row>
     );
@@ -15,11 +15,11 @@ class Navbar extends Component {
 }
 
 Navbar.defaultProps = {
-  helpLink: "#"
+  helpLink: "#",
 };
 
 Navbar.propTypes = {
-  helpLink: PropTypes.string
+  helpLink: PropTypes.string,
 };
 
 export default Navbar;

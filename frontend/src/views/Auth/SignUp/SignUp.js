@@ -113,7 +113,7 @@ class SignUp extends Component {
     }
 
     return (
-      <Container fluid className={"auth-page"}>
+      <Container fluid id="signup" className={"auth-page"}>
         <Row>
           <AuthSidebar />
           <Col className={"content"}>
@@ -129,10 +129,9 @@ class SignUp extends Component {
                   <h2>Sign up</h2>
                   <Formik
                     validate={this.validate}
-                    validationSchema={this.schema}
                     onSubmit={(data) => {
                       this.setState({data});
-                      this.handleSignUp();
+                      this.handleForgotPassword();
                     }}
                     initialValues={this.state.data}
                     values={this.state.data}

@@ -10,12 +10,10 @@ class PocketBox extends Component {
     return (
       <>
         <span id="pocket-box">
-          <div className="head"></div>
-          <div className="wrapper">
-            {/*eslint-disable-next-line jsx-a11y/alt-text*/}
-            <img src={iconUrl} id="img" />
-            {children}
+          <div className="head">
+            <img src={iconUrl} id="img" alt="" />
           </div>
+          <div className="wrapper">{children}</div>
         </span>
       </>
     );
