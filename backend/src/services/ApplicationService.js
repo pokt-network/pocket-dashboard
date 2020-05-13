@@ -269,7 +269,6 @@ export default class ApplicationService extends BaseService {
    */
   async getStakedApplicationSummary() {
     try {
-      /** @type {Application[]} */
       const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
 
       const totalApplications = bigInt(stakedApplications.length);
@@ -282,7 +281,7 @@ export default class ApplicationService extends BaseService {
 
       return new StakedApplicationSummary(totalApplications.toString(), averageStaked.toString(), averageMaxRelays.toString());
     } catch (e) {
-      return new StakedApplicationSummary("0n", "0n", "0n");
+      return new StakedApplicationSummary("0", "0", "0");
     }
   }
 
