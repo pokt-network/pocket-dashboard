@@ -1,11 +1,8 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {
-  AuthProviderButton,
-  AuthProviderType,
-} from "../../../core/components/AuthProviderButton";
-import UserService from "../../../core/services/PocketUserService";
+import {AuthProviderButton, AuthProviderType} from "../../../core/components/AuthProviderButton";
+import PocketUserService from "../../../core/services/PocketUserService";
 import "./SignUp.scss";
 import {ROUTE_PATHS} from "../../../_routes";
 import AuthSidebar from "../../../core/components/AuthSidebar/AuthSidebar";
@@ -54,8 +51,7 @@ class SignUp extends Component {
   }
 
   componentDidMount() {
-    /** @type {UserService} */
-    UserService.getAuthProviders().then((providers) => {
+    PocketUserService.getAuthProviders().then((providers) => {
       this.setState({authProviders: providers});
     });
   }
@@ -74,12 +70,12 @@ class SignUp extends Component {
 
   async handleSignUp() {
     this.setState({backendErrors: ""});
-    
+
     const {username, email, password1, password2} = this.state.data;
 
     const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
-    const {success, data} = await UserService.signUp(
+    const {success, data} = await PocketUserService.signUp(
       username, email, password1, password2, securityQuestionLinkPage
     );
 
@@ -224,7 +220,7 @@ class SignUp extends Component {
                             className="brand pl-5 pr-5 mr-3"
                             icon={faGoogle}
                             type={AuthProviderType.signup}
-                            authProvider={UserService.getAuthProvider(
+                            authProvider={PocketUserService.getAuthProvider(
                               this.state.authProviders, "google"
                             )}
                           />
@@ -233,7 +229,7 @@ class SignUp extends Component {
                             className="brand pl-4 pr-4"
                             icon={faGithub}
                             type={AuthProviderType.signup}
-                            authProvider={UserService.getAuthProvider(
+                            authProvider={PocketUserService.getAuthProvider(
                               this.state.authProviders, "github"
                             )}
                           />

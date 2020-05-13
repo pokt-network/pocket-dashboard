@@ -1,4 +1,3 @@
-/* eslint-disable jsx-a11y/alt-text */
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 import "./VerifyEmail.scss";
@@ -51,11 +50,13 @@ class VerifyEmail extends Component {
   render() {
     const {email, unauthorized, resentEmail} = this.state;
 
+    /* eslint-disable jsx-a11y/alt-text */
     const icons = [
       <img key={0} src="/assets/user.svg" className="step-icon" />,
       <img key={1} src="/assets/mail.svg" className="step-icon" />,
       <img key={2} src="/assets/key.svg" className="step-icon" />,
     ];
+    /* eslint-enable jsx-a11y/alt-text */
 
     return (
       <Container fluid id="verify-email-page">
@@ -109,6 +110,7 @@ class VerifyEmail extends Component {
                   className="font-weight-light pt-2 pb-2 pl-5 pr-5"
                   variant="primary"
                   size={"md"}
+                  onClick={this.resendEmail}
                 >
                   Resend
                 </Button>
