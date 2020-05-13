@@ -58,19 +58,79 @@ router.post("/auth/login", async (request, response) => {
  */
 router.post("/auth/signup", async (request, response) => {
   try {
-    /** @type {{email:string, username:string, password1:string, password2:string, postValidationLink:string}} */
+    /** @type {{email:string, username:string, password1:string, password2:string, postValidationBaseLink:string}} */
     const data = request.body;
 
     const result = await userService.signupUser(data);
 
     if (result) {
-      // TODO: Generate jwt with time
-      const postValidationLink = `${data.postValidationLink}/`;
+      const postValidationLink = `${data.postValidationBaseLink}?d=${await userService.generateToken(data.email)}`;
 
       await EmailService.to(data.email).sendSignUpEmail(data.username, postValidationLink);
     }
 
     response.send(result);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+
+});
+
+/**
+ * User sign up using email.
+ */
+router.post("/auth/resend_signup_email", async (request, response) => {
+  try {
+    /** @type {{email:string, postValidationBaseLink:string}} */
+    const data = request.body;
+
+    const user = await userService.getUser(data.email);
+
+    if (user) {
+      const postValidationLink = `${data.postValidationBaseLink}?d=${await userService.generateToken(data.email)}`;
+
+      await EmailService.to(data.email).sendSignUpEmail(user.username, postValidationLink);
+    }
+
+    response.send(user !== undefined);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+
+});
+
+/**
+ * Validate token.
+ */
+router.post("/validate_token", async (request, response) => {
+  try {
+    /** @type {{token:string}} */
+    const data = request.body;
+
+    /** @type {{email:string}} */
+    const tokenPayload = await userService.decodeToken(data.token);
+
+    if (tokenPayload) {
+      const userEmail = tokenPayload.email;
+
+      if (await userService.userExists(userEmail)) {
+        const user = await userService.getUser(userEmail);
+
+        response.send({success: true, data: user});
+      }
+
+      response.send({success: false, data: "User does not exists or is invalid."});
+    } else {
+      response.send({success: false, data: "Invalid token."});
+    }
   } catch (e) {
     const error = {
       message: e.toString()

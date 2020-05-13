@@ -109,7 +109,7 @@ export class PocketApplicationService extends PocketBaseService {
     // Axios options format to send both query parameters and body data
     return axios({
       method: "post",
-      url: this._getURL("user"),
+      url: this._getURL("user/all"),
       data: {
         user
       },
@@ -150,7 +150,7 @@ export class PocketApplicationService extends PocketBaseService {
     const data = privateKey
     ? {application: applicationData, privateKey}
     : {application: applicationData};
-   
+
     return axios.post(this._getURL(""), data)
       .then(response => {
         if (response.status === 200) {
@@ -262,10 +262,10 @@ export class PocketApplicationService extends PocketBaseService {
       .then((response) => response.data);
   }
 
- 
+
   /**
    * Get application data from network
-   * 
+   *
    * @param {string} applicationAccountAddress Application account address.
    *
    * @returns {Promise|Promise<*>}

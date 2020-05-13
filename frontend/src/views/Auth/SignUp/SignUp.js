@@ -1,10 +1,7 @@
 import React, {Component} from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Link} from "react-router-dom";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {
-  AuthProviderButton,
-  AuthProviderType,
-} from "../../../core/components/AuthProviderButton";
+import {AuthProviderButton, AuthProviderType,} from "../../../core/components/AuthProviderButton";
 import UserService from "../../../core/services/PocketUserService";
 import "./SignUp.scss";
 import {ROUTE_PATHS} from "../../../_routes";
@@ -43,7 +40,6 @@ class SignUp extends Component {
     this.state = {
       authProviders: [],
       agreeTerms: false,
-      signedIn: false,
       data: {
         username: "",
         email: "",
@@ -77,15 +73,32 @@ class SignUp extends Component {
   async handleSignUp() {
     const {username, email, password1, password2} = this.state.data;
 
-    const {success, data: error} = await UserService.signUp(
+    const validationMsg = this.validateSignUp(
       username, email, password1, password2);
 
-    if (!success) {
-    // TODO: Show proper message on front end to user.
-    console.log(error.response.data.message);
+    if (validationMsg !== "") {
+      // TODO: Show proper message on front end to user.
+      console.log(validationMsg);
+      return;
     }
 
-    this.setState({signedIn: success});
+    const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
+
+    const {success, data: error} = await UserService.signUp(
+      username, email, password1, password2, securityQuestionLinkPage);
+
+    if (!success) {
+      // TODO: Show proper message on front end to user.
+      console.log(error.response.data.message);
+    } else {
+      // eslint-disable-next-line react/prop-types
+      this.props.history.push({
+        pathname: ROUTE_PATHS.verify_email,
+        state: {
+          email
+        }
+      });
+    }
   }
 
   handleChange({currentTarget: input}) {
@@ -96,26 +109,13 @@ class SignUp extends Component {
   }
 
   render() {
-    const {login, verify_email} = ROUTE_PATHS;
-    const {signedIn, agreeTerms} = this.state;
-
-    if (signedIn) {
-      return (
-        <Redirect
-          to={{
-            pathname: verify_email,
-            state: {
-              email: this.state.data.email,
-            },
-          }}
-        />
-      );
-    }
+    const {login} = ROUTE_PATHS;
+    const {agreeTerms} = this.state;
 
     return (
       <Container fluid id="signup" className={"auth-page"}>
         <Row>
-          <AuthSidebar />
+          <AuthSidebar/>
           <Col className={"content"}>
             <div className="change">
               <p>

@@ -5,15 +5,20 @@ import "./VerifyEmail.scss";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
+import {ROUTE_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
+import UserService from "../../../core/services/PocketUserService";
 
 class VerifyEmail extends Component {
+
   constructor(props, context) {
     super(props, context);
 
     this.state = {
       email: "",
     };
+
+    this.resendEmail = this.resendEmail.bind(this);
   }
 
   componentDidMount() {
@@ -23,11 +28,19 @@ class VerifyEmail extends Component {
       console.log("Error: you are not authorized to do this action");
       return;
     }
-
     // eslint-disable-next-line react/prop-types
     const {email} = this.props.location.state;
 
     this.setState({email});
+  }
+
+  resendEmail(e) {
+    const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
+
+    UserService.resendSignUpEmail(this.state.email, securityQuestionLinkPage)
+      .then(result => {
+        console.log(result);
+      });
   }
 
   render() {
