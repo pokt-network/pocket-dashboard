@@ -17,7 +17,7 @@ class DefaultLayout extends Component {
     }
 
     return (
-      <Container fluid className={"auth-page"}>
+      <Container fluid>
         <Row>
           <Col lg="12">
             <AppNavbar />
