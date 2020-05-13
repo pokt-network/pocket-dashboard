@@ -61,6 +61,24 @@ class PocketUserService extends PocketBaseService {
   }
 
   /**
+   * Validate a token.
+   *
+   * @param {string} token Token to validate.
+   *
+   * @return {Promise<*>}
+   */
+  validateToken(token) {
+    return axios.post(this._getURL("validate_token"), {token})
+      .then(response => response.data)
+      .catch(err => {
+        return {
+          success: false,
+          data: err
+        };
+      });
+  }
+
+  /**
    * Get available Auth Providers.
    *
    * @return {Promise|Promise<Array.<{name:string, consent_url:string}>>}
@@ -158,19 +176,21 @@ class PocketUserService extends PocketBaseService {
    * Register new user.
    *
    * @param {string} username Username of user to login.
-   * @param {string} email Wmail of user.
+   * @param {string} email Email of user.
    * @param {string} password1 Password of user.
    * @param {string} password2 Repeated password of user.
+   * @param {string} securityQuestionPageLink Link to security question page.
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async signUp(username, email, password1, password2) {
+  async signUp(username, email, password1, password2, securityQuestionPageLink) {
     const data = {
       username,
       email,
       password1,
-      password2
+      password2,
+      postValidationBaseLink: securityQuestionPageLink
     };
 
     return axios.post(this._getURL("auth/signup"), data)
@@ -183,6 +203,33 @@ class PocketUserService extends PocketBaseService {
 
         return {
           success: false
+        };
+      }).catch(err => {
+        return {
+          success: false,
+          data: err
+        };
+      });
+  }
+
+  /**
+   * Resend sign up email.
+   *
+   * @param {string} email Email of user.
+   * @param {string} securityQuestionPageLink Link to security question page.
+   *
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   */
+  resendSignUpEmail(email, securityQuestionPageLink) {
+    const data = {
+      email,
+      postValidationBaseLink: securityQuestionPageLink
+    };
+
+    return axios.post(this._getURL("auth/resend_signup_email"), data)
+      .then(response => {
+        return {
+          success: response.data
         };
       }).catch(err => {
         return {

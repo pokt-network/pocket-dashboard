@@ -21,6 +21,9 @@ export const Configurations = {
     }
   },
   auth: {
+    jwt: {
+      secret_key: process.env.JWT_SECRET_KEY
+    },
     providers: {
       google: {
         client_id: process.env.AUTH_PROVIDER_GOOGLE_CLIENT_ID,

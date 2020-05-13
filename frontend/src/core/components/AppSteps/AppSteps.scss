@@ -1,41 +1,75 @@
+@import "../../../scss/Core.scss";
+
 .app-steps {
   .rc-steps-icon {
-    display: none;
+    .step-icon {
+      width: 45%;
+      height: 100%;
+    }
   }
 
   .rc-steps-item-icon {
     background: #e9e9e9;
     border: 1px solid #e9e9e9;
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     line-height: 26px;
     text-align: center;
     border-radius: 50%;
     margin-left: 10px;
     margin-right: 8px;
     transition: background-color 0.3s, border-color 0.3s;
+    background: transparent;
+    border: 4px solid $white-smoke;
   }
 
   .rc-steps-item-process .rc-steps-item-icon,
   .rc-steps-item-finish .rc-steps-item-icon {
-    background: #686868;
-    border: 1px solid #686868;
+    border: 4px solid $primary-color;
+
   }
 
   .rc-steps-item-tail {
     position: absolute;
     left: 0;
     width: 100%;
-    top: 35px;
+    top: 55px;
     padding: 0 10px;
     z-index: -1;
   }
 
+  .rc-steps-item-tail {
+    left: 80px;
+    width: 75%;
+  }
+
   .rc-steps-item-tail:after {
+    border-radius: 15px;
     height: 12px;
+    background-color: $white-smoke;
   }
 
   .rc-steps-item-finish .rc-steps-item-tail:after {
-    background-color: #686868;
+    background-color: $primary-color;
+  }
+
+  .rc-steps-item-title {
+    font-size: 25px;
+    color: black;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-family: "Open Sans";
+    white-space: nowrap;
+
+
+  }
+
+  .rc-steps-item-content {
+    display: flex;
+    justify-content: center;
+
+    .rc-steps-item-title {
+      margin-left: 45px;
+    }
   }
 }

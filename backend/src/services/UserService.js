@@ -3,6 +3,8 @@ import {get_auth_providers, getAuthProvider} from "../providers/auth/Index";
 import {AuthProviderUser, EmailUser, PocketUser} from "../models/User";
 import {AnsweredSecurityQuestion} from "../models/SecurityQuestion";
 import BaseAuthProvider from "../providers/auth/BaseAuthProvider";
+import {Configurations} from "../_configuration";
+import jwt from "jsonwebtoken";
 
 const AUTH_TOKEN_TYPE = "access_token";
 const USER_COLLECTION_NAME = "Users";
@@ -80,7 +82,22 @@ export default class UserService extends BaseService {
     const filter = {email: userEmail};
     const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
-    return dbUser !== null;
+    return dbUser !== undefined;
+  }
+
+  /**
+   * Get User from DB.
+   *
+   * @param {string} email User email.
+   *
+   * @returns {Promise<PocketUser>} Pocket user.
+   * @async
+   */
+  async getUser(email) {
+    const filter = {email};
+    const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    return PocketUser.createPocketUserFromDB(dbUser);
   }
 
   /**
@@ -148,6 +165,9 @@ export default class UserService extends BaseService {
       throw Error("Passwords do not match");
     }
 
+    // Update last login of user on DB.
+    await this.__updateLastLogin(pocketUser);
+
     return PocketUser.removeSensitiveFields(pocketUser);
   }
 
@@ -161,11 +181,15 @@ export default class UserService extends BaseService {
    * @param {string} userData.password2 Password to validate against Password1.
    *
    * @returns {Promise<boolean>} If user was created or not.
-   * @throws {Error} If validation fails.
+   * @throws {Error} If validation fails or already exists.
    * @async
    */
   async signupUser(userData) {
     if (EmailUser.validate(userData)) {
+      if (await this.userExists(userData.email)) {
+        throw Error("This email is already registered");
+      }
+
       const emailPocketUser = await EmailUser.createEmailUserWithEncryptedPassword(userData.email, userData.username, userData.password1);
 
       // Create the user if not exists on DB.
@@ -206,6 +230,32 @@ export default class UserService extends BaseService {
     const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, filter, data);
 
     return result.result.ok === 1;
+  }
+
+  /**
+   * Generate token encapsulating the user email.
+   *
+   * @param {string} userEmail User email to encapsulate.
+   *
+   * @returns {Promise<string>} The token generated.
+   * @async
+   */
+  async generateToken(userEmail) {
+    const payload = {email: userEmail};
+
+    return jwt.sign(payload, Configurations.auth.jwt.secret_key);
+  }
+
+  /**
+   * Decode a token.
+   *
+   * @param {string} token Token to decode.
+   *
+   * @returns {Promise<*>} The token payload.
+   * @async
+   */
+  decodeToken(token) {
+    return jwt.verify(token, Configurations.auth.jwt.secret_key);
   }
 }
 

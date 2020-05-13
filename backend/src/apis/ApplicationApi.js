@@ -180,7 +180,7 @@ router.get("", async (request, response) => {
 /**
  * Get all user applications.
  */
-router.post("/user", async (request, response) => {
+router.post("/user/all", async (request, response) => {
   try {
 
     const limit = parseInt(getQueryOption(request, "limit"));

@@ -34,7 +34,6 @@ class PocketSecurityQuestionsService extends PocketBaseService {
     return axios.post(this._getURL("answered"), data)
       .then(response => {
         if (response.status === 200) {
-
           return {success: response.data};
         }
 
