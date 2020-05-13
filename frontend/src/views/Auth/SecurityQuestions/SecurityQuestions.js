@@ -39,7 +39,6 @@ class SecurityQuestions extends Component {
 
     if (queryParam === undefined || queryParam.d === undefined) {
       // TODO: Show message on frontend
-      console.log("Error: you are not authorized to do this action");
       return;
     }
 
@@ -48,7 +47,6 @@ class SecurityQuestions extends Component {
         this.setState({user: result.data});
       } else {
         // TODO: Show proper message on front end to user.
-        console.log(result.data);
       }
     });
 
@@ -121,18 +119,15 @@ class SecurityQuestions extends Component {
 
     if (validationMsg !== "") {
       // TODO: Show proper message on front end to user.
-      console.log(validationMsg);
       return;
     }
 
     const {
       success,
-      data: error,
     } = await SecurityQuestionsService.saveSecurityQuestionAnswers(user.email, questions);
 
     if (!success) {
       // TODO: Properly log error in frontend
-      console.log(error.data.message);
       return;
     }
 

@@ -78,18 +78,16 @@ class SignUp extends Component {
 
     if (validationMsg !== "") {
       // TODO: Show proper message on front end to user.
-      console.log(validationMsg);
       return;
     }
 
     const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
-    const {success, data: error} = await UserService.signUp(
+    const {success} = await UserService.signUp(
       username, email, password1, password2, securityQuestionLinkPage);
 
     if (!success) {
       // TODO: Show proper message on front end to user.
-      console.log(error.response.data.message);
     } else {
       // eslint-disable-next-line react/prop-types
       this.props.history.push({

@@ -25,7 +25,6 @@ class VerifyEmail extends Component {
     // eslint-disable-next-line react/prop-types
     if (this.props.location.state === undefined) {
       // TODO: Show message on frontend
-      console.log("Error: you are not authorized to do this action");
       return;
     }
     // eslint-disable-next-line react/prop-types
