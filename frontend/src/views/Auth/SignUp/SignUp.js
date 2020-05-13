@@ -39,6 +39,7 @@ class SignUp extends Component {
 
     this.state = {
       authProviders: [],
+      backendErrors: "",
       agreeTerms: false,
       data: {
         username: "",
@@ -64,36 +65,29 @@ class SignUp extends Component {
     if (yupErr) {
       return yupErr;
     }
-
-    // TODO: Handle backend errors
     return errors;
   }
 
   async handleSignUp() {
+    this.setState({backendErrors: ""});
+
     const {username, email, password1, password2} = this.state.data;
-
-    const validationMsg = await this.validate(username, email, password1, password2);
-
-    if (validationMsg !== "") {
-      // TODO: Show proper message on front end to user.
-      console.log(validationMsg);
-      return;
-    }
 
     const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
-    const {success} = await PocketUserService.signUp(
-      username, email, password1, password2, securityQuestionLinkPage);
+    const {success, data} = await PocketUserService.signUp(
+      username, email, password1, password2, securityQuestionLinkPage
+    );
 
     if (!success) {
-      // TODO: Show proper message on front end to user.
+      this.setState({backendErrors: data.response.data.message});
     } else {
       // eslint-disable-next-line react/prop-types
       this.props.history.push({
         pathname: ROUTE_PATHS.verify_email,
         state: {
-          email
-        }
+          email,
+        },
       });
     }
   }
@@ -107,12 +101,12 @@ class SignUp extends Component {
 
   render() {
     const {login} = ROUTE_PATHS;
-    const {agreeTerms} = this.state;
+    const {agreeTerms, backendErrors} = this.state;
 
     return (
       <Container fluid id="signup" className={"auth-page"}>
         <Row>
-          <AuthSidebar/>
+          <AuthSidebar />
           <Col className={"content"}>
             <div className="change">
               <p>
@@ -124,6 +118,7 @@ class SignUp extends Component {
               <Col lg={{span: 5, offset: 3}}>
                 <div className={"main"}>
                   <h2>Sign up</h2>
+                  <p className="error">{backendErrors}</p>
                   <Formik
                     validate={this.validate}
                     onSubmit={(data) => {

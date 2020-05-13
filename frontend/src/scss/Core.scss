@@ -181,22 +181,56 @@ input {
 
 .alert {
   font-family: "Open Sans";
-  font-weight: 300;
-}
-
-.alert.alert-light {
-  background-color: $light-gray;
-  color: rgba(0, 0, 0, 0.7);
-}
-
-.alert.alert-primary {
+  padding-top: 20px;
+  padding-bottom: 10px;
   background-color: $dark-blue;
   border-color: $dark-blue;
   color: white;
   padding-left: 30px;
-  padding-bottom: 0px;
-  padding-top: 10px;
   border-radius: 15px;
+
+  p {
+    font-weight: 700 !important;
+    font-size: 1.2em !important;
+  }
+
+  .head {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  .icon {
+    width: 3%;
+    margin-right: 5px;
+  }
+}
+
+.alert.alert-danger {
+  @for $i from 1 through 6 {
+    h#{$i} {
+      font-weight: bold;
+      color: #fa5849;
+    }
+  }
+}
+
+.alert.alert-warning {
+  @for $i from 1 through 6 {
+    h#{$i} {
+      font-weight: bold;
+      color: #e6ad3a;
+    }
+  }
+}
+
+.alert.alert-primary {
+  @for $i from 1 through 6 {
+    h#{$i} {
+      font-weight: bold;
+      color: $primary-color;
+    }
+  }
 
   button {
     min-width: unset;
@@ -433,11 +467,17 @@ button.link {
   border-color: $border-blue;
 }
 
-.invalid-feedback {
+.invalid-feedback,
+.error {
   margin-left: 10px;
-  text-align: right;
   padding-right: 10px;
   color: #fc635f;
+  font-size: 16px;
+  font-weight: bold !important;
+}
+
+.invalid-feedback {
+  text-align: right;
 }
 
 .text {
