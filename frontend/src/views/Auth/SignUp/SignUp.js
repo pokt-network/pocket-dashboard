@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {AuthProviderButton, AuthProviderType,} from "../../../core/components/AuthProviderButton";
+import {AuthProviderButton, AuthProviderType} from "../../../core/components/AuthProviderButton";
 import UserService from "../../../core/services/PocketUserService";
 import "./SignUp.scss";
 import {ROUTE_PATHS} from "../../../_routes";
