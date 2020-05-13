@@ -5,12 +5,13 @@ import Navbar from "../../../core/components/Navbar";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import SecurityQuestionsService from "../../../core/services/PocketSecurityQuestionsService";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
-import {DASHBOARD_PATHS, _getDashboardPath} from "../../../_routes";
+import PocketUserService from "../../../core/services/PocketUserService";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import qs from "qs";
 
 const QUESTIONS_QUANTITY = 3;
 
 class SecurityQuestions extends Component {
-  // TODO: Integrate with backend
 
   constructor(props) {
     super(props);
@@ -21,8 +22,7 @@ class SecurityQuestions extends Component {
 
     this.state = {
       securityQuestions: [],
-      // TODO: Define where email would be obtained (I recommend from URL query)
-      email: "",
+      user: null,
       chosenQuestions: new Array(QUESTIONS_QUANTITY),
       data: {
         answer1: "",
@@ -33,11 +33,62 @@ class SecurityQuestions extends Component {
   }
 
   componentDidMount() {
+
+    // eslint-disable-next-line react/prop-types
+    const queryParam = qs.parse(this.props.location.search, {ignoreQueryPrefix: true});
+
+    if (queryParam === undefined || queryParam.d === undefined) {
+      // TODO: Show message on frontend
+      return;
+    }
+
+    PocketUserService.validateToken(queryParam.d).then(result => {
+      if (result.success) {
+        this.setState({user: result.data});
+      } else {
+        // TODO: Show proper message on front end to user.
+      }
+    });
+
     SecurityQuestionsService.getSecurityQuestions().then((questions) => {
       const securityQuestions = ["Select Question", ...questions];
 
       this.setState({securityQuestions});
     });
+  }
+
+
+  validateQuestion(ordinalNumber, question) {
+    if (question.question === undefined) {
+      return `${ordinalNumber} question cannot be empty`;
+    }
+
+    if (question.answer === "") {
+      return `${ordinalNumber} answer cannot be empty`;
+    }
+
+    return "";
+  }
+
+
+  validateQuestions(questions) {
+    const firstQuestion = this.validateQuestion("First", questions[0]);
+    const secondQuestion = this.validateQuestion("Second", questions[1]);
+    const thirdQuestion = this.validateQuestion("Third", questions[2]);
+
+    if (firstQuestion !== "") {
+      return firstQuestion;
+    }
+
+    if (secondQuestion !== "") {
+      return secondQuestion;
+    }
+
+    if (thirdQuestion !== "") {
+      return thirdQuestion;
+    }
+
+    return "";
   }
 
   handleSelect(e, index) {
@@ -56,7 +107,7 @@ class SecurityQuestions extends Component {
 
   async sendQuestions(e) {
     e.preventDefault();
-    const {email, chosenQuestions} = this.state;
+    const {user, chosenQuestions} = this.state;
     const {answer1, answer2, answer3} = this.state.data;
     const questions = [
       {question: chosenQuestions[0], answer: answer1},
@@ -64,17 +115,23 @@ class SecurityQuestions extends Component {
       {question: chosenQuestions[2], answer: answer3},
     ];
 
+    const validationMsg = this.validateQuestions(questions);
+
+    if (validationMsg !== "") {
+      // TODO: Show proper message on front end to user.
+      return;
+    }
+
     const {
       success,
-      data: error,
-    } = await SecurityQuestionsService.saveSecurityQuestionAnswers(
-      email, questions);
+    } = await SecurityQuestionsService.saveSecurityQuestionAnswers(user.email, questions);
 
     if (!success) {
       // TODO: Properly log error in frontend
-      console.log(error.data.message);
       return;
     }
+
+    PocketUserService.saveUserInCache(user, true);
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.home));
@@ -92,7 +149,7 @@ class SecurityQuestions extends Component {
 
     return (
       <Container fluid id={"security-questions-page"}>
-        <Navbar />
+        <Navbar/>
         <Row className="mb-3">
           <Col lg={{span: 8, offset: 2}}>
             <AppSteps
@@ -129,6 +186,7 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
+              <hr/>
               <Form.Group>
                 <Form.Label>Question 2</Form.Label>
                 <Form.Control
@@ -146,6 +204,7 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
+              <hr/>
               <Form.Group>
                 <Form.Label>Question 3</Form.Label>
                 <Form.Control

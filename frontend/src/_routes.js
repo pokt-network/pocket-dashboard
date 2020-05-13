@@ -30,6 +30,8 @@ import EditNode from "./views/Nodes/EditNode/EditNode";
 import ImportNode from "./views/Nodes/ImportNode/ImportNode";
 import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
 import OrderSummary from "./views/Payment/OrderSummary/OrderSummary";
+import ResetPassword from "./views/Auth/ResetPassword/ResetPassword";
+
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -38,6 +40,7 @@ export const ROUTE_PATHS = {
   forgot_password: "/forgot-password",
   security_questions: "/security-questions",
   verify_email: "/verify-email",
+  reset_password: "/reset-password"
 };
 
 export const DASHBOARD_PATHS = {
@@ -85,6 +88,12 @@ const pageRoutes = [
     exact: true,
     name: "Forgot Password",
     component: ForgotPassword,
+  },
+  {
+    path: ROUTE_PATHS.reset_password,
+    exact: true,
+    name: "Reset Password",
+    component: ResetPassword,
   },
   {
     path: ROUTE_PATHS.security_questions,

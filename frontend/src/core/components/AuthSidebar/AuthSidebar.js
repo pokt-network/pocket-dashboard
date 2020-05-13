@@ -2,13 +2,12 @@ import React, {Component} from "react";
 import {Row} from "react-bootstrap";
 import Sidebar from "../Sidebar";
 import "./AuthSidebar.scss";
-import {ReactComponent as LogoWhite} from "../../../scss/svg/logo-white.svg";
 
 export default class AuthSidebar extends Component {
   render() {
     return (
       <Sidebar xs={4} sm={3} lg={3}>
-        <LogoWhite id="logo-white" />
+        <img src="/assets/logo-white.svg" id="logo-white" alt="" />
         <div id="auth-sidebar" style={{paddingLeft: 60}}>
           <Row>
             <h1>
