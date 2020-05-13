@@ -1,16 +1,16 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React, {Component} from "react";
 import "./SecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import SecurityQuestionsService from "../../../core/services/PocketSecurityQuestionsService";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
-import PocketUserService from "../../../core/services/PocketUserService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import qs from "qs";
+import {DASHBOARD_PATHS, _getDashboardPath} from "../../../_routes";
 
 const QUESTIONS_QUANTITY = 3;
 
 class SecurityQuestions extends Component {
+  // TODO: Integrate with backend
 
   constructor(props) {
     super(props);
@@ -21,7 +21,8 @@ class SecurityQuestions extends Component {
 
     this.state = {
       securityQuestions: [],
-      user: null,
+      // TODO: Define where email would be obtained (I recommend from URL query)
+      email: "",
       chosenQuestions: new Array(QUESTIONS_QUANTITY),
       data: {
         answer1: "",
@@ -32,64 +33,11 @@ class SecurityQuestions extends Component {
   }
 
   componentDidMount() {
-
-    // eslint-disable-next-line react/prop-types
-    const queryParam = qs.parse(this.props.location.search, {ignoreQueryPrefix: true});
-
-    if (queryParam === undefined || queryParam.d === undefined) {
-      // TODO: Show message on frontend
-      console.log("Error: you are not authorized to do this action");
-      return;
-    }
-
-    PocketUserService.validateToken(queryParam.d).then(result => {
-      if (result.success) {
-        this.setState({user: result.data});
-      } else {
-        // TODO: Show proper message on front end to user.
-        console.log(result.data);
-      }
-    });
-
     SecurityQuestionsService.getSecurityQuestions().then((questions) => {
-      const securityQuestions = ["Select one", ...questions];
+      const securityQuestions = ["Select Question", ...questions];
 
       this.setState({securityQuestions});
     });
-  }
-
-
-  validateQuestion(ordinalNumber, question) {
-    if (question.question === undefined) {
-      return `${ordinalNumber} question cannot be empty`;
-    }
-
-    if (question.answer === "") {
-      return `${ordinalNumber} answer cannot be empty`;
-    }
-
-    return "";
-  }
-
-
-  validateQuestions(questions) {
-    const firstQuestion = this.validateQuestion("First", questions[0]);
-    const secondQuestion = this.validateQuestion("Second", questions[1]);
-    const thirdQuestion = this.validateQuestion("Third", questions[2]);
-
-    if (firstQuestion !== "") {
-      return firstQuestion;
-    }
-
-    if (secondQuestion !== "") {
-      return secondQuestion;
-    }
-
-    if (thirdQuestion !== "") {
-      return thirdQuestion;
-    }
-
-    return "";
   }
 
   handleSelect(e, index) {
@@ -108,7 +56,7 @@ class SecurityQuestions extends Component {
 
   async sendQuestions(e) {
     e.preventDefault();
-    const {user, chosenQuestions} = this.state;
+    const {email, chosenQuestions} = this.state;
     const {answer1, answer2, answer3} = this.state.data;
     const questions = [
       {question: chosenQuestions[0], answer: answer1},
@@ -116,26 +64,17 @@ class SecurityQuestions extends Component {
       {question: chosenQuestions[2], answer: answer3},
     ];
 
-    const validationMsg = this.validateQuestions(questions);
-
-    if (validationMsg !== "") {
-      // TODO: Show proper message on front end to user.
-      console.log(validationMsg);
-      return;
-    }
-
     const {
       success,
       data: error,
-    } = await SecurityQuestionsService.saveSecurityQuestionAnswers(user.email, questions);
+    } = await SecurityQuestionsService.saveSecurityQuestionAnswers(
+      email, questions);
 
     if (!success) {
       // TODO: Properly log error in frontend
       console.log(error.data.message);
       return;
     }
-
-    PocketUserService.saveUserInCache(user, true);
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.home));
@@ -145,23 +84,33 @@ class SecurityQuestions extends Component {
     const {securityQuestions} = this.state;
     const {answer1, answer2, answer3} = this.state.data;
 
+    const icons = [
+      <img key={0} src="/assets/user.svg" className="step-icon" />,
+      <img key={1} src="/assets/mail.svg" className="step-icon" />,
+      <img key={2} src="/assets/key.svg" className="step-icon" />,
+    ];
+
     return (
       <Container fluid id={"security-questions-page"}>
-        <Navbar/>
+        <Navbar />
         <Row className="mb-3">
           <Col lg={{span: 8, offset: 2}}>
             <AppSteps
+              icons={icons}
               steps={[
                 "Account Created",
                 "Email Verified",
                 "Security Questions",
               ]}
-              current={1}
+              current={2}
             />
           </Col>
         </Row>
-        <Row>
-          <Col id="main" md={{span: 8, offset: 2}} lg={{span: 6, offset: 3}}>
+        <Row className="mt-5">
+          <Col id="main" md={{span: 6, offset: 2}} lg={{span: 4, offset: 4}}>
+            <h1 className="text-uppercase">
+              Please answer the security questions befere creating a new account
+            </h1>
             <Form onSubmit={this.sendQuestions}>
               <Form.Group>
                 <Form.Label>Question 1</Form.Label>
@@ -180,7 +129,6 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <hr/>
               <Form.Group>
                 <Form.Label>Question 2</Form.Label>
                 <Form.Control
@@ -198,7 +146,6 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <hr/>
               <Form.Group>
                 <Form.Label>Question 3</Form.Label>
                 <Form.Control
@@ -216,8 +163,13 @@ class SecurityQuestions extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
-              <Button type="submit" variant="dark" size={"lg"} block>
-                Save
+              <Button
+                className="font-weight-light mb-5 pt-2 pb-2 pl-5 pr-5"
+                type="submit"
+                variant="primary"
+                size={"md"}
+              >
+                Continue
               </Button>
             </Form>
           </Col>

@@ -1,8 +1,5 @@
 #auth-sidebar {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  height: 100%;
+  margin-top: 35%;
 
   h1 {
     color: #ffffff;
@@ -15,6 +12,6 @@
   }
 
   .row:last-of-type {
-    padding-bottom: 135px;
+    padding-bottom: 350px;
   }
 }

@@ -9,8 +9,11 @@ import UserService from "../../../core/services/PocketUserService";
 import {ROUTE_PATHS} from "../../../_routes";
 import {Link, Redirect} from "react-router-dom";
 import AuthSidebar from "../../../core/components/AuthSidebar/AuthSidebar";
-import {faGithub} from "@fortawesome/free-brands-svg-icons";
-import {faGoogle} from "@fortawesome/free-brands-svg-icons";
+import {faGithub, faGoogle} from "@fortawesome/free-brands-svg-icons";
+import {Formik} from "formik";
+import * as yup from "yup";
+import {VALIDATION_MESSAGES} from "../../../_constants";
+import {validateYup} from "../../../_helpers";
 
 class Login extends Component {
   constructor(props, context) {
@@ -18,12 +21,21 @@ class Login extends Component {
 
     this.handleLogin = this.handleLogin.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.validate = this.validate.bind(this);
+
+    this.schema = yup.object().shape({
+      email: yup
+        .string()
+        .email(VALIDATION_MESSAGES.EMAIL)
+        .required(VALIDATION_MESSAGES.REQUIRED),
+      password: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
+    });
 
     this.state = {
       authProviders: [],
       loggedIn: false,
       data: {
-        username: "",
+        email: "",
         password: "",
       },
     };
@@ -36,41 +48,10 @@ class Login extends Component {
     });
   }
 
-  /**
-   * Validate user login data.
-   *
-   * @param {string} username Username of user to login.
-   * @param {string} password Password of user.
-   *
-   * @return {string} Message about error or empty if there's none
-   */
-  validateLogin(username, password) {
-    if (username === "" || password === "") {
-      return "Username or password cannot be empty";
-    }
-    return "";
-  }
-
   async handleLogin(e) {
     e.preventDefault();
-    const {username, password} = this.state.data;
 
-    const validationMsg = this.validateLogin(username, password);
-
-    if (validationMsg !== "") {
-      // TODO: Show proper message on front end to user.
-      console.log(validationMsg);
-      return;
-    }
-
-    const {success, data: error} = await UserService.login(username, password);
-
-    if (!success) {
-      // TODO: Show proper message on front end to user.
-      console.log(error.response.data.message);
-    }
-
-    this.setState({loggedIn: success});
+    this.setState({loggedIn: true});
   }
 
   handleChange({currentTarget: input}) {
@@ -80,10 +61,35 @@ class Login extends Component {
     this.setState({data});
   }
 
+  async validate(values) {
+    let errors = {};
+    let yupErr;
+
+    yupErr = await validateYup(values, this.schema);
+
+    if (yupErr) {
+      return yupErr;
+    }
+
+    const {success, data: error} = await UserService.login(
+      values.email, values.password);
+
+    if (!success) {
+      const {message: err} = error.response.data;
+
+      if (err === "Error: Passwords do not match") {
+        errors.password = "Wrong password";
+      } else if (err === "Error: Invalid username.") {
+        errors.email = "invalid email.";
+      }
+    }
+
+    return errors;
+  }
+
   render() {
     const {home, signup, forgot_password} = ROUTE_PATHS;
-    const {loggedIn, data} = this.state;
-    const {username, password} = data;
+    const {loggedIn} = this.state;
 
     if (loggedIn) {
       return <Redirect to={home} />;
@@ -104,54 +110,86 @@ class Login extends Component {
               <Col lg={{span: 5, offset: 3}}>
                 <div className={"main"}>
                   <h2>Login</h2>
-                  <Form onSubmit={this.handleLogin} id={"main-form"}>
-                    <Form.Group>
-                      <Form.Label>Email</Form.Label>
-                      <Form.Control
-                        name="username"
-                        value={username}
-                        onChange={this.handleChange}
-                      />
-                    </Form.Group>
-                    <Form.Group>
-                      <Form.Label>Password</Form.Label>
-                      <Form.Control
-                        type="password"
-                        name="password"
-                        placeholder="**************"
-                        value={password}
-                        onChange={this.handleChange}
-                      />
-                    </Form.Group>
-                    <p>
-                      <Link to={forgot_password}>Forgot your password?</Link>
-                    </p>
+                  <Formik
+                    validate={this.validate}
+                    // validationSchema={this.schema}
+                    onSubmit={() => {
+                      this.setState({loggedIn: true});
+                    }}
+                    initialValues={this.state.data}
+                    values={this.state.data}
+                    validateOnChange={false}
+                    validateOnBlur={false}
+                  >
+                    {({handleSubmit, handleChange, values, errors}) => (
+                      <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
+                        <Form.Group>
+                          <Form.Label>Email</Form.Label>
 
-                    <Button type="submit" size="lg" variant="primary" block>
-                      Sign in
-                    </Button>
-                    <div className="divider mt-4 mb-3">Or</div>
-                    <div id={"provider-buttons"}>
-                      <AuthProviderButton
-                        block={false}
-                        className="brand pl-5 pr-5 mr-3"
-                        icon={faGoogle}
-                        type={AuthProviderType.login}
-                        authProvider={UserService.getAuthProvider(
-                          this.state.authProviders, "google"
-                        )}
-                      />
-                      <AuthProviderButton
-                        block={false}
-                        className="brand pl-5 pr-5"
-                        icon={faGithub}
-                        type={AuthProviderType.login}
-                        authProvider={UserService.getAuthProvider(
-                          this.state.authProviders, "github"
-                        )}
-                      />
-                    </div>
-                  </Form>
+                          <Form.Control
+                            name="email"
+                            placeholder="example@email.com"
+                            value={values.email}
+                            onChange={handleChange}
+                            isInvalid={!!errors.email}
+                          />
+                          <Form.Control.Feedback type="invalid">
+                            {errors.email}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                        <Form.Group className="password">
+                          <Form.Label>Password</Form.Label>
+                          <Form.Control
+                            type="password"
+                            name="password"
+                            placeholder="**************"
+                            value={values.password}
+                            onChange={handleChange}
+                            isInvalid={!!errors.password}
+                          />
+                          {/* This is only to validate password submission */}
+                          {/* <Field
+                            name="password"
+                            style={{display: "none"}}
+                            validate={this.validatePassword}
+                          /> */}
+                          <Form.Control.Feedback type="invalid">
+                            {errors.password}
+                          </Form.Control.Feedback>
+                        </Form.Group>
+                        <p>
+                          <Link to={forgot_password}>
+                            Forgot your password?
+                          </Link>
+                        </p>
+
+                        <Button type="submit" size="md" variant="primary" block>
+                          Sign in
+                        </Button>
+                        <div className="divider mt-4 mb-3">Or</div>
+                        <div id={"provider-buttons"}>
+                          <AuthProviderButton
+                            block={true}
+                            className="brand pl-5 pr-5 mr-3"
+                            icon={faGoogle}
+                            type={AuthProviderType.login}
+                            authProvider={UserService.getAuthProvider(
+                              this.state.authProviders, "google"
+                            )}
+                          />
+                          <AuthProviderButton
+                            block={true}
+                            className="brand pl-4 pr-4"
+                            icon={faGithub}
+                            type={AuthProviderType.login}
+                            authProvider={UserService.getAuthProvider(
+                              this.state.authProviders, "github"
+                            )}
+                          />
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
                 </div>
               </Col>
             </Row>
