@@ -3,6 +3,14 @@ import {PropTypes} from "prop-types";
 import {Alert} from "react-bootstrap";
 
 class AppAlert extends Component {
+  renderTitle(title) {
+    if (typeof title === "string") {
+      return <h4>{title}</h4>;
+    } else {
+      return title;
+    }
+  }
+
   render() {
     const {title, children, variant, ...restProps} = this.props;
 
@@ -17,7 +25,7 @@ class AppAlert extends Component {
           {iconPaths[variant] && (
             <img src={iconPaths[variant]} className="icon" alt="" />
           )}
-          {typeof title === "string" ? <h4>{title}</h4> : {title}}
+          {this.renderTitle(title)}
         </span>
         <div style={{marginLeft: iconPaths[variant] ? 60 : 0}} className="body">
           {children}
