@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import "./ForgotPassword.scss";
 import Navbar from "../../../core/components/Navbar";
-import PocketBox from "../../../core/PocketBox/PocketBox";
+import PocketBox from "../../../core/components/PocketBox/PocketBox";
 
 class ForgotPassword extends Component {
   constructor(props, context) {
