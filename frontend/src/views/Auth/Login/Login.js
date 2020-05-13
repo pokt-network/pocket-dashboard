@@ -38,6 +38,7 @@ class Login extends Component {
         email: "",
         password: "",
       },
+      user: {},
     };
   }
 
@@ -71,17 +72,19 @@ class Login extends Component {
       return yupErr;
     }
 
-    const {success, data: error} = await UserService.login(
+    const {success, data} = await UserService.login(
       values.email, values.password);
 
     if (!success) {
-      const {message: err} = error.response.data;
+      const {message: err} = data.response.data;
 
       if (err === "Error: Passwords do not match") {
         errors.password = "Wrong password";
       } else if (err === "Error: Invalid username.") {
         errors.email = "invalid email.";
       }
+    } else {
+      this.setState({user: data});
     }
 
     return errors;
@@ -114,6 +117,8 @@ class Login extends Component {
                     validate={this.validate}
                     // validationSchema={this.schema}
                     onSubmit={() => {
+                      UserService.saveUserInCache(this.state.user, true);
+                      UserService.showWelcomeMessage(true);
                       this.setState({loggedIn: true});
                     }}
                     initialValues={this.state.data}
