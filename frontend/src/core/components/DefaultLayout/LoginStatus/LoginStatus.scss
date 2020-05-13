@@ -1,1 +1,13 @@
+@import "../../../../scss/Core.scss";
 
+.user-dropdown {
+  .dropdown-item {
+    font-weight: 300;
+
+    .icon {
+      color: $primary-color;
+      margin-right: 5px;
+      width: 20%;
+    }
+  }
+}
