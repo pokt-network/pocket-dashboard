@@ -8,7 +8,8 @@ import {
   Node,
   NodeParams,
   Pocket,
-  RawTxResponse
+  RawTxResponse,
+  StakingStatus
 } from "@pokt-network/pocket-js";
 import {PocketAAT} from "@pokt-network/aat-js";
 import {Configurations} from "../_configuration";
@@ -222,7 +223,7 @@ export default class PocketService {
   /**
    * Get Applications data.
    *
-   * @param {string} status Status of the apps to retrieve.
+   * @param {StakingStatus} status Status of the apps to retrieve.
    *
    * @returns {Promise<Application[]>} The applications data.
    * @throws Error If Query fails.

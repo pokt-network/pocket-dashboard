@@ -262,7 +262,7 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Get staked application summary.
+   * Get staked application summary from network.
    *
    * @returns {Promise<StakedApplicationSummary>} Summary data of staked applications.
    * @async
@@ -270,26 +270,17 @@ export default class ApplicationService extends BaseService {
   async getStakedApplicationSummary() {
     try {
       /** @type {Application[]} */
-      const stakedApplications = await this.pocketService.getApplications("staked");
+      const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
 
-      // noinspection JSValidateTypes
       const totalApplications = bigInt(stakedApplications.length);
 
-      // noinspection JSValidateTypes
-      /** @type {bigint} */
-      const totalStaked = stakedApplications.reduce((acc, appA) => bigInt(appA.stakedTokens).add(acc), 0n);
+      const totalStaked = stakedApplications.reduce((acc, appA) => bigInt(appA.stakedTokens).add(acc), bigInt(0));
+      const totalRelays = stakedApplications.reduce((acc, appA) => bigInt(appA.maxRelays).add(acc), bigInt(0));
 
-      // noinspection JSValidateTypes
-      /** @type {bigint} */
-      const totalRelays = stakedApplications.reduce((acc, appA) => bigInt(appA.maxRelays).add(acc), 0n);
-
-      // noinspection JSUnresolvedFunction
       const averageStaked = totalStaked.divide(totalApplications);
-      // noinspection JSUnresolvedFunction
       const averageMaxRelays = totalRelays.divide(totalApplications);
 
-      return new StakedApplicationSummary(totalApplications.value.toString(), averageStaked.value.toString(), averageMaxRelays.value.toString());
-
+      return new StakedApplicationSummary(totalApplications.toString(), averageStaked.toString(), averageMaxRelays.toString());
     } catch (e) {
       return new StakedApplicationSummary("0n", "0n", "0n");
     }
