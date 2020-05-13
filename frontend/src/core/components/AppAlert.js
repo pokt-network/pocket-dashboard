@@ -17,7 +17,7 @@ class AppAlert extends Component {
           {iconPaths[variant] && (
             <img src={iconPaths[variant]} className="icon" alt="" />
           )}
-          {title}
+          {typeof title === "string" ? <h4>{title}</h4> : {title}}
         </span>
         <div style={{marginLeft: iconPaths[variant] ? 60 : 0}} className="body">
           {children}

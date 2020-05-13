@@ -147,12 +147,6 @@ class Login extends Component {
                             onChange={handleChange}
                             isInvalid={!!errors.password}
                           />
-                          {/* This is only to validate password submission */}
-                          {/* <Field
-                            name="password"
-                            style={{display: "none"}}
-                            validate={this.validatePassword}
-                          /> */}
                           <Form.Control.Feedback type="invalid">
                             {errors.password}
                           </Form.Control.Feedback>
