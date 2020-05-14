@@ -1,0 +1,46 @@
+@import "../../../scss/Core.scss";
+
+#passphrase {
+
+  h1,
+  h2,
+  h3 {
+    text-transform: uppercase;
+  }
+
+  h1 {
+    color: #474747;
+    font-weight: 800;
+    margin-bottom: 25px;
+  }
+
+  h2,
+  h3 {
+    color: $dark-gray;
+  }
+
+  p {
+    font-size: 1.1em;
+  }
+
+  .show-passphrase {
+    display: flex;
+
+    .form-group {
+      flex-grow: 2;
+
+      .invalid-feedback {
+        position: absolute;
+        padding-right: 85px;
+      }
+    }
+
+    img {
+      width: 4%;
+      cursor: pointer;
+      margin-left: 15px;
+      margin-right: 10px;
+      margin-bottom: 18px;
+    }
+  }
+}

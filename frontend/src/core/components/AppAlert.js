@@ -12,7 +12,7 @@ class AppAlert extends Component {
   }
 
   render() {
-    const {title, children, variant, ...restProps} = this.props;
+    const {title, children, className, variant, ...restProps} = this.props;
 
     const iconPaths = {
       warning: "/assets/yellow_alert.svg",
@@ -20,7 +20,7 @@ class AppAlert extends Component {
     };
 
     return (
-      <Alert variant={variant} {...restProps}>
+      <Alert className={className} variant={variant} {...restProps}>
         <span className="head">
           {iconPaths[variant] && (
             <img src={iconPaths[variant]} className="icon" alt="" />
@@ -37,6 +37,7 @@ class AppAlert extends Component {
 
 AppAlert.defaultProps = {
   variant: "primary",
+  className: "",
 };
 
 AppAlert.propTypes = {
@@ -51,6 +52,7 @@ AppAlert.propTypes = {
     PropTypes.string,
   ]),
   restProps: PropTypes.any,
+  className: PropTypes.string,
 };
 
 export default AppAlert;
