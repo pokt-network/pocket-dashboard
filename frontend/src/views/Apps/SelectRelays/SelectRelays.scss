@@ -1,3 +1,27 @@
+@import "../../../scss/Core.scss";
+
+.rc-slider-tooltip {
+
+  .rc-slider-tooltip-arrow {
+    border-top-color: #06022e !important;
+  }
+
+  .rc-slider-tooltip-inner {
+    background-color: $dark-blue;
+    font-size: 1.2em;
+    height: 100%;
+    padding-left: 35px;
+    padding-right: 35px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-top: -35px;
+    border-radius: $default-border-radius;
+    color: $primary-color;
+    box-shadow: unset;
+    font-weight: 700;
+  }
+}
+
 #select-relays {
   .price-card {
 
@@ -15,17 +39,37 @@
     }
   }
 
+  h4.alert-relays {
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+
+  p.alert-relays {
+    font-weight: 400 !important;
+  }
+
   .relays-calc {
     display: flex;
 
     .slider-wrapper {
+      height: 285px;
+      margin-bottom: 50px;
+      display: flex;
+      align-items: center;
       flex-grow: 2;
       padding: 60px 40px;
-      background-color: rgb(235, 235, 235);
       border-radius: 5px;
+      box-shadow: $default-box-shadow;
 
       .rc-slider-mark-text {
         font-size: 1.5em;
+        font-weight: 300;
+        font-family: "Lato";
+      }
+
+      .rc-slider-mark-text:last-of-type {
+        margin-left: -42px;
+        width: 100%;
       }
 
       .rc-slider-dot {
@@ -48,6 +92,53 @@
 
     .p-badge p {
       font-weight: bold;
+    }
+  }
+
+  .summary {
+    padding-left: 30px;
+    padding-right: 30px;
+    box-shadow: $default-box-shadow;
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 20px;
+
+      p {
+        color: $light-gray;
+        font-weight: 800;
+        font-size: 1.5em;
+      }
+
+      .form-control {
+        width: 40%;
+        text-align: right;
+      }
+
+    }
+
+    .item.total {
+      margin-top: 10px;
+
+      p {
+        text-transform: uppercase;
+      }
+
+      p:first-of-type {
+        color: $dark-gray;
+      }
+
+      p:last-of-type {
+        color: $primary-color;
+      }
+    }
+
+    hr {
+      border: none;
+      height: 2px;
+      background-color: $light-gray;
     }
   }
 

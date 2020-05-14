@@ -9,6 +9,7 @@ import CreateForm from "../../../core/components/CreateForm/CreateForm";
 import {appFormSchema, generateIcon} from "../../../_helpers";
 import {BOND_STATUS_STR} from "../../../_constants";
 import {Formik} from "formik";
+import AppAlert from "../../../core/components/AppAlert";
 
 class CreateAppForm extends CreateForm {
   constructor(props, context) {
@@ -92,13 +93,18 @@ class CreateAppForm extends CreateForm {
 
       this.setState({created: true});
     } else {
-      // TODO: Show proper error message on front-end.
-      console.log(data);
+      this.setState({error: true});
     }
   }
 
   render() {
-    const {created, redirectPath, redirectParams, agreeTerms} = this.state;
+    const {
+      created,
+      redirectPath,
+      redirectParams,
+      agreeTerms,
+      error,
+    } = this.state;
 
     if (created) {
       return (
@@ -115,6 +121,14 @@ class CreateAppForm extends CreateForm {
       <div id="create-form">
         <Row>
           <Col sm="12" md="12" lg="12">
+            {error && (
+              <AppAlert
+                variant="danger"
+                title="There was an error creating your app, please try again later."
+                dismissible
+                onClose={() => this.setState({error: false})}
+              />
+            )}
             <h1 className="text-uppercase">App Information</h1>
             <p className="info">
               Fill in these quick questions to identity your app on the

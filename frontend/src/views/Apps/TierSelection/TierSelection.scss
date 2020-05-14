@@ -1,21 +1,94 @@
-#tier-selection {
-  #titles {
-    h1 {
-      margin-bottom: 0;
+@import "../../../scss/Core.scss";
+
+
+.modal-dialog,
+.modal-tier {
+  max-width: 60% !important;
+  width: 60% !important;
+  background-color: $dark-blue;
+  padding: 0px 20px 0px 50px;
+  border-radius: $default-border-radius;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+
+  .modal-title {
+    color: $primary-color;
+    font-size: 2em;
+    text-transform: uppercase;
+    font-weight: 800;
+    font-family: "Open Sans";
+  }
+
+  .modal-content {
+    background-color: $dark-blue;
+    color: #fff;
+
+    p,
+    a {
+      font-size: 1.2em;
+    }
+
+    a {
+      text-decoration: underline;
+      font-weight: bold;
     }
 
     p {
-      font-size: 1.5em;
+      font-weight: 300;
+      margin-bottom: 40px;
     }
   }
 
-  .tier-card {
-    text-align: center;
-    min-height: 560px;
+  .modal-footer {
+    justify-content: flex-start;
+
+  }
+
+}
+
+
+#tier-selection {
+
+  h1,
+  h2 {
+    margin-bottom: 0;
+    text-transform: uppercase;
+    font-weight: 800;
+  }
+
+  #titles {
+    p {
+      font-weight: 300;
+      font-size: 1.3em;
+    }
+  }
+
+  .tiers {
+    padding: 20px 20px 50px 30px;
+    border-radius: 20px;
+
+    box-shadow: $default-box-shadow;
 
     h2 {
-      margin-top: 50px;
-      margin-bottom: 35px;
+      font-size: 2.2em;
+    }
+
+    ul {
+      padding-left: 20px;
+
+      li {
+        list-style-type: none;
+        font-weight: 300;
+        font-size: 1.2em;
+        margin-bottom: 25px;
+        font-family: "Lato";
+      }
+
+    }
+
+    ul>li:before {
+      content: '\2014';
+      position: absolute;
+      margin-left: -20px;
     }
 
     p {
@@ -29,16 +102,13 @@
 
     .cta {
       font-weight: bold;
-      font-size: 1.3em;
-      padding: 0;
+      font-size: 1.2em;
+      text-decoration: none;
+      padding-left: 20px;
     }
 
     button {
       margin: auto;
-    }
-
-    small {
-      display: block;
     }
 
     .custom-tier-title {
@@ -46,7 +116,31 @@
     }
   }
 
-  .right-tier {
-    margin-left: 0;
+  .tiers.free {
+    .subtitle {
+      color: #000000;
+    }
+
+    .form-check-label p {
+      font-weight: 300;
+      font-size: 1.1em;
+    }
+
+    .cta {
+      margin-bottom: 30px;
+    }
+  }
+
+  .tiers.custom {
+    background-color: $dark-blue;
+
+    .cta {
+      margin-bottom: 68px
+    }
+
+    .subtitle,
+    li {
+      color: #ffffff;
+    }
   }
 }

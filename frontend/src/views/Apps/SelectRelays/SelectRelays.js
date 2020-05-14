@@ -1,12 +1,10 @@
 import React, {Component} from "react";
 import "./SelectRelays.scss";
-import {Alert, Col, Row} from "react-bootstrap";
+import {Col, Row, Form} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faExclamationCircle} from "@fortawesome/free-solid-svg-icons";
 import AppSlider from "../../../core/components/AppSlider";
-import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {MAX_RELAYS, ITEM_TYPES} from "../../../_constants";
-import {formatCurrency} from "../../../_helpers";
+import {MAX_RELAYS, ITEM_TYPES, STYLING} from "../../../_constants";
+import {formatCurrency, formatNumbers} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -14,6 +12,8 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import UserService from "../../../core/services/PocketUserService";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
 import LoadingButton from "../../../core/components/LoadingButton";
+import {faCaretUp} from "@fortawesome/free-solid-svg-icons";
+import AppAlert from "../../../core/components/AppAlert";
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -23,12 +23,12 @@ class SelectRelays extends Component {
     this.goToCheckout = this.goToCheckout.bind(this);
 
     this.state = {
-      alert: true,
       relays: 1,
       poktPrice: 0.06,
       total: 0,
       currencies: [],
       loading: false,
+      error: false,
     };
   }
 
@@ -52,7 +52,8 @@ class SelectRelays extends Component {
     };
 
     const {success, data} = await StripePaymentService.createNewPaymentIntent(
-      ITEM_TYPES.APPLICATION, item, currency, amount);
+      ITEM_TYPES.APPLICATION, item, currency, amount
+    );
 
     return {success, data};
   }
@@ -69,12 +70,11 @@ class SelectRelays extends Component {
 
     // TODO: Calculate pokt from formula
     const {success, data: paymentIntentData} = await this.createPaymentIntent(
-      total, usd, relays);
+      total, usd, relays
+    );
 
     if (!success) {
-      // TODO: Display message on frontend
-      console.log(success, paymentIntentData);
-      this.setState({loading: false});
+      this.setState({error: true, loading: false});
       return;
     }
 
@@ -94,54 +94,57 @@ class SelectRelays extends Component {
   }
 
   render() {
-    const {alert, relays, poktPrice, total: currentTotal, loading} = this.state;
+    const {error, relays, poktPrice, total: currentTotal, loading} = this.state;
 
     const total = formatCurrency(currentTotal);
 
     return (
       <div id="select-relays">
         <Row className="mt-4 mb-5">
-          <Col>
-            <h2>Custom tier</h2>
+          <Col lg="11" md="11" sm="11" className="title-page">
+            {error && (
+              <AppAlert
+                variant="danger"
+                title="There was an error during the request, please try again later."
+                dismissible
+                onClose={() => this.setState({error: false})}
+              />
+            )}
+            <h1>Custom tier</h1>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-              varius quam id arcu consectetur, et accumsan libero condimentum.
-              Sed aliquet ante a massa mattis malesuada. Morbi aliquet augue
+              With the custom tier, you only need to pay for the API throughput
+              you application needs. If you expect your application to grow in
+              the short term, we recommend giving it a small buffer.
             </p>
           </Col>
         </Row>
         <Row>
-          <Col>
-            <h2>Select how much relays per session your app will need</h2>
-            <div className="price-card">
-              <p className="price">US ${poktPrice}</p>
-              <p className="label font-weight-bold">POKT market price</p>
-            </div>
-            <div className="price-card">
-              <p className="price">340 POKT US $70</p>
-              <p className="label font-weight-bold">Current Balance</p>
-            </div>
-
-            {
-              /*eslint-disable-next-line jsx-a11y/anchor-is-valid*/
-              <a className="link font-weight-bold mt-4 float-right" href="#">
-                Calcule your app needs
-              </a>
-            }
-          </Col>
-        </Row>
-        <Row>
-          <Col>
+          <Col lg="8" md="8" sm="8" className="title-page">
+            <h4>Slide to Select how much relays per day you want to buy</h4>
             <div className="relays-calc">
               <div className="slider-wrapper">
                 <AppSlider
                   onChange={this.onSliderChange}
-                  marks={{1: "1", [MAX_RELAYS]: MAX_RELAYS}}
+                  marks={{
+                    1: "1 RPD",
+                    [MAX_RELAYS / 2]: {
+                      label: (
+                        <span>
+                          <FontAwesomeIcon
+                            style={{color: STYLING.primaryColor}}
+                            icon={faCaretUp}
+                          />
+                          <p style={{fontSize: "0.9em"}}>AVG STAKE</p>
+                        </span>
+                      ),
+                    },
+                    [MAX_RELAYS]: `*${formatNumbers(MAX_RELAYS)} RPD`,
+                  }}
                   min={1}
                   max={MAX_RELAYS}
                 />
               </div>
-              <div>
+              {/* <div>
                 <InfoCard
                   className="pr-4 pl-4 text-center"
                   title={relays}
@@ -163,45 +166,60 @@ class SelectRelays extends Component {
                 >
                   <span />
                 </InfoCard>
+              </div> */}
+            </div>
+            <AppAlert
+              className="pt-4 pb-4"
+              variant="primary"
+              title={<h4 className="alert-relays">*More relays?</h4>}
+            >
+              <p className="alert-relays">
+                If your app requires more than {formatNumbers(MAX_RELAYS)}{" "}
+                Relays Per Day please <a href="/todo">Contact us</a> directly to
+                find a solution specially designed for your app.
+              </p>
+            </AppAlert>
+          </Col>
+          <Col lg="4" md="4" sm="4" className="title-page">
+            <h4 className="mb-4">Order Summary</h4>
+            <div className="summary">
+              <div className="item">
+                <p>App</p>
+                <p>1</p>
               </div>
+              <div className="item">
+                <p>Relays per day</p>
+                <p>{relays}</p>
+              </div>
+              <div className="item">
+                <p>Relays per day cost</p>
+                <p>{poktPrice} USD</p>
+              </div>
+              <div className="item">
+                <p>Current balance</p>
+                {/* TODO: Get balance */}
+                <Form.Control value="50 USD" readOnly />
+              </div>
+              <hr />
+              <div className="item total">
+                <p>Total cost</p>
+                <p>{total} USD</p>
+              </div>
+              <LoadingButton
+                loading={loading}
+                buttonProps={{
+                  onClick: this.goToCheckout,
+                  variant: "primary",
+                }}
+              >
+                Checkout
+              </LoadingButton>
             </div>
           </Col>
         </Row>
         <Row>
-          <Col>
-            <LoadingButton
-              loading={loading}
-              buttonProps={{
-                onClick: this.goToCheckout,
-                variant: "dark",
-                className: "mt-3 pl-5 pr-5 font-weight-bold float-right",
-              }}
-            >
-              Checkout
-            </LoadingButton>
-          </Col>
+          <Col></Col>
         </Row>
-        {alert && (
-          <Row className="mt-3">
-            <Col>
-              <Alert
-                variant="secondary"
-                className="d-flex align-items-center"
-                onClose={() => {
-                  this.setState({alert: false});
-                }}
-                dismissible
-              >
-                <FontAwesomeIcon
-                  icon={faExclamationCircle}
-                  size="3x"
-                  className="icon mr-2"
-                />
-                Over 20,000 relays per session you please contact us.
-              </Alert>
-            </Col>
-          </Row>
-        )}
       </div>
     );
   }

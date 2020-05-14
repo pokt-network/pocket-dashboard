@@ -306,10 +306,13 @@ label.form-label {
   }
 }
 
-a.link,
-button.link {
-  color: #343a41;
-  text-decoration: underline;
+button,
+button.btn {
+  min-width: unset;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 7px;
+  padding-bottom: 7px;
 }
 
 .app-table {
@@ -443,6 +446,39 @@ textarea.form-control::placeholder {
 
   button:hover {
     color: #fff;
+  }
+}
+
+.title-page {
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-transform: uppercase;
+  }
+
+  h1,
+  h2 {
+    font-weight: 800;
+
+  }
+
+  h3,
+  h4 {
+    font-weight: 700;
+  }
+
+  h2,
+  h3,
+  h4 {
+    color: $dark-gray;
+  }
+
+  p {
+    font-size: 1.3em;
+    font-weight: 300;
+    line-height: 1.2;
   }
 }
 
