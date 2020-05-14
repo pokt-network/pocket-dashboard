@@ -306,10 +306,13 @@ label.form-label {
   }
 }
 
-a.link,
-button.link {
-  color: #343a41;
-  text-decoration: underline;
+button,
+button.btn {
+  min-width: unset;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 7px;
+  padding-bottom: 7px;
 }
 
 .app-table {

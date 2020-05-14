@@ -18,6 +18,7 @@ class CreateForm extends Component {
       },
       icon: "",
       created: false,
+      error: false,
     };
   }
 
