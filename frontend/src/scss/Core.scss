@@ -1,5 +1,5 @@
 @import "node_modules/bootstrap/scss/bootstrap";
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;900&family=Open+Sans:ital,wght@0,400;0,800;1,300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&family=Open+Sans:wght@300;400;600;700;800&display=swap");
 
 // Table variables
 $table: (columns: (background-color: theme-color("dark"),
@@ -41,7 +41,7 @@ $paragraph: (font: "Lato",
   color: #535353);
 
 // utils variables
-$default-border-radius: 25px;
+$default-border-radius: 20px;
 $default-box-shadow: 1px 15px 53px -26px rgba(33, 33, 33, .1);
 
 @mixin bordered-layout {
@@ -276,7 +276,7 @@ label.form-label {
 
 #sidebar {
   padding-top: 5px;
-  background: $gradient;
+  // background: $gradient;
   color: color("white");
 
   #title {
@@ -416,6 +416,18 @@ button.link {
   a:hover {
     text-decoration: none;
   }
+}
+
+input.form-control,
+textarea.form-control {
+  font-family: "Lato";
+}
+
+input.form-control::placeholder,
+textarea.form-control::placeholder {
+  color: #474747;
+  font-weight: 300;
+  font-size: 14px;
 }
 
 #default-layout {
