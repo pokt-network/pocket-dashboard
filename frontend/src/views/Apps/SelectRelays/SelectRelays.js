@@ -144,29 +144,6 @@ class SelectRelays extends Component {
                   max={MAX_RELAYS}
                 />
               </div>
-              {/* <div>
-                <InfoCard
-                  className="pr-4 pl-4 text-center"
-                  title={relays}
-                  subtitle="Relays per session"
-                >
-                  <span />
-                </InfoCard>
-                <InfoCard
-                  className="text-center"
-                  title={total}
-                  subtitle="Total  amount"
-                >
-                  <span />
-                </InfoCard>
-                <InfoCard
-                  className="text-center"
-                  title={poktPrice}
-                  subtitle="Relays per session cost"
-                >
-                  <span />
-                </InfoCard>
-              </div> */}
             </div>
             <AppAlert
               className="pt-4 pb-4"
