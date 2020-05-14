@@ -54,7 +54,7 @@ class CreateAppForm extends CreateForm {
 
     if (unstakedApp) {
       this.setState({
-        redirectPath: _getDashboardPath(DASHBOARD_PATHS.chooseChain),
+        redirectPath: _getDashboardPath(DASHBOARD_PATHS.appCreated),
       });
     } else {
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
