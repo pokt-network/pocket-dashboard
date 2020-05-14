@@ -27,22 +27,24 @@ class AppCreated extends Component {
 
     const {networkData} = await ApplicationService.getApplication(address);
 
-    const {
-      status,
-      maxRelays,
-      staked_tokens: stakedTokens,
-    } = networkData;
+    if (networkData) {
+      const {
+        status,
+        maxRelays,
+        stakedTokens,
+      } = networkData;
 
-    this.setState({
-      status,
-      maxRelays,
-      stakedTokens,
-      address,
-      privateKey,
-      loading: false,
-    });
+      this.setState({
+        status,
+        maxRelays,
+        stakedTokens,
+        address,
+        privateKey,
+        loading: false,
+      });
 
-    ApplicationService.removeAppInfoFromCache();
+      ApplicationService.removeAppInfoFromCache();
+    }
   }
 
   render() {
@@ -63,7 +65,7 @@ class AppCreated extends Component {
     ];
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     return (
@@ -78,7 +80,7 @@ class AppCreated extends Component {
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle} />
+              <InfoCard title={card.title} subtitle={card.subtitle}/>
             </Col>
           ))}
         </Row>

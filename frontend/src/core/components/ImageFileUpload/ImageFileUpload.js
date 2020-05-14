@@ -29,15 +29,14 @@ function ImageFileUpload(props) {
   const thumbs = files.map((file, idx) => (
     <React.Fragment key={idx}>
       {/*eslint-disable-next-line jsx-a11y/alt-text*/}
-      <img src={file.preview} className="drop-border" />
+      <img src={file.preview} className="drop-border"/>
     </React.Fragment>
   ));
 
   useEffect(
     () => () => {
       files.forEach((file) => URL.revokeObjectURL(file.preview));
-    },
-    [files]
+    }, [files]
   );
 
   const renderDropZone = () => {
@@ -46,7 +45,7 @@ function ImageFileUpload(props) {
     } else {
       return (
         <>
-          <img src="/assets/user_icon_circle.svg" className="icon" alt="" />
+          <img src="/assets/user_icon_circle.svg" className="icon" alt=""/>
           <p className="mt-3">
             Drag and drop an icon{" "}
             <span className="alt">
