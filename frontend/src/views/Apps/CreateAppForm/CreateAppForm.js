@@ -3,10 +3,10 @@ import {Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import ApplicationService from "../../../core/services/PocketApplicationService";
-import UserService from "../../../core/services/PocketUserService";
+import PocketUserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {generateIcon, appFormSchema} from "../../../_helpers";
+import {appFormSchema, generateIcon} from "../../../_helpers";
 import {BOND_STATUS_STR} from "../../../_constants";
 import {Formik} from "formik";
 
@@ -40,9 +40,11 @@ class CreateAppForm extends CreateForm {
       imported = false;
     }
 
+    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(DASHBOARD_PATHS.appDetail)}`;
+
     const {success, data} = imported
-      ? await ApplicationService.createApplication(applicationData, privateKey)
-      : await ApplicationService.createApplication(applicationData);
+      ? await ApplicationService.createApplication(applicationData, applicationBaseLink, privateKey)
+      : await ApplicationService.createApplication(applicationData, applicationBaseLink);
 
     const unstakedApp =
       !imported ||
@@ -78,7 +80,7 @@ class CreateAppForm extends CreateForm {
       icon = generateIcon();
     }
 
-    const user = UserService.getUserInfo().email;
+    const user = PocketUserService.getUserInfo().email;
 
     const {success, data} = await this.createApplication({
       name,

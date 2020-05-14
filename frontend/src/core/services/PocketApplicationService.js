@@ -49,10 +49,10 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Save application address and chains in local storage encrypted.
    *
-   * @param {string} address Pocket application address
-   * @param {string} privateKey Pocket application private key
-   * @param {Array<string>} chains Pocket application chosen chains.
-   * @param {Array<string>} data Pocket application dashboard data.
+   * @param {string} [address] Pocket application address
+   * @param {string} [privateKey] Pocket application private key
+   * @param {Array<string>} [chains] Pocket application chosen chains.
+   * @param {object} [data] Pocket application dashboard data.
    */
   saveAppInfoInCache({address, privateKey, chains, data}) {
     if (address) {
@@ -77,7 +77,7 @@ export class PocketApplicationService extends PocketBaseService {
    * @returns {Promise|Promise<*>}
    */
   getApplication(applicationAddress) {
-    return axios.get(this._getURL(`/${applicationAddress}`))
+    return axios.get(this._getURL(`${applicationAddress}`))
       .then(response => response.data);
   }
 
@@ -89,7 +89,7 @@ export class PocketApplicationService extends PocketBaseService {
    *
    * @return {Promise|Promise<Array.<*>>}
    */
-  getAllApplications(limit, offset = 0, status=undefined) {
+  getAllApplications(limit, offset = 0, status = undefined) {
     const params = {limit, offset, status};
 
     return axios.get(this._getURL(""), {params})
@@ -105,7 +105,7 @@ export class PocketApplicationService extends PocketBaseService {
    *
    * @return {Promise|Promise<Array.<*>>}
    */
-  getAllUserApplications(user, limit, offset = 0, status=undefined) {
+  getAllUserApplications(user, limit, offset = 0, status = undefined) {
     // Axios options format to send both query parameters and body data
     return axios({
       method: "post",
@@ -135,21 +135,24 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Create application.
    *
-   * @param {string} name Name.
-   * @param {string} owner Owner.
-   * @param {string} url URL.
-   * @param {string} contactEmail Contact email.
-   * @param {string} [description] Description.
-   * @param {string} [icon] Icon (string is in base64 format).
-   * @param {string} [user] User email.
+   * @param {object} application Application data.
+   * @param {string} application.name Name.
+   * @param {string} application.owner Owner.
+   * @param {string} application.url URL.
+   * @param {string} application.contactEmail Contact email.
+   * @param {string} application.user User email.
+   * @param {string} application.description Description.
+   * @param {string} application.icon Icon (string is in base64 format).
+   * @param {string} applicationBaseLink Private Key(is imported).
+   * @param {string} privateKey? Private Key(is imported).
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async createApplication(applicationData, privateKey=undefined) {
-    const data = privateKey
-    ? {application: applicationData, privateKey}
-    : {application: applicationData};
+  async createApplication(application, applicationBaseLink, privateKey = undefined) {
+    const data = privateKey ?
+      {application, privateKey, applicationBaseLink} :
+      {application, applicationBaseLink};
 
     return axios.post(this._getURL(""), data)
       .then(response => {
@@ -171,7 +174,7 @@ export class PocketApplicationService extends PocketBaseService {
       });
   }
 
-    /**
+  /**
    * Edit application.
    *
    * @param {string} applicationAccountAddress Application address.
@@ -219,7 +222,7 @@ export class PocketApplicationService extends PocketBaseService {
    * @returns {Promise|Promise<*>}
    */
   stakeFreeTierApplication(applicationAccountAddress, networkChains) {
-    return axios.post(this._getURL("/freetier/stake"), {applicationAccountAddress, networkChains})
+    return axios.post(this._getURL("freetier/stake"), {applicationAccountAddress, networkChains})
       .then(response => response.data);
   }
 
@@ -245,7 +248,7 @@ export class PocketApplicationService extends PocketBaseService {
    */
   deleteAppFromDashboard(applicationAccountAddress) {
     return axios
-      .delete(this._getURL(`/${applicationAccountAddress}`))
+      .delete(this._getURL(`${applicationAccountAddress}`))
       .then((response) => response.data);
   }
 
@@ -258,7 +261,7 @@ export class PocketApplicationService extends PocketBaseService {
    */
   unstakeFreeTierApplication(applicationAccountAddress) {
     return axios
-      .post(this._getURL("/freetier/unstake"), {applicationAccountAddress})
+      .post(this._getURL("freetier/unstake"), {applicationAccountAddress})
       .then((response) => response.data);
   }
 

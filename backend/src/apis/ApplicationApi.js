@@ -24,7 +24,7 @@ router.post("", async (request, response) => {
     const application = await applicationService.createApplication(data.application, data.privateKey);
     const emailAction = data.privateKey ? "imported" : "created";
     const applicationEmailData = {
-      name: data.node.name,
+      name: data.application.name,
       link: `${data.applicationBaseLink}/${application.privateApplicationData.address}`
     };
 
