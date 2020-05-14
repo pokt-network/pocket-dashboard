@@ -38,7 +38,7 @@ $title: (font: "Open Sans",
 $paragraph: (font: "Lato",
   type: sans-serif,
   weight: 400,
-  color: #535353);
+  color: $dark-gray);
 
 // utils variables
 $default-border-radius: 25px;
@@ -166,9 +166,9 @@ form {
 
 .btn-primary.disabled,
 .btn-primary:disabled {
-  color: #fff;
-  background-color: #4bbef0;
-  border-color: #4bbef0;
+  color: $dark-gray;
+  background-color: $white-smoke;
+  border-color: $white-smoke;
 }
 
 .btn-dark {
@@ -193,6 +193,7 @@ input {
   p {
     font-weight: 700 !important;
     font-size: 1.2em !important;
+    margin-bottom: 0;
   }
 
   .head {
@@ -432,18 +433,12 @@ textarea.form-control::placeholder {
 
 .search-input.input-group {
   input {
-    border-right-color: rgba(194, 194, 194, 0.5) !important;
-  }
-
-  input::placeholder {
-    font-weight: bold;
-    color: red;
-    color: rgba(230, 230, 230, 0.1);
+    border-right-color: transparent;
   }
 
   button {
     color: $primary-color;
-    border-left-color: rgba(194, 194, 194, 0.5);
+    border-left-color: transparent;
   }
 
   button:hover {
@@ -492,6 +487,54 @@ textarea.form-control::placeholder {
 .text {
   font-weight: 300;
   font-size: 14;
+}
+
+.form-check-label {
+  margin-top: 5px;
+  margin-left: 5px;
+  position: absolute;
+}
+
+input[type="checkbox"] {
+  position: relative;
+  width: 1.5em;
+  height: 1.5em;
+  color: $black;
+  border: 1px solid $light-gray;
+  border-radius: 4px;
+  appearance: none;
+  outline: 0;
+  cursor: pointer;
+  transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
+
+  &::before {
+    position: absolute;
+    content: '';
+    display: block;
+    top: 2px;
+    left: 7px;
+    width: 8px;
+    height: 14px;
+    border-style: solid;
+    border-color: $white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+  }
+
+  &:checked {
+    color: $white;
+    border-color: $primary-color;
+    background: $primary-color;
+
+    &::before {
+      opacity: 1;
+    }
+
+    ~label::before {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+  }
 }
 
 /* Custom scroll bar. Not supports in Firefox and IE */

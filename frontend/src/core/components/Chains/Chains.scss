@@ -1,6 +1,24 @@
+@import "../../../scss/Core.scss";
+
 #choose-chains {
   margin-top: 10px;
   margin-left: 20px;
+
+  h1,
+  h2 {
+    text-transform: uppercase;
+  }
+
+  h2 {
+    color: $dark-gray;
+  }
+
+  .info {
+    p {
+      font-size: 1.2em;
+      font-weight: 300;
+    }
+  }
 
   .title {
     display: flex;
@@ -9,11 +27,6 @@
     button {
       align-self: center;
     }
-  }
-
-  .react-bootstrap-table {
-    overflow-y: hidden;
-    max-height: 55vh;
   }
 
   button {
