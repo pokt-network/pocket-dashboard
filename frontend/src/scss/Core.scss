@@ -449,6 +449,39 @@ textarea.form-control::placeholder {
   }
 }
 
+.title-page {
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-transform: uppercase;
+  }
+
+  h1,
+  h2 {
+    font-weight: 800;
+
+  }
+
+  h3,
+  h4 {
+    font-weight: 700;
+  }
+
+  h2,
+  h3,
+  h4 {
+    color: $dark-gray;
+  }
+
+  p {
+    font-size: 1.3em;
+    font-weight: 300;
+    line-height: 1.2;
+  }
+}
+
 .divider {
   display: flex;
   flex-direction: row;

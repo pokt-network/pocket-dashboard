@@ -28,7 +28,9 @@ export const NODES_LIMIT = 10;
 export const PAYMENT_HISTORY_LIMIT = 10;
 
 export const STYLING = {
-  primaryColor: "#37aee1",
+  primaryColor: "#27a9e0",
+  lightGray: "#afafaf",
+  whiteSmoke: "#f5f5f5",
 };
 
 export const TABLE_COLUMNS = {
