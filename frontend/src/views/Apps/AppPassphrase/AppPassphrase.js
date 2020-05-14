@@ -181,11 +181,11 @@ class AppPassphrase extends Component {
               <Row>
                 <Col>
                   <h3>Private key</h3>
-                  <Form.Control />
+                  <Form.Control readOnly />
                 </Col>
                 <Col>
                   <h3>Address</h3>
-                  <Form.Control />
+                  <Form.Control readOnly />
                 </Col>
               </Row>
             </Form>
