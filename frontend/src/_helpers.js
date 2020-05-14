@@ -31,7 +31,7 @@ export const mapStatusToField = (app) => {
     ...app,
     networkData: {
       ...app.networkData,
-      status: getBondStatus(app.networkData.status),
+      status: getStakeStatus(app.networkData.status),
     },
   };
 };
@@ -46,7 +46,7 @@ export const generateIcon = () => {
   return identicon;
 };
 
-export const getBondStatus = (status) => {
+export const getStakeStatus = (status) => {
   return typeof status === "string"
     ? STAKE_STATUS[status]
     : BOND_STATUS[status];

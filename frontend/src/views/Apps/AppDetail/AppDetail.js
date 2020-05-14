@@ -10,7 +10,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {copyToClipboard, formatNumbers, getBondStatus} from "../../../_helpers";
+import {copyToClipboard, formatNumbers, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 
@@ -127,7 +127,7 @@ class AppDetail extends Component {
       stakedTokens,
       status: bondStatus,
     } = this.state.networkData;
-    const status = getBondStatus(bondStatus);
+    const status = getStakeStatus(bondStatus);
     const isStaked =
       status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 

@@ -97,9 +97,9 @@ export const TABLE_COLUMNS = {
 };
 
 export const FILTER_OPTIONS = [
-  {text: "Staked", dataField: "bonded"},
-  {text: "Unstaking", dataField: "unbonding"},
-  {text: "Unstaked", dataField: "unbonded"},
+  {text: "Staked", dataField: "staked"},
+  {text: "Unstaking", dataField: "unstaking"},
+  {text: "Unstaked", dataField: "unstaked"},
 ];
 
 export const MAX_RELAYS = 20000;
