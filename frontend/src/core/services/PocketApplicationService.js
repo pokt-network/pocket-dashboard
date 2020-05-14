@@ -28,6 +28,7 @@ export class PocketApplicationService extends PocketBaseService {
    * Remove app address data from local storage.
    */
   removeAppInfoFromCache() {
+    this.ls.remove("app_id");
     this.ls.remove("app_address");
     this.ls.remove("app_private_key");
     this.ls.remove("app_chains");
@@ -39,6 +40,7 @@ export class PocketApplicationService extends PocketBaseService {
    */
   getAppAInfo() {
     return {
+      id: this.ls.get("app_id").data,
       address: this.ls.get("app_address").data,
       privateKey: this.ls.get("app_private_key").data,
       chains: this.ls.get("app_chains").data,
@@ -49,12 +51,16 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Save application address and chains in local storage encrypted.
    *
-   * @param {string} [address] Pocket application address
-   * @param {string} [privateKey] Pocket application private key
+   * @param {string} [applicationID] Pocket application ID.
+   * @param {string} [address] Pocket application address.
+   * @param {string} [privateKey] Pocket application private key.
    * @param {Array<string>} [chains] Pocket application chosen chains.
    * @param {object} [data] Pocket application dashboard data.
    */
-  saveAppInfoInCache({address, privateKey, chains, data}) {
+  saveAppInfoInCache({applicationID, address, privateKey, chains, data}) {
+    if (applicationID) {
+      this.ls.set("app_id", {data: applicationID});
+    }
     if (address) {
       this.ls.set("app_address", {data: address});
     }
@@ -145,18 +151,52 @@ export class PocketApplicationService extends PocketBaseService {
    * @param {string} application.user User email.
    * @param {string} application.description Description.
    * @param {string} application.icon Icon (string is in base64 format).
-   * @param {string} applicationBaseLink Private Key(is imported).
+   *
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   * @async
+   */
+  async createApplication(application) {
+    const data = {application};
+
+    return axios.post(this._getURL(""), data)
+      .then(response => {
+        if (response.status === 200) {
+          return {
+            success: true,
+            data: response.data
+          };
+        }
+
+        return {
+          success: false
+        };
+      }).catch(err => {
+        return {
+          success: false,
+          data: err.response.data.message,
+        };
+      });
+  }
+
+  /**
+   * Create application account.
+   *
+   * @param {object} applicationID Application ID.
+   * @param {string} passphrase Passphrase.
+   * @param {string} applicationBaseLink Application base link.
    * @param {string} privateKey? Private Key(is imported).
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async createApplication(application, applicationBaseLink, privateKey = undefined) {
-    const data = privateKey ?
-      {application, privateKey, applicationBaseLink} :
-      {application, applicationBaseLink};
+  async createApplicationAccount(applicationID, passphrase, applicationBaseLink, privateKey = undefined) {
+    let data = {applicationID, passphrase, applicationBaseLink};
 
-    return axios.post(this._getURL(""), data)
+    if (privateKey) {
+      data["privateKey"] = privateKey;
+    }
+
+    return axios.post(this._getURL("account"), data)
       .then(response => {
         if (response.status === 200) {
           return {

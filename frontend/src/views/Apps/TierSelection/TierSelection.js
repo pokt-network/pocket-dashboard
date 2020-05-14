@@ -27,7 +27,7 @@ class TierSelection extends Component {
     // TODO: Notify of errors on the frontend
     if (data !== false) {
       // eslint-disable-next-line react/prop-types
-      this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.appCreated));
+      this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.appPassphrase));
     }
   }
 

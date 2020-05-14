@@ -84,6 +84,7 @@ export default class PocketService {
    * @param {string} passphrase Passphrase used to generate account.
    *
    * @returns {Promise<Account | Error>} A pocket account.
+   * @async
    */
   async createAccount(passphrase) {
     return this.__pocket.keybase.createAccount(passphrase);

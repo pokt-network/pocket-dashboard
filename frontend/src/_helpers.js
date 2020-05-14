@@ -40,10 +40,8 @@ export const generateIcon = () => {
   const currTime = new Date().getTime();
 
   // Use current time as a 'hash' to generate icon of 250x250
-  const identicon = `data:image/png;base64,${new Identicon(
+  return `data:image/png;base64,${new Identicon(
     `${currTime}${currTime / 2}`, 250).toString()}`;
-
-  return identicon;
 };
 
 export const getStakeStatus = (status) => {
@@ -52,6 +50,7 @@ export const getStakeStatus = (status) => {
     : BOND_STATUS[status];
 };
 
+// noinspection DuplicatedCode
 export const appFormSchema = yup.object().shape({
   name: yup
     .string()
@@ -66,6 +65,7 @@ export const appFormSchema = yup.object().shape({
   description: yup.string().max(150, VALIDATION_MESSAGES.MAX(150)),
 });
 
+// noinspection DuplicatedCode
 export const nodeFormSchema = yup.object().shape({
   name: yup
     .string()

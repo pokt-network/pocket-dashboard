@@ -11,7 +11,7 @@ import {APPLICATIONS_LIMIT, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {formatNumbers, getStakeStatus, mapStatusToField,} from "../../../_helpers";
+import {formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBoxOpen, faSearch} from "@fortawesome/free-solid-svg-icons";
 import Segment from "../../../core/components/Segment/Segment";

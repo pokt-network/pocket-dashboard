@@ -29,22 +29,17 @@ class CreateAppForm extends CreateForm {
     let imported;
     let stakeStatus;
     let address;
-    let privateKey;
 
     if (this.props.location.state !== undefined) {
       stakeStatus = this.props.location.state.stakeStatus;
       address = this.props.location.state.address;
-      privateKey = this.props.location.state.privateKey;
       imported = this.props.location.state.imported;
     } else {
       imported = false;
     }
 
-    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(DASHBOARD_PATHS.appDetail)}`;
+    const {success, data} = await ApplicationService.createApplication(applicationData);
 
-    const {success, data} = imported
-      ? await ApplicationService.createApplication(applicationData, applicationBaseLink, privateKey)
-      : await ApplicationService.createApplication(applicationData, applicationBaseLink);
 
     const unstakedApp =
       !imported ||
@@ -54,7 +49,7 @@ class CreateAppForm extends CreateForm {
 
     if (unstakedApp) {
       this.setState({
-        redirectPath: _getDashboardPath(DASHBOARD_PATHS.appCreated),
+        redirectPath: _getDashboardPath(DASHBOARD_PATHS.appPassphrase),
       });
     } else {
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
@@ -93,14 +88,8 @@ class CreateAppForm extends CreateForm {
     });
 
     if (success) {
-      const {privateApplicationData} = data;
-      const {address, privateKey} = privateApplicationData;
+      ApplicationService.saveAppInfoInCache({applicationID: data});
 
-      ApplicationService.saveAppInfoInCache({
-        address,
-        privateKey,
-        data: {name},
-      });
       this.setState({created: true});
     } else {
       // TODO: Show proper error message on front-end.
@@ -128,8 +117,8 @@ class CreateAppForm extends CreateForm {
           <Col sm="12" md="12" lg="12">
             <h1 className="text-uppercase">App Information</h1>
             <p className="info">
-              Fill in these quick questions to idenfity your app on the
-              dashbord. Fields marked with * are required to continue.
+              Fill in these quick questions to identity your app on the
+              dashboard. Fields marked with * are required to continue.
             </p>
           </Col>
         </Row>
@@ -137,9 +126,9 @@ class CreateAppForm extends CreateForm {
           <Col sm="5" md="5" lg="5">
             <Formik
               validationSchema={appFormSchema}
-              onSubmit={(data) => {
+              onSubmit={async (data) => {
                 this.setState({data});
-                this.handleCreate();
+                await this.handleCreate();
               }}
               initialValues={this.state.data}
               values={this.state.data}

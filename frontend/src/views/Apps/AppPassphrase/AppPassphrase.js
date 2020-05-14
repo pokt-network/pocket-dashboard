@@ -1,7 +1,6 @@
-/* eslint-disable function-call-argument-newline */
 import React, {Component} from "react";
 import "./AppPassphrase.scss";
-import {Button, Form, Col, Row} from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
 import BootstrapTable from "react-bootstrap-table-next";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
@@ -9,14 +8,18 @@ import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
 import {validateYup} from "../../../_helpers";
+import PocketApplicationService from "../../../core/services/PocketApplicationService";
+import ApplicationService from "../../../core/services/PocketApplicationService";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 
 class AppPassphrase extends Component {
+
   constructor(props, context) {
     super(props, context);
 
-    this.changeInpuType = this.changeInpuType.bind(this);
+    this.changeInputType = this.changeInputType.bind(this);
     this.handlePassphrase = this.handlePassphrase.bind(this);
-    this.createApplication = this.createApplication.bind(this);
+    this.createApplicationAccount = this.createApplicationAccount.bind(this);
     this.downloadKeyFile = this.downloadKeyFile.bind(this);
 
     this.iconUrl = {
@@ -29,18 +32,15 @@ class AppPassphrase extends Component {
         .string()
         .required(VALIDATION_MESSAGES.REQUIRED)
         .matches(
-          // eslint-disable-next-line function-call-argument-newline
           // eslint-disable-next-line no-useless-escape
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{15,})/,
-          "The password does not meet the requirements"
-        ),
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{15,})/, "The password does not meet the requirements"),
     });
 
     this.state = {
       created: false,
       inputType: "password",
       validPassphrase: false,
-      showPassphraseIconURL: this.iconUrl.close,
+      showPassphraseIconURL: this.iconUrl.open,
       privateKey: "",
       address: "",
       chains: [],
@@ -50,18 +50,18 @@ class AppPassphrase extends Component {
     };
   }
 
-  changeInpuType() {
+  changeInputType() {
     const {inputType} = this.state;
 
     if (inputType === "text") {
       this.setState({
         inputType: "password",
-        showPassphraseIconURL: this.iconUrl.close,
+        showPassphraseIconURL: this.iconUrl.open,
       });
     } else {
       this.setState({
         inputType: "text",
-        showPassphraseIconURL: this.iconUrl.open,
+        showPassphraseIconURL: this.iconUrl.close,
       });
     }
   }
@@ -79,9 +79,17 @@ class AppPassphrase extends Component {
     }
   }
 
-  createApplication() {
-    // TODO: Implement
-    this.setState({created: true});
+  async createApplicationAccount() {
+    const applicationInfo = PocketApplicationService.getAppAInfo();
+    const {passPhrase} = this.state;
+
+    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(DASHBOARD_PATHS.appDetail)}`;
+
+    const {success, data} = await ApplicationService.createApplicationAccount(applicationInfo.id, passPhrase, applicationBaseLink);
+
+    console.log(data);
+
+    this.setState({created: false});
   }
 
   downloadKeyFile() {
@@ -149,7 +157,7 @@ class AppPassphrase extends Component {
                         </Form.Control.Feedback>
                       </Form.Group>
                       <img
-                        onClick={this.changeInpuType}
+                        onClick={this.changeInputType}
                         src={showPassphraseIconURL}
                         alt=""
                       />
@@ -162,7 +170,7 @@ class AppPassphrase extends Component {
                         type="submit"
                         onClick={
                           !created
-                            ? () => this.createApplication()
+                            ? () => this.createApplicationAccount()
                             : () => this.downloadKeyFile()
                         }
                       >
@@ -181,11 +189,11 @@ class AppPassphrase extends Component {
               <Row>
                 <Col>
                   <h3>Private key</h3>
-                  <Form.Control />
+                  <Form.Control/>
                 </Col>
                 <Col>
                   <h3>Address</h3>
-                  <Form.Control />
+                  <Form.Control/>
                 </Col>
               </Row>
             </Form>
@@ -208,8 +216,8 @@ class AppPassphrase extends Component {
               }
             >
               <p>
-                The keyfile by itself is useless without the passphrase and
-                you&#39;ll need it to import or set up your node.
+                The key file by itself is useless without the passphrase and
+                you&#39;ll need it to import or set up your application.
               </p>
             </AppAlert>
           </Col>
@@ -218,7 +226,7 @@ class AppPassphrase extends Component {
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle} />
+              <InfoCard title={card.title} subtitle={card.subtitle}/>
             </Col>
           ))}
         </Row>

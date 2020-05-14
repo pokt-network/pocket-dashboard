@@ -23,16 +23,16 @@ export default class ApplicationService extends BaseService {
    *
    * @param {PocketApplication} application Application to persist.
    *
-   * @returns {Promise<boolean>} If application was persisted or not.
+   * @returns {Promise<string | boolean>} If application was persisted return id, if not return false.
    * @private
    * @async
    */
   async __persistApplicationIfNotExists(application) {
     if (!await this.applicationExists(application)) {
-      /** @type {{result: {n:number, ok: number}}} */
+      /** @type {{insertedId: string, result: {n:number, ok: number}}} */
       const result = await this.persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, application);
 
-      return result.result.ok === 1;
+      return result.result.ok === 1 ? result.insertedId : "0";
     }
 
     return false;
@@ -60,6 +60,23 @@ export default class ApplicationService extends BaseService {
     }
 
     return false;
+  }
+
+  /**
+   * Update application on db by ID.
+   *
+   * @param {string} applicationID Application ID.
+   * @param {PocketApplication} applicationData Application data.
+   *
+   * @returns {Promise<boolean>} If application was updated or not.
+   * @private
+   * @async
+   */
+  async __updateApplicationByID(applicationID, applicationData) {
+    /** @type {{result: {n:number, ok: number}}} */
+    const result = await this.persistenceService.updateEntityByID(APPLICATION_COLLECTION_NAME, applicationID, applicationData);
+
+    return result.result.ok === 1;
   }
 
   /**
@@ -459,7 +476,7 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Create an application on network.
+   * Create an application on dashboard.
    *
    * @param {object} applicationData Application data.
    * @param {string} applicationData.name Name.
@@ -469,13 +486,12 @@ export default class ApplicationService extends BaseService {
    * @param {string} applicationData.user User.
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
-   * @param {string} [privateKey] Application private key if is imported.
    *
-   * @returns {Promise<{privateApplicationData: PrivatePocketAccount, networkData:Application}>} An application information.
+   * @returns {Promise<string | boolean>} If application was persisted return id, if not return false.
    * @throws {Error} If validation fails or already exists.
    * @async
    */
-  async createApplication(applicationData, privateKey = "") {
+  async createApplication(applicationData) {
     if (PocketApplication.validate(applicationData)) {
       if (!await this.userService.userExists(applicationData.user)) {
         throw new Error("User does not exist");
@@ -487,22 +503,45 @@ export default class ApplicationService extends BaseService {
         throw new Error("Application already exists");
       }
 
-      const accountService = new AccountService();
-      const passPhrase = await accountService.generatePassphrase(application.name);
-      const pocketAccount = await accountService.createPocketAccount(this.pocketService, passPhrase, privateKey);
-
-      application.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
-
-      await this.__persistApplicationIfNotExists(application);
-
-      const appParameters = await this.pocketService.getApplicationParameters();
-
-      const privateApplicationData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
-      const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
-
-      // noinspection JSValidateTypes
-      return {privateApplicationData, networkData};
+      return this.__persistApplicationIfNotExists(application);
     }
+  }
+
+  /**
+   * Create an application account.
+   *
+   * @param {string} applicationID Application ID.
+   * @param {string} passphrase Application account passphrase.
+   * @param {string} [privateKey] Application private key if is imported.
+   *
+   * @returns {Promise<{application: PocketApplication,privateApplicationData: PrivatePocketAccount, networkData:Application}>} An application information.
+   * @throws {Error} If application does not exists.
+   * @async
+   */
+  async createApplicationAccount(applicationID, passphrase, privateKey = "") {
+
+    const applicationDB = await this.persistenceService.getEntityByID(APPLICATION_COLLECTION_NAME, applicationID);
+
+    if (!applicationDB) {
+      throw new Error("Application does not exists");
+    }
+
+    const application = PocketApplication.createPocketApplication(applicationDB);
+
+    const accountService = new AccountService();
+    const pocketAccount = await accountService.createPocketAccount(this.pocketService, passphrase, privateKey);
+
+    application.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
+
+    await this.__updateApplicationByID(applicationID, application);
+
+    const appParameters = await this.pocketService.getApplicationParameters();
+
+    const privateApplicationData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passphrase);
+    const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
+
+    // noinspection JSValidateTypes
+    return {application, privateApplicationData, networkData};
   }
 
   /**
