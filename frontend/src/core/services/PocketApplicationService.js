@@ -86,6 +86,7 @@ export class PocketApplicationService extends PocketBaseService {
    *
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
+   * @param {number} [status] Status of applications.
    *
    * @return {Promise|Promise<Array.<*>>}
    */
@@ -102,6 +103,7 @@ export class PocketApplicationService extends PocketBaseService {
    * @param {string} user Email of user.
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
+   * @param {number} [status] Status of applications.
    *
    * @return {Promise|Promise<Array.<*>>}
    */
@@ -243,12 +245,16 @@ export class PocketApplicationService extends PocketBaseService {
    * Delete an application from dashboard (but not from the network).
    *
    * @param {string} applicationAccountAddress Application account address.
+   * @param {string} userEmail User email address.
+   * @param {string} appsLink Applications links.
    *
    * @returns {Promise|Promise<*>}
    */
-  deleteAppFromDashboard(applicationAccountAddress) {
+  deleteAppFromDashboard(applicationAccountAddress, userEmail, appsLink) {
+    const data = {user: userEmail, appsLink};
+
     return axios
-      .delete(this._getURL(`${applicationAccountAddress}`))
+      .post(this._getURL(`${applicationAccountAddress}`), data)
       .then((response) => response.data);
   }
 
