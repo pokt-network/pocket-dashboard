@@ -7,10 +7,11 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
-import {validateYup} from "../../../_helpers";
+import {createAndDownloadFile, validateYup} from "../../../_helpers";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import {Redirect} from "react-router-dom";
 
 class AppPassphrase extends Component {
 
@@ -38,6 +39,7 @@ class AppPassphrase extends Component {
 
     this.state = {
       created: false,
+      fileDownloaded: false,
       inputType: "password",
       validPassphrase: false,
       showPassphraseIconURL: this.iconUrl.open,
@@ -47,6 +49,8 @@ class AppPassphrase extends Component {
       data: {
         passPhrase: "",
       },
+      redirectPath: "",
+      redirectParams: {}
     };
   }
 
@@ -80,29 +84,69 @@ class AppPassphrase extends Component {
   }
 
   async createApplicationAccount() {
-    const applicationInfo = PocketApplicationService.getAppAInfo();
+    const applicationInfo = PocketApplicationService.getApplicationInfo();
     const {passPhrase} = this.state;
 
     const applicationBaseLink = `${window.location.origin}${_getDashboardPath(DASHBOARD_PATHS.appDetail)}`;
 
     const {success, data} = await ApplicationService.createApplicationAccount(applicationInfo.id, passPhrase, applicationBaseLink);
 
-    console.log(data);
+    if (success) {
+      const {privateApplicationData} = data;
+      const {address, privateKey} = privateApplicationData;
 
-    this.setState({created: false});
+      PocketApplicationService.removeAppInfoFromCache();
+      PocketApplicationService.saveAppInfoInCache({
+        applicationID: applicationInfo.id,
+        address,
+        privateKey
+      });
+
+      this.setState({
+        created: true,
+        address,
+        privateKey
+      });
+    } else {
+      // TODO: Show proper error message on front-end.
+      console.log(data);
+    }
   }
 
   downloadKeyFile() {
-    // TODO: Implement
+    const {privateKey} = this.state;
+
+    createAndDownloadFile(privateKey);
+
+    this.setState({
+      fileDownloaded: true,
+      redirectPath: _getDashboardPath(DASHBOARD_PATHS.chooseChain),
+    });
   }
 
   render() {
     const {
       created,
+      fileDownloaded,
       inputType,
       showPassphraseIconURL,
       validPassphrase,
+      privateKey,
+      address,
+      redirectPath,
+      redirectParams,
     } = this.state;
+
+    if (fileDownloaded) {
+      return (
+        <Redirect
+          to={{
+            pathname: redirectPath,
+            state: redirectParams,
+          }}
+        />
+      );
+    }
 
     const generalInfo = [
       {title: "0 POKT", subtitle: "Stake tokens"},
@@ -189,11 +233,11 @@ class AppPassphrase extends Component {
               <Row>
                 <Col>
                   <h3>Private key</h3>
-                  <Form.Control readOnly />
+                  <Form.Control readOnly value={privateKey}/>
                 </Col>
                 <Col>
                   <h3>Address</h3>
-                  <Form.Control readOnly />
+                  <Form.Control readOnly value={address}/>
                 </Col>
               </Row>
             </Form>

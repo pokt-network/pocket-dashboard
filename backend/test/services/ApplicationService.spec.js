@@ -40,17 +40,6 @@ describe("ApplicationService", () => {
 
       applicationID.should.be.an("string");
 
-      // // eslint-disable-next-line no-undef
-      // should.exist(applicationID.privateApplicationData.address);
-      // // eslint-disable-next-line no-undef
-      // should.exist(applicationID.privateApplicationData.privateKey);
-      //
-      // applicationID.privateApplicationData.address.length.should.be.equal(40);
-      // applicationID.privateApplicationData.privateKey.length.should.be.equal(128);
-      //
-      // applicationID.networkData.stakedTokens.toString().should.be.equal("0");
-      // applicationID.networkData.jailed.should.be.equal(false);
-      // applicationID.networkData.status.should.be.equal(StakingStatus.Unstaked);
     });
   });
 

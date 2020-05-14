@@ -44,7 +44,7 @@ class Checkout extends Component {
     const {type, paymentId, paymentMethod, detail} = this.props.location.state;
     const address =
       type === ITEM_TYPES.APPLICATION
-        ? ApplicationService.getAppAInfo().address
+        ? ApplicationService.getApplicationInfo().address
         : NodeService.getNodeInfo().address;
     const {
       paymentID: id,

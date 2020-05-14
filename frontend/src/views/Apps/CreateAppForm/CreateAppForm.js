@@ -41,7 +41,6 @@ class CreateAppForm extends CreateForm {
 
     const {success, data} = await ApplicationService.createApplication(applicationData);
 
-
     const unstakedApp =
       !imported ||
       (imported &&

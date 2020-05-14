@@ -38,7 +38,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Get Address and chains for app creating/importing
    */
-  getAppAInfo() {
+  getApplicationInfo() {
     return {
       id: this.ls.get("app_id").data,
       address: this.ls.get("app_address").data,

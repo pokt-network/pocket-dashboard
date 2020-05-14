@@ -18,6 +18,17 @@ export const copyToClipboard = (value) => {
   document.body.removeChild(el);
 };
 
+export const createAndDownloadFile = (data) => {
+  const element = document.createElement("a");
+  const file = new Blob([data], {type: "text/plain"});
+
+  element.href = URL.createObjectURL(file);
+  element.download = "myPrivateKey.txt";
+
+  document.body.appendChild(element); // Required for this to work in FireFox
+  element.click();
+};
+
 export const isActiveExactUrl = (match, location) => {
   if (!match) {
     return false;
