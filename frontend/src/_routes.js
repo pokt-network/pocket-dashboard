@@ -31,7 +31,7 @@ import ImportNode from "./views/Nodes/ImportNode/ImportNode";
 import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
 import OrderSummary from "./views/Payment/OrderSummary/OrderSummary";
 import ResetPassword from "./views/Auth/ResetPassword/ResetPassword";
-
+import AppPassphrase from "./views/Apps/AppPassphrase/AppPassphrase";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -50,6 +50,7 @@ export const DASHBOARD_PATHS = {
   editApp: "/apps/edit/:address",
   importApp: "/apps/import",
   createAppInfo: "/apps/new",
+  appPassphrase: "/apps/new/passphrase",
   chooseChain: "/apps/new/chains",
   tierSelection: "/apps/new/tiers",
   selectRelays: "/apps/new/relays",
@@ -179,6 +180,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Create New Node",
     component: CreateNodeForm,
+  },
+  {
+    path: DASHBOARD_PATHS.appPassphrase,
+    exact: true,
+    name: "Create App Passhprase",
+    component: AppPassphrase,
   },
   {
     path: DASHBOARD_PATHS.nodeChainList,

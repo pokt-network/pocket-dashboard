@@ -263,7 +263,6 @@ class CreateAppForm extends CreateForm {
                 </ul>
 
                 <Form.Check
-                  custom
                   checked={agreeTerms}
                   onChange={() => this.setState({agreeTerms: !agreeTerms})}
                   id="terms-checkbox"

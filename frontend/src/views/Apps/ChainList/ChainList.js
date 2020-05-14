@@ -5,6 +5,8 @@ import {TABLE_COLUMNS} from "../../../_constants";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSearch} from "@fortawesome/free-solid-svg-icons";
 
 class ChooseChain extends Chains {
   constructor(props, context) {
@@ -42,18 +44,34 @@ class ChooseChain extends Chains {
             <div className="info">
               <h1>Choose chains</h1>
               <p>
-                Pocket can support any blockchain infrastructure that has an
-                HTTP endpoint. These are the <br /> blockchain networks the
-                Pocket Core Protocol currently supports in Testnet phase one.
+                Choose the chains you want to connect your app or node to.
+                Remember you won&#39;t be able to change these chains until your
+                next stake which will be evenly divided on the selected number
+                of chains.
               </p>
             </div>
           </Col>
         </Row>
         <Row>
           <Col>
-            <InputGroup className="mb-3">
+            <div className="mb-4 d-flex justify-content-between">
+              <h2>Supported blockchains</h2>
+              <Button
+                onClick={this.handleChains}
+                variant="primary"
+                size={"md"}
+                className="pl-4 pr-4"
+              >
+                Continue
+              </Button>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col lg="5" md="5" sm="5">
+            <InputGroup className="search-input ml-5 mb-3">
               <FormControl
-                placeholder="Search chain"
+                placeholder="Search a chain"
                 name="searchChainQuery"
                 onChange={this.handleChange}
                 onKeyPress={({key}) => {
@@ -66,9 +84,9 @@ class ChooseChain extends Chains {
                 <Button
                   type="submit"
                   onClick={this.handleChainSearch}
-                  variant="dark"
+                  variant="outline-primary"
                 >
-                  Search
+                  <FontAwesomeIcon icon={faSearch} />
                 </Button>
               </InputGroup.Append>
             </InputGroup>
@@ -77,21 +95,13 @@ class ChooseChain extends Chains {
         <Row>
           <Col>
             <BootstrapTable
-              classes="table app-table table-striped"
+              classes="table app-table"
               keyField="hash"
               data={chains}
               columns={TABLE_COLUMNS.NETWORK_CHAINS}
               selectRow={tableSelectOptions}
               bordered={false}
             />
-            <Button
-              onClick={this.handleChains}
-              variant="dark"
-              size={"lg"}
-              className="float-right mt-4 pl-5 pr-5"
-            >
-              Continue
-            </Button>
           </Col>
         </Row>
       </div>
