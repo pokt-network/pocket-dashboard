@@ -21,15 +21,12 @@ class TierSelection extends Component {
   async createFreeTierItem() {
     const {address, chains} = ApplicationService.getApplicationInfo();
 
-    const data = await ApplicationService.stakeFreeTierApplication(
-      address,
-      chains
-    );
+    const data = await ApplicationService.stakeFreeTierApplication(address, chains);
 
     // TODO: Notify of errors on the frontend
     if (data !== false) {
       // eslint-disable-next-line react/prop-types
-      this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.appPassphrase));
+      this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.appDetail));
     }
   }
 
@@ -165,6 +162,7 @@ class TierSelection extends Component {
             <p>Pocket Network</p>
             <p>
               An AAT o needed to authorize the use of throughput. Providing your
+              {/* eslint-disable-next-line react/no-unescaped-entities */}
               users with MT's dynamically allows you to control who you let use
               your Pocket Network bandwidth at your app discretion. (Note: a
               backend server is required for this).

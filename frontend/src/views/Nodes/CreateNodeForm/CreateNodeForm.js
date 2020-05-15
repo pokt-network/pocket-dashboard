@@ -54,7 +54,7 @@ class CreateNodeForm extends CreateForm {
 
     if (unstakedNode) {
       this.setState({
-        redirectPath: _getDashboardPath(DASHBOARD_PATHS.chooseChain),
+        redirectPath: _getDashboardPath(DASHBOARD_PATHS.nodeChainList),
       });
     } else {
       const url = _getDashboardPath(DASHBOARD_PATHS.nodeChainList);

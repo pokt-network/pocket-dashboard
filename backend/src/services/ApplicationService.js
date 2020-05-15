@@ -311,7 +311,7 @@ export default class ApplicationService extends BaseService {
    * @async
    */
   async getFreeTierAAT(clientAccountAddress) {
-    const passphrase = "FreeTierAAT";
+
     const filter = {
       "publicPocketAccount.address": clientAccountAddress
     };
@@ -325,7 +325,7 @@ export default class ApplicationService extends BaseService {
     const clientApplication = PocketApplication.createPocketApplication(applicationDB);
 
     try {
-      const freeTierAccount = await this.pocketService.getFreeTierAccount(passphrase);
+      const {account: freeTierAccount, passphrase} = await this.pocketService.getFreeTierAccount();
 
       return this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, passphrase);
 
@@ -378,7 +378,6 @@ export default class ApplicationService extends BaseService {
    * @async
    */
   async stakeFreeTierApplication(applicationAccountAddress, networkChains) {
-    const passphrase = "FreeTierApplication";
     const filter = {
       "publicPocketAccount.address": applicationAccountAddress
     };
@@ -392,8 +391,8 @@ export default class ApplicationService extends BaseService {
     const clientApplication = PocketApplication.createPocketApplication(applicationDB);
 
     try {
-      const freeTierAccount = await this.pocketService.getFreeTierAccount(passphrase);
-      const stakeAmount = Configurations.pocket_network.free_tier.stake_amount;
+      const {account: freeTierAccount, passphrase} = await this.pocketService.getFreeTierAccount();
+      const {stake_amount: stakeAmount} = Configurations.pocket_network.free_tier;
 
       const aat = await this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, passphrase);
 

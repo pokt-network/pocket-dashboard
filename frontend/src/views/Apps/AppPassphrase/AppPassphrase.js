@@ -120,7 +120,7 @@ class AppPassphrase extends Component {
 
     this.setState({
       fileDownloaded: true,
-      redirectPath: _getDashboardPath(DASHBOARD_PATHS.chooseChain),
+      redirectPath: _getDashboardPath(DASHBOARD_PATHS.applicationChangeList),
     });
   }
 

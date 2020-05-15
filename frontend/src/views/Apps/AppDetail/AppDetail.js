@@ -50,10 +50,13 @@ class AppDetail extends Component {
     // eslint-disable-next-line react/prop-types
     const {address} = this.props.match.params;
 
+    console.log(address);
+
     const {
       pocketApplication,
       networkData,
     } = await ApplicationService.getApplication(address);
+
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
 
@@ -95,9 +98,7 @@ class AppDetail extends Component {
     const {freeTier} = this.state.pocketApplication;
 
     if (freeTier) {
-      const success = await ApplicationService.unstakeFreeTierApplication(
-        address
-      );
+      const success = await ApplicationService.unstakeFreeTierApplication(address);
 
       if (success) {
         // TODO: Show message on frontend about success
@@ -108,7 +109,7 @@ class AppDetail extends Component {
   }
 
   async stakeApplication() {
-    // TOOD: Implement
+    // TODO: Implement
   }
 
   render() {

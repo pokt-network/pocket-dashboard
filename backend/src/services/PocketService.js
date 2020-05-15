@@ -144,13 +144,12 @@ export default class PocketService {
   /**
    * Retrieve the free tier account.
    *
-   * @param {string} passphrase Passphrase used to import account.
-   *
-   * @returns {Promise<Account | Error>} Free Tier account.
+   * @returns {Promise<{account:Account, passphrase:string} | Error>} Free Tier account.
    * @throws Error If the account is not valid.
    */
-  async getFreeTierAccount(passphrase) {
+  async getFreeTierAccount() {
     const privateKey = POCKET_NETWORK_CONFIGURATION.free_tier.account;
+    const passphrase = POCKET_NETWORK_CONFIGURATION.free_tier.passphrase;
 
     if (!privateKey) {
       throw Error("Free tier account value is required");
@@ -162,7 +161,7 @@ export default class PocketService {
       throw Error("Free tier account is not valid");
     }
 
-    return account;
+    return {account, passphrase};
   }
 
   /**
