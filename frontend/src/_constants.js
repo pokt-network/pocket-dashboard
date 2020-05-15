@@ -35,7 +35,7 @@ export const TABLE_COLUMNS = {
   NETWORK_CHAINS: [
     {
       dataField: "name",
-      text: "Network",
+      text: "Name",
     },
     {
       dataField: "netID",
@@ -47,6 +47,14 @@ export const TABLE_COLUMNS = {
     {
       dataField: "hash",
       text: "Hash",
+    },
+    {
+      dataField: "description",
+      text: "Description",
+    },
+    {
+      dataField: "ticker",
+      text: "Ticker",
     },
   ],
   APPS: [

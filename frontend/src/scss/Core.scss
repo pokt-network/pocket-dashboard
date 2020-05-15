@@ -1,6 +1,7 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&family=Open+Sans:wght@300;400;600;700;800&display=swap");
 
+
 // Table variables
 $table: (columns: (background-color: theme-color("dark"),
     color: white,
@@ -25,13 +26,13 @@ $light-gray: #afafaf;
 $white-smoke: #f5f5f5;
 $border-blue: #25a9e0;
 
-$error: #bb0505;
+$error: #ff0000;
 $alert: #ffbf02;
 
 // Font variables
 $title: (font: "Open Sans",
   type: sans-serif,
-  weight: 800,
+  weight: 700,
 );
 
 
@@ -73,7 +74,7 @@ $gradient: linear-gradient(180deg,
 }
 
 h1 {
-  color: $secondary-color;
+  color: black;
 }
 
 // Paragraphs, Labels, Links
@@ -210,7 +211,7 @@ input {
   @for $i from 1 through 6 {
     h#{$i} {
       font-weight: bold;
-      color: #fa5849;
+      color: $error;
     }
   }
 }
@@ -219,7 +220,7 @@ input {
   @for $i from 1 through 6 {
     h#{$i} {
       font-weight: bold;
-      color: #e6ad3a;
+      color: $alert;
     }
   }
 }
@@ -271,7 +272,7 @@ label.form-label {
 
 #sidebar,
 #content {
-  min-height: calc(100vh - 87px);
+  min-height: calc(90vh);
 }
 
 #sidebar {

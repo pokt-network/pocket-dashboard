@@ -28,11 +28,14 @@ class Dashboard extends Component {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
-    const userApps = await ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT);
+    const userApps = await ApplicationService.getAllUserApplications(
+      userEmail, APPLICATIONS_LIMIT
+    );
     const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
     const chains = await NetworkService.getAvailableNetworkChains();
+    const alert = UserService.getShowWelcomeMesage();
 
-    this.setState({userApps, userNodes, chains, loading: false});
+    this.setState({alert, userApps, userNodes, chains, loading: false});
   }
 
   render() {
@@ -55,7 +58,7 @@ class Dashboard extends Component {
     ];
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     const userApps = allUserApps.map(mapStatusToField);
@@ -66,7 +69,10 @@ class Dashboard extends Component {
         {alert && (
           <Alert
             variant="primary"
-            onClose={() => this.setState({alert: false})}
+            onClose={() => {
+              UserService.showWelcomeMessage(false);
+              this.setState({alert: false});
+            }}
             dismissible
           >
             <h4 className="font-weight-bold ml-3 mt-2 mb-4">
@@ -80,7 +86,7 @@ class Dashboard extends Component {
           </Col>
           <Col sm="4" md="4" lg="4" className="d-flex justify-content-end">
             <Dropdown className="cta mr-2">
-              <Dropdown.Toggle variant="primary" id="dropdown-basic">
+              <Dropdown.Toggle className="pl-4 pr-4" variant="primary" id="dropdown-basic">
                 Apps
               </Dropdown.Toggle>
 
@@ -109,7 +115,7 @@ class Dashboard extends Component {
               </Dropdown.Menu>
             </Dropdown>
             <Dropdown className="cta">
-              <Dropdown.Toggle variant="dark" id="dropdown-basic">
+              <Dropdown.Toggle className="pl-4 pr-4" variant="dark" id="dropdown-basic">
                 Nodes
               </Dropdown.Toggle>
 
@@ -142,35 +148,11 @@ class Dashboard extends Component {
         <Row className="stats mt-3 mb-4">
           {cards.map((card) => (
             <Col key={card.title}>
-              <InfoCard title={card.title} subtitle={card.subtitle}/>
+              <InfoCard title={card.title} subtitle={card.subtitle} />
             </Col>
           ))}
         </Row>
         <Row>
-          <Col lg="6" md="6" sm="6">
-            <Segment label="Supported Blockchains">
-              <BootstrapTable
-                classes="app-table"
-                keyField="hash"
-                data={chains}
-                columns={TABLE_COLUMNS.NETWORK_CHAINS}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
-          <Col lg="6" md="6" sm="6">
-            <Segment label="Most popular chains">
-              <BootstrapTable
-                classes="app-table"
-                keyField="hash"
-                data={chains}
-                columns={TABLE_COLUMNS.NETWORK_CHAINS}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
-        </Row>
-        <Row className="mt-5 mb-4">
           <Col lg="6" md="6" sm="6">
             <Segment label="Registered Nodes">
               <BootstrapTable
@@ -189,6 +171,30 @@ class Dashboard extends Component {
                 keyField="pocketApplication.publicPocketAccount.address"
                 data={userApps}
                 columns={TABLE_COLUMNS.APPS}
+                bordered={false}
+              />
+            </Segment>
+          </Col>
+        </Row>
+        <Row className="mt-5 mb-4">
+          <Col lg="12" md="12" sm="12">
+            <Segment label="Supported Blockchains">
+              <BootstrapTable
+                classes="app-table"
+                keyField="hash"
+                data={chains}
+                columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                bordered={false}
+              />
+            </Segment>
+          </Col>
+          <Col lg="12" md="12" sm="12">
+            <Segment label="Most popular chains">
+              <BootstrapTable
+                classes="app-table"
+                keyField="hash"
+                data={chains}
+                columns={TABLE_COLUMNS.NETWORK_CHAINS}
                 bordered={false}
               />
             </Segment>
