@@ -12,7 +12,7 @@ class CardCVCNumberInput extends Component {
         base: "payment-input card-cvc-number-input"
       },
       style: PaymentInputStyle,
-      placeholder: ""
+      placeholder: "222"
     };
   }
 

@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Card, Col, Form, Modal, Row} from "react-bootstrap";
+import {Button, Col, Form, Modal, Row} from "react-bootstrap";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import "./TierSelection.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";

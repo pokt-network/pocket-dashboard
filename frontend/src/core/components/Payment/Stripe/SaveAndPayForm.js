@@ -32,12 +32,10 @@ class SaveAndPayForm extends Component {
     PocketStripePaymentService.confirmPaymentWithNewCard(stripe, paymentIntentSecretID, card, billingDetails)
       .then(result => {
         if (result.error) {
-          // TODO: Show information to user in a proper way.
           handleAfterPayment({success: false, data: result.error});
         }
 
         if (result.paymentIntent) {
-          // TODO: Show information to user in a proper way, and redirect to another path
           handleAfterPayment({success: true, data: result.paymentIntent.status});
         }
       });

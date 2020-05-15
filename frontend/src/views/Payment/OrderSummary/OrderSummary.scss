@@ -3,13 +3,14 @@
 #order-summary {
 
   .cards {
-    max-height: 30vh;
+    height: 25vh;
     overflow-x: auto;
   }
 
   .p-badge {
     background-color: $dark-blue;
     border-radius: 15px;
+    margin: 0;
 
     h2 {
       font-size: 2.2em;
@@ -30,7 +31,7 @@
       margin-bottom: 25px;
 
       p:first-of-type {
-        color: $light-gray;
+        color: $dark-gray;
       }
 
       p:last-of-type {
@@ -51,8 +52,8 @@
 
   .payment-method {
     display: flex;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     border-bottom: 1px solid rgba(90, 90, 90, 0.1);
 
     .card-display {
