@@ -27,8 +27,10 @@
     "moment": "^2.25.3",
     "numeral": "^2.0.6",
     "prop-types": "^15.7.2",
-    "rc-slider": "^9.2.4",
+    "qs": "^6.9.4",
+    "rc-slider": "9.2.4",
     "rc-steps": "^3.5.0",
+    "rc-tooltip": "3.7.3",
     "react": "^16.13.0",
     "react-bootstrap": "^1.0.0-beta.17",
     "react-bootstrap-table-next": "^4.0.0",
@@ -42,8 +44,7 @@
     "react-scripts": "3.4.0",
     "react-spinners": "^0.8.1",
     "secure-ls": "^1.2.6",
-    "yup": "^0.28.5",
-    "qs": "^6.9.4"
+    "yup": "^0.28.5"
   },
   "eslintConfig": {
     "env": {

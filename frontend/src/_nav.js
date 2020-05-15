@@ -28,22 +28,22 @@ export default {
     {
       name: "Network Status",
       url: "/dashboard",
-      icon: "square",
+      icon: "tachometer-alt",
     },
     {
       name: "Apps",
       url: "/dashboard/apps",
-      icon: "square",
+      icon: "shapes",
     },
     {
       name: "Nodes",
       url: "/dashboard/nodes",
-      icon: "square",
+      icon: "dot-circle",
     },
     {
       name: "Support",
       url: "/dashboard/Documentation",
-      icon: "square",
+      icon: "headset",
     },
   ],
 };

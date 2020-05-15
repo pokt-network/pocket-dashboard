@@ -3,17 +3,16 @@ import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import HelpLink from "../../../core/components/HelpLink";
-import {TABLE_COLUMNS, STAKE_STATUS} from "../../../_constants";
+import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
 import "./AppDetail.scss";
-import ApplicationService, {
-  PocketApplicationService,
-} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {copyToClipboard, getBondStatus, formatNumbers} from "../../../_helpers";
+import {copyToClipboard, formatNetworkData, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
+import PocketUserService from "../../../core/services/PocketUserService";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -56,6 +55,7 @@ class AppDetail extends Component {
       networkData,
     } = await ApplicationService.getApplication(address);
 
+
     const chains = await NetworkService.getNetworkChains(networkData.chains);
 
     const {freeTier} = pocketApplication;
@@ -81,8 +81,10 @@ class AppDetail extends Component {
 
   async deleteApplication() {
     const {address} = this.state.pocketApplication.publicPocketAccount;
+    const appsLink = `${window.location.origin}${_getDashboardPath(DASHBOARD_PATHS.apps)}`;
+    const userEmail = PocketUserService.getUserInfo().email;
 
-    const success = await ApplicationService.deleteAppFromDashboard(address);
+    const success = await ApplicationService.deleteAppFromDashboard(address, userEmail, appsLink);
 
     if (success) {
       this.setState({deleted: true});
@@ -94,9 +96,7 @@ class AppDetail extends Component {
     const {freeTier} = this.state.pocketApplication;
 
     if (freeTier) {
-      const success = await ApplicationService.unstakeFreeTierApplication(
-        address
-      );
+      const success = await ApplicationService.unstakeFreeTierApplication(address);
 
       if (success) {
         // TODO: Show message on frontend about success
@@ -107,7 +107,7 @@ class AppDetail extends Component {
   }
 
   async stakeApplication() {
-    // TOOD: Implement
+    // TODO: Implement
   }
 
   render() {
@@ -126,7 +126,7 @@ class AppDetail extends Component {
       stakedTokens,
       status: bondStatus,
     } = this.state.networkData;
-    const status = getBondStatus(bondStatus);
+    const status = getStakeStatus(bondStatus);
     const isStaked =
       status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
@@ -149,9 +149,9 @@ class AppDetail extends Component {
     } = this.state;
 
     const generalInfo = [
-      {title: `${formatNumbers(stakedTokens)} POKT`, subtitle: "Stake tokens"},
+      {title: `${formatNetworkData(stakedTokens)} POKT`, subtitle: "Stake tokens"},
       {title: status, subtitle: "Stake status"},
-      {title: formatNumbers(maxRelays), subtitle: "Max Relays"},
+      {title: formatNetworkData(maxRelays), subtitle: "Max Relays"},
     ];
 
     const contactInfo = [
@@ -172,7 +172,7 @@ class AppDetail extends Component {
     if (deleted) {
       return (
         <DeletedOverlay
-          text="You application was succesfully removed"
+          text="You application was successfully removed"
           buttonText="Go to apps list"
           buttonLink={_getDashboardPath(DASHBOARD_PATHS.apps)}
         />
@@ -242,12 +242,12 @@ class AppDetail extends Component {
               <Alert variant="dark">{publicKey}</Alert>
             </div>
           </Col>
-          {freeTier && (
+          {freeTier ? (
             <Col lg="6" md="6">
               <div id="aat-info" className="mb-2">
                 <h3>AAT</h3>
                 <span>
-                  <HelpLink size="2x" />
+                  <HelpLink size="2x"/>
                   <p>How to create an AAT?</p>
                 </span>
               </div>
@@ -267,7 +267,7 @@ class AppDetail extends Component {
                 </pre>
               </Alert>
             </Col>
-          )}
+          ) : null}
         </Row>
         <Row>
           <Col>

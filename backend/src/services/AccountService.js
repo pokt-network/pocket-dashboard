@@ -70,13 +70,13 @@ export default class AccountService extends BaseService {
    * @async
    */
   async importAccountToNetwork(pocketService, passPhrase, privateKey) {
-    const applicationAccount = await pocketService.importAccount(privateKey, passPhrase);
+    const account = await pocketService.importAccount(privateKey, passPhrase);
 
-    if (applicationAccount instanceof Error) {
+    if (account instanceof Error) {
       throw TypeError("Account is invalid");
     }
 
-    return applicationAccount;
+    return account;
   }
 
   /**

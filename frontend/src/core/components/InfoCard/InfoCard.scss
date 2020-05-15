@@ -3,7 +3,9 @@
 .p-badge {
   margin: 10px;
   padding: 10px;
-  border-radius: 5px;
+  border-radius: $panel-radius;
+  -webkit-box-shadow: $default-box-shadow;
+  -moz-box-shadow: $default-box-shadow;
   box-shadow: $default-box-shadow;
   display: flex;
   flex-direction: column;
@@ -12,7 +14,7 @@
 
   h2 {
     margin-bottom: 0;
-    color: $primary-color;
+    color: $primary-color !important;
     font-weight: 700;
     font-family: "Lato";
   }

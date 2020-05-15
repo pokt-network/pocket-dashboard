@@ -1,4 +1,54 @@
+@import "../../../scss/Core.scss";
+
 #order-summary {
+
+  .cards {
+    max-height: 30vh;
+    overflow-x: auto;
+  }
+
+  .p-badge {
+    background-color: $dark-blue;
+    border-radius: 15px;
+
+    h2 {
+      font-size: 2.2em;
+    }
+
+    p {
+      color: white;
+    }
+  }
+
+  .order {
+    padding-left: 30px;
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 25px;
+
+      p:first-of-type {
+        color: $light-gray;
+      }
+
+      p:last-of-type {
+        color: $primary-color;
+        font-size: 1.8em;
+        font-weight: 700;
+      }
+    }
+  }
+
+  .form-check-label {
+    p {
+      font-size: 1.1em;
+      font-weight: 300 !important;
+      margin-top: 2px;
+    }
+  }
+
   .payment-method {
     display: flex;
     padding-top: 20px;
@@ -21,8 +71,4 @@
     border-bottom: unset;
   }
 
-  .payment-container {
-    margin-left: 25px;
-    margin-bottom: 4em;
-  }
 }

@@ -1,7 +1,6 @@
 import {before, describe, it} from "mocha";
 import "chai/register-should";
 import ApplicationService from "../../src/services/ApplicationService";
-import {StakingStatus} from "@pokt-network/pocket-js";
 import {configureTestService} from "../setupTests";
 import PersistenceProvider from "../../src/providers/data/PersistenceProvider";
 import sinon from "sinon";
@@ -34,21 +33,13 @@ describe("ApplicationService", () => {
         description: "A test application"
       };
 
-      const applicationResult = await applicationService.createApplication(data);
+      const applicationID = await applicationService.createApplication(data);
 
       // eslint-disable-next-line no-undef
-      should.exist(applicationResult);
-      // eslint-disable-next-line no-undef
-      should.exist(applicationResult.privateApplicationData.address);
-      // eslint-disable-next-line no-undef
-      should.exist(applicationResult.privateApplicationData.privateKey);
+      should.exist(applicationID);
 
-      applicationResult.privateApplicationData.address.length.should.be.equal(40);
-      applicationResult.privateApplicationData.privateKey.length.should.be.equal(128);
+      applicationID.should.be.an("string");
 
-      applicationResult.networkData.stakedTokens.toString().should.be.equal("0");
-      applicationResult.networkData.jailed.should.be.equal(false);
-      applicationResult.networkData.status.should.be.equal(StakingStatus.Unstaked);
     });
   });
 

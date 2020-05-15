@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
-import PocketBox from "../../../core/PocketBox/PocketBox";
+import PocketBox from "../../../core/components/PocketBox/PocketBox";
 import {Formik} from "formik";
 import * as yup from "yup";
 import {VALIDATION_MESSAGES} from "../../../_constants";

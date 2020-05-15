@@ -3,15 +3,19 @@
 
 
 // Table variables
-$table: (columns: (background-color: theme-color("dark"),
+$table: (
+  columns: (
+    background-color: theme-color("dark"),
     color: white,
   ),
-  data: (odd: "",
+  data: (
+    odd: "",
     even: "",
   ),
   selected-item: (background-color: rgba(0, 0, 0, 0.075),
   ),
 );
+
 
 // color variables:
 // Primary colors
@@ -39,11 +43,15 @@ $title: (font: "Open Sans",
 $paragraph: (font: "Lato",
   type: sans-serif,
   weight: 400,
-  color: #535353);
+  color: $dark-gray
+);
 
 // utils variables
-$default-border-radius: 20px;
-$default-box-shadow: 1px 15px 53px -26px rgba(33, 33, 33, .1);
+$panel-radius: 15px;
+$table-radius: 15px;
+$default-border-radius: 25px;
+$default-box-shadow: 0px 0px 39px -21px rgba(33, 33, 33, 0.36);
+
 
 @mixin bordered-layout {
   border: 2px solid $primary-color;
@@ -80,7 +88,8 @@ h1 {
 // Paragraphs, Labels, Links
 label,
 p,
-a {
+a,
+li {
   @include font-style($paragraph);
 }
 
@@ -158,7 +167,7 @@ form {
 .btn-primary:focus,
 .btn-outline-primary:active,
 .btn-primary:active,
-.show>.btn-primary.dropdown-toggle,
+.show > .btn-primary.dropdown-toggle,
 .btn-primary:not(:disabled):not(.disabled):active {
   background-color: $primary-color-darker;
   border-color: $primary-color-darker;
@@ -166,9 +175,9 @@ form {
 
 .btn-primary.disabled,
 .btn-primary:disabled {
-  color: #fff;
-  background-color: #4bbef0;
-  border-color: #4bbef0;
+  color: $dark-gray;
+  background-color: $white-smoke;
+  border-color: $white-smoke;
 }
 
 .btn-dark {
@@ -193,6 +202,7 @@ input {
   p {
     font-weight: 700 !important;
     font-size: 1.2em !important;
+    margin-bottom: 0;
   }
 
   .head {
@@ -305,10 +315,13 @@ label.form-label {
   }
 }
 
-a.link,
-button.link {
-  color: #343a41;
-  text-decoration: underline;
+button,
+button.btn {
+  min-width: unset;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 7px;
+  padding-bottom: 7px;
 }
 
 .app-table {
@@ -438,20 +451,49 @@ textarea.form-control::placeholder {
 
 .search-input.input-group {
   input {
-    border-right-color: rgba(194, 194, 194, 0.5) !important;
-  }
-
-  input::placeholder {
-    font-weight: bold;
+    border-right-color: transparent;
   }
 
   button {
     color: $primary-color;
-    border-left-color: rgba(194, 194, 194, 0.5);
+    border-left-color: transparent;
   }
 
   button:hover {
     color: #fff;
+  }
+}
+
+.title-page {
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-transform: uppercase;
+  }
+
+  h1,
+  h2 {
+    font-weight: 800;
+
+  }
+
+  h3,
+  h4 {
+    font-weight: 700;
+  }
+
+  h2,
+  h3,
+  h4 {
+    color: $dark-gray;
+  }
+
+  p {
+    font-size: 1.3em;
+    font-weight: 300;
+    line-height: 1.2;
   }
 }
 
@@ -497,6 +539,116 @@ textarea.form-control::placeholder {
   font-weight: 300;
   font-size: 14;
 }
+
+.form-check-label {
+  margin-top: 5px;
+  margin-left: 5px;
+  position: absolute;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  position: relative;
+  width: 1.5em;
+  height: 1.5em;
+  color: $black;
+  border: 1px solid $light-gray;
+  border-radius: 4px;
+  appearance: none;
+  outline: 0;
+  cursor: pointer;
+  transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
+
+  &::before {
+    position: absolute;
+    content: '';
+    display: block;
+    top: 2px;
+    left: 7px;
+    width: 8px;
+    height: 14px;
+    border-style: solid;
+    border-color: $white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+    opacity: 0;
+  }
+
+  &:checked {
+    color: $white;
+    border-color: $primary-color;
+    background: $primary-color;
+
+    &::before {
+      opacity: 1;
+    }
+
+    ~ label::before {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+  }
+}
+
+// input[type="radio"] {
+//   position: absolute;
+//   opacity: 0;
+
+//   +.radio-label {
+//     &:before {
+//       content: '';
+//       background: $primary-color;
+//       border-radius: 100%;
+//       border: 1px solid white;
+//       display: inline-block;
+//       width: 1.4em;
+//       height: 1.4em;
+//       position: relative;
+//       top: -0.2em;
+//       margin-right: 1em;
+//       vertical-align: top;
+//       cursor: pointer;
+//       text-align: center;
+//       transition: all 250ms ease;
+//     }
+//   }
+
+//   &:checked {
+//     +.radio-label {
+//       &:before {
+//         background-color: $primary-color;
+//         box-shadow: inset 0 0 0 4px #000;
+//       }
+//     }
+//   }
+
+//   &:focus {
+//     +.radio-label {
+//       &:before {
+//         outline: none;
+//         border-color: $primary-color;
+//       }
+//     }
+//   }
+
+//   &:disabled {
+//     +.radio-label {
+//       &:before {
+//         box-shadow: inset 0 0 0 4px $primary-color;
+//         border-color: white;
+//         background: white;
+//       }
+//     }
+//   }
+
+//   +.radio-label {
+//     &:empty {
+//       &:before {
+//         margin-right: 0;
+//       }
+//     }
+//   }
+// }
+
 
 /* Custom scroll bar. Not supports in Firefox and IE */
 

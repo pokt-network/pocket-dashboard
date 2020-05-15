@@ -14,23 +14,45 @@ const paymentService = new PaymentService();
  */
 router.post("", async (request, response) => {
   try {
-    /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}, privateKey?:string, applicationBaseLink:string}} */
+    /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}}} */
+    let data = request.body;
+
+    const applicationID = await applicationService.createApplication(data.application);
+
+    response.send(applicationID);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Create new application account.
+ */
+router.post("/account", async (request, response) => {
+  try {
+    /** @type {{applicationID: string, passphrase: string, applicationBaseLink:string, privateKey?:string}} */
     let data = request.body;
 
     if (!("privateKey" in data)) {
       data["privateKey"] = "";
     }
 
-    const application = await applicationService.createApplication(data.application, data.privateKey);
+    const applicationData = await applicationService.createApplicationAccount(data.applicationID, data.passphrase, data.privateKey);
     const emailAction = data.privateKey ? "imported" : "created";
     const applicationEmailData = {
-      name: data.node.name,
-      link: `${data.applicationBaseLink}/${application.privateApplicationData.address}`
+      name: applicationData.application.name,
+      link: `${data.applicationBaseLink}/${applicationData.privateApplicationData.address}`
     };
 
-    await EmailService.to(data.application.contactEmail).sendCreateOrImportAppEmail(emailAction, data.application.user, applicationEmailData);
+    await EmailService
+      .to(applicationData.application.contactEmail)
+      .sendCreateOrImportAppEmail(emailAction, applicationData.application.contactEmail, applicationEmailData);
 
-    response.send(application);
+    response.send(applicationData);
   } catch (e) {
     const error = {
       message: e.toString()
@@ -212,10 +234,10 @@ router.post("/user/all", async (request, response) => {
 router.post("/freetier/stake", async (request, response) => {
   try {
 
-    /** @type {{applicationAccountAddress: string, networkChains: string[]}} */
+    /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[]}} */
     const data = request.body;
 
-    const aat = await applicationService.stakeFreeTierApplication(data.applicationAccountAddress, data.networkChains);
+    const aat = await applicationService.stakeFreeTierApplication(data.application, data.networkChains);
 
     response.send(aat);
   } catch (e) {

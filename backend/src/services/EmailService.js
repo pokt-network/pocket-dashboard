@@ -62,6 +62,7 @@ export default class EmailService {
   async sendSignUpEmail(userName, postValidationLink) {
     const data = {
       USER_NAME: userName,
+      USER_EMAIL: this.__toEmail,
       POST_VALIDATION_LINK: postValidationLink
     };
 

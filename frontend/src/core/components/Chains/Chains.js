@@ -24,7 +24,7 @@ class Chains extends Component {
   async componentDidMount() {
     const chains = await NetworkService.getAvailableNetworkChains();
 
-    this.setState({chains});
+    this.setState({chains, filteredChains: chains});
   }
 
   handleChainSearch() {

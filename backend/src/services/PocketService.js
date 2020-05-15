@@ -8,7 +8,8 @@ import {
   Node,
   NodeParams,
   Pocket,
-  RawTxResponse
+  RawTxResponse,
+  StakingStatus
 } from "@pokt-network/pocket-js";
 import {PocketAAT} from "@pokt-network/aat-js";
 import {Configurations} from "../_configuration";
@@ -83,6 +84,7 @@ export default class PocketService {
    * @param {string} passphrase Passphrase used to generate account.
    *
    * @returns {Promise<Account | Error>} A pocket account.
+   * @async
    */
   async createAccount(passphrase) {
     return this.__pocket.keybase.createAccount(passphrase);
@@ -142,13 +144,12 @@ export default class PocketService {
   /**
    * Retrieve the free tier account.
    *
-   * @param {string} passphrase Passphrase used to import account.
-   *
-   * @returns {Promise<Account | Error>} Free Tier account.
+   * @returns {Promise<{account:Account, passphrase:string} | Error>} Free Tier account.
    * @throws Error If the account is not valid.
    */
-  async getFreeTierAccount(passphrase) {
+  async getFreeTierAccount() {
     const privateKey = POCKET_NETWORK_CONFIGURATION.free_tier.account;
+    const passphrase = POCKET_NETWORK_CONFIGURATION.free_tier.passphrase;
 
     if (!privateKey) {
       throw Error("Free tier account value is required");
@@ -160,7 +161,33 @@ export default class PocketService {
       throw Error("Free tier account is not valid");
     }
 
-    return account;
+    return {account, passphrase};
+  }
+
+  /**
+   * Transfer Pokt between Accounts
+   *
+   * @param {string} fromAccountAddressHex From account address in Hex.
+   * @param {string} toAccountAddressHex To account address in Hex.
+   * @param {string} uPoktAmount uPokt to transfer.
+   *
+   * @returns {Promise<RawTxResponse>} Raw Tx Response.
+   */
+  async transferPoktBetweenAccounts(fromAccountAddressHex, toAccountAddressHex, uPoktAmount) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const {account: freeTierAccount, passphrase} = await this.getFreeTierAccount();
+
+    const transactionSender = await this.__pocket.withImportedAccount(freeTierAccount.addressHex, passphrase);
+
+    const transactionResponse = await transactionSender
+      .send(fromAccountAddressHex, toAccountAddressHex, uPoktAmount)
+      .submit(chain_id, transaction_fee);
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse;
   }
 
   /**
@@ -222,7 +249,7 @@ export default class PocketService {
   /**
    * Get Applications data.
    *
-   * @param {string} status Status of the apps to retrieve.
+   * @param {StakingStatus} status Status of the apps to retrieve.
    *
    * @returns {Promise<Application[]>} The applications data.
    * @throws Error If Query fails.
@@ -270,10 +297,10 @@ export default class PocketService {
     const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
     const publicKey = applicationAccount.publicKey.toString("hex");
 
-    const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.address, passPhrase);
+    const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.addressHex, passPhrase);
 
     const transactionResponse = await transactionSender.appStake(publicKey, networkChains, uPoktAmount)
-      .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake an application");
+      .submit(chain_id, transaction_fee);
 
     if (transactionResponse instanceof Error) {
       throw transactionResponse;
