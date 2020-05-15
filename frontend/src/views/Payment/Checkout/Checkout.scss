@@ -1,31 +1,69 @@
+@import "../../../scss/Core.scss";
+
 #nodes-checkout {
   .segment {
     padding: 35px;
     margin-left: 20px;
     margin-right: 20px;
-    border: 1px solid #686868;
     border-radius: 5px;
+    box-shadow: $default-box-shadow;
 
     hr {
-      background-color: #686868;
+      background-color: $light-gray;
+    }
+  }
+
+  .title-page h3 {
+    font-size: 18px;
+    margin-left: 25px;
+  }
+
+  .app-steps {
+    .rc-steps-item-title {
+      white-space: pre-wrap;
     }
   }
 
   .field {
     display: flex;
     justify-content: space-between;
+
+    p {
+      font-size: 16px;
+      color: #656565;
+    }
+  }
+
+  .print {
+    padding: 0;
   }
 
   .invoice {
+    h2 {
+      color: $dark-gray;
+      font-size: 21px;
+      font-weight: 800;
+    }
+
+    .label.total p {
+      font-weight: 700;
+      color: #06202E;
+      font-family: "Open Sans";
+      font-size: 18px;
+    }
+
+    .detail {
+      color: $light-gray;
+      font-family: "Open Sans";
+      font-size: 18px;
+      font-weight: 700;
+    }
+
     .label {
       text-transform: uppercase;
-      padding: 10px;
-      background-color: #F5F5F5;
       font-weight: bold;
 
-      p {
-        margin-bottom: 0;
-      }
+      p {}
     }
   }
 }

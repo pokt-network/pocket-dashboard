@@ -34,7 +34,6 @@ $title: (font: "Open Sans",
   weight: 700,
 );
 
-
 $paragraph: (font: "Lato",
   type: sans-serif,
   weight: 400,
@@ -42,7 +41,7 @@ $paragraph: (font: "Lato",
 
 // utils variables
 $default-border-radius: 25px;
-$default-box-shadow: 1px 15px 53px -26px rgba(33, 33, 33, .1);
+$default-box-shadow: 0 9px 24px 0 rgba(6, 32, 46, 0.1);
 
 @mixin bordered-layout {
   border: 2px solid $primary-color;

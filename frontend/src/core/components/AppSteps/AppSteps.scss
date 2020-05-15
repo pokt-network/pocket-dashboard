@@ -11,8 +11,8 @@
   .rc-steps-item-icon {
     background: #e9e9e9;
     border: 1px solid #e9e9e9;
-    width: 120px;
-    height: 120px;
+    width: 99px;
+    height: 99px;
     line-height: 26px;
     text-align: center;
     border-radius: 50%;
@@ -33,14 +33,14 @@
     position: absolute;
     left: 0;
     width: 100%;
-    top: 55px;
+    top: 45px;
     padding: 0 10px;
     z-index: -1;
   }
 
   .rc-steps-item-tail {
-    left: 80px;
-    width: 75%;
+    left: 70px;
+    width: calc(100% - 120px);
   }
 
   .rc-steps-item-tail:after {
@@ -54,14 +54,12 @@
   }
 
   .rc-steps-item-title {
-    font-size: 25px;
+    font-size: 21px;
     color: black;
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: 800;
     font-family: "Open Sans";
     white-space: nowrap;
-
-
   }
 
   .rc-steps-item-content {
@@ -69,7 +67,7 @@
     justify-content: center;
 
     .rc-steps-item-title {
-      margin-left: 45px;
+      margin-left: 20px;
     }
   }
 }
