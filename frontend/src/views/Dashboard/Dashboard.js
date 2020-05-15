@@ -28,6 +28,7 @@ class Dashboard extends Component {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
+
     const userApps = await ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT);
     const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
     const chains = await NetworkService.getAvailableNetworkChains();

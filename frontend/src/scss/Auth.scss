@@ -14,11 +14,11 @@
     margin-bottom: 0.5em;
   }
 
-  #sidebar.col-lg-3.col-sm-3.col-4 {
-    flex: 1 0 25%;
-    max-width: 30%;
-    background: url("/assets/auth-sidebar.png");
+  #sidebar {
+    background-image: url("/assets/auth-sidebar.png");
+    height: 100vh;
     background-size: cover;
+    background-repeat: no-repeat;
   }
 
   #logo-white {
@@ -29,13 +29,19 @@
 
   .content {
 
+    p {
+      color: #474747;
+    }
+
+    a {
+      color: #25a9e0;
+    }
+
     p,
     a {
       font-weight: 300;
-      font-size: 1.1em;
+      font-size: 14px;
     }
-
-    background: theme-color("light");
 
     .change {
       margin-top: 50px;
@@ -53,6 +59,14 @@
     div.main {
       h2 {
         text-transform: uppercase;
+        font-size: 2.5em;
+        font-weight: 700;
+      }
+
+      #main-form {
+        .form-group {
+          margin-bottom: 30px;
+        }
       }
 
       #provider-buttons {
@@ -69,7 +83,8 @@
         }
 
         button {
-          font-size: 17px;
+          font-size: 14px;
+          border-radius: 31px;
         }
 
       }
