@@ -21,7 +21,7 @@ class PocketUserService extends PocketBaseService {
     localStorage.setItem("user_provider", user.provider);
   }
 
-  
+
   /**
    * Save wether show message or not.
    *
@@ -31,7 +31,7 @@ class PocketUserService extends PocketBaseService {
     localStorage.setItem("welcome_message", show.toString());
   }
 
-  getShowWelcomeMesage() {
+  getShowWelcomeMessage() {
     return localStorage.getItem("welcome_message") === "true";
   }
 
