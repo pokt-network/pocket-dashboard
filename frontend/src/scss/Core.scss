@@ -287,7 +287,7 @@ label.form-label {
 
 #sidebar {
   padding-top: 5px;
-  // background: $gradient;
+  background: $gradient;
   color: color("white");
 
   #title {
@@ -537,7 +537,7 @@ textarea.form-control::placeholder {
 
 .text {
   font-weight: 300;
-  font-size: 14;
+  font-size: 14pt;
 }
 
 .form-check-label {
