@@ -11,7 +11,7 @@ import {APPLICATIONS_LIMIT, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
+import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faBoxOpen, faSearch} from "@fortawesome/free-solid-svg-icons";
 import Segment from "../../../core/components/Segment/Segment";
@@ -28,31 +28,31 @@ class AppsMain extends Main {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
 
-    const userItems = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
-    );
+    ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT)
+      .then(userItems => {
+        ApplicationService.getStakedApplicationSummary()
+          .then(({totalApplications, averageRelays, averageStaked}) => {
 
-    const {
-      totalApplications,
-      averageRelays,
-      averageStaked,
-    } = await ApplicationService.getStakedApplicationSummary();
+            ApplicationService.getAllApplications(APPLICATIONS_LIMIT)
+              .then(registeredItems => {
 
-    const registeredItems = await ApplicationService.getAllApplications(APPLICATIONS_LIMIT);
+                this.setState({
+                  userItems,
+                  filteredItems: userItems,
+                  total: totalApplications,
+                  averageRelays,
+                  averageStaked,
+                  registeredItems,
+                  loading: false,
+                  hasApps: userItems.length > 0,
+                });
 
-    this.setState({
-      userItems,
-      filteredItems: userItems,
-      total: totalApplications,
-      averageRelays,
-      averageStaked,
-      registeredItems,
-      loading: false,
-      hasApps: userItems.length > 0,
-    });
+              });
+          });
+      });
   }
 
   render() {
@@ -72,11 +72,8 @@ class AppsMain extends Main {
 
     const cards = [
       {title: formatNumbers(total), subtitle: "Total of apps"},
-      {title: formatNumbers(averageStaked), subtitle: "Average staked"},
-      {
-        title: formatNumbers(averageRelays),
-        subtitle: "Average relays per application",
-      },
+      {title: formatNetworkData(averageStaked, false), subtitle: "Average staked"},
+      {title: formatNetworkData(averageRelays, false), subtitle: "Average relays per application"},
     ];
 
     if (loading) {

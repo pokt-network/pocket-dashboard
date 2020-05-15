@@ -165,6 +165,32 @@ export default class PocketService {
   }
 
   /**
+   * Transfer Pokt between Accounts
+   *
+   * @param {string} fromAccountAddressHex From account address in Hex.
+   * @param {string} toAccountAddressHex To account address in Hex.
+   * @param {string} uPoktAmount uPokt to transfer.
+   *
+   * @returns {Promise<RawTxResponse>} Raw Tx Response.
+   */
+  async transferPoktBetweenAccounts(fromAccountAddressHex, toAccountAddressHex, uPoktAmount) {
+    const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+    const {account: freeTierAccount, passphrase} = await this.getFreeTierAccount();
+
+    const transactionSender = await this.__pocket.withImportedAccount(freeTierAccount.addressHex, passphrase);
+
+    const transactionResponse = await transactionSender
+      .send(fromAccountAddressHex, toAccountAddressHex, uPoktAmount)
+      .submit(chain_id, transaction_fee);
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse;
+  }
+
+  /**
    * Get an Application Authentication Token to be used on Pokt network.
    *
    * @param {string} clientPublicKey The client Pocket account public key.
@@ -271,10 +297,10 @@ export default class PocketService {
     const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
     const publicKey = applicationAccount.publicKey.toString("hex");
 
-    const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.address, passPhrase);
+    const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.addressHex, passPhrase);
 
     const transactionResponse = await transactionSender.appStake(publicKey, networkChains, uPoktAmount)
-      .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake an application");
+      .submit(chain_id, transaction_fee);
 
     if (transactionResponse instanceof Error) {
       throw transactionResponse;

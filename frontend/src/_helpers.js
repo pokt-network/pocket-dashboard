@@ -1,12 +1,19 @@
 import numeral from "numeral";
-import {BOND_STATUS, STAKE_STATUS, VALIDATION_MESSAGES} from "./_constants";
-import Identicon from "identicon.js";
+import {BOND_STATUS, DEFAULT_POKT_DENOMINATION_BASE, STAKE_STATUS, VALIDATION_MESSAGES} from "./_constants";
+import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
+
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
 export const formatNumbers = (num) => numeral(num).format("0,0");
+
+export const formatNetworkData = (pokt, fixed = true, poktDenominationBase = DEFAULT_POKT_DENOMINATION_BASE) => {
+  const poktNumber = pokt / Math.pow(10, poktDenominationBase);
+
+  return fixed ? formatNumbers(poktNumber) : numeral(poktNumber).format("0,0.0");
+};
 
 export const copyToClipboard = (value) => {
   const el = document.createElement("textarea");
@@ -18,12 +25,12 @@ export const copyToClipboard = (value) => {
   document.body.removeChild(el);
 };
 
-export const createAndDownloadFile = (data) => {
+export const createAndDownloadJSONFile = (fileName, data) => {
   const element = document.createElement("a");
-  const file = new Blob([data], {type: "text/plain"});
+  const file = new Blob([JSON.stringify(data)], {type: "application/json"});
 
   element.href = URL.createObjectURL(file);
-  element.download = "myPrivateKey.txt";
+  element.download = `${fileName}.json`;
 
   document.body.appendChild(element); // Required for this to work in FireFox
   element.click();
@@ -51,7 +58,7 @@ export const generateIcon = () => {
   const currTime = new Date().getTime();
 
   // Use current time as a 'hash' to generate icon of 250x250
-  return `data:image/png;base64,${new Identicon(
+  return `data:image/png;base64,${new IdentIcon(
     `${currTime}${currTime / 2}`, 250).toString()}`;
 };
 

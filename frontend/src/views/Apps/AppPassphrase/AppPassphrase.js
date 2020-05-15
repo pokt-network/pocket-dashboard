@@ -7,7 +7,7 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
-import {createAndDownloadFile, validateYup} from "../../../_helpers";
+import {createAndDownloadJSONFile, validateYup} from "../../../_helpers";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -98,6 +98,7 @@ class AppPassphrase extends Component {
       PocketApplicationService.removeAppInfoFromCache();
       PocketApplicationService.saveAppInfoInCache({
         applicationID: applicationInfo.id,
+        passphrase: passPhrase,
         address,
         privateKey
       });
@@ -114,9 +115,9 @@ class AppPassphrase extends Component {
   }
 
   downloadKeyFile() {
-    const {privateKey} = this.state;
+    const {privateKey, address, passPhrase} = this.state;
 
-    createAndDownloadFile(privateKey);
+    createAndDownloadJSONFile("MyPocketApplication", {address, privateKey, passPhrase});
 
     this.setState({
       fileDownloaded: true,

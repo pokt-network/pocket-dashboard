@@ -83,7 +83,7 @@ export const Configurations = {
     aat_version: "0.0.1",
     default_rpc_port: 8081,
     transaction_fee: "100000",
-    chain_id: "pocket-testnet-rc-0.2.1",
+    chain_id: "testnet-r1",
     max_dispatchers: process.env.POCKET_NETWORK_MAX_DISPATCHER,
     request_timeout: process.env.POCKET_NETWORK_REQUEST_TIMEOUT,
     max_sessions: process.env.POCKET_NETWORK_MAX_SESSIONS,

@@ -234,10 +234,10 @@ router.post("/user/all", async (request, response) => {
 router.post("/freetier/stake", async (request, response) => {
   try {
 
-    /** @type {{applicationAccountAddress: string, networkChains: string[]}} */
+    /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[]}} */
     const data = request.body;
 
-    const aat = await applicationService.stakeFreeTierApplication(data.applicationAccountAddress, data.networkChains);
+    const aat = await applicationService.stakeFreeTierApplication(data.application, data.networkChains);
 
     response.send(aat);
   } catch (e) {

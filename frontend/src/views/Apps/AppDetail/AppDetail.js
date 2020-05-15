@@ -10,7 +10,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {copyToClipboard, formatNumbers, getStakeStatus} from "../../../_helpers";
+import {copyToClipboard, formatNetworkData, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 
@@ -49,8 +49,6 @@ class AppDetail extends Component {
 
     // eslint-disable-next-line react/prop-types
     const {address} = this.props.match.params;
-
-    console.log(address);
 
     const {
       pocketApplication,
@@ -151,9 +149,9 @@ class AppDetail extends Component {
     } = this.state;
 
     const generalInfo = [
-      {title: `${formatNumbers(stakedTokens)} POKT`, subtitle: "Stake tokens"},
+      {title: `${formatNetworkData(stakedTokens)} POKT`, subtitle: "Stake tokens"},
       {title: status, subtitle: "Stake status"},
-      {title: formatNumbers(maxRelays), subtitle: "Max Relays"},
+      {title: formatNetworkData(maxRelays), subtitle: "Max Relays"},
     ];
 
     const contactInfo = [
@@ -174,7 +172,7 @@ class AppDetail extends Component {
     if (deleted) {
       return (
         <DeletedOverlay
-          text="You application was succesfully removed"
+          text="You application was successfully removed"
           buttonText="Go to apps list"
           buttonLink={_getDashboardPath(DASHBOARD_PATHS.apps)}
         />

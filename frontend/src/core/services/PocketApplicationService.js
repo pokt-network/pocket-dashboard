@@ -31,6 +31,7 @@ export class PocketApplicationService extends PocketBaseService {
     this.ls.remove("app_id");
     this.ls.remove("app_address");
     this.ls.remove("app_private_key");
+    this.ls.remove("app_passphrase");
     this.ls.remove("app_chains");
     this.ls.remove("app_data");
   }
@@ -43,6 +44,7 @@ export class PocketApplicationService extends PocketBaseService {
       id: this.ls.get("app_id").data,
       address: this.ls.get("app_address").data,
       privateKey: this.ls.get("app_private_key").data,
+      passphrase: this.ls.get("app_passphrase").data,
       chains: this.ls.get("app_chains").data,
       data: this.ls.get("app_data").data,
     };
@@ -54,10 +56,11 @@ export class PocketApplicationService extends PocketBaseService {
    * @param {string} [applicationID] Pocket application ID.
    * @param {string} [address] Pocket application address.
    * @param {string} [privateKey] Pocket application private key.
+   * @param {string} [passphrase] Pocket application private key.
    * @param {Array<string>} [chains] Pocket application chosen chains.
    * @param {object} [data] Pocket application dashboard data.
    */
-  saveAppInfoInCache({applicationID, address, privateKey, chains, data}) {
+  saveAppInfoInCache({applicationID, address, privateKey, passphrase, chains, data}) {
     if (applicationID) {
       this.ls.set("app_id", {data: applicationID});
     }
@@ -66,6 +69,9 @@ export class PocketApplicationService extends PocketBaseService {
     }
     if (privateKey) {
       this.ls.set("app_private_key", {data: privateKey});
+    }
+    if (passphrase) {
+      this.ls.set("app_passphrase", {data: passphrase});
     }
     if (chains) {
       this.ls.set("app_chains", {data: chains});
@@ -258,13 +264,13 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Create free tier application.
    *
-   * @param {string} applicationAccountAddress Application account address.
+   * @param {{privateKey: string, passphrase: string}} application Application data.
    * @param {string[]} networkChains Network chains to stake application.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeFreeTierApplication(applicationAccountAddress, networkChains) {
-    return axios.post(this._getURL("freetier/stake"), {applicationAccountAddress, networkChains})
+  stakeFreeTierApplication(application, networkChains) {
+    return axios.post(this._getURL("freetier/stake"), {application, networkChains})
       .then(response => response.data);
   }
 

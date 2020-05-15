@@ -21,6 +21,8 @@ export const ITEM_TYPES = {
   NODE: "node",
 };
 
+export const DEFAULT_POKT_DENOMINATION_BASE = 6;
+
 export const APPLICATIONS_LIMIT = 10;
 
 export const NODES_LIMIT = 10;
