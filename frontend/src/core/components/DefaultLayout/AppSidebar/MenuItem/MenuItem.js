@@ -1,11 +1,6 @@
 import React, {Component} from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {fas} from "@fortawesome/free-solid-svg-icons";
 import PropTypes from "prop-types";
-import {library} from "@fortawesome/fontawesome-svg-core";
 import {NavLink} from "react-router-dom";
-
-library.add(fas);
 
 class MenuItem extends Component {
   render() {
@@ -14,7 +9,12 @@ class MenuItem extends Component {
     return (
       <NavLink to={url} {...restProps}>
         <li>
-          <FontAwesomeIcon icon={icon} size={size} className="icon" />
+          <img
+            style={{width: "10%"}}
+            src={`/assets/${icon}.svg`}
+            className="icon"
+            alt=""
+          />
           {label}
         </li>
       </NavLink>
