@@ -1,9 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, {Component} from "react";
 import {formatCurrency, formatNumbers} from "../../../_helpers";
-import InfoCards from "../../../core/components/InfoCards";
 import {Button, Col, Form, Row} from "react-bootstrap";
-import Segment from "../../../core/components/Segment/Segment";
 import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDisplay";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
@@ -14,6 +12,7 @@ import {ElementsConsumer} from "@stripe/react-stripe-js";
 import PaymentContainer from "../../../core/components/Payment/Stripe/PaymentContainer";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import InfoCard from "../../../core/components/InfoCard/InfoCard";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -39,7 +38,6 @@ class OrderSummary extends Component {
       paymentMethods: [],
       selectedPaymentMethod: {},
       loading: false,
-      newCardForm: false,
       loadingPayment: false,
       agreeTerms: false,
     };
@@ -133,7 +131,6 @@ class OrderSummary extends Component {
       total,
       cost,
       balance,
-      newCardForm,
       paymentIntent,
       loading,
       agreeTerms,
@@ -167,82 +164,89 @@ class OrderSummary extends Component {
 
     return (
       <div id="order-summary">
+        <div className="title-page mb-4">
+          <h2>Order summary</h2>
+        </div>
         <Row>
-          <InfoCards cards={cards} />
-        </Row>
-        <Row>
-          <Col>
-            <Segment
-              label="Your payment methods"
-              sideItem={
-                <Button
-                  onClick={() => this.setState({newCardForm: true})}
-                  className="mr-3 pl-5 pr-5"
-                  variant="primary"
-                >
-                  Add new card
-                </Button>
-              }
-            >
-              {newCardForm && (
-                <SaveAndPayForm
-                  handleAfterPayment={this.makePurchaseWithNewCard}
-                  paymentIntentSecretID={paymentIntent.paymentNumber}
-                />
-              )}
-              <div>
-                <Form>
-                  {paymentMethods.map((card, idx) => {
-                    const {cardData, holder} = card;
+          <Col lg="8" md="8" sm="8" className="title-page">
+            <h4>Confirm your payment method</h4>
+            <Form className="cards">
+              {paymentMethods.map((card, idx) => {
+                const {cardData, holder} = card;
 
-                    return (
-                      <div key={idx} className="payment-method">
-                        <Form.Check
-                          custom
-                          inline
-                          label=""
-                          type="radio"
-                          checked={card.id === selectedPaymentMethod.id}
-                          onChange={() => {
-                            this.setState({selectedPaymentMethod: card});
-                          }}
-                          id={`payment-method-${idx}`}
-                        />
-                        <CardDisplay
-                          cardData={cardData}
-                          holder={holder}
-                          onDelete={this.deleteCard}
-                        />
-                      </div>
-                    );
-                  })}
-                </Form>
-              </div>
-            </Segment>
+                return (
+                  <div key={idx} className="payment-method">
+                    <Form.Check
+                      inline
+                      label=""
+                      type="radio"
+                      checked={card.id === selectedPaymentMethod.id}
+                      onChange={() => {
+                        this.setState({selectedPaymentMethod: card});
+                      }}
+                      id={`payment-method-${idx}`}
+                    />
+                    <CardDisplay
+                      cardData={cardData}
+                      holder={holder}
+                      onDelete={this.deleteCard}
+                    />
+                  </div>
+                );
+              })}
+            </Form>
+            <h5 className="mt-5 mb-4">Add a new card</h5>
+            <SaveAndPayForm
+              handleAfterPayment={this.makePurchaseWithNewCard}
+              paymentIntentSecretID={paymentIntent.paymentNumber}
+            />
           </Col>
-        </Row>
-        <Row className="mt-4">
-          <Col>
+          <Col lg="4" md="4" sm="4" className="title-page">
+            <h4>Review your order</h4>
+            <div className="mt-5 order">
+              <div className="item">
+                <p>Relays per day</p>
+                <p>100</p>
+              </div>
+              <div className="item">
+                <p>Relays per day cost</p>
+                <p>70 USD</p>
+              </div>
+              <div className="item">
+                <p>Current balance</p>
+                <p>-50 USD</p>
+              </div>
+              <InfoCard
+                className="pt-5 mb-4 pr-4 text-center"
+                title={"20 USD"}
+                subtitle={"Total cost"}
+              />
+            </div>
+
+            <Form.Check
+              checked={agreeTerms}
+              onChange={() => this.setState({agreeTerms: !agreeTerms})}
+              id="terms-checkbox"
+              type="checkbox"
+              label={
+                <p>
+                  I agree to Pocket Purchase&#39;s{" "}
+                  <a href="/todo">Terms and Condititons.</a>
+                </p>
+              }
+            />
+            <br />
             <PaymentContainer>
               <ElementsConsumer>
                 {({_, stripe}) => (
                   <Form
                     onSubmit={(e) => this.makePurchaseWithSavedCard(e, stripe)}
-                    className="d-flex justify-content-between"
+                    className=""
                   >
-                    <Form.Check
-                      custom
-                      checked={agreeTerms}
-                      onChange={() => this.setState({agreeTerms: !agreeTerms})}
-                      id="terms-checkbox"
-                      type="checkbox"
-                      label="By paying I agree to Pocket Network purchase terms and conditions."
-                    />
-
                     <Button
                       disabled={!agreeTerms}
                       variant="primary"
-                      className="pr-5 pl-5"
+                      className=" pr-5 pl-5"
                       type="submit"
                     >
                       Confirm payment
