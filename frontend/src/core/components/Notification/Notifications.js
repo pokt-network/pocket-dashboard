@@ -33,11 +33,7 @@ class NotificationIcon extends Component {
 
   render() {
     return (
-      <Dropdown
-        alignRight
-        className="user-dropdown"
-        id="dropdown-menu-align-right"
-      >
+      <Dropdown alignRight id="dropdown-menu-align-right">
         <Dropdown.Toggle as={NotificationToggle} id="dropdown-basic">
           2
         </Dropdown.Toggle>

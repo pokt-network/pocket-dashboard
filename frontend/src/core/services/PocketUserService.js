@@ -21,6 +21,20 @@ class PocketUserService extends PocketBaseService {
     localStorage.setItem("user_provider", user.provider);
   }
 
+  
+  /**
+   * Save wether show message or not.
+   *
+   * @param {boolean} show status of show.
+   */
+  showWelcomeMessage(show) {
+    localStorage.setItem("welcome_message", show.toString());
+  }
+
+  getShowWelcomeMesage() {
+    return localStorage.getItem("welcome_message") === "true";
+  }
+
   /**
    * Remove user data from local storage.
    */
@@ -157,7 +171,8 @@ class PocketUserService extends PocketBaseService {
           this.saveUserInCache(response.data, true);
 
           return {
-            success: true
+            success: true,
+            data: response.data
           };
         }
 

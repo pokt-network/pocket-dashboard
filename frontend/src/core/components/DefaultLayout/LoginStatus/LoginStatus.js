@@ -52,7 +52,7 @@ class LoginStatus extends Component {
 
         <Dropdown.Menu>
           <Dropdown.Item onClick={() => this.goToProfile()}>
-            <FontAwesomeIcon className="icon" icon={faCircle} size="1x" />
+            <img src={"assets/user_icon_circle.svg"} className="icon" alt="" />
             User Profile
           </Dropdown.Item>
           <Dropdown.Item onClick={() => this.logout()}>
