@@ -4,7 +4,6 @@ import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import PocketAAT from "@pokt-network/aat-js";
 import {Account, Application, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
-import bigInt from "big-integer";
 import {Configurations} from "../_configuration";
 import AccountService from "./AccountService";
 
@@ -150,6 +149,18 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
+   * Get average of array.
+   *
+   * @param {number[]} data Array data.
+   *
+   * @returns {number} The average of array.
+   * @private
+   */
+  __getAverage(data) {
+    return data.reduce((a, b) => a + b, 0) / data.length;
+  }
+
+  /**
    * Check if application exists on DB.
    *
    * @param {PocketApplication} application Application to check if exists.
@@ -288,15 +299,10 @@ export default class ApplicationService extends BaseService {
     try {
       const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
 
-      const totalApplications = bigInt(stakedApplications.length);
+      const averageStaked = this.__getAverage(stakedApplications.map(app => parseInt(app.stakedTokens.toString())));
+      const averageRelays = this.__getAverage(stakedApplications.map(app => parseInt(app.maxRelays.toString())));
 
-      const totalStaked = stakedApplications.reduce((acc, appA) => bigInt(appA.stakedTokens).add(acc), bigInt(0));
-      const totalRelays = stakedApplications.reduce((acc, appA) => bigInt(appA.maxRelays).add(acc), bigInt(0));
-
-      const averageStaked = totalStaked.divide(totalApplications);
-      const averageMaxRelays = totalRelays.divide(totalApplications);
-
-      return new StakedApplicationSummary(totalApplications.toString(), averageStaked.toString(), averageMaxRelays.toString());
+      return new StakedApplicationSummary(stakedApplications.length.toString(), averageStaked.toString(), averageRelays.toString());
     } catch (e) {
       return new StakedApplicationSummary("0", "0", "0");
     }
