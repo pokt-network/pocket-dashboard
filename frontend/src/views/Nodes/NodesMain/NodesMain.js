@@ -7,12 +7,12 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {BOND_STATUS_STR, FILTER_OPTIONS, NODES_LIMIT, TABLE_COLUMNS,} from "../../../_constants";
+import {BOND_STATUS_STR, FILTER_OPTIONS, NODES_LIMIT, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
 import InfoCards from "../../../core/components/InfoCards";
-import {formatNumbers, getStakeStatus, mapStatusToField,} from "../../../_helpers";
+import {formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
 import NodeService from "../../../core/services/PocketNodeService";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
