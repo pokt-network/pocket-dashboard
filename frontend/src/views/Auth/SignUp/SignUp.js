@@ -1,7 +1,10 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import {AuthProviderButton, AuthProviderType} from "../../../core/components/AuthProviderButton";
+import {
+  AuthProviderButton,
+  AuthProviderType,
+} from "../../../core/components/AuthProviderButton";
 import PocketUserService from "../../../core/services/PocketUserService";
 import "./SignUp.scss";
 import {ROUTE_PATHS} from "../../../_routes";
@@ -117,7 +120,7 @@ class SignUp extends Component {
             <Row>
               <Col lg={{span: 5, offset: 3}}>
                 <div className={"main"}>
-                  <h2>Sign up</h2>
+                  <h2>Create Account</h2>
                   <p className="error">{backendErrors}</p>
                   <Formik
                     validate={this.validate}
@@ -217,7 +220,7 @@ class SignUp extends Component {
                         <div id={"provider-buttons"}>
                           <AuthProviderButton
                             block={true}
-                            className="brand pl-5 pr-5 mr-3"
+                            className="brand pl-4 pr-4 mr-3"
                             icon={faGoogle}
                             type={AuthProviderType.signup}
                             authProvider={PocketUserService.getAuthProvider(
