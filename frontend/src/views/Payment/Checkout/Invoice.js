@@ -8,25 +8,27 @@ class Invoice extends Component {
     const {information, items, total, title} = this.props;
 
     return (
-      <Col>
-        <h2>{title}</h2>
+      <Col className="invoice">
+        <h2 className="text-uppercase">{title}</h2>
         <hr />
-        <div className="invoice">
+        <div>
           {information.map((item, idx) => (
-            <div key={idx} className="field pl-3 pr-3">
-              <p className="font-weight-bold">{item.text}</p>
+            <div key={idx} className="field">
+              <p>{item.text}</p>
               <p>{item.value}</p>
             </div>
           ))}
-          <p className="label">Purchase detail</p>
+          <hr />
+          <p className="text-uppercase detail">Purchase detail</p>
           {items.map((item, idx) => (
-            <div key={idx} className="field pl-3 pr-3">
-              <p className="font-weight-bold">{item.text}</p>
+            <div key={idx} className="field">
+              <p>{item.text}</p>
               <p>{item.value}</p>
             </div>
           ))}
-          <div className="label field pl-3">
-            <p className="font-weight-bold">Total Cost:</p>
+          <hr />
+          <div className="label field mt-4 total">
+            <p className=""> Total Cost:</p>
             <p>{total}</p>
           </div>
         </div>

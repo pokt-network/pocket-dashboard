@@ -65,14 +65,22 @@ class PocketStripePaymentService extends PocketBaseService {
       billing_details: billingDetails
     };
 
-    return stripe.createPaymentMethod(cardData)
-      .then(result => {
-        if (result.paymentMethod) {
-          this.__savePaymentMethod(result.paymentMethod.id, billingDetails);
+    return stripe.createPaymentMethod(cardData).then(async (result) => {
+      if (result.paymentMethod) {
+        // Adding a card on checkout doesn't ask you for billing info.
+        if (!billingDetails.address) {
+          billingDetails.address = {
+            country: " ",
+            line1: " ",
+            postal_code: " ",
+          };
         }
 
-        return result;
-      });
+        await this.__savePaymentMethod(result.paymentMethod.id, billingDetails);
+      }
+
+      return result;
+    });
   }
 
   /**
