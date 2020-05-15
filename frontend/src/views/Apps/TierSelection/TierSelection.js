@@ -19,17 +19,17 @@ class TierSelection extends Component {
   }
 
   async createFreeTierItem() {
-    const {address, chains} = ApplicationService.getAppAInfo();
+    const {privateKey, passphrase, chains} = ApplicationService.getApplicationInfo();
+    const application = {privateKey, passphrase};
 
-    const data = await ApplicationService.stakeFreeTierApplication(
-      address,
-      chains
-    );
+    const data = await ApplicationService.stakeFreeTierApplication(application, chains);
+
+    ApplicationService.removeAppInfoFromCache();
 
     // TODO: Notify of errors on the frontend
     if (data !== false) {
       // eslint-disable-next-line react/prop-types
-      this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.appCreated));
+      this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.appDetail));
     }
   }
 
@@ -70,7 +70,7 @@ class TierSelection extends Component {
                 >
                   How it works
                 </Button>
-                <br />
+                <br/>
                 <Form.Check
                   checked={agreeTerms}
                   onChange={() => this.setState({agreeTerms: !agreeTerms})}
@@ -92,7 +92,7 @@ class TierSelection extends Component {
                 >
                   Get Free Tier
                 </Button>
-                <br />
+                <br/>
               </div>
             </div>
           </Col>
@@ -117,13 +117,13 @@ class TierSelection extends Component {
                 >
                   How it works
                 </Button>
-                <br />
+                <br/>
                 <Link to={_getDashboardPath(DASHBOARD_PATHS.selectRelays)}>
                   <Button size="md" variant="primary" className="ml-4 mt-3">
                     Customize your tier
                   </Button>
                 </Link>{" "}
-                <br />
+                <br/>
               </div>
             </div>
           </Col>
@@ -165,6 +165,7 @@ class TierSelection extends Component {
             <p>Pocket Network</p>
             <p>
               An AAT o needed to authorize the use of throughput. Providing your
+              {/* eslint-disable-next-line react/no-unescaped-entities */}
               users with MT's dynamically allows you to control who you let use
               your Pocket Network bandwidth at your app discretion. (Note: a
               backend server is required for this).

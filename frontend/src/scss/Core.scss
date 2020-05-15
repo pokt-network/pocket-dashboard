@@ -1,16 +1,21 @@
 @import "node_modules/bootstrap/scss/bootstrap";
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&family=Open+Sans:wght@300;400;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&family=Open+Sans:wght@300;400;600;700;800&display=swap");
+
 
 // Table variables
-$table: (columns: (background-color: theme-color("dark"),
+$table: (
+  columns: (
+    background-color: theme-color("dark"),
     color: white,
   ),
-  data: (odd: "",
+  data: (
+    odd: "",
     even: "",
   ),
   selected-item: (background-color: rgba(0, 0, 0, 0.075),
   ),
 );
+
 
 // color variables:
 // Primary colors
@@ -37,9 +42,12 @@ $title: (font: "Open Sans",
 $paragraph: (font: "Lato",
   type: sans-serif,
   weight: 400,
-  color: $dark-gray);
+  color: $dark-gray
+);
 
 // utils variables
+$panel-radius: 15px;
+$table-radius: 15px;
 $default-border-radius: 25px;
 $default-box-shadow: 0 9px 24px 0 rgba(6, 32, 46, 0.1);
 
@@ -162,7 +170,7 @@ form {
 .btn-primary:focus,
 .btn-outline-primary:active,
 .btn-primary:active,
-.show>.btn-primary.dropdown-toggle,
+.show > .btn-primary.dropdown-toggle,
 .btn-primary:not(:disabled):not(.disabled):active {
   background-color: $primary-color-darker;
   border-color: $primary-color-darker;
@@ -282,7 +290,7 @@ label.form-label {
 
 #sidebar {
   padding-top: 5px;
-  background: $gradient;
+  // background: $gradient;
   color: color("white");
 
   #title {
@@ -427,10 +435,16 @@ button.btn {
   }
 }
 
+input.form-control,
+textarea.form-control {
+  font-family: "Lato";
+}
 
 input.form-control::placeholder,
 textarea.form-control::placeholder {
-  color: rgba(0, 0, 0, 0.2);
+  color: #474747;
+  font-weight: 300;
+  font-size: 14px;
 }
 
 #default-layout {
@@ -572,7 +586,7 @@ input[type="radio"] {
       opacity: 1;
     }
 
-    ~label::before {
+    ~ label::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
   }

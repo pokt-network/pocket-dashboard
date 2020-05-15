@@ -28,13 +28,11 @@ class Dashboard extends Component {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
-    const userApps = await ApplicationService.getAllUserApplications(
-      userEmail,
-      APPLICATIONS_LIMIT
-    );
+
+    const userApps = await ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT);
     const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
     const chains = await NetworkService.getAvailableNetworkChains();
-    const alert = UserService.getShowWelcomeMesage();
+    const alert = UserService.getShowWelcomeMessage();
 
     this.setState({alert, userApps, userNodes, chains, loading: false});
   }
@@ -71,7 +69,7 @@ class Dashboard extends Component {
           <Alert
             variant="primary"
             onClose={() => {
-              UserService.showWelcomeMessage(false);
+              UserService.showWelcomeMessage(true);
               this.setState({alert: false});
             }}
             dismissible

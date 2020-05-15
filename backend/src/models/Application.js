@@ -1,7 +1,6 @@
-import {Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
+import {Application, ApplicationParams} from "@pokt-network/pocket-js";
 import {PublicPocketAccount} from "./Account";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
-import {Configurations} from "../_configuration";
 
 export class PocketApplication {
 
@@ -129,7 +128,7 @@ export class ExtendedPocketApplication {
    * @param {PublicPocketAccount} publicPocketAccount Public pocket account.
    * @param {ApplicationParams} applicationParameters Application parameter from network.
    *
-   * @returns {{address:string, publicKey:string, jailed:boolean, status:StakingStatus, chains:string[], stakedTokens: string, maxRelays: string, unstakingCompletionTime?: string}} Application.
+   * @returns {{address:string, publicKey:string, jailed:boolean, status: string, chains:string[], stakedTokens: string, maxRelays: string, unstakingCompletionTime?: string}} Application.
    * @static
    */
   static createNetworkApplication(publicPocketAccount, applicationParameters) {
@@ -139,33 +138,9 @@ export class ExtendedPocketApplication {
       address,
       publicKey,
       jailed: false,
-      status: StakingStatus.Unstaked,
+      status: "Unstaked",
       chains: [],
       stakedTokens: "0",
-      maxRelays: applicationParameters.baseRelaysPerPokt.toString(),
-      unstakingCompletionTime: applicationParameters.unstakingTime
-    };
-  }
-
-  /**
-   * Convenient Factory method to create network application as free tier.
-   *
-   * @param {PublicPocketAccount} publicPocketAccount Public pocket account.
-   * @param {ApplicationParams} applicationParameters Application parameter from network.
-   *
-   * @returns {{address:string, publicKey:string, jailed:boolean, status:StakingStatus, chains:string[], stakedTokens: string, maxRelays: string, unstakingCompletionTime?: string}} Application.
-   * @static
-   */
-  static createNetworkApplicationAsFreeTier(publicPocketAccount, applicationParameters) {
-    const {address, publicKey} = publicPocketAccount;
-
-    return {
-      address,
-      publicKey,
-      jailed: false,
-      status: StakingStatus.Staked,
-      chains: [],
-      stakedTokens: Configurations.pocket_network.free_tier.stake_amount.toString(),
       maxRelays: applicationParameters.baseRelaysPerPokt.toString(),
       unstakingCompletionTime: applicationParameters.unstakingTime
     };

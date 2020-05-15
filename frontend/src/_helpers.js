@@ -1,12 +1,19 @@
 import numeral from "numeral";
-import {BOND_STATUS, STAKE_STATUS, VALIDATION_MESSAGES} from "./_constants";
-import Identicon from "identicon.js";
+import {BOND_STATUS, DEFAULT_POKT_DENOMINATION_BASE, STAKE_STATUS, VALIDATION_MESSAGES} from "./_constants";
+import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
+
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
 export const formatNumbers = (num) => numeral(num).format("0,0");
+
+export const formatNetworkData = (pokt, fixed = true, poktDenominationBase = DEFAULT_POKT_DENOMINATION_BASE) => {
+  const poktNumber = pokt / Math.pow(10, poktDenominationBase);
+
+  return fixed ? formatNumbers(poktNumber) : numeral(poktNumber).format("0,0.0");
+};
 
 export const copyToClipboard = (value) => {
   const el = document.createElement("textarea");
@@ -16,6 +23,17 @@ export const copyToClipboard = (value) => {
   el.select();
   document.execCommand("copy");
   document.body.removeChild(el);
+};
+
+export const createAndDownloadJSONFile = (fileName, data) => {
+  const element = document.createElement("a");
+  const file = new Blob([JSON.stringify(data)], {type: "application/json"});
+
+  element.href = URL.createObjectURL(file);
+  element.download = `${fileName}.json`;
+
+  document.body.appendChild(element); // Required for this to work in FireFox
+  element.click();
 };
 
 export const isActiveExactUrl = (match, location) => {
@@ -31,7 +49,7 @@ export const mapStatusToField = (app) => {
     ...app,
     networkData: {
       ...app.networkData,
-      status: getBondStatus(app.networkData.status),
+      status: getStakeStatus(app.networkData.status),
     },
   };
 };
@@ -40,18 +58,17 @@ export const generateIcon = () => {
   const currTime = new Date().getTime();
 
   // Use current time as a 'hash' to generate icon of 250x250
-  const identicon = `data:image/png;base64,${new Identicon(
+  return `data:image/png;base64,${new IdentIcon(
     `${currTime}${currTime / 2}`, 250).toString()}`;
-
-  return identicon;
 };
 
-export const getBondStatus = (status) => {
+export const getStakeStatus = (status) => {
   return typeof status === "string"
     ? STAKE_STATUS[status]
     : BOND_STATUS[status];
 };
 
+// noinspection DuplicatedCode
 export const appFormSchema = yup.object().shape({
   name: yup
     .string()
@@ -66,6 +83,7 @@ export const appFormSchema = yup.object().shape({
   description: yup.string().max(150, VALIDATION_MESSAGES.MAX(150)),
 });
 
+// noinspection DuplicatedCode
 export const nodeFormSchema = yup.object().shape({
   name: yup
     .string()

@@ -2,34 +2,35 @@ import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import {TABLE_COLUMNS} from "../../../_constants";
-import ApplicationService from "../../../core/services/PocketApplicationService";
+import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSearch} from "@fortawesome/free-solid-svg-icons";
 
-class ChooseChain extends Chains {
+class ApplicationChainList extends Chains {
   constructor(props, context) {
     super(props, context);
 
     this.handleChains = this.handleChains.bind(this);
+
   }
 
   handleChains() {
     const {chosenChains} = this.state;
     const chainsHashes = chosenChains.map((ch) => ch.hash);
 
-    ApplicationService.saveAppInfoInCache({chains: chainsHashes});
+    PocketApplicationService.saveAppInfoInCache({chains: chainsHashes});
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.tierSelection));
   }
 
   render() {
-    const {chains: allChains, filteredChains} = this.state;
-    const chains = filteredChains.length === 0 ? allChains : filteredChains;
+    const {filteredChains} = this.state;
+    const chains = filteredChains;
 
-    // BoostrapTable selectionParams
+    // Bootstrap Table selectionParams
     const tableSelectOptions = {
       mode: "checkbox",
       clickToSelect: true,
@@ -86,7 +87,7 @@ class ChooseChain extends Chains {
                   onClick={this.handleChainSearch}
                   variant="outline-primary"
                 >
-                  <FontAwesomeIcon icon={faSearch} />
+                  <FontAwesomeIcon icon={faSearch}/>
                 </Button>
               </InputGroup.Append>
             </InputGroup>
@@ -109,4 +110,4 @@ class ChooseChain extends Chains {
   }
 }
 
-export default ChooseChain;
+export default ApplicationChainList;

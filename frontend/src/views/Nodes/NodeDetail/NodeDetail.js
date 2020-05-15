@@ -2,14 +2,14 @@ import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {TABLE_COLUMNS, STAKE_STATUS} from "../../../_constants";
+import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
 import "../../Apps/AppDetail/AppDetail.scss";
 import NodeService from "../../../core/services/PocketNodeService";
-import {getBondStatus} from "../../../_helpers";
+import {getStakeStatus} from "../../../_helpers";
 
 class NodeDetail extends Component {
   constructor(props, context) {
@@ -93,7 +93,7 @@ class NodeDetail extends Component {
       publicPocketAccount,
     } = this.state.pocketNode;
     const {stakedTokens, status: bondStatus, jailed} = this.state.networkData;
-    const status = getBondStatus(bondStatus);
+    const status = getStakeStatus(bondStatus);
     const isStaked =
       status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 

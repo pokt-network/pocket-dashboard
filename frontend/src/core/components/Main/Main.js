@@ -37,9 +37,15 @@ class Main extends Component {
     let filteredItems = userItems;
 
     if (searchQuery) {
-      filteredItems = userItems.filter((it) =>
-        _.get(it, dataField).toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      filteredItems = userItems.filter(item => {
+        const data = _.get(item, dataField);
+
+        if (!data) {
+          return true;
+        }
+
+        return data.toLowerCase().includes(searchQuery.toLowerCase());
+      });
     }
 
     this.setState({filteredItems});

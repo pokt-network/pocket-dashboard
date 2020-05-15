@@ -1,9 +1,9 @@
 import React, {Component} from "react";
 import "./SelectRelays.scss";
-import {Col, Row, Form} from "react-bootstrap";
+import {Col, Form, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {MAX_RELAYS, ITEM_TYPES, STYLING} from "../../../_constants";
+import {ITEM_TYPES, MAX_RELAYS, STYLING} from "../../../_constants";
 import {formatCurrency, formatNumbers} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
@@ -47,7 +47,7 @@ class SelectRelays extends Component {
   async createPaymentIntent(amount, currency, pokt) {
     const item = {
       account: UserService.getUserInfo().email,
-      name: ApplicationService.getAppAInfo().data.name,
+      name: ApplicationService.getApplicationInfo().data.name,
       pokt,
     };
 

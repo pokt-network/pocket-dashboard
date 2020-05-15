@@ -83,13 +83,15 @@ export const Configurations = {
     aat_version: "0.0.1",
     default_rpc_port: 8081,
     transaction_fee: "100000",
-    chain_id: "pocket-testnet-rc-0.2.1",
+    chain_id: "testnet-r1",
     max_dispatchers: process.env.POCKET_NETWORK_MAX_DISPATCHER,
     request_timeout: process.env.POCKET_NETWORK_REQUEST_TIMEOUT,
     max_sessions: process.env.POCKET_NETWORK_MAX_SESSIONS,
     free_tier: {
       account: process.env.POCKET_FREE_TIER_ACCOUNT,
-      stake_amount: process.env.POCKET_FREE_TIER_AMOUNT,
+      passphrase: process.env.POCKET_FREE_TIER_ACCOUNT_PASSPRHASE,
+      stake_amount: process.env.POCKET_FREE_TIER_STAKE_AMOUNT,
+      max_relay_per_application: process.env.POCKET_FREE_TIER_MAX_RELAY_PER_APPLICATION,
     },
     nodes: {
       test_rpc_provider: "http://node4.testnet.pokt.network",

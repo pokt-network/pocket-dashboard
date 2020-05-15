@@ -21,6 +21,8 @@ export const ITEM_TYPES = {
   NODE: "node",
 };
 
+export const DEFAULT_POKT_DENOMINATION_BASE = 6;
+
 export const APPLICATIONS_LIMIT = 10;
 
 export const NODES_LIMIT = 10;
@@ -99,9 +101,9 @@ export const TABLE_COLUMNS = {
 };
 
 export const FILTER_OPTIONS = [
-  {text: "Staked", dataField: "bonded"},
-  {text: "Unstaking", dataField: "unbonding"},
-  {text: "Unstaked", dataField: "unbonded"},
+  {text: "Staked", dataField: "staked"},
+  {text: "Unstaking", dataField: "unstaking"},
+  {text: "Unstaked", dataField: "unstaked"},
 ];
 
 export const MAX_RELAYS = 20000;
