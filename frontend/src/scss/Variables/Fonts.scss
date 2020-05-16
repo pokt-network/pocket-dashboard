@@ -2,10 +2,13 @@
 @import "Colors";
 
 $default-font-family: Lato, san-serif;
+$default-segment-font: "Open Sans";
+
+$table-header-font-family: "Open Sans";
+$table-data-font-family: $default-font-family;
 
 $title-font: (
-  font-family: $default-font-family,
-  weight: 700,
+  font-family: "Open Sans"
 );
 
 $paragraph-font: (

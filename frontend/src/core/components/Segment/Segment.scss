@@ -2,8 +2,8 @@
 
 .app-segment {
   .head {
-    border-top-right-radius: 15px;
-    border-top-left-radius: 15px;
+    //border-top-right-radius: 15px;
+    //border-top-left-radius: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -11,10 +11,14 @@
     padding-bottom: 5px;
 
     .title {
+      font-family: $default-segment-font;
+      font-size: 18px;
+      font-weight: bold;
+      line-height: 2.11;
+      letter-spacing: -0.49px;
       color: $secondary-color;
-      margin-left: 25px;
+      margin-left: 45px;
       text-transform: uppercase;
-      font-size: 1.7em;
     }
 
     .app-dropdown {
@@ -23,11 +27,8 @@
   }
 
   .body {
-    padding-top: 5px;
     box-shadow: $default-box-shadow;
-    padding-left: 30px;
-    padding-right: 10px;
-    padding-bottom: 15px;
+    padding: 5px 10px 15px 30px;
     overflow-x: auto;
     max-height: 60vh;
     border-radius: $table-radius;

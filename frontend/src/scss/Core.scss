@@ -23,7 +23,11 @@
 }
 
 h1 {
-  color: black;
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1.27;
+  letter-spacing: -0.82px;
+  color: #06202e;
 }
 
 // Paragraphs, Labels, Links
@@ -44,7 +48,6 @@ body {
 }
 
 .btn {
-  // min-width: 180px;
   font-weight: 400;
   border-radius: $default-border-radius;
   font-family: "Lato", sans-serif;
@@ -223,12 +226,12 @@ label.form-label {
 
 #sidebar,
 #content {
-  min-height: calc(90vh);
+  min-height: calc(100vh);
 }
 
 #sidebar {
   background: $gradient;
-  color: color("white");
+  color: color(white);
 
   #title {
     margin-top: 50px;
@@ -247,11 +250,16 @@ button.btn {
 .app-table {
   thead {
     text-transform: uppercase;
-    color: #000000;
-    border: 2px solid transparent;
+    color: black;
 
     th {
-      border-color: transparent;
+      border-top-color: transparent;
+      border-bottom: $border-bottom;
+      font-family: $table-header-font-family;
+      color: $table-header-font-color;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: -0.33px;
     }
   }
 
@@ -261,8 +269,13 @@ button.btn {
     }
 
     td {
-      border-top: 1px solid transparent;
-      overflow-wrap: anywhere;
+      border-top-color: transparent;
+      border-bottom: $border-bottom;
+      font-family: $table-data-font-family;
+      font-size: $table-data-font-size;
+      color: $table-data-font-color;
+      font-weight: 300;
+      letter-spacing: -0.33px;
     }
   }
 }
@@ -279,11 +292,8 @@ button.btn {
   margin: 0 auto;
 }
 
-.stats {
-  .col {
-    padding-left: 0;
-    padding-right: 0;
-  }
+.page-name {
+  padding-left: 0;
 }
 
 .order-by {
@@ -335,11 +345,6 @@ textarea.form-control::placeholder {
   color: #474747;
   font-weight: 300;
   font-size: 14px;
-}
-
-#default-layout {
-  max-height: 90vh;
-  overflow-x: auto;
 }
 
 .search-input.input-group {

@@ -1,13 +1,6 @@
-// Table variables
-$table: (
-  columns: (
-    background-color: theme-color("dark"),
-    color: white,
-  ),
-  data: (
-    odd: "",
-    even: "",
-  ),
-  selected-item: (background-color: rgba(0, 0, 0, 0.075),
-  ),
-);
+$table-radius: 12px;
+$border-bottom: solid 1px #f5f5f5;
+$table-header-font-color: #06202e;
+$table-data-font-color: #888888;
+$table-data-font-size: 12px;
+
