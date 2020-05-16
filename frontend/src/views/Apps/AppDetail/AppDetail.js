@@ -2,17 +2,24 @@ import React, {Component} from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import HelpLink from "../../../core/components/HelpLink";
 import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
 import "./AppDetail.scss";
-import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {
+  PocketApplicationService,
+} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {copyToClipboard, formatNetworkData, getStakeStatus} from "../../../_helpers";
+import {
+  copyToClipboard,
+  formatNetworkData,
+  getStakeStatus,
+  formatNumbers,
+} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
+import moment from "moment";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -55,7 +62,6 @@ class AppDetail extends Component {
       networkData,
     } = await ApplicationService.getApplication(address);
 
-
     const chains = await NetworkService.getNetworkChains(networkData.chains);
 
     const {freeTier} = pocketApplication;
@@ -81,10 +87,14 @@ class AppDetail extends Component {
 
   async deleteApplication() {
     const {address} = this.state.pocketApplication.publicPocketAccount;
-    const appsLink = `${window.location.origin}${_getDashboardPath(DASHBOARD_PATHS.apps)}`;
+    const appsLink = `${window.location.origin}${_getDashboardPath(
+      DASHBOARD_PATHS.apps
+    )}`;
     const userEmail = PocketUserService.getUserInfo().email;
 
-    const success = await ApplicationService.deleteAppFromDashboard(address, userEmail, appsLink);
+    const success = await ApplicationService.deleteAppFromDashboard(
+      address, userEmail, appsLink
+    );
 
     if (success) {
       this.setState({deleted: true});
@@ -96,7 +106,9 @@ class AppDetail extends Component {
     const {freeTier} = this.state.pocketApplication;
 
     if (freeTier) {
-      const success = await ApplicationService.unstakeFreeTierApplication(address);
+      const success = await ApplicationService.unstakeFreeTierApplication(
+        address
+      );
 
       if (success) {
         // TODO: Show message on frontend about success
@@ -125,6 +137,7 @@ class AppDetail extends Component {
       maxRelays,
       stakedTokens,
       status: bondStatus,
+      unstakingCompletionTime,
     } = this.state.networkData;
     const status = getStakeStatus(bondStatus);
     const isStaked =
@@ -138,25 +151,31 @@ class AppDetail extends Component {
       publicKey = publicPocketAccount.publicKey;
     }
 
-    const {
-      chains,
-      aat,
-      loading,
-      deleteModal,
-      deleted,
-      purchase,
-      message,
-    } = this.state;
+    const {chains, aat, loading, deleteModal, deleted, message} = this.state;
 
     const generalInfo = [
-      {title: `${formatNetworkData(stakedTokens)} POKT`, subtitle: "Stake tokens"},
-      {title: status, subtitle: "Stake status"},
-      {title: formatNetworkData(maxRelays), subtitle: "Max Relays"},
+      {
+        title: `${formatNetworkData(stakedTokens)} POKT`,
+        subtitle: "Stake tokens",
+      },
+      {title: formatNumbers(2000), subtitle: "Balance"},
+      {
+        title: status,
+        subtitle: "Stake status",
+        children:
+          status === STAKE_STATUS.Unstaking ? (
+            <p className="unstaking-time">{`Unstaking time: ${moment
+              .duration({seconds: unstakingCompletionTime})
+              .humanize()}`}</p>
+          ) : undefined,
+      },
+      // TODO: Get
+      {title: formatNetworkData(maxRelays), subtitle: "Max Relays Per Day"},
     ];
 
     const contactInfo = [
-      {title: url, subtitle: "URL"},
-      {title: contactEmail, subtitle: "Email"},
+      {title: url, subtitle: freeTier ? "Website" : "Service URL"},
+      {title: contactEmail, subtitle: "Contact email"},
     ];
 
     let aatStr = "";
@@ -199,57 +218,68 @@ class AppDetail extends Component {
                 <h1 className="name d-flex align-items-center">
                   {name}
                   {freeTier && (
-                    <Badge variant="primary" className="ml-2 pl-3 pr-3">
+                    <Badge variant="light" className="ml-2 pl-3 pr-3">
                       Free Tier
                     </Badge>
                   )}
                 </h1>
-                <p className="owner mb-1">{owner}</p>
+                <h3 className="owner mb-1">{owner}</h3>
                 <p className="description">{description}</p>
               </div>
             </div>
           </Col>
         </Row>
-        <h1 className="mt-4">GENERAL INFORMATION</h1>
-        <Row className="mt-2 stats">
+        <div className="title-page">
+          <h3 className="mt-4">General Information</h3>
+          <Button
+            className="float-right cta"
+            onClick={isStaked ? this.unstakeApplication : this.stakeApplication}
+            variant="primary"
+          >
+            {isStaked ? "Unstake" : "Stake"}
+          </Button>
+        </div>
+        <Row className="mt-2 mb-4 stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle} />
-            </Col>
-          ))}
-        </Row>
-        <Row className="contact-info stats">
-          {contactInfo.map((card, idx) => (
-            <Col key={idx}>
-              <InfoCard
-                className="pl-4"
-                title={card.title}
-                subtitle={card.subtitle}
-              >
-                <span />
+              <InfoCard title={card.title} subtitle={card.subtitle}>
+                {card.children || <br />}
               </InfoCard>
             </Col>
           ))}
         </Row>
-        <Row className="mt-3">
-          <Col lg={freeTier ? 6 : 12} md={freeTier ? 6 : 12}>
-            <div className="info-section">
-              <h3>Address</h3>
+        <Row>
+          <Col className="title-page mt-2 mb-4">
+            <h4 className="ml-2">Networks</h4>
+            <BootstrapTable
+              classes="app-table"
+              keyField="hash"
+              Purch
+              data={chains}
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
+              bordered={false}
+            />
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <div className="title-page">
+              <h4 className="ml-3">Address</h4>
               <Alert variant="light">{address}</Alert>
             </div>
-            <div className="info-section">
-              <h3>Public Key</h3>
-              <Alert variant="dark">{publicKey}</Alert>
+          </Col>
+          <Col>
+            <div className="title-page">
+              <h4 className="ml-3">Public Key</h4>
+              <Alert variant="light">{publicKey}</Alert>
             </div>
           </Col>
-          {freeTier ? (
-            <Col lg="6" md="6">
-              <div id="aat-info" className="mb-2">
-                <h3>AAT</h3>
-                <span>
-                  <HelpLink size="2x"/>
-                  <p>How to create an AAT?</p>
-                </span>
+        </Row>
+        <Row className="mt-3 contact-info stats">
+          {freeTier && (
+            <Col>
+              <div id="aat-info" className="title-page mb-2">
+                <h4 className="ml-3">AAT</h4>
               </div>
               <Alert variant="light" className="aat-code">
                 <pre>
@@ -267,59 +297,58 @@ class AppDetail extends Component {
                 </pre>
               </Alert>
             </Col>
-          ) : null}
-        </Row>
-        <Row>
+          )}
           <Col>
-            <h3>Networks</h3>
-            <BootstrapTable
-              classes="app-table"
-              keyField="hash"
-              Purch
-              data={chains}
-              columns={TABLE_COLUMNS.NETWORK_CHAINS}
-              bordered={false}
-            />
+            <Row className="contact-info stats">
+              {contactInfo.map((card, idx) => (
+                <Col
+                  className={freeTier ? "free-tier" : ""}
+                  lg={freeTier ? "12" : "6"}
+                  key={idx}
+                >
+                  <InfoCard
+                    className={"pl-4 contact"}
+                    title={card.subtitle}
+                    subtitle={card.title}
+                  >
+                    <span />
+                  </InfoCard>
+                </Col>
+              ))}
+            </Row>
           </Col>
         </Row>
         <Row className="mt-3 mb-4">
-          <Col className="action-buttons">
-            <div className="main-options">
-              <Link
-                to={() => {
-                  const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
+          <Col>
+            <div className="action-buttons">
+              <span className="option">
+                <img src="/assets/edit.svg" alt="" className="icon" />
+                <p>
+                  <Link
+                    to={() => {
+                      const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
 
-                  return url.replace(":address", address);
-                }}
-              >
-                <Button variant="dark" className="pr-4 pl-4 mr-3">
-                  Edit
-                </Button>
-              </Link>
-              <Button
-                onClick={
-                  isStaked ? this.unstakeApplication : this.stakeApplication
-                }
-                variant="dark"
-                className="pr-4 pl-4"
-              >
-                {isStaked ? "Unstake" : "Stake"}
-              </Button>
-              <Button
-                variant="secondary"
-                className="ml-3 pr-4 pl-4"
-                disabled={!purchase}
-              >
-                New Purchase
-              </Button>
+                      return url.replace(":address", address);
+                    }}
+                  >
+                    Edit
+                  </Link>{" "}
+                  to change your app description.
+                </p>
+              </span>
+              <span className="option">
+                <img src="/assets/trash.svg" alt="" className="icon" />
+                <p>
+                  <span
+                    className="link"
+                    onClick={() => this.setState({deleteModal: true})}
+                  >
+                    Remove
+                  </span>{" "}
+                  this App from the Dashboard.
+                </p>
+              </span>
             </div>
-            <Button
-              onClick={() => this.setState({deleteModal: true})}
-              variant="link"
-              className="link mt-3"
-            >
-              Delete
-            </Button>
           </Col>
         </Row>
         <Modal

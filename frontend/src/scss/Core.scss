@@ -3,13 +3,10 @@
 
 
 // Table variables
-$table: (
-  columns: (
-    background-color: theme-color("dark"),
+$table: (columns: (background-color: theme-color("dark"),
     color: white,
   ),
-  data: (
-    odd: "",
+  data: (odd: "",
     even: "",
   ),
   selected-item: (background-color: rgba(0, 0, 0, 0.075),
@@ -42,14 +39,13 @@ $title: (font: "Open Sans",
 $paragraph: (font: "Lato",
   type: sans-serif,
   weight: 400,
-  color: $dark-gray
-);
+  color: $dark-gray);
 
 // utils variables
 $panel-radius: 15px;
 $table-radius: 15px;
 $default-border-radius: 25px;
-$default-box-shadow: 0 9px 24px 0 rgba(6, 32, 46, 0.1);
+$default-box-shadow: 0px 7px 19px -6px rgba(6, 32, 46, 0.1);
 
 @mixin bordered-layout {
   border: 2px solid $primary-color;
@@ -170,7 +166,7 @@ form {
 .btn-primary:focus,
 .btn-outline-primary:active,
 .btn-primary:active,
-.show > .btn-primary.dropdown-toggle,
+.show>.btn-primary.dropdown-toggle,
 .btn-primary:not(:disabled):not(.disabled):active {
   background-color: $primary-color-darker;
   border-color: $primary-color-darker;
@@ -218,6 +214,16 @@ input {
     width: 3%;
     margin-right: 5px;
   }
+}
+
+.alert.alert-light {
+  background-color: $white-smoke;
+  border-color: $white-smoke;
+  color: $dark-gray;
+  border-radius: 25px;
+  padding: 10px 30px;
+  font-family: "Lato";
+  font-weight: 300;
 }
 
 .alert.alert-danger {
@@ -330,17 +336,18 @@ button.btn {
 .app-table {
   thead {
     text-transform: uppercase;
-    color: #000000;
     border: 2px solid transparent;
 
     th {
+      color: $dark-gray;
       border-color: transparent;
     }
   }
 
   tbody {
     tr {
-      color: gray;
+      color: #888888;
+      font-family: "Lato";
     }
 
     td {
@@ -586,7 +593,7 @@ input[type="radio"] {
       opacity: 1;
     }
 
-    ~ label::before {
+    ~label::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
   }

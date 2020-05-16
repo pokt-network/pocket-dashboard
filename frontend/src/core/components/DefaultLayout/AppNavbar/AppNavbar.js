@@ -14,13 +14,16 @@ class AppNavbar extends Component {
       <Row>
         <Col id={"app-navbar"}>
           <div>
-            <img src={"/logo.png"} alt="logo" id={"main-logo"}/>
-            <span> / DASHBOARD</span>
+            <img
+              src={"/assets/logo-dashboard.svg"}
+              alt="logo"
+              id={"main-logo"}
+            />
           </div>
           <span className="items">
-            <NotificationIcon/>
-            <HelpLink size={"2x"} link={helpLink}/>
-            <LoginStatus/>
+            <NotificationIcon />
+            <HelpLink size={"2x"} link={helpLink} />
+            <LoginStatus />
           </span>
         </Col>
       </Row>
