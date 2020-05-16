@@ -1,11 +1,14 @@
+@import "../../../../../scss/Variables/DefaultLayout";
+
 .notifications {
   .badge {
-    font-size: 0.7em;
+    background-color: $badge-background-color;
+    border-radius: 100%;
+    width: 20px;
+    height: 20px;
     position: relative;
-    top: -18px;
-    right: 0;
-    left: 40px;
-    bottom: 0;
+    top: -8px;
+    right: 13px;
   }
 
   .dropdown-item {

@@ -1,16 +1,27 @@
+@import "../../../../scss/Core.scss";
+
 #app-navbar {
-  padding-top: 10px;
-  padding-bottom: 15px;
+  padding: 15px $panel-padding-right 15.5px $panel-padding-left;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0px -12px 21px 1px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 3px 12.5px 0 rgba(6, 32, 46, 0.1);
   height: 10vh;
 
   #main-logo {
-    width: 20%;
-    margin-left: 50px;
+    img {
+      width: map_get($main-logo-size, width);
+      height: map_get($main-logo-size, height);
+    }
+
+    img, .logo-divider {
+      margin-right: 10px;
+    }
+
+    .app-name, .logo-divider {
+      @include app-name;
+    }
   }
 
   .items {
@@ -19,13 +30,19 @@
     align-items: center;
     justify-content: flex-end;
 
-    >* {
-      margin-right: 35px;
+
+    .notifications {
+      img {
+        width: map_get($item-size, width);
+        height: map_get($item-size, height);
+      }
     }
 
-    >:last-child {
-      margin-right: 25px;
+    .help-link {
+      img {
+        width: map_get($item-size, width);
+        height: map_get($item-size, height);
+      }
     }
-
   }
 }

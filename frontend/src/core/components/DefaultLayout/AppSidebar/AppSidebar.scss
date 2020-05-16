@@ -6,12 +6,28 @@
   a {
     margin-top: 20px;
     margin-bottom: 20px;
-  }
 
-  a>li {
-    margin-left: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
+    li {
+      height: 30%;
+      margin-left: $default-layout-item-margin-left;
+      margin-bottom: 13%;
+
+      img {
+        width: 35px;
+        height: 25px;
+        margin-right: 10px;
+      }
+
+      span {
+        font-family: "Lato", sans-serif;
+        text-transform: uppercase;
+        font-size: 17px;
+        font-weight: bold;
+        letter-spacing: -0.19px;
+        line-height: 8.4px;
+        text-align: left;
+      }
+    }
   }
 
   a:hover {

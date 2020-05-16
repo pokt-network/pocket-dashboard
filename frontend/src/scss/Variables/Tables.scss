@@ -1,0 +1,13 @@
+// Table variables
+$table: (
+  columns: (
+    background-color: theme-color("dark"),
+    color: white,
+  ),
+  data: (
+    odd: "",
+    even: "",
+  ),
+  selected-item: (background-color: rgba(0, 0, 0, 0.075),
+  ),
+);
