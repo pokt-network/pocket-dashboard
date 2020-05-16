@@ -3,16 +3,9 @@ import React, {Component} from "react";
 import {Dropdown} from "react-bootstrap";
 import UserService from "../../../services/PocketUserService";
 import "./LoginStatus.scss";
-import {Redirect} from "react-router-dom";
-import {
-  ROUTE_PATHS,
-  DASHBOARD_PATHS,
-  _getDashboardPath,
-} from "../../../../_routes";
-import LabelToggle from "../../LabelToggle/LabelToggle";
-import {withRouter} from "react-router-dom";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCircle} from "@fortawesome/free-solid-svg-icons";
+import {Redirect, withRouter} from "react-router-dom";
+import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../../_routes";
+import LabelToggle from "../../LabelToggle";
 
 class LoginStatus extends Component {
   constructor(props, context) {
@@ -52,11 +45,11 @@ class LoginStatus extends Component {
 
         <Dropdown.Menu>
           <Dropdown.Item onClick={() => this.goToProfile()}>
-            <img src={"assets/user_icon_circle.svg"} className="icon" alt="" />
+            <img src={"assets/user_icon_circle.svg"} className="icon" alt="user-profile-icon"/>
             User Profile
           </Dropdown.Item>
           <Dropdown.Item onClick={() => this.logout()}>
-            <FontAwesomeIcon className="icon" icon={faCircle} size="1x" />
+            <img src={"assets/log-out.svg"} className="icon" alt="logout-profile-icon"/>
             Logout
           </Dropdown.Item>
         </Dropdown.Menu>

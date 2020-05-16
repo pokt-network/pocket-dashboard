@@ -1,16 +1,30 @@
-#app-navbar {
-  padding-top: 10px;
-  padding-bottom: 15px;
+@import "../../../../scss/Core.scss";
+
+.app-navbar {
+  padding: $navbar-padding;
+  background-color: $navbar-color;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0px -12px 21px 1px rgba(0, 0, 0, 0.4);
-  height: 10vh;
+  box-shadow: 0 6px 25px -8px rgba(6, 32, 46, 0.1);
+  height: 80px;
 
   #main-logo {
-    width: 90%;
-    margin-left: 50px;
+    img {
+      width: map_get($main-logo-size, width);
+      height: map_get($main-logo-size, height);
+    }
+
+    img, .logo-divider {
+      margin-right: 13px;
+    }
+
+    .app-name {
+      @include font-style($app-title-font);
+      color: $app-name-color;
+      text-align: center;
+    }
   }
 
   .items {
@@ -19,13 +33,28 @@
     align-items: center;
     justify-content: flex-end;
 
-    >* {
-      margin-right: 35px;
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      margin-right: 38px;
+
+      > * {
+        margin-left: 25px;
+      }
     }
 
-    >:last-child {
-      margin-right: 25px;
+    .notifications {
+      img {
+        width: map_get($item-size, width);
+        height: map_get($item-size, height);
+      }
     }
 
+    .help-link {
+      img {
+        width: map_get($item-size, width);
+        height: map_get($item-size, height);
+      }
+    }
   }
 }

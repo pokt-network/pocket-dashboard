@@ -57,7 +57,7 @@ class Dashboard extends Component {
     ];
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     const userApps = allUserApps.map(mapStatusToField);
@@ -80,10 +80,10 @@ class Dashboard extends Component {
           </Alert>
         )}
         <Row>
-          <Col sm="8" md="8" lg="8">
+          <Col sm="8" md="8" lg="8" className="page-name">
             <h1 className="ml-1">NETWORK INFORMATION</h1>
           </Col>
-          <Col sm="4" md="4" lg="4" className="d-flex justify-content-end">
+          <Col sm="4" md="4" lg="4" className="d-flex justify-content-end cta-buttons">
             <Dropdown className="cta mr-2">
               <Dropdown.Toggle className="pl-4 pr-4" variant="primary" id="dropdown-basic">
                 Apps
@@ -93,9 +93,7 @@ class Dashboard extends Component {
                 <Dropdown.Item
                   onClick={() =>
                     // eslint-disable-next-line react/prop-types
-                    this.props.history.push(
-                      _getDashboardPath(DASHBOARD_PATHS.createAppInfo)
-                    )
+                    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.createAppInfo))
                   }
                 >
                   Create
@@ -104,9 +102,7 @@ class Dashboard extends Component {
                 <Dropdown.Item
                   onClick={() =>
                     // eslint-disable-next-line react/prop-types
-                    this.props.history.push(
-                      _getDashboardPath(DASHBOARD_PATHS.importApp)
-                    )
+                    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.importApp))
                   }
                 >
                   Import
@@ -114,7 +110,7 @@ class Dashboard extends Component {
               </Dropdown.Menu>
             </Dropdown>
             <Dropdown className="cta">
-              <Dropdown.Toggle className="pl-4 pr-4" variant="dark" id="dropdown-basic">
+              <Dropdown.Toggle className="pl-4 pr-4" variant="primary" id="dropdown-basic">
                 Nodes
               </Dropdown.Toggle>
 
@@ -122,9 +118,7 @@ class Dashboard extends Component {
                 <Dropdown.Item
                   onClick={() =>
                     // eslint-disable-next-line react/prop-types
-                    this.props.history.push(
-                      _getDashboardPath(DASHBOARD_PATHS.createNodeForm)
-                    )
+                    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.createNodeForm))
                   }
                 >
                   Create
@@ -133,9 +127,7 @@ class Dashboard extends Component {
                 <Dropdown.Item
                   onClick={() =>
                     // eslint-disable-next-line react/prop-types
-                    this.props.history.push(
-                      _getDashboardPath(DASHBOARD_PATHS.importNode)
-                    )
+                    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.importNode))
                   }
                 >
                   Import
@@ -145,60 +137,60 @@ class Dashboard extends Component {
           </Col>
         </Row>
         <Row className="stats mt-3 mb-4">
-          {cards.map((card) => (
-            <Col key={card.title}>
-              <InfoCard title={card.title} subtitle={card.subtitle} />
-            </Col>
+          {cards.map((card, idx) => (
+            <InfoCard key={idx} title={card.title} subtitle={card.subtitle}/>
           ))}
         </Row>
-        <Row>
-          <Col lg="6" md="6" sm="6">
-            <Segment label="Registered Nodes">
-              <BootstrapTable
-                classes="app-table"
-                keyField="pocketNode.publicPocketAccount.address"
-                data={userNodes}
-                columns={TABLE_COLUMNS.NODES}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
-          <Col lg="6" md="6" sm="6">
-            <Segment label="Registered Apps">
-              <BootstrapTable
-                classes="app-table"
-                keyField="pocketApplication.publicPocketAccount.address"
-                data={userApps}
-                columns={TABLE_COLUMNS.APPS}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
-        </Row>
-        <Row className="mt-5 mb-4">
-          <Col lg="12" md="12" sm="12">
-            <Segment label="Supported Blockchains">
-              <BootstrapTable
-                classes="app-table"
-                keyField="hash"
-                data={chains}
-                columns={TABLE_COLUMNS.NETWORK_CHAINS}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
-          <Col lg="12" md="12" sm="12">
-            <Segment label="Most popular chains">
-              <BootstrapTable
-                classes="app-table"
-                keyField="hash"
-                data={chains}
-                columns={TABLE_COLUMNS.NETWORK_CHAINS}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
-        </Row>
+        <div className="network-status-tables">
+          <Row>
+            <Col lg="6" md="6" sm="6" className="network-status-table">
+              <Segment label="Registered Nodes">
+                <BootstrapTable
+                  classes="app-table"
+                  keyField="pocketNode.publicPocketAccount.address"
+                  data={userNodes}
+                  columns={TABLE_COLUMNS.NODES}
+                  bordered={false}
+                />
+              </Segment>
+            </Col>
+            <Col lg="6" md="6" sm="6" className="network-status-table">
+              <Segment label="Registered Apps">
+                <BootstrapTable
+                  classes="app-table"
+                  keyField="pocketApplication.publicPocketAccount.address"
+                  data={userApps}
+                  columns={TABLE_COLUMNS.APPS}
+                  bordered={false}
+                />
+              </Segment>
+            </Col>
+          </Row>
+          <Row className="mt-5 mb-4">
+            <Col lg="12" md="12" sm="12" className="network-status-table">
+              <Segment label="Supported Blockchains">
+                <BootstrapTable
+                  classes="app-table"
+                  keyField="hash"
+                  data={chains}
+                  columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                  bordered={false}
+                />
+              </Segment>
+            </Col>
+            <Col lg="12" md="12" sm="12" className="network-status-table">
+              <Segment label="Most popular chains">
+                <BootstrapTable
+                  classes="app-table"
+                  keyField="hash"
+                  data={chains}
+                  columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                  bordered={false}
+                />
+              </Segment>
+            </Col>
+          </Row>
+        </div>
       </div>
     );
   }

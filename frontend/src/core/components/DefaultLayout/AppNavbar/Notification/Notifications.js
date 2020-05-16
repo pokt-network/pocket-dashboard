@@ -1,26 +1,23 @@
 import React, {Component} from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBell} from "@fortawesome/free-regular-svg-icons";
-import "./Notifications.scss";
 import {PropTypes} from "prop-types";
 import {Dropdown} from "react-bootstrap";
 import Notification from "./Notification";
-import {STYLING} from "../../../_constants";
+import "./Notifications.scss";
 
 // eslint-disable-next-line react/display-name
 const NotificationToggle = React.forwardRef(({children, onClick}, ref) => (
-  <span
+  <div
     style={{cursor: "pointer"}}
     className="notifications"
     ref={ref}
     onClick={(e) => {
       e.preventDefault();
       onClick(e);
-    }}
-  >
+    }}>
+
+    <img src="/assets/bell-notification.svg" alt="bell-notification"/>
     <span className="badge badge-secondary">{children}</span>
-    <FontAwesomeIcon size="2x" color={STYLING.primaryColor} icon={faBell} />
-  </span>
+  </div>
 ));
 
 NotificationToggle.propTypes = {

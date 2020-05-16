@@ -4,18 +4,15 @@ import {NavLink} from "react-router-dom";
 
 class MenuItem extends Component {
   render() {
-    const {url, label, icon, size, ...restProps} = this.props;
+    const {url, label, icon, ...restProps} = this.props;
+    const iconImageSource = `/assets/${icon}`;
 
     return (
       <NavLink to={url} {...restProps}>
         <li>
-          <img
-            style={{width: "10%"}}
-            src={`/assets/${icon}.svg`}
-            className="icon"
-            alt=""
-          />
-          {label}
+          <img src={iconImageSource} alt="side-bar-menu-item-icon"/>
+          <span>{label}</span>
+
         </li>
       </NavLink>
     );
@@ -25,7 +22,6 @@ class MenuItem extends Component {
 MenuItem.defaultProps = {
   url: "#",
   icon: "square",
-  size: "2x",
 };
 
 MenuItem.propTypes = {
