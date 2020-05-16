@@ -1,5 +1,4 @@
 @import "node_modules/bootstrap/scss/bootstrap";
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&family=Open+Sans:wght@300;400;600;700;800&display=swap");
 @import "Variables/All";
 
 @mixin bordered-layout {
@@ -8,15 +7,12 @@
   border-radius: $default-border-radius;
 }
 
-@mixin font-style($type) {
-  font-family: map_get($type, font), map_get($type, type);
-  font-weight: map_get($type, weight);
-}
 
+// TODO: Review these values.
 // Headers
 @for $i from 1 through 6 {
   h#{$i} {
-    @include font-style($title);
+    @include font-style($title-font);
   }
 }
 
@@ -35,7 +31,7 @@ label,
 p,
 a,
 li {
-  @include font-style($paragraph);
+  @include font-style($paragraph-font);
 }
 
 a {

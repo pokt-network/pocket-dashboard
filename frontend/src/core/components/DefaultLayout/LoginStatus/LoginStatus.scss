@@ -1,9 +1,53 @@
-@import "../../../../scss/Core.scss";
+@import "../../../../scss/Variables/DefaultLayout";
+
+
+//.label-dropdown {
+//  @include bordered-layout;
+//  display: inline;
+//
+
+//
+//  .icon {
+//    position: absolute;
+//    margin-top: 5px;
+//  }
+//}
+//
+
 
 .user-dropdown {
-  .dropdown-item {
-    font-weight: 300;
 
+  .label-dropdown {
+    width: 160px;
+    height: 32px;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    border-radius: $default-border-radius;
+    border-style: solid;
+    border-width: 1px;
+
+    p {
+      @include font-style($user-login-font);
+      color: map_get($user-login-font, color);
+
+      text-transform: uppercase;
+      margin-right: 8px;
+    }
+
+
+    svg {
+      margin-top: 5px;
+      font-size: 8px;
+    }
+  }
+
+  .label-dropdown:hover {
+    text-decoration: none;
+    background-color: aliceblue;
+  }
+
+  .dropdown-item {
     .icon {
       color: $primary-color;
       margin-right: 5px;

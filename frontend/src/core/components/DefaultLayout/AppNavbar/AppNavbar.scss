@@ -1,13 +1,14 @@
 @import "../../../../scss/Core.scss";
 
-#app-navbar {
-  padding: 15px $panel-padding-right 15.5px $panel-padding-left;
+.app-navbar {
+  padding: $navbar-padding;
+  background-color: $navbar-color;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 3px 12.5px 0 rgba(6, 32, 46, 0.1);
-  height: 10vh;
+  box-shadow: 0 6px 25px -8px rgba(6, 32, 46, 0.1);
+  height: 79px;
 
   #main-logo {
     img {
@@ -16,10 +17,10 @@
     }
 
     img, .logo-divider {
-      margin-right: 10px;
+      margin-right: 13px;
     }
 
-    .app-name, .logo-divider {
+    .app-name {
       @include app-name;
     }
   }
@@ -30,6 +31,15 @@
     align-items: center;
     justify-content: flex-end;
 
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      margin-right: 38px;
+
+      > * {
+        margin-left: 25px;
+      }
+    }
 
     .notifications {
       img {

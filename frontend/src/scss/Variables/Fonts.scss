@@ -1,13 +1,28 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&family=Open+Sans:wght@300;400;600;700;800&display=swap");
 @import "Colors";
 
-$title: (font: "Open Sans",
-  type: sans-serif,
+$default-font-family: Lato, san-serif;
+
+$title-font: (
+  font-family: $default-font-family,
   weight: 700,
 );
 
-$paragraph: (font: "Lato",
-  type: sans-serif,
+$paragraph-font: (
+  font-family: $default-font-family,
   weight: 400,
   color: $dark-gray
 );
+
+$app-title-font: (
+  font-family: $default-font-family,
+  weight: 300,
+  size: 16px
+);
+
+@mixin font-style($type) {
+  font-family: map_get($type, font-family);
+  font-weight: map_get($type, weight);
+  font-size: map_get($type, size);
+}
 

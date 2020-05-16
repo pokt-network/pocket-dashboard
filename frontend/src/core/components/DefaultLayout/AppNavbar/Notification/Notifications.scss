@@ -4,11 +4,15 @@
   .badge {
     background-color: $badge-background-color;
     border-radius: 100%;
-    width: 20px;
-    height: 20px;
+    width: 16px;
+    height: 16px;
     position: relative;
-    top: -8px;
+    top: -6px;
     right: 13px;
+
+    font-family: $default-font-family;
+    font-size: 9px;
+    color: #ffffff;
   }
 
   .dropdown-item {

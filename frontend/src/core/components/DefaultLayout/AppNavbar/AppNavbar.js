@@ -11,15 +11,19 @@ class AppNavbar extends Component {
     const {helpLink} = this.props;
 
     return (
-      <Row id={"app-navbar"}>
-        <div id={"main-logo"}>
-          <img src={"/logo.png"} alt="logo"/>
-          <span className={"logo-divider"}>/</span>
-          <span className={"app-name"}>DASHBOARD</span>
+      <Row className="app-navbar">
+        <div id="main-logo">
+          <img src="/assets/logo.svg" alt="logo"/>
+          <span className="app-name">
+            <span className="logo-divider">/</span>
+            DASHBOARD
+          </span>
         </div>
         <div className="items">
-          <NotificationIcon/>
-          <HelpLink link={helpLink}/>
+          <div className="buttons">
+            <NotificationIcon/>
+            <HelpLink link={helpLink}/>
+          </div>
           <LoginStatus/>
         </div>
       </Row>

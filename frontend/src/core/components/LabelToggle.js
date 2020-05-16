@@ -2,15 +2,13 @@
 import React from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
-import {STYLING} from "../../../_constants";
+import {STYLING} from "../../_constants";
 import PropTypes from "prop-types";
-import "./LabelToggle.scss";
 
 // eslint-disable-next-line react/display-name
 const LabelToggle = React.forwardRef(({children, onClick}, ref) => (
   <a
     className="label-dropdown"
-    style={{color: "black"}}
     href=""
     ref={ref}
     onClick={(e) => {

@@ -1,26 +1,36 @@
-$default-layout-item-margin-left: 6%;
+@import "Fonts";
+@import "Others";
+
+$default-layout-item-padding-left: 50px;
+$default-layout-item-padding-right: 50px;
 
 // Navbar
-$panel-padding-left: 2.5%;
-$panel-padding-right: 2%;
+$navbar-padding: 24px $default-layout-item-padding-right 24px $default-layout-item-padding-left;
+$navbar-color: #ffffff;
 $badge-background-color: #06202E;
 $app-name-color: #515151;
 
-$item-size: (
-  width:35px,
-  height:40px
+$main-logo-size: (
+  width: 100px,
+  height: 41px
 );
 
-$main-logo-size: (
-  width: 25%,
-  height: 10%
+$item-size: (
+  width:32px,
+  height:32px
 );
+
+
+$user-login-font: (
+  color: #282828,
+  font-family: $default-font-family,
+  weight: normal,
+  size: 12px
+);
+
 
 @mixin app-name {
+  @include font-style($app-title-font);
   color: $app-name-color;
-  font-family: "Lato", sans-serif;
-  font-size: 20px;
-  font-weight: 300;
-  line-height: 11px;
   text-align: center;
 }
