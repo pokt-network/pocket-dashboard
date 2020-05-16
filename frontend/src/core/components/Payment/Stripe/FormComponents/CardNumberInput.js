@@ -12,7 +12,7 @@ class CardNumberInput extends Component {
         base: "payment-input card-number-input"
       },
       style: PaymentInputStyle,
-      placeholder: ""
+      placeholder: "2222 2222 2222 2222"
     };
   }
 

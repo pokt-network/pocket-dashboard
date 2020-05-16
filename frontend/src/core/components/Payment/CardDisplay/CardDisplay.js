@@ -10,7 +10,7 @@ class CardDisplay extends Component {
     return (
       <div className="card-display">
         <div className="info">
-          <strong>
+          <strong className="text-capitalize">
             {cardData.type} {cardData.digits}
           </strong>
           <p className="name">{holder}</p>

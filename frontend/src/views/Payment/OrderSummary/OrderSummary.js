@@ -1,25 +1,26 @@
 /* eslint-disable react/prop-types */
 import React, {Component} from "react";
-import {formatCurrency, formatNumbers} from "../../../_helpers";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDisplay";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import "./OrderSummary.scss";
 import Loader from "../../../core/components/Loader";
-import SaveAndPayForm from "../../../core/components/Payment/Stripe/SaveAndPayForm";
 import {ElementsConsumer} from "@stripe/react-stripe-js";
 import PaymentContainer from "../../../core/components/Payment/Stripe/PaymentContainer";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
+import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCardNoAddressForm";
+import AppAlert from "../../../core/components/AppAlert";
+import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 
 class OrderSummary extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.makePurchaseWithSavedCard = this.makePurchaseWithSavedCard.bind(this);
-    this.makePurchaseWithNewCard = this.makePurchaseWithNewCard.bind(this);
+    this.saveNewCardNoAddress = this.saveNewCardNoAddress.bind(this);
     this.goToInvoice = this.goToInvoice.bind(this);
 
     this.state = {
@@ -40,6 +41,12 @@ class OrderSummary extends Component {
       loading: false,
       loadingPayment: false,
       agreeTerms: false,
+      alert: {
+        show: false,
+        variant: "",
+        message: "",
+      },
+      unauthorized: false,
     };
   }
 
@@ -47,8 +54,7 @@ class OrderSummary extends Component {
     this.setState({loading: true});
     // eslint-disable-next-line react/prop-types
     if (this.props.location.state === undefined) {
-      // TODO: Show message on frontend
-      console.log("Error: you are not authorized to do this action");
+      this.setState({loading: false, unauthorized: true});
       return;
     }
 
@@ -109,18 +115,60 @@ class OrderSummary extends Component {
       selectedPaymentMethod.billingDetails
     );
 
-    // TODO: Redirect user to invoice view
-    console.log(result);
+    if (result.errors) {
+      this.setState({
+        alert: {
+          show: true,
+          variant: "warning",
+          message:
+            "there was an error making the payment, please try again later",
+        },
+      });
+    } else {
+      this.goToInvoice();
+    }
   }
 
-  async makePurchaseWithNewCard({success, data}) {
-    if (success) {
-      // TODO: Show information to user in a proper way, and redirect to another path
-      this.goToInvoice();
-    } else {
-      // TODO: Show information to user in a proper way.
-      console.log(data);
-    }
+  saveNewCardNoAddress(e, cardData, stripe) {
+    e.preventDefault();
+
+    const {cardHolderName: name} = cardData;
+
+    const billingDetails = {
+      name,
+    };
+
+    StripePaymentService.createPaymentMethod(
+      stripe, cardData.card, billingDetails
+    ).then(async (result) => {
+      if (result.errors) {
+        this.setState({
+          alert: {
+            show: true,
+            variant: "warning",
+            message: "There was an error adding your card",
+          },
+        });
+        return;
+      }
+
+      if (result.paymentMethod) {
+        const user = UserService.getUserInfo().email;
+        const paymentMethods = await PaymentService.getPaymentMethods(user);
+
+        const selectedPaymentMethod = paymentMethods.find(
+          (pm) => result.paymentMethod.id === pm.id
+        );
+
+        const alert = {
+          show: true,
+          variant: "primary",
+          message: "Your payment method was successfully added",
+        };
+
+        this.setState({alert, paymentMethods, selectedPaymentMethod});
+      }
+    });
   }
 
   render() {
@@ -131,27 +179,26 @@ class OrderSummary extends Component {
       total,
       cost,
       balance,
-      paymentIntent,
       loading,
       agreeTerms,
+      alert,
+      unauthorized,
     } = this.state;
 
     const cards = [
-      {title: formatNumbers(quantity.number), subtitle: quantity.description},
-      {title: formatCurrency(cost.number), subtitle: cost.description},
+      {title: quantity.number, subtitle: quantity.description},
+      {title: `${cost.number} USD`, subtitle: cost.description},
       {
-        title: `-${formatCurrency(balance)}`,
+        title: `-${balance} USD`,
         subtitle: "Current Balance",
       },
-      {title: formatCurrency(total), subtitle: "Total Cost"},
     ];
 
     const paymentMethods = allPaymentMethods.map((method) => {
       return {
         id: method.id,
         cardData: {
-          // TODO: Retrieve card type data from backend
-          type: "Visa",
+          type: method.brand,
           digits: `**** **** **** ${method.lastDigits}`,
         },
         holder: method.billingDetails.name,
@@ -162,8 +209,20 @@ class OrderSummary extends Component {
       return <Loader />;
     }
 
+    if (unauthorized) {
+      return <UnauthorizedAlert />;
+    }
+
     return (
       <div id="order-summary">
+        {alert.show && (
+          <AppAlert
+            dismissible
+            onClose={() => this.setState({alert: {show: false}})}
+            title={alert.message}
+            variant={alert.variant}
+          ></AppAlert>
+        )}
         <div className="title-page mb-4">
           <h2>Order summary</h2>
         </div>
@@ -196,33 +255,26 @@ class OrderSummary extends Component {
               })}
             </Form>
             <h5 className="mt-5 mb-4">Add a new card</h5>
-            <SaveAndPayForm
-              handleAfterPayment={this.makePurchaseWithNewCard}
-              paymentIntentSecretID={paymentIntent.paymentNumber}
+            <NewCardNoAddressForm
+              formActionHandler={this.saveNewCardNoAddress}
+              actionButtonName="Add card"
             />
           </Col>
           <Col lg="4" md="4" sm="4" className="title-page">
             <h4>Review your order</h4>
             <div className="mt-5 order">
-              <div className="item">
-                <p>Relays per day</p>
-                <p>100</p>
-              </div>
-              <div className="item">
-                <p>Relays per day cost</p>
-                <p>70 USD</p>
-              </div>
-              <div className="item">
-                <p>Current balance</p>
-                <p>-50 USD</p>
-              </div>
-              <InfoCard
-                className="pt-5 mb-4 pr-4 text-center"
-                title={"20 USD"}
-                subtitle={"Total cost"}
-              />
+              {cards.map((c, idx) => (
+                <div key={idx} className="item">
+                  <p>{c.subtitle}</p>
+                  <p>{c.title}</p>
+                </div>
+              ))}
             </div>
-
+            <InfoCard
+              className="pt-5 mb-4 pr-4 text-center"
+              title={`${total} USD`}
+              subtitle={"Total cost"}
+            />
             <Form.Check
               checked={agreeTerms}
               onChange={() => this.setState({agreeTerms: !agreeTerms})}

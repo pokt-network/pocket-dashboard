@@ -73,6 +73,11 @@ form {
   }
 }
 
+.payment-input {
+  border-color: $primary-color !important;
+  border-radius: $default-border-radius !important;
+}
+
 .input-group {
   input.form-control {
     border-color: $primary-color !important;

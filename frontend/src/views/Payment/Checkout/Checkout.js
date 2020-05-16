@@ -12,7 +12,8 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import NodeService from "../../../core/services/PocketNodeService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
-import Loader from "react-spinners/DotLoader";
+import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
+import Loader from "../../../core/components/Loader";
 
 class Checkout extends Component {
   constructor(props, context) {
@@ -30,14 +31,14 @@ class Checkout extends Component {
       detail: [],
       total: 0,
       address: "",
+      unauthorized: false,
     };
   }
 
   async componentDidMount() {
     this.setState({loading: true});
     if (this.props.location.state === undefined) {
-      // TODO: Show message on frontend
-      console.log("Error: you are not authorized to do this action");
+      this.setState({loading: false, unauthorized: true});
       return;
     }
 
@@ -53,11 +54,13 @@ class Checkout extends Component {
       amount: total,
     } = await PaymentService.getPaymentDetail(paymentId);
 
+    const {type: brand, digits} = paymentMethod.cardData;
+
     const invoice = {
       id,
       date: moment(date).format("DD MM YYYY"),
       owner: item.account,
-      card: `${paymentMethod.brand} **** **** **** ${paymentMethod.lastDigits}`,
+      card: `${brand.charAt(0).toUpperCase() + brand.slice(1)} ${digits}`,
     };
 
     this.setState({
@@ -72,10 +75,16 @@ class Checkout extends Component {
   }
   render() {
     const {owner, id, date, card} = this.state.invoice;
-    const {detail, total: totalCost, type, address, loading} = this.state;
+    const {
+      detail,
+      total: totalCost,
+      type,
+      address,
+      loading,
+      unauthorized,
+    } = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
-    // TODO: Remove dummy data when integrating with backend.
     const information = [
       {text: "Date", value: date},
       {text: "Bill To", value: owner},
@@ -97,6 +106,10 @@ class Checkout extends Component {
       return <Loader />;
     }
 
+    if (unauthorized) {
+      return <UnauthorizedAlert />;
+    }
+
     const detailButton = (
       <Link
         to={() => {
@@ -109,31 +122,45 @@ class Checkout extends Component {
         }}
       >
         <Button
-          variant="dark pl-4"
-          className="mt-3 pr-4 float-right font-weight-bold"
+          variant="primary"
+          className="mt-3  pl-4 pr-4 float-right font-weight-light"
         >
-          Go to {isApp ? "apps" : "nodes"} detail
+          Go to {isApp ? "app" : "nodes"} detail
         </Button>
       </Link>
     );
 
+    /* eslint-disable jsx-a11y/alt-text */
+    const icons = [
+      <img key={0} src="/assets/cart.svg" className="step-icon" />,
+      <img key={1} src="/assets/arrows.svg" className="step-icon" />,
+      <img key={2} src="/assets/check.svg" className="step-icon" />,
+    ];
+
+    if (unauthorized) {
+    }
+
     return (
-      <div id="nodes-checkout">
+      <div id="nodes-checkout" className="mb-5">
         <Row className="segment mb-3">
-          <Col>
+          <Col className="title-page">
+            {detailButton}
             <h2>Enjoy your purchase</h2>
             <p>Please wait a few minutes until the process is completed</p>
             <AppSteps
-              current={1}
+              icons={icons}
+              current={2}
               steps={[
                 "Purchase",
-                "Encode and sign stake",
-                "Successfull Node stake",
+                "Encode and sign stake transaction",
+                "throughput available",
               ]}
             />
-            {detailButton}
           </Col>
         </Row>
+        <div className="mt-4 mb-4 title-page">
+          <h3>Your invoice</h3>
+        </div>
         <Row className="segment mb-2">
           <Invoice
             title={`Invoice ${id}`}
@@ -142,13 +169,13 @@ class Checkout extends Component {
             total={total}
           />
         </Row>
-        <Button
-          variant="dark pl-4"
-          className="mt-3 mb-5 mr-3 pr-5 pl-5 float-right font-weight-bold"
-        >
-          {/* TODO: Add invoice print functionality */}
-          Print
-        </Button>
+        <p className="mt-4 ml-3 font-weight-light">
+          {/* TODO: Add print functionality */}
+          <Button variant="link" className="print font-weight-light">
+            Print
+          </Button>{" "}
+          your invoice
+        </p>
       </div>
     );
   }
