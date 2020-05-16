@@ -496,8 +496,29 @@ input[type="radio"] {
       opacity: 1;
     }
 
-    ~label::before {
+    ~ label::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+  }
+}
+
+.dropdown-menu.show {
+  margin-top: 1px;
+  border-radius: $cta-panel-radius;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.24);
+  background-color: white;
+
+  .dropdown-item {
+    font-family: $default-font-family;
+    font-size: 12px;
+    font-weight: 300;
+    color: #282828;
+
+    .icon {
+      color: $primary-color;
+      margin-right: 15px;
+      width: 16px;
+      height: 16px;
     }
   }
 }

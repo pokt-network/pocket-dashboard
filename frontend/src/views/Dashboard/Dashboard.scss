@@ -16,13 +16,8 @@
         padding-top: 4px;
       }
 
-      .dropdown-menu.show {
-        border-radius: $panel-radius;
-        box-shadow: 0 1px 9px 1px rgba(33, 33, 33, 0.2);
-      }
-
-      .dropdown-item {
-        padding-right: 0;
+      .dropdown-item:hover {
+        background-color: transparent;
       }
     }
   }

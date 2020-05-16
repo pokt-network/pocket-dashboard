@@ -1,20 +1,5 @@
 @import "../../../../scss/Variables/DefaultLayout";
 
-
-//.label-dropdown {
-//  @include bordered-layout;
-//  display: inline;
-//
-
-//
-//  .icon {
-//    position: absolute;
-//    margin-top: 5px;
-//  }
-//}
-//
-
-
 .user-dropdown {
 
   .label-dropdown {
@@ -35,7 +20,6 @@
       margin-right: 8px;
     }
 
-
     svg {
       margin-top: 5px;
       font-size: 8px;
@@ -47,11 +31,24 @@
     background-color: aliceblue;
   }
 
-  .dropdown-item {
-    .icon {
-      color: $primary-color;
-      margin-right: 5px;
-      width: 20%;
+  .dropdown-menu.show {
+    margin-top: 1px;
+    border-radius: $cta-panel-radius;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.24);
+    background-color: white;
+
+    .dropdown-item {
+      font-family: $default-font-family;
+      font-size: 12px;
+      font-weight: 300;
+      color: #282828;
+
+      .icon {
+        color: $primary-color;
+        margin-right: 15px;
+        width: 16px;
+        height: 16px;
+      }
     }
   }
 }
