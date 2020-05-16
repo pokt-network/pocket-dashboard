@@ -227,7 +227,6 @@ label.form-label {
 }
 
 #sidebar {
-  padding-top: 5px;
   background: $gradient;
   color: color("white");
 
@@ -238,23 +237,6 @@ label.form-label {
   }
 }
 
-#navbar {
-  padding-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  padding-left: 60px;
-  padding-right: 60px;
-
-  #main-logo {
-    margin-top: 10px;
-    width: 17%;
-    height: 90px;
-  }
-
-  .help {
-    padding-top: 5px;
-  }
-}
 
 button,
 button.btn {
@@ -342,33 +324,6 @@ button.btn {
   }
 }
 
-.sidebar-menu {
-  list-style-type: none;
-  padding-left: 0;
-  width: 100%;
-
-  a {
-    color: #ffffff;
-    display: block;
-    font-size: 1.2em;
-
-    li {
-      display: flex;
-      align-items: center;
-      padding-left: 30px;
-      padding-top: 20px;
-      padding-bottom: 20px;
-
-      .icon {
-        margin-right: 20px;
-      }
-    }
-  }
-
-  a:hover {
-    text-decoration: none;
-  }
-}
 
 input.form-control,
 textarea.form-control {

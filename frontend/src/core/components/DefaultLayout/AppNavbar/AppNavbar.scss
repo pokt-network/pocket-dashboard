@@ -8,7 +8,7 @@
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 6px 25px -8px rgba(6, 32, 46, 0.1);
-  height: 79px;
+  height: 80px;
 
   #main-logo {
     img {
@@ -21,7 +21,9 @@
     }
 
     .app-name {
-      @include app-name;
+      @include font-style($app-title-font);
+      color: $app-name-color;
+      text-align: center;
     }
   }
 

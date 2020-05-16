@@ -2,10 +2,9 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {NavLink} from "react-router-dom";
 
-
 class MenuItem extends Component {
   render() {
-    const {url, label, icon, size, ...restProps} = this.props;
+    const {url, label, icon, ...restProps} = this.props;
     const iconImageSource = `/assets/${icon}`;
 
     return (
@@ -22,7 +21,6 @@ class MenuItem extends Component {
 MenuItem.defaultProps = {
   url: "#",
   icon: "square",
-  size: "2x",
 };
 
 MenuItem.propTypes = {

@@ -9,9 +9,9 @@ import {isActiveExactUrl} from "../../../../_helpers";
 class AppSidebar extends Component {
   render() {
     return (
-      <Sidebar xs={2} sm={2} lg={2}>
+      <Sidebar xs={2} sm={2} lg={2} className="app-sidebar">
         <Row>
-          <ul id="app-sidebar" className="sidebar-menu">
+          <ul className="sidebar-menu">
             {navRoutes.items.map((route, idx) => (
               <MenuItem
                 key={idx}

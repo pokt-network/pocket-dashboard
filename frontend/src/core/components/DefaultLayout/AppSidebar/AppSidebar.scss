@@ -1,41 +1,48 @@
-@import "../../../../scss/Core.scss";
+@import "../../../../scss/Variables/DefaultLayout";
 
-#app-sidebar {
-  margin-top: 20px;
+
+ul.sidebar-menu {
+  margin-top: 52px;
+  padding-left: 0;
+  width: 100%;
 
   a {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    padding-left: $default-layout-item-padding-left;
+    display: block;
 
     li {
-      height: 30%;
-      padding-left: $default-layout-item-padding-left;
-      margin-bottom: 13%;
+      height: 55px;
+      padding: 20px 0;
+      margin-bottom: 28px;
+      list-style: none;
+
+      display: flex;
+      align-items: center;
 
       img {
-        width: 20px;
-        height: 16px;
+        width: map_get($menu-icon-size, width);
+        height: map_get($menu-icon-size, height);
         margin-right: 10px;
       }
 
       span {
-        font-family: "Lato", sans-serif;
+        @include font-style($menu-item-font);
+        color: map_get($menu-item-font, color);
         text-transform: uppercase;
-        font-size: 14px;
-        font-weight: 900;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: normal;
         letter-spacing: -0.38px;
       }
     }
   }
 
+
   a:hover {
-    background-color: #007293;
+    background-color: $menu-item-hover-color;
+    text-decoration: none;
   }
 
-  a.active {
-    background-color: #093044;
+  .active {
+    background-color: $menu-item-active-color;
   }
 }
+
+

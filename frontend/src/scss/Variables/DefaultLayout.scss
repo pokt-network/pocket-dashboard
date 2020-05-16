@@ -4,6 +4,22 @@
 $default-layout-item-padding-left: 50px;
 $default-layout-item-padding-right: 50px;
 
+//Menu
+$menu-item-hover-color: #007293;
+$menu-item-active-color: #093044;
+
+$menu-icon-size: (
+  width: 20px,
+  height: 16px
+);
+
+$menu-item-font: (
+  color: #ffffff,
+  font-family: $default-font-family,
+  weight: 900,
+  size: 14px
+);
+
 // Navbar
 $navbar-padding: 24px $default-layout-item-padding-right 24px $default-layout-item-padding-left;
 $navbar-color: #ffffff;
@@ -20,17 +36,9 @@ $item-size: (
   height:32px
 );
 
-
 $user-login-font: (
   color: #282828,
   font-family: $default-font-family,
   weight: normal,
   size: 12px
 );
-
-
-@mixin app-name {
-  @include font-style($app-title-font);
-  color: $app-name-color;
-  text-align: center;
-}
