@@ -1,6 +1,6 @@
 @import "../../../scss/Core";
 
-#payment-history {
+.payment-history {
   .filters {
     display: flex;
     justify-content: space-around;
@@ -18,6 +18,13 @@
     .filter.search {
       flex-grow: 2;
     }
+  }
+
+  .label-text {
+    font-weight: 700;
+    margin-top: 10px;
+    margin-right: 15px;
+    color: $primary-color;
   }
 
   .export {
