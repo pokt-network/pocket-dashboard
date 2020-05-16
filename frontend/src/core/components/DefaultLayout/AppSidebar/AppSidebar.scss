@@ -1,7 +1,7 @@
 @import "../../../../scss/Variables/DefaultLayout";
 
 
-ul.sidebar-menu {
+.sidebar-menu {
   margin-top: 52px;
   padding-left: 0;
   width: 100%;
@@ -42,6 +42,21 @@ ul.sidebar-menu {
 
   .active {
     background-color: $menu-item-active-color;
+  }
+}
+
+.app-sidebar-footer {
+  position: relative;
+  bottom: -300px;
+
+  div {
+    span.footer-copyright {
+      font-family: $default-font-family;
+      color: white;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: -0.38px;
+    }
   }
 }
 

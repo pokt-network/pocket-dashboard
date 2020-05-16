@@ -37,7 +37,12 @@
     }
   }
 
-  .network-status-table {
-    padding-left: 0;
+  .network-status-tables {
+    margin-top: 50px;
+
+    .network-status-table {
+      padding-left: 0;
+    }
   }
+
 }

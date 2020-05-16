@@ -141,54 +141,56 @@ class Dashboard extends Component {
             <InfoCard key={idx} title={card.title} subtitle={card.subtitle}/>
           ))}
         </Row>
-        <Row>
-          <Col lg="6" md="6" sm="6" className="network-status-table">
-            <Segment label="Registered Nodes">
-              <BootstrapTable
-                classes="app-table"
-                keyField="pocketNode.publicPocketAccount.address"
-                data={userNodes}
-                columns={TABLE_COLUMNS.NODES}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
-          <Col lg="6" md="6" sm="6" className="network-status-table">
-            <Segment label="Registered Apps">
-              <BootstrapTable
-                classes="app-table"
-                keyField="pocketApplication.publicPocketAccount.address"
-                data={userApps}
-                columns={TABLE_COLUMNS.APPS}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
-        </Row>
-        <Row className="mt-5 mb-4">
-          <Col lg="12" md="12" sm="12" className="network-status-table">
-            <Segment label="Supported Blockchains">
-              <BootstrapTable
-                classes="app-table"
-                keyField="hash"
-                data={chains}
-                columns={TABLE_COLUMNS.NETWORK_CHAINS}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
-          <Col lg="12" md="12" sm="12" className="network-status-table">
-            <Segment label="Most popular chains">
-              <BootstrapTable
-                classes="app-table"
-                keyField="hash"
-                data={chains}
-                columns={TABLE_COLUMNS.NETWORK_CHAINS}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
-        </Row>
+        <div className="network-status-tables">
+          <Row>
+            <Col lg="6" md="6" sm="6" className="network-status-table">
+              <Segment label="Registered Nodes">
+                <BootstrapTable
+                  classes="app-table"
+                  keyField="pocketNode.publicPocketAccount.address"
+                  data={userNodes}
+                  columns={TABLE_COLUMNS.NODES}
+                  bordered={false}
+                />
+              </Segment>
+            </Col>
+            <Col lg="6" md="6" sm="6" className="network-status-table">
+              <Segment label="Registered Apps">
+                <BootstrapTable
+                  classes="app-table"
+                  keyField="pocketApplication.publicPocketAccount.address"
+                  data={userApps}
+                  columns={TABLE_COLUMNS.APPS}
+                  bordered={false}
+                />
+              </Segment>
+            </Col>
+          </Row>
+          <Row className="mt-5 mb-4">
+            <Col lg="12" md="12" sm="12" className="network-status-table">
+              <Segment label="Supported Blockchains">
+                <BootstrapTable
+                  classes="app-table"
+                  keyField="hash"
+                  data={chains}
+                  columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                  bordered={false}
+                />
+              </Segment>
+            </Col>
+            <Col lg="12" md="12" sm="12" className="network-status-table">
+              <Segment label="Most popular chains">
+                <BootstrapTable
+                  classes="app-table"
+                  keyField="hash"
+                  data={chains}
+                  columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                  bordered={false}
+                />
+              </Segment>
+            </Col>
+          </Row>
+        </div>
       </div>
     );
   }
