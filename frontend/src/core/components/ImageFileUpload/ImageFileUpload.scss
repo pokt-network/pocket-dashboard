@@ -11,7 +11,9 @@
     align-items: center;
 
     img.icon {
-      width: 35%;
+      margin-top: 30px;
+      width: 35% !important;
+      height: 35% !important;
     }
 
     p {
@@ -35,6 +37,7 @@
   }
 
   img {
-    width: 100%;
+    width: 70%;
+    height: 70%;
   }
 }

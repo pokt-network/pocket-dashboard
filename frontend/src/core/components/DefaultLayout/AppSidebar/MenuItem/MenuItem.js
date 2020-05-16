@@ -12,6 +12,13 @@ class MenuItem extends Component {
         <li>
           <img src={iconImageSource} alt="side-bar-menu-item-icon"/>
           <span>{label}</span>
+          <img
+            style={{width: "10%"}}
+            src={`/assets/${icon}.svg`}
+            className="icon"
+            alt=""
+          />
+          {label}
         </li>
       </NavLink>
     );

@@ -45,8 +45,8 @@ function ImageFileUpload(props) {
     } else {
       return (
         <>
-          <img src="/assets/user_icon_circle.svg" className="icon" alt=""/>
-          <p className="mt-3">
+          <img src="/assets/upload_icon.svg" className="icon" alt=""/>
+          <p>
             Drag and drop an icon{" "}
             <span className="alt">
               <br></br>or upload from your computer

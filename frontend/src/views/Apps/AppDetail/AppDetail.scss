@@ -1,6 +1,12 @@
 @import "../../../scss/Core.scss";
 
 #app-detail {
+  .head {
+    h1 {
+      color: $primary-color;
+    }
+  }
+
   .name {
     margin-bottom: 0;
   }
@@ -9,17 +15,54 @@
     margin-top: 50px;
   }
 
-  h3 {
-    color: #000000;
-    font-weight: bold;
-    font-size: 1.3em;
-    margin-bottom: 15px;
+  .title-page {
+    color: $dark-gray;
+
+    h2 {
+      font-weight: 700;
+      display: inline;
+    }
+  }
+
+  .unstaking-time {
+    margin-top: 5px;
+    font-size: 0.75em;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  .cta {
+    margin-top: -5px;
+  }
+
+  .app-table {
+    box-shadow: $default-box-shadow;
+
+    th {
+      font-weight: 700;
+      font-size: 1.2em;
+    }
+  }
+
+  .contact {
+    h2 {
+      color: $dark-gray !important;
+      font-size: 24px;
+      text-transform: uppercase;
+      font-family: "Open Sans";
+    }
+  }
+
+  .contact-info>.free-tier:first-of-type {
+    .contact {
+      box-shadow: none;
+    }
   }
 
   .owner {
-    font-size: 1em;
-    color: $primary-color;
+    color: #000;
     margin-left: 2px;
+    font-weight: 800;
   }
 
   .description {
@@ -40,6 +83,9 @@
     .info {
       .badge {
         font-size: 0.4em;
+        padding: 10px;
+        font-weight: 400;
+        color: $dark-gray;
       }
     }
   }
@@ -88,13 +134,26 @@
   }
 
   .action-buttons {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
+    .option {
+      .icon {
+        width: 1.8%;
+        margin-right: 5px;
+      }
+    }
 
-    button,
-    a {
-      font-weight: bold;
+    a,
+    p {
+      display: inline;
+      font-weight: 300;
+      font-size: 18px;
+    }
+
+    p {
+      margin-right: 10px;
+    }
+
+    .link {
+      color: $primary-color;
     }
   }
 

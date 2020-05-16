@@ -1,12 +1,14 @@
 import React from "react";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {Alert, Form, Button, Row, Col} from "react-bootstrap";
+import {Form, Button, Row, Col} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import Loader from "../../../core/components/Loader";
 import UserService from "../../../core/services/PocketUserService";
 import {Formik} from "formik";
 import {appFormSchema} from "../../../_helpers";
+import "../../../core/components/CreateForm/CreateForm.scss";
+import AppAlert from "../../../core/components/AppAlert";
 
 class EditApp extends CreateForm {
   constructor(props, context) {
@@ -39,7 +41,7 @@ class EditApp extends CreateForm {
     const {name, owner, contactEmail, description, url} = this.state.data;
     const {icon} = this.state;
 
-    const {success, data} = await ApplicationService.editApplication(address, {
+    const {success} = await ApplicationService.editApplication(address, {
       name,
       contactEmail,
       description,
@@ -52,13 +54,12 @@ class EditApp extends CreateForm {
     if (success) {
       this.setState({success: true});
     } else {
-      // TODO: Show frontend message
-      console.log(data);
+      this.setState({error: true});
     }
   }
 
   render() {
-    const {loading, icon, success} = this.state;
+    const {loading, icon, success, error} = this.state;
 
     if (loading) {
       return <Loader />;
@@ -66,28 +67,32 @@ class EditApp extends CreateForm {
 
     return (
       <div id="create-form">
-        {success && (
-          <Alert
-            onClose={() => this.setState({success: false})}
-            dismissible
-            variant="success"
-          >
-            Your app changes were successfully saved
-          </Alert>
-        )}
         <Row>
-          <Col sm="3" md="3" lg="3">
-            <h1>Edit you application</h1>
+          <Col sm="12" md="12" lg="12">
+            {success && (
+              <AppAlert
+                onClose={() => this.setState({success: false})}
+                dismissible
+                title="Your app changes were successfully saved"
+              />
+            )}
+            {error && (
+              <AppAlert
+                variant="danger"
+                title="There was an error saving your app changes, please try again later."
+                dismissible
+                onClose={() => this.setState({error: false})}
+              />
+            )}
+            <h1 className="text-uppercase">App Information</h1>
+            <p className="info">
+              Fill in these quick questions to identity your app on the
+              dashboard. Fields marked with * are required to continue.
+            </p>
           </Col>
         </Row>
-        <Row>
-          <Col sm="3" md="3" lg="3">
-            <ImageFileUpload
-              defaultImg={icon}
-              handleDrop={(img) => this.handleDrop(img.preview)}
-            />
-          </Col>
-          <Col sm="9" md="9" lg="9">
+        <Row className="mt-3">
+          <Col sm="5" md="5" lg="5">
             <Formik
               validationSchema={appFormSchema}
               onSubmit={(data) => {
@@ -102,9 +107,10 @@ class EditApp extends CreateForm {
               {({handleSubmit, handleChange, values, errors}) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
-                    <Form.Label>Name</Form.Label>
+                    <Form.Label>Application Name*</Form.Label>
                     <Form.Control
                       name="name"
+                      placeholder="maximum of 20 characters"
                       value={values.name}
                       onChange={handleChange}
                       isInvalid={!!errors.name}
@@ -114,9 +120,12 @@ class EditApp extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Application Developer</Form.Label>
+                    <Form.Label>
+                      Application Developer or Company name*
+                    </Form.Label>
                     <Form.Control
                       name="owner"
+                      placeholder="maximum of 20 characters"
                       value={values.owner}
                       onChange={handleChange}
                       isInvalid={!!errors.owner}
@@ -126,20 +135,9 @@ class EditApp extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>URL</Form.Label>
+                    <Form.Label>Contact Email*</Form.Label>
                     <Form.Control
-                      name="url"
-                      value={values.url}
-                      onChange={handleChange}
-                      isInvalid={!!errors.url}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.url}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Contact email</Form.Label>
-                    <Form.Control
+                      placeholder="hello@example.com"
                       name="contactEmail"
                       type="email"
                       value={values.contactEmail}
@@ -151,8 +149,22 @@ class EditApp extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
+                    <Form.Label>Website</Form.Label>
+                    <Form.Control
+                      placeholder="www.example.com"
+                      name="url"
+                      value={values.url}
+                      onChange={handleChange}
+                      isInvalid={!!errors.url}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.url}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group>
                     <Form.Label>Description</Form.Label>
                     <Form.Control
+                      placeholder="maximum of 150 characters"
                       as="textarea"
                       rows="6"
                       name="description"
@@ -164,15 +176,27 @@ class EditApp extends CreateForm {
                       {errors.description}
                     </Form.Control.Feedback>
                   </Form.Group>
-
-                  <div className="submit float-right mt-2">
-                    <Button variant="dark" size="lg" type="submit">
-                      Save
+                  <div className="submit mt-2 mb-4">
+                    <Button
+                      className="pl-5 pr-5"
+                      variant="primary"
+                      size="md"
+                      type="submit"
+                    >
+                      Continue
                     </Button>
                   </div>
                 </Form>
               )}
             </Formik>
+          </Col>
+          <Col sm="7" md="7" lg="7">
+            <div className="ml-5 mt-4">
+              <ImageFileUpload
+                defaultImg={icon}
+                handleDrop={(img) => this.handleDrop(img.preview)}
+              />
+            </div>
           </Col>
         </Row>
       </div>
