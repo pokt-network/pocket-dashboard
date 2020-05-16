@@ -1,14 +1,27 @@
 @import "../../../scss/Core.scss";
 
-#payment-methods {
-  box-shadow: $default-box-shadow;
-
+.payment-methods {
   #cards {
-    max-height: 60vh;
+    max-height: 30vh;
     overflow-x: auto;
   }
 
   #card-form {
     margin-bottom: 5em;
+    box-shadow: $default-box-shadow;
+    padding-bottom: 100px;
+    margin-right: -100px;
+    padding-right: 100px;
+  }
+
+  .new-card {
+    margin-top: 30px;
+    color: $primary-color;
+    font-weight: 700;
+    font-size: 18px;
+  }
+
+  .new-card:hover {
+    cursor: pointer;
   }
 }

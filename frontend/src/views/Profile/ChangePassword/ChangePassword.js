@@ -34,9 +34,9 @@ class ChangePassword extends Component {
     const {oldPassword, password, passwordConfirm} = this.state.data;
 
     return (
-      <Row>
-        <Col lg="8" md="8" sm="8">
-          <h2>Password</h2>
+      <Row id="general">
+        <Col lg={{span: 7, offset: 2}} className="body title-page">
+          <h1>Change your Password</h1>
           <Form onSubmit={this.handleSubmit}>
             <Form.Group>
               <Form.Label>Old password</Form.Label>
@@ -47,6 +47,7 @@ class ChangePassword extends Component {
                 onChange={this.handleChange}
               />
             </Form.Group>
+            <br />
             <Form.Group>
               <Form.Label>Password</Form.Label>
               <Form.Control
@@ -55,6 +56,7 @@ class ChangePassword extends Component {
                 onChange={this.handleChange}
               />
             </Form.Group>
+            <br />
             <Form.Group>
               <Form.Label>Password Confirm</Form.Label>
               <Form.Control
@@ -63,13 +65,9 @@ class ChangePassword extends Component {
                 onChange={this.handleChange}
               />
             </Form.Group>
-            <Button
-              className="pr-5 pl-5 float-right"
-              type="submit"
-              variant="dark"
-              size={"lg"}
-            >
-              Change
+            <br />
+            <Button type="submit" variant="primary" size={"lg"}>
+              save
             </Button>
           </Form>
         </Col>

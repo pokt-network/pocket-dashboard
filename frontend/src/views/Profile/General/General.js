@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Button, Col, Form, Modal, Row} from "react-bootstrap";
 import PocketUserService from "../../../core/services/PocketUserService";
+import "./General.scss";
 
 class General extends Component {
   constructor(props, context) {
@@ -43,9 +44,9 @@ class General extends Component {
 
     return (
       <>
-        <Row>
-          <Col lg="8" md="8" sm="8">
-            <h2>General Information</h2>
+        <Row id="general">
+          <Col lg={{span: 7, offset: 2}} className="body title-page">
+            <h1>General Information</h1>
             <Form onSubmit={(e) => e.preventDefault()}>
               <Form.Group>
                 <Form.Label>Username</Form.Label>
@@ -55,8 +56,9 @@ class General extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
+              <br />
               <Form.Group>
-                <Form.Label>E-mail</Form.Label>
+                <Form.Label>Email</Form.Label>
                 <Form.Control
                   type="email"
                   name="email"
@@ -64,11 +66,12 @@ class General extends Component {
                   onChange={this.handleChange}
                 />
               </Form.Group>
+              <br />
               <Button
-                className="pr-5 pl-5 float-right"
+                className=""
                 type="submit"
-                variant="dark"
-                size={"lg"}
+                variant="primary"
+                size={"md"}
                 onClick={() => {
                   this.setState({passwordModal: true});
                 }}

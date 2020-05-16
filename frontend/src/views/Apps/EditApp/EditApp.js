@@ -183,7 +183,7 @@ class EditApp extends CreateForm {
                       size="md"
                       type="submit"
                     >
-                      Continue
+                      save
                     </Button>
                   </div>
                 </Form>
