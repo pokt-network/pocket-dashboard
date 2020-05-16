@@ -9,13 +9,15 @@ class ProfileSidebar extends Component {
     return (
       <ul id="profile-sidebar" className="sidebar-menu">
         {profile.items.map((route, idx) => (
-          <MenuItem
-            key={idx}
-            label={route.name}
-            url={route.url}
-            icon={route.icon}
-            isActive={isActiveExactUrl}
-          />
+          <React.Fragment key={idx}>
+            <MenuItem
+              label={route.name}
+              url={route.url}
+              icon={route.icon}
+              isActive={isActiveExactUrl}
+            />
+            <hr />
+          </React.Fragment>
         ))}
       </ul>
     );
