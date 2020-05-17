@@ -4,7 +4,7 @@ import {Alert, Col, Dropdown, Row} from "react-bootstrap";
 import "./Dashboard.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
-import {APPLICATIONS_LIMIT, NODES_LIMIT, TABLE_COLUMNS} from "../../_constants";
+import {APPLICATIONS_LIMIT, NODES_LIMIT, STYLING, TABLE_COLUMNS} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
@@ -12,6 +12,8 @@ import {mapStatusToField} from "../../_helpers";
 import NodeService from "../../core/services/PocketNodeService";
 import Segment from "../../core/components/Segment/Segment";
 import BootstrapTable from "react-bootstrap-table-next";
+import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 class Dashboard extends Component {
   constructor(props, context) {
@@ -86,7 +88,14 @@ class Dashboard extends Component {
           <Col sm="4" md="4" lg="4" className="d-flex justify-content-end cta-buttons">
             <Dropdown className="cta mr-2">
               <Dropdown.Toggle className="pl-4 pr-4" variant="primary" id="dropdown-basic">
-                Apps
+                <span>
+                  Apps
+                  <FontAwesomeIcon
+                    className="icon"
+                    icon={faAngleDown}
+                    color={STYLING.primaryColor}
+                  />
+                </span>
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
@@ -111,7 +120,14 @@ class Dashboard extends Component {
             </Dropdown>
             <Dropdown className="cta">
               <Dropdown.Toggle className="pl-4 pr-4" variant="primary" id="dropdown-basic">
-                Nodes
+                <span>
+                  Nodes
+                  <FontAwesomeIcon
+                    className="icon"
+                    icon={faAngleDown}
+                    color={STYLING.primaryColor}
+                  />
+                </span>
               </Dropdown.Toggle>
 
               <Dropdown.Menu>
