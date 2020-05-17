@@ -220,17 +220,13 @@ class CreateAppForm extends CreateForm {
                       {errors.description}
                     </Form.Control.Feedback>
                   </Form.Group>
-                  <div className="submit mt-2 mb-4">
-                    <Button
-                      className="pl-5 pr-5"
-                      disabled={!agreeTerms}
-                      variant="primary"
-                      size="md"
-                      type="submit"
-                    >
-                      Continue
-                    </Button>
-                  </div>
+                  <Button
+                    className="pl-5 pr-5"
+                    disabled={!agreeTerms}
+                    variant="primary"
+                    type="submit">
+                    <span>Continue</span>
+                  </Button>
                 </Form>
               )}
             </Formik>
