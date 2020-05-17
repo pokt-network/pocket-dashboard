@@ -11,15 +11,16 @@
     align-items: center;
 
     img.icon {
-      margin-top: 30px;
-      width: 35% !important;
-      height: 35% !important;
+      margin-top: 32px;
+      width: 45px;
+      height: 45px;
     }
 
     p {
-      width: 200px;
       text-align: center;
       color: $primary-color;
+      font-family: $default-font-family;
+      font-size: 12px;
 
       span.alt {
         color: $light-gray;
@@ -27,12 +28,10 @@
     }
   }
 
-
-
   .drop.drop-border {
-    border: 3px solid $primary-color;
-    height: 200px;
-    width: 200px;
+    width: 150px;
+    height: 150px;
+    border: solid 2px $primary-color;
     border-radius: 50%;
   }
 

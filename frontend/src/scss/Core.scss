@@ -22,12 +22,15 @@
   }
 }
 
-h1 {
-  font-weight: 800;
-  font-size: 30px;
-  line-height: 1.27;
-  letter-spacing: -0.82px;
-  color: #06202e;
+.page-name {
+  h1 {
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 30px;
+    line-height: 1.27;
+    letter-spacing: -0.82px;
+    color: #06202e;
+  }
 }
 
 // Paragraphs, Labels, Links
@@ -58,18 +61,8 @@ body {
 }
 
 form {
-
-  input,
   textarea {
-    border-color: $primary-color;
-  }
-
-  input {
-    border-radius: $default-border-radius !important;
-  }
-
-  textarea {
-    border-radius: 15px !important;
+    resize: none;
   }
 }
 
@@ -116,7 +109,7 @@ form {
 .btn-primary:focus,
 .btn-outline-primary:active,
 .btn-primary:active,
-.show>.btn-primary.dropdown-toggle,
+.show > .btn-primary.dropdown-toggle,
 .btn-primary:not(:disabled):not(.disabled):active {
   background-color: $primary-color-darker;
   border-color: $primary-color-darker;
@@ -172,7 +165,7 @@ input {
   color: $dark-gray;
   border-radius: 25px;
   padding: 10px 30px;
-  font-family: "Lato";
+  font-family: $default-font-family;
   font-weight: 300;
 }
 
@@ -220,12 +213,15 @@ input {
 
 .form-control {
   border: 1px solid $border-blue;
-  height: calc(1.5em + 1.00rem + 2px);
-  border-radius: 25px;
+  height: 32px;
+  border-radius: 21px;
 }
 
 label.form-label {
+  font-family: $default-font-family;
+  font-size: 14px;
   font-weight: 300;
+  color: $form-label-font-color;
 }
 
 .badge,

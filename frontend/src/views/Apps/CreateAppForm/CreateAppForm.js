@@ -119,7 +119,7 @@ class CreateAppForm extends CreateForm {
     return (
       <div id="create-form">
         <Row>
-          <Col sm="12" md="12" lg="12">
+          <Col sm="12" md="12" lg="12" className="page-name">
             {error && (
               <AppAlert
                 variant="danger"
@@ -128,7 +128,7 @@ class CreateAppForm extends CreateForm {
                 onClose={() => this.setState({error: false})}
               />
             )}
-            <h1 className="text-uppercase">App Information</h1>
+            <h1>App Information</h1>
             <p className="info">
               Fill in these quick questions to identity your app on the
               dashboard. Fields marked with * are required to continue.
@@ -210,7 +210,7 @@ class CreateAppForm extends CreateForm {
                     <Form.Control
                       placeholder="maximum of 150 characters"
                       as="textarea"
-                      rows="6"
+                      rows="4"
                       name="description"
                       value={values.description}
                       onChange={handleChange}
@@ -235,7 +235,7 @@ class CreateAppForm extends CreateForm {
               )}
             </Formik>
           </Col>
-          <Col sm="7" md="7" lg="7">
+          <Col sm="7" md="7" lg="7" className="create-form-left-side">
             <div className="ml-5 mt-4">
               <ImageFileUpload
                 handleDrop={(img) => this.handleDrop(img.preview)}
@@ -263,14 +263,16 @@ class CreateAppForm extends CreateForm {
                     distribute POKT to others.
                   </li>
                 </ul>
+                <div className="legal-info-check">
+                  <Form.Check
+                    checked={agreeTerms}
+                    onChange={() => this.setState({agreeTerms: !agreeTerms})}
+                    id="terms-checkbox"
+                    type="checkbox"
+                    label="I agree to these Pocket's "/>
+                  <a href="#">Terms and conditions.</a>
+                </div>
 
-                <Form.Check
-                  checked={agreeTerms}
-                  onChange={() => this.setState({agreeTerms: !agreeTerms})}
-                  id="terms-checkbox"
-                  type="checkbox"
-                  label="I agree with these terms and conditions."
-                />
               </div>
             </div>
           </Col>

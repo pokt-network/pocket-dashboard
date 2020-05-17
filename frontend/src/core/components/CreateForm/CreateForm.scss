@@ -1,28 +1,63 @@
+@import "../../../scss/Variables/Fonts";
+
 #create-form {
-  h1 {
-    font-size: 2em;
-    font-weight: 800;
-  }
 
   .info {
-    font-size: 1.2em;
+    font-family: $default-font-family;
     font-weight: 300;
-    ;
+    font-size: 16px;
+    line-height: 2.38;
+    letter-spacing: -0.44px;
+    color: $secondary-color;
+  }
+
+  .create-form-left-side {
+    margin-top: 10px;
   }
 
   .legal-info {
-    max-width: 600px;
+    margin-top: 60px;
+    font-family: $default-font-family;
+    font-size: 12px;
+    font-weight: 300;
+    color: $secondary-color;
 
-    ul>li {
-      margin-bottom: 10px;
+    strong {
+      font-weight: bold;
+    }
+
+    ul > li {
+      margin-bottom: 15px;
       font-weight: 300;
     }
 
-    .form-check {
-      padding-left: 45px;
+    .legal-info-check {
+      display: inline-flex;
+      width: 100%;
 
-      .custom-control-label {
+      label, a {
+        font-family: $default-font-family;
+        font-size: 14px;
         font-weight: 300;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: normal;
+
+      }
+
+      label {
+        color: $secondary-color;
+        width: 350%;
+      }
+
+      a {
+        margin-top: 4.5px;
+        margin-left: 150px;
+      }
+
+      .form-check {
+        padding-left: 45px;
       }
     }
   }
