@@ -136,7 +136,7 @@ class CreateAppForm extends CreateForm {
           </Col>
         </Row>
         <Row className="mt-3">
-          <Col sm="5" md="5" lg="5">
+          <Col sm="5" md="5" lg="5" className="create-form-left-side">
             <Formik
               validationSchema={appFormSchema}
               onSubmit={async (data) => {
@@ -235,7 +235,7 @@ class CreateAppForm extends CreateForm {
               )}
             </Formik>
           </Col>
-          <Col sm="7" md="7" lg="7" className="create-form-left-side">
+          <Col sm="7" md="7" lg="7" className="create-form-right-side">
             <div className="ml-5 mt-4">
               <ImageFileUpload
                 handleDrop={(img) => this.handleDrop(img.preview)}
