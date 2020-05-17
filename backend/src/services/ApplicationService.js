@@ -240,7 +240,8 @@ export default class ApplicationService extends BaseService {
    */
   async getAllApplications(limit, offset = 0, stakingStatus = undefined) {
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, {}, limit, offset))
-      .map(PocketApplication.createPocketApplication);
+      .map(PocketApplication.createPocketApplication)
+      .filter(application => application.publicPocketAccount);
 
     if (applications) {
       const extendedApplications = await this.__getExtendedPocketApplications(applications);
@@ -269,7 +270,8 @@ export default class ApplicationService extends BaseService {
   async getUserApplications(userEmail, limit, offset = 0, stakingStatus = undefined) {
     const filter = {user: userEmail};
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
-      .map(PocketApplication.createPocketApplication);
+      .map(PocketApplication.createPocketApplication)
+      .filter(application => application.publicPocketAccount);
 
     if (applications) {
       const extendedApplications = await this.__getExtendedPocketApplications(applications);

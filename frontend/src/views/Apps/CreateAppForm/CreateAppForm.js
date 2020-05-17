@@ -272,7 +272,6 @@ class CreateAppForm extends CreateForm {
                     label="I agree to these Pocket's "/>
                   <a href="#">Terms and conditions.</a>
                 </div>
-
               </div>
             </div>
           </Col>
