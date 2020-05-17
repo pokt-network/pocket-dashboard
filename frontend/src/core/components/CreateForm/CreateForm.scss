@@ -3,7 +3,7 @@
 #create-form {
 
   .info {
-    font-family: $default-font-family;
+    font-family: $primary-font-family;
     font-weight: 300;
     font-size: 16px;
     line-height: 2.38;
@@ -21,7 +21,7 @@
 
   .legal-info {
     margin-top: 60px;
-    font-family: $default-font-family;
+    font-family: $primary-font-family;
     font-size: 12px;
     font-weight: 300;
     color: $secondary-color;
@@ -40,7 +40,7 @@
       width: 100%;
 
       label, a {
-        font-family: $default-font-family;
+        font-family: $primary-font-family;
         font-size: 14px;
         font-weight: 300;
         font-stretch: normal;

@@ -12,6 +12,7 @@ import PocketApplicationService from "../../../core/services/PocketApplicationSe
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Redirect} from "react-router-dom";
+import Segment from "../../../core/components/Segment/Segment";
 
 class AppPassphrase extends Component {
 
@@ -152,16 +153,19 @@ class AppPassphrase extends Component {
     const generalInfo = [
       {title: "0 POKT", subtitle: "Stake tokens"},
       {title: "0 POKT", subtitle: "Balance"},
-      {title: "--", subtitle: "Stake status"},
-      {title: "--", subtitle: "Max Relays"},
+      {title: "_ _", subtitle: "Stake status"},
+      {title: "_ _", subtitle: "Max Relays"},
     ];
 
     return (
-      <div id="passphrase">
+      <div id="app-passphrase">
         <Row>
-          <Col sm="12" md="12" lg="12">
+          <Col className="page-title">
             <h1>Create App</h1>
-
+          </Col>
+        </Row>
+        <Row>
+          <Col className="page-title">
             <h2>Protect your private key with a passphrase</h2>
             <p>
               Write down a passphrase to protect your key file. This should have
@@ -183,7 +187,7 @@ class AppPassphrase extends Component {
               validate={this.handlePassphrase}
             >
               {({handleSubmit, handleChange, values, errors}) => (
-                <Form noValidate onSubmit={handleSubmit}>
+                <Form noValidate onSubmit={handleSubmit} className="create-passphrase-form">
                   <Form.Row>
                     <Col className="show-passphrase">
                       <Form.Group>
@@ -217,9 +221,10 @@ class AppPassphrase extends Component {
                           !created
                             ? () => this.createApplicationAccount()
                             : () => this.downloadKeyFile()
-                        }
-                      >
-                        {!created ? "Create" : "Download key file "}
+                        }>
+                        <span>
+                          {!created ? "Create" : "Download key file "}
+                        </span>
                       </Button>
                     </Col>
                   </Form.Row>
@@ -229,19 +234,13 @@ class AppPassphrase extends Component {
           </Col>
         </Row>
         <Row className="mt-4">
-          <Col>
-            <Form>
-              <Row>
-                <Col>
-                  <h3>Private key</h3>
-                  <Form.Control readOnly value={privateKey}/>
-                </Col>
-                <Col>
-                  <h3>Address</h3>
-                  <Form.Control readOnly value={address}/>
-                </Col>
-              </Row>
-            </Form>
+          <Col sm="6" md="6" lg="6">
+            <h3>Private key</h3>
+            <Form.Control readOnly value={privateKey}/>
+          </Col>
+          <Col sm="6" md="6" lg="6">
+            <h3>Address</h3>
+            <Form.Control readOnly value={address}/>
           </Col>
         </Row>
         <Row className="mt-5">
@@ -267,7 +266,12 @@ class AppPassphrase extends Component {
             </AppAlert>
           </Col>
         </Row>
-        <h2>General information</h2>
+        <Row>
+          <Col className="page-title">
+            <h1>General information</h1>
+          </Col>
+        </Row>
+        <br/>
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
@@ -275,17 +279,18 @@ class AppPassphrase extends Component {
             </Col>
           ))}
         </Row>
-        <Row className="mt-4"></Row>
-        <Row className="mb-5">
+        <br/>
+        <Row className="mb-5 app-networks">
           <Col>
-            <h3 className="sub mb-3">Networks</h3>
-            <BootstrapTable
-              classes="table app-table table-striped"
-              keyField="hash"
-              data={[]}
-              columns={TABLE_COLUMNS.NETWORK_CHAINS}
-              bordered={false}
-            />
+            <Segment label="Networks">
+              <BootstrapTable
+                classes="table app-table app-table-empty table-striped"
+                keyField="hash"
+                data={[]}
+                columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                bordered={false}
+              />
+            </Segment>
           </Col>
         </Row>
       </div>

@@ -80,7 +80,7 @@ class Dashboard extends Component {
           </Alert>
         )}
         <Row>
-          <Col sm="8" md="8" lg="8" className="page-name">
+          <Col sm="8" md="8" lg="8" className="page-title">
             <h1 className="ml-1">NETWORK INFORMATION</h1>
           </Col>
           <Col sm="4" md="4" lg="4" className="d-flex justify-content-end cta-buttons">

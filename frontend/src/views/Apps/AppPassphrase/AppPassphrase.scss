@@ -1,46 +1,115 @@
-@import "../../../scss/Core.scss";
+@import "../../../scss/Core";
 
-#passphrase {
-
-  h1,
-  h2,
-  h3 {
-    text-transform: uppercase;
-  }
+#app-passphrase {
 
   h1 {
-    color: #474747;
-    font-weight: 800;
-    margin-bottom: 25px;
+    color: $secondary-color;
   }
 
-  h2,
   h3 {
-    color: $dark-gray;
+    text-transform: uppercase;
+    font-family: $secondary-font-family;
+    font-size: 18px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: $form-label-font-color;
   }
 
-  p {
-    font-size: 1.1em;
-  }
+  div.alert.alert-warning {
+    padding-left: 20px;
 
-  .show-passphrase {
-    display: flex;
+    h4 {
+      font-family: $secondary-font-family;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.22;
+    }
 
-    .form-group {
-      flex-grow: 2;
+    p {
+      font-family: $primary-font-family;
+      font-size: 14px !important;
+      font-weight: bold;
+      letter-spacing: -0.38px;
+      color: white;
+    }
 
-      .invalid-feedback {
-        position: absolute;
-        padding-right: 85px;
+    .body {
+      p {
+        margin-left: -23px;
       }
     }
 
-    img {
-      width: 4%;
-      cursor: pointer;
-      margin-left: 15px;
-      margin-right: 10px;
-      margin-bottom: 18px;
+  }
+
+  .row {
+    div {
+      padding-left: 0;
+    }
+  }
+
+  input:read-only {
+    background-color: white;
+  }
+
+  form.create-passphrase-form {
+    display: inline;
+
+    button {
+      height: 32px;
+
+      span {
+        position: relative;
+        top: -6px;
+
+        font-family: $primary-font-family;
+        font-size: 12px;
+      }
+    }
+
+    .show-passphrase {
+      display: flex;
+
+      .form-group {
+        flex-grow: 2;
+
+        .invalid-feedback {
+          position: absolute;
+          padding-right: 85px;
+        }
+      }
+
+      img {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        margin: 8px 10px 18px 15px;
+      }
+    }
+  }
+
+  .app-networks {
+    h2 {
+      margin-left: 20px;
+    }
+
+    .app-segment {
+      .body {
+        height: 50px;
+        padding-top: 10px;
+        padding-left: 10px;
+
+        .table {
+          thead {
+            th {
+              font-size: 14px;
+              color: $secondary-color;
+            }
+          }
+        }
+      }
     }
   }
 }

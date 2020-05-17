@@ -22,14 +22,30 @@
   }
 }
 
-.page-name {
+.page-title {
+  padding-left: 0;
+
   h1 {
     text-transform: uppercase;
     font-weight: 800;
     font-size: 30px;
     line-height: 1.27;
     letter-spacing: -0.82px;
-    color: #06202e;
+    color: $form-label-font-color;
+  }
+
+  h2 {
+    text-transform: uppercase;
+    font-family: $primary-font-family;
+    font-size: 21px;
+    font-weight: 900;
+    color: $form-label-font-color;
+  }
+
+  p {
+    font-family: $primary-font-family;
+    font-size: 14px;
+    color: $secondary-color;
   }
 }
 
@@ -132,14 +148,16 @@ input {
 }
 
 .alert {
-  font-family: "Open Sans", sans-serif;
+  font-family: $secondary-font-family;
+  height: 110px;
+  box-shadow: 0 6px 25px -8px rgba(6, 32, 46, 0.1);
+  background-color: #07212f;
   padding-top: 20px;
   padding-bottom: 10px;
-  background-color: $dark-blue;
   border-color: $dark-blue;
   color: white;
   padding-left: 30px;
-  border-radius: 15px;
+  border-radius: 10px;
 
   p {
     font-weight: 700 !important;
@@ -154,7 +172,8 @@ input {
   }
 
   .icon {
-    width: 3%;
+    width: 36px;
+    height: 31px;
     margin-right: 5px;
   }
 }
@@ -165,7 +184,7 @@ input {
   color: $dark-gray;
   border-radius: 25px;
   padding: 10px 30px;
-  font-family: $default-font-family;
+  font-family: $primary-font-family;
   font-weight: 300;
 }
 
@@ -218,7 +237,7 @@ input {
 }
 
 label.form-label {
-  font-family: $default-font-family;
+  font-family: $primary-font-family;
   font-size: 14px;
   font-weight: 300;
   color: $form-label-font-color;
@@ -291,6 +310,17 @@ button.btn {
   }
 }
 
+.app-table-empty {
+  thead {
+    text-transform: uppercase;
+    color: black;
+
+    th {
+      border-bottom: none;
+    }
+  }
+}
+
 .main-list {
   a:hover {
     text-decoration: none;
@@ -303,9 +333,6 @@ button.btn {
   margin: 0 auto;
 }
 
-.page-name {
-  padding-left: 0;
-}
 
 .order-by {
   display: flex;
@@ -385,7 +412,6 @@ textarea.form-control::placeholder {
   h1,
   h2 {
     font-weight: 800;
-
   }
 
   h3,
@@ -505,7 +531,7 @@ input[type="radio"] {
   background-color: white;
 
   .dropdown-item {
-    font-family: $default-font-family;
+    font-family: $primary-font-family;
     font-size: 12px;
     font-weight: 300;
     color: #282828;
