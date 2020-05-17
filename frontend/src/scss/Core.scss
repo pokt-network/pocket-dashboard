@@ -25,8 +25,14 @@
 .page-title {
   padding-left: 0;
 
-  h1 {
+  h1,
+  h2,
+  h3,
+  h4 {
     text-transform: uppercase;
+  }
+
+  h1 {
     font-weight: 800;
     font-size: 30px;
     line-height: 1.27;
@@ -35,7 +41,6 @@
   }
 
   h2 {
-    text-transform: uppercase;
     font-family: $primary-font-family;
     font-size: 21px;
     font-weight: 900;
@@ -271,18 +276,30 @@ label.form-label {
 }
 
 
-button,
-button.btn {
-  min-width: unset;
-  padding: 7px 30px;
+button {
+  height: 32px;
+
+  span {
+    position: relative;
+    top: -5px;
+
+    font-family: $primary-font-family;
+    font-size: 12px;
+  }
 }
 
 .app-table {
+
+  input {
+    margin-left: -32px;
+  }
+
   thead {
     text-transform: uppercase;
     color: black;
 
     th {
+      margin-top: -10px;
       border-top-color: transparent;
       border-bottom: $border-bottom;
       font-family: $table-header-font-family;
@@ -387,50 +404,35 @@ textarea.form-control::placeholder {
 
 .search-input.input-group {
   input {
-    border-right-color: transparent;
+    border-right-style: hidden;
+  }
+
+  input:focus {
+    -webkit-box-shadow: none;
+    box-shadow: none;
   }
 
   button {
     color: $primary-color;
     border-left-color: transparent;
+
+    img {
+      position: relative;
+      top: -4px;
+      width: 25px;
+      height: 16px;
+    }
   }
 
   button:hover {
-    color: #fff;
+    background-color: white;
+
+    img {
+      color: white;
+    }
   }
 }
 
-.title-page {
-
-  h1,
-  h2,
-  h3,
-  h4 {
-    text-transform: uppercase;
-  }
-
-  h1,
-  h2 {
-    font-weight: 800;
-  }
-
-  h3,
-  h4 {
-    font-weight: 700;
-  }
-
-  h2,
-  h3,
-  h4 {
-    color: $dark-gray;
-  }
-
-  p {
-    font-size: 1.3em;
-    font-weight: 300;
-    line-height: 1.2;
-  }
-}
 
 .divider {
   display: flex;

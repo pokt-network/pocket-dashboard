@@ -223,7 +223,8 @@ class AppPassphrase extends Component {
                             : () => this.downloadKeyFile()
                         }>
                         <span>
-                          {!created ? "Create" : "Download key file "}
+                          {!created ? "Create" :
+                            <span><img src="/assets/" alt="download-key-file"/> Download key file</span>}
                         </span>
                       </Button>
                     </Col>

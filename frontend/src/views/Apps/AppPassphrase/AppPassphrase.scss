@@ -57,18 +57,6 @@
   form.create-passphrase-form {
     display: inline;
 
-    button {
-      height: 32px;
-
-      span {
-        position: relative;
-        top: -6px;
-
-        font-family: $primary-font-family;
-        font-size: 12px;
-      }
-    }
-
     .show-passphrase {
       display: flex;
 
