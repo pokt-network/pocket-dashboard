@@ -18,7 +18,7 @@ export class PocketApplication {
     Object.assign(this, {name, owner, url, contactEmail, user, description, icon});
 
     /** @type {PublicPocketAccount} */
-    this.publicPocketAccount = null;
+    this.publicPocketAccount = new PublicPocketAccount("", "");
 
     this.freeTier = freeTier || false;
   }
@@ -57,7 +57,7 @@ export class PocketApplication {
       throw Error("Owner is not valid.");
     }
 
-    if (!URL_REGEX.test(applicationData.url)) {
+    if (applicationData.url && !URL_REGEX.test(applicationData.url)) {
       throw Error("URL is not valid.");
     }
 
@@ -93,7 +93,7 @@ export class PocketApplication {
     const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount, freeTier} = applicationData;
     const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, freeTier);
 
-    pocketApplication.publicPocketAccount = publicPocketAccount;
+    pocketApplication.publicPocketAccount = publicPocketAccount ?? new PublicPocketAccount("", "");
 
     return pocketApplication;
   }

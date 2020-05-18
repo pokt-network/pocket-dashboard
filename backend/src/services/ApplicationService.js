@@ -87,14 +87,12 @@ export default class ApplicationService extends BaseService {
    * @async
    */
   async __getExtendedPocketApplication(application) {
-    /** @type {Application} */
     let networkApplication;
     const appParameters = await this.pocketService.getApplicationParameters();
 
     try {
       networkApplication = await this.pocketService.getApplication(application.publicPocketAccount.address);
     } catch (e) {
-      // noinspection JSValidateTypes
       networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
     }
 
@@ -166,7 +164,7 @@ export default class ApplicationService extends BaseService {
   async applicationExists(application) {
     let filter = {};
 
-    if (application.publicPocketAccount) {
+    if (application.publicPocketAccount.address) {
       filter["publicPocketAccount.address"] = application.publicPocketAccount.address;
     } else {
       filter["name"] = application.name;
@@ -240,8 +238,7 @@ export default class ApplicationService extends BaseService {
    */
   async getAllApplications(limit, offset = 0, stakingStatus = undefined) {
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, {}, limit, offset))
-      .map(PocketApplication.createPocketApplication)
-      .filter(application => application.publicPocketAccount);
+      .map(PocketApplication.createPocketApplication);
 
     if (applications) {
       const extendedApplications = await this.__getExtendedPocketApplications(applications);
@@ -270,8 +267,7 @@ export default class ApplicationService extends BaseService {
   async getUserApplications(userEmail, limit, offset = 0, stakingStatus = undefined) {
     const filter = {user: userEmail};
     const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
-      .map(PocketApplication.createPocketApplication)
-      .filter(application => application.publicPocketAccount);
+      .map(PocketApplication.createPocketApplication);
 
     if (applications) {
       const extendedApplications = await this.__getExtendedPocketApplications(applications);
@@ -340,17 +336,14 @@ export default class ApplicationService extends BaseService {
   /**
    * Unstake free tier application.
    *
-   * @param {string} applicationAccountAddress Application account address.
-   * @param {string} user Owner of application.
+   * @param {{privateKey:string, passPhrase:string, accountAddress: string}} applicationData Application data.
    *
    * @returns {Promise<PocketApplication | boolean>} If application was unstaked return the application, if not return false.
    * @async
    */
-  async unstakeFreeTierApplication(applicationAccountAddress, user) {
-    const passphrase = "UnstakeFreeTierApplication";
+  async unstakeFreeTierApplication(applicationData) {
     const filter = {
-      "publicPocketAccount.address": applicationAccountAddress,
-      user
+      "publicPocketAccount.address": applicationData.accountAddress
     };
 
     const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
@@ -358,14 +351,29 @@ export default class ApplicationService extends BaseService {
     if (!applicationDB) {
       return false;
     }
+    const accountService = new AccountService();
 
     try {
-      const freeTierAccount = await this.pocketService.getFreeTierAccount(passphrase);
+      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.passPhrase, applicationData.privateKey);
 
-      // Unstake application using free tier account
-      await this.pocketService.unstakeApplication(freeTierAccount, passphrase);
+      // Unstake application
+      const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passPhrase);
 
-      return PocketApplication.createPocketApplication(applicationDB);
+      if (unstakedTransaction.logs && unstakedTransaction.logs[0].success) {
+        const {account: freeTierAccount} = this.pocketService.getFreeTierAccount();
+        const {stake_amount: stakeAmount} = Configurations.pocket_network.free_tier;
+
+        const transferTransaction = await this.pocketService
+          .transferPoktBetweenAccounts(applicationAccount.addressHex, freeTierAccount.addressHex, stakeAmount);
+
+        if (transferTransaction.logs && transferTransaction.logs[0].success) {
+          return PocketApplication.createPocketApplication(applicationDB);
+        }
+
+        return false;
+      }
+
+      return false;
     } catch (e) {
       return false;
     }
@@ -405,10 +413,10 @@ export default class ApplicationService extends BaseService {
         .transferPoktBetweenAccounts(freeTierAccount.addressHex, clientApplication.publicPocketAccount.address, stakeAmount);
 
       if (transferTransaction.logs && transferTransaction.logs[0].success) {
-        // Stake application using free tier account
+        // Stake application
         const stakeTransaction = await this.pocketService.stakeApplication(applicationAccount, application.passphrase, stakeAmount, networkChains);
 
-        if (stakeTransaction.logs && transferTransaction.logs[0].success) {
+        if (stakeTransaction.logs && stakeTransaction.logs[0].success) {
           await this.__markApplicationAsFreeTier(clientApplication);
 
           return this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, freeTierPassphrase);
@@ -447,9 +455,13 @@ export default class ApplicationService extends BaseService {
 
     try {
       // Stake application
-      const transaction = await this.pocketService.stakeApplication(applicationAccount, application.passPhrase, uPoktAmount, application.networkChains);
+      const stakeTransaction = await this.pocketService.stakeApplication(applicationAccount, application.passPhrase, uPoktAmount, application.networkChains);
 
-      return transaction.tx !== undefined ? PocketApplication.createPocketApplication(applicationDB) : false;
+      if (stakeTransaction.logs && stakeTransaction.logs[0].success) {
+        return PocketApplication.createPocketApplication(applicationDB);
+      }
+
+      return false;
     } catch (e) {
       return false;
     }
@@ -479,9 +491,13 @@ export default class ApplicationService extends BaseService {
       const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.passPhrase, applicationData.privateKey);
 
       // Unstake application
-      const transaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passPhrase);
+      const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passPhrase);
 
-      return transaction.tx !== undefined ? PocketApplication.createPocketApplication(applicationDB) : false;
+      if (unstakedTransaction.logs && unstakedTransaction.logs[0].success) {
+        return PocketApplication.createPocketApplication(applicationDB);
+      }
+
+      return false;
     } catch (e) {
       return false;
     }
