@@ -4,7 +4,7 @@ import {Col, Form, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
 import {ITEM_TYPES, MAX_RELAYS, STYLING} from "../../../_constants";
-import {formatCurrency, formatNumbers} from "../../../_helpers";
+import {formatCurrency, formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -28,7 +28,7 @@ class SelectRelays extends Component {
       total: 0,
       currencies: [],
       loading: false,
-      error: false,
+      error: {show: false, message: ""},
     };
   }
 
@@ -52,7 +52,10 @@ class SelectRelays extends Component {
     };
 
     const {success, data} = await StripePaymentService.createNewPaymentIntent(
-      ITEM_TYPES.APPLICATION, item, currency, amount
+      ITEM_TYPES.APPLICATION,
+      item,
+      currency,
+      amount
     );
 
     return {success, data};
@@ -70,11 +73,17 @@ class SelectRelays extends Component {
 
     // TODO: Calculate pokt from formula
     const {success, data: paymentIntentData} = await this.createPaymentIntent(
-      total, usd, relays
+      total,
+      usd,
+      relays
     );
 
     if (!success) {
-      this.setState({error: true, loading: false});
+      this.setState({
+        error: {show: true, message: paymentIntentData.data.message},
+        loading: false,
+      });
+      scrollToId("alert");
       return;
     }
 
@@ -102,10 +111,10 @@ class SelectRelays extends Component {
       <div id="select-relays">
         <Row className="mt-4 mb-5">
           <Col lg="11" md="11" sm="11" className="title-page">
-            {error && (
+            {error.show && (
               <AppAlert
                 variant="danger"
-                title="There was an error during the request, please try again later."
+                title={error.message}
                 dismissible
                 onClose={() => this.setState({error: false})}
               />

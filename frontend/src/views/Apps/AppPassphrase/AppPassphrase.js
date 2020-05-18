@@ -96,12 +96,15 @@ class AppPassphrase extends Component {
       const {privateApplicationData} = data;
       const {address, privateKey} = privateApplicationData;
 
+      const appData = PocketApplicationService.getApplicationInfo().data;
+
       PocketApplicationService.removeAppInfoFromCache();
       PocketApplicationService.saveAppInfoInCache({
         applicationID: applicationInfo.id,
         passphrase: passPhrase,
         address,
-        privateKey
+        privateKey,
+        data: appData
       });
 
       this.setState({

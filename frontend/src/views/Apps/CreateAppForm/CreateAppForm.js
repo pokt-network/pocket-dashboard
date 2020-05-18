@@ -88,7 +88,7 @@ class CreateAppForm extends CreateForm {
     });
 
     if (success) {
-      ApplicationService.saveAppInfoInCache({applicationID: data});
+      ApplicationService.saveAppInfoInCache({applicationID: data, data: {name}});
 
       this.setState({created: true});
     } else {
