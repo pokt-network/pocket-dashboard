@@ -116,9 +116,10 @@ class AppPassphrase extends Component {
   }
 
   downloadKeyFile() {
-    const {privateKey, address, passPhrase} = this.state;
+    const {privateKey, passPhrase} = this.state;
+    const data = {"private_key": privateKey, "passphrase": passPhrase};
 
-    createAndDownloadJSONFile("MyPocketApplication", {address, privateKey, passPhrase});
+    createAndDownloadJSONFile("MyPocketApplication", data);
 
     this.setState({
       fileDownloaded: true,
@@ -151,10 +152,10 @@ class AppPassphrase extends Component {
     }
 
     const generalInfo = [
-      {title: "0 POKT", subtitle: "Stake tokens"},
+      {title: "0 POKT", subtitle: "Staked tokens"},
       {title: "0 POKT", subtitle: "Balance"},
       {title: "_ _", subtitle: "Stake status"},
-      {title: "_ _", subtitle: "Max Relays"},
+      {title: "_ _", subtitle: "Max Relay Per Day"},
     ];
 
     return (

@@ -595,3 +595,13 @@ input[type="radio"] {
 ::-webkit-scrollbar-button {
   display: none;
 }
+
+
+//TODO: Remove when second release.
+.breadcrumb {
+  .active {
+    color: transparent;
+  }
+}
+
+// ------

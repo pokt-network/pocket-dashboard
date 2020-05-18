@@ -28,7 +28,8 @@ class DefaultLayout extends Component {
           <AppSidebar />
           <Col id="default-layout">
             <Row>
-              {/* TODO: Remove manually written links for testing purposes */}
+              {/* TODO: Remove manually written links for testing purposes. */}
+
               <Breadcrumbs
                 links={[{url: "#", label: "Network Status", active: true}]}
               />
