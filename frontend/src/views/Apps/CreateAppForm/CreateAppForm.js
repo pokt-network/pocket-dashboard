@@ -92,7 +92,7 @@ class CreateAppForm extends CreateForm {
 
       this.setState({created: true});
     } else {
-      this.setState({error: true});
+      this.setState({error: {show: true, message: data}});
     }
   }
 
@@ -120,12 +120,12 @@ class CreateAppForm extends CreateForm {
       <div id="create-form">
         <Row>
           <Col sm="12" md="12" lg="12" className="page-title">
-            {error && (
+            {error.show && (
               <AppAlert
                 variant="danger"
-                title="There was an error creating your app, please try again later."
+                title={error.message}
                 dismissible
-                onClose={() => this.setState({error: false})}
+                onClose={() => this.setState({error: {show: false}})}
               />
             )}
             <h1>App Information</h1>

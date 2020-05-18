@@ -18,7 +18,10 @@ class CreateForm extends Component {
       },
       icon: "",
       created: false,
-      error: false,
+      error: {
+        show: false,
+        message: ""
+      }
     };
   }
 
