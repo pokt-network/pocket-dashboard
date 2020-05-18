@@ -1,1 +1,60 @@
+@import "../../../scss/Core";
 
+.app-main {
+  .page-title {
+    h1 {
+      color: $secondary-color;
+    }
+  }
+
+  .stats {
+    margin-left: -25px;
+  }
+
+  .cta-buttons {
+    margin-left: -20px;
+    margin-bottom: 30px;
+
+    .create-app-button {
+      background-color: $dark-gray;
+      border-color: $dark-gray;
+      width: 140px;
+    }
+
+    .import-app-button {
+      width: 115px;
+    }
+  }
+
+
+  .app-tables {
+    margin-left: -25px;
+
+    .search-panel {
+      margin-top: 20px;
+      margin-bottom: -10px;
+
+      button {
+        width: 30px;
+
+        img {
+          left: -12px;
+        }
+      }
+    }
+
+    .my-apps-segment {
+      .app-segment {
+        .head {
+          h2 {
+            margin-left: 28px;
+          }
+        }
+
+        .body {
+          overflow-x: hidden;
+        }
+      }
+    }
+  }
+}

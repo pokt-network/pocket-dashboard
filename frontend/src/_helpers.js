@@ -27,7 +27,7 @@ export const copyToClipboard = (value) => {
 
 export const createAndDownloadJSONFile = (fileName, data) => {
   const element = document.createElement("a");
-  const file = new Blob([JSON.stringify(data)], {type: "application/json"});
+  const file = new File([JSON.stringify(data)], fileName, {type: "application/json"});
 
   element.href = URL.createObjectURL(file);
   element.download = `${fileName}.json`;
