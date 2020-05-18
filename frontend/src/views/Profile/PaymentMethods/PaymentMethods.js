@@ -42,9 +42,7 @@ class PaymentMethods extends Component {
     };
 
     StripePaymentService.createPaymentMethod(
-      stripe,
-      cardData.card,
-      billingDetails
+      stripe, cardData.card, billingDetails
     ).then((result) => {
       if (result.errors) {
         // TODO: Show message to frontend

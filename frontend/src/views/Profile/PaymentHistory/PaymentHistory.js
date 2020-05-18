@@ -33,8 +33,7 @@ class PaymentHistory extends Component {
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
     const history = await PaymentService.getPaymentHistory(
-      userEmail,
-      PAYMENT_HISTORY_LIMIT
+      userEmail, PAYMENT_HISTORY_LIMIT
     );
 
     this.setState({history});
@@ -62,9 +61,7 @@ class PaymentHistory extends Component {
     const offset = (page - 1) * sizePerPage + 1;
 
     const history = await PaymentService.getPaymentHistory(
-      userEmail,
-      PAYMENT_HISTORY_LIMIT,
-      offset
+      userEmail, PAYMENT_HISTORY_LIMIT, offset
     );
 
     this.setState({page, history, offset});
