@@ -1,23 +1,19 @@
 import React, {Component} from "react";
 import {Button, Col, Form, Row, Alert} from "react-bootstrap";
-import AppAlert from "../../../core/components/AppAlert";
 import BootstrapTable from "react-bootstrap-table-next";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
-import {Formik} from "formik";
-import * as yup from "yup";
-import {createAndDownloadJSONFile, validateYup} from "../../../_helpers";
-import PocketApplicationService from "../../../core/services/PocketApplicationService";
-import ApplicationService from "../../../core/services/PocketApplicationService";
+import {TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Redirect, Link} from "react-router-dom";
-import Segment from "../../../core/components/Segment/Segment";
 import "./ImportApp.scss";
+import AccountService from "../../../core/services/PocketAccountService";
+import ApplicationService from "../../../core/services/PocketApplicationService";
 
 class Import extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.importApp = this.importApp.bind(this);
     this.changeInputType = this.changeInputType.bind(this);
     this.handleChange = this.handleChange.bind(this);
 
@@ -28,15 +24,16 @@ class Import extends Component {
 
     this.state = {
       created: false,
-      fileDownloaded: false,
+      error: {show: false, message: ""},
+      hasPrivateKey: false,
       inputType: "password",
       validPassphrase: false,
       showPassphraseIconURL: this.iconUrl.open,
-      privateKey: "",
       address: "",
+      uploadedPrivateKey: "",
       chains: [],
       data: {
-        passPhrase: "",
+        passphrase: "",
         privateKey: "",
       },
       redirectPath: "",
@@ -67,19 +64,65 @@ class Import extends Component {
     }
   }
 
+  readUploadedFile = (e) => {
+    e.preventDefault();
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const {result} = e.target;
+      const {data} = this.state;
+
+      const privateKey = result.trim();
+
+      this.setState({
+        hasPrivateKey: true,
+        uploadedPrivateKey: privateKey,
+        data: {...data, privateKey: privateKey},
+      });
+    };
+    reader.readAsText(e.target.files[0], "utf8");
+  };
+
+  async importApp(e) {
+    e.preventDefault();
+
+    const {privateKey, passphrase} = this.state.data;
+
+    const {success, data} = await AccountService.importAccount(
+      privateKey, passphrase
+    );
+
+    // eslint-disable-next-line react/prop-types
+    this.props.history.push({
+      pathname: _getDashboardPath(DASHBOARD_PATHS.createAppInfo),
+      state: {imported: true},
+    });
+    if (success) {
+      ApplicationService.saveAppInfoInCache({
+        imported: true,
+        privateKey,
+        passphrase,
+        address: data.address,
+      });
+    } else {
+      this.setState({error: {show: true, message: data.message}});
+    }
+  }
+
   render() {
     const {
-      created,
       fileDownloaded,
       inputType,
       showPassphraseIconURL,
-      validPassphrase,
       address,
       redirectPath,
       redirectParams,
+      uploadedPrivateKey,
+      hasPrivateKey,
+      error,
     } = this.state;
 
-    const {passPhrase, privateKey} = this.state.data;
+    const {passphrase, privateKey} = this.state.data;
 
     if (fileDownloaded) {
       return (
@@ -93,10 +136,10 @@ class Import extends Component {
     }
 
     const generalInfo = [
-      {title: "0 POKT", subtitle: "Stake tokens"},
+      {title: "0 POKT", subtitle: "Staked tokens"},
       {title: "0 POKT", subtitle: "Balance"},
       {title: "_ _", subtitle: "Stake status"},
-      {title: "_ _", subtitle: "Max Relays"},
+      {title: "_ _", subtitle: "Max Relays per Day"},
     ];
 
     return (
@@ -126,14 +169,24 @@ class Import extends Component {
                   <Form.Group className="d-flex">
                     <Form.Control
                       className="mr-3"
+                      readOnly
                       placeholder="Upload your key file"
-                      value={passPhrase}
-                      onChange={this.handleChange}
-                      name="passPhrase"
+                      value={uploadedPrivateKey}
                     />
-                    <Button className="upload-btn" variant="primary">
-                      Upload key file
-                    </Button>
+                    <div className="file">
+                      <label
+                        htmlFor="upload-key"
+                        className="upload-key btn btn-primary"
+                      >
+                        Upload key file
+                      </label>
+                      <input
+                        style={{display: "none"}}
+                        id="upload-key"
+                        type="file"
+                        onChange={(e) => this.readUploadedFile(e)}
+                      />
+                    </div>
                   </Form.Group>
                 </Col>
               </Form.Row>
@@ -143,46 +196,69 @@ class Import extends Component {
             <Form className="create-passphrase-form ">
               <Form.Row>
                 <Col className="show-passphrase flex-column">
-                  <h2>Private key</h2>
-                  <Form.Group className="d-flex">
-                    <Form.Control
-                      placeholder="*****************"
-                      value={passPhrase}
-                      onChange={this.handleChange}
-                      type={inputType}
-                      name="passPhrase"
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {/* {errors.passPhrase} */}
-                    </Form.Control.Feedback>
-                    <img
-                      onClick={this.changeInputType}
-                      src={showPassphraseIconURL}
-                      alt=""
-                    />
-                    <Button
-                      disabled={!validPassphrase}
-                      className="pl-4 pr-4 pt-2 pb-2"
-                      variant="dark"
-                      type="submit"
-                      onClick={
-                        !created
-                          ? () => this.createApplicationAccount()
-                          : () => this.downloadKeyFile()
-                      }
-                    >
-                      <span>
-                        {!created ? (
-                          "Import"
-                        ) : (
-                          <span>
-                            <img src="/assets/" alt="download-key-file" />{" "}
-                            Create
-                          </span>
-                        )}
-                      </span>
-                    </Button>
-                  </Form.Group>
+                  {!hasPrivateKey ? (
+                    <>
+                      <h2>Private key</h2>
+                      <Form.Group className="d-flex">
+                        <Form.Control
+                          placeholder="*****************"
+                          value={privateKey}
+                          required
+                          onChange={this.handleChange}
+                          type={inputType}
+                          name="privateKey"
+                        />
+                        <img
+                          onClick={this.changeInputType}
+                          src={showPassphraseIconURL}
+                          alt=""
+                        />
+                        <Button
+                          className="pl-4 pr-4 pt-2 pb-2"
+                          variant="dark"
+                          type="submit"
+                          onClick={() => {
+                            this.setState({hasPrivateKey: true});
+                          }}
+                        >
+                          Import
+                        </Button>
+                      </Form.Group>
+                    </>
+                  ) : (
+                    <>
+                      <h2>Passphrase</h2>
+                      <Form.Group className="d-flex">
+                        <Form.Control
+                          placeholder="*****************"
+                          value={passphrase}
+                          required
+                          onChange={this.handleChange}
+                          type={inputType}
+                          name="passphrase"
+                          className={error.show ? "is-invalid" : ""}
+                        />
+                        <Form.Control.Feedback
+                          className="invalid-acount"
+                          type="invalid"
+                        >
+                          {error.show ? error.message : ""}
+                        </Form.Control.Feedback>
+                        <img
+                          onClick={this.changeInputType}
+                          src={showPassphraseIconURL}
+                          alt=""
+                        />
+                        <Button
+                          variant="dark"
+                          type="submit"
+                          onClick={this.importApp}
+                        >
+                          Create
+                        </Button>
+                      </Form.Group>
+                    </>
+                  )}
                 </Col>
               </Form.Row>
             </Form>
