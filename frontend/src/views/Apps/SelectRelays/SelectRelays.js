@@ -52,10 +52,7 @@ class SelectRelays extends Component {
     };
 
     const {success, data} = await StripePaymentService.createNewPaymentIntent(
-      ITEM_TYPES.APPLICATION,
-      item,
-      currency,
-      amount
+      ITEM_TYPES.APPLICATION, item, currency, amount
     );
 
     return {success, data};
@@ -73,9 +70,7 @@ class SelectRelays extends Component {
 
     // TODO: Calculate pokt from formula
     const {success, data: paymentIntentData} = await this.createPaymentIntent(
-      total,
-      usd,
-      relays
+      total, usd, relays
     );
 
     if (!success) {
