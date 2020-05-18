@@ -33,7 +33,8 @@ class PaymentHistory extends Component {
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
     const history = await PaymentService.getPaymentHistory(
-      userEmail, PAYMENT_HISTORY_LIMIT);
+      userEmail, PAYMENT_HISTORY_LIMIT
+    );
 
     this.setState({history});
   }
@@ -60,7 +61,8 @@ class PaymentHistory extends Component {
     const offset = (page - 1) * sizePerPage + 1;
 
     const history = await PaymentService.getPaymentHistory(
-      userEmail, PAYMENT_HISTORY_LIMIT, offset);
+      userEmail, PAYMENT_HISTORY_LIMIT, offset
+    );
 
     this.setState({page, history, offset});
   }
@@ -127,15 +129,16 @@ class PaymentHistory extends Component {
     // TODO: Add table date filtering
 
     return (
-      <Row id="payment-history">
-        <Col>
-          <h2>Payment history</h2>
+      <Row id="general" className="payment-history">
+        <Col lg={{span: 10, offset: 1}} className="title-page">
+          <h1>Payment history</h1>
           <div className="filters mt-4">
             <span className="filter">
               <AppDatePicker
                 onChange={(date) => this.handleDateChange(date, "startDate")}
               />
             </span>
+            <p className="label-text">To</p>
             <span className="filter">
               <AppDatePicker
                 onChange={(date) => this.handleDateChange(date, "endDate")}
@@ -145,7 +148,7 @@ class PaymentHistory extends Component {
               <InputGroup className="search-input mb-3">
                 <FormControl
                   placeholder="Search invoice"
-                  name="searchQuery"
+                  name="searchQflex-wrapuery"
                   onChange={this.handleChange}
                   onKeyPress={({key}) => {
                     if (key === "Enter") {

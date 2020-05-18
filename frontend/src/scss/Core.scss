@@ -1,6 +1,7 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "Variables/All";
 
+
 @mixin bordered-layout {
   border: 2px solid $primary-color;
   padding: 10px 30px 7px 30px;
@@ -499,6 +500,19 @@ input[type="radio"] {
     ~ label::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
+  }
+}
+
+#general {
+  box-shadow: $default-box-shadow;
+
+  .body {
+    padding-bottom: 100px;
+  }
+
+  h1 {
+    color: $dark-gray;
+    margin-bottom: 85px;
   }
 }
 

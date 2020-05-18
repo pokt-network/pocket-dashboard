@@ -28,16 +28,21 @@ class AppDatePicker extends Component {
 
     const {onChange, ...props} = this.props;
 
+    const ExampleCustomInput = ({value, onClick}) => (
+      <button className="wrapper" onClick={onClick}>
+        <span>{value}</span>
+        <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
+      </button>
+    );
+
     return (
       <span className="date-picker">
-        <span className="wrapper">
-          <FontAwesomeIcon icon={faCalendarAlt} />
-        </span>
         <DatePicker
           {...props}
           selected={date}
           onChange={(date) => this.handleDateChange(date, onChange)}
           className="form-control"
+          customInput={<ExampleCustomInput />}
         />
       </span>
     );

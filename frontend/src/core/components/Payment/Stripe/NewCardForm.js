@@ -180,7 +180,7 @@ class NewCardForm extends Component {
                     </Col>
                   </Row>
                   <div className="submit float-right mt-2">
-                    <Button variant="dark" size="lg" type="submit">
+                    <Button variant="primary" size="md" type="submit">
                       {actionButtonName}
                     </Button>
                   </div>

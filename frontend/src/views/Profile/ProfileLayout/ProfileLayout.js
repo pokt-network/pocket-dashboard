@@ -13,7 +13,7 @@ class Profile extends Component {
 
     return (
       <div>
-        <Row className="mt-5">
+        <Row className="mt-2">
           <Col lg={4} md={4} sm={4}>
             <ProfileSidebar />
           </Col>

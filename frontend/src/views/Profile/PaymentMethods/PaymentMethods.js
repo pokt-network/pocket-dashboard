@@ -15,6 +15,7 @@ class PaymentMethods extends Component {
 
     this.state = {
       paymentMethods: [],
+      newCard: false,
     };
   }
 
@@ -73,13 +74,13 @@ class PaymentMethods extends Component {
   }
 
   render() {
-    const {paymentMethods: allPaymentMethods} = this.state;
+    const {paymentMethods: allPaymentMethods, newCard} = this.state;
     const paymentMethods = allPaymentMethods.map((method) => {
       return {
         id: method.id,
         cardData: {
           // TODO: Retrieve card type data from backend
-          type: "Visa",
+          type: method.brand,
           digits: `**** **** **** ${method.lastDigits}`,
         },
         holder: method.billingDetails.name,
@@ -87,9 +88,9 @@ class PaymentMethods extends Component {
     });
 
     return (
-      <Row id="payment-methods">
-        <Col>
-          <h1 className="mb-3">Payment methods</h1>
+      <Row id="general" className="payment-methods">
+        <Col lg={{span: 9, offset: 2}} className="body title-page">
+          <h1> Payment methods</h1>
           <div id="cards">
             {paymentMethods.map((card, idx) => {
               const {cardData, holder} = card;
@@ -106,9 +107,20 @@ class PaymentMethods extends Component {
               );
             })}
           </div>
-          <div id="card-form">
-            <NewCardForm formActionHandler={this.saveNewCard} />
-          </div>
+          <br />
+          {!newCard && (
+            <p
+              onClick={() => this.setState({newCard: true})}
+              className="new-card"
+            >
+              Add a new card
+            </p>
+          )}
+          {newCard && (
+            <div id="card-form">
+              <NewCardForm formTitle="" formActionHandler={this.saveNewCard} />
+            </div>
+          )}
         </Col>
       </Row>
     );

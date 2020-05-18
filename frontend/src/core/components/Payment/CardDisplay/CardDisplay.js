@@ -16,7 +16,12 @@ class CardDisplay extends Component {
           <p className="name">{holder}</p>
         </div>
         {onDelete && (
-          <Button variant="link" onClick={() => onDelete(cardData)}>
+          <Button
+            className="font-weight-light"
+            style={{fontSize: "1.1em"}}
+            variant="link"
+            onClick={() => onDelete(cardData)}
+          >
             Delete Card
           </Button>
         )}

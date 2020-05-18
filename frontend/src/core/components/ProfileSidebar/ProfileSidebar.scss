@@ -1,18 +1,35 @@
 @import "../../../scss/Core.scss";
 
 #profile-sidebar {
-  background-color: #c2c2c2;
+  // background-color: #c2c2c2;
 
-  a:hover {
-    background-color: #808080;
+  a {
+    color: $light-gray;
+
+    li {
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
+
+    .icon {
+      filter: grayscale(1) opacity(0.5);
+      width: 7% !important;
+    }
   }
 
   a.active {
-    background-color: #666666;
+    color: $primary-color;
+
+    .icon {
+      filter: grayscale(0);
+    }
   }
 
-  a li {
-    padding-top: 10px;
-    padding-bottom: 10px;
+  hr {
+    opacity: (0.5);
+    margin-left: 30px;
+    width: 250px;
+    ;
   }
+
 }
