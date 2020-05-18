@@ -1,7 +1,7 @@
 import {Component} from "react";
 import NetworkService from "../../services/PocketNetworkService";
 import "./Chains.scss";
-import { addIndex } from "../../../_helpers";
+import {addIndex} from "../../../_helpers";
 
 class Chains extends Component {
   constructor(props, context) {
