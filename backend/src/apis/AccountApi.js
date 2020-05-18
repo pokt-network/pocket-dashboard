@@ -10,9 +10,9 @@ const accountService = new AccountService();
  */
 router.post("/import", async (request, response) => {
   try {
-    /** @type {{accountPrivateKey:string}} */
+    /** @type {{accountPrivateKey:string, passphrase: string}} */
     const data = request.body;
-    const account = await accountService.importDashboardAccountToNetwork(data.accountPrivateKey);
+    const account = await accountService.importDashboardAccountToNetwork(data.accountPrivateKey, data.passphrase);
 
     response.send(account);
   } catch (e) {

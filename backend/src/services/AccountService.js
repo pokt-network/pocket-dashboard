@@ -83,14 +83,14 @@ export default class AccountService extends BaseService {
    * Import account into network.
    *
    * @param {string} accountPrivateKey Account private key.
+   * @param {string} passphrase Passphrase of account.
    *
    * @returns {Promise<PublicPocketAccount>} a pocket account.
    * @throws Error If account is invalid.
    * @async
    */
-  async importDashboardAccountToNetwork(accountPrivateKey) {
-    const passPhrase = "DashboardAccount";
-    const applicationAccount = await this.pocketService.importAccount(accountPrivateKey, passPhrase);
+  async importDashboardAccountToNetwork(accountPrivateKey, passphrase) {
+    const applicationAccount = await this.pocketService.importAccount(accountPrivateKey, passphrase);
 
     if (applicationAccount instanceof Error) {
       throw TypeError("Account is invalid");
