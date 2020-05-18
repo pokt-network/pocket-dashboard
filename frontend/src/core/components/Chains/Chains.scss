@@ -1,35 +1,37 @@
 @import "../../../scss/Core.scss";
 
-#choose-chains {
-  margin-top: 10px;
-  margin-left: 20px;
+.choose-chains {
 
-  h1,
-  h2 {
-    text-transform: uppercase;
-  }
+  .page-title {
+    h2 {
+      font-family: $secondary-font-family;
+      font-size: 22px;
+      font-weight: bold;
+      line-height: 1.73;
+      letter-spacing: -0.6px;
+      color: $secondary-color;
+    }
 
-  h2 {
-    color: $dark-gray;
-  }
-
-  .info {
     p {
-      font-size: 1.2em;
+      font-size: 16px;
       font-weight: 300;
     }
-  }
-
-  .title {
-    display: flex;
-    justify-content: space-between;
 
     button {
-      align-self: center;
+      margin-right: 50px;
     }
   }
 
-  button {
-    font-weight: bold;
+  .app-segment {
+    margin-top: -40px;
+
+    .search-panel {
+      margin-left: -15px;
+      width: 606px;
+    }
+
+    .body {
+      margin-left: -20px;
+    }
   }
 }

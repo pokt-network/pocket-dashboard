@@ -23,12 +23,36 @@
   }
 }
 
-h1 {
-  font-weight: 800;
-  font-size: 30px;
-  line-height: 1.27;
-  letter-spacing: -0.82px;
-  color: #06202e;
+.page-title {
+  padding-left: 0;
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-weight: 800;
+    font-size: 30px;
+    line-height: 1.27;
+    letter-spacing: -0.82px;
+    color: $form-label-font-color;
+  }
+
+  h2 {
+    font-family: $primary-font-family;
+    font-size: 21px;
+    font-weight: 900;
+    color: $form-label-font-color;
+  }
+
+  p {
+    font-family: $primary-font-family;
+    font-size: 14px;
+    color: $secondary-color;
+  }
 }
 
 // Paragraphs, Labels, Links
@@ -59,18 +83,8 @@ body {
 }
 
 form {
-
-  input,
   textarea {
-    border-color: $primary-color;
-  }
-
-  input {
-    border-radius: $default-border-radius !important;
-  }
-
-  textarea {
-    border-radius: 15px !important;
+    resize: none;
   }
 }
 
@@ -117,7 +131,7 @@ form {
 .btn-primary:focus,
 .btn-outline-primary:active,
 .btn-primary:active,
-.show>.btn-primary.dropdown-toggle,
+.show > .btn-primary.dropdown-toggle,
 .btn-primary:not(:disabled):not(.disabled):active {
   background-color: $primary-color-darker;
   border-color: $primary-color-darker;
@@ -140,14 +154,16 @@ input {
 }
 
 .alert {
-  font-family: "Open Sans", sans-serif;
+  font-family: $secondary-font-family;
+  height: 110px;
+  box-shadow: 0 6px 25px -8px rgba(6, 32, 46, 0.1);
+  background-color: #07212f;
   padding-top: 20px;
   padding-bottom: 10px;
-  background-color: $dark-blue;
   border-color: $dark-blue;
   color: white;
   padding-left: 30px;
-  border-radius: 15px;
+  border-radius: 10px;
 
   p {
     font-weight: 700 !important;
@@ -162,7 +178,8 @@ input {
   }
 
   .icon {
-    width: 3%;
+    width: 36px;
+    height: 31px;
     margin-right: 5px;
   }
 }
@@ -173,7 +190,7 @@ input {
   color: $dark-gray;
   border-radius: 25px;
   padding: 10px 30px;
-  font-family: "Lato";
+  font-family: $primary-font-family;
   font-weight: 300;
 }
 
@@ -221,12 +238,15 @@ input {
 
 .form-control {
   border: 1px solid $border-blue;
-  height: calc(1.5em + 1.00rem + 2px);
-  border-radius: 25px;
+  height: 32px;
+  border-radius: 21px;
 }
 
 label.form-label {
+  font-family: $primary-font-family;
+  font-size: 14px;
   font-weight: 300;
+  color: $form-label-font-color;
 }
 
 .badge,
@@ -257,18 +277,31 @@ label.form-label {
 }
 
 
-button,
-button.btn {
-  min-width: unset;
-  padding: 7px 30px;
+button {
+  height: 32px;
+  width: 105px;
+
+  span {
+    position: relative;
+    top: -5px;
+
+    font-family: $primary-font-family;
+    font-size: 12px;
+  }
 }
 
 .app-table {
+
+  input {
+    margin-left: -32px;
+  }
+
   thead {
     text-transform: uppercase;
     color: black;
 
     th {
+      margin-top: -10px;
       border-top-color: transparent;
       border-bottom: $border-bottom;
       font-family: $table-header-font-family;
@@ -296,6 +329,17 @@ button.btn {
   }
 }
 
+.app-table-empty {
+  thead {
+    text-transform: uppercase;
+    color: black;
+
+    th {
+      border-bottom: none;
+    }
+  }
+}
+
 .main-list {
   a:hover {
     text-decoration: none;
@@ -303,14 +347,11 @@ button.btn {
 }
 
 // Spinner Loader
-.css-1skdk9r {
-  display: block;
-  margin: 0 auto;
+.pocket-loader {
+  margin-top: 25%;
+  margin-left: 45%;
 }
 
-.page-name {
-  padding-left: 0;
-}
 
 .order-by {
   display: flex;
@@ -365,51 +406,35 @@ textarea.form-control::placeholder {
 
 .search-input.input-group {
   input {
-    border-right-color: transparent;
+    border-right-style: hidden;
+  }
+
+  input:focus {
+    -webkit-box-shadow: none;
+    box-shadow: none;
   }
 
   button {
     color: $primary-color;
     border-left-color: transparent;
+
+    img {
+      position: relative;
+      top: -4px;
+      width: 25px;
+      height: 16px;
+    }
   }
 
   button:hover {
-    color: #fff;
+    background-color: white;
+
+    img {
+      color: white;
+    }
   }
 }
 
-.title-page {
-
-  h1,
-  h2,
-  h3,
-  h4 {
-    text-transform: uppercase;
-  }
-
-  h1,
-  h2 {
-    font-weight: 800;
-
-  }
-
-  h3,
-  h4 {
-    font-weight: 700;
-  }
-
-  h2,
-  h3,
-  h4 {
-    color: $dark-gray;
-  }
-
-  p {
-    font-size: 1.3em;
-    font-weight: 300;
-    line-height: 1.2;
-  }
-}
 
 .divider {
   display: flex;
@@ -523,7 +548,7 @@ input[type="radio"] {
   background-color: white;
 
   .dropdown-item {
-    font-family: $default-font-family;
+    font-family: $primary-font-family;
     font-size: 12px;
     font-weight: 300;
     color: #282828;

@@ -5,8 +5,7 @@ import {TABLE_COLUMNS} from "../../../_constants";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSearch} from "@fortawesome/free-solid-svg-icons";
+import Segment from "../../../core/components/Segment/Segment";
 
 class ApplicationChainList extends Chains {
   constructor(props, context) {
@@ -39,70 +38,68 @@ class ApplicationChainList extends Chains {
     };
 
     return (
-      <div id="choose-chains">
+      <div className="choose-chains">
         <Row>
-          <Col className="title">
-            <div className="info">
-              <h1>Choose chains</h1>
-              <p>
-                Choose the chains you want to connect your app or node to.
-                Remember you won&#39;t be able to change these chains until your
-                next stake which will be evenly divided on the selected number
-                of chains.
-              </p>
-            </div>
+          <Col className="page-title">
+            <h1>Choose chains</h1>
+            <p>
+              Choose the chains you want to connect your app or node to.
+              Remember you won&#39;t be able to change these chains until your
+              next stake which will be evenly divided on the selected number
+              of chains.
+            </p>
           </Col>
         </Row>
         <Row>
-          <Col>
+          <Col className="page-title">
             <div className="mb-4 d-flex justify-content-between">
               <h2>Supported blockchains</h2>
               <Button
                 onClick={this.handleChains}
                 variant="primary"
                 size={"md"}
-                className="pl-4 pr-4"
-              >
-                Continue
+                className="pl-4 pr-4">
+                <span>Continue</span>
               </Button>
             </div>
           </Col>
         </Row>
         <Row>
-          <Col lg="5" md="5" sm="5">
-            <InputGroup className="search-input ml-5 mb-3">
-              <FormControl
-                placeholder="Search a chain"
-                name="searchChainQuery"
-                onChange={this.handleChange}
-                onKeyPress={({key}) => {
-                  if (key === "Enter") {
-                    this.handleChainSearch();
-                  }
-                }}
-              />
-              <InputGroup.Append>
-                <Button
-                  type="submit"
-                  onClick={this.handleChainSearch}
-                  variant="outline-primary"
-                >
-                  <FontAwesomeIcon icon={faSearch}/>
-                </Button>
-              </InputGroup.Append>
-            </InputGroup>
-          </Col>
-        </Row>
-        <Row>
           <Col>
-            <BootstrapTable
-              classes="table app-table"
-              keyField="hash"
-              data={chains}
-              columns={TABLE_COLUMNS.NETWORK_CHAINS}
-              selectRow={tableSelectOptions}
-              bordered={false}
-            />
+            <Segment>
+              <Row className="search-panel">
+                <Col>
+                  <InputGroup className="search-input ml-5 mb-3">
+                    <FormControl
+                      placeholder="Search a chain"
+                      name="searchChainQuery"
+                      onChange={this.handleChange}
+                      onKeyPress={({key}) => {
+                        if (key === "Enter") {
+                          this.handleChainSearch();
+                        }
+                      }}
+                    />
+                    <InputGroup.Append>
+                      <Button
+                        type="submit"
+                        onClick={this.handleChainSearch}
+                        variant="outline-primary">
+                        <img src="/assets/search.svg" alt="search-icon"/>
+                      </Button>
+                    </InputGroup.Append>
+                  </InputGroup>
+                </Col>
+              </Row>
+              <BootstrapTable
+                classes="table app-table"
+                keyField="hash"
+                data={chains}
+                columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                selectRow={tableSelectOptions}
+                bordered={false}
+              />
+            </Segment>
           </Col>
         </Row>
       </div>

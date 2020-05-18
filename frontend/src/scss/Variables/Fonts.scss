@@ -1,24 +1,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&family=Open+Sans:wght@300;400;600;700;800&display=swap");
 @import "Colors";
 
-$default-font-family: Lato, san-serif;
-$default-segment-font: "Open Sans";
+$primary-font-family: Lato, san-serif;
+$secondary-font-family: "Open Sans";
 
-$table-header-font-family: "Open Sans";
-$table-data-font-family: $default-font-family;
+$default-segment-font: $secondary-font-family;
+
+$table-header-font-family: $secondary-font-family;
+$table-data-font-family: $primary-font-family;
 
 $title-font: (
   font-family: "Open Sans"
 );
 
 $paragraph-font: (
-  font-family: $default-font-family,
+  font-family: $primary-font-family,
   weight: 400,
   color: $dark-gray
 );
 
 $app-title-font: (
-  font-family: $default-font-family,
+  font-family: $primary-font-family,
   weight: 300,
   size: 16px
 );

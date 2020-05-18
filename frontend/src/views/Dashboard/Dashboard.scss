@@ -10,11 +10,27 @@
     .dropdown.cta {
       button {
         width: 80px;
-        height: 30px;
-        font-family: $default-font-family;
-        font-size: 13px;
-        padding-top: 4px;
+        height: 33px;
+
+        span {
+          position: relative;
+          top: -3px;
+          left: -14px;
+          font-family: $primary-font-family;
+          font-size: 13px;
+
+          svg {
+            color: white;
+            margin-left: 5px;
+            font-size: 8px;
+          }
+        }
       }
+
+      button::after {
+        display: none;
+      }
+
 
       .dropdown-item:hover {
         background-color: transparent;

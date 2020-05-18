@@ -48,14 +48,14 @@ class NodeChainList extends Chains {
     };
 
     return (
-      <div id="choose-chains">
+      <div className="choose-chains">
         <Row>
           <Col className="title">
             <div className="info">
               <h1>Choose chains</h1>
               <p>
                 Pocket can support any blockchain infrastructure that has an
-                HTTP endpoint. These are the <br /> blockchain networks the
+                HTTP endpoint. These are the <br/> blockchain networks the
                 Pocket Core Protocol currently supports in Testnet phase one.
               </p>
             </div>

@@ -60,6 +60,10 @@ export const TABLE_COLUMNS = {
       dataField: "ticker",
       text: "Ticker",
     },
+    {
+      dataField: "index",
+      text: "Index",
+    }
   ],
   APPS: [
     {

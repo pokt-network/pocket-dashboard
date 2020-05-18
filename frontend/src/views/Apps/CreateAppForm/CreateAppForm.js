@@ -119,7 +119,7 @@ class CreateAppForm extends CreateForm {
     return (
       <div id="create-form">
         <Row>
-          <Col sm="12" md="12" lg="12">
+          <Col sm="12" md="12" lg="12" className="page-title">
             {error && (
               <AppAlert
                 variant="danger"
@@ -128,7 +128,7 @@ class CreateAppForm extends CreateForm {
                 onClose={() => this.setState({error: false})}
               />
             )}
-            <h1 className="text-uppercase">App Information</h1>
+            <h1>App Information</h1>
             <p className="info">
               Fill in these quick questions to identity your app on the
               dashboard. Fields marked with * are required to continue.
@@ -136,7 +136,7 @@ class CreateAppForm extends CreateForm {
           </Col>
         </Row>
         <Row className="mt-3">
-          <Col sm="5" md="5" lg="5">
+          <Col sm="5" md="5" lg="5" className="create-form-left-side">
             <Formik
               validationSchema={appFormSchema}
               onSubmit={async (data) => {
@@ -210,7 +210,7 @@ class CreateAppForm extends CreateForm {
                     <Form.Control
                       placeholder="maximum of 150 characters"
                       as="textarea"
-                      rows="6"
+                      rows="4"
                       name="description"
                       value={values.description}
                       onChange={handleChange}
@@ -220,22 +220,18 @@ class CreateAppForm extends CreateForm {
                       {errors.description}
                     </Form.Control.Feedback>
                   </Form.Group>
-                  <div className="submit mt-2 mb-4">
-                    <Button
-                      className="pl-5 pr-5"
-                      disabled={!agreeTerms}
-                      variant="primary"
-                      size="md"
-                      type="submit"
-                    >
-                      Continue
-                    </Button>
-                  </div>
+                  <Button
+                    className="pl-5 pr-5"
+                    disabled={!agreeTerms}
+                    variant="primary"
+                    type="submit">
+                    <span>Continue</span>
+                  </Button>
                 </Form>
               )}
             </Formik>
           </Col>
-          <Col sm="7" md="7" lg="7">
+          <Col sm="7" md="7" lg="7" className="create-form-right-side">
             <div className="ml-5 mt-4">
               <ImageFileUpload
                 handleDrop={(img) => this.handleDrop(img.preview)}
@@ -263,14 +259,15 @@ class CreateAppForm extends CreateForm {
                     distribute POKT to others.
                   </li>
                 </ul>
-
-                <Form.Check
-                  checked={agreeTerms}
-                  onChange={() => this.setState({agreeTerms: !agreeTerms})}
-                  id="terms-checkbox"
-                  type="checkbox"
-                  label="I agree with these terms and conditions."
-                />
+                <div className="legal-info-check">
+                  <Form.Check
+                    checked={agreeTerms}
+                    onChange={() => this.setState({agreeTerms: !agreeTerms})}
+                    id="terms-checkbox"
+                    type="checkbox"
+                    label="I agree to these Pocket's "/>
+                  <a href="#">Terms and conditions.</a>
+                </div>
               </div>
             </div>
           </Col>
