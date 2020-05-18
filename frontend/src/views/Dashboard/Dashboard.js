@@ -8,7 +8,7 @@ import {APPLICATIONS_LIMIT, NODES_LIMIT, STYLING, TABLE_COLUMNS} from "../../_co
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
-import {mapStatusToField} from "../../_helpers";
+import {mapStatusToField, addIndex} from "../../_helpers";
 import NodeService from "../../core/services/PocketNodeService";
 import Segment from "../../core/components/Segment/Segment";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -33,7 +33,8 @@ class Dashboard extends Component {
 
     const userApps = await ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT);
     const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
-    const chains = await NetworkService.getAvailableNetworkChains();
+    const allChains = await NetworkService.getAvailableNetworkChains();
+    const chains = allChains.map(addIndex);
     const alert = UserService.getShowWelcomeMessage();
 
     this.setState({alert, userApps, userNodes, chains, loading: false});

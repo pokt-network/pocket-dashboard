@@ -16,6 +16,7 @@ import {
   formatNetworkData,
   getStakeStatus,
   formatNumbers,
+  addIndex,
 } from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
@@ -62,7 +63,8 @@ class AppDetail extends Component {
       networkData,
     } = await ApplicationService.getApplication(address);
 
-    const chains = await NetworkService.getNetworkChains(networkData.chains);
+    const allChains = await NetworkService.getAvailableNetworkChains();
+    const chains = allChains.map(addIndex);
 
     const {freeTier} = pocketApplication;
 

@@ -1,18 +1,28 @@
 import numeral from "numeral";
-import {BOND_STATUS, DEFAULT_POKT_DENOMINATION_BASE, STAKE_STATUS, VALIDATION_MESSAGES} from "./_constants";
+import {
+  BOND_STATUS,
+  DEFAULT_POKT_DENOMINATION_BASE,
+  STAKE_STATUS,
+  VALIDATION_MESSAGES,
+} from "./_constants";
 import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
-
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
 export const formatNumbers = (num) => numeral(num).format("0,0");
 
-export const formatNetworkData = (pokt, fixed = true, poktDenominationBase = DEFAULT_POKT_DENOMINATION_BASE) => {
+export const formatNetworkData = (
+  pokt,
+  fixed = true,
+  poktDenominationBase = DEFAULT_POKT_DENOMINATION_BASE
+) => {
   const poktNumber = pokt / Math.pow(10, poktDenominationBase);
 
-  return fixed ? formatNumbers(poktNumber) : numeral(poktNumber).format("0,0.0");
+  return fixed
+    ? formatNumbers(poktNumber)
+    : numeral(poktNumber).format("0,0.0");
 };
 
 export const copyToClipboard = (value) => {
@@ -51,6 +61,13 @@ export const mapStatusToField = (app) => {
       ...app.networkData,
       status: getStakeStatus(app.networkData.status),
     },
+  };
+};
+
+export const addIndex = (ch, idx) => {
+  return {
+    ...ch,
+    index: idx,
   };
 };
 
@@ -118,6 +135,6 @@ export const validateYup = async (values, schema) => {
 
 export const scrollToId = (id) => {
   const elmnt = document.getElementById(id);
-  
+
   elmnt.scrollIntoView();
-}
+};
