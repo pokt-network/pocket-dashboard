@@ -115,3 +115,9 @@ export const validateYup = async (values, schema) => {
 
   return yupErrors;
 };
+
+export const scrollToId = (id) => {
+  const elmnt = document.getElementById(id);
+  
+  elmnt.scrollIntoView();
+}

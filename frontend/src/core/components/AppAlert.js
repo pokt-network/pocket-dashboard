@@ -20,7 +20,7 @@ class AppAlert extends Component {
     };
 
     return (
-      <Alert className={className} variant={variant} {...restProps}>
+      <Alert id="alert" className={className} variant={variant} {...restProps}>
         <span className="head">
           {iconPaths[variant] && (
             <img src={iconPaths[variant]} className="icon" alt="" />

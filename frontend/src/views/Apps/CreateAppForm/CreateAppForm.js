@@ -6,7 +6,7 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import PocketUserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {appFormSchema, generateIcon} from "../../../_helpers";
+import {appFormSchema, generateIcon, scrollToId} from "../../../_helpers";
 import {BOND_STATUS_STR} from "../../../_constants";
 import {Formik} from "formik";
 import AppAlert from "../../../core/components/AppAlert";
@@ -93,6 +93,7 @@ class CreateAppForm extends CreateForm {
       this.setState({created: true});
     } else {
       this.setState({error: {show: true, message: data}});
+       scrollToId("alert");
     }
   }
 
@@ -266,7 +267,7 @@ class CreateAppForm extends CreateForm {
                     id="terms-checkbox"
                     type="checkbox"
                     label="I agree to these Pocket's "/>
-                  <a href="#">Terms and conditions.</a>
+                  <a href="/">Terms and conditions.</a>
                 </div>
               </div>
             </div>
