@@ -217,7 +217,7 @@ class AppPassphrase extends Component {
                     <Col>
                       <Button
                         disabled={!validPassphrase}
-                        className="pl-4 pr-4 pt-2 pb-2"
+                        className={`pl-4 pr-4 pt-2 pb-2 ${created ? "download-key-file-button" : null}`}
                         variant="primary"
                         type="submit"
                         onClick={
@@ -226,8 +226,9 @@ class AppPassphrase extends Component {
                             : () => this.downloadKeyFile()
                         }>
                         <span>
-                          {!created ? "Create" :
-                            <span><img src="/assets/" alt="download-key-file"/> Download key file</span>}
+                          {created ? <img src={"/assets/download.svg"} alt="download-key-file"
+                                          className="download-key-file-icon"/> : null}
+                          {created ? "Download key file" : "Create"}
                         </span>
                       </Button>
                     </Col>
