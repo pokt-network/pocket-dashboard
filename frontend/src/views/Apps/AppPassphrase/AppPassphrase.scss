@@ -76,6 +76,23 @@
         margin: 8px 10px 18px 15px;
       }
     }
+
+    button.download-key-file-button {
+      width: 168px;
+
+      span {
+        position: relative;
+        top: -7px;
+        left: -5px;
+
+        img {
+          width: 16px;
+          height: 16px;
+          margin-right: 8px;
+        }
+
+      }
+    }
   }
 
   .app-networks {
