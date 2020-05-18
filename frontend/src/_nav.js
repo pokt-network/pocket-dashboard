@@ -28,22 +28,22 @@ export default {
     {
       name: "Network Status",
       url: "/dashboard",
-      icon: "network_status",
+      icon: "menu/network-status.svg",
     },
     {
       name: "Apps",
       url: "/dashboard/apps",
-      icon: "apps",
+      icon: "menu/apps.svg",
     },
     {
       name: "Nodes",
       url: "/dashboard/nodes",
-      icon: "nodes",
+      icon: "menu/nodes.svg",
     },
     {
       name: "Support",
       url: "/dashboard/Documentation",
-      icon: "support",
+      icon: "menu/support.svg",
     },
   ],
 };

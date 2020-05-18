@@ -1,0 +1,45 @@
+@import "Fonts";
+@import "Others";
+
+$default-layout-padding-left-right: 50px;
+$default-layout-item-padding-left: 50px;
+$default-layout-item-padding-right: 50px;
+
+//Menu
+$menu-item-hover-color: #007293;
+$menu-item-active-color: #093044;
+
+$menu-icon-size: (
+  width: 20px,
+  height: 16px
+);
+
+$menu-item-font: (
+  color: #ffffff,
+  font-family: $default-font-family,
+  weight: 900,
+  size: 14px
+);
+
+// Navbar
+$navbar-padding: 24px $default-layout-item-padding-right 24px $default-layout-item-padding-left;
+$navbar-color: #ffffff;
+$badge-background-color: #06202E;
+$app-name-color: #515151;
+
+$main-logo-size: (
+  width: 100px,
+  height: 41px
+);
+
+$item-size: (
+  width:32px,
+  height:32px
+);
+
+$user-login-font: (
+  color: #282828,
+  font-family: $default-font-family,
+  weight: normal,
+  size: 12px
+);

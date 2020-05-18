@@ -6,6 +6,7 @@ import AppNavbar from "./AppNavbar/AppNavbar";
 import Breadcrumbs from "./BreadCrumb/Breadcrumb";
 import {dashboardRoutes, ROUTE_PATHS} from "../../../_routes";
 import UserService from "../../services/PocketUserService";
+import "./DefaultLayout.scss";
 
 class DefaultLayout extends Component {
   render() {

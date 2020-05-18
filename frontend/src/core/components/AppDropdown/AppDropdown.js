@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Dropdown} from "react-bootstrap";
 import {PropTypes} from "prop-types";
 import "./AppDropdown.scss";
-import LabelToggle from "../LabelToggle/LabelToggle";
+import LabelToggle from "../LabelToggle";
 
 class AppDropdown extends Component {
   constructor(props, context) {

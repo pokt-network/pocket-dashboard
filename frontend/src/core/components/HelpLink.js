@@ -1,22 +1,16 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faQuestionCircle} from "@fortawesome/free-regular-svg-icons";
-import {STYLING} from "../../_constants";
+
 
 export default class HelpLink extends Component {
   render() {
-    const {link, size} = this.props;
+    const {link} = this.props;
 
     return (
-      <div style={{marginTop: "4px"}}>
+      <div className="help-link">
         <Link to={link}>
-          <FontAwesomeIcon
-            size={size}
-            color={STYLING.primaryColor}
-            icon={faQuestionCircle}
-          />
+          <img src="/assets/FAQ.svg" alt="help-link"/>
         </Link>
       </div>
     );
@@ -25,10 +19,8 @@ export default class HelpLink extends Component {
 
 HelpLink.defaultProps = {
   link: "#",
-  size: "3x",
 };
 
 HelpLink.propTypes = {
   link: PropTypes.string,
-  size: PropTypes.string,
 };

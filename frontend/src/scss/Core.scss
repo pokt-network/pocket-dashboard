@@ -1,51 +1,6 @@
 @import "node_modules/bootstrap/scss/bootstrap";
-@import url("https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700;900&family=Open+Sans:wght@300;400;600;700;800&display=swap");
+@import "Variables/All";
 
-
-// Table variables
-$table: (columns: (background-color: theme-color("dark"),
-    color: white,
-  ),
-  data: (odd: "",
-    even: "",
-  ),
-  selected-item: (background-color: rgba(0, 0, 0, 0.075),
-  ),
-);
-
-
-// color variables:
-// Primary colors
-$primary-color: #27a9e0;
-$primary-color-darker: #1e95c8;
-$dark-blue: #06022e;
-
-// Secondary-colors
-$secondary-color: #474747;
-$dark-gray: #474747;
-$light-gray: #afafaf;
-$white-smoke: #f5f5f5;
-$border-blue: #25a9e0;
-
-$error: #ff0000;
-$alert: #ffbf02;
-
-// Font variables
-$title: (font: "Open Sans",
-  type: sans-serif,
-  weight: 700,
-);
-
-$paragraph: (font: "Lato",
-  type: sans-serif,
-  weight: 400,
-  color: $dark-gray);
-
-// utils variables
-$panel-radius: 15px;
-$table-radius: 15px;
-$default-border-radius: 25px;
-$default-box-shadow: 0 6px 25px -8px rgba(6, 32, 46, 0.1);
 
 @mixin bordered-layout {
   border: 2px solid $primary-color;
@@ -53,19 +8,12 @@ $default-box-shadow: 0 6px 25px -8px rgba(6, 32, 46, 0.1);
   border-radius: $default-border-radius;
 }
 
-$gradient: linear-gradient(180deg,
-  rgba(6, 32, 46, 1) -20%,
-  rgba(37, 169, 224, 1) 110%);
 
-@mixin font-style($type) {
-  font-family: map_get($type, font), map_get($type, type);
-  font-weight: map_get($type, weight);
-}
-
+// TODO: Review these values.
 // Headers
 @for $i from 1 through 6 {
   h#{$i} {
-    @include font-style($title);
+    @include font-style($title-font);
   }
 }
 
@@ -76,7 +24,11 @@ $gradient: linear-gradient(180deg,
 }
 
 h1 {
-  color: black;
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1.27;
+  letter-spacing: -0.82px;
+  color: #06202e;
 }
 
 // Paragraphs, Labels, Links
@@ -84,7 +36,7 @@ label,
 p,
 a,
 li {
-  @include font-style($paragraph);
+  @include font-style($paragraph-font);
 }
 
 a {
@@ -97,10 +49,9 @@ body {
 }
 
 .btn {
-  // min-width: 180px;
   font-weight: 400;
   border-radius: $default-border-radius;
-  font-family: "Lato";
+  font-family: "Lato", sans-serif;
 }
 
 .btn.dropdown-toggle-split {
@@ -189,7 +140,7 @@ input {
 }
 
 .alert {
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans-serif;
   padding-top: 20px;
   padding-bottom: 10px;
   background-color: $dark-blue;
@@ -264,7 +215,7 @@ input {
   .alert-heading {
     font-size: 1em;
     font-weight: 300;
-    font-family: "Lato";
+    font-family: "Lato", sans-serif;
   }
 }
 
@@ -291,13 +242,12 @@ label.form-label {
 
 #sidebar,
 #content {
-  min-height: calc(90vh);
+  min-height: calc(90.2vh);
 }
 
 #sidebar {
-  padding-top: 5px;
   background: $gradient;
-  color: color("white");
+  color: color(white);
 
   #title {
     margin-top: 50px;
@@ -306,54 +256,42 @@ label.form-label {
   }
 }
 
-#navbar {
-  padding-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  padding-left: 60px;
-  padding-right: 60px;
-
-  #main-logo {
-    margin-top: 10px;
-    width: 17%;
-    height: 90px;
-  }
-
-  .help {
-    padding-top: 5px;
-  }
-}
 
 button,
 button.btn {
   min-width: unset;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-top: 7px;
-  padding-bottom: 7px;
+  padding: 7px 30px;
 }
 
 .app-table {
   thead {
     text-transform: uppercase;
-    border: 2px solid transparent;
+    color: black;
 
     th {
-      color: $dark-gray;
-      border-color: transparent;
+      border-top-color: transparent;
+      border-bottom: $border-bottom;
+      font-family: $table-header-font-family;
+      color: $table-header-font-color;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: -0.33px;
     }
   }
 
   tbody {
     tr {
-      color: #888888;
-      font-family: "Lato";
+      color: gray;
     }
 
     td {
-      border-top: 1px solid transparent;
-      overflow-wrap: anywhere;
+      border-top-color: transparent;
+      border-bottom: $border-bottom;
+      font-family: $table-data-font-family;
+      font-size: $table-data-font-size;
+      color: $table-data-font-color;
       font-weight: 300;
+      letter-spacing: -0.33px;
     }
   }
 }
@@ -370,11 +308,8 @@ button.btn {
   margin: 0 auto;
 }
 
-.stats {
-  .col {
-    padding-left: 0;
-    padding-right: 0;
-  }
+.page-name {
+  padding-left: 0;
 }
 
 .order-by {
@@ -415,37 +350,10 @@ button.btn {
   }
 }
 
-.sidebar-menu {
-  list-style-type: none;
-  padding-left: 0;
-  width: 100%;
-
-  a {
-    color: #ffffff;
-    display: block;
-    font-size: 1.2em;
-
-    li {
-      display: flex;
-      align-items: center;
-      padding-left: 30px;
-      padding-top: 20px;
-      padding-bottom: 20px;
-
-      .icon {
-        margin-right: 20px;
-      }
-    }
-  }
-
-  a:hover {
-    text-decoration: none;
-  }
-}
 
 input.form-control,
 textarea.form-control {
-  font-family: "Lato";
+  font-family: "Lato", sans-serif;
 }
 
 input.form-control::placeholder,
@@ -453,11 +361,6 @@ textarea.form-control::placeholder {
   color: #474747;
   font-weight: 300;
   font-size: 14px;
-}
-
-#default-layout {
-  max-height: 90vh;
-  overflow-x: auto;
 }
 
 .search-input.input-group {
@@ -548,7 +451,7 @@ textarea.form-control::placeholder {
 
 .text {
   font-weight: 300;
-  font-size: 14;
+  font-size: 14pt;
 }
 
 .form-check-label {
@@ -594,7 +497,7 @@ input[type="radio"] {
       opacity: 1;
     }
 
-    ~label::before {
+    ~ label::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
   }
@@ -613,67 +516,26 @@ input[type="radio"] {
   }
 }
 
+.dropdown-menu.show {
+  margin-top: 1px;
+  border-radius: $cta-panel-radius;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.24);
+  background-color: white;
 
-// input[type="radio"] {
-//   position: absolute;
-//   opacity: 0;
+  .dropdown-item {
+    font-family: $default-font-family;
+    font-size: 12px;
+    font-weight: 300;
+    color: #282828;
 
-//   +.radio-label {
-//     &:before {
-//       content: '';
-//       background: $primary-color;
-//       border-radius: 100%;
-//       border: 1px solid white;
-//       display: inline-block;
-//       width: 1.4em;
-//       height: 1.4em;
-//       position: relative;
-//       top: -0.2em;
-//       margin-right: 1em;
-//       vertical-align: top;
-//       cursor: pointer;
-//       text-align: center;
-//       transition: all 250ms ease;
-//     }
-//   }
-
-//   &:checked {
-//     +.radio-label {
-//       &:before {
-//         background-color: $primary-color;
-//         box-shadow: inset 0 0 0 4px #000;
-//       }
-//     }
-//   }
-
-//   &:focus {
-//     +.radio-label {
-//       &:before {
-//         outline: none;
-//         border-color: $primary-color;
-//       }
-//     }
-//   }
-
-//   &:disabled {
-//     +.radio-label {
-//       &:before {
-//         box-shadow: inset 0 0 0 4px $primary-color;
-//         border-color: white;
-//         background: white;
-//       }
-//     }
-//   }
-
-//   +.radio-label {
-//     &:empty {
-//       &:before {
-//         margin-right: 0;
-//       }
-//     }
-//   }
-// }
-
+    .icon {
+      color: $primary-color;
+      margin-right: 15px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+}
 
 /* Custom scroll bar. Not supports in Firefox and IE */
 

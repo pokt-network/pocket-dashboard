@@ -1,24 +1,63 @@
-@import "../../../../scss/Core.scss";
+@import "../../../../scss/Variables/DefaultLayout";
 
-#app-sidebar {
-  margin-top: 20px;
+
+.sidebar-menu {
+  margin-top: 52px;
+  padding-left: 0;
+  width: 100%;
 
   a {
-    margin-top: 20px;
-    margin-bottom: 20px;
+    padding-left: $default-layout-item-padding-left;
+    display: block;
+
+    li {
+      height: 55px;
+      padding: 20px 0;
+      margin-bottom: 28px;
+      list-style: none;
+
+      display: flex;
+      align-items: center;
+
+      img {
+        width: map_get($menu-icon-size, width);
+        height: map_get($menu-icon-size, height);
+        margin-right: 10px;
+      }
+
+      span {
+        @include font-style($menu-item-font);
+        color: map_get($menu-item-font, color);
+        text-transform: uppercase;
+        letter-spacing: -0.38px;
+      }
+    }
   }
 
-  a>li {
-    margin-left: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
-  }
 
   a:hover {
-    background-color: #007293;
+    background-color: $menu-item-hover-color;
+    text-decoration: none;
   }
 
-  a.active {
-    background-color: #093044;
+  .active {
+    background-color: $menu-item-active-color;
   }
 }
+
+.app-sidebar-footer {
+  position: relative;
+  bottom: -300px;
+
+  div {
+    span.footer-copyright {
+      font-family: $default-font-family;
+      color: white;
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: -0.38px;
+    }
+  }
+}
+
+
