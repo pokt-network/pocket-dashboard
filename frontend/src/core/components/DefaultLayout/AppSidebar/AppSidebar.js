@@ -27,7 +27,7 @@ class AppSidebar extends Component {
         </Row>
         <Row className="app-sidebar-footer">
           <Col>
-            <div className="text-center">
+            <div className="footer text-center">
               <span className="footer-copyright">
                 © {currentYear} Pocket Network Inc
               </span>

@@ -131,7 +131,7 @@ form {
 .btn-primary:focus,
 .btn-outline-primary:active,
 .btn-primary:active,
-.show > .btn-primary.dropdown-toggle,
+.show>.btn-primary.dropdown-toggle,
 .btn-primary:not(:disabled):not(.disabled):active {
   background-color: $primary-color-darker;
   border-color: $primary-color-darker;
@@ -155,15 +155,23 @@ input {
 
 .alert {
   font-family: $secondary-font-family;
-  height: 110px;
   box-shadow: 0 6px 25px -8px rgba(6, 32, 46, 0.1);
   background-color: #07212f;
   padding-top: 20px;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
+  padding-left: 30px;
   border-color: $dark-blue;
   color: white;
-  padding-left: 30px;
   border-radius: 10px;
+
+  button.close {
+    span {
+      left: 20px !important;
+      color: white;
+      font-size: 1.5em;
+      font-weight: 300;
+    }
+  }
 
   p {
     font-weight: 700 !important;
@@ -262,7 +270,7 @@ label.form-label {
 
 #sidebar,
 #content {
-  min-height: calc(90.2vh);
+  min-height: calc(100vh - 80px);
 }
 
 #sidebar {
@@ -522,7 +530,7 @@ input[type="radio"] {
       opacity: 1;
     }
 
-    ~ label::before {
+    ~label::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
   }
