@@ -16,6 +16,7 @@ import {
   formatNetworkData,
   getStakeStatus,
   formatNumbers,
+  tableShow,
 } from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
@@ -35,6 +36,7 @@ class AppDetail extends Component {
       deleted: false,
       message: "",
       purchase: true,
+      hideTable: false,
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -62,9 +64,7 @@ class AppDetail extends Component {
       networkData,
     } = await ApplicationService.getApplication(address);
 
-    const chains = await NetworkService.getAvailableNetworkChains(
-      networkData.chains
-    );
+    const chains = await NetworkService.getNetworkChains(networkData.chains);
 
     const {freeTier} = pocketApplication;
 
@@ -153,7 +153,15 @@ class AppDetail extends Component {
       publicKey = publicPocketAccount.publicKey;
     }
 
-    const {chains, aat, loading, deleteModal, deleted, message} = this.state;
+    const {
+      chains,
+      aat,
+      loading,
+      deleteModal,
+      deleted,
+      message,
+      hideTable,
+    } = this.state;
 
     const generalInfo = [
       {
@@ -254,11 +262,15 @@ class AppDetail extends Component {
           <Col className="title-page mt-2 mb-4">
             <h4 className="ml-2">Networks</h4>
             <BootstrapTable
-              classes="app-table"
+              classes={`app-table scroll ${hideTable ? "hide" : ""}`}
               keyField="hash"
               Purch
               data={chains}
-              columns={TABLE_COLUMNS.NETWORK_CHAINS}
+              columns={
+                chains.length === 0
+                  ? TABLE_COLUMNS.NETWORK_CHAINS
+                  : tableShow(() => this.setState({hideTable: !hideTable}))
+              }
               bordered={false}
             />
           </Col>

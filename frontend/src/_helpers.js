@@ -1,3 +1,4 @@
+import React from "react";
 import numeral from "numeral";
 import {
   BOND_STATUS,
@@ -37,7 +38,9 @@ export const copyToClipboard = (value) => {
 
 export const createAndDownloadJSONFile = (fileName, data) => {
   const element = document.createElement("a");
-  const file = new File([JSON.stringify(data)], fileName, {type: "application/json"});
+  const file = new File([JSON.stringify(data)], fileName, {
+    type: "application/json",
+  });
 
   element.href = URL.createObjectURL(file);
   element.download = `${fileName}.json`;
@@ -130,4 +133,51 @@ export const scrollToId = (id) => {
   const elmnt = document.getElementById(id);
 
   elmnt.scrollIntoView();
+};
+
+export const tableShow = (handleClick) => {
+  function showFormatter(column) {
+    return (
+      <span className="show-icon d-flex justify-content-between">
+        <span>{column.text}</span>{" "}
+        <img
+          onClick={handleClick}
+          className="icon"
+          src="/assets/arrow.svg"
+          alt=""
+        />
+      </span>
+    );
+  }
+
+  return [
+    {
+      dataField: "name",
+      text: "Network",
+    },
+    {
+      dataField: "netID",
+      text: "Network ID",
+      headerStyle: {
+        whiteSpace: "nowrap",
+      },
+    },
+    {
+      dataField: "hash",
+      text: "Hash",
+    },
+    {
+      dataField: "description",
+      text: "Description",
+    },
+    {
+      dataField: "ticker",
+      text: "Ticker",
+    },
+    {
+      dataField: "index",
+      text: "Index",
+      headerFormatter: showFormatter,
+    },
+  ];
 };
