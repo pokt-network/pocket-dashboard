@@ -146,7 +146,7 @@ class TierSelection extends Component {
               If you still have questions please take a look at our{" "}
               <a href="/todo">FAQ.</a>
             </p>
-            <p>Pocket Network</p>
+            <p><b>Pocket Network</b></p>
             <p>
               An AAT o needed to authorize the use of throughput. Providing your
               {/* eslint-disable-next-line react/no-unescaped-entities */}
@@ -162,12 +162,8 @@ class TierSelection extends Component {
             <a href="/todo">Please see our FAQ for additional information.</a>
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              variant="primary"
-              className="pr-4 pl-4"
-              onClick={() => this.setState({customTierModal: false})}
-            >
-              Agree
+            <Button onClick={() => this.setState({customTierModal: false})}>
+              <span>Agree</span>
             </Button>
           </Modal.Footer>
         </Modal>
@@ -176,10 +172,9 @@ class TierSelection extends Component {
           show={freeTierModal}
           onHide={() => this.setState({freeTierModal: false})}
           animation={false}
-          centered
-        >
+          centered>
           <Modal.Header closeButton>
-            <Modal.Title>How the free tier works.</Modal.Title>
+            <Modal.Title>How the free tier works?</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <p>
@@ -201,7 +196,7 @@ class TierSelection extends Component {
               If you still have questions please take a look at our{" "}
               <a href="/todo">FAQ.</a>
             </p>
-            <p>Pocket Network</p>
+            <p><b>Pocket Network</b></p>
             <p>
               In the free tier, Pocket Network Inc stakes on behalf of the user
               and manages the staked POKT and Application Authentication Token
@@ -217,12 +212,8 @@ class TierSelection extends Component {
             <a href="/todo">Please see our FAQ for additional information</a>
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              variant="primary"
-              className="pr-4 pl-4"
-              onClick={() => this.setState({freeTierModal: false})}
-            >
-              Agree
+            <Button onClick={() => this.setState({freeTierModal: false})}>
+              <span>Agree</span>
             </Button>
           </Modal.Footer>
         </Modal>
