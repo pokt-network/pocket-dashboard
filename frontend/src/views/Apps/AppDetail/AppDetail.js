@@ -62,7 +62,7 @@ class AppDetail extends Component {
       networkData,
     } = await ApplicationService.getApplication(address);
 
-    const chains = await NetworkService.getAvailableNetworkChains(
+    const chains = await NetworkService.getNetworkChains(
       networkData.chains
     );
 
