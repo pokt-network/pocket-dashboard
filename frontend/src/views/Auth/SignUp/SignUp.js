@@ -14,6 +14,8 @@ import * as yup from "yup";
 import {VALIDATION_MESSAGES} from "../../../_constants";
 import {faGithub, faGoogle} from "@fortawesome/free-brands-svg-icons";
 import {validateYup} from "../../../_helpers";
+import ReCAPTCHA from "react-google-recaptcha";
+import {Configurations} from "../../../_configuration";
 
 class SignUp extends Component {
   constructor(props, context) {
@@ -22,6 +24,7 @@ class SignUp extends Component {
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.validate = this.validate.bind(this);
+    this.validateCaptcha = this.validateCaptcha.bind(this);
 
     this.schema = yup.object().shape({
       email: yup
@@ -100,6 +103,10 @@ class SignUp extends Component {
 
     data[input.name] = input.value;
     this.setState({data});
+  }
+
+  async validateCaptcha(token) {
+    // TODO: Validate recaptcha on backend.
   }
 
   render() {
@@ -192,7 +199,6 @@ class SignUp extends Component {
                           </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Check
-                          custom
                           checked={agreeTerms}
                           onChange={() =>
                             this.setState({agreeTerms: !agreeTerms})
@@ -207,6 +213,11 @@ class SignUp extends Component {
                           }
                         />
                         <br />
+                        <ReCAPTCHA
+                          sitekey={Configurations.recaptcha.client}
+                          onChange={this.validateCaptcha}
+                        />
+                        ,
                         <Button
                           disabled={!agreeTerms}
                           type="submit"

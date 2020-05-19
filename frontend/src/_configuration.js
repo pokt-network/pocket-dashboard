@@ -8,7 +8,11 @@ export const Configurations = {
   payment: {
     default: {
       client_id: process.env.REACT_APP_PAYMENT_DEFAULT_CLIENT_ID,
-      options: {}
-    }
-  }
+      options: {},
+    },
+  },
+  recaptcha: {
+    client: process.env.REACT_APP_RECAPTCHA_CLIENT_KEY,
+    google_server: process.env.REACT_APP_RECAPTCHA_COMMUNICATION_KEY,
+  },
 };
