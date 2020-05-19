@@ -80,8 +80,8 @@ class NewCardForm extends Component {
       };
 
       this.props.formActionHandler(e, cardData, stripe);
-    } catch (e) {
-      console.log(e.message);
+    } catch (err) {
+      this.props.formActionHandler(e, err, stripe);
     }
   }
 

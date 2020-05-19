@@ -7,7 +7,11 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
-import {createAndDownloadJSONFile, validateYup} from "../../../_helpers";
+import {
+  createAndDownloadJSONFile,
+  validateYup,
+  scrollToId,
+} from "../../../_helpers";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -15,7 +19,6 @@ import {Redirect} from "react-router-dom";
 import Segment from "../../../core/components/Segment/Segment";
 
 class AppPassphrase extends Component {
-
   constructor(props, context) {
     super(props, context);
 
@@ -35,7 +38,8 @@ class AppPassphrase extends Component {
         .required(VALIDATION_MESSAGES.REQUIRED)
         .matches(
           // eslint-disable-next-line no-useless-escape
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{15,})/, "The password does not meet the requirements"),
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{15,})/, "The password does not meet the requirements"
+        ),
     });
 
     this.state = {
@@ -47,11 +51,12 @@ class AppPassphrase extends Component {
       privateKey: "",
       address: "",
       chains: [],
+      error: {show: false, message: ""},
       data: {
         passPhrase: "",
       },
       redirectPath: "",
-      redirectParams: {}
+      redirectParams: {},
     };
   }
 
@@ -88,9 +93,13 @@ class AppPassphrase extends Component {
     const applicationInfo = PocketApplicationService.getApplicationInfo();
     const {passPhrase} = this.state;
 
-    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(DASHBOARD_PATHS.appDetail)}`;
+    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(
+      DASHBOARD_PATHS.appDetail
+    )}`;
 
-    const {success, data} = await ApplicationService.createApplicationAccount(applicationInfo.id, passPhrase, applicationBaseLink);
+    const {success, data} = await ApplicationService.createApplicationAccount(
+      applicationInfo.id, passPhrase, applicationBaseLink
+    );
 
     if (success) {
       const {privateApplicationData} = data;
@@ -107,18 +116,22 @@ class AppPassphrase extends Component {
       this.setState({
         created: true,
         address,
-        privateKey
+        privateKey,
       });
     } else {
-      // TODO: Show proper error message on front-end.
-      console.log(data);
+      this.setState({error: {show: true, message: data.message}});
+      scrollToId("alert");
     }
   }
 
   downloadKeyFile() {
     const {privateKey, address, passPhrase} = this.state;
 
-    createAndDownloadJSONFile("MyPocketApplication", {address, privateKey, passPhrase});
+    createAndDownloadJSONFile("MyPocketApplication", {
+      address,
+      privateKey,
+      passPhrase,
+    });
 
     this.setState({
       fileDownloaded: true,
@@ -137,6 +150,7 @@ class AppPassphrase extends Component {
       address,
       redirectPath,
       redirectParams,
+      error,
     } = this.state;
 
     if (fileDownloaded) {
@@ -161,6 +175,14 @@ class AppPassphrase extends Component {
       <div id="app-passphrase">
         <Row>
           <Col className="page-title">
+            {error.show && (
+              <AppAlert
+                variant="danger"
+                title={error.message}
+                dismissible
+                onClose={() => this.setState({error: {show: false}})}
+              />
+            )}
             <h1>Create App</h1>
           </Col>
         </Row>
@@ -179,15 +201,16 @@ class AppPassphrase extends Component {
               }}
               initialValues={this.state.data}
               values={this.state.data}
-              onChange={(a) => {
-                console.log(a);
-              }}
               validateOnChange={true}
               validateOnBlur={false}
               validate={this.handlePassphrase}
             >
               {({handleSubmit, handleChange, values, errors}) => (
-                <Form noValidate onSubmit={handleSubmit} className="create-passphrase-form">
+                <Form
+                  noValidate
+                  onSubmit={handleSubmit}
+                  className="create-passphrase-form"
+                >
                   <Form.Row>
                     <Col className="show-passphrase">
                       <Form.Group>
@@ -214,17 +237,25 @@ class AppPassphrase extends Component {
                     <Col>
                       <Button
                         disabled={!validPassphrase}
-                        className={`pl-4 pr-4 pt-2 pb-2 ${created ? "download-key-file-button" : null}`}
+                        className={`pl-4 pr-4 pt-2 pb-2 ${
+                          created ? "download-key-file-button" : null
+                        }`}
                         variant="primary"
                         type="submit"
                         onClick={
                           !created
                             ? () => this.createApplicationAccount()
                             : () => this.downloadKeyFile()
-                        }>
+                        }
+                      >
                         <span>
-                          {created ? <img src={"/assets/download.svg"} alt="download-key-file"
-                                          className="download-key-file-icon"/> : null}
+                          {created ? (
+                            <img
+                              src={"/assets/download.svg"}
+                              alt="download-key-file"
+                              className="download-key-file-icon"
+                            />
+                          ) : null}
                           {created ? "Download key file" : "Create"}
                         </span>
                       </Button>
@@ -238,11 +269,11 @@ class AppPassphrase extends Component {
         <Row className="mt-4">
           <Col sm="6" md="6" lg="6">
             <h3>Private key</h3>
-            <Form.Control readOnly value={privateKey}/>
+            <Form.Control readOnly value={privateKey} />
           </Col>
           <Col sm="6" md="6" lg="6">
             <h3>Address</h3>
-            <Form.Control readOnly value={address}/>
+            <Form.Control readOnly value={address} />
           </Col>
         </Row>
         <Row className="mt-5">
@@ -273,15 +304,15 @@ class AppPassphrase extends Component {
             <h1>General information</h1>
           </Col>
         </Row>
-        <br/>
+        <br />
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle}/>
+              <InfoCard title={card.title} subtitle={card.subtitle} />
             </Col>
           ))}
         </Row>
-        <br/>
+        <br />
         <Row className="mb-5 app-networks">
           <Col>
             <Segment label="Networks">
