@@ -62,7 +62,9 @@ class AppDetail extends Component {
       networkData,
     } = await ApplicationService.getApplication(address);
 
-    const chains = await NetworkService.getNetworkChains(networkData.chains);
+    const chains = await NetworkService.getAvailableNetworkChains(
+      networkData.chains
+    );
 
     const {freeTier} = pocketApplication;
 

@@ -7,21 +7,27 @@ export class PocketAccountService extends PocketBaseService {
   }
 
   /**
-   * Import an account into network.
+   * Validate an account into the network.
    *
    * @param {string} accountPrivateKey Account private key.
+   * @param {string} passphrase Account passphrase.
    *
    * @returns {Promise<*>}
    */
-  importAccount(accountPrivateKey) {
+  importAccount(accountPrivateKey, passphrase) {
     const data = {
       accountPrivateKey,
+      passphrase,
     };
 
     return axios
       .post(this._getURL("import"), data)
-      .then((response) => response.data)
-      .catch((err) => err.response.data);
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {success: false, data: err.response.data};
+      });
   }
 }
 

@@ -6,70 +6,91 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import PocketUserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {appFormSchema, generateIcon} from "../../../_helpers";
-import {BOND_STATUS_STR} from "../../../_constants";
+import {appFormSchema, generateIcon, scrollToId} from "../../../_helpers";
 import {Formik} from "formik";
 import AppAlert from "../../../core/components/AppAlert";
+import {STAKE_STATUS} from "../../../_constants";
 
 class CreateAppForm extends CreateForm {
   constructor(props, context) {
     super(props, context);
 
     this.handleCreate = this.handleCreate.bind(this);
-    this.createApplication = this.createApplication.bind(this);
+    this.handleCreateImported = this.handleCreateImported.bind(this);
+
     this.state = {
       ...this.state,
       applicationData: {},
       redirectPath: "",
       redirectParams: {},
       agreeTerms: false,
+      imported: false,
     };
   }
 
-  async createApplication(applicationData) {
+  componentDidMount() {
     let imported;
-    let stakeStatus;
-    let address;
 
-    if (this.props.location.state !== undefined) {
-      stakeStatus = this.props.location.state.stakeStatus;
-      address = this.props.location.state.address;
+    if (this.props.location.state) {
       imported = this.props.location.state.imported;
-    } else {
-      imported = false;
     }
 
-    const {success, data} = await ApplicationService.createApplication(applicationData);
+    if (imported) {
+      this.setState({imported});
 
-    const unstakedApp =
-      !imported ||
-      (imported &&
-        (stakeStatus === BOND_STATUS_STR.unbonded ||
-          stakeStatus === BOND_STATUS_STR.unbonding));
-
-    if (unstakedApp) {
-      this.setState({
-        redirectPath: _getDashboardPath(DASHBOARD_PATHS.appPassphrase),
-      });
-    } else {
-      const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
-
-      const detail = url.replace(":address", address);
-
-      this.setState({
-        redirectPath: detail,
-        redirectParams: {
-          message: "For new purchase first unstake please!",
-          purchase: false,
-        },
-      });
+      // Prevent bugs related to leaving form mid-way and accesing again.
+      ApplicationService.saveAppInfoInCache({imported: false});
     }
-    return {success, data};
+  }
+
+  async handleCreateImported(applicationId) {
+    const {
+      address,
+      privateKey,
+      passphrase,
+    } = ApplicationService.getApplicationInfo();
+    const data = this.state.data;
+
+    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(
+      DASHBOARD_PATHS.appDetail
+    )}`;
+
+    const {
+      success,
+      data: importData,
+    } = await ApplicationService.createApplicationAccount(
+      applicationId, passphrase, applicationBaseLink, privateKey
+    );
+
+    if (success) {
+      const {status} = importData.networkData;
+
+      const unstakedApp =
+        status === STAKE_STATUS.Staked || status === STAKE_STATUS.Unstaking;
+
+      if (unstakedApp) {
+        const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
+
+        const path = url.replace(":address", address);
+
+        this.props.history.push(path);
+      } else {
+        ApplicationService.saveAppInfoInCache({
+          data: data,
+        });
+        this.props.history.replace(
+          _getDashboardPath(DASHBOARD_PATHS.applicationChangeList)
+        );
+      }
+    } else {
+      this.setState({error: {show: true, message: data}});
+      scrollToId("alert");
+    }
   }
 
   async handleCreate() {
     const {name, owner, url, contactEmail, description} = this.state.data;
-    let {icon} = this.state;
+    let {icon, imported} = this.state;
 
     if (!icon) {
       icon = generateIcon();
@@ -77,7 +98,7 @@ class CreateAppForm extends CreateForm {
 
     const user = PocketUserService.getUserInfo().email;
 
-    const {success, data} = await this.createApplication({
+    const {success, data} = await ApplicationService.createApplication({
       name,
       owner,
       url,
@@ -88,11 +109,23 @@ class CreateAppForm extends CreateForm {
     });
 
     if (success) {
-      ApplicationService.saveAppInfoInCache({applicationID: data});
+      if (imported) {
+        this.handleCreateImported(data);
+        return;
+      } else {
+        ApplicationService.saveAppInfoInCache({
+          applicationID: data,
+          data: {name},
+        });
+      }
 
-      this.setState({created: true});
+      this.setState({
+        created: true,
+        redirectPath: _getDashboardPath(DASHBOARD_PATHS.appPassphrase),
+      });
     } else {
       this.setState({error: {show: true, message: data}});
+      scrollToId("alert");
     }
   }
 
@@ -224,7 +257,8 @@ class CreateAppForm extends CreateForm {
                     className="pl-5 pr-5"
                     disabled={!agreeTerms}
                     variant="primary"
-                    type="submit">
+                    type="submit"
+                  >
                     <span>Continue</span>
                   </Button>
                 </Form>
@@ -265,8 +299,9 @@ class CreateAppForm extends CreateForm {
                     onChange={() => this.setState({agreeTerms: !agreeTerms})}
                     id="terms-checkbox"
                     type="checkbox"
-                    label="I agree to these Pocket's "/>
-                  <a href="#">Terms and conditions.</a>
+                    label="I agree to these Pocket's "
+                  />
+                  <a href="/">Terms and conditions.</a>
                 </div>
               </div>
             </div>
