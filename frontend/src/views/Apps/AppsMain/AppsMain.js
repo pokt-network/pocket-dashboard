@@ -12,8 +12,6 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
 import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField,} from "../../../_helpers";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBoxOpen} from "@fortawesome/free-solid-svg-icons";
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
@@ -138,7 +136,7 @@ class AppsMain extends Main {
     const registeredItems = allRegisteredItems.map(mapStatusToField);
 
     const cards = [
-      {title: formatNumbers(total), subtitle: "Total of Spps"},
+      {title: formatNumbers(total), subtitle: "Total of Apps"},
       {
         title: formatNetworkData(averageStaked, false),
         subtitle: "Average Staked",
@@ -188,7 +186,7 @@ class AppsMain extends Main {
         <Row className="mb-4 app-tables">
           <Col sm="6" md="6" lg="6" className="my-apps-segment">
             <Segment label="My Apps">
-              <Row className="search-panel">
+              <Row className={`search-panel ${!hasApps ? "search-panel-without-apps" : null}`}>
                 <Col>
                   <InputGroup className="search-input mb-3">
                     <FormControl
@@ -250,13 +248,9 @@ class AppsMain extends Main {
                       })
                     ) : (
                       <div className="empty-overlay">
-                        <FontAwesomeIcon
-                          className="icon"
-                          size="7x"
-                          icon={faBoxOpen}
-                        />
+                        <img src={"/assets/empty-box.svg"} alt="apps-empty-box"/>
                         <p>
-                          You have not created or <br/> imported any app yet!
+                          You have not created <br/> or imported any app yet
                         </p>
                       </div>
                     )}
@@ -265,7 +259,7 @@ class AppsMain extends Main {
               </InfiniteScroll>
             </Segment>
           </Col>
-          <Col sm="6" md="6" lg="6">
+          <Col sm="6" md="6" lg="6" className={`${registeredItems.length === 0 ? "segment-table-empty" : null}`}>
             <Segment label="REGISTERED APPS">
               <InfiniteScroll
                 pageStart={0}
@@ -275,13 +269,12 @@ class AppsMain extends Main {
                 loader={loader}
               >
                 <BootstrapTable
-                  classes="app-table"
+                  classes={`app-table ${registeredItems.length === 0 ? "app-table-empty" : null}`}
                   keyField="pocketApplication.publicPocketAccount.address"
                   data={registeredItems}
                   columns={TABLE_COLUMNS.APPS}
                   bordered={false}
                   loading={allItemsTableLoading}
-                  noDataIndication={"No apps found"}
                   overlay={overlayFactory({
                     spinner: true,
                     styles: {

@@ -160,7 +160,7 @@ class Dashboard extends Component {
         <div className="network-status-tables">
           <Row>
             <Col lg="6" md="6" sm="6"
-                 className={`network-status-table ${userNodes.length === 0 ? "segment-empty" : null}`}>
+                 className={`network-status-table ${userNodes.length === 0 ? "segment-table-empty" : null}`}>
               <Segment label="Registered Nodes">
                 <BootstrapTable
                   classes={`app-table ${userNodes.length === 0 ? "app-table-empty" : null}`}
@@ -172,7 +172,7 @@ class Dashboard extends Component {
               </Segment>
             </Col>
             <Col lg="6" md="6" sm="6"
-                 className={`network-status-table ${userApps.length === 0 ? "segment-empty" : null}`}>
+                 className={`network-status-table ${userApps.length === 0 ? "segment-table-empty" : null}`}>
               <Segment label="Registered Apps">
                 <BootstrapTable
                   classes={`app-table ${userApps.length === 0 ? "app-table-empty" : null}`}
@@ -186,7 +186,7 @@ class Dashboard extends Component {
           </Row>
           <Row className="mt-5 mb-4">
             <Col lg="12" md="12" sm="12"
-                 className={`network-status-table ${chains.length === 0 ? "segment-empty" : null}`}>
+                 className={`network-status-table ${chains.length === 0 ? "segment-table-empty" : null}`}>
               <Segment label="Supported Blockchains">
                 <BootstrapTable
                   classes={`app-table ${chains.length === 0 ? "app-table-empty" : null}`}
@@ -198,7 +198,7 @@ class Dashboard extends Component {
               </Segment>
             </Col>
             <Col lg="12" md="12" sm="12"
-                 className={`network-status-table ${chains.length === 0 ? "segment-empty" : null}`}>
+                 className={`network-status-table ${chains.length === 0 ? "segment-table-empty" : null}`}>
               <Segment label="Most popular chains">
                 <BootstrapTable
                   classes={`app-table ${chains.length === 0 ? "app-table-empty" : null}`}
