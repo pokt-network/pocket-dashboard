@@ -45,9 +45,12 @@ class SelectRelays extends Component {
   }
 
   async createPaymentIntent(amount, currency, pokt) {
+    const {address} = ApplicationService.getApplicationInfo();
+    const {pocketApplication} = await ApplicationService.getApplication(address);
+
     const item = {
       account: UserService.getUserInfo().email,
-      name: ApplicationService.getApplicationInfo().data.name,
+      name: pocketApplication.name,
       pokt,
     };
 
