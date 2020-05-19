@@ -7,23 +7,11 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {
-  APPLICATIONS_LIMIT,
-  TABLE_COLUMNS,
-  BOND_STATUS_STR,
-  STYLING,
-} from "../../../_constants";
+import {APPLICATIONS_LIMIT, BOND_STATUS_STR, STYLING, TABLE_COLUMNS,} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {
-  formatNetworkData,
-  formatNumbers,
-  getStakeStatus,
-  mapStatusToField,
-} from "../../../_helpers";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faBoxOpen, faSearch} from "@fortawesome/free-solid-svg-icons";
+import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField,} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
@@ -45,33 +33,33 @@ class AppsMain extends Main {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
 
-    const userItems = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
-    );
+    ApplicationService
+      .getAllUserApplications(userEmail, APPLICATIONS_LIMIT)
+      .then(userItems => {
 
-    const {
-      totalApplications,
-      averageRelays,
-      averageStaked,
-    } = await ApplicationService.getStakedApplicationSummary();
+        ApplicationService
+          .getStakedApplicationSummary()
+          .then(({totalApplications, averageRelays, averageStaked}) => {
+            ApplicationService
+              .getAllApplications(APPLICATIONS_LIMIT)
+              .then(registeredItems => {
+                this.setState({
+                  userItems,
+                  filteredItems: userItems,
+                  total: totalApplications,
+                  averageRelays,
+                  averageStaked,
+                  registeredItems,
+                  loading: false,
+                  hasApps: userItems.length > 0,
+                });
+              });
+          });
+      });
 
-    const registeredItems = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT
-    );
-
-    this.setState({
-      userItems,
-      filteredItems: userItems,
-      total: totalApplications,
-      averageRelays,
-      averageStaked,
-      registeredItems,
-      loading: false,
-      hasApps: userItems.length > 0,
-    });
   }
 
   async handleAllItemsFilter(option) {
@@ -119,14 +107,13 @@ class AppsMain extends Main {
   async loadMoreRegisteredApps(offset) {
     const {registeredItems} = this.state;
 
-    const newRgisteredItems = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1
-    );
+    const newRegisteredItems = await ApplicationService
+      .getAllApplications(APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1);
 
-    const allRegisteredItems = [...registeredItems, ...newRgisteredItems];
+    const allRegisteredItems = [...registeredItems, ...newRegisteredItems];
 
     this.setState({
-      hasMoreRegisteredItems: newRgisteredItems.length !== 0,
+      hasMoreRegisteredItems: newRegisteredItems.length !== 0,
       registeredItems: allRegisteredItems,
     });
   }
@@ -149,14 +136,14 @@ class AppsMain extends Main {
     const registeredItems = allRegisteredItems.map(mapStatusToField);
 
     const cards = [
-      {title: formatNumbers(total), subtitle: "Total of apps"},
+      {title: formatNumbers(total), subtitle: "Total of Apps"},
       {
         title: formatNetworkData(averageStaked, false),
-        subtitle: "Average staked",
+        subtitle: "Average Staked",
       },
       {
         title: formatNetworkData(averageRelays, false),
-        subtitle: "Average relays per application",
+        subtitle: "Average Relays Per Application",
       },
     ];
 
@@ -171,64 +158,64 @@ class AppsMain extends Main {
     );
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     return (
-      <div>
+      <div className="app-main">
         <Row>
-          <Col sm="8" md="8" lg="8">
+          <Col sm="8" md="8" lg="8" className="page-title">
             <h1 className="ml-1">General Apps Information</h1>
           </Col>
-          <Col sm="4" md="4" lg="4" className="d-flex justify-content-end">
+          <Col sm="4" md="4" lg="4" className="d-flex justify-content-end cta-buttons">
             <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
-              <Button variant="dark" className="ml-4 pl-4 pr-4 mr-3">
-                Create New App
+              <Button className="ml-4 pl-4 pr-4 mr-3 create-app-button">
+                <span>Create New App</span>
               </Button>
             </Link>
             <Link to={_getDashboardPath(DASHBOARD_PATHS.importApp)}>
-              <Button variant="primary" size={"md"} className="pl-4 pr-4">
-                Import app
+              <Button variant="primary" size={"md"} className="pl-4 pr-4 import-app-button">
+                <span>Import App</span>
               </Button>
             </Link>
           </Col>
         </Row>
         <Row className="stats mb-4">
-          <InfoCards cards={cards} />
+          <InfoCards cards={cards}/>
         </Row>
-        <Row className="mb-4">
-          <Col sm="6" md="6" lg="6">
-            <Segment label="MY APPS">
+        <Row className="mb-4 app-tables">
+          <Col sm="6" md="6" lg="6" className="my-apps-segment">
+            <Segment label="My Apps">
+              <Row className={`search-panel ${!hasApps ? "search-panel-without-apps" : null}`}>
+                <Col>
+                  <InputGroup className="search-input mb-3">
+                    <FormControl
+                      placeholder="Search an App"
+                      name="searchQuery"
+                      onChange={this.handleChange}
+                      onKeyPress={({key}) => {
+                        if (key === "Enter") {
+                          this.handleSearch("pocketApplication.name");
+                        }
+                      }}
+                    />
+                    <InputGroup.Append>
+                      <Button
+                        type="submit"
+                        onClick={this.handleChainSearch}
+                        variant="outline-primary">
+                        <img src="/assets/search.svg" alt="search-icon"/>
+                      </Button>
+                    </InputGroup.Append>
+                  </InputGroup>
+                </Col>
+              </Row>
               <InfiniteScroll
                 pageStart={0}
                 loadMore={this.loadMoreUserApps}
                 useWindow={false}
                 hasMore={hasMoreUserItems}
-                loader={loader}
-              >
-                <InputGroup className="search-input mb-3">
-                  <FormControl
-                    placeholder="Search app"
-                    name="searchQuery"
-                    onChange={this.handleChange}
-                    onKeyPress={({key}) => {
-                      if (key === "Enter") {
-                        this.handleSearch("pocketApplication.name");
-                      }
-                    }}
-                  />
-                  <InputGroup.Append>
-                    <Button
-                      type="submit"
-                      onClick={() =>
-                        this.handleSearch("pocketApplication.name")
-                      }
-                      variant="outline-primary"
-                    >
-                      <FontAwesomeIcon icon={faSearch} />
-                    </Button>
-                  </InputGroup.Append>
-                </InputGroup>
+                loader={loader}>
                 <div className="main-list">
                   <LoadingOverlay active={userItemsTableLoading} spinner>
                     {hasApps ? (
@@ -252,7 +239,7 @@ class AppsMain extends Main {
                           >
                             <PocketElementCard
                               title={name}
-                              subtitle={`Staked POKT: ${stakedTokens} POKT`}
+                              subtitle={`Staked POKT: ${formatNetworkData(stakedTokens)} POKT`}
                               status={getStakeStatus(status)}
                               iconURL={icon}
                             />
@@ -261,13 +248,9 @@ class AppsMain extends Main {
                       })
                     ) : (
                       <div className="empty-overlay">
-                        <FontAwesomeIcon
-                          className="icon"
-                          size="7x"
-                          icon={faBoxOpen}
-                        />
+                        <img src={"/assets/empty-box.svg"} alt="apps-empty-box"/>
                         <p>
-                          You have not created or <br /> imported any app yet!
+                          You have not created <br/> or imported any app yet
                         </p>
                       </div>
                     )}
@@ -276,7 +259,7 @@ class AppsMain extends Main {
               </InfiniteScroll>
             </Segment>
           </Col>
-          <Col sm="6" md="6" lg="6">
+          <Col sm="6" md="6" lg="6" className={`${registeredItems.length === 0 ? "segment-table-empty" : null}`}>
             <Segment label="REGISTERED APPS">
               <InfiniteScroll
                 pageStart={0}
@@ -286,13 +269,12 @@ class AppsMain extends Main {
                 loader={loader}
               >
                 <BootstrapTable
-                  classes="app-table"
+                  classes={`app-table ${registeredItems.length === 0 ? "app-table-empty" : null}`}
                   keyField="pocketApplication.publicPocketAccount.address"
                   data={registeredItems}
                   columns={TABLE_COLUMNS.APPS}
                   bordered={false}
                   loading={allItemsTableLoading}
-                  noDataIndication={"No apps found"}
                   overlay={overlayFactory({
                     spinner: true,
                     styles: {

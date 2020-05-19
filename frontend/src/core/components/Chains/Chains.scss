@@ -5,11 +5,11 @@
   .page-title {
     h2 {
       font-family: $secondary-font-family;
+      color: $title-secondary-color;
       font-size: 22px;
       font-weight: bold;
       line-height: 1.73;
       letter-spacing: -0.6px;
-      color: $secondary-color;
     }
 
     p {
@@ -40,6 +40,7 @@
 
     .body {
       margin-left: -20px;
+      max-height: 50vh;
     }
   }
 }

@@ -44,12 +44,14 @@
     flex-direction: row;
 
     * {
-      margin-right: 12px;
+      margin-left: 6px;
+      margin-right: 6px;
     }
   }
 
   .network-status-tables {
     margin-top: 50px;
+    margin-right: -10px;
 
     .network-status-table {
       padding-left: 0;

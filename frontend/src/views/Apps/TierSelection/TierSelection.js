@@ -37,69 +37,60 @@ class TierSelection extends Component {
     const {freeTierModal, customTierModal, agreeTerms} = this.state;
 
     return (
-      <div id="tier-selection" className="mt-4 ml-5">
+      <div className="tier-selection">
         <Row>
-          <Col id="titles">
+          <Col className="page-title">
             <h1>Choose what is more convenient for your app</h1>
-            <p>
+            <p className="info">
               Don&#39;t overpay for the infrastructure your app needs, stake and
-              scale as your userbase grows or you can start connecting to any
+              scale as your user base grows or you can start connecting to any
               blockchain with our free tier.
             </p>
           </Col>
         </Row>
-        <Row>
-          <Col lg={{span: 5, offset: 1}}>
-            <div className="tiers free mr-5">
-              <div>
-                <div className="tier-title m-3 mb-3">
-                  <h2>Free</h2>
-                  <h2 className="subtitle">tier</h2>
-                </div>
-                <ul>
-                  <li>Limited to 1 Million relays per session</li>
-                  <li>Access to AAT, but not ownership</li>
-                  <li>Staked POKT is own by Pocket Network Inc</li>
-                  <li>Unstake balance unavailable</li>
-                </ul>
-                {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-                <Button
-                  onClick={() => this.setState({freeTierModal: true})}
-                  variant="link"
-                  className="cta"
-                >
-                  How it works
-                </Button>
-                <br/>
-                <Form.Check
-                  checked={agreeTerms}
-                  onChange={() => this.setState({agreeTerms: !agreeTerms})}
-                  id="terms-checkbox"
-                  type="checkbox"
-                  label={
-                    <p>
-                      I agree to pocket Dashboard{" "}
-                      <a href="/todo">Terms and Condititon</a>
-                    </p>
-                  }
-                />
-                <Button
-                  onClick={() => this.createFreeTierItem()}
-                  disabled={!agreeTerms}
-                  size="md"
-                  variant="dark"
-                  className="ml-4 mt-3"
-                >
-                  Get Free Tier
-                </Button>
-                <br/>
+        <Row className="tiers">
+          <Col sm="6" md="6" lg="6">
+            <div className="tier">
+              <div className="tier-title">
+                <h2>Free</h2>
+                <h2 className="subtitle">tier</h2>
               </div>
+              <ul>
+                <li>Limited to 1 Million relays per day</li>
+                <li>Access to AAT, but not ownership</li>
+                <li>Stake POKT is managed by Pocket Network Inc.</li>
+                <li>Unstake balance unavailable for transfers</li>
+              </ul>
+              {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
+              <Button
+                onClick={() => this.setState({freeTierModal: true})}
+                variant="link"
+                className="cta">
+                How it works
+              </Button>
+              <br/>
+              <Form.Check
+                checked={agreeTerms}
+                onChange={() => this.setState({agreeTerms: !agreeTerms})}
+                className="terms-checkbox"
+                type="checkbox"
+                label={
+                  <p>
+                    I agree to pocket Dashboard{" "}
+                    <a href="/todo">Terms and Conditions.</a>
+                  </p>
+                }
+              />
+              <Button onClick={() => this.createFreeTierItem()} disabled={!agreeTerms}>
+                <span>Get Free Tier</span>
+              </Button>
+              <br/>
             </div>
           </Col>
-          <Col lg={{span: 5}} className="right-tier">
-            <div className="tiers custom mr-5">
+          <Col sm="6" md="6" lg="6">
+            <div className="tier custom-tier">
               <div>
-                <div className="tier-title m-3 mb-3">
+                <div className="tier-title">
                   <h2>Custom</h2>
                   <h2 className="subtitle">tier</h2>
                 </div>
@@ -134,8 +125,7 @@ class TierSelection extends Component {
           show={customTierModal}
           onHide={() => this.setState({customTierModal: false})}
           animation={false}
-          centered
-        >
+          centered>
           <Modal.Header closeButton>
             <Modal.Title>How the custom tier works?</Modal.Title>
           </Modal.Header>

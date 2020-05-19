@@ -38,14 +38,14 @@
     font-size: 30px;
     line-height: 1.27;
     letter-spacing: -0.82px;
-    color: $form-label-font-color;
+    color: $title-primary-color;
   }
 
   h2 {
     font-family: $primary-font-family;
     font-size: 21px;
     font-weight: 900;
-    color: $form-label-font-color;
+    color: $title-primary-color;
   }
 
   p {
@@ -53,6 +53,16 @@
     font-size: 14px;
     color: $secondary-color;
   }
+
+  .info {
+    font-family: $primary-font-family;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 2.38;
+    letter-spacing: -0.44px;
+    color: $secondary-color;
+  }
+
 }
 
 // Paragraphs, Labels, Links
@@ -344,7 +354,15 @@ button {
 
     th {
       border-bottom: none;
+      border-top-color: transparent;
     }
+  }
+}
+
+.segment-table-empty {
+  .body {
+    height: 60px;
+    overflow-y: hidden;
   }
 }
 
@@ -371,21 +389,25 @@ button {
 }
 
 .empty-overlay {
-  background-color: $light-gray;
-  height: 50vh;
+  height: 35vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   border-radius: 20px;
 
-  .icon {
-    color: gray;
+  img {
+    width: 132px;
+    height: 105px;
   }
 
   p {
-    font-size: 1.2em;
-    font-weight: 300;
+    text-transform: uppercase;
+    font-family: $secondary-font-family;
+    font-size: 18px;
+    font-weight: 800;
+    text-align: center;
+    color: #06202e;
   }
 }
 
@@ -570,6 +592,11 @@ input[type="radio"] {
       height: 16px;
     }
   }
+
+  .dropdown-item:active {
+    background-color: transparent;
+  }
+
 }
 
 /* Custom scroll bar. Not supports in Firefox and IE */
@@ -605,3 +632,13 @@ input[type="radio"] {
 ::-webkit-scrollbar-button {
   display: none;
 }
+
+
+//TODO: Remove when second release.
+.breadcrumb {
+  .active {
+    color: transparent;
+  }
+}
+
+// ------

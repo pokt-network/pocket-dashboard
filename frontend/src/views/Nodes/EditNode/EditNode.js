@@ -1,6 +1,6 @@
 import React from "react";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {Alert, Form, Button, Row, Col} from "react-bootstrap";
+import {Alert, Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import Loader from "../../../core/components/Loader";
 import NodeService from "../../../core/services/PocketNodeService";
@@ -66,7 +66,7 @@ class EditNode extends CreateForm {
     }
 
     return (
-      <div id="create-form">
+      <div className="create-form">
         {success && (
           <Alert
             variant="success"

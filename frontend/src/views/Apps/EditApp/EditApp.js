@@ -1,6 +1,6 @@
 import React from "react";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {Form, Button, Row, Col} from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import Loader from "../../../core/components/Loader";
@@ -66,7 +66,7 @@ class EditApp extends CreateForm {
     }
 
     return (
-      <div id="create-form">
+      <div className="create-form">
         <Row>
           <Col sm="12" md="12" lg="12">
             {success && (

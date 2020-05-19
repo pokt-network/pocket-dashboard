@@ -7,11 +7,7 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
-import {
-  createAndDownloadJSONFile,
-  validateYup,
-  scrollToId,
-} from "../../../_helpers";
+import {createAndDownloadJSONFile, validateYup, scrollToId} from "../../../_helpers";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -19,6 +15,7 @@ import {Redirect} from "react-router-dom";
 import Segment from "../../../core/components/Segment/Segment";
 
 class AppPassphrase extends Component {
+
   constructor(props, context) {
     super(props, context);
 
@@ -56,7 +53,7 @@ class AppPassphrase extends Component {
         passPhrase: "",
       },
       redirectPath: "",
-      redirectParams: {},
+      redirectParams: {}
     };
   }
 
@@ -93,13 +90,10 @@ class AppPassphrase extends Component {
     const applicationInfo = PocketApplicationService.getApplicationInfo();
     const {passPhrase} = this.state;
 
-    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(
-      DASHBOARD_PATHS.appDetail
-    )}`;
+    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(DASHBOARD_PATHS.appDetail)}`;
 
-    const {success, data} = await ApplicationService.createApplicationAccount(
-      applicationInfo.id, passPhrase, applicationBaseLink
-    );
+    const {success, data} = await ApplicationService
+      .createApplicationAccount(applicationInfo.id, passPhrase, applicationBaseLink);
 
     if (success) {
       const {privateApplicationData} = data;
@@ -110,13 +104,13 @@ class AppPassphrase extends Component {
         applicationID: applicationInfo.id,
         passphrase: passPhrase,
         address,
-        privateKey,
+        privateKey
       });
 
       this.setState({
         created: true,
         address,
-        privateKey,
+        privateKey
       });
     } else {
       this.setState({error: {show: true, message: data.message}});
@@ -125,13 +119,10 @@ class AppPassphrase extends Component {
   }
 
   downloadKeyFile() {
-    const {privateKey, address, passPhrase} = this.state;
+    const {privateKey, passPhrase} = this.state;
+    const data = {"private_key": privateKey, "passphrase": passPhrase};
 
-    createAndDownloadJSONFile("MyPocketApplication", {
-      address,
-      privateKey,
-      passPhrase,
-    });
+    createAndDownloadJSONFile("MyPocketApplication", data);
 
     this.setState({
       fileDownloaded: true,
@@ -165,10 +156,10 @@ class AppPassphrase extends Component {
     }
 
     const generalInfo = [
-      {title: "0 POKT", subtitle: "Stake tokens"},
+      {title: "0 POKT", subtitle: "Staked tokens"},
       {title: "0 POKT", subtitle: "Balance"},
       {title: "_ _", subtitle: "Stake status"},
-      {title: "_ _", subtitle: "Max Relays"},
+      {title: "_ _", subtitle: "Max Relay Per Day"},
     ];
 
     return (
@@ -237,25 +228,17 @@ class AppPassphrase extends Component {
                     <Col>
                       <Button
                         disabled={!validPassphrase}
-                        className={`pl-4 pr-4 pt-2 pb-2 ${
-                          created ? "download-key-file-button" : null
-                        }`}
+                        className={`pl-4 pr-4 pt-2 pb-2 ${created ? "download-key-file-button" : null}`}
                         variant="primary"
                         type="submit"
                         onClick={
                           !created
                             ? () => this.createApplicationAccount()
                             : () => this.downloadKeyFile()
-                        }
-                      >
+                        }>
                         <span>
-                          {created ? (
-                            <img
-                              src={"/assets/download.svg"}
-                              alt="download-key-file"
-                              className="download-key-file-icon"
-                            />
-                          ) : null}
+                          {created ? <img src={"/assets/download.svg"} alt="download-key-file"
+                                          className="download-key-file-icon"/> : null}
                           {created ? "Download key file" : "Create"}
                         </span>
                       </Button>
@@ -269,11 +252,11 @@ class AppPassphrase extends Component {
         <Row className="mt-4">
           <Col sm="6" md="6" lg="6">
             <h3>Private key</h3>
-            <Form.Control readOnly value={privateKey} />
+            <Form.Control readOnly value={privateKey}/>
           </Col>
           <Col sm="6" md="6" lg="6">
             <h3>Address</h3>
-            <Form.Control readOnly value={address} />
+            <Form.Control readOnly value={address}/>
           </Col>
         </Row>
         <Row className="mt-5">
@@ -304,15 +287,15 @@ class AppPassphrase extends Component {
             <h1>General information</h1>
           </Col>
         </Row>
-        <br />
+        <br/>
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle} />
+              <InfoCard title={card.title} subtitle={card.subtitle}/>
             </Col>
           ))}
         </Row>
-        <br />
+        <br/>
         <Row className="mb-5 app-networks">
           <Col>
             <Segment label="Networks">
