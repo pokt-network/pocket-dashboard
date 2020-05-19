@@ -2,8 +2,10 @@
 
 #app-passphrase {
 
-  h1 {
-    color: $secondary-color;
+  .page-title {
+    h1 {
+      color: $title-secondary-color;
+    }
   }
 
   h3 {
