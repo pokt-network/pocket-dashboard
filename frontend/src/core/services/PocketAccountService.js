@@ -7,7 +7,7 @@ export class PocketAccountService extends PocketBaseService {
   }
 
   /**
-   * Validatw an account into network.
+   * Validate an account into the network.
    *
    * @param {string} accountPrivateKey Account private key.
    * @param {string} passphrase Account passphrase.

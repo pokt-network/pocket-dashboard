@@ -1,7 +1,6 @@
 import {Component} from "react";
 import NetworkService from "../../services/PocketNetworkService";
 import "./Chains.scss";
-import {addIndex} from "../../../_helpers";
 
 class Chains extends Component {
   constructor(props, context) {
@@ -23,9 +22,7 @@ class Chains extends Component {
   }
 
   async componentDidMount() {
-    const allChains = await NetworkService.getAvailableNetworkChains();
-    const chains = allChains.map(addIndex);
-
+    const chains = await NetworkService.getAvailableNetworkChains();
 
     this.setState({chains, filteredChains: chains});
   }

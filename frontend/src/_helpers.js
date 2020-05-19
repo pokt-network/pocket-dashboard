@@ -64,13 +64,6 @@ export const mapStatusToField = (app) => {
   };
 };
 
-export const addIndex = (ch, idx) => {
-  return {
-    ...ch,
-    index: idx,
-  };
-};
-
 export const generateIcon = () => {
   const currTime = new Date().getTime();
 
