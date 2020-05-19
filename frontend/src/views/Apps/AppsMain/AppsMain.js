@@ -222,9 +222,6 @@ class AppsMain extends Main {
                       filteredItems.map((app, idx) => {
                         const {name, icon} = app.pocketApplication;
                         const {stakedTokens, status} = app.networkData;
-                        const {
-                          address,
-                        } = app.pocketApplication.publicPocketAccount;
 
                         return (
                           <Link
