@@ -90,8 +90,7 @@ class Import extends Component {
     const {privateKey, passphrase} = this.state.data;
 
     const {success, data} = await AccountService.importAccount(
-      privateKey, passphrase
-    );
+      privateKey, passphrase);
 
     if (success) {
       ApplicationService.saveAppInfoInCache({
