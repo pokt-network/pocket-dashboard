@@ -47,6 +47,7 @@ class SignUp extends Component {
       authProviders: [],
       backendErrors: "",
       agreeTerms: false,
+      validCaptcha: false,
       data: {
         username: "",
         email: "",
@@ -106,12 +107,18 @@ class SignUp extends Component {
   }
 
   async validateCaptcha(token) {
-    // TODO: Validate recaptcha on backend.
+    const {success} = await PocketUserService.verifyCaptcha(token);
+
+    if (success) {
+      this.setState({validCaptcha: true});
+    } else {
+      this.setState({validCaptcha: false});
+    }
   }
 
   render() {
     const {login} = ROUTE_PATHS;
-    const {agreeTerms, backendErrors} = this.state;
+    const {agreeTerms, backendErrors, validCaptcha} = this.state;
 
     return (
       <Container fluid id="signup" className={"auth-page"}>
@@ -213,13 +220,15 @@ class SignUp extends Component {
                           }
                         />
                         <br />
-                        <ReCAPTCHA
-                          sitekey={Configurations.recaptcha.client}
-                          onChange={this.validateCaptcha}
-                        />
+                        <div className="d-flex justify-content-center">
+                          <ReCAPTCHA
+                            sitekey={Configurations.recaptcha.client}
+                            onChange={this.validateCaptcha}
+                          />
+                        </div>
                         ,
                         <Button
-                          disabled={!agreeTerms}
+                          disabled={!(agreeTerms && validCaptcha)}
                           type="submit"
                           size="md"
                           variant="primary"

@@ -13,6 +13,5 @@ export const Configurations = {
   },
   recaptcha: {
     client: process.env.REACT_APP_RECAPTCHA_CLIENT_KEY,
-    google_server: process.env.REACT_APP_RECAPTCHA_COMMUNICATION_KEY,
   },
 };
