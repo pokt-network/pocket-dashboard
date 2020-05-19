@@ -76,7 +76,7 @@ class EditApp extends CreateForm {
                 title="Your app changes were successfully saved"
               />
             )}
-            {error && (
+            {error.show && (
               <AppAlert
                 variant="danger"
                 title="There was an error saving your app changes, please try again later."

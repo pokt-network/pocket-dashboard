@@ -7,7 +7,7 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
-import {createAndDownloadJSONFile, validateYup} from "../../../_helpers";
+import {createAndDownloadJSONFile, validateYup, scrollToId} from "../../../_helpers";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -35,7 +35,8 @@ class AppPassphrase extends Component {
         .required(VALIDATION_MESSAGES.REQUIRED)
         .matches(
           // eslint-disable-next-line no-useless-escape
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{15,})/, "The password does not meet the requirements"),
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{15,})/, "The password does not meet the requirements"
+        ),
     });
 
     this.state = {
@@ -47,6 +48,7 @@ class AppPassphrase extends Component {
       privateKey: "",
       address: "",
       chains: [],
+      error: {show: false, message: ""},
       data: {
         passPhrase: "",
       },
@@ -90,7 +92,8 @@ class AppPassphrase extends Component {
 
     const applicationBaseLink = `${window.location.origin}${_getDashboardPath(DASHBOARD_PATHS.appDetail)}`;
 
-    const {success, data} = await ApplicationService.createApplicationAccount(applicationInfo.id, passPhrase, applicationBaseLink);
+    const {success, data} = await ApplicationService
+      .createApplicationAccount(applicationInfo.id, passPhrase, applicationBaseLink);
 
     if (success) {
       const {privateApplicationData} = data;
@@ -110,8 +113,8 @@ class AppPassphrase extends Component {
         privateKey
       });
     } else {
-      // TODO: Show proper error message on front-end.
-      console.log(data);
+      this.setState({error: {show: true, message: data.message}});
+      scrollToId("alert");
     }
   }
 
@@ -138,6 +141,7 @@ class AppPassphrase extends Component {
       address,
       redirectPath,
       redirectParams,
+      error,
     } = this.state;
 
     if (fileDownloaded) {
@@ -162,6 +166,14 @@ class AppPassphrase extends Component {
       <div id="app-passphrase">
         <Row>
           <Col className="page-title">
+            {error.show && (
+              <AppAlert
+                variant="danger"
+                title={error.message}
+                dismissible
+                onClose={() => this.setState({error: {show: false}})}
+              />
+            )}
             <h1>Create App</h1>
           </Col>
         </Row>
@@ -180,15 +192,16 @@ class AppPassphrase extends Component {
               }}
               initialValues={this.state.data}
               values={this.state.data}
-              onChange={(a) => {
-                console.log(a);
-              }}
               validateOnChange={true}
               validateOnBlur={false}
               validate={this.handlePassphrase}
             >
               {({handleSubmit, handleChange, values, errors}) => (
-                <Form noValidate onSubmit={handleSubmit} className="create-passphrase-form">
+                <Form
+                  noValidate
+                  onSubmit={handleSubmit}
+                  className="create-passphrase-form"
+                >
                   <Form.Row>
                     <Col className="show-passphrase">
                       <Form.Group>

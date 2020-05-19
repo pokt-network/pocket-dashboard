@@ -1,93 +1,44 @@
 import React, {Component} from "react";
-import {Link} from "react-router-dom";
+import {Button, Col, Form, Row, Alert} from "react-bootstrap";
 import BootstrapTable from "react-bootstrap-table-next";
-import {
-  Alert,
-  Col,
-  FormControl,
-  InputGroup,
-  Button,
-  Row,
-  Spinner,
-} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {
-  TABLE_COLUMNS,
-  BOND_STATUS,
-  BOND_STATUS_STR,
-} from "../../../_constants";
-import "./ImportApp.scss";
-import ApplicationService from "../../../core/services/PocketApplicationService";
+import {TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import {Redirect, Link} from "react-router-dom";
+import "./ImportApp.scss";
 import AccountService from "../../../core/services/PocketAccountService";
-import NetworkService from "../../../core/services/PocketNetworkService";
+import ApplicationService from "../../../core/services/PocketApplicationService";
 
 class Import extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.importApp = this.importApp.bind(this);
+    this.changeInputType = this.changeInputType.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handleAppImport = this.handleAppImport.bind(this);
+
+    this.iconUrl = {
+      open: "/assets/open_eye.svg",
+      close: "/assets/closed_eye.svg",
+    };
 
     this.state = {
-      loading: false,
-      stakedTokens: 0,
-      poktBalance: 0,
-      stakeStatus: "--",
-      maxRelays: "--",
-      jailed: "--",
+      created: false,
+      error: {show: false, message: ""},
+      hasPrivateKey: false,
+      inputType: "password",
+      validPassphrase: false,
+      showPassphraseIconURL: this.iconUrl.open,
       address: "",
+      uploadedPrivateKey: "",
       chains: [],
-      privateKey: "",
-      imported: false,
       data: {
-        applicationPrivateKey: "",
+        passphrase: "",
+        privateKey: "",
       },
+      redirectPath: "",
+      redirectParams: {},
     };
-  }
-
-  async handleAppImport() {
-    this.setState({loading: true});
-    const {applicationPrivateKey} = this.state.data;
-
-    const {message, address} = await AccountService.importAccount(
-      applicationPrivateKey
-    );
-
-    if (message) {
-      // TODO: display error on frontend
-      console.log(message);
-      this.setState({loading: false, imported: false});
-      return;
-    }
-
-    // If the call now throws an error, it means the application is
-    // unstaked/unbonded, as it has been already validated that the app exists.
-    try {
-      const {
-        chains: allChains,
-        max_relays: maxRelays,
-        status: stakeStatus,
-        staked_tokens: stakedTokens,
-      } = await ApplicationService.getNetworkAppInfo(address);
-
-      const chains = await NetworkService.getNetworkChains(allChains);
-
-      this.setState({chains, address, stakedTokens, maxRelays, stakeStatus});
-    } catch {
-      // Unstaked/Unbonded application
-      this.setState({
-        address,
-        stakeStatus: BOND_STATUS_STR.unbonded,
-        stakedTokens: 0,
-        maxRelays: "--",
-      });
-    }
-    this.setState({
-      privateKey: applicationPrivateKey,
-      loading: false,
-      imported: true,
-    });
   }
 
   handleChange({currentTarget: input}) {
@@ -97,68 +48,228 @@ class Import extends Component {
     this.setState({data});
   }
 
+  changeInputType() {
+    const {inputType} = this.state;
+
+    if (inputType === "text") {
+      this.setState({
+        inputType: "password",
+        showPassphraseIconURL: this.iconUrl.open,
+      });
+    } else {
+      this.setState({
+        inputType: "text",
+        showPassphraseIconURL: this.iconUrl.close,
+      });
+    }
+  }
+
+  readUploadedFile = (e) => {
+    e.preventDefault();
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const {result} = e.target;
+      const {data} = this.state;
+
+      const privateKey = result.trim();
+
+      this.setState({
+        hasPrivateKey: true,
+        uploadedPrivateKey: privateKey,
+        data: {...data, privateKey: privateKey},
+      });
+    };
+    reader.readAsText(e.target.files[0], "utf8");
+  };
+
+  async importApp(e) {
+    e.preventDefault();
+
+    const {privateKey, passphrase} = this.state.data;
+
+    const {success, data} = await AccountService.importAccount(
+      privateKey, passphrase
+    );
+
+    // eslint-disable-next-line react/prop-types
+    this.props.history.push({
+      pathname: _getDashboardPath(DASHBOARD_PATHS.createAppInfo),
+      state: {imported: true},
+    });
+    if (success) {
+      ApplicationService.saveAppInfoInCache({
+        imported: true,
+        privateKey,
+        passphrase,
+        address: data.address,
+      });
+    } else {
+      this.setState({error: {show: true, message: data.message}});
+    }
+  }
+
   render() {
     const {
-      stakedTokens,
-      poktBalance,
-      stakeStatus: status,
-      maxRelays,
+      fileDownloaded,
+      inputType,
+      showPassphraseIconURL,
       address,
-      chains,
-      loading,
-      imported,
-      privateKey,
+      redirectPath,
+      redirectParams,
+      uploadedPrivateKey,
+      hasPrivateKey,
+      error,
     } = this.state;
 
-    const stakeStatus = status === "--" ? "--" : BOND_STATUS[status];
+    const {passphrase, privateKey} = this.state.data;
+
+    if (fileDownloaded) {
+      return (
+        <Redirect
+          to={{
+            pathname: redirectPath,
+            state: redirectParams,
+          }}
+        />
+      );
+    }
 
     const generalInfo = [
-      {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
-      {title: `${poktBalance} POKT`, subtitle: "Balance"},
-      {title: stakeStatus, subtitle: "Stake status"},
-      {title: maxRelays, subtitle: "Max Relays"},
+      {title: "0 POKT", subtitle: "Staked tokens"},
+      {title: "0 POKT", subtitle: "Balance"},
+      {title: "_ _", subtitle: "Stake status"},
+      {title: "_ _", subtitle: "Max Relays per Day"},
     ];
 
     return (
-      <div id="import-app">
+      <div id="app-passphrase" className="import">
         <Row>
-          <Col id="head">
-            <h1>We are ready to import your app</h1>
-            <p className="sub">Please enter your private key</p>
-            <InputGroup className="mb-3 import-input" size="lg">
-              <FormControl
-                name="applicationPrivateKey"
-                onChange={this.handleChange}
-                onKeyPress={({key}) => {
-                  if (key === "Enter") {
-                    this.handleAppImport();
-                  }
-                }}
-              />
-              <InputGroup.Append>
-                <Button
-                  className="pr-5 pl-5"
-                  type="submit"
-                  onClick={this.handleAppImport}
-                  variant="dark"
-                >
-                  {loading ? (
-                    <Spinner
-                      as="span"
-                      animation="border"
-                      size="sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    "Import"
-                  )}
-                </Button>
-              </InputGroup.Append>
-            </InputGroup>
+          <Col className="page-title">
+            <h1>Import App</h1>
           </Col>
         </Row>
-        <h2>General information</h2>
+        <Row>
+          <Col className="page-title">
+            <p>
+              Import to the dashboard a pocket account previously created as an
+              application in the network. If your account is not an app go to{" "}
+              <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
+                Create.
+              </Link>
+            </p>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="page-title">
+            <Form className="create-passphrase-form ">
+              <Form.Row>
+                <Col className="show-passphrase flex-column">
+                  <h2>Key file</h2>
+                  <Form.Group className="d-flex">
+                    <Form.Control
+                      className="mr-3"
+                      readOnly
+                      placeholder="Upload your key file"
+                      value={uploadedPrivateKey}
+                    />
+                    <div className="file">
+                      <label
+                        htmlFor="upload-key"
+                        className="upload-key btn btn-primary"
+                      >
+                        Upload key file
+                      </label>
+                      <input
+                        style={{display: "none"}}
+                        id="upload-key"
+                        type="file"
+                        onChange={(e) => this.readUploadedFile(e)}
+                      />
+                    </div>
+                  </Form.Group>
+                </Col>
+              </Form.Row>
+            </Form>
+          </Col>
+          <Col className="page-title">
+            <Form className="create-passphrase-form ">
+              <Form.Row>
+                <Col className="show-passphrase flex-column">
+                  {!hasPrivateKey ? (
+                    <>
+                      <h2>Private key</h2>
+                      <Form.Group className="d-flex">
+                        <Form.Control
+                          placeholder="*****************"
+                          value={privateKey}
+                          required
+                          onChange={this.handleChange}
+                          type={inputType}
+                          name="privateKey"
+                        />
+                        <img
+                          onClick={this.changeInputType}
+                          src={showPassphraseIconURL}
+                          alt=""
+                        />
+                        <Button
+                          className="pl-4 pr-4 pt-2 pb-2"
+                          variant="dark"
+                          type="submit"
+                          onClick={() => {
+                            this.setState({hasPrivateKey: true});
+                          }}
+                        >
+                          Import
+                        </Button>
+                      </Form.Group>
+                    </>
+                  ) : (
+                    <>
+                      <h2>Passphrase</h2>
+                      <Form.Group className="d-flex">
+                        <Form.Control
+                          placeholder="*****************"
+                          value={passphrase}
+                          required
+                          onChange={this.handleChange}
+                          type={inputType}
+                          name="passphrase"
+                          className={error.show ? "is-invalid" : ""}
+                        />
+                        <Form.Control.Feedback
+                          className="invalid-acount"
+                          type="invalid"
+                        >
+                          {error.show ? error.message : ""}
+                        </Form.Control.Feedback>
+                        <img
+                          onClick={this.changeInputType}
+                          src={showPassphraseIconURL}
+                          alt=""
+                        />
+                        <Button
+                          variant="dark"
+                          type="submit"
+                          onClick={this.importApp}
+                        >
+                          Create
+                        </Button>
+                      </Form.Group>
+                    </>
+                  )}
+                </Col>
+              </Form.Row>
+            </Form>
+          </Col>
+        </Row>
+        <Row>
+          <Col className="mt-4 page-title">
+            <h1>General information</h1>
+          </Col>
+        </Row>
+        <br />
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
@@ -166,44 +277,26 @@ class Import extends Component {
             </Col>
           ))}
         </Row>
-        <Row className="mt-4">
-          <Col>
-            <p className="sub">Address</p>
-            <Alert variant="dark">{address}</Alert>
+        <Row>
+          <Col className="mt-5 title-page">
+            <h3>Address</h3>
+            <Alert variant="light">
+              <span className="address">{address}</span>
+            </Alert>
           </Col>
         </Row>
-        <Row>
-          <Col>
-            <p className="sub mb-3">Networks</p>
+        <Row className="mt-2 app-networks">
+          <Col className="title-page">
+            <h3>Networks</h3>
             <BootstrapTable
-              classes="table app-table table-striped"
+              classes="table app-table app-table-empty table-striped"
               keyField="hash"
-              data={chains}
+              data={[]}
               columns={TABLE_COLUMNS.NETWORK_CHAINS}
               bordered={false}
             />
           </Col>
         </Row>
-        <Link
-          to={{
-            pathname: _getDashboardPath(DASHBOARD_PATHS.createAppInfo),
-            state: {
-              imported: imported,
-              stakeStatus: status,
-              address: address,
-              privateKey: privateKey,
-            },
-          }}
-        >
-          <Button
-            disabled={!imported}
-            variant="secondary"
-            size="lg"
-            className="float-right pl-5 pr-5 mt-3 mb-3"
-          >
-            Continue
-          </Button>
-        </Link>
       </div>
     );
   }
