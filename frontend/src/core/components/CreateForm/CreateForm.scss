@@ -1,20 +1,11 @@
 @import "../../../scss/Variables/Fonts";
 
-#create-form {
+.create-form {
 
   button {
     span {
       left: -22px;
     }
-  }
-
-  .info {
-    font-family: $primary-font-family;
-    font-weight: 300;
-    font-size: 16px;
-    line-height: 2.38;
-    letter-spacing: -0.44px;
-    color: $secondary-color;
   }
 
   .create-form-right-side {

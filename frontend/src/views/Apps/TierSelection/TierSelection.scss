@@ -1,12 +1,11 @@
 @import "../../../scss/Core.scss";
 
 
-.modal-dialog,
-.modal-tier {
+.modal-dialog, .modal-tier {
   max-width: 60% !important;
   width: 60% !important;
   background-color: $dark-blue;
-  padding: 0px 20px 0px 50px;
+  padding: 0 20px 0 50px;
   border-radius: $default-border-radius;
   box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
 
@@ -15,7 +14,7 @@
     font-size: 2em;
     text-transform: uppercase;
     font-weight: 800;
-    font-family: "Open Sans";
+    font-family: $secondary-font-family;
   }
 
   .modal-content {
@@ -45,102 +44,113 @@
 
 }
 
-
-#tier-selection {
-
-  h1,
-  h2 {
-    margin-bottom: 0;
-    text-transform: uppercase;
-    font-weight: 800;
-  }
-
-  #titles {
-    p {
-      font-weight: 300;
-      font-size: 1.3em;
-    }
-  }
+.tier-selection {
+  max-height: 50vh;
 
   .tiers {
-    padding: 20px 20px 50px 30px;
-    border-radius: 20px;
+    margin: 10px 150px 132px 50px;
 
-    box-shadow: $default-box-shadow;
+    .tier {
+      width: 400px;
+      height: 448px;
+      border-radius: 12px;
+      box-shadow: $default-box-shadow;
+      padding-top: 30px;
+      padding-bottom: 30px;
 
-    h2 {
-      font-size: 2.2em;
-    }
+      .tier-title {
+        margin-left: 45px;
 
-    ul {
-      padding-left: 20px;
+        h2 {
+          text-transform: uppercase;
+          font-family: $secondary-font-family;
+          font-size: 30px;
+          font-weight: 800;
+          line-height: 1.83;
+          color: $primary-color;
+        }
 
-      li {
-        list-style-type: none;
-        font-weight: 300;
-        font-size: 1.2em;
-        margin-bottom: 25px;
-        font-family: "Lato";
+        .subtitle {
+          margin-top: -35px;
+          color: #03121a;
+        }
       }
 
+      ul {
+        margin-top: 20px;
+
+        li {
+          list-style-type: none;
+          font-family: $secondary-font-family;
+          color: $secondary-color;
+          font-size: 14px;
+          font-weight: 300;
+          margin-bottom: 20px;
+        }
+
+        li:before {
+          content: '\2014';
+          position: absolute;
+          margin-left: -20px;
+        }
+      }
+
+      .cta {
+        font-family: $primary-font-family;
+        color: $primary-color;
+        font-size: 14px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: -0.38px;
+
+        margin-top: -10px;
+        margin-left: 26px;
+      }
+
+      .terms-checkbox {
+        margin-top: 30px;
+        margin-left: 18px;
+
+        input {
+          width: 16px;
+          height: 16px;
+          position: relative;
+          top: 1px;
+        }
+
+        p, a {
+          font-family: $primary-font-family;
+          font-size: 14px;
+          font-weight: 300;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: normal;
+          letter-spacing: normal;
+          color: $secondary-color;
+        }
+
+        a {
+          color: $primary-color;
+        }
+      }
+
+      button:not(.cta) {
+        margin-top: 30px;
+        background-color: $dark-gray;
+        border-color: $dark-gray;
+        width: 130px;
+        color: white;
+      }
     }
 
-    ul>li:before {
-      content: '\2014';
-      position: absolute;
-      margin-left: -20px;
-    }
+    .custom-tier {
+      background-color: $dark-blue;
 
-    p {
-      font-size: 1.3em;
-      margin-bottom: 25px;
-    }
-
-    p:last-of-type {
-      margin-bottom: 30px;
-    }
-
-    .cta {
-      font-weight: bold;
-      font-size: 1.2em;
-      text-decoration: none;
-      padding-left: 20px;
-    }
-
-    button {
-      margin: auto;
-    }
-
-    .custom-tier-title {
-      margin-bottom: 66px;
-    }
-  }
-
-  .tiers.free {
-    .subtitle {
-      color: #000000;
-    }
-
-    .form-check-label p {
-      font-weight: 300;
-      font-size: 1.1em;
-    }
-
-    .cta {
-      margin-bottom: 30px;
-    }
-  }
-
-  .tiers.custom {
-    background-color: $dark-blue;
-
-    .cta {
-      margin-bottom: 68px
-    }
-
-    .subtitle,
-    li {
-      color: #ffffff;
+      .tier-title > .subtitle, ul > li {
+        color: white;
+      }
     }
   }
 }

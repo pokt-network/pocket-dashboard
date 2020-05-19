@@ -117,9 +117,9 @@ class CreateAppForm extends CreateForm {
     }
 
     return (
-      <div id="create-form">
+      <div className="create-form">
         <Row>
-          <Col sm="12" md="12" lg="12" className="page-title">
+          <Col className="page-title">
             {error.show && (
               <AppAlert
                 variant="danger"

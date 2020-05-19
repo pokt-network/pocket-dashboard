@@ -108,7 +108,7 @@ class CreateNodeForm extends CreateForm {
     }
 
     return (
-      <div id="create-form">
+      <div className="create-form">
         <Row>
           <Col sm="3" md="3" lg="3">
             <h1>Node Information</h1>
