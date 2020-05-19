@@ -230,6 +230,17 @@ class AppsMain extends Main {
                           <Link
                             key={idx}
                             to={() => {
+                              const address = app.networkData.address;
+                              const applicationID = app.pocketApplication.id;
+
+                              if (!address) {
+                                ApplicationService.saveAppInfoInCache({
+                                  applicationID,
+                                });
+                                return _getDashboardPath(
+                                  DASHBOARD_PATHS.appPassphrase
+                                );
+                              }
                               const url = _getDashboardPath(
                                 DASHBOARD_PATHS.appDetail
                               );
