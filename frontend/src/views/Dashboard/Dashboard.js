@@ -160,10 +160,10 @@ class Dashboard extends Component {
         <div className="network-status-tables">
           <Row>
             <Col lg="6" md="6" sm="6"
-                 className={`network-status-table ${userNodes.length === 0 ? "segment-table-empty" : null}`}>
+                 className={`network-status-table ${userNodes.length === 0 ? "segment-table-empty" : ""}`}>
               <Segment label="Registered Nodes">
                 <BootstrapTable
-                  classes={`app-table ${userNodes.length === 0 ? "app-table-empty" : null}`}
+                  classes={`app-table ${userNodes.length === 0 ? "app-table-empty" : ""}`}
                   keyField="pocketNode.publicPocketAccount.address"
                   data={userNodes}
                   columns={TABLE_COLUMNS.NODES}
@@ -172,10 +172,10 @@ class Dashboard extends Component {
               </Segment>
             </Col>
             <Col lg="6" md="6" sm="6"
-                 className={`network-status-table ${userApps.length === 0 ? "segment-table-empty" : null}`}>
+                 className={`network-status-table ${userApps.length === 0 ? "segment-table-empty" : ""}`}>
               <Segment label="Registered Apps">
                 <BootstrapTable
-                  classes={`app-table ${userApps.length === 0 ? "app-table-empty" : null}`}
+                  classes={`app-table ${userApps.length === 0 ? "app-table-empty" : ""}`}
                   keyField="pocketApplication.publicPocketAccount.address"
                   data={userApps}
                   columns={TABLE_COLUMNS.APPS}
@@ -186,10 +186,10 @@ class Dashboard extends Component {
           </Row>
           <Row className="mt-5 mb-4">
             <Col lg="12" md="12" sm="12"
-                 className={`network-status-table ${chains.length === 0 ? "segment-table-empty" : null}`}>
+                 className={`network-status-table ${chains.length === 0 ? "segment-table-empty" : ""}`}>
               <Segment label="Supported Blockchains">
                 <BootstrapTable
-                  classes={`app-table ${chains.length === 0 ? "app-table-empty" : null}`}
+                  classes={`app-table ${chains.length === 0 ? "app-table-empty" : ""}`}
                   keyField="hash"
                   data={chains}
                   columns={TABLE_COLUMNS.NETWORK_CHAINS}
@@ -198,10 +198,10 @@ class Dashboard extends Component {
               </Segment>
             </Col>
             <Col lg="12" md="12" sm="12"
-                 className={`network-status-table ${chains.length === 0 ? "segment-table-empty" : null}`}>
+                 className={`network-status-table ${chains.length === 0 ? "segment-table-empty" : ""}`}>
               <Segment label="Most popular chains">
                 <BootstrapTable
-                  classes={`app-table ${chains.length === 0 ? "app-table-empty" : null}`}
+                  classes={`app-table ${chains.length === 0 ? "app-table-empty" : ""}`}
                   keyField="hash"
                   data={chains}
                   columns={TABLE_COLUMNS.NETWORK_CHAINS}

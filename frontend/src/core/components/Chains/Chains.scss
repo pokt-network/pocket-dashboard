@@ -26,8 +26,8 @@
     margin-top: -40px;
 
     .search-panel {
-      margin-left: -15px;
-      width: 606px;
+      margin-left: -34px;
+      width: 620px;
 
       button {
         width: 30px;
@@ -40,7 +40,23 @@
 
     .body {
       margin-left: -20px;
+      padding-left: 0;
       max-height: 50vh;
+
+      .app-table {
+        margin-top: -15px;
+        margin-left: -20px;
+
+        input[type="checkbox"] {
+          position: relative;
+          left: 45px;
+        }
+
+        .selection-cell-header {
+          position: relative;
+          top: 5px;
+        }
+      }
     }
   }
 }

@@ -2,8 +2,10 @@ import {Component} from "react";
 import _ from "lodash";
 
 class Main extends Component {
+
   constructor(props, context) {
     super(props, context);
+
     this.handleSearch = this.handleSearch.bind(this);
     this.handleChange = this.handleChange.bind(this);
 

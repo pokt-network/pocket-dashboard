@@ -7,11 +7,11 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {APPLICATIONS_LIMIT, BOND_STATUS_STR, STYLING, TABLE_COLUMNS,} from "../../../_constants";
+import {APPLICATIONS_LIMIT, BOND_STATUS_STR, STYLING, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField,} from "../../../_helpers";
+import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
@@ -19,6 +19,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import ClipLoader from "react-spinners/ClipLoader";
 
 class AppsMain extends Main {
+
   constructor(props, context) {
     super(props, context);
 
@@ -204,7 +205,7 @@ class AppsMain extends Main {
                         type="submit"
                         onClick={this.handleChainSearch}
                         variant="outline-primary">
-                        <img src="/assets/search.svg" alt="search-icon"/>
+                        <img src={"/assets/search.svg"} alt="search-icon"/>
                       </Button>
                     </InputGroup.Append>
                   </InputGroup>
@@ -259,7 +260,7 @@ class AppsMain extends Main {
               </InfiniteScroll>
             </Segment>
           </Col>
-          <Col sm="6" md="6" lg="6" className={`${registeredItems.length === 0 ? "segment-table-empty" : null}`}>
+          <Col sm="6" md="6" lg="6" className={`${registeredItems.length === 0 ? "segment-table-empty" : ""}`}>
             <Segment label="REGISTERED APPS">
               <InfiniteScroll
                 pageStart={0}
@@ -269,7 +270,7 @@ class AppsMain extends Main {
                 loader={loader}
               >
                 <BootstrapTable
-                  classes={`app-table ${registeredItems.length === 0 ? "app-table-empty" : null}`}
+                  classes={`app-table ${registeredItems.length === 0 ? "app-table-empty" : ""}`}
                   keyField="pocketApplication.publicPocketAccount.address"
                   data={registeredItems}
                   columns={TABLE_COLUMNS.APPS}

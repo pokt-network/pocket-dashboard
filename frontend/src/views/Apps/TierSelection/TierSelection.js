@@ -68,7 +68,6 @@ class TierSelection extends Component {
                 className="cta">
                 How it works
               </Button>
-              <br/>
               <Form.Check
                 checked={agreeTerms}
                 onChange={() => this.setState({agreeTerms: !agreeTerms})}
@@ -76,15 +75,13 @@ class TierSelection extends Component {
                 type="checkbox"
                 label={
                   <p>
-                    I agree to pocket Dashboard{" "}
-                    <a href="/todo">Terms and Conditions.</a>
+                    I agree to pocket Dashboard{" "} <a href="/todo">Terms and Conditions.</a>
                   </p>
                 }
               />
               <Button onClick={() => this.createFreeTierItem()} disabled={!agreeTerms}>
                 <span>Get Free Tier</span>
               </Button>
-              <br/>
             </div>
           </Col>
           <Col sm="6" md="6" lg="6">
@@ -104,17 +101,14 @@ class TierSelection extends Component {
                 <Button
                   onClick={() => this.setState({customTierModal: true})}
                   variant="link"
-                  className="cta"
-                >
+                  className="cta">
                   How it works
                 </Button>
-                <br/>
                 <Link to={_getDashboardPath(DASHBOARD_PATHS.selectRelays)}>
-                  <Button size="md" variant="primary" className="ml-4 mt-3">
-                    Customize your tier
+                  <Button>
+                    <span>Get Custom Tier</span>
                   </Button>
-                </Link>{" "}
-                <br/>
+                </Link>
               </div>
             </div>
           </Col>

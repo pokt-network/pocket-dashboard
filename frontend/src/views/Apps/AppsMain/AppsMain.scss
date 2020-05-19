@@ -9,7 +9,13 @@
   }
 
   .stats {
+    margin-top: -10px;
     margin-left: -25px;
+
+    .p-badge {
+      height: 100px;
+    }
+
   }
 
   .cta-buttons {
@@ -30,6 +36,7 @@
 
   .app-tables {
     margin-left: -25px;
+    margin-top: -30px;
 
     .search-panel {
       margin-top: 20px;
@@ -46,6 +53,12 @@
 
     .search-panel-without-apps {
       display: none;
+    }
+
+    .app-segment {
+      .head {
+        margin-bottom: -10px;
+      }
     }
 
     .my-apps-segment {

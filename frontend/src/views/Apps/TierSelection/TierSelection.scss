@@ -137,7 +137,8 @@
       }
 
       button:not(.cta) {
-        margin-top: 30px;
+        margin-top: 10px;
+        margin-left: 40px;
         background-color: $dark-gray;
         border-color: $dark-gray;
         width: 130px;
@@ -150,6 +151,14 @@
 
       .tier-title > .subtitle, ul > li {
         color: white;
+      }
+
+      button:not(.cta) {
+        position: relative;
+        left: -132px;
+        top: 82px;
+        background-color: $primary-color;
+        border-color: $primary-color;
       }
     }
   }

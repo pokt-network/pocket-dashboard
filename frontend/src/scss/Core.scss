@@ -310,8 +310,10 @@ button {
 
 .app-table {
 
-  input {
+  input[type="checkbox"] {
     margin-left: -32px;
+    width: 18px;
+    height: 18px;
   }
 
   thead {
@@ -328,6 +330,7 @@ button {
       font-weight: bold;
       letter-spacing: -0.33px;
     }
+
   }
 
   tbody {
@@ -595,6 +598,7 @@ input[type="radio"] {
 
   .dropdown-item:active {
     background-color: transparent;
+    border-color: transparent;
   }
 
 }
