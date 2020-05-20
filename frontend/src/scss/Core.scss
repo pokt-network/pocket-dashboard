@@ -481,7 +481,33 @@ button {
   }
 }
 
-.app-modal {
+.modal-dialog {
+
+  .modal-content {
+    background-color: $dark-blue;
+    border-radius: 10px;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+  }
+
+  .modal-title {
+    text-transform: uppercase;
+    font-family: $secondary-font-family;
+    color: $primary-color;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .close {
+    opacity: 1;
+    color: white;
+
+    span {
+      font-size: 25pt;
+      font-weight: lighter;
+    }
+  }
+
   .modal-header {
     border-bottom: 0;
   }

@@ -1,5 +1,5 @@
 import React from "react";
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import ApplicationService from "../../../core/services/PocketApplicationService";
@@ -302,7 +302,8 @@ class CreateAppForm extends CreateForm {
                     label={
                       <p>
                         {/* eslint-disable-next-line react/no-unescaped-entities */}
-                        I agree to these Pocket's{" "} <a href="/todo">Terms and Conditions.</a>
+                        I agree to these Pocket's{" "} <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>Terms
+                        and Conditions.</Link>
                       </p>
                     }
                   />
