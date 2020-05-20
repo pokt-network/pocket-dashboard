@@ -301,7 +301,6 @@ class AppPassphrase extends Component {
             <Segment label="Networks">
               <AppTable
                 scroll
-                toggler={[].length > 0}
                 keyField="hash"
                 data={[]}
                 columns={TABLE_COLUMNS.NETWORK_CHAINS}

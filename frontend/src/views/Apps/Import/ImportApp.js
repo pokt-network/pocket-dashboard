@@ -290,7 +290,6 @@ class Import extends Component {
             <h3>Networks</h3>
             <AppTable
               scroll
-              toggle={[].length > 0}
               keyField="hash"
               data={[]}
               columns={TABLE_COLUMNS.NETWORK_CHAINS}
