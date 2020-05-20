@@ -627,6 +627,10 @@ input[type="radio"] {
   }
 }
 
+input[type="radio"] {
+  border-radius: 50%;
+}
+
 #general {
   box-shadow: $default-box-shadow;
 

@@ -87,7 +87,8 @@ class ValidateKeys extends Component {
     const {privateKey, passphrase} = this.state.data;
 
     const {success, data} = await AccountService.importAccount(
-      privateKey, passphrase);
+      privateKey, passphrase
+    );
 
     const validated = success && data.address === address;
 
@@ -188,7 +189,7 @@ class ValidateKeys extends Component {
                             this.setState({hasPrivateKey: true});
                           }}
                         >
-                          Import
+                          <span>Import</span>
                         </Button>
                       </Form.Group>
                     </>
@@ -232,7 +233,7 @@ class ValidateKeys extends Component {
                                 }
                           }
                         >
-                          {!validated ? "Validate" : "Continue"}
+                          <span>{!validated ? "Validate" : "Continue"}</span>
                         </Button>
                       </Form.Group>
                     </>
