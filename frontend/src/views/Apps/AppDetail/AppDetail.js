@@ -373,32 +373,28 @@ class AppDetail extends Component {
             </span>
           </Col>
         </Row>
-        <div className="app-detail-modal">
-          <Modal
-            size="sm"
-            className="app-modal"
-            show={deleteModal}
-            onHide={() => this.setState({deleteModal: false})}
-            animation={false}
-            centered>
-            <Modal.Header closeButton>
-              <Modal.Title>Are you sure you want to remove this App?</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              Your application will be removed from the Pocket Dashboard.
-              However, you will be able access it through the command line interface (CLI) or import it
-              back into Pocket Dashboard with the private key assigned to it.
-            </Modal.Body>
-            <Modal.Footer>
-              <Button className="dark-button" onClick={() => this.setState({deleteModal: false})}>
-                <span>Cancel</span>
-              </Button>
-              <Button onClick={this.deleteApplication}>
-                <span>Remove</span>
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
+        <Modal
+          show={deleteModal}
+          onHide={() => this.setState({deleteModal: false})}
+          animation={false}
+          centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Are you sure you want to remove this App?</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Your application will be removed from the Pocket Dashboard.
+            However, you will be able access it through the command line interface (CLI) or import it
+            back into Pocket Dashboard with the private key assigned to it.
+          </Modal.Body>
+          <Modal.Footer>
+            <Button className="dark-button" onClick={() => this.setState({deleteModal: false})}>
+              <span>Cancel</span>
+            </Button>
+            <Button onClick={this.deleteApplication}>
+              <span>Remove</span>
+            </Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }
