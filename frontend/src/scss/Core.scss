@@ -50,7 +50,8 @@
 
   p {
     font-family: $primary-font-family;
-    font-size: 14px;
+    font-size: 18px;
+    font-weight: 300;
     color: $secondary-color;
   }
 
@@ -653,6 +654,10 @@ input[type="radio"] {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
   }
+}
+
+input[type="radio"] {
+  border-radius: 50%;
 }
 
 #general {

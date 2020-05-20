@@ -13,6 +13,7 @@ import PocketUserService from "../../../core/services/PocketUserService";
 import moment from "moment";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
+import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
 import Segment from "../../../core/components/Segment/Segment";
 import "./AppDetail.scss";
 
@@ -32,14 +33,21 @@ class AppDetail extends Component {
       purchase: true,
       hideTable: false,
       exists: true,
+      unstake: false,
+      stake: false,
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
     this.unstakeApplication = this.unstakeApplication.bind(this);
     this.stakeApplication = this.stakeApplication.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   }
 
   async componentDidMount() {
+    this.fetchData();
+  }
+
+  async fetchData() {
     let message;
     let purchase = true;
 
@@ -103,25 +111,35 @@ class AppDetail extends Component {
     }
   }
 
-  async unstakeApplication() {
-    const {address} = this.state.pocketApplication.publicPocketAccount;
+  async unstakeApplication({privateKey, passphrase, address}) {
     const {freeTier} = this.state.pocketApplication;
 
-    if (freeTier) {
-      const success = await ApplicationService.unstakeFreeTierApplication(
-        address
-      );
+    const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
+    const detail = url.replace(":address", address);
+    const link = `${window.location.origin}${detail}`;
 
-      if (success) {
-        // TODO: Show message on frontend about success
-      }
+    const {success, data} = freeTier
+      ? await ApplicationService.unstakeFreeTierApplication(address, link)
+      : await ApplicationService.unstakeApplication(
+          privateKey, passphrase, address, link);
+
+    if (success) {
+    // "Reload page" for updated networkData
+      this.setState({loading: true, unstaking: false});
+      this.fetchData();
     } else {
-      // TODO: Integrate unstake for custom tier apps
+      this.setState({unstaking: false, message: data});
     }
   }
 
-  async stakeApplication() {
-    // TODO: Implement
+  async stakeApplication({privateKey, passphrase, address}) {
+    ApplicationService.removeAppInfoFromCache();
+    ApplicationService.saveAppInfoInCache({address, privateKey, passphrase});
+
+    // eslint-disable-next-line react/prop-types
+    this.props.history.push(
+      _getDashboardPath(DASHBOARD_PATHS.applicationChangeList)
+    );
   }
 
   render() {
@@ -160,12 +178,14 @@ class AppDetail extends Component {
       deleted,
       message,
       exists,
+      unstake,
+      stake,
     } = this.state;
 
     const generalInfo = [
       {
         title: `${formatNetworkData(stakedTokens)} POKT`,
-        subtitle: "Stake tokens",
+        subtitle: "Staked tokens",
       },
       // TODO: Change this value.
       {
@@ -192,8 +212,26 @@ class AppDetail extends Component {
 
     let aatStr = "";
 
+    const renderValidation = (handleFunc) => (
+      <ValidateKeys address={address} handleAfterValidate={handleFunc}>
+        <h1>Confirm private key</h1>
+        <p>
+          Import to the dashboard a pocket account previously created as an app
+          in the network. If your account is not an app go to create.
+        </p>
+      </ValidateKeys>
+    );
+
     if (freeTier) {
       aatStr = PocketApplicationService.parseAAT(aat);
+    }
+
+    if (stake) {
+      return renderValidation(this.stakeApplication);
+    }
+
+    if (unstake) {
+      return renderValidation(this.unstakeApplication);
     }
 
     if (loading) {
@@ -228,13 +266,12 @@ class AppDetail extends Component {
         <Row>
           <Col>
             {message && (
-              <Alert
-                variant="secondary"
+              <AppAlert
+                variant="danger"
+                title={message}
                 onClose={() => this.setState({message: ""})}
                 dismissible
-              >
-                {message}
-              </Alert>
+              ></AppAlert>
             )}
             <div className="head">
               <img src={icon} alt="app-icon"/>
@@ -260,7 +297,11 @@ class AppDetail extends Component {
           <Col sm="1" md="1" lg="1">
             <Button
               className="float-right cta"
-              onClick={isStaked ? this.unstakeApplication : this.stakeApplication}
+              onClick={
+                isStaked
+                  ? this.setState({unstake: true})
+                  : () => this.setState({stake: true})
+              }
               variant="primary">
               <span>{isStaked ? "Unstake" : "Stake"}</span>
             </Button>

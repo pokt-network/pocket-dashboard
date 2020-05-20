@@ -2,6 +2,7 @@ import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
 import SecureLS from "secure-ls";
 import {Configurations} from "../../_configuration";
+import PocketUserService from "./PocketUserService";
 
 export class PocketApplicationService extends PocketBaseService {
   constructor() {
@@ -335,13 +336,48 @@ export class PocketApplicationService extends PocketBaseService {
    * Unstake a free tier application.
    *
    * @param {string} applicationAccountAddress Application account address.
+   * @param {string} appLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeFreeTierApplication(applicationAccountAddress) {
+  unstakeFreeTierApplication(applicationAccountAddress, appLink) {
+    const user = PocketUserService.getUserInfo().email;
+
     return axios
-      .post(this._getURL("freetier/unstake"), {applicationAccountAddress})
-      .then((response) => response.data);
+      .post(this._getURL("freetier/unstake"), {
+        applicationAccountAddress,
+        user,
+        appLink,
+      })
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {success: false, data: err.response};
+      });
+  }
+
+  /**
+   * Unstake a custom tier application.
+   *
+   * @param {string} privatekey Application private Key.
+   * @param {string} passPhrase Application pass phrase.
+   * @param {string} address Application account address.
+   * @param {string} application Link to detail for email.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  unstakeApplication(privateKey, passPhrase, adddress, applicationLink) {
+    const data = {privateKey, passPhrase, adddress, applicationLink};
+
+    return axios
+      .post(this._getURL("unstake"), data)
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {success: false, data: err.response};
+      });
   }
 
   /**
