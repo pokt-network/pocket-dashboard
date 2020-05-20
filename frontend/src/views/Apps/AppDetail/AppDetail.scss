@@ -195,7 +195,7 @@
   }
 
   .free-tier-contact-info {
-    height: 190px;
+    height: 210px;
     border-radius: 4px;
     margin-top: 8px;
     margin-left: -15px;
@@ -211,7 +211,7 @@
 
   }
 
-  .free-tier-contact-info h3, .contact-info h3 {
+  .free-tier-contact-info h3, .contact-info h2 {
     text-transform: uppercase;
     font-family: $secondary-font-family;
     font-size: 18px;
@@ -223,7 +223,7 @@
     color: $secondary-color;
   }
 
-  .free-tier-contact-info span, .contact-info span {
+  .free-tier-contact-info span, .contact-info p {
     font-family: $primary-font-family;
 
     font-size: 18px;
@@ -235,8 +235,26 @@
     color: $secondary-color;
   }
 
+  .contact-info {
+    margin-top: 25px;
+
+    div {
+      margin-left: -8px;
+    }
+
+    div:last-of-type {
+      padding-right: 0;
+    }
+
+    .contact {
+      padding-top: 15px;
+      padding-left: 45px;
+      height: 86px;
+    }
+  }
+
   .action-buttons {
-    margin-top: 5px;
+    margin-top: 30px;
     margin-left: -26px;
     height: 5em;
 
@@ -264,7 +282,83 @@
 
       a, .link {
         color: $primary-color;
+        cursor: pointer;
       }
+    }
+  }
+}
+
+.app-modal {
+  height: 400px !important;
+  margin-top: 15%;
+
+  .modal-dialog {
+    max-width: 678px !important;
+    max-height: 316px !important;
+
+    background-color: $dark-blue;
+    border-radius: 10px;
+
+
+    .modal-content {
+
+      .modal-header {
+        width: 110%;
+      }
+
+      .modal-title {
+        text-transform: uppercase;
+        font-family: $secondary-font-family;
+        color: $primary-color;
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .close {
+        position: relative;
+        top: -30px;
+        right: 0;
+        opacity: 1;
+        color: white;
+
+        span {
+          font-size: 25pt;
+          font-weight: lighter;
+        }
+      }
+
+      .modal-body {
+        width: 570px;
+        height: 100px;
+
+        opacity: 1;
+
+        font-family: $primary-font-family;
+        font-size: 18px;
+        font-weight: 300;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.39;
+        letter-spacing: normal;
+        color: white;
+      }
+    }
+
+    .modal-footer {
+      padding-top: 50px;
+      justify-content: flex-start;
+
+      button {
+        width: 97px;
+        margin-right: 18px;
+      }
+
+      .dark-button {
+        background-color: $dark-blue;
+        border: solid 1px #25a9e0;
+      }
+
     }
   }
 }

@@ -189,8 +189,8 @@ class AppDetail extends Component {
     if (deleted) {
       return (
         <DeletedOverlay
-          text="You application was successfully removed"
-          buttonText="Go to apps list"
+          text={<p>Your application<br/>was successfully removed</p>}
+          buttonText="Go to App List"
           buttonLink={_getDashboardPath(DASHBOARD_PATHS.apps)}
         />
       );
@@ -308,8 +308,8 @@ class AppDetail extends Component {
               <Col key={idx} sm="6" md="6" lg="6">
                 <InfoCard
                   className={"contact"}
-                  title={card.subtitle}
-                  subtitle={card.title}>
+                  title={card.title}
+                  subtitle={card.subtitle}>
                   <span/>
                 </InfoCard>
               </Col>
@@ -347,6 +347,7 @@ class AppDetail extends Component {
           </Col>
         </Row>
         <Modal
+          size="sm"
           className="app-modal"
           show={deleteModal}
           onHide={() => this.setState({deleteModal: false})}
@@ -356,21 +357,16 @@ class AppDetail extends Component {
             <Modal.Title>Are you sure you want to delete this App?</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            This action is irreversible, if you delete it you will never be able
-            to access it again
+            Your application will be removed from the Pocket Dashboard.
+            However, you will be able access it through the command line interface (CLI) or import it
+            back into Pocket Dashboard with the private key assigned to it.
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              variant="light"
-              className="pr-4 pl-4"
-              onClick={this.deleteApplication}>
-              Delete
+            <Button className="dark-button" onClick={() => this.setState({deleteModal: false})}>
+              <span>Cancel</span>
             </Button>
-            <Button
-              variant="dark"
-              className="pr-4 pl-4"
-              onClick={() => this.setState({deleteModal: false})}>
-              Cancel
+            <Button onClick={this.deleteApplication}>
+              <span>Remove</span>
             </Button>
           </Modal.Footer>
         </Modal>
