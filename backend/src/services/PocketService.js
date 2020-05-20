@@ -172,6 +172,7 @@ export default class PocketService {
    * @param {string} uPoktAmount uPokt to transfer.
    *
    * @returns {Promise<RawTxResponse>} Raw Tx Response.
+   * @async
    */
   async transferPoktBetweenAccounts(fromAccountAddressHex, toAccountAddressHex, uPoktAmount) {
     const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
@@ -188,6 +189,25 @@ export default class PocketService {
     }
 
     return transactionResponse;
+  }
+
+  /**
+   * Check if account has sufficient balance.
+   *
+   * @param {Account} account Account to query.
+   * @param {string} amount Amount to check.
+   *
+   * @returns {Promise<boolean>} True if has sufficient balance, otherwise not.
+   * @async
+   */
+  async hasBalance(account, amount) {
+    const balanceQueryResponse = await this.__pocket.rpc().query.getBalance(account.addressHex);
+
+    if (balanceQueryResponse instanceof Error) {
+      throw balanceQueryResponse;
+    }
+
+    return balanceQueryResponse.balance >= parseInt(amount);
   }
 
   /**

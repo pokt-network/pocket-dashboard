@@ -382,7 +382,7 @@ export default class ApplicationService extends BaseService {
   /**
    * Stake a free tier application.
    *
-   * @param {{privateKey: string, passphrase:string, networkChains: string[]}} application Application to stake.
+   * @param {{privateKey: string, passphrase:string}} application Application to stake.
    * @param {string[]} networkChains Network chains to stake application.
    *
    * @returns {Promise<PocketAAT | boolean>} If application was created or not.
@@ -404,10 +404,15 @@ export default class ApplicationService extends BaseService {
     }
 
     const clientApplication = PocketApplication.createPocketApplication(applicationDB);
+    const {account: freeTierAccount, passphrase: freeTierPassphrase} = await this.pocketService.getFreeTierAccount();
+    const {stake_amount: stakeAmount} = Configurations.pocket_network.free_tier;
+
+    if (!await this.pocketService.hasBalance(freeTierAccount, stakeAmount)) {
+      throw Error("Free tier account does not have sufficient balance.");
+    }
+
 
     try {
-      const {account: freeTierAccount, passphrase: freeTierPassphrase} = await this.pocketService.getFreeTierAccount();
-      const {stake_amount: stakeAmount} = Configurations.pocket_network.free_tier;
 
       const transferTransaction = await this.pocketService
         .transferPoktBetweenAccounts(freeTierAccount.addressHex, clientApplication.publicPocketAccount.address, stakeAmount);
@@ -432,13 +437,14 @@ export default class ApplicationService extends BaseService {
   /**
    * Stake an application on network.
    *
-   * @param {{privateKey: string, passPhrase:string, networkChains: string[]}} application Application to stake.
+   * @param {{privateKey: string, passPhrase:string}} application Application to stake.
+   * @param {string[]} networkChains Network chains to stake application.
    * @param {string} uPoktAmount uPokt amount used to stake.
    *
    * @returns {Promise<PocketApplication | boolean>} If was staked return the application, if not return false.
    * @throws Error If private key is not valid or application does not exists on dashboard.
    */
-  async stakeApplication(application, uPoktAmount) {
+  async stakeApplication(application, networkChains, uPoktAmount) {
     const accountService = new AccountService();
 
     const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, application.passPhrase, application.privateKey);
@@ -455,7 +461,7 @@ export default class ApplicationService extends BaseService {
 
     try {
       // Stake application
-      const stakeTransaction = await this.pocketService.stakeApplication(applicationAccount, application.passPhrase, uPoktAmount, application.networkChains);
+      const stakeTransaction = await this.pocketService.stakeApplication(applicationAccount, application.passPhrase, uPoktAmount, networkChains);
 
       if (stakeTransaction.logs && stakeTransaction.logs[0].success) {
         return PocketApplication.createPocketApplication(applicationDB);
