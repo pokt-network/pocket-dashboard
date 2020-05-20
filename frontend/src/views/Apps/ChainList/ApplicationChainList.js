@@ -25,7 +25,7 @@ class ApplicationChainList extends Chains {
   }
 
   render() {
-    const {filteredChains} = this.state;
+    const {filteredChains, chosenChains} = this.state;
     const chains = filteredChains;
 
     // Bootstrap Table selectionParams
@@ -54,6 +54,7 @@ class ApplicationChainList extends Chains {
             <div className="mb-4 d-flex justify-content-between">
               <h2>Supported blockchains</h2>
               <Button
+                disabled={chosenChains.length <= 0}
                 onClick={this.handleChains}
                 variant="primary"
                 size={"md"}
