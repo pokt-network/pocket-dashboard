@@ -396,7 +396,8 @@ button {
     }
   }
 
-  &.hide {
+  &.hide,
+  &.empty {
     thead {
       text-transform: uppercase;
       color: black;
