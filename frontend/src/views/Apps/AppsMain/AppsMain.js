@@ -19,6 +19,7 @@ import InfiniteScroll from "react-infinite-scroller";
 import ClipLoader from "react-spinners/ClipLoader";
 
 class AppsMain extends Main {
+
   constructor(props, context) {
     super(props, context);
 
@@ -204,7 +205,7 @@ class AppsMain extends Main {
                         type="submit"
                         onClick={this.handleChainSearch}
                         variant="outline-primary">
-                        <img src="/assets/search.svg" alt="search-icon"/>
+                        <img src={"/assets/search.svg"} alt="search-icon"/>
                       </Button>
                     </InputGroup.Append>
                   </InputGroup>
@@ -267,7 +268,7 @@ class AppsMain extends Main {
               </InfiniteScroll>
             </Segment>
           </Col>
-          <Col sm="6" md="6" lg="6" className={`${registeredItems.length === 0 ? "segment-table-empty" : null}`}>
+          <Col sm="6" md="6" lg="6" className={`${registeredItems.length === 0 ? "segment-table-empty" : ""}`}>
             <Segment scroll={false} label="REGISTERED APPS">
               <InfiniteScroll
                 pageStart={0}

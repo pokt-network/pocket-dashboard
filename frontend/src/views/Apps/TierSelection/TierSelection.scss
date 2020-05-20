@@ -1,47 +1,84 @@
 @import "../../../scss/Core.scss";
 
 
-.modal-dialog, .modal-tier {
-  max-width: 60% !important;
-  width: 60% !important;
-  background-color: $dark-blue;
-  padding: 0 20px 0 50px;
-  border-radius: $default-border-radius;
-  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+.app-modal {
+  min-height: 800px !important;
+  margin-top: 0 !important;
 
-  .modal-title {
-    color: $primary-color;
-    font-size: 2em;
-    text-transform: uppercase;
-    font-weight: 800;
-    font-family: $secondary-font-family;
-  }
+  .modal-dialog {
+    max-width: 948px !important;
 
-  .modal-content {
+
     background-color: $dark-blue;
-    color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+    padding: 0 40px;
 
-    p,
-    a {
-      font-size: 1.2em;
+    .modal-content {
+      background-color: $dark-blue;
+
+      .modal-title {
+        text-transform: uppercase;
+        font-family: $secondary-font-family;
+        color: $primary-color;
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .close {
+        position: relative;
+        top: -40px;
+        right: -60px;
+        opacity: 1;
+        color: white;
+
+        span {
+          font-size: 25pt;
+          font-weight: lighter;
+        }
+      }
+
+      .modal-body {
+        width: 848px;
+        height: 522px;
+
+        p,
+        a {
+          opacity: 1;
+          font-family: $primary-font-family;
+          font-size: 16px;
+          font-weight: 300;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.81;
+          letter-spacing: -0.44px;
+          text-align: justify;
+          color: white;
+        }
+
+        a {
+          text-decoration: underline;
+          font-weight: bold;
+          letter-spacing: -0.64px;
+          color: $primary-color;
+        }
+
+        p {
+          margin-bottom: 20px;
+        }
+
+        b {
+          font-weight: bold;
+        }
+      }
     }
 
-    a {
-      text-decoration: underline;
-      font-weight: bold;
-    }
-
-    p {
-      font-weight: 300;
-      margin-bottom: 40px;
+    .modal-footer {
+      padding-top: 30px;
+      justify-content: flex-start;
     }
   }
-
-  .modal-footer {
-    justify-content: flex-start;
-
-  }
-
 }
 
 .tier-selection {
@@ -137,7 +174,8 @@
       }
 
       button:not(.cta) {
-        margin-top: 30px;
+        margin-top: 10px;
+        margin-left: 40px;
         background-color: $dark-gray;
         border-color: $dark-gray;
         width: 130px;
@@ -150,6 +188,14 @@
 
       .tier-title > .subtitle, ul > li {
         color: white;
+      }
+
+      button:not(.cta) {
+        position: relative;
+        left: -132px;
+        top: 82px;
+        background-color: $primary-color;
+        border-color: $primary-color;
       }
     }
   }

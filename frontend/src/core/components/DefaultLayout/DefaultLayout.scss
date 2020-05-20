@@ -1,7 +1,12 @@
 @import "../../../scss/Variables/DefaultLayout";
 
-#default-layout {
+.default-layout {
   max-height: 90vh;
-  overflow-x: auto;
-  padding: 0 30px 0 $default-layout-item-padding-left;
+  overflow-x: hidden;
+  padding: 0 30px 0 $default-layout-item-padding-left !important;
+
+  .default-layout-footer {
+    height: 3em;
+  }
 }
+

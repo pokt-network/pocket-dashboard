@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import BarLoader from "react-spinners/BarLoader";
+import DotLoader from "react-spinners/DotLoader";
 import {PropTypes} from "prop-types";
 
 class Loader extends Component {
@@ -8,7 +8,7 @@ class Loader extends Component {
 
     return (
       <div className="pocket-loader">
-        <BarLoader
+        <DotLoader
           className="loader"
           size={100}
           color={"#44AAE1"}
