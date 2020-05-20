@@ -1,21 +1,25 @@
 import React, {Component} from "react";
 import "./AppPassphrase.scss";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import {Col, Form, Row} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
-import BootstrapTable from "react-bootstrap-table-next";
+import AppTable from "../../../core/components/AppTable";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
-import {createAndDownloadJSONFile, validateYup, scrollToId} from "../../../_helpers";
+import {
+  createAndDownloadJSONFile,
+  validateYup,
+  scrollToId,
+} from "../../../_helpers";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Redirect} from "react-router-dom";
 import Segment from "../../../core/components/Segment/Segment";
+import LoadingButton from "../../../core/components/LoadingButton";
 
 class AppPassphrase extends Component {
-
   constructor(props, context) {
     super(props, context);
 
@@ -53,7 +57,8 @@ class AppPassphrase extends Component {
         passPhrase: "",
       },
       redirectPath: "",
-      redirectParams: {}
+      redirectParams: {},
+      loading: false,
     };
   }
 
@@ -87,13 +92,17 @@ class AppPassphrase extends Component {
   }
 
   async createApplicationAccount() {
+    this.setState({loading: true});
     const applicationInfo = PocketApplicationService.getApplicationInfo();
     const {passPhrase} = this.state;
 
-    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(DASHBOARD_PATHS.appDetail)}`;
+    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(
+      DASHBOARD_PATHS.appDetail
+    )}`;
 
-    const {success, data} = await ApplicationService
-      .createApplicationAccount(applicationInfo.id, passPhrase, applicationBaseLink);
+    const {success, data} = await ApplicationService.createApplicationAccount(
+      applicationInfo.id, passPhrase, applicationBaseLink
+    );
 
     if (success) {
       const {privateApplicationData} = data;
@@ -104,23 +113,24 @@ class AppPassphrase extends Component {
         applicationID: applicationInfo.id,
         passphrase: passPhrase,
         address,
-        privateKey
+        privateKey,
       });
 
       this.setState({
         created: true,
         address,
-        privateKey
+        privateKey,
       });
     } else {
       this.setState({error: {show: true, message: data.message}});
       scrollToId("alert");
     }
+    this.setState({loading: false});
   }
 
   downloadKeyFile() {
     const {privateKey, passPhrase} = this.state;
-    const data = {"private_key": privateKey, "passphrase": passPhrase};
+    const data = {private_key: privateKey, passphrase: passPhrase};
 
     createAndDownloadJSONFile("MyPocketApplication", data);
 
@@ -142,6 +152,7 @@ class AppPassphrase extends Component {
       redirectPath,
       redirectParams,
       error,
+      loading,
     } = this.state;
 
     if (fileDownloaded) {
@@ -226,22 +237,31 @@ class AppPassphrase extends Component {
                       />
                     </Col>
                     <Col>
-                      <Button
-                        disabled={!validPassphrase}
-                        className={`pl-4 pr-4 pt-2 pb-2 ${created ? "download-key-file-button" : null}`}
-                        variant="primary"
-                        type="submit"
-                        onClick={
-                          !created
+                      <LoadingButton
+                        loading={loading}
+                        buttonProps={{
+                          disabled: !validPassphrase,
+                          className: `pl-4 pr-4 pt-2 pb-2 ${
+                            created ? "download-key-file-button" : null
+                          }`,
+                          variant: "primary",
+                          type: "submit",
+                          onClick: !created
                             ? () => this.createApplicationAccount()
-                            : () => this.downloadKeyFile()
-                        }>
+                            : () => this.downloadKeyFile(),
+                        }}
+                      >
                         <span>
-                          {created ? <img src={"/assets/download.svg"} alt="download-key-file"
-                                          className="download-key-file-icon"/> : null}
+                          {created ? (
+                            <img
+                              src={"/assets/download.svg"}
+                              alt="download-key-file"
+                              className="download-key-file-icon"
+                            />
+                          ) : null}
                           {created ? "Download key file" : "Create"}
                         </span>
-                      </Button>
+                      </LoadingButton>
                     </Col>
                   </Form.Row>
                 </Form>
@@ -252,11 +272,11 @@ class AppPassphrase extends Component {
         <Row className="mt-4">
           <Col sm="6" md="6" lg="6">
             <h3>Private key</h3>
-            <Form.Control readOnly value={privateKey}/>
+            <Form.Control readOnly value={privateKey} />
           </Col>
           <Col sm="6" md="6" lg="6">
             <h3>Address</h3>
-            <Form.Control readOnly value={address}/>
+            <Form.Control readOnly value={address} />
           </Col>
         </Row>
         <Row className="mt-5">
@@ -287,20 +307,20 @@ class AppPassphrase extends Component {
             <h1>General information</h1>
           </Col>
         </Row>
-        <br/>
+        <br />
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle}/>
+              <InfoCard title={card.title} subtitle={card.subtitle} />
             </Col>
           ))}
         </Row>
-        <br/>
+        <br />
         <Row className="mb-5 app-networks">
           <Col>
             <Segment label="Networks">
-              <BootstrapTable
-                classes="table app-table app-table-empty table-striped"
+              <AppTable
+                scroll
                 keyField="hash"
                 data={[]}
                 columns={TABLE_COLUMNS.NETWORK_CHAINS}

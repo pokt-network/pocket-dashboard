@@ -5,6 +5,7 @@ import {AnsweredSecurityQuestion} from "../models/SecurityQuestion";
 import BaseAuthProvider from "../providers/auth/BaseAuthProvider";
 import {Configurations} from "../_configuration";
 import jwt from "jsonwebtoken";
+import axios from "axios";
 
 const AUTH_TOKEN_TYPE = "access_token";
 const USER_COLLECTION_NAME = "Users";
@@ -256,6 +257,26 @@ export default class UserService extends BaseService {
    */
   decodeToken(token) {
     return jwt.verify(token, Configurations.auth.jwt.secret_key);
+  }
+
+  /**
+   * Validate reCAPTCHA token
+   *
+   * @param {string} token Token to validate.
+   *
+   * @returns {Promise<*>} recaptcha result.
+   * @async
+   */
+  async verifyCaptcha(token) {
+    const secret = Configurations.recaptcha.google_server;
+
+    /**
+     * Although is a POST request, google requires the data to be sent by query
+     * params, trying to do so in the body will result on an error.
+     */
+    return await axios.post(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`
+    );
   }
 }
 

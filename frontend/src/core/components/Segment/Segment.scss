@@ -27,8 +27,13 @@
   .body {
     box-shadow: $default-box-shadow;
     padding: 5px 10px 15px 30px;
+    border-radius: $table-radius;
+    margin-bottom: 10px;
+  }
+
+
+  &.scroll .body {
     overflow-x: auto;
     max-height: 60vh;
-    border-radius: $table-radius;
   }
 }

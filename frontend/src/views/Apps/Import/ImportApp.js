@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {Button, Col, Form, Row, Alert} from "react-bootstrap";
-import BootstrapTable from "react-bootstrap-table-next";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -8,6 +7,7 @@ import {Redirect, Link} from "react-router-dom";
 import "./ImportApp.scss";
 import AccountService from "../../../core/services/PocketAccountService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
+import AppTable from "../../../core/components/AppTable";
 
 class Import extends Component {
   constructor(props, context) {
@@ -38,6 +38,7 @@ class Import extends Component {
       },
       redirectPath: "",
       redirectParams: {},
+      imported: false,
     };
   }
 
@@ -89,14 +90,8 @@ class Import extends Component {
     const {privateKey, passphrase} = this.state.data;
 
     const {success, data} = await AccountService.importAccount(
-      privateKey, passphrase
-    );
+      privateKey, passphrase);
 
-    // eslint-disable-next-line react/prop-types
-    this.props.history.push({
-      pathname: _getDashboardPath(DASHBOARD_PATHS.createAppInfo),
-      state: {imported: true},
-    });
     if (success) {
       ApplicationService.saveAppInfoInCache({
         imported: true,
@@ -104,6 +99,7 @@ class Import extends Component {
         passphrase,
         address: data.address,
       });
+      this.setState({imported: true, address: data.address});
     } else {
       this.setState({error: {show: true, message: data.message}});
     }
@@ -120,6 +116,7 @@ class Import extends Component {
       uploadedPrivateKey,
       hasPrivateKey,
       error,
+      imported,
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
@@ -252,9 +249,21 @@ class Import extends Component {
                         <Button
                           variant="dark"
                           type="submit"
-                          onClick={this.importApp}
+                          onClick={
+                            !imported
+                              ? this.importApp
+                              : () => {
+                                  // eslint-disable-next-line react/prop-types
+                                  this.props.history.push({
+                                    pathname: _getDashboardPath(
+                                      DASHBOARD_PATHS.createAppInfo
+                                    ),
+                                    state: {imported: true},
+                                  });
+                                }
+                          }
                         >
-                          Create
+                          {!imported ? "Create" : "Continue"}
                         </Button>
                       </Form.Group>
                     </>
@@ -288,8 +297,8 @@ class Import extends Component {
         <Row className="mt-2 app-networks">
           <Col className="title-page">
             <h3>Networks</h3>
-            <BootstrapTable
-              classes="table app-table app-table-empty table-striped"
+            <AppTable
+              scroll
               keyField="hash"
               data={[]}
               columns={TABLE_COLUMNS.NETWORK_CHAINS}

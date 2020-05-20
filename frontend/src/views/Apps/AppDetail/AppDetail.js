@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
@@ -12,8 +11,10 @@ import {formatNetworkData, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import moment from "moment";
-import "./AppDetail.scss";
+import AppTable from "../../../core/components/AppTable";
+import AppAlert from "../../../core/components/AppAlert";
 import Segment from "../../../core/components/Segment/Segment";
+import "./AppDetail.scss";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -29,6 +30,8 @@ class AppDetail extends Component {
       deleted: false,
       message: "",
       purchase: true,
+      hideTable: false,
+      exists: true,
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -56,9 +59,12 @@ class AppDetail extends Component {
       networkData,
     } = await ApplicationService.getApplication(address);
 
-    const chains = await NetworkService.getAvailableNetworkChains(
-      networkData.chains
-    );
+    if (pocketApplication === undefined) {
+      this.setState({loading: false, exists: false});
+      return;
+    }
+
+    const chains = await NetworkService.getNetworkChains(networkData.chains);
 
     const {freeTier} = pocketApplication;
 
@@ -146,12 +152,20 @@ class AppDetail extends Component {
       publicKey = publicPocketAccount.publicKey;
     }
 
-    const {chains, aat, loading, deleteModal, deleted, message} = this.state;
+    const {
+      chains,
+      aat,
+      loading,
+      deleteModal,
+      deleted,
+      message,
+      exists,
+    } = this.state;
 
     const generalInfo = [
       {
         title: `${formatNetworkData(stakedTokens)} POKT`,
-        subtitle: "Staked tokens",
+        subtitle: "Stake tokens",
       },
       // TODO: Change this value.
       {
@@ -184,6 +198,19 @@ class AppDetail extends Component {
 
     if (loading) {
       return <Loader/>;
+    }
+
+    if (!exists) {
+      const message = (
+        <h3>
+          This application does not exist.{" "}
+          <Link to={_getDashboardPath(DASHBOARD_PATHS.apps)}>
+            Go to App List
+          </Link>
+        </h3>
+      );
+
+      return <AppAlert variant="danger" title={message} />;
     }
 
     if (deleted) {
@@ -251,10 +278,10 @@ class AppDetail extends Component {
         <Row>
           <Col>
             <Segment label="Networks">
-              <BootstrapTable
-                classes="app-table"
+              <AppTable
+                scroll
+                toggle={chains.length > 0}
                 keyField="hash"
-                Purch
                 data={chains}
                 columns={TABLE_COLUMNS.NETWORK_CHAINS}
                 bordered={false}

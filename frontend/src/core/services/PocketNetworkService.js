@@ -9,7 +9,7 @@ class PocketNetworkService extends PocketBaseService {
   static addIndex = (ch, idx) => {
     return {
       ...ch,
-      index: idx,
+      index: idx + 1,
     };
   };
 

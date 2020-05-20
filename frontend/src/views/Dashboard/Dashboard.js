@@ -11,9 +11,9 @@ import ApplicationService from "../../core/services/PocketApplicationService";
 import {mapStatusToField} from "../../_helpers";
 import NodeService from "../../core/services/PocketNodeService";
 import Segment from "../../core/components/Segment/Segment";
-import BootstrapTable from "react-bootstrap-table-next";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import AppTable from "../../core/components/AppTable";
 
 class Dashboard extends Component {
   constructor(props, context) {
@@ -160,11 +160,11 @@ class Dashboard extends Component {
         </Row>
         <div className="network-status-tables">
           <Row>
-            <Col lg="6" md="6" sm="6"
-                 className={`network-status-table ${userNodes.length === 0 ? "segment-table-empty" : ""}`}>
-              <Segment label="Registered Nodes">
-                <BootstrapTable
-                  classes={`app-table ${userNodes.length === 0 ? "app-table-empty" : ""}`}
+            <Col lg="6" md="6" sm="6" className={`network-status-table ${userNodes.length === 0 ? "segment-table-empty" : ""}`}>
+              <Segment scroll={false} label="Registered Nodes">
+                <AppTable
+                  scroll
+                  toggle={userNodes.length > 0}
                   keyField="pocketNode.publicPocketAccount.address"
                   data={userNodes}
                   columns={TABLE_COLUMNS.NODES}
@@ -172,12 +172,12 @@ class Dashboard extends Component {
                 />
               </Segment>
             </Col>
-            <Col lg="6" md="6" sm="6"
-                 className={`network-status-table ${userApps.length === 0 ? "segment-table-empty" : ""}`}>
-              <Segment label="Registered Apps">
-                <BootstrapTable
-                  classes={`app-table ${userApps.length === 0 ? "app-table-empty" : ""}`}
-                  keyField="pocketApplication.publicPocketAccount.address"
+            <Col  lg="6"  md="6" sm="6" className={`network-status-table ${userApps.length === 0 ? "segment-table-empty" : ""}`}>
+              <Segment scroll={false} label="Registered Apps">
+                <AppTable
+                  scroll
+                  toggle={userApps.length > 0}
+                  keyField="pocketNode.publicPocketAccount.address"
                   data={userApps}
                   columns={TABLE_COLUMNS.APPS}
                   bordered={false}
@@ -186,24 +186,24 @@ class Dashboard extends Component {
             </Col>
           </Row>
           <Row className="mt-5 mb-4">
-            <Col lg="12" md="12" sm="12"
-                 className={`network-status-table ${chains.length === 0 ? "segment-table-empty" : ""}`}>
-              <Segment label="Supported Blockchains">
-                <BootstrapTable
-                  classes={`app-table ${chains.length === 0 ? "app-table-empty" : ""}`}
+            <Col lg="12"  md="12"  sm="12" className={`network-status-table ${chains.length === 0 ? "segment-table-empty" : ""}`}>
+              <Segment scroll={false} label="Supported Blockchains">
+                <AppTable
                   keyField="hash"
+                  scroll
+                  toggle={chains.length > 0}
                   data={chains}
                   columns={TABLE_COLUMNS.NETWORK_CHAINS}
                   bordered={false}
                 />
               </Segment>
             </Col>
-            <Col lg="12" md="12" sm="12"
-                 className={`network-status-table ${chains.length === 0 ? "segment-table-empty" : ""}`}>
-              <Segment label="Most popular chains">
-                <BootstrapTable
-                  classes={`app-table ${chains.length === 0 ? "app-table-empty" : ""}`}
+            <Col lg="12"md="12" sm="12" className={`network-status-table ${chains.length === 0 ? "segment-table-empty" : ""}`}>
+              <Segment scroll={false} label="Most popular chains">
+                <AppTable
                   keyField="hash"
+                  scroll
+                  toggle={chains.length > 0}
                   data={chains}
                   columns={TABLE_COLUMNS.NETWORK_CHAINS}
                   bordered={false}

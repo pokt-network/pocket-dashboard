@@ -4,10 +4,10 @@ import {PropTypes} from "prop-types";
 
 class Segment extends Component {
   render() {
-    const {children, label, sideItem} = this.props;
+    const {children, label, sideItem, scroll} = this.props;
 
     return (
-      <div className="app-segment">
+      <div className={`app-segment ${scroll ? "scroll" : ""}`}>
         <div className="head">
           <h2 className="title">{label}</h2>
           {sideItem}
@@ -18,7 +18,12 @@ class Segment extends Component {
   }
 }
 
+Segment.defaultProps = {
+  scroll: true,
+};
+
 Segment.propTypes = {
+  scroll: PropTypes.bool,
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,

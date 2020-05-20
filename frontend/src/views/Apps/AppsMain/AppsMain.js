@@ -1,6 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import BootstrapTable from "react-bootstrap-table-next";
+import AppTable from "../../../core/components/AppTable";
 import "./AppsMain.scss";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import InfoCards from "../../../core/components/InfoCards";
@@ -223,14 +223,22 @@ class AppsMain extends Main {
                       filteredItems.map((app, idx) => {
                         const {name, icon} = app.pocketApplication;
                         const {stakedTokens, status} = app.networkData;
-                        const {
-                          address,
-                        } = app.pocketApplication.publicPocketAccount;
 
                         return (
                           <Link
                             key={idx}
                             to={() => {
+                              const address = app.networkData.address;
+                              const applicationID = app.pocketApplication.id;
+
+                              if (!address) {
+                                ApplicationService.saveAppInfoInCache({
+                                  applicationID,
+                                });
+                                return _getDashboardPath(
+                                  DASHBOARD_PATHS.appPassphrase
+                                );
+                              }
                               const url = _getDashboardPath(
                                 DASHBOARD_PATHS.appDetail
                               );
@@ -261,7 +269,7 @@ class AppsMain extends Main {
             </Segment>
           </Col>
           <Col sm="6" md="6" lg="6" className={`${registeredItems.length === 0 ? "segment-table-empty" : ""}`}>
-            <Segment label="REGISTERED APPS">
+            <Segment scroll={false} label="REGISTERED APPS">
               <InfiniteScroll
                 pageStart={0}
                 loadMore={this.loadMoreRegisteredApps}
@@ -269,8 +277,9 @@ class AppsMain extends Main {
                 hasMore={hasMoreRegisteredItems}
                 loader={loader}
               >
-                <BootstrapTable
-                  classes={`app-table ${registeredItems.length === 0 ? "app-table-empty" : ""}`}
+                <AppTable
+                  scroll
+                  toggle={registeredItems.length > 0}
                   keyField="pocketApplication.publicPocketAccount.address"
                   data={registeredItems}
                   columns={TABLE_COLUMNS.APPS}
