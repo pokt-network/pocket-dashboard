@@ -186,7 +186,7 @@ class AppsMain extends Main {
         </Row>
         <Row className="mb-4 app-tables">
           <Col sm="6" md="6" lg="6" className="my-apps-segment">
-            <Segment label="My Apps">
+            <Segment scroll={false} label="My Apps">
               <Row className={`search-panel ${!hasApps ? "search-panel-without-apps" : null}`}>
                 <Col>
                   <InputGroup className="search-input mb-3">
@@ -211,13 +211,13 @@ class AppsMain extends Main {
                   </InputGroup>
                 </Col>
               </Row>
+              <div className="scroll main-list">
               <InfiniteScroll
                 pageStart={0}
                 loadMore={this.loadMoreUserApps}
                 useWindow={false}
                 hasMore={hasMoreUserItems}
                 loader={loader}>
-                <div className="main-list">
                   <LoadingOverlay active={userItemsTableLoading} spinner>
                     {hasApps ? (
                       filteredItems.map((app, idx) => {
@@ -264,8 +264,8 @@ class AppsMain extends Main {
                       </div>
                     )}
                   </LoadingOverlay>
-                </div>
               </InfiniteScroll>
+              </div>
             </Segment>
           </Col>
           <Col sm="6" md="6" lg="6" className={`${registeredItems.length === 0 ? "segment-table-empty" : ""}`}>
@@ -279,6 +279,8 @@ class AppsMain extends Main {
               >
                 <AppTable
                   scroll
+                  classes="flex-body"
+                  headerClasses="d-flex"
                   toggle={registeredItems.length > 0}
                   keyField="pocketApplication.publicPocketAccount.address"
                   data={registeredItems}

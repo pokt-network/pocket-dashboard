@@ -4,12 +4,12 @@ import {Alert, Col, Dropdown, Row} from "react-bootstrap";
 import "./Dashboard.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
-import {APPLICATIONS_LIMIT, NODES_LIMIT, STYLING, TABLE_COLUMNS} from "../../_constants";
+import {APPLICATIONS_LIMIT, /*NODES_LIMIT,*/ STYLING, TABLE_COLUMNS} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
 import {mapStatusToField} from "../../_helpers";
-import NodeService from "../../core/services/PocketNodeService";
+// import NodeService from "../../core/services/PocketNodeService";
 import Segment from "../../core/components/Segment/Segment";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -32,11 +32,11 @@ class Dashboard extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT);
-    const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
+    // const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
     const chains = await NetworkService.getAvailableNetworkChains();
     const alert = UserService.getShowWelcomeMessage();
 
-    this.setState({alert, userApps, userNodes, chains, loading: false});
+    this.setState({alert, userApps, chains, loading: false});
   }
 
   render() {
@@ -176,6 +176,8 @@ class Dashboard extends Component {
               <Segment scroll={false} label="Registered Apps">
                 <AppTable
                   scroll
+                  classes="flex-body"
+                  headerClasses="d-flex"
                   toggle={userApps.length > 0}
                   keyField="pocketNode.publicPocketAccount.address"
                   data={userApps}

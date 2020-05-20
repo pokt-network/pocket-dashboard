@@ -26,9 +26,9 @@ class AppTable extends Component {
 
     return (
       <BootstrapTable
-        classes={`app-table ${classes} ${scroll ? "scroll" : ""} ${
-          show ? "" : "hide"
-        }`}
+        classes={`app-table ${data.length === 0 ? "empty" : ""} ${classes} ${
+          scroll ? "scroll" : ""
+        } ${show ? "" : "hide"}`}
         keyField="pocketNode.publicPocketAccount.address"
         data={data}
         columns={toggle ? columnsToggle : columns}
