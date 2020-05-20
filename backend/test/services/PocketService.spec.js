@@ -2,9 +2,18 @@ import {describe, it} from "mocha";
 import "chai/register-should";
 import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
+import {StakingStatus} from "@pokt-network/pocket-js";
+
+/** @type {string} */
+const FREE_TIER_PRIVATE_KEY_WITH_POKT = process.env.POCKET_FREE_TIER_ACCOUNT;
+/** @type {string} */
+const ACCOUNT_FROM_TRANSFER = process.env.TEST_ACCOUNT_FROM_TRANSFER;
 
 /** @type {string} */
 const APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT;
+/** @type {string} */
+const APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE = process.env.TEST_APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE;
+
 /** @type {string} */
 const NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT;
 /** @type {string} */
@@ -126,9 +135,10 @@ describe("PocketService", () => {
       });
     });
   }
+
   describe("getApplications", () => {
     it("Expected applications data successfully retrieved", async () => {
-      const applicationsData = await pocketService.getApplications("staked");
+      const applicationsData = await pocketService.getApplications(StakingStatus.Staked);
 
       // eslint-disable-next-line no-undef
       should.exist(applicationsData);
@@ -138,18 +148,38 @@ describe("PocketService", () => {
     });
   });
 
-  if (APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT) {
-    // FIXME: Fix these unit tests, we think the issue is from library.
+  if (FREE_TIER_PRIVATE_KEY_WITH_POKT && APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT && ACCOUNT_FROM_TRANSFER) {
+    describe("FreeTier transferPoktBetweenAccounts", () => {
+      it("Expect a success transfer of POKT", async () => {
+
+        const passphrase = "TestAccount";
+        const accountToTransfer = await pocketService.createAccount(passphrase);
+        const uPoktAmount = "10000000";
+
+        const transaction = await pocketService
+          .transferPoktBetweenAccounts(ACCOUNT_FROM_TRANSFER, accountToTransfer.addressHex, uPoktAmount);
+
+        // eslint-disable-next-line no-undef
+        should.exist(transaction.logs);
+
+        transaction.logs.should.not.to.be.empty;
+        transaction.logs[0].success.should.to.be.true;
+      });
+    });
+  }
+
+  if (APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT && APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE) {
     describe("stakeApplication", () => {
       it("Expected a transaction hash successfully", async () => {
-        const passPhrase = "testPassphrase";
-        const account = await pocketService.importAccount(APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT, passPhrase);
+        const account = await pocketService
+          .importAccount(APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT, APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE);
         const poktToStake = "10000000";
         const networkChains = [
-          "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
+          "0001"
         ];
 
-        const transaction = await pocketService.stakeApplication(account, passPhrase, poktToStake, networkChains);
+        const transaction = await pocketService
+          .stakeApplication(account, APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE, poktToStake, networkChains);
 
         // eslint-disable-next-line no-undef
         should.exist(transaction);
@@ -164,10 +194,10 @@ describe("PocketService", () => {
 
     describe("unstakeApplication", () => {
       it("Expected a transaction hash successfully", async () => {
-        const passPhrase = "testPassphrase";
-        const account = await pocketService.importAccount(APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT, passPhrase);
+        const account = await pocketService
+          .importAccount(APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT, APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE);
 
-        const transaction = await pocketService.unstakeApplication(account, passPhrase);
+        const transaction = await pocketService.unstakeApplication(account, APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE);
 
         // eslint-disable-next-line no-undef
         should.exist(transaction);
