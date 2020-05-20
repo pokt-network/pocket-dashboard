@@ -1,8 +1,6 @@
 import express from "express";
 import UserService from "../services/UserService";
 import EmailService from "../services/EmailService";
-import axios from "axios";
-import {Configurations} from "../_configuration";
 
 const router = express.Router();
 
@@ -167,19 +165,11 @@ router.post("/verify-captcha", async (request, response) => {
   try {
     /** @type {{token:string}} */
     const {token} = request.body;
-    const secret = Configurations.recaptcha.google_server;
-
-    /**
-     * Although is a POST request, google requires the data to be sent by query
-     * params, trying to do so in the body will result on an error.
-     */
-    const res = await axios.post(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${token}`
-    );
-
-    response.send(res.data);
+    const result = await userService.verifyCaptcha(token);
+    
+    response.send(result.data);
   } catch (e) {
-    response.status(400).send(false);
+    response.status(400).send(false); 
   }
 });
 

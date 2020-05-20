@@ -109,11 +109,7 @@ class SignUp extends Component {
   async validateCaptcha(token) {
     const {success} = await PocketUserService.verifyCaptcha(token);
 
-    if (success) {
-      this.setState({validCaptcha: true});
-    } else {
-      this.setState({validCaptcha: false});
-    }
+    this.setState({validCaptcha: success});
   }
 
   render() {
