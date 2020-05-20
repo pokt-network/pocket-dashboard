@@ -137,7 +137,7 @@ describe("ApplicationService", () => {
         should.exist(aat);
 
         aat.should.be.an("object");
-      });
+      }).timeout(100000);
     });
 
     // TODO: Add unit test for unstake free tier app.

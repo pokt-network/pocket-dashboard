@@ -195,18 +195,22 @@ export default class PocketService {
    * Check if account has sufficient balance.
    *
    * @param {Account} account Account to query.
+   * @param {boolean} throwError If true throw the response error.
    *
    * @returns {Promise<boolean>} True if has sufficient balance, otherwise not.
    * @async
    */
-  async hasBalance(account) {
+  async hasBalance(account, throwError = true) {
     const balanceQueryResponse = await this.__pocket.rpc().query.getBalance(account.addressHex);
 
     if (balanceQueryResponse instanceof Error) {
-      throw balanceQueryResponse;
+      if (throwError) {
+        throw balanceQueryResponse;
+      }
+      return false;
     }
 
-    return balanceQueryResponse.balance.toString() !== "0n";
+    return balanceQueryResponse.balance.toString() !== "0";
   }
 
   /**

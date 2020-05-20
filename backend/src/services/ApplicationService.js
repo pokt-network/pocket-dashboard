@@ -413,21 +413,37 @@ export default class ApplicationService extends BaseService {
 
     try {
 
-      const transferTransaction = await this.pocketService
-        .transferPoktBetweenAccounts(freeTierAccount.addressHex, clientApplication.publicPocketAccount.address, stakeAmount);
+      return this.pocketService
+        .transferPoktBetweenAccounts(freeTierAccount.addressHex, clientApplication.publicPocketAccount.address, stakeAmount)
+        .then(async (transferTransaction) => {
 
-      if (transferTransaction.logs && transferTransaction.logs[0].success) {
-        // Stake application
-        const stakeTransaction = await this.pocketService.stakeApplication(applicationAccount, application.passphrase, stakeAmount, networkChains);
+          if (transferTransaction.logs && transferTransaction.logs[0].success) {
+            const noop = () => {
+            };
 
-        if (stakeTransaction.logs && stakeTransaction.logs[0].success) {
-          await this.__markApplicationAsFreeTier(clientApplication);
+            // Wait until account has balance.
+            while (!await this.pocketService.hasBalance(applicationAccount, false)) {
+              noop();
+            }
 
-          return this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, freeTierPassphrase);
-        }
-        return false;
-      }
-      return false;
+            // Stake application
+            return this.pocketService
+              .stakeApplication(applicationAccount, application.passphrase, stakeAmount, networkChains)
+              .then(async (stakeTransaction) => {
+
+                if (stakeTransaction.logs && stakeTransaction.logs[0].success) {
+                  await this.__markApplicationAsFreeTier(clientApplication);
+
+                  return this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, freeTierPassphrase);
+                }
+                return false;
+
+              });
+          }
+          return false;
+
+        });
+
     } catch (e) {
       return false;
     }
