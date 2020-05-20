@@ -148,7 +148,7 @@ export const tableShow = (table, handleClick) => {
         />
       </span>
     );
-  }
+  };
 
   const tableFormatted = [...table];
   const formatter = Object.assign({}, table[table.length-1]);
