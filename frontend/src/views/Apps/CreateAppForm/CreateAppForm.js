@@ -168,7 +168,7 @@ class CreateAppForm extends CreateForm {
             </p>
           </Col>
         </Row>
-        <Row className="mt-3">
+        <Row>
           <Col sm="5" md="5" lg="5" className="create-form-left-side">
             <Formik
               validationSchema={appFormSchema}
@@ -266,19 +266,19 @@ class CreateAppForm extends CreateForm {
             </Formik>
           </Col>
           <Col sm="7" md="7" lg="7" className="create-form-right-side">
-            <div className="ml-5 mt-4">
+            <div>
               <ImageFileUpload
                 handleDrop={(img) => this.handleDrop(img.preview)}
               />
 
               <div className="legal-info">
-                <ul className="mt-5">
+                <ul>
                   <li>
                     <strong>Purchasers</strong> are not buying POKT as an
                     investment with the expectation of profit or appreciation
                   </li>
                   <li>
-                    <strong>Purcharsers</strong> are buying POKT to use it.
+                    <strong>Purchasers</strong> are buying POKT to use it.
                   </li>
                   <li>
                     To ensure <strong>purchasers</strong> are bona fide and not
@@ -297,11 +297,15 @@ class CreateAppForm extends CreateForm {
                   <Form.Check
                     checked={agreeTerms}
                     onChange={() => this.setState({agreeTerms: !agreeTerms})}
-                    id="terms-checkbox"
+                    className="terms-checkbox"
                     type="checkbox"
-                    label="I agree to these Pocket's "
+                    label={
+                      <p>
+                        {/* eslint-disable-next-line react/no-unescaped-entities */}
+                        I agree to these Pocket's{" "} <a href="/todo">Terms and Conditions.</a>
+                      </p>
+                    }
                   />
-                  <a href="/">Terms and conditions.</a>
                 </div>
               </div>
             </div>

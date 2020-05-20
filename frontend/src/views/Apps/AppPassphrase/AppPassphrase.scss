@@ -22,6 +22,7 @@
 
   div.alert.alert-warning {
     padding-left: 20px;
+    margin-top: -20px;
 
     h4 {
       font-family: $secondary-font-family;
@@ -98,6 +99,7 @@
   }
 
   .app-networks {
+
     h2 {
       margin-left: 20px;
     }
@@ -107,6 +109,7 @@
         height: 50px;
         padding-top: 2px;
         padding-left: 10px;
+        overflow: hidden;
 
         .table {
           thead {

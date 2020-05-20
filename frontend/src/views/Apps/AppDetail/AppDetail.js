@@ -2,25 +2,19 @@ import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
-import "./AppDetail.scss";
-import ApplicationService, {
-  PocketApplicationService,
-} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {
-  copyToClipboard,
-  formatNetworkData,
-  getStakeStatus,
-  formatNumbers,
-} from "../../../_helpers";
+import {formatNetworkData, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import moment from "moment";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
+import Segment from "../../../core/components/Segment/Segment";
+import "./AppDetail.scss";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -148,8 +142,7 @@ class AppDetail extends Component {
       unstakingCompletionTime,
     } = this.state.networkData;
     const status = getStakeStatus(bondStatus);
-    const isStaked =
-      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
+    const isStaked = status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
     let address;
     let publicKey;
@@ -174,10 +167,14 @@ class AppDetail extends Component {
         title: `${formatNetworkData(stakedTokens)} POKT`,
         subtitle: "Stake tokens",
       },
-      {title: formatNumbers(2000), subtitle: "Balance"},
+      // TODO: Change this value.
+      {
+        title: `${formatNetworkData(2000000)} POKT`,
+        subtitle: "Balance"
+      },
       {
         title: status,
-        subtitle: "Stake status",
+        subtitle: "Stake Status",
         children:
           status === STAKE_STATUS.Unstaking ? (
             <p className="unstaking-time">{`Unstaking time: ${moment
@@ -185,13 +182,12 @@ class AppDetail extends Component {
               .humanize()}`}</p>
           ) : undefined,
       },
-      // TODO: Get
       {title: formatNetworkData(maxRelays), subtitle: "Max Relays Per Day"},
     ];
 
     const contactInfo = [
-      {title: url, subtitle: freeTier ? "Website" : "Service URL"},
-      {title: contactEmail, subtitle: "Contact email"},
+      {title: "Website", subtitle: url},
+      {title: "Contact email", subtitle: contactEmail},
     ];
 
     let aatStr = "";
@@ -201,7 +197,7 @@ class AppDetail extends Component {
     }
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     if (!exists) {
@@ -209,7 +205,7 @@ class AppDetail extends Component {
         <h3>
           This application does not exist.{" "}
           <Link to={_getDashboardPath(DASHBOARD_PATHS.apps)}>
-            Go to applications list.
+            Go to App List
           </Link>
         </h3>
       );
@@ -220,15 +216,15 @@ class AppDetail extends Component {
     if (deleted) {
       return (
         <DeletedOverlay
-          text="You application was successfully removed"
-          buttonText="Go to apps list"
+          text={<p>Your application<br/>was successfully removed</p>}
+          buttonText="Go to App List"
           buttonLink={_getDashboardPath(DASHBOARD_PATHS.apps)}
         />
       );
     }
 
     return (
-      <div id="app-detail">
+      <div className="app-detail">
         <Row>
           <Col>
             {message && (
@@ -241,176 +237,168 @@ class AppDetail extends Component {
               </Alert>
             )}
             <div className="head">
-              {/* eslint-disable-next-line jsx-a11y/alt-text */}
-              <img src={icon} className="mr-3" />
+              <img src={icon} alt="app-icon"/>
               <div className="info">
                 <h1 className="name d-flex align-items-center">
                   {name}
                   {freeTier && (
-                    <Badge variant="light" className="ml-2 pl-3 pr-3">
+                    <Badge variant="light">
                       Free Tier
                     </Badge>
                   )}
                 </h1>
-                <h3 className="owner mb-1">{owner}</h3>
+                <h3 className="owner">{owner}</h3>
                 <p className="description">{description}</p>
               </div>
             </div>
           </Col>
         </Row>
-        <div className="title-page">
-          <h3 className="mt-4">General Information</h3>
-          <Button
-            className="float-right cta"
-            onClick={isStaked ? this.unstakeApplication : this.stakeApplication}
-            variant="primary"
-          >
-            {isStaked ? "Unstake" : "Stake"}
-          </Button>
-        </div>
-        <Row className="mt-2 mb-4 stats">
+        <Row>
+          <Col sm="11" md="11" lg="11" className="general-header page-title">
+            <h1>General Information</h1>
+          </Col>
+          <Col sm="1" md="1" lg="1">
+            <Button
+              className="float-right cta"
+              onClick={isStaked ? this.unstakeApplication : this.stakeApplication}
+              variant="primary">
+              <span>{isStaked ? "Unstake" : "Stake"}</span>
+            </Button>
+          </Col>
+        </Row>
+        <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
               <InfoCard title={card.title} subtitle={card.subtitle}>
-                {card.children || <br />}
+                {card.children || <br/>}
               </InfoCard>
             </Col>
           ))}
         </Row>
         <Row>
-          <Col className="title-page mt-2 mb-4">
-            <h4 className="ml-2">Networks</h4>
-            <AppTable
-              scroll
-              toggle={chains.length > 0}
-              keyField="hash"
-              data={chains}
-              columns={TABLE_COLUMNS.NETWORK_CHAINS}
-              bordered={false}
-            />
+          <Col>
+            <Segment label="Networks">
+              <AppTable
+                scroll
+                toggle={chains.length > 0}
+                keyField="hash"
+                data={chains}
+                columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                bordered={false}
+              />
+            </Segment>
           </Col>
         </Row>
-        <Row>
-          <Col>
-            <div className="title-page">
-              <h4 className="ml-3">Address</h4>
+        <Row className="app-data">
+          <Col sm="6" md="6" lg="6">
+            <div className="page-title">
+              <h2>Address</h2>
               <Alert variant="light">{address}</Alert>
             </div>
           </Col>
-          <Col>
-            <div className="title-page">
-              <h4 className="ml-3">Public Key</h4>
+          <Col sm="6" md="6" lg="6">
+            <div className="page-title">
+              <h2>Public Key</h2>
               <Alert variant="light">{publicKey}</Alert>
             </div>
           </Col>
         </Row>
-        <Row className="mt-3 contact-info stats">
-          {freeTier && (
-            <Col>
-              <div id="aat-info" className="title-page mb-2">
-                <h4 className="ml-3">AAT</h4>
-              </div>
-              <Alert variant="light" className="aat-code">
+        {freeTier ? (
+            <Row>
+              <Col sm="6" md="6" lg="6">
+                <div id="aat-info" className="page-title">
+                  <h2>AAT</h2>
+                </div>
+                <Alert variant="light" className="aat-code">
                 <pre>
                   <code className="language-html" data-lang="html">
                     {"# Returns\n"}
                     <span id="aat">{aatStr}</span>
                   </code>
-                  <p
-                    onClick={() =>
-                      copyToClipboard(JSON.stringify(aat, null, 2))
-                    }
-                  >
-                    Copy
-                  </p>
                 </pre>
-              </Alert>
-            </Col>
-          )}
-          <Col>
-            <Row className="contact-info stats">
-              {contactInfo.map((card, idx) => (
-                <Col
-                  className={freeTier ? "free-tier" : ""}
-                  lg={freeTier ? "12" : "6"}
-                  key={idx}
-                >
-                  <InfoCard
-                    className={"pl-4 contact"}
-                    title={card.subtitle}
-                    subtitle={card.title}
-                  >
-                    <span />
-                  </InfoCard>
-                </Col>
-              ))}
+                </Alert>
+              </Col>
+              <Col sm="6" md="6" lg="6">
+                <div className="free-tier-contact-info">
+                  {contactInfo.map((card, idx) => (
+                    <div key={idx}>
+                      <h3>{card.title}</h3>
+                      <span>{card.subtitle}</span>
+                    </div>
+                  ))}
+                </div>
+              </Col>
             </Row>
-          </Col>
-        </Row>
-        <Row className="mt-3 mb-4">
-          <Col>
-            <div className="action-buttons">
-              <span className="option">
-                <img src="/assets/edit.svg" alt="" className="icon" />
+          ) :
+          <Row className="contact-info">
+            {contactInfo.map((card, idx) => (
+              <Col key={idx} sm="6" md="6" lg="6">
+                <InfoCard
+                  className={"contact"}
+                  title={card.title}
+                  subtitle={card.subtitle}>
+                  <span/>
+                </InfoCard>
+              </Col>
+            ))}
+          </Row>}
+        <Row className="action-buttons">
+          <Col sm="3" md="3" lg="3">
+            <span className="option">
+                <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
                 <p>
                   <Link
                     to={() => {
                       const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
 
                       return url.replace(":address", address);
-                    }}
-                  >
+                    }}>
                     Edit
                   </Link>{" "}
                   to change your app description.
                 </p>
               </span>
-              <span className="option">
-                <img src="/assets/trash.svg" alt="" className="icon" />
+          </Col>
+          <Col sm="3" md="3" lg="3">
+            <span className="option">
+                <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
                 <p>
                   <span
                     className="link"
-                    onClick={() => this.setState({deleteModal: true})}
-                  >
+                    onClick={() => this.setState({deleteModal: true})}>
                     Remove
                   </span>{" "}
                   this App from the Dashboard.
                 </p>
-              </span>
-            </div>
+            </span>
           </Col>
         </Row>
-        <Modal
-          className="app-modal"
-          show={deleteModal}
-          onHide={() => this.setState({deleteModal: false})}
-          animation={false}
-          centered
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Are you sure you want to delete this App?</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            This action is irreversible, if you delete it you will never be able
-            to access it again
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="light"
-              className="pr-4 pl-4"
-              onClick={this.deleteApplication}
-            >
-              Delete
-            </Button>
-            <Button
-              variant="dark"
-              className="pr-4 pl-4"
-              onClick={() => this.setState({deleteModal: false})}
-            >
-              Cancel
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <div className="app-detail-modal">
+          <Modal
+            size="sm"
+            className="app-modal"
+            show={deleteModal}
+            onHide={() => this.setState({deleteModal: false})}
+            animation={false}
+            centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Are you sure you want to remove this App?</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Your application will be removed from the Pocket Dashboard.
+              However, you will be able access it through the command line interface (CLI) or import it
+              back into Pocket Dashboard with the private key assigned to it.
+            </Modal.Body>
+            <Modal.Footer>
+              <Button className="dark-button" onClick={() => this.setState({deleteModal: false})}>
+                <span>Cancel</span>
+              </Button>
+              <Button onClick={this.deleteApplication}>
+                <span>Remove</span>
+              </Button>
+            </Modal.Footer>
+          </Modal>
+        </div>
       </div>
     );
   }

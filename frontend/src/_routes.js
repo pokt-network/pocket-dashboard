@@ -66,7 +66,7 @@ export const DASHBOARD_PATHS = {
   nodeChainList: "/nodes/chains",
   importNode: "/nodes/import",
   termsOfService: "/support/terms-of-service",
-  PrivacyPolicy: "/support/privacy-policy"
+  privacyPolicy: "/support/privacy-policy"
 };
 
 export const PROFILE_PATHS = {
@@ -269,7 +269,7 @@ export const dashboardRoutes = [
     component: TermsOfService,
   },
   {
-    path: DASHBOARD_PATHS.PrivacyPolicy,
+    path: DASHBOARD_PATHS.privacyPolicy,
     exact: false,
     name: "Terms of Service",
     component: PrivacyPolicy,

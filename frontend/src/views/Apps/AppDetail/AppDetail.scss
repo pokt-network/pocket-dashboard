@@ -1,27 +1,97 @@
 @import "../../../scss/Core.scss";
 
-#app-detail {
+.app-detail {
+
   .head {
+    display: flex;
+    align-items: center;
+    margin-left: -16px;
+    margin-bottom: 10px;
+
+    // Free tier badge
+    .badge {
+      font-family: $primary-font-family;
+      font-weight: 400;
+      font-size: 12px;
+      text-align: center;
+      text-transform: capitalize;
+
+      border-radius: 25px;
+      background-color: $white-smoke;
+
+      width: 80px;
+      height: 26px;
+
+      margin-left: 12px;
+    }
+
+    img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(33, 33, 33, 0.25);
+      background-color: white;
+
+      margin-top: -35px;
+      margin-right: 20px;
+    }
+
     h1 {
+      font-family: $secondary-font-family;
       color: $primary-color;
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.83;
+
+      margin-bottom: -25px;
+    }
+
+    h3 {
+      font-family: $secondary-font-family;
+      font-size: 22px;
+      font-weight: 800;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 2.5;
+      letter-spacing: normal;
+      color: $dark-blue;
+
+      margin-bottom: -13px;
+    }
+
+    h1, h3 {
+      text-transform: uppercase;
+    }
+
+    p {
+      font-family: $primary-font-family;
+      font-size: 18px;
+      font-weight: 300;
+      color: $secondary-color;
     }
   }
 
-  .name {
-    margin-bottom: 0;
+  button {
+    width: 85px;
   }
 
-  .info-section:last-of-type {
-    margin-top: 50px;
-  }
+  .page-title {
 
-  .title-page {
-    color: $dark-gray;
-
-    h2 {
-      font-weight: 700;
-      display: inline;
+    h1 {
+      font-family: $secondary-font-family;
+      font-size: 22px;
+      font-weight: bold;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: 1.73;
+      letter-spacing: -0.6px;
+      color: $secondary-color;
     }
+  }
+
+  .stats {
+    margin-top: 25px;
+    margin-left: -30px;
   }
 
   .unstaking-time {
@@ -31,66 +101,53 @@
     text-transform: uppercase;
   }
 
-  .cta {
-    margin-top: -5px;
-  }
+  .app-segment {
+    margin-left: -15px;
 
-  .app-table {
-    box-shadow: $default-box-shadow;
-
-    th {
-      font-weight: 700;
-      font-size: 1.2em;
-    }
-  }
-
-  .contact {
-    h2 {
-      color: $dark-gray !important;
-      font-size: 24px;
-      text-transform: uppercase;
-      font-family: "Open Sans";
-    }
-  }
-
-  .contact-info>.free-tier:first-of-type {
-    .contact {
-      box-shadow: none;
-    }
-  }
-
-  .owner {
-    color: #000;
-    margin-left: 2px;
-    font-weight: 800;
-  }
-
-  .description {
-    font-weight: 300;
-  }
-
-  .head {
-    display: flex;
-    align-items: center;
-
-    img {
-      height: 70px;
-      width: 70px;
-      border-radius: 50%;
-      box-shadow: 0 0 10px rgba(33, 33, 33, 0.25);
-    }
-
-    .info {
-      .badge {
-        font-size: 0.4em;
-        padding: 10px;
-        font-weight: 400;
-        color: $dark-gray;
+    .head {
+      h2 {
+        margin-left: 58px;
       }
     }
   }
 
+  .app-data {
+    margin-top: 32px;
+    margin-left: -35px;
+
+    div.alert.alert-light {
+      box-shadow: none;
+
+      font-family: $primary-font-family;
+      font-size: 13px;
+      font-weight: 300;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: $secondary-color;
+    }
+  }
+
+  .page-title {
+    h2 {
+      font-family: $secondary-font-family;
+      font-size: 18px;
+      font-weight: bold;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: $secondary-color;
+
+      margin-left: 42px;
+
+    }
+  }
+
   #aat-info {
+    margin-left: -15px;
+
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -108,58 +165,192 @@
   }
 
   .aat-code {
+    margin-left: -20px;
+    padding-left: 36px;
+    box-shadow: none;
+
     pre {
       display: flex;
       justify-content: space-between;
-      padding: 15px;
+      padding-top: 10px;
+      padding-left: -10px;
 
       code {
-        font-family: "Lato";
-        font-weight: 400;
-        color: rgba(0, 0, 0, 0.5);
+        font-family: "Poppins", sans-serif;
+        font-size: 12px;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: -0.33px;
+        color: #888888;
       }
     }
+  }
 
-    p {
-      align-self: flex-start;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 1.1em;
-      color: rgba(0, 0, 0, 0.5);
+  .free-tier-contact-info {
+    height: 210px;
+    border-radius: 4px;
+    margin-top: 8px;
+
+    padding-top: 25px;
+    padding-left: 30px;
+
+    box-shadow: $default-box-shadow;
+
+    div {
+      margin-bottom: 50px;
     }
 
-    p:active {
-      color: #000000;
+  }
+
+  .free-tier-contact-info h3, .contact-info h2 {
+    text-transform: uppercase;
+    font-family: $secondary-font-family;
+    font-size: 18px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: $secondary-color;
+  }
+
+  .free-tier-contact-info span, .contact-info p {
+    font-family: $primary-font-family;
+
+    font-size: 18px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: $secondary-color;
+  }
+
+  .contact-info {
+    margin-top: 25px;
+
+    div {
+      margin-left: -8px;
+    }
+
+    div:last-of-type {
+      margin-left: 0;
+    }
+
+    .contact {
+      padding-top: 15px;
+      padding-left: 28px;
+      height: 86px;
     }
   }
 
   .action-buttons {
+    margin-top: 30px;
+    margin-left: -26px;
+
+    div {
+      margin-right: -25px;
+    }
+
     .option {
-      .icon {
-        width: 1.8%;
-        margin-right: 5px;
+
+      img {
+        width: 20px;
+        height: 20px;
+
+        margin-right: 7px;
       }
-    }
 
-    a,
-    p {
-      display: inline;
-      font-weight: 300;
-      font-size: 18px;
-    }
+      a, p {
+        display: inline;
+        font-family: $primary-font-family;
+        font-size: 14px;
+        font-weight: 300;
+        letter-spacing: -0.38px;
+        color: $secondary-color;
+      }
 
-    p {
-      margin-right: 10px;
-    }
-
-    .link {
-      color: $primary-color;
-    }
-  }
-
-  .contact-info {
-    h1 {
-      font-size: 2em;
+      a, .link {
+        color: $primary-color;
+        cursor: pointer;
+      }
     }
   }
 }
+
+.app-modal {
+  height: 400px !important;
+  margin-top: 15%;
+
+  .modal-dialog {
+    max-width: 678px !important;
+    max-height: 316px !important;
+
+    background-color: $dark-blue;
+    border-radius: 10px;
+
+
+    .modal-content {
+
+      .modal-header {
+        width: 120%;
+      }
+
+      .modal-title {
+        text-transform: uppercase;
+        font-family: $secondary-font-family;
+        color: $primary-color;
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .close {
+        position: relative;
+        top: -40px;
+        right: 60px;
+        opacity: 1;
+        color: white;
+
+        span {
+          font-size: 25pt;
+          font-weight: lighter;
+        }
+      }
+
+      .modal-body {
+        width: 570px;
+        height: 100px;
+
+        opacity: 1;
+
+        font-family: $primary-font-family;
+        font-size: 18px;
+        font-weight: 300;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.39;
+        letter-spacing: normal;
+        color: white;
+      }
+    }
+
+    .modal-footer {
+      padding-top: 50px;
+      justify-content: flex-start;
+
+      button {
+        width: 97px;
+        margin-right: 18px;
+      }
+
+      .dark-button {
+        background-color: $dark-blue;
+        border: solid 1px #25a9e0;
+      }
+    }
+  }
+}
+
