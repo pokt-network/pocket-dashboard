@@ -211,9 +211,6 @@ class Dashboard extends Component {
               </Segment>
             </Col>
           </Row>
-          <Row className="dashboard-footer">
-
-          </Row>
         </div>
       </div>
     );

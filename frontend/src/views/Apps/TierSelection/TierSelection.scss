@@ -1,77 +1,83 @@
 @import "../../../scss/Core.scss";
 
 
-.modal-dialog, .modal-tier {
-  max-width: 948px !important;
-  max-height: 700px !important;
-  background-color: $dark-blue;
-  border-radius: 10px;
-  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
-  padding: 0 40px;
+.app-modal {
+  min-height: 800px !important;
+  margin-top: 0 !important;
 
-  .modal-content {
+  .modal-dialog {
+    max-width: 948px !important;
+
+
     background-color: $dark-blue;
+    border-radius: 10px;
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+    padding: 0 40px;
 
-    .modal-title {
-      text-transform: uppercase;
-      font-family: $secondary-font-family;
-      color: $primary-color;
-      font-size: 22px;
-      font-weight: 800;
-      line-height: 1;
-    }
+    .modal-content {
+      background-color: $dark-blue;
 
-    .close {
-      position: relative;
-      top: -40px;
-      right: -60px;
-      opacity: 1;
-      color: white;
-
-      span {
-        font-size: 25pt;
-        font-weight: lighter;
-      }
-    }
-
-    .modal-body {
-      width: 848px;
-      height: 522px;
-
-      p,
-      a {
-        opacity: 1;
-        font-family: $primary-font-family;
-        font-size: 16px;
-        font-weight: 300;
-        font-stretch: normal;
-        font-style: normal;
-        line-height: 1.81;
-        letter-spacing: -0.44px;
-        text-align: justify;
-        color: white;
-      }
-
-      a {
-        text-decoration: underline;
-        font-weight: bold;
-        letter-spacing: -0.64px;
+      .modal-title {
+        text-transform: uppercase;
+        font-family: $secondary-font-family;
         color: $primary-color;
+        font-size: 22px;
+        font-weight: 800;
+        line-height: 1;
       }
 
-      p {
-        margin-bottom: 20px;
+      .close {
+        position: relative;
+        top: -40px;
+        right: -60px;
+        opacity: 1;
+        color: white;
+
+        span {
+          font-size: 25pt;
+          font-weight: lighter;
+        }
       }
 
-      b {
-        font-weight: bold;
+      .modal-body {
+        width: 848px;
+        height: 522px;
+
+        p,
+        a {
+          opacity: 1;
+          font-family: $primary-font-family;
+          font-size: 16px;
+          font-weight: 300;
+          font-stretch: normal;
+          font-style: normal;
+          line-height: 1.81;
+          letter-spacing: -0.44px;
+          text-align: justify;
+          color: white;
+        }
+
+        a {
+          text-decoration: underline;
+          font-weight: bold;
+          letter-spacing: -0.64px;
+          color: $primary-color;
+        }
+
+        p {
+          margin-bottom: 20px;
+        }
+
+        b {
+          font-weight: bold;
+        }
       }
     }
-  }
 
-  .modal-footer {
-    padding-top: 30px;
-    justify-content: flex-start;
+    .modal-footer {
+      padding-top: 30px;
+      justify-content: flex-start;
+    }
   }
 }
 

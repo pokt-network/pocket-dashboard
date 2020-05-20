@@ -25,8 +25,8 @@ class DefaultLayout extends Component {
           </Col>
         </Row>
         <Row>
-          <AppSidebar />
-          <Col id="default-layout">
+          <AppSidebar/>
+          <Col className="default-layout">
             <Row>
               {/* TODO: Remove manually written links for testing purposes. */}
 
@@ -47,6 +47,9 @@ class DefaultLayout extends Component {
                 );
               })}
             </div>
+            <Row className="default-layout-footer">
+
+            </Row>
           </Col>
         </Row>
       </Container>

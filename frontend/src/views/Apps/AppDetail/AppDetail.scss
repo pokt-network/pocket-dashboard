@@ -1,7 +1,6 @@
 @import "../../../scss/Core.scss";
 
 .app-detail {
-  height: 60vh;
 
   .head {
     display: flex;
@@ -114,18 +113,13 @@
 
   .app-data {
     margin-top: 32px;
-    margin-left: -15px;
-
-    div.col {
-      padding-left: 0;
-    }
-
+    margin-left: -35px;
 
     div.alert.alert-light {
       box-shadow: none;
 
       font-family: $primary-font-family;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 300;
       font-stretch: normal;
       font-style: normal;
@@ -171,7 +165,7 @@
   }
 
   .aat-code {
-    margin-left: -10px;
+    margin-left: -20px;
     padding-left: 36px;
     box-shadow: none;
 
@@ -198,10 +192,9 @@
     height: 210px;
     border-radius: 4px;
     margin-top: 8px;
-    margin-left: -15px;
 
     padding-top: 25px;
-    padding-left: 22px;
+    padding-left: 30px;
 
     box-shadow: $default-box-shadow;
 
@@ -248,7 +241,7 @@
 
     .contact {
       padding-top: 15px;
-      padding-left: 45px;
+      padding-left: 28px;
       height: 86px;
     }
   }
@@ -256,7 +249,6 @@
   .action-buttons {
     margin-top: 30px;
     margin-left: -26px;
-    height: 5em;
 
     div {
       margin-right: -25px;
@@ -303,7 +295,7 @@
     .modal-content {
 
       .modal-header {
-        width: 110%;
+        width: 120%;
       }
 
       .modal-title {
@@ -317,8 +309,8 @@
 
       .close {
         position: relative;
-        top: -30px;
-        right: 0;
+        top: -40px;
+        right: 60px;
         opacity: 1;
         color: white;
 
@@ -358,7 +350,7 @@
         background-color: $dark-blue;
         border: solid 1px #25a9e0;
       }
-
     }
   }
 }
+
