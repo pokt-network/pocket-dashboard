@@ -31,6 +31,8 @@ import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
 import OrderSummary from "./views/Payment/OrderSummary/OrderSummary";
 import ResetPassword from "./views/Auth/ResetPassword/ResetPassword";
 import AppPassphrase from "./views/Apps/AppPassphrase/AppPassphrase";
+import TermsOfService from "./views/Support/TermsOfService";
+import PrivacyPolicy from "./views/Support/PrivacyPolicy";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -63,6 +65,8 @@ export const DASHBOARD_PATHS = {
   createNodeForm: "/nodes/new",
   nodeChainList: "/nodes/chains",
   importNode: "/nodes/import",
+  termsOfService: "/support/terms-of-service",
+  PrivacyPolicy: "/support/privacy-policy"
 };
 
 export const PROFILE_PATHS = {
@@ -257,6 +261,18 @@ export const dashboardRoutes = [
     exact: false,
     name: "User General",
     component: Profile,
+  },
+  {
+    path: DASHBOARD_PATHS.termsOfService,
+    exact: false,
+    name: "Terms of Service",
+    component: TermsOfService,
+  },
+  {
+    path: DASHBOARD_PATHS.PrivacyPolicy,
+    exact: false,
+    name: "Terms of Service",
+    component: PrivacyPolicy,
   },
 ];
 

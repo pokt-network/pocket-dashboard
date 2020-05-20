@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import "./AppPassphrase.scss";
 import {Col, Form, Row} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
-import BootstrapTable from "react-bootstrap-table-next";
+import AppTable from "../../../core/components/AppTable";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
@@ -319,8 +319,8 @@ class AppPassphrase extends Component {
         <Row className="mb-5 app-networks">
           <Col>
             <Segment label="Networks">
-              <BootstrapTable
-                classes="table app-table app-table-empty table-striped"
+              <AppTable
+                scroll
                 keyField="hash"
                 data={[]}
                 columns={TABLE_COLUMNS.NETWORK_CHAINS}

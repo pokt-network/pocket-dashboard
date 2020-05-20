@@ -343,6 +343,72 @@ button {
       color: $table-data-font-color;
       font-weight: 300;
       letter-spacing: -0.33px;
+      overflow-wrap: anywhere;
+    }
+  }
+
+  &.scroll {
+
+    thead,
+    tbody tr {
+      display: table;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    thead {
+      width: calc(100% - 1em);
+    }
+
+    tbody {
+      display: block;
+      height: 60vh;
+      overflow: auto;
+    }
+
+    .selection-cell-header {
+      width: 26px;
+
+      input {
+        margin-left: -8px;
+      }
+    }
+
+    .selection-cell {
+      width: 1px;
+
+      input {
+        margin-left: -8px;
+      }
+    }
+
+    .selection-cell-header * {
+      margin-left: 21px;
+    }
+  }
+
+  &.hide {
+
+    th {
+      border-bottom-color: transparent;
+    }
+
+    .show-icon {
+      .icon {
+        transform: rotate(0);
+      }
+    }
+
+    tbody {
+      display: none;
+    }
+  }
+
+  .show-icon {
+    .icon {
+      width: 5.5%;
+      cursor: pointer;
+      transform: rotate(180deg);
     }
   }
 }

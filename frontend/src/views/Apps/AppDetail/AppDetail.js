@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
@@ -20,6 +19,8 @@ import {
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import moment from "moment";
+import AppTable from "../../../core/components/AppTable";
+import AppAlert from "../../../core/components/AppAlert";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -35,6 +36,8 @@ class AppDetail extends Component {
       deleted: false,
       message: "",
       purchase: true,
+      hideTable: false,
+      exists: true,
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -62,9 +65,12 @@ class AppDetail extends Component {
       networkData,
     } = await ApplicationService.getApplication(address);
 
-    const chains = await NetworkService.getNetworkChains(
-      networkData.chains
-    );
+    if (pocketApplication === undefined) {
+      this.setState({loading: false, exists: false});
+      return;
+    }
+
+    const chains = await NetworkService.getNetworkChains(networkData.chains);
 
     const {freeTier} = pocketApplication;
 
@@ -153,7 +159,15 @@ class AppDetail extends Component {
       publicKey = publicPocketAccount.publicKey;
     }
 
-    const {chains, aat, loading, deleteModal, deleted, message} = this.state;
+    const {
+      chains,
+      aat,
+      loading,
+      deleteModal,
+      deleted,
+      message,
+      exists,
+    } = this.state;
 
     const generalInfo = [
       {
@@ -188,6 +202,19 @@ class AppDetail extends Component {
 
     if (loading) {
       return <Loader />;
+    }
+
+    if (!exists) {
+      const message = (
+        <h3>
+          This application does not exist.{" "}
+          <Link to={_getDashboardPath(DASHBOARD_PATHS.apps)}>
+            Go to applications list.
+          </Link>
+        </h3>
+      );
+
+      return <AppAlert variant="danger" title={message} />;
     }
 
     if (deleted) {
@@ -253,10 +280,10 @@ class AppDetail extends Component {
         <Row>
           <Col className="title-page mt-2 mb-4">
             <h4 className="ml-2">Networks</h4>
-            <BootstrapTable
-              classes="app-table"
+            <AppTable
+              scroll
+              toggle={chains.length > 0}
               keyField="hash"
-              Purch
               data={chains}
               columns={TABLE_COLUMNS.NETWORK_CHAINS}
               bordered={false}
