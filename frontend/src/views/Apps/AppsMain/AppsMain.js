@@ -7,11 +7,11 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {APPLICATIONS_LIMIT, BOND_STATUS_STR, STYLING, TABLE_COLUMNS,} from "../../../_constants";
+import {APPLICATIONS_LIMIT, BOND_STATUS_STR, STYLING, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField,} from "../../../_helpers";
+import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
@@ -222,14 +222,22 @@ class AppsMain extends Main {
                       filteredItems.map((app, idx) => {
                         const {name, icon} = app.pocketApplication;
                         const {stakedTokens, status} = app.networkData;
-                        const {
-                          address,
-                        } = app.pocketApplication.publicPocketAccount;
 
                         return (
                           <Link
                             key={idx}
                             to={() => {
+                              const address = app.networkData.address;
+                              const applicationID = app.pocketApplication.id;
+
+                              if (!address) {
+                                ApplicationService.saveAppInfoInCache({
+                                  applicationID,
+                                });
+                                return _getDashboardPath(
+                                  DASHBOARD_PATHS.appPassphrase
+                                );
+                              }
                               const url = _getDashboardPath(
                                 DASHBOARD_PATHS.appDetail
                               );

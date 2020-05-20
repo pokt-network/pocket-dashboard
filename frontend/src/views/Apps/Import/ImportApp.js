@@ -38,6 +38,7 @@ class Import extends Component {
       },
       redirectPath: "",
       redirectParams: {},
+      imported: false,
     };
   }
 
@@ -89,14 +90,8 @@ class Import extends Component {
     const {privateKey, passphrase} = this.state.data;
 
     const {success, data} = await AccountService.importAccount(
-      privateKey, passphrase
-    );
+      privateKey, passphrase);
 
-    // eslint-disable-next-line react/prop-types
-    this.props.history.push({
-      pathname: _getDashboardPath(DASHBOARD_PATHS.createAppInfo),
-      state: {imported: true},
-    });
     if (success) {
       ApplicationService.saveAppInfoInCache({
         imported: true,
@@ -104,6 +99,7 @@ class Import extends Component {
         passphrase,
         address: data.address,
       });
+      this.setState({imported: true, address: data.address});
     } else {
       this.setState({error: {show: true, message: data.message}});
     }
@@ -120,6 +116,7 @@ class Import extends Component {
       uploadedPrivateKey,
       hasPrivateKey,
       error,
+      imported,
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
@@ -252,9 +249,21 @@ class Import extends Component {
                         <Button
                           variant="dark"
                           type="submit"
-                          onClick={this.importApp}
+                          onClick={
+                            !imported
+                              ? this.importApp
+                              : () => {
+                                  // eslint-disable-next-line react/prop-types
+                                  this.props.history.push({
+                                    pathname: _getDashboardPath(
+                                      DASHBOARD_PATHS.createAppInfo
+                                    ),
+                                    state: {imported: true},
+                                  });
+                                }
+                          }
                         >
-                          Create
+                          {!imported ? "Create" : "Continue"}
                         </Button>
                       </Form.Group>
                     </>
