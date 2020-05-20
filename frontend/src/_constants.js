@@ -63,7 +63,7 @@ export const TABLE_COLUMNS = {
     {
       dataField: "index",
       text: "Index",
-    }
+    },
   ],
   APPS: [
     {

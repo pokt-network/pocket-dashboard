@@ -121,6 +121,9 @@ export const Configurations = {
         "http://node10.testnet.pokt.network"
       ]
     }
+  },
+  recaptcha: {
+    google_server: process.env.RECAPTCHA_SERVER_SECRET
   }
 };
 

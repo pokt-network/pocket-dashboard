@@ -14,6 +14,7 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCardNoAddressForm";
 import AppAlert from "../../../core/components/AppAlert";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
+import {Link} from "react-router-dom";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -283,7 +284,7 @@ class OrderSummary extends Component {
               label={
                 <p>
                   I agree to Pocket Purchase&#39;s{" "}
-                  <a href="/todo">Terms and Condititons.</a>
+                  <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>Terms and Condititons.</Link>
                 </p>
               }
             />

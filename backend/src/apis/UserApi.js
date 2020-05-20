@@ -158,5 +158,20 @@ router.post("/auth/logout", async (request, response) => {
 
 });
 
+/**
+ * Validate captcha token
+ */
+router.post("/verify-captcha", async (request, response) => {
+  try {
+    /** @type {{token:string}} */
+    const {token} = request.body;
+    const result = await userService.verifyCaptcha(token);
+    
+    response.send(result.data);
+  } catch (e) {
+    response.status(400).send(false); 
+  }
+});
+
 
 export default router;

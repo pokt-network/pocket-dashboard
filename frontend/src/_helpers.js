@@ -1,3 +1,4 @@
+import React from "react";
 import numeral from "numeral";
 import {
   BOND_STATUS,
@@ -37,7 +38,9 @@ export const copyToClipboard = (value) => {
 
 export const createAndDownloadJSONFile = (fileName, data) => {
   const element = document.createElement("a");
-  const file = new File([JSON.stringify(data)], fileName, {type: "application/json"});
+  const file = new File([JSON.stringify(data)], fileName, {
+    type: "application/json",
+  });
 
   element.href = URL.createObjectURL(file);
   element.download = `${fileName}.json`;
@@ -130,4 +133,27 @@ export const scrollToId = (id) => {
   const elmnt = document.getElementById(id);
 
   elmnt.scrollIntoView();
+};
+
+export const tableShow = (table, handleClick) => {
+  const showFormatter = (column) => {
+    return (
+      <span className="show-icon d-flex justify-content-between">
+        <span>{column.text}</span>{" "}
+        <img
+          onClick={handleClick}
+          className="icon"
+          src="/assets/arrow.svg"
+          alt=""
+        />
+      </span>
+    );
+  };
+
+  const tableFormatted = [...table];
+  const formatter = Object.assign({}, table[table.length-1]);
+  
+  formatter.headerFormatter = showFormatter;
+  tableFormatted[tableFormatted.length-1] = formatter;
+  return tableFormatted;  
 };

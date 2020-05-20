@@ -1,18 +1,17 @@
 import React from "react";
-import BootstrapTable from "react-bootstrap-table-next";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import {TABLE_COLUMNS} from "../../../_constants";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
 import Segment from "../../../core/components/Segment/Segment";
+import AppTable from "../../../core/components/AppTable";
 
 class ApplicationChainList extends Chains {
   constructor(props, context) {
     super(props, context);
 
     this.handleChains = this.handleChains.bind(this);
-
   }
 
   handleChains() {
@@ -45,8 +44,8 @@ class ApplicationChainList extends Chains {
             <p>
               Choose the chains you want to connect your app or node to.
               Remember you won&#39;t be able to change these chains until your
-              next stake which will be evenly divided on the selected number
-              of chains.
+              next stake which will be evenly divided on the selected number of
+              chains.
             </p>
           </Col>
         </Row>
@@ -58,7 +57,8 @@ class ApplicationChainList extends Chains {
                 onClick={this.handleChains}
                 variant="primary"
                 size={"md"}
-                className="pl-4 pr-4">
+                className="pl-4 pr-4"
+              >
                 <span>Continue</span>
               </Button>
             </div>
@@ -66,7 +66,7 @@ class ApplicationChainList extends Chains {
         </Row>
         <Row>
           <Col>
-            <Segment>
+            <Segment scroll={false}>
               <Row className="search-panel">
                 <Col>
                   <InputGroup className="search-input ml-5 mb-3">
@@ -84,15 +84,17 @@ class ApplicationChainList extends Chains {
                       <Button
                         type="submit"
                         onClick={this.handleChainSearch}
-                        variant="outline-primary">
-                        <img src="/assets/search.svg" alt="search-icon"/>
+                        variant="outline-primary"
+                      >
+                        <img src="/assets/search.svg" alt="search-icon" />
                       </Button>
                     </InputGroup.Append>
                   </InputGroup>
                 </Col>
               </Row>
-              <BootstrapTable
-                classes="table app-table"
+              <AppTable
+                scroll
+                toggle={chains.length > 0}
                 keyField="hash"
                 data={chains}
                 columns={TABLE_COLUMNS.NETWORK_CHAINS}

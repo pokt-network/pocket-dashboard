@@ -7,13 +7,15 @@ import {
 } from "../../../core/components/AuthProviderButton";
 import PocketUserService from "../../../core/services/PocketUserService";
 import "./SignUp.scss";
-import {ROUTE_PATHS} from "../../../_routes";
+import {ROUTE_PATHS, _getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import AuthSidebar from "../../../core/components/AuthSidebar/AuthSidebar";
 import {Formik} from "formik";
 import * as yup from "yup";
 import {VALIDATION_MESSAGES} from "../../../_constants";
 import {faGithub, faGoogle} from "@fortawesome/free-brands-svg-icons";
 import {validateYup} from "../../../_helpers";
+import ReCAPTCHA from "react-google-recaptcha";
+import {Configurations} from "../../../_configuration";
 
 class SignUp extends Component {
   constructor(props, context) {
@@ -22,6 +24,7 @@ class SignUp extends Component {
     this.handleSignUp = this.handleSignUp.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.validate = this.validate.bind(this);
+    this.validateCaptcha = this.validateCaptcha.bind(this);
 
     this.schema = yup.object().shape({
       email: yup
@@ -44,6 +47,7 @@ class SignUp extends Component {
       authProviders: [],
       backendErrors: "",
       agreeTerms: false,
+      validCaptcha: false,
       data: {
         username: "",
         email: "",
@@ -102,9 +106,15 @@ class SignUp extends Component {
     this.setState({data});
   }
 
+  async validateCaptcha(token) {
+    const {success} = await PocketUserService.verifyCaptcha(token);
+
+    this.setState({validCaptcha: success});
+  }
+
   render() {
     const {login} = ROUTE_PATHS;
-    const {agreeTerms, backendErrors} = this.state;
+    const {agreeTerms, backendErrors, validCaptcha} = this.state;
 
     return (
       <Container fluid id="signup" className={"auth-page"}>
@@ -192,7 +202,6 @@ class SignUp extends Component {
                           </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Check
-                          custom
                           checked={agreeTerms}
                           onChange={() =>
                             this.setState({agreeTerms: !agreeTerms})
@@ -202,13 +211,20 @@ class SignUp extends Component {
                           label={
                             <span className="text">
                               I agree to Pocket Dashboard{" "}
-                              <Link to={login}>Privacy Policy.</Link>
+                              <Link to={_getDashboardPath(DASHBOARD_PATHS.privacyPolicy)}>Privacy Policy.</Link>
                             </span>
                           }
                         />
                         <br />
+                        <div className="d-flex justify-content-center">
+                          <ReCAPTCHA
+                            sitekey={Configurations.recaptcha.client}
+                            onChange={this.validateCaptcha}
+                          />
+                        </div>
+                        ,
                         <Button
-                          disabled={!agreeTerms}
+                          disabled={!(agreeTerms && validCaptcha)}
                           type="submit"
                           size="md"
                           variant="primary"
