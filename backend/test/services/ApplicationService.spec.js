@@ -89,7 +89,7 @@ describe("ApplicationService", () => {
   if (FREE_TIER_PRIVATE_KEY_WITH_POKT) {
     describe("stakeFreeTierApplication", async () => {
 
-      it("Expect a true value", async () => {
+      it("Expect the aat value", async () => {
 
         const applicationPassphrase = "Application";
         const applicationAccount = await applicationService.pocketService
@@ -108,10 +108,9 @@ describe("ApplicationService", () => {
           description: "A test application",
           publicPocketAccount: {
             address: applicationAccount.addressHex,
-            publicKey: ""
+            publicKey: applicationAccount.publicKey.toString("hex")
           }
         };
-
 
         const persistenceService = sinon.createStubInstance(PersistenceProvider);
         const stubFilter = {
@@ -132,12 +131,12 @@ describe("ApplicationService", () => {
           "0001"
         ];
 
-        const staked = await applicationService.stakeFreeTierApplication(applicationData, networkChains);
+        const aat = await applicationService.stakeFreeTierApplication(applicationData, networkChains);
 
         // eslint-disable-next-line no-undef
-        should.exist(staked);
+        should.exist(aat);
 
-        staked.should.be.true;
+        aat.should.be.an("object");
       });
     });
 

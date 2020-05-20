@@ -255,10 +255,10 @@ router.post("/freetier/stake", async (request, response) => {
 router.post("/freetier/unstake", async (request, response) => {
   try {
 
-    /** @type {{applicationAccountAddress: string, user: string, appLink: string}} */
+    /** @type {{application: {privateKey:string, passphrase:string, accountAddress: string}, user: string, appLink: string}} */
     const data = request.body;
 
-    const application = await applicationService.unstakeFreeTierApplication(data.applicationAccountAddress, data.user);
+    const application = await applicationService.unstakeFreeTierApplication(data.application);
 
     if (application) {
       const applicationEmailData = {
@@ -287,7 +287,7 @@ router.post("/freetier/unstake", async (request, response) => {
 router.post("/stake", async (request, response) => {
   try {
 
-    /** @type {{application: {privateKey: string, passPhrase: string, networkChains: string[]}, payment:{id: string}, applicationLink: string}} */
+    /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[], payment:{id: string}, applicationLink: string}} */
     const data = request.body;
     const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
@@ -295,7 +295,7 @@ router.post("/stake", async (request, response) => {
 
       if (paymentHistory.isApplicationPaymentItem(true)) {
         const item = paymentHistory.getItem();
-        const application = await applicationService.stakeApplication(data.application, item.pokt);
+        const application = await applicationService.stakeApplication(data.application, data.networkChains, item.pokt);
 
         if (application) {
           const applicationEmailData = {
@@ -332,7 +332,7 @@ router.post("/stake", async (request, response) => {
 router.post("/unstake", async (request, response) => {
   try {
 
-    /** @type {{application:{privateKey:string, passPhrase:string, accountAddress: string}, applicationLink: string}} */
+    /** @type {{application:{privateKey:string, passphrase:string, accountAddress: string}, applicationLink: string}} */
     const data = request.body;
 
     const application = await applicationService.unstakeApplication(data.application);

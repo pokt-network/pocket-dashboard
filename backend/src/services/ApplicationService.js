@@ -336,7 +336,7 @@ export default class ApplicationService extends BaseService {
   /**
    * Unstake free tier application.
    *
-   * @param {{privateKey:string, passPhrase:string, accountAddress: string}} applicationData Application data.
+   * @param {{privateKey:string, passphrase:string, accountAddress: string}} applicationData Application data.
    *
    * @returns {Promise<PocketApplication | boolean>} If application was unstaked return the application, if not return false.
    * @async
@@ -354,10 +354,10 @@ export default class ApplicationService extends BaseService {
     const accountService = new AccountService();
 
     try {
-      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.passPhrase, applicationData.privateKey);
+      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.passphrase, applicationData.privateKey);
 
       // Unstake application
-      const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passPhrase);
+      const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passphrase);
 
       if (unstakedTransaction.logs && unstakedTransaction.logs[0].success) {
         const {account: freeTierAccount} = this.pocketService.getFreeTierAccount();
@@ -407,10 +407,9 @@ export default class ApplicationService extends BaseService {
     const {account: freeTierAccount, passphrase: freeTierPassphrase} = await this.pocketService.getFreeTierAccount();
     const {stake_amount: stakeAmount} = Configurations.pocket_network.free_tier;
 
-    if (!await this.pocketService.hasBalance(freeTierAccount, stakeAmount)) {
+    if (!await this.pocketService.hasBalance(freeTierAccount)) {
       throw Error("Free tier account does not have sufficient balance.");
     }
-
 
     try {
 
@@ -437,7 +436,7 @@ export default class ApplicationService extends BaseService {
   /**
    * Stake an application on network.
    *
-   * @param {{privateKey: string, passPhrase:string}} application Application to stake.
+   * @param {{privateKey: string, passphrase:string}} application Application to stake.
    * @param {string[]} networkChains Network chains to stake application.
    * @param {string} uPoktAmount uPokt amount used to stake.
    *
@@ -447,7 +446,7 @@ export default class ApplicationService extends BaseService {
   async stakeApplication(application, networkChains, uPoktAmount) {
     const accountService = new AccountService();
 
-    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, application.passPhrase, application.privateKey);
+    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, application.passphrase, application.privateKey);
 
     const filter = {
       "publicPocketAccount.address": applicationAccount.addressHex
@@ -461,7 +460,7 @@ export default class ApplicationService extends BaseService {
 
     try {
       // Stake application
-      const stakeTransaction = await this.pocketService.stakeApplication(applicationAccount, application.passPhrase, uPoktAmount, networkChains);
+      const stakeTransaction = await this.pocketService.stakeApplication(applicationAccount, application.passphrase, uPoktAmount, networkChains);
 
       if (stakeTransaction.logs && stakeTransaction.logs[0].success) {
         return PocketApplication.createPocketApplication(applicationDB);
@@ -476,7 +475,7 @@ export default class ApplicationService extends BaseService {
   /**
    * Unstake application.
    *
-   * @param {{privateKey:string, passPhrase:string, accountAddress: string}} applicationData Application data.
+   * @param {{privateKey:string, passphrase:string, accountAddress: string}} applicationData Application data.
    *
    * @returns {Promise<PocketApplication | boolean>} If application was unstaked return application, if not return false.
    * @async
@@ -494,10 +493,10 @@ export default class ApplicationService extends BaseService {
     const accountService = new AccountService();
 
     try {
-      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.passPhrase, applicationData.privateKey);
+      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.passphrase, applicationData.privateKey);
 
       // Unstake application
-      const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passPhrase);
+      const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passphrase);
 
       if (unstakedTransaction.logs && unstakedTransaction.logs[0].success) {
         return PocketApplication.createPocketApplication(applicationDB);
