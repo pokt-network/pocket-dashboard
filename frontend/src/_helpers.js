@@ -135,8 +135,8 @@ export const scrollToId = (id) => {
   elmnt.scrollIntoView();
 };
 
-export const tableShow = (handleClick) => {
-  function showFormatter(column) {
+export const tableShow = (table, handleClick) => {
+  const showFormatter = (column) => {
     return (
       <span className="show-icon d-flex justify-content-between">
         <span>{column.text}</span>{" "}
@@ -150,34 +150,10 @@ export const tableShow = (handleClick) => {
     );
   }
 
-  return [
-    {
-      dataField: "name",
-      text: "Network",
-    },
-    {
-      dataField: "netID",
-      text: "Network ID",
-      headerStyle: {
-        whiteSpace: "nowrap",
-      },
-    },
-    {
-      dataField: "hash",
-      text: "Hash",
-    },
-    {
-      dataField: "description",
-      text: "Description",
-    },
-    {
-      dataField: "ticker",
-      text: "Ticker",
-    },
-    {
-      dataField: "index",
-      text: "Index",
-      headerFormatter: showFormatter,
-    },
-  ];
+  const tableFormatted = [...table];
+  const formatter = Object.assign({}, table[table.length-1]);
+  
+  formatter.headerFormatter = showFormatter;
+  tableFormatted[tableFormatted.length-1] = formatter;
+  return tableFormatted;  
 };

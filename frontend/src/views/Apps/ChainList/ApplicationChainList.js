@@ -1,11 +1,11 @@
 import React from "react";
-import BootstrapTable from "react-bootstrap-table-next";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import {TABLE_COLUMNS} from "../../../_constants";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
 import Segment from "../../../core/components/Segment/Segment";
+import AppTable from "../../../core/components/AppTable";
 
 class ApplicationChainList extends Chains {
   constructor(props, context) {
@@ -92,8 +92,9 @@ class ApplicationChainList extends Chains {
                   </InputGroup>
                 </Col>
               </Row>
-              <BootstrapTable
-                classes="table app-table scroll"
+              <AppTable
+                scroll
+                toggle={chains.length > 0}
                 keyField="hash"
                 data={chains}
                 columns={TABLE_COLUMNS.NETWORK_CHAINS}

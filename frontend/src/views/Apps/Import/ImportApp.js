@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {Button, Col, Form, Row, Alert} from "react-bootstrap";
-import BootstrapTable from "react-bootstrap-table-next";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -8,6 +7,7 @@ import {Redirect, Link} from "react-router-dom";
 import "./ImportApp.scss";
 import AccountService from "../../../core/services/PocketAccountService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
+import AppTable from "../../../core/components/AppTable";
 
 class Import extends Component {
   constructor(props, context) {
@@ -288,8 +288,9 @@ class Import extends Component {
         <Row className="mt-2 app-networks">
           <Col className="title-page">
             <h3>Networks</h3>
-            <BootstrapTable
-              classes="table app-table app-table-empty table-striped"
+            <AppTable
+              scroll
+              toggle={[].length > 0}
               keyField="hash"
               data={[]}
               columns={TABLE_COLUMNS.NETWORK_CHAINS}

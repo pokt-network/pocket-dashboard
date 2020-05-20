@@ -13,12 +13,12 @@ import {
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
-import {mapStatusToField, tableShow} from "../../_helpers";
+import {mapStatusToField} from "../../_helpers";
 import NodeService from "../../core/services/PocketNodeService";
 import Segment from "../../core/components/Segment/Segment";
-import BootstrapTable from "react-bootstrap-table-next";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import AppTable from "../../core/components/AppTable";
 
 class Dashboard extends Component {
   constructor(props, context) {
@@ -30,8 +30,6 @@ class Dashboard extends Component {
       chains: [],
       userApps: [],
       userNodes: [],
-      hideSupport: false,
-      hideMostPopular: false,
     };
   }
 
@@ -55,8 +53,6 @@ class Dashboard extends Component {
       loading,
       userApps: allUserApps,
       userNodes: allUserNodes,
-      hideSupport,
-      hideMostPopular,
     } = this.state;
 
     // TODO: Integrate this data with backend.
@@ -200,10 +196,9 @@ class Dashboard extends Component {
               }`}
             >
               <Segment scroll={false} label="Registered Nodes">
-                <BootstrapTable
-                  classes={`app-table scroll ${
-                    userNodes.length === 0 ? "app-table-empty" : null
-                  }`}
+                <AppTable
+                  scroll
+                  toggle={userNodes.length > 0}
                   keyField="pocketNode.publicPocketAccount.address"
                   data={userNodes}
                   columns={TABLE_COLUMNS.NODES}
@@ -220,11 +215,10 @@ class Dashboard extends Component {
               }`}
             >
               <Segment scroll={false} label="Registered Apps">
-                <BootstrapTable
-                  classes={`app-table scroll ${
-                    userApps.length === 0 ? "app-table-empty" : null
-                  }`}
-                  keyField="pocketApplication.publicPocketAccount.address"
+                                <AppTable
+                  scroll
+                  toggle={userApps.length > 0}
+                  keyField="pocketNode.publicPocketAccount.address"
                   data={userApps}
                   columns={TABLE_COLUMNS.APPS}
                   bordered={false}
@@ -242,17 +236,12 @@ class Dashboard extends Component {
               }`}
             >
               <Segment scroll={false} label="Supported Blockchains">
-                <BootstrapTable
-                  classes={`app-table scroll ${hideSupport ? "hide" : ""}`}
+                <AppTable
                   keyField="hash"
+                  scroll
+                  toggle={chains.length > 0}
                   data={chains}
-                  columns={
-                    chains.length === 0
-                      ? TABLE_COLUMNS.NETWORK_CHAINS
-                      : tableShow(() =>
-                          this.setState({hideSupport: !hideSupport})
-                        )
-                  }
+                  columns={TABLE_COLUMNS.NETWORK_CHAINS}
                   bordered={false}
                 />
               </Segment>
@@ -266,17 +255,12 @@ class Dashboard extends Component {
               }`}
             >
               <Segment scroll={false} label="Most popular chains">
-                <BootstrapTable
-                  classes={`app-table scroll ${hideMostPopular ? "hide" : ""}`}
+                <AppTable
                   keyField="hash"
+                  scroll
+                  toggle={chains.length > 0}
                   data={chains}
-                  columns={
-                    chains.length === 0
-                      ? TABLE_COLUMNS.NETWORK_CHAINS
-                      : tableShow(() =>
-                          this.setState({hideMostPopular: !hideMostPopular})
-                        )
-                  }
+                  columns={TABLE_COLUMNS.NETWORK_CHAINS}
                   bordered={false}
                 />
               </Segment>

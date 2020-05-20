@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
@@ -16,11 +15,11 @@ import {
   formatNetworkData,
   getStakeStatus,
   formatNumbers,
-  tableShow,
 } from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import moment from "moment";
+import AppTable from "../../../core/components/AppTable";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -160,7 +159,6 @@ class AppDetail extends Component {
       deleteModal,
       deleted,
       message,
-      hideTable,
     } = this.state;
 
     const generalInfo = [
@@ -261,16 +259,12 @@ class AppDetail extends Component {
         <Row>
           <Col className="title-page mt-2 mb-4">
             <h4 className="ml-2">Networks</h4>
-            <BootstrapTable
-              classes={`app-table scroll ${hideTable ? "hide" : ""}`}
+            <AppTable
+              scroll
+              toggle={chains.length > 0}
               keyField="hash"
-              Purch
               data={chains}
-              columns={
-                chains.length === 0
-                  ? TABLE_COLUMNS.NETWORK_CHAINS
-                  : tableShow(() => this.setState({hideTable: !hideTable}))
-              }
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
               bordered={false}
             />
           </Col>
