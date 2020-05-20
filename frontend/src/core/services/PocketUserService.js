@@ -268,6 +268,19 @@ class PocketUserService extends PocketBaseService {
   }
 
   /**
+   * Validate reCAPTCHA token.
+   * 
+   * @param {string} token recaptcha generated token.
+   * @return {Promise<{object}>}
+   * @async
+   */
+  verifyCaptcha(token) {
+
+    return axios.post(this._getURL("verify-captcha"), {token})
+      .then(response => response.data);
+  }
+
+  /**
    * Format an email.
    *
    * @param {string} email Email to format.
