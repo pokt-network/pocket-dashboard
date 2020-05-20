@@ -20,6 +20,7 @@ import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import moment from "moment";
 import AppTable from "../../../core/components/AppTable";
+import AppAlert from "../../../core/components/AppAlert";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -36,6 +37,7 @@ class AppDetail extends Component {
       message: "",
       purchase: true,
       hideTable: false,
+      exists: true,
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -62,6 +64,11 @@ class AppDetail extends Component {
       pocketApplication,
       networkData,
     } = await ApplicationService.getApplication(address);
+
+    if (pocketApplication === undefined) {
+      this.setState({loading: false, exists: false});
+      return;
+    }
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
 
@@ -159,6 +166,7 @@ class AppDetail extends Component {
       deleteModal,
       deleted,
       message,
+      exists,
     } = this.state;
 
     const generalInfo = [
@@ -194,6 +202,19 @@ class AppDetail extends Component {
 
     if (loading) {
       return <Loader />;
+    }
+
+    if (!exists) {
+      const message = (
+        <h3>
+          This application does not exist.{" "}
+          <Link to={_getDashboardPath(DASHBOARD_PATHS.apps)}>
+            Go to applications list.
+          </Link>
+        </h3>
+      );
+
+      return <AppAlert variant="danger" title={message} />;
     }
 
     if (deleted) {
