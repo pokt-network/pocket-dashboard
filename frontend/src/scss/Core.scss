@@ -371,7 +371,7 @@ button {
     tbody {
       display: block;
       height: 60vh;
-      overflow: auto;
+      overflow: scroll;
     }
 
     .selection-cell-header {
@@ -406,9 +406,9 @@ button {
       color: black;
 
       th {
-      border-bottom: none;
-      border-top-color: transparent;
-    }
+        border-bottom: none;
+        border-top-color: transparent;
+      }
     }
 
     .show-icon {

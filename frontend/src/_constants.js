@@ -69,8 +69,8 @@ export const TABLE_COLUMNS = {
     {
       dataField: "pocketApplication.name",
       text: "Name",
-      headerClasses: "col-4",
-      classes: "col-4",
+      headerClasses: "col-3",
+      classes: "col-3",
     },
     {
       dataField: "pocketApplication.publicPocketAccount.address",
@@ -85,8 +85,8 @@ export const TABLE_COLUMNS = {
         color: STYLING.primaryColor,
         fontWeight: "bold",
       },
-      headerClasses: "col-2",
-      classes: "col-2",
+      headerClasses: "col-3",
+      classes: "col-3",
     },
   ],
   NODES: [
