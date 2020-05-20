@@ -118,38 +118,39 @@ class Dashboard extends Component {
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-            <Dropdown className="cta">
-              <Dropdown.Toggle className="pl-4 pr-4" variant="primary" id="dropdown-basic">
-                <span>
-                  Nodes
-                  <FontAwesomeIcon
-                    className="icon"
-                    icon={faAngleDown}
-                    color={STYLING.primaryColor}
-                  />
-                </span>
-              </Dropdown.Toggle>
+            {/*//TODO: Uncomment when node release.*/}
+            {/*<Dropdown className="cta">*/}
+            {/*  <Dropdown.Toggle className="pl-4 pr-4" variant="primary" id="dropdown-basic">*/}
+            {/*    <span>*/}
+            {/*      Nodes*/}
+            {/*      <FontAwesomeIcon*/}
+            {/*        className="icon"*/}
+            {/*        icon={faAngleDown}*/}
+            {/*        color={STYLING.primaryColor}*/}
+            {/*      />*/}
+            {/*    </span>*/}
+            {/*  </Dropdown.Toggle>*/}
 
-              <Dropdown.Menu>
-                <Dropdown.Item
-                  onClick={() =>
-                    // eslint-disable-next-line react/prop-types
-                    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.createNodeForm))
-                  }
-                >
-                  Create
-                </Dropdown.Item>
+            {/*  <Dropdown.Menu>*/}
+            {/*    <Dropdown.Item*/}
+            {/*      onClick={() =>*/}
+            {/*        // eslint-disable-next-line react/prop-types*/}
+            {/*        this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.createNodeForm))*/}
+            {/*      }*/}
+            {/*    >*/}
+            {/*      Create*/}
+            {/*    </Dropdown.Item>*/}
 
-                <Dropdown.Item
-                  onClick={() =>
-                    // eslint-disable-next-line react/prop-types
-                    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.importNode))
-                  }
-                >
-                  Import
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            {/*    <Dropdown.Item*/}
+            {/*      onClick={() =>*/}
+            {/*        // eslint-disable-next-line react/prop-types*/}
+            {/*        this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.importNode))*/}
+            {/*      }*/}
+            {/*    >*/}
+            {/*      Import*/}
+            {/*    </Dropdown.Item>*/}
+            {/*  </Dropdown.Menu>*/}
+            {/*</Dropdown>*/}
           </Col>
         </Row>
         <Row className="stats mt-3 mb-4">
