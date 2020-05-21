@@ -18,7 +18,7 @@ before(() => {
   configureTestService(nodeService);
 });
 
-describe("NodeService", () => {
+describe.skip("NodeService", () => {
 
   describe("createNode", () => {
     it("Expect node successfully created", async () => {
