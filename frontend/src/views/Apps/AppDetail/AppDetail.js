@@ -120,7 +120,7 @@ class AppDetail extends Component {
     const link = `${window.location.origin}${detail}`;
 
     const {success, data} = freeTier
-      ? await ApplicationService.unstakeFreeTierApplication(address, link)
+      ? await ApplicationService.unstakeFreeTierApplication({privateKey, passphrase, accountAddress: address}, link)
       : await ApplicationService.unstakeApplication(
         privateKey, passphrase, address, link);
 
@@ -191,7 +191,7 @@ class AppDetail extends Component {
       },
       // TODO: Change this value.
       {
-        title: `${formatNetworkData(2000000)} POKT`,
+        title: `${formatNetworkData(freeTier ? 0 : 20000)} POKT`,
         subtitle: "Balance"
       },
       {
