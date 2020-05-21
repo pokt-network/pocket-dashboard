@@ -73,7 +73,7 @@ class AppDetail extends Component {
       return;
     }
 
-    const chains = await NetworkService.getNetworkChains(networkData.chains);
+    const chains = await NetworkService.getAvailableNetworkChains();
 
     const {freeTier} = pocketApplication;
 
@@ -319,7 +319,7 @@ class AppDetail extends Component {
         </Row>
         <Row>
           <Col>
-            <Segment label="Networks">
+            <Segment scroll={false} label="Networks">
               <AppTable
                 scroll
                 toggle={chains.length > 0}
