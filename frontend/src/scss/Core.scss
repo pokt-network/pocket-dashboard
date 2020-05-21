@@ -371,7 +371,7 @@ button {
     tbody {
       display: block;
       height: 60vh;
-      overflow: auto;
+      overflow: scroll;
     }
 
     .selection-cell-header {
@@ -396,14 +396,16 @@ button {
     }
   }
 
-  &.hide {
+  &.hide,
+  &.empty {
     thead {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
-
       text-transform: uppercase;
       color: black;
+
+      th {
+        border-bottom: none;
+        border-top-color: transparent;
+      }
     }
 
     .show-icon {
@@ -413,14 +415,9 @@ button {
     }
 
     tbody {
-      display: none;
-    }
-  }
-
-  &.empty {
-    thead th {
-      border-bottom: none;
-      border-top-color: transparent;
+      visibility: hidden;
+      display: absolute;
+      height: 0px;
     }
   }
 
@@ -434,7 +431,7 @@ button {
 
   .show-icon {
     .icon {
-      width: 15px;
+      width: 10px;
       cursor: pointer;
       transform: rotate(180deg);
     }

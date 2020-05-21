@@ -222,7 +222,6 @@ class SignUp extends Component {
                             onChange={this.validateCaptcha}
                           />
                         </div>
-                        ,
                         <Button
                           disabled={!(agreeTerms && validCaptcha)}
                           type="submit"

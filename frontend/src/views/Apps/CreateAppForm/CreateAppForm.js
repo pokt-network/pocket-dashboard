@@ -65,10 +65,7 @@ class CreateAppForm extends CreateForm {
     if (success) {
       const {status} = importData.networkData;
 
-      const unstakedApp =
-        status === STAKE_STATUS.Staked || status === STAKE_STATUS.Unstaking;
-
-      if (unstakedApp) {
+      if (status === STAKE_STATUS.Staked) {
         const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
 
         const path = url.replace(":address", address);
