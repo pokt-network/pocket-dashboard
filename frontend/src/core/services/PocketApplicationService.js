@@ -359,6 +359,38 @@ export class PocketApplicationService extends PocketBaseService {
       });
   }
 
+
+  /**
+   * Stake a custom tier application.
+   *
+   * @param {object} application Application data.
+   * @param {string} application.privateKey Application private key.
+   * @param {string} application.passphrase Application passphrase.
+   * @param {string[]} networkChains Application network chains.
+   * @param {Object} payment payment data.
+   * @param {string} payment.id payment's stripe confirmation id.
+   * @param {string} applicationLink Link to detail for email.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  stakeApplication(application, networkChains, paymentId, applicationLink) {
+    const data = {
+      application,
+      networkChains,
+      payment: {paymentId},
+      applicationLink
+    };
+
+    return axios
+    .post(this._getURL("stake"), data)
+    .then((response) => {
+      return {success: true, data: response.data};
+    })
+    .catch((err) => {
+      return {success: false, data: err.response};
+    });
+  }
+
   /**
    * Unstake a custom tier application.
    *
@@ -394,6 +426,8 @@ export class PocketApplicationService extends PocketBaseService {
       .get(this._getURL(`import/${applicationAccountAddress}`))
       .then((response) => response.data);
   }
+
+  
 }
 
 export default new PocketApplicationService();

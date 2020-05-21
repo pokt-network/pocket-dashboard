@@ -16,6 +16,7 @@ import AppAlert from "../../../core/components/AppAlert";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import {Link} from "react-router-dom";
 import {scrollToId} from "../../../_helpers";
+import ApplicationService from "../../../core/services/PocketApplicationService";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -118,17 +119,48 @@ class OrderSummary extends Component {
     );
 
     if (result.error) {
+      console.log("klk");
       this.setState({
         alert: {
           show: true,
           variant: "warning",
-          message:
-            <h4>{result.error.message}</h4>,
+          message: <h4>{result.error.message}</h4>,
         },
       });
       scrollToId("alert");
-    } else {
+      return;
+    }
+
+    // Stake application
+    // TODO: Add node staking when implementing nodes.
+    const {
+      privateKey,
+      passphrase,
+      chains,
+      address,
+    } = ApplicationService.getApplicationInfo();
+    const application = {privateKey, passphrase};
+
+    const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
+    const detail = url.replace(":address", address);
+    const applicationlink = `${window.location.origin}${detail}`;
+
+    const {success, data} = ApplicationService.stakeApplication(
+      application, chains, result.paymentIntent.id, applicationlink
+    );
+
+    if (success && data === true) {
       this.goToInvoice();
+    } else {
+      // TODO: Add meaningful message on backend instead of false
+      this.setState({
+        alert: {
+          show: true,
+          variant: "warning",
+          message: "There was an error staking your app",
+        },
+      });
+      scrollToId("alert");
     }
   }
 
@@ -287,7 +319,10 @@ class OrderSummary extends Component {
               label={
                 <p className="agree">
                   I agree to Pocket Purchase&#39;s{" "}
-                  <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}><br/>Terms and Condititons.</Link>
+                  <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>
+                    <br />
+                    Terms and Condititons.
+                  </Link>
                 </p>
               }
             />
