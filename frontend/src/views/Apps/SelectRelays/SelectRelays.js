@@ -93,8 +93,8 @@ class SelectRelays extends Component {
       state: {
         type: ITEM_TYPES.APPLICATION,
         paymentIntent: paymentIntentData,
-        quantity: {number: relays, description: "Relays per session"},
-        cost: {number: poktPrice, description: "replays per session cost"},
+        quantity: {number: relays, description: "Relays per day"},
+        cost: {number: poktPrice, description: "Relays per day cost"},
         total: total,
       },
     });
@@ -194,9 +194,10 @@ class SelectRelays extends Component {
                 buttonProps={{
                   onClick: this.goToCheckout,
                   variant: "primary",
+                  className: "mb-3"
                 }}
               >
-                Checkout
+                <span>Checkout</span>
               </LoadingButton>
             </div>
           </Col>

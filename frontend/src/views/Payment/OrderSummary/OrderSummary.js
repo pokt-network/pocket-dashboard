@@ -15,6 +15,7 @@ import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCar
 import AppAlert from "../../../core/components/AppAlert";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import {Link} from "react-router-dom";
+import {scrollToId} from "../../../_helpers";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -116,15 +117,16 @@ class OrderSummary extends Component {
       selectedPaymentMethod.billingDetails
     );
 
-    if (result.errors) {
+    if (result.error) {
       this.setState({
         alert: {
           show: true,
           variant: "warning",
           message:
-            "there was an error making the payment, please try again later",
+            <h4>{result.error.message}</h4>,
         },
       });
+      scrollToId("alert");
     } else {
       this.goToInvoice();
     }
@@ -225,11 +227,11 @@ class OrderSummary extends Component {
           ></AppAlert>
         )}
         <div className="title-page mb-4">
-          <h2>Order summary</h2>
+          <h1>Order summary</h1>
         </div>
         <Row>
           <Col lg="8" md="8" sm="8" className="title-page">
-            <h4>Confirm your payment method</h4>
+            <h2 className="sub">Confirm your payment method</h2>
             <Form className="cards">
               {paymentMethods.map((card, idx) => {
                 const {cardData, holder} = card;
@@ -262,7 +264,7 @@ class OrderSummary extends Component {
             />
           </Col>
           <Col lg="4" md="4" sm="4" className="title-page">
-            <h4>Review your order</h4>
+            <h2 className="sub">Review your order</h2>
             <div className="mt-5 order">
               {cards.map((c, idx) => (
                 <div key={idx} className="item">
@@ -272,7 +274,7 @@ class OrderSummary extends Component {
               ))}
             </div>
             <InfoCard
-              className="pt-5 mb-4 pr-4 text-center"
+              className="pt-4 mb-4 pr-4 text-center"
               title={`${total} USD`}
               subtitle={"Total cost"}
             />
@@ -281,10 +283,11 @@ class OrderSummary extends Component {
               onChange={() => this.setState({agreeTerms: !agreeTerms})}
               id="terms-checkbox"
               type="checkbox"
+              className="mb-3"
               label={
-                <p>
+                <p className="agree">
                   I agree to Pocket Purchase&#39;s{" "}
-                  <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>Terms and Condititons.</Link>
+                  <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}><br/>Terms and Condititons.</Link>
                 </p>
               }
             />
@@ -299,10 +302,10 @@ class OrderSummary extends Component {
                     <Button
                       disabled={!agreeTerms}
                       variant="primary"
-                      className=" pr-5 pl-5"
+                      className="confirm pr-5 pl-5"
                       type="submit"
                     >
-                      Confirm payment
+                      <span>Confirm payment</span>
                     </Button>
                   </Form>
                 )}
