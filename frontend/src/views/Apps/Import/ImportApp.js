@@ -218,7 +218,7 @@ class Import extends Component {
                             this.setState({hasPrivateKey: true});
                           }}
                         >
-                          Import
+                          <span>Import</span>
                         </Button>
                       </Form.Group>
                     </>

@@ -332,6 +332,10 @@ button {
       letter-spacing: -0.33px;
     }
 
+    th:focus {
+      outline: none;
+    }
+
   }
 
   tbody {
@@ -367,11 +371,11 @@ button {
     tbody {
       display: block;
       height: 60vh;
-      overflow: auto;
+      overflow: scroll;
     }
 
     .selection-cell-header {
-      width: 26px;
+      width: 63px;
 
       input {
         margin-left: -8px;
@@ -379,6 +383,7 @@ button {
     }
 
     .selection-cell {
+      padding-right: 50px;
       width: 1px;
 
       input {
@@ -391,10 +396,16 @@ button {
     }
   }
 
-  &.hide {
+  &.hide,
+  &.empty {
+    thead {
+      text-transform: uppercase;
+      color: black;
 
-    th {
-      border-bottom-color: transparent;
+      th {
+        border-bottom: none;
+        border-top-color: transparent;
+      }
     }
 
     .show-icon {
@@ -404,27 +415,25 @@ button {
     }
 
     tbody {
-      display: none;
+      visibility: hidden;
+      display: absolute;
+      height: 0px;
+    }
+  }
+
+  &.flex-body {
+    tbody {
+      tr {
+        display: flex;
+      }
     }
   }
 
   .show-icon {
     .icon {
-      width: 5.5%;
+      width: 10px;
       cursor: pointer;
       transform: rotate(180deg);
-    }
-  }
-}
-
-.app-table-empty {
-  thead {
-    text-transform: uppercase;
-    color: black;
-
-    th {
-      border-bottom: none;
-      border-top-color: transparent;
     }
   }
 }
@@ -517,6 +526,10 @@ button {
   }
 }
 
+.scroll {
+  overflow-x: auto;
+  max-height: 60vh;
+}
 
 input.form-control,
 textarea.form-control {
