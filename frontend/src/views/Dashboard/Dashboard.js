@@ -160,7 +160,7 @@ class Dashboard extends Component {
         </Row>
         <div className="network-status-tables">
           <Row>
-            <Col  lg="6"  md="6" sm="6" className={`network-status-table ${userApps.length === 0 ? "segment-table-empty" : ""}`}>
+            <Col  lg="6"  md="6" sm="6" className={`network-status-table ${userNodes.length === 0 ? "segment-table-empty" : ""}`}>
               <Segment scroll={false} label="Registered Nodes">
                 <AppTable
                   scroll
@@ -169,7 +169,7 @@ class Dashboard extends Component {
                   toggle={userNodes.length > 0}
                   keyField="pocketNode.publicPocketAccount.address"
                   data={userNodes}
-                  columns={TABLE_COLUMNS.APPS}
+                  columns={TABLE_COLUMNS.NODES}
                   bordered={false}
                 />
               </Segment>
