@@ -145,7 +145,7 @@ class ValidateKeys extends Component {
                         htmlFor="upload-key"
                         className="upload-key btn btn-primary"
                       >
-                        Upload key file
+                        <span>Upload key file</span>
                       </label>
                       <input
                         style={{display: "none"}}
