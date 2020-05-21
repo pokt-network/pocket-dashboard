@@ -34,7 +34,7 @@ class DefaultLayout extends Component {
                 links={[{url: "#", label: "Network Status", active: true}]}
               />
             </Row>
-            <div className={"pl-4 pr-4"}>
+            <div className={"pl-3 pr-3"}>
               {dashboardRoutes.map((route, idx) => {
                 return (
                   <Route

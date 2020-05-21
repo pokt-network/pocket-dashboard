@@ -25,7 +25,6 @@
   }
 
   .body {
-    box-shadow: $default-box-shadow;
     padding: 5px 10px 0 30px;
     border-radius: $table-radius;
     margin-bottom: 10px;
@@ -36,5 +35,9 @@
     overflow-x: auto;
     max-height: 60vh;
     padding-bottom: 5px;
+  }
+
+  &.bordered .body {
+    box-shadow: $default-box-shadow;
   }
 }
