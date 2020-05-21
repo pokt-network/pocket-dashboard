@@ -235,16 +235,21 @@ export default class PocketService {
    * Get Application data.
    *
    * @param {string} addressHex Account address.
+   * @param {boolean} throwError If true throw the response error.
    *
    * @returns {Application} The account data.
    * @throws Error If Query fails.
    * @async
    */
-  async getApplication(addressHex) {
+  async getApplication(addressHex, throwError = true) {
     const applicationResponse = await this.__pocket.rpc().query.getApp(addressHex);
 
     if (applicationResponse instanceof Error) {
-      throw applicationResponse;
+      if (throwError) {
+        throw applicationResponse;
+      }
+
+      return undefined;
     }
 
     return applicationResponse.application;

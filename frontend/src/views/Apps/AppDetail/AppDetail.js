@@ -35,6 +35,7 @@ class AppDetail extends Component {
       exists: true,
       unstake: false,
       stake: false,
+      ctaButtonPressed: false
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -121,10 +122,10 @@ class AppDetail extends Component {
     const {success, data} = freeTier
       ? await ApplicationService.unstakeFreeTierApplication(address, link)
       : await ApplicationService.unstakeApplication(
-          privateKey, passphrase, address, link);
+        privateKey, passphrase, address, link);
 
     if (success) {
-    // "Reload page" for updated networkData
+      // "Reload page" for updated networkData
       this.setState({loading: true, unstaking: false});
       this.fetchData();
     } else {
@@ -154,8 +155,8 @@ class AppDetail extends Component {
       publicPocketAccount,
     } = this.state.pocketApplication;
     const {
-      maxRelays,
-      stakedTokens,
+      max_relays: maxRelays,
+      staked_tokens: stakedTokens,
       status: bondStatus,
       unstakingCompletionTime,
     } = this.state.networkData;
@@ -180,6 +181,7 @@ class AppDetail extends Component {
       exists,
       unstake,
       stake,
+      ctaButtonPressed,
     } = this.state;
 
     const generalInfo = [
@@ -226,11 +228,11 @@ class AppDetail extends Component {
       aatStr = PocketApplicationService.parseAAT(aat);
     }
 
-    if (stake) {
+    if (ctaButtonPressed && stake) {
       return renderValidation(this.stakeApplication);
     }
 
-    if (unstake) {
+    if (ctaButtonPressed && unstake) {
       return renderValidation(this.unstakeApplication);
     }
 
@@ -248,7 +250,7 @@ class AppDetail extends Component {
         </h3>
       );
 
-      return <AppAlert variant="danger" title={message} />;
+      return <AppAlert variant="danger" title={message}/>;
     }
 
     if (deleted) {
@@ -270,8 +272,7 @@ class AppDetail extends Component {
                 variant="danger"
                 title={message}
                 onClose={() => this.setState({message: ""})}
-                dismissible
-              ></AppAlert>
+                dismissible/>
             )}
             <div className="head">
               <img src={icon} alt="app-icon"/>
@@ -297,11 +298,11 @@ class AppDetail extends Component {
           <Col sm="1" md="1" lg="1">
             <Button
               className="float-right cta"
-              onClick={
-                isStaked
-                  ? this.setState({unstake: true})
-                  : () => this.setState({stake: true})
-              }
+              onClick={() => {
+                this.setState({ctaButtonPressed: true});
+
+                isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
+              }}
               variant="primary">
               <span>{isStaked ? "Unstake" : "Stake"}</span>
             </Button>

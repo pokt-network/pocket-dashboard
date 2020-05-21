@@ -432,6 +432,12 @@ export default class ApplicationService extends BaseService {
               .then(async (stakeTransaction) => {
 
                 if (stakeTransaction.logs && stakeTransaction.logs[0].success) {
+
+                  // Wait until application was staked.
+                  while (!await this.pocketService.getApplication(applicationAccount.addressHex, false)) {
+                    noop();
+                  }
+
                   await this.__markApplicationAsFreeTier(clientApplication);
 
                   return this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, freeTierPassphrase);
