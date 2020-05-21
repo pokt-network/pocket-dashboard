@@ -150,7 +150,7 @@ describe("PocketService", () => {
 
   if (APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT && APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE) {
     describe("stakeApplication", () => {
-      it("Expected a transaction hash successfully", async (done) => {
+      it("Expected a transaction hash successfully", async () => {
         const account = await pocketService
           .importAccount(APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT, APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE);
         const poktToStake = "10000000";
@@ -160,8 +160,6 @@ describe("PocketService", () => {
 
         const transaction = await pocketService
           .stakeApplication(account, APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE, poktToStake, networkChains);
-
-        done();
 
         // eslint-disable-next-line no-undef
         should.exist(transaction);
