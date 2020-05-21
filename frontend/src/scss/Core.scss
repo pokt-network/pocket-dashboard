@@ -373,27 +373,6 @@ button {
       height: 60vh;
       overflow: scroll;
     }
-
-    .selection-cell-header {
-      width: 63px;
-
-      input {
-        margin-left: -8px;
-      }
-    }
-
-    .selection-cell {
-      padding-right: 50px;
-      width: 1px;
-
-      input {
-        margin-left: -8px;
-      }
-    }
-
-    .selection-cell-header * {
-      margin-left: 21px;
-    }
   }
 
   &.hide,

@@ -10,6 +10,8 @@
       font-weight: bold;
       line-height: 1.73;
       letter-spacing: -0.6px;
+
+      padding-left: 22px;
     }
 
     p {
@@ -39,21 +41,34 @@
     }
 
     .body {
-      margin-left: -20px;
       padding-left: 0;
+      padding-bottom: 0;
 
       .app-table {
-        margin-top: -15px;
-        margin-left: -40px;
-
-        input[type="checkbox"] {
-          position: relative;
-          left: 45px;
-        }
 
         .selection-cell-header {
-          position: relative;
-          top: 5px;
+          padding: 0;
+          width: 36px;
+          border-bottom-color: transparent;
+
+          input[type="checkbox"] {
+            position: absolute;
+            top: 64px;
+            left: 52px;
+          }
+        }
+
+        .selection-cell {
+          padding-left: 37px;
+          padding-right: 0px;
+          padding-top: 10px;
+          width: 1px;
+          border-bottom-color: transparent;
+        }
+
+        tbody tr td:nth-of-type(2),
+        th:nth-of-type(2) {
+          padding-left: 0px;
         }
       }
     }

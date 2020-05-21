@@ -160,7 +160,7 @@ class Dashboard extends Component {
         </Row>
         <div className="network-status-tables">
           <Row>
-            <Col  lg="6"  md="6" sm="6" className={`network-status-table ${userNodes.length === 0 ? "segment-table-empty" : ""}`}>
+            <Col  lg="6"  md="6" sm="6" className="network-status-table">
               <Segment scroll={false} label="Registered Nodes">
                 <AppTable
                   scroll
@@ -174,7 +174,7 @@ class Dashboard extends Component {
                 />
               </Segment>
             </Col>
-            <Col  lg="6"  md="6" sm="6" className={`network-status-table ${userApps.length === 0 ? "segment-table-empty" : ""}`}>
+            <Col  lg="6"  md="6" sm="6" className="network-status-table">
               <Segment scroll={false} label="Registered Apps">
                 <AppTable
                   scroll
