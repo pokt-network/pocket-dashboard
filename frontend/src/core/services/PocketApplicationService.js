@@ -64,14 +64,14 @@ export class PocketApplicationService extends PocketBaseService {
    * @param {boolean} [imported] wether the application is imported.
    */
   saveAppInfoInCache({
-    applicationID,
-    address,
-    privateKey,
-    passphrase,
-    chains,
-    data,
-    imported,
-  }) {
+                       applicationID,
+                       address,
+                       privateKey,
+                       passphrase,
+                       chains,
+                       data,
+                       imported,
+                     }) {
     if (applicationID) {
       this.ls.set("app_id", {data: applicationID});
     }
@@ -335,20 +335,22 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a free tier application.
    *
-   * @param {string} applicationAccountAddress Application account address.
+   * @param {{privateKey: string, passphrase: string, accountAddress: string}} application Application data.
    * @param {string} appLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeFreeTierApplication(applicationAccountAddress, appLink) {
+  unstakeFreeTierApplication(application, appLink) {
     const user = PocketUserService.getUserInfo().email;
 
+    const data = {
+      application,
+      user,
+      appLink
+    };
+
     return axios
-      .post(this._getURL("freetier/unstake"), {
-        applicationAccountAddress,
-        user,
-        appLink,
-      })
+      .post(this._getURL("freetier/unstake"), data)
       .then((response) => {
         return {success: true, data: response.data};
       })

@@ -4,6 +4,7 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import "./TierSelection.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
+import Loader from "../../../core/components/Loader";
 
 class TierSelection extends Component {
   constructor(props, context) {
@@ -15,26 +16,39 @@ class TierSelection extends Component {
       freeTierModal: false,
       customTierModal: false,
       agreeTerms: false,
+      creatingFreeTier: false
     };
   }
 
   async createFreeTierItem() {
-    const {privateKey, passphrase, chains} = ApplicationService.getApplicationInfo();
+    const {privateKey, passphrase, chains, address} = ApplicationService.getApplicationInfo();
     const application = {privateKey, passphrase};
+
+    this.setState({creatingFreeTier: true});
+
 
     const data = await ApplicationService.stakeFreeTierApplication(application, chains);
 
-    ApplicationService.removeAppInfoFromCache();
 
     // TODO: Notify of errors on the frontend
     if (data !== false) {
+
+      const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
+      const path = url.replace(":address", address);
+
+      ApplicationService.removeAppInfoFromCache();
+
       // eslint-disable-next-line react/prop-types
-      this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.appDetail));
+      this.props.history.push(path);
     }
   }
 
   render() {
-    const {freeTierModal, customTierModal, agreeTerms} = this.state;
+    const {freeTierModal, customTierModal, agreeTerms, creatingFreeTier} = this.state;
+
+    if (creatingFreeTier) {
+      return <Loader/>;
+    }
 
     return (
       <div className="tier-selection">
@@ -75,7 +89,8 @@ class TierSelection extends Component {
                 type="checkbox"
                 label={
                   <p>
-                    I agree to pocket Dashboard{" "} <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>Terms and Conditions.</Link>
+                    I agree to pocket Dashboard{" "} <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>Terms
+                    and Conditions.</Link>
                   </p>
                 }
               />

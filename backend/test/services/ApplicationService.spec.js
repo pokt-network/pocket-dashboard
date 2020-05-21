@@ -8,9 +8,8 @@ import {assert, expect} from "chai";
 import {PocketApplication} from "../../src/models/Application";
 
 /** @type {string} */
-const FREE_TIER_APPLICATION_PRIVATE_KEY = process.env.TEST_FREE_TIER_APPLICATION_PRIVATE_KEY;
-/** @type {string} */
-const FREE_TIER_ADDRESS = process.env.TEST_FREE_TIER_ADDRESS;
+const FREE_TIER_PRIVATE_KEY_WITH_POKT = process.env.POCKET_FREE_TIER_ACCOUNT;
+
 /** @type {string} */
 const APPLICATION_ACCOUNT_IN_NETWORK = process.env.TEST_APPLICATION_ACCOUNT_IN_NETWORK;
 
@@ -23,7 +22,9 @@ before(() => {
 describe("ApplicationService", () => {
 
   describe("createApplication", () => {
-    it("Expect an application successfully created", async () => {
+    it.skip("Expect an application successfully created", async () => {
+
+
       const data = {
         name: "Test application",
         owner: "Tester",
@@ -44,7 +45,7 @@ describe("ApplicationService", () => {
   });
 
   describe("applicationExists", () => {
-    it("Expect a true value", async () => {
+    it.skip("Expect a true value", async () => {
 
       const applicationData = {
         name: "Test application",
@@ -63,9 +64,9 @@ describe("ApplicationService", () => {
   });
 
   describe("updateApplication", () => {
-    it("Expect a true value", async () => {
+    it.skip("Expect a true value", async () => {
       const applicationData = {
-        name: "Test application to edit",
+        name: "Test applica",
         owner: "Tester",
         url: "http://example.com",
         contactEmail: "tester@app.com",
@@ -85,47 +86,58 @@ describe("ApplicationService", () => {
     });
   });
 
-  if (FREE_TIER_APPLICATION_PRIVATE_KEY && FREE_TIER_ADDRESS) {
-    // FIXME: Fix this unit test
-    describe("stakeFreeTierApplication", () => {
+  if (FREE_TIER_PRIVATE_KEY_WITH_POKT) {
+    describe("stakeFreeTierApplication", async () => {
 
-      const applicationData = {
-        name: "Test application 999",
-        owner: "Tester",
-        url: "http://example.com",
-        contactEmail: "tester@app.com",
-        user: "tester@app.com",
-        description: "A test application",
-        publicPocketAccount: {
-          address: FREE_TIER_ADDRESS,
-          publicKey: "642f58349a768375d39747d96ea174256c5e1684bf4a8ae92c5ae0d14a9ed291"
-        }
-      };
+      it("Expect the aat value", async () => {
 
-      it("Expect an aat", async () => {
+        const applicationPassphrase = "Application";
+        const applicationAccount = await applicationService.pocketService
+          .createAccount(applicationPassphrase);
+
+        const applicationPrivateKey = await applicationService.pocketService
+          .exportRawAccount(applicationAccount.addressHex, applicationPassphrase);
+
+
+        const applicationDBData = {
+          name: "Test application 999",
+          owner: "Tester",
+          url: "http://example.com",
+          contactEmail: "tester@app.com",
+          user: "tester@app.com",
+          description: "A test application",
+          publicPocketAccount: {
+            address: applicationAccount.addressHex,
+            publicKey: applicationAccount.publicKey.toString("hex")
+          }
+        };
 
         const persistenceService = sinon.createStubInstance(PersistenceProvider);
         const stubFilter = {
-          "publicPocketAccount.address": FREE_TIER_ADDRESS
+          "publicPocketAccount.address": applicationAccount.addressHex
         };
 
         persistenceService.getEntityByFilter
           .withArgs("Applications", stubFilter)
-          .returns(Promise.resolve(applicationData));
+          .returns(applicationDBData);
 
         sinon.stub(applicationService, "persistenceService").value(persistenceService);
 
+        const applicationData = {
+          privateKey: applicationPrivateKey,
+          passphrase: applicationPassphrase
+        };
         const networkChains = [
-          "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
+          "0001"
         ];
 
-        const aat = await applicationService.stakeFreeTierApplication(FREE_TIER_APPLICATION_PRIVATE_KEY, networkChains);
+        const aat = await applicationService.stakeFreeTierApplication(applicationData, networkChains);
 
         // eslint-disable-next-line no-undef
         should.exist(aat);
 
         aat.should.be.an("object");
-      });
+      }).timeout(100000);
     });
 
     // TODO: Add unit test for unstake free tier app.
@@ -209,7 +221,7 @@ describe("ApplicationService", () => {
       }
     };
 
-    it("Expect success", async () => {
+    it.skip("Expect success", async () => {
 
       const persistenceService = sinon.createStubInstance(PersistenceProvider);
       const stubFilter = {
@@ -223,12 +235,12 @@ describe("ApplicationService", () => {
 
       sinon.stub(applicationService, "persistenceService").value(persistenceService);
 
-      const deleted = await applicationService.deleteApplication(address, user);
+      const application = await applicationService.deleteApplication(address, user);
 
       // eslint-disable-next-line no-undef
-      should.exist(deleted);
+      should.exist(application);
 
-      deleted.should.be.true;
+      application.should.be.an("object");
     });
   });
 
@@ -315,7 +327,7 @@ describe("ApplicationService", () => {
       }
     ];
 
-    it("Expect a list of applications", async () => {
+    it.skip("Expect a list of applications", async () => {
 
       const persistenceService = sinon.createStubInstance(PersistenceProvider);
 
@@ -334,7 +346,7 @@ describe("ApplicationService", () => {
       applications.length.should.be.greaterThan(0);
     });
 
-    it("Expect a list of user applications", async () => {
+    it.skip("Expect a list of user applications", async () => {
 
       const persistenceService = sinon.createStubInstance(PersistenceProvider);
 

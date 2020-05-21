@@ -8,12 +8,11 @@ import {
   Node,
   NodeParams,
   Pocket,
+  PocketAAT,
   RawTxResponse,
   StakingStatus
 } from "@pokt-network/pocket-js";
-import {PocketAAT} from "@pokt-network/aat-js";
 import {Configurations} from "../_configuration";
-import assert from "assert";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
@@ -29,7 +28,6 @@ const POCKET_CONFIGURATION = new Configuration(
  * @returns {URL[]} Nodes urls.
  */
 function getNodeURLS(nodes) {
-  assert.notEqual(null, nodes);
 
   return nodes.map((node) => {
     const nodeURL = node + ":" + POCKET_NETWORK_CONFIGURATION.default_rpc_port;
@@ -47,7 +45,6 @@ function getNodeURLS(nodes) {
  * @returns {HttpRpcProvider} The main rpc provider in the node.
  */
 function getRPCDispatcher(node) {
-  assert.notEqual(null, node);
 
   const nodeURL = node + ":" + POCKET_NETWORK_CONFIGURATION.default_rpc_port;
 
@@ -167,20 +164,21 @@ export default class PocketService {
   /**
    * Transfer Pokt between Accounts
    *
-   * @param {string} fromAccountAddressHex From account address in Hex.
-   * @param {string} toAccountAddressHex To account address in Hex.
+   * @param {Account} fromAccount From account address.
+   * @param {string} passphrase passphrase of fromAccount.
+   * @param {Account} toAccount To account address.
    * @param {string} uPoktAmount uPokt to transfer.
    *
    * @returns {Promise<RawTxResponse>} Raw Tx Response.
+   * @async
    */
-  async transferPoktBetweenAccounts(fromAccountAddressHex, toAccountAddressHex, uPoktAmount) {
+  async transferPoktBetweenAccounts(fromAccount, passphrase, toAccount, uPoktAmount) {
     const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
-    const {account: freeTierAccount, passphrase} = await this.getFreeTierAccount();
 
-    const transactionSender = await this.__pocket.withImportedAccount(freeTierAccount.addressHex, passphrase);
+    const transactionSender = await this.__pocket.withImportedAccount(fromAccount.addressHex, passphrase);
 
     const transactionResponse = await transactionSender
-      .send(fromAccountAddressHex, toAccountAddressHex, uPoktAmount)
+      .send(fromAccount.addressHex, toAccount.addressHex, uPoktAmount)
       .submit(chain_id, transaction_fee);
 
     if (transactionResponse instanceof Error) {
@@ -188,6 +186,54 @@ export default class PocketService {
     }
 
     return transactionResponse;
+  }
+
+  /**
+   * Check if account has sufficient balance.
+   *
+   * @param {Account} account Account to query.
+   * @param {boolean} throwError If true throw the response error.
+   *
+   * @returns {Promise<boolean>} True if has sufficient balance, otherwise not.
+   * @async
+   */
+  async hasBalance(account, throwError = true) {
+    return (await this.getBalance(account, throwError)) !== "0";
+  }
+
+
+  /**
+   * Check if account has sufficient balance.
+   *
+   * @param {Account} account Account to query.
+   * @param {boolean} throwError If true throw the response error.
+   *
+   * @returns {Promise<string>} The account balance.
+   * @async
+   */
+  async getBalance(account, throwError = true) {
+    const accountQueryResponse = await this.__pocket.rpc().query.getBalance(account.addressHex);
+
+    if (accountQueryResponse instanceof Error) {
+      if (throwError) {
+        throw accountQueryResponse;
+      }
+
+      return "0";
+    }
+
+    return accountQueryResponse.balance.toString();
+  }
+
+  /**
+   * Check if transaction is success or not.
+   *
+   * @param {RawTxResponse} transaction Transaction to validate.
+   *
+   * @returns {boolean} If transaction is success or not.
+   */
+  isTransactionSuccess(transaction) {
+    return transaction.logs && transaction.logs[0].success;
   }
 
   /**
@@ -212,16 +258,21 @@ export default class PocketService {
    * Get Application data.
    *
    * @param {string} addressHex Account address.
+   * @param {boolean} throwError If true throw the response error.
    *
    * @returns {Application} The account data.
    * @throws Error If Query fails.
    * @async
    */
-  async getApplication(addressHex) {
+  async getApplication(addressHex, throwError = true) {
     const applicationResponse = await this.__pocket.rpc().query.getApp(addressHex);
 
     if (applicationResponse instanceof Error) {
-      throw applicationResponse;
+      if (throwError) {
+        throw applicationResponse;
+      }
+
+      return undefined;
     }
 
     return applicationResponse.application;
