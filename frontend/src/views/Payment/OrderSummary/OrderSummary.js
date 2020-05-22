@@ -119,7 +119,6 @@ class OrderSummary extends Component {
     );
 
     if (result.error) {
-      console.log("klk");
       this.setState({
         alert: {
           show: true,
