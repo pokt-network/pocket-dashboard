@@ -186,7 +186,7 @@ class AppsMain extends Main {
         </Row>
         <Row className="mb-4 app-tables">
           <Col sm="6" md="6" lg="6" className="my-apps-segment">
-            <Segment scroll={false} label="My Apps">
+            <Segment bordered scroll={false} label="My Apps">
               <Row className={`search-panel ${!hasApps ? "search-panel-without-apps" : null}`}>
                 <Col>
                   <InputGroup className="search-input mb-3">
@@ -211,7 +211,7 @@ class AppsMain extends Main {
                   </InputGroup>
                 </Col>
               </Row>
-              <div className="scroll main-list">
+              <div className="scrollable main-list">
               <InfiniteScroll
                 pageStart={0}
                 loadMore={this.loadMoreUserApps}
@@ -279,7 +279,7 @@ class AppsMain extends Main {
               >
                 <AppTable
                   scroll
-                  classes="flex-body"
+                  classes={`flex-body ${hasMoreRegisteredItems ? "loading" : ""} `}
                   headerClasses="d-flex"
                   toggle={registeredItems.length > 0}
                   keyField="pocketApplication.publicPocketAccount.address"

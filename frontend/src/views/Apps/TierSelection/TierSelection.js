@@ -5,6 +5,7 @@ import "./TierSelection.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
 import Loader from "../../../core/components/Loader";
+import AppAlert from "../../../core/components/AppAlert";
 
 class TierSelection extends Component {
   constructor(props, context) {
@@ -16,7 +17,8 @@ class TierSelection extends Component {
       freeTierModal: false,
       customTierModal: false,
       agreeTerms: false,
-      creatingFreeTier: false
+      creatingFreeTier: false,
+      errorMessage: "",
     };
   }
 
@@ -40,11 +42,16 @@ class TierSelection extends Component {
 
       // eslint-disable-next-line react/prop-types
       this.props.history.push(path);
+    } else {
+      this.setState({
+        creatingFreeTier: false,
+        errorMessage: "There was an error creating your free tier app.",
+      });
     }
   }
 
   render() {
-    const {freeTierModal, customTierModal, agreeTerms, creatingFreeTier} = this.state;
+    const {freeTierModal, customTierModal, agreeTerms, creatingFreeTier, errorMessage} = this.state;
 
     if (creatingFreeTier) {
       return <Loader/>;
@@ -52,6 +59,18 @@ class TierSelection extends Component {
 
     return (
       <div className="tier-selection">
+        {errorMessage && (
+          <Row>
+            <Col>
+              <AppAlert
+                title={errorMessage}
+                variant="danger"
+                dismissible
+                onClose={() => this.setState({errorMessage: ""})}
+              />
+            </Col>
+          </Row>
+        )}
         <Row>
           <Col className="page-title">
             <h1>Choose what is more convenient for your app</h1>
@@ -79,7 +98,8 @@ class TierSelection extends Component {
               <Button
                 onClick={() => this.setState({freeTierModal: true})}
                 variant="link"
-                className="cta">
+                className="cta"
+              >
                 How it works
               </Button>
               <Form.Check
@@ -89,12 +109,19 @@ class TierSelection extends Component {
                 type="checkbox"
                 label={
                   <p>
-                    I agree to pocket Dashboard{" "} <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>Terms
-                    and Conditions.</Link>
+                    I agree to pocket Dashboard{" "}
+                    <Link
+                      to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}
+                    >
+                      Terms and Conditions.
+                    </Link>
                   </p>
                 }
               />
-              <Button onClick={() => this.createFreeTierItem()} disabled={!agreeTerms}>
+              <Button
+                onClick={() => this.createFreeTierItem()}
+                disabled={!agreeTerms}
+              >
                 <span>Get Free Tier</span>
               </Button>
             </div>
@@ -116,7 +143,8 @@ class TierSelection extends Component {
                 <Button
                   onClick={() => this.setState({customTierModal: true})}
                   variant="link"
-                  className="cta">
+                  className="cta"
+                >
                   How it works
                 </Button>
                 <Link to={_getDashboardPath(DASHBOARD_PATHS.selectRelays)}>
@@ -132,7 +160,8 @@ class TierSelection extends Component {
           show={customTierModal}
           onHide={() => this.setState({customTierModal: false})}
           animation={false}
-          centered>
+          centered
+        >
           <Modal.Header closeButton>
             <Modal.Title>How the custom tier works?</Modal.Title>
           </Modal.Header>
@@ -159,7 +188,9 @@ class TierSelection extends Component {
               If you still have questions please take a look at our{" "}
               <a href="/todo">FAQ.</a>
             </p>
-            <p><b>Pocket Network</b></p>
+            <p>
+              <b>Pocket Network</b>
+            </p>
             <p>
               An AAT o needed to authorize the use of throughput. Providing your
               {/* eslint-disable-next-line react/no-unescaped-entities */}
@@ -184,7 +215,8 @@ class TierSelection extends Component {
           show={freeTierModal}
           onHide={() => this.setState({freeTierModal: false})}
           animation={false}
-          centered>
+          centered
+        >
           <Modal.Header closeButton>
             <Modal.Title>How the free tier works?</Modal.Title>
           </Modal.Header>
@@ -208,7 +240,9 @@ class TierSelection extends Component {
               If you still have questions please take a look at our{" "}
               <a href="/todo">FAQ.</a>
             </p>
-            <p><b>Pocket Network</b></p>
+            <p>
+              <b>Pocket Network</b>
+            </p>
             <p>
               In the free tier, Pocket Network Inc stakes on behalf of the user
               and manages the staked POKT and Application Authentication Token
