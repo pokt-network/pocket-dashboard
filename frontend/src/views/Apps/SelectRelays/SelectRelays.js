@@ -4,7 +4,7 @@ import {Col, Form, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
 import {ITEM_TYPES, MAX_RELAYS, STYLING} from "../../../_constants";
-import {formatCurrency, formatNumbers, scrollToId} from "../../../_helpers";
+import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
