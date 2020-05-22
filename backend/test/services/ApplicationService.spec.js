@@ -22,7 +22,7 @@ before(() => {
 describe("ApplicationService", () => {
 
   describe("createApplication", () => {
-    it.skip("Expect an application successfully created", async () => {
+    it("Expect an application successfully created", async () => {
 
 
       const data = {
@@ -45,7 +45,7 @@ describe("ApplicationService", () => {
   });
 
   describe("applicationExists", () => {
-    it.skip("Expect a true value", async () => {
+    it("Expect a true value", async () => {
 
       const applicationData = {
         name: "Test application",
@@ -64,7 +64,7 @@ describe("ApplicationService", () => {
   });
 
   describe("updateApplication", () => {
-    it.skip("Expect a true value", async () => {
+    it("Expect a true value", async () => {
       const applicationData = {
         name: "Test applica",
         owner: "Tester",
@@ -87,7 +87,7 @@ describe("ApplicationService", () => {
   });
 
   if (FREE_TIER_PRIVATE_KEY_WITH_POKT) {
-    describe("stakeFreeTierApplication", async () => {
+    describe.skip("stakeFreeTierApplication", async () => {
 
       it("Expect the aat value", async () => {
 
@@ -221,7 +221,7 @@ describe("ApplicationService", () => {
       }
     };
 
-    it.skip("Expect success", async () => {
+    it("Expect success", async () => {
 
       const persistenceService = sinon.createStubInstance(PersistenceProvider);
       const stubFilter = {
@@ -245,9 +245,11 @@ describe("ApplicationService", () => {
   });
 
   describe("getStakedApplicationSummary", () => {
-    it("Expect staked summary data from network", async () => {
+    it("Expect staked summary data from network", async (done) => {
 
       const summaryData = await applicationService.getStakedApplicationSummary();
+
+      done();
 
       // eslint-disable-next-line no-undef
       should.exist(summaryData);
@@ -327,7 +329,7 @@ describe("ApplicationService", () => {
       }
     ];
 
-    it.skip("Expect a list of applications", async () => {
+    it("Expect a list of applications", async () => {
 
       const persistenceService = sinon.createStubInstance(PersistenceProvider);
 
@@ -346,7 +348,7 @@ describe("ApplicationService", () => {
       applications.length.should.be.greaterThan(0);
     });
 
-    it.skip("Expect a list of user applications", async () => {
+    it("Expect a list of user applications", async () => {
 
       const persistenceService = sinon.createStubInstance(PersistenceProvider);
 

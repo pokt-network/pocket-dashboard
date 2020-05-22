@@ -285,7 +285,7 @@ export default class NodeService extends BaseService {
   async stakeNode(node, uPoktAmount) {
     const accountService = new AccountService();
 
-    const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, node.passPhrase, node.privateKey);
+    const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, node.privateKey, node.passPhrase);
 
     const filter = {
       "publicPocketAccount.address": nodeAccount.addressHex
@@ -329,7 +329,7 @@ export default class NodeService extends BaseService {
     const accountService = new AccountService();
 
     try {
-      const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, nodeData.passPhrase, nodeData.privateKey);
+      const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passPhrase);
 
       // Unstake node
       const transaction = await this.pocketService.unstakeNode(nodeAccount, nodeData.passPhrase);
@@ -363,7 +363,7 @@ export default class NodeService extends BaseService {
 
     try {
 
-      const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, nodeData.passPhrase, nodeData.privateKey);
+      const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passPhrase);
 
       // UnJail node
       const transaction = await this.pocketService.unJailNode(nodeAccount, nodeData.passPhrase);

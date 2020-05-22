@@ -377,7 +377,7 @@ export default class ApplicationService extends BaseService {
     const accountService = new AccountService();
 
     try {
-      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.passphrase, applicationData.privateKey);
+      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.privateKey, applicationData.passphrase);
 
       // Unstake application
       const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passphrase);
@@ -426,7 +426,7 @@ export default class ApplicationService extends BaseService {
   async stakeFreeTierApplication(application, networkChains) {
     const accountService = new AccountService();
 
-    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, application.passphrase, application.privateKey);
+    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, application.privateKey, application.passphrase);
 
     const filter = {
       "publicPocketAccount.address": applicationAccount.addressHex
@@ -496,7 +496,7 @@ export default class ApplicationService extends BaseService {
   async stakeApplication(application, networkChains, uPoktAmount) {
     const accountService = new AccountService();
 
-    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, application.passphrase, application.privateKey);
+    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, application.privateKey, application.passphrase);
 
     const filter = {
       "publicPocketAccount.address": applicationAccount.addressHex
@@ -543,7 +543,7 @@ export default class ApplicationService extends BaseService {
     const accountService = new AccountService();
 
     try {
-      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.passphrase, applicationData.privateKey);
+      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.privateKey, applicationData.passphrase);
 
       // Unstake application
       const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passphrase);

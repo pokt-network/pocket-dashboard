@@ -21,8 +21,8 @@ describe("Network model", () => {
     it("Expect a list of network chains from hashes", () => {
 
       const networkHashes = [
-        "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309",
-        "8ef9a7c67f6f8ad14f82c1f340963951245f912f037a7087f3f2d2f9f9ee38a8"
+        "0001",
+        "0002"
       ];
 
       const chains = NetworkChain.getNetworkChains(networkHashes);

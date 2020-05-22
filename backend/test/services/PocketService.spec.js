@@ -146,31 +146,11 @@ describe("PocketService", () => {
       applicationsData.should.be.an("array");
       applicationsData.length.should.be.greaterThan(0);
     });
-  });
-
-  if (FREE_TIER_PRIVATE_KEY_WITH_POKT && APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT && ACCOUNT_FROM_TRANSFER) {
-    describe("FreeTier transferPoktBetweenAccounts", () => {
-      it("Expect a success transfer of POKT", async () => {
-
-        const passphrase = "TestAccount";
-        const accountToTransfer = await pocketService.createAccount(passphrase);
-        const uPoktAmount = "10000000";
-
-        const transaction = await pocketService
-          .transferPoktBetweenAccounts(ACCOUNT_FROM_TRANSFER, accountToTransfer.addressHex, uPoktAmount);
-
-        // eslint-disable-next-line no-undef
-        should.exist(transaction.logs);
-
-        transaction.logs.should.not.to.be.empty;
-        transaction.logs[0].success.should.to.be.true;
-      });
-    });
-  }
+  }).timeout(5000);
 
   if (APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT && APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE) {
     describe("stakeApplication", () => {
-      it("Expected a transaction hash successfully", async () => {
+      it("Expected a transaction hash successfully", async (done) => {
         const account = await pocketService
           .importAccount(APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT, APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE);
         const poktToStake = "10000000";
@@ -180,6 +160,8 @@ describe("PocketService", () => {
 
         const transaction = await pocketService
           .stakeApplication(account, APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE, poktToStake, networkChains);
+
+        done();
 
         // eslint-disable-next-line no-undef
         should.exist(transaction);
@@ -212,7 +194,6 @@ describe("PocketService", () => {
   }
 
   if (NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT) {
-    // FIXME: Fix these unit tests, we think the issue is from library.
     describe("stakeNode", () => {
       it("Expected a transaction hash successfully", async () => {
         const passPhrase = "testPassphrase";
@@ -220,7 +201,7 @@ describe("PocketService", () => {
         const poktToStake = "10000000";
         const serviceURL = new URL("https://www.pokt.network/");
         const networkChains = [
-          "a969144c864bd87a92e974f11aca9d964fb84cf5fb67bcc6583fe91a407a9309"
+          "a969"
         ];
 
         const transaction = await pocketService.stakeNode(account, passPhrase, poktToStake, networkChains, serviceURL);
