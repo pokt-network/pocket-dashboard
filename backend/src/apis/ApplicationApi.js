@@ -260,18 +260,7 @@ router.post("/freetier/unstake", async (request, response) => {
 
     const application = await applicationService.unstakeFreeTierApplication(data.application);
 
-    if (application) {
-      const applicationEmailData = {
-        name: application.name,
-        link: data.appLink
-      };
-
-      await EmailService.to(data.user).sendUnstakeAppEmail(data.user, applicationEmailData);
-
-      response.send(true);
-    } else {
-      response.send(false);
-    }
+    response.send(application !== undefined);
   } catch (e) {
     const error = {
       message: e.toString()
