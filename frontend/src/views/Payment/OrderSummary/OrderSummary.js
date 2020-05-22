@@ -161,7 +161,7 @@ class OrderSummary extends Component {
         alert: {
           show: true,
           variant: "warning",
-          message: "There was an error staking your app",
+          message: "There was an error staking your app.",
         },
       });
       scrollToId("alert");
