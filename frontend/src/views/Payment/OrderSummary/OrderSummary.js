@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, {Component} from "react";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import {Col, Form, Row} from "react-bootstrap";
 import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDisplay";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
@@ -17,6 +17,7 @@ import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import {Link} from "react-router-dom";
 import {scrollToId} from "../../../_helpers";
 import ApplicationService from "../../../core/services/PocketApplicationService";
+import LoadingButton from "../../../core/components/LoadingButton";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -50,6 +51,7 @@ class OrderSummary extends Component {
         message: "",
       },
       unauthorized: false,
+      purchasing: false,
     };
   }
 
@@ -109,6 +111,7 @@ class OrderSummary extends Component {
 
   async makePurchaseWithSavedCard(e, stripe) {
     e.preventDefault();
+    this.setState({purchasing: true});
 
     const {paymentIntent, selectedPaymentMethod} = this.state;
 
@@ -120,6 +123,7 @@ class OrderSummary extends Component {
 
     if (result.error) {
       this.setState({
+        purchasing: false,
         alert: {
           show: true,
           variant: "warning",
@@ -153,6 +157,7 @@ class OrderSummary extends Component {
     } else {
       // TODO: Add meaningful message on backend instead of false
       this.setState({
+        purchasing: false,
         alert: {
           show: true,
           variant: "warning",
@@ -217,6 +222,7 @@ class OrderSummary extends Component {
       agreeTerms,
       alert,
       unauthorized,
+      purchasing
     } = this.state;
 
     const cards = [
@@ -335,14 +341,17 @@ class OrderSummary extends Component {
                     onSubmit={(e) => this.makePurchaseWithSavedCard(e, stripe)}
                     className=""
                   >
-                    <Button
-                      disabled={!agreeTerms}
-                      variant="primary"
-                      className="confirm pr-5 pl-5"
-                      type="submit"
+                    <LoadingButton
+                      loading={purchasing}
+                      buttonProps={{
+                        disabled: !agreeTerms,
+                        variant: "primary",
+                        className: "confirm pr-5 pl-5",
+                        type: "submit",
+                      }}
                     >
                       <span>Confirm payment</span>
-                    </Button>
+                    </LoadingButton>
                   </Form>
                 )}
               </ElementsConsumer>
