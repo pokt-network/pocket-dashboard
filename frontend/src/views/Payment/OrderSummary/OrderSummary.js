@@ -289,12 +289,14 @@ class OrderSummary extends Component {
               })}
             </Form>
             <h5 className="mt-5 mb-4">Add a new card</h5>
+
+            <h5 className="card-form-title">Enter your card information</h5>
             <NewCardNoAddressForm
               formActionHandler={this.saveNewCardNoAddress}
               actionButtonName="Add card"
             />
           </Col>
-          <Col lg="4" md="4" sm="4" className="title-page">
+          <Col lg="4" md="4" sm="4" className="title-page pr-5">
             <h2 className="sub">Review your order</h2>
             <div className="mt-5 order">
               {cards.map((c, idx) => (
@@ -317,7 +319,7 @@ class OrderSummary extends Component {
               className="mb-3"
               label={
                 <p className="agree">
-                  I agree to Pocket Purchase&#39;s{" "}
+                  I agree to Pocket Network&#39;s Purchase{" "}
                   <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>
                     <br />
                     Terms and Condititons.
