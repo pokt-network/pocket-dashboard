@@ -15,8 +15,6 @@ export default class ApplicationService extends BaseService {
     super();
 
     this.userService = new UserService();
-    this.noop = () => {
-    };
   }
 
   /**
@@ -143,25 +141,6 @@ export default class ApplicationService extends BaseService {
    */
   async __getAAT(clientPublicKey, applicationAccount, applicationPassphrase) {
     return this.pocketService.getApplicationAuthenticationToken(clientPublicKey, applicationAccount, applicationPassphrase);
-  }
-
-  /**
-   * Check if application is staked on network.
-   *
-   * @param {Account} applicationAccount Application account.
-   * @param {StakingStatus} status Application status.
-   *
-   * @returns {Promise<boolean>} If is staked or not.
-   * @private
-   * @async
-   */
-  async __isApplicationOnNetwork(applicationAccount, status) {
-    const applications = await this.pocketService.getApplications(status);
-
-    const application = applications
-      .filter((application) => application.address === applicationAccount.addressHex);
-
-    return application && application.length > 0;
   }
 
   /**
@@ -389,16 +368,11 @@ export default class ApplicationService extends BaseService {
         const transferTransaction = await this.pocketService
           .transferPoktBetweenAccounts(applicationAccount, applicationData.passphrase, freeTierAccount, stakeAmount);
 
-
         if (this.pocketService.isTransactionSuccess(transferTransaction)) {
 
-          // Wait until application account has no balance.
-          // noinspection JSCheckFunctionSignatures
-          while (await this.pocketService.hasBalance(applicationAccount, false)) {
-            this.noop();
-          }
-
           const clientApplication = PocketApplication.createPocketApplication(applicationDB);
+
+          await this._waitUntilIsOnNetwork(applicationAccount, StakingStatus.Unstaking);
 
           await this.__markApplicationAsFreeTier(clientApplication, false);
 
@@ -454,9 +428,7 @@ export default class ApplicationService extends BaseService {
       if (this.pocketService.isTransactionSuccess(transferTransaction)) {
 
         // Wait until account has balance.
-        while (!await this.pocketService.hasBalance(applicationAccount, false)) {
-          this.noop();
-        }
+        await this._waitUntilHasBalance(applicationAccount);
 
         // Stake application
         const stakeTransaction = await this.pocketService
@@ -464,11 +436,7 @@ export default class ApplicationService extends BaseService {
 
         if (this.pocketService.isTransactionSuccess(stakeTransaction)) {
 
-          // Wait until application was staked.
-          // noinspection JSCheckFunctionSignatures
-          while (!await this.__isApplicationOnNetwork(applicationAccount, StakingStatus.Staked)) {
-            this.noop();
-          }
+          await this._waitUntilIsOnNetwork(applicationAccount, StakingStatus.Staked);
 
           await this.__markApplicationAsFreeTier(clientApplication, true);
 
@@ -481,7 +449,6 @@ export default class ApplicationService extends BaseService {
       return false;
     }
   }
-
 
   /**
    * Stake an application on network.
@@ -496,7 +463,8 @@ export default class ApplicationService extends BaseService {
   async stakeApplication(application, networkChains, uPoktAmount) {
     const accountService = new AccountService();
 
-    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, application.privateKey, application.passphrase);
+    const applicationAccount = await accountService
+      .importAccountToNetwork(this.pocketService, application.privateKey, application.passphrase);
 
     const filter = {
       "publicPocketAccount.address": applicationAccount.addressHex
@@ -510,7 +478,8 @@ export default class ApplicationService extends BaseService {
 
     try {
       // Stake application
-      const stakeTransaction = await this.pocketService.stakeApplication(applicationAccount, application.passphrase, uPoktAmount, networkChains);
+      const stakeTransaction = await this.pocketService
+        .stakeApplication(applicationAccount, application.passphrase, uPoktAmount, networkChains);
 
       if (stakeTransaction.logs && stakeTransaction.logs[0].success) {
         return PocketApplication.createPocketApplication(applicationDB);
