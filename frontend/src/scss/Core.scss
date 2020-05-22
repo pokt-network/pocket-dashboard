@@ -197,8 +197,10 @@ input {
   }
 
   .icon {
-    width: 36px;
-    height: 31px;
+    min-width: 40px;
+    min-height: 40px;
+    max-width: 140px;
+    max-height: 140px;
     margin-right: 5px;
   }
 }
@@ -310,16 +312,25 @@ button {
 }
 
 .app-table {
+  margin-bottom: 0;
+  box-shadow: $default-box-shadow;
 
   input[type="checkbox"] {
     margin-left: -32px;
     width: 18px;
     height: 18px;
+
+    &::before {
+      opacity: 1;
+      margin-left: -2px;
+      margin-top: -2px;
+    }
   }
 
   thead {
     text-transform: uppercase;
     color: black;
+    height: 50px;
 
     th {
       margin-top: -10px;
@@ -327,9 +338,10 @@ button {
       border-bottom: $border-bottom;
       font-family: $table-header-font-family;
       color: $table-header-font-color;
-      font-size: 12px;
+      font-size: 14px;
       font-weight: bold;
       letter-spacing: -0.33px;
+      padding-bottom: 14px;
     }
 
     th:focus {
@@ -370,29 +382,9 @@ button {
 
     tbody {
       display: block;
-      height: 60vh;
+      height: auto;
+      max-height: 60vh;
       overflow: scroll;
-    }
-
-    .selection-cell-header {
-      width: 63px;
-
-      input {
-        margin-left: -8px;
-      }
-    }
-
-    .selection-cell {
-      padding-right: 50px;
-      width: 1px;
-
-      input {
-        margin-left: -8px;
-      }
-    }
-
-    .selection-cell-header * {
-      margin-left: 21px;
     }
   }
 
@@ -422,6 +414,10 @@ button {
   }
 
   &.flex-body {
+    thead tr {
+      padding-top: 13px;
+    }
+
     tbody {
       tr {
         display: flex;
@@ -526,7 +522,7 @@ button {
   }
 }
 
-.scroll {
+.scrollable {
   overflow-x: auto;
   max-height: 60vh;
 }
@@ -659,8 +655,6 @@ input[type="radio"] {
 
     &::before {
       opacity: 1;
-      margin-left: -2px;
-      margin-top: -2px;
     }
 
     ~label::before {

@@ -16,6 +16,10 @@
 
   .upload-key {
     white-space: nowrap;
-    padding: 3px 10px;
+    padding: 3px 25px;
+
+    span {
+      font-size: 12px;
+    }
   }
 }
