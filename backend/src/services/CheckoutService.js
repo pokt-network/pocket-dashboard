@@ -43,13 +43,13 @@ export default class CheckoutService extends BaseService {
   /**
    *  Get relays per day data.
    *
-   *  @returns {{min:number, max: number}} Relays per day data.
+   *  @returns {{min:number, max: number, price: number}} Relays per day data.
    */
   getRelaysPerDay() {
     return {
       min: this.options.relays_per_day.min,
       max: this.options.relays_per_day.max,
-      cost: this.options.pokt_market_price
+      price: this.options.pokt_market_price
     };
   }
 

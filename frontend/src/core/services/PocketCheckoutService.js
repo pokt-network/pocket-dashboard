@@ -26,7 +26,7 @@ export class PocketCheckoutService extends PocketBaseService {
    */
   getAccountBalance(accountAddress) {
     return axios
-      .get(this._getURL(`/balance/${accountAddress}`))
+      .get(this._getURL(`balance/${accountAddress}`))
       .then((response) => response.data);
   }
 
@@ -39,7 +39,7 @@ export class PocketCheckoutService extends PocketBaseService {
    */
   getMoneyToSpent(relaysPerDay) {
     return axios
-      .get(this._getURL(`/cost?rpd=${relaysPerDay}`))
+      .get(this._getURL(`cost?rpd=${relaysPerDay}`))
       .then((response) => response.data);
   }
 }

@@ -28,7 +28,7 @@ router.get("/balance/:accountAddress", async (request, response) => {
 
     const balance = await checkoutService.getAccountBalance(params.accountAddress);
 
-    response.send(balance);
+    response.send({balance});
   } catch (e) {
     const error = {
       message: e.toString()
@@ -44,7 +44,7 @@ router.get("/cost", (request, response) => {
 
     const cost = checkoutService.getMoneyToSpent(relaysPerDay);
 
-    response.send(cost);
+    response.send({cost});
   } catch (e) {
     const error = {
       message: e.toString()

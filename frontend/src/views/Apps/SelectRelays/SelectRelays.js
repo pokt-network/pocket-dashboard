@@ -3,17 +3,16 @@ import "./SelectRelays.scss";
 import {Col, Form, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {ITEM_TYPES, MAX_RELAYS, STYLING} from "../../../_constants";
-import {formatCurrency, formatNumbers, scrollToId} from "../../../_helpers";
+import {STYLING} from "../../../_constants";
+import {formatNumbers} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import ApplicationService from "../../../core/services/PocketApplicationService";
-import UserService from "../../../core/services/PocketUserService";
-import StripePaymentService from "../../../core/services/PocketStripePaymentService";
 import LoadingButton from "../../../core/components/LoadingButton";
 import {faCaretUp} from "@fortawesome/free-solid-svg-icons";
 import AppAlert from "../../../core/components/AppAlert";
+import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
+import Loader from "../../../core/components/Loader";
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -23,87 +22,127 @@ class SelectRelays extends Component {
     this.goToCheckout = this.goToCheckout.bind(this);
 
     this.state = {
-      relays: 1,
-      poktPrice: 0.06,
+      minRelays: 0,
+      maxRelays: 0,
+      relaysSelected: 0,
+      relaysPrice: 0,
       total: 0,
+      currentBalance: 0,
       currencies: [],
-      loading: false,
+      loading: true,
       error: {show: false, message: ""},
     };
   }
 
-  async componentDidMount() {
-    const currencies = await PaymentService.getAvailableCurrencies();
+  componentDidMount() {
+    const {address: accountAddress} = ApplicationService.getApplicationInfo();
 
-    this.setState({currencies});
+    PaymentService.getAvailableCurrencies()
+      .then(currencies => {
+
+        PocketCheckoutService.getRelaysPerDay()
+          .then(relaysPerDay => {
+            const minRelays = parseInt(relaysPerDay.min);
+
+            PocketCheckoutService.getMoneyToSpent(minRelays)
+              .then(({cost}) => {
+
+                this.setState({
+                  minRelays: minRelays,
+                  maxRelays: parseInt(relaysPerDay.max),
+                  relaysPrice: parseFloat(relaysPerDay.price),
+                  relaysSelected: minRelays,
+                  total: parseFloat(cost),
+                  loading: false
+                });
+              });
+          });
+
+        if (accountAddress) {
+          PocketCheckoutService.getAccountBalance(accountAddress)
+            .then(({balance}) => {
+              this.setState({currentBalance: parseFloat(balance)});
+            });
+        }
+        this.setState({currencies});
+      });
   }
 
   onSliderChange(value) {
-    const {poktPrice} = this.state;
 
-    this.setState({relays: value, total: value * poktPrice});
+    PocketCheckoutService.getMoneyToSpent(value)
+      .then(({cost}) => {
+        this.setState({relaysSelected: value, total: parseFloat(cost)});
+      });
   }
 
   async createPaymentIntent(amount, currency, pokt) {
-    const {address} = ApplicationService.getApplicationInfo();
-    const {pocketApplication} = await ApplicationService.getApplication(address);
-
-    const item = {
-      account: UserService.getUserInfo().email,
-      name: pocketApplication.name,
-      pokt,
-    };
-
-    const {success, data} = await StripePaymentService.createNewPaymentIntent(
-      ITEM_TYPES.APPLICATION, item, currency, amount
-    );
-
-    return {success, data};
+    // const {address} = ApplicationService.getApplicationInfo();
+    // const {pocketApplication} = await ApplicationService.getApplication(address);
+    //
+    // const item = {
+    //   account: UserService.getUserInfo().email,
+    //   name: pocketApplication.name,
+    //   pokt,
+    // };
+    //
+    // const {success, data} = await StripePaymentService.createNewPaymentIntent(
+    //   ITEM_TYPES.APPLICATION, item, currency, amount
+    // );
+    //
+    // return {success, data};
   }
 
   async goToCheckout() {
-    this.setState({loading: true});
-    const {relays, poktPrice, currencies, total: totalPrice} = this.state;
-
-    // At the moment the only available currency is USD.
-    const usd = currencies[0];
-
-    // Avoiding floating point precision errors.
-    const total = parseFloat(numeral(totalPrice).format("0.00")).toFixed(2);
-
-    // TODO: Calculate pokt from formula
-    const {success, data: paymentIntentData} = await this.createPaymentIntent(
-      total, usd, relays
-    );
-
-    if (!success) {
-      this.setState({
-        error: {show: true, message: paymentIntentData.data.message},
-        loading: false,
-      });
-      scrollToId("alert");
-      return;
-    }
-
-    PaymentService.savePurchaseInfoInCache({relays, costPerRelay: total});
-
-    // eslint-disable-next-line react/prop-types
-    this.props.history.push({
-      pathname: _getDashboardPath(DASHBOARD_PATHS.appOrderSummary),
-      state: {
-        type: ITEM_TYPES.APPLICATION,
-        paymentIntent: paymentIntentData,
-        quantity: {number: relays, description: "Relays per day"},
-        cost: {number: poktPrice, description: "Relays per day cost"},
-        total: total,
-      },
-    });
+    // this.setState({loading: true});
+    // const {relaysSelected, relaysPrice, currencies, total: totalCost} = this.state;
+    //
+    // // At the moment the only available currency is USD.
+    // const usd = currencies[0];
+    //
+    // // Avoiding floating point precision errors.
+    // const total = parseFloat(numeral(totalCost).format("0.00")).toFixed(2);
+    //
+    // // TODO: Calculate pokt from formula
+    // const {success, data: paymentIntentData} = await this.createPaymentIntent(total, usd, relaysSelected);
+    //
+    // if (!success) {
+    //   this.setState({
+    //     error: {show: true, message: paymentIntentData.data.message},
+    //     loading: false,
+    //   });
+    //   scrollToId("alert");
+    //   return;
+    // }
+    //
+    // PaymentService.savePurchaseInfoInCache({relays: relaysSelected, costPerRelay: total});
+    //
+    // // eslint-disable-next-line react/prop-types
+    // this.props.history.push({
+    //   pathname: _getDashboardPath(DASHBOARD_PATHS.appOrderSummary),
+    //   state: {
+    //     type: ITEM_TYPES.APPLICATION,
+    //     paymentIntent: paymentIntentData,
+    //     quantity: {number: relaysSelected, description: "Relays per day"},
+    //     cost: {number: relaysPrice, description: "Relays per day cost"},
+    //     total: total,
+    //   },
+    // });
   }
 
   render() {
-    const {error, relays, poktPrice, total: currentTotal, loading} = this.state;
+    const {
+      error, currencies, relaysSelected, relaysPrice,
+      minRelays, maxRelays, currentBalance, total: currentTotal, loading
+    } = this.state;
 
-    const total = formatCurrency(currentTotal);
+    // At the moment the only available currency is USD.
+    const currency = currencies[0];
+    const total = numeral(currentTotal).format("$0,0.000");
+
+    if (loading) {
+      return <Loader/>;
+    }
 
     return (
       <div id="select-relays">
@@ -133,8 +172,8 @@ class SelectRelays extends Component {
                 <AppSlider
                   onChange={this.onSliderChange}
                   marks={{
-                    1: "1 RPD",
-                    [MAX_RELAYS / 2]: {
+                    [minRelays]: `${minRelays} RPD`,
+                    [maxRelays / 2]: {
                       label: (
                         <span>
                           <FontAwesomeIcon
@@ -145,20 +184,19 @@ class SelectRelays extends Component {
                         </span>
                       ),
                     },
-                    [MAX_RELAYS]: `*${formatNumbers(MAX_RELAYS)} RPD`,
+                    [maxRelays]: `*${formatNumbers(maxRelays)} RPD`,
                   }}
-                  min={1}
-                  max={MAX_RELAYS}
+                  min={minRelays}
+                  max={maxRelays}
                 />
               </div>
             </div>
             <AppAlert
               className="pt-4 pb-4"
               variant="primary"
-              title={<h4 className="alert-relays">*More relays?</h4>}
-            >
+              title={<h4 className="alert-relays">*More relays?</h4>}>
               <p className="alert-relays">
-                If your app requires more than {formatNumbers(MAX_RELAYS)}{" "}
+                If your app requires more than {formatNumbers(maxRelays)}{" "}
                 Relays Per Day please <a href="/todo">Contact us</a> directly to
                 find a solution specially designed for your app.
               </p>
@@ -173,21 +211,20 @@ class SelectRelays extends Component {
               </div>
               <div className="item">
                 <p>Relays per day</p>
-                <p>{relays}</p>
+                <p>{relaysSelected}</p>
               </div>
               <div className="item">
                 <p>Relays per day cost</p>
-                <p>{poktPrice} USD</p>
+                <p>{relaysPrice} {currency}</p>
               </div>
               <div className="item">
                 <p>Current balance</p>
-                {/* TODO: Get balance */}
-                <Form.Control value="50 USD" readOnly />
+                <Form.Control value={`${currentBalance} ${currency}`} readOnly/>
               </div>
-              <hr />
+              <hr/>
               <div className="item total">
                 <p>Total cost</p>
-                <p>{total} USD</p>
+                <p>{total} {currency}</p>
               </div>
               <LoadingButton
                 loading={loading}
