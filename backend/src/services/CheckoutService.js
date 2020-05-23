@@ -1,13 +1,8 @@
 import BaseService from "./BaseService";
-import {Account, CoinDenom} from "@pokt-network/pocket-js";
-
+import {CoinDenom} from "@pokt-network/pocket-js";
+import {Configurations} from "../_configuration";
 
 export default class CheckoutService extends BaseService {
-
-  __pocketDenominations = {
-    pokt: 0,
-    upokt: 6
-  };
 
   /**
    * @param {object} options Options used in checkout service.
@@ -25,17 +20,36 @@ export default class CheckoutService extends BaseService {
     super();
 
     this.options = options;
+
+    this.__pocketDenominations = {
+      pokt: 0,
+      upokt: 6
+    };
+  }
+
+  /**
+   * Get instance of CheckoutService.
+   *
+   * @param {object} [options] Options used by service.
+   *
+   * @returns {CheckoutService} An instance.
+   */
+  static getInstance(options = undefined) {
+    const serviceOptions = options ?? Configurations.pocket_network.checkout;
+
+    return new CheckoutService(serviceOptions);
   }
 
   /**
    *  Get relays per day data.
    *
-   *  @returns {{min:number, max: number, }} Relays per day data.
+   *  @returns {{min:number, max: number}} Relays per day data.
    */
   getRelaysPerDay() {
     return {
       min: this.options.relays_per_day.min,
-      max: this.options.relays_per_day.max
+      max: this.options.relays_per_day.max,
+      cost: this.options.pokt_market_price
     };
   }
 
@@ -95,27 +109,45 @@ export default class CheckoutService extends BaseService {
   /**
    * Get balance of account
    *
-   * @param {Account} account Account to get balance.
+   * @param {string} accountAddress Account address to get balance.
    * @param {CoinDenom} pocketDenomination Pocket denomination.
    *
    * @returns {Promise<number>} Account balance.
    * @async
    */
-  async getAccountBalance(account, pocketDenomination = CoinDenom.Pokt) {
+  async getAccountBalance(accountAddress, pocketDenomination = CoinDenom.Pokt) {
     const poktMarketPrice = this.options.pokt_market_price;
-    const balance = await this.pocketService.getBalance(account);
+    const balance = await this.pocketService.getBalance(accountAddress);
     const pokt = parseInt(balance) / Math.pow(10, this.__pocketDenominations[pocketDenomination]);
 
     return pokt * poktMarketPrice;
   }
 
-  getRelaysPerDayCost() {
-    return this.options.pokt_market_price;
-  }
-
+  /**
+   * Get money to spent.
+   *
+   * @param {number} relaysPerDay Relays per day.
+   *
+   * @returns {number} Money to spent.
+   * @throws {Error} if relays per day is out of allowed range.
+   */
   getMoneyToSpent(relaysPerDay) {
+    const {
+      sessions_per_day: sessionsInADay,
+      p_rate: pRate,
+      stability,
+      pokt_market_price: poktMarketPrice,
+      relays_per_day: {
+        min: minRelaysPerDay,
+        max: maxRelaysPerDay,
+        base_relay_per_pokt: baseRelayPerPOKT
+      }
+    } = this.options;
 
+    if (relaysPerDay < minRelaysPerDay && relaysPerDay > maxRelaysPerDay) {
+      throw new Error("Relays per Day out of allowed range.");
+    }
+
+    return (((((relaysPerDay / sessionsInADay) - stability) / pRate)) / baseRelayPerPOKT) * poktMarketPrice;
   }
-
-
 }

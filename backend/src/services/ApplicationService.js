@@ -1,8 +1,7 @@
 import BaseService from "./BaseService";
 import {ExtendedPocketApplication, PocketApplication, StakedApplicationSummary} from "../models/Application";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
-import PocketAAT from "@pokt-network/aat-js";
-import {Account, Application, StakingStatus} from "@pokt-network/pocket-js";
+import {Account, Application, PocketAAT, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import {Configurations} from "../_configuration";
 import AccountService from "./AccountService";
