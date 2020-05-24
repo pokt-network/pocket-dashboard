@@ -3,11 +3,13 @@ import NodeService from "../services/NodeService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
+import CheckoutService from "../services/CheckoutService";
 
 const router = express.Router();
 
 const nodeService = new NodeService();
 const paymentService = new PaymentService();
+const checkoutService = CheckoutService.getInstance();
 
 /**
  * Create new node.
@@ -203,7 +205,9 @@ router.post("/stake", async (request, response) => {
 
       if (paymentHistory.isNodePaymentItem(true)) {
         const item = paymentHistory.getItem();
-        const node = await nodeService.stakeNode(data.node, item.pokt);
+        const poktToStake = checkoutService.getPoktToStake(paymentHistory.amount);
+
+        const node = await nodeService.stakeNode(data.node, poktToStake.toString());
 
         if (node) {
           const nodeEmailData = {
@@ -214,7 +218,7 @@ router.post("/stake", async (request, response) => {
           const paymentEmailData = {
             amountPaid: paymentHistory.amount,
             validatorPowerAmount: item.validatorPower,
-            poktStaked: item.pokt
+            poktStaked: poktToStake.toString()
           };
 
           await EmailService.to(node.user).sendStakeNodeEmail(node.user, nodeEmailData, paymentEmailData);

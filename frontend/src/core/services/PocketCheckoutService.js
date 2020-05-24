@@ -18,19 +18,6 @@ export class PocketCheckoutService extends PocketBaseService {
   }
 
   /**
-   * Get account balance.
-   *
-   * @param {string} accountAddress Account address in hex to query.
-   *
-   * @returns {Promise<number|*>} The balance of account.
-   */
-  getAccountBalance(accountAddress) {
-    return axios
-      .get(this._getURL(`balance/${accountAddress}`))
-      .then((response) => response.data);
-  }
-
-  /**
    * Get money to spent.
    *
    * @param {number} relaysPerDay Relays per day.

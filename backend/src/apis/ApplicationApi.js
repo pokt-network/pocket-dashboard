@@ -3,10 +3,12 @@ import ApplicationService from "../services/ApplicationService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
+import CheckoutService from "../services/CheckoutService";
 
 const router = express.Router();
 
 const applicationService = new ApplicationService();
+const checkoutService = CheckoutService.getInstance();
 const paymentService = new PaymentService();
 
 /**
@@ -284,7 +286,9 @@ router.post("/stake", async (request, response) => {
 
       if (paymentHistory.isApplicationPaymentItem(true)) {
         const item = paymentHistory.getItem();
-        const application = await applicationService.stakeApplication(data.application, data.networkChains, item.pokt);
+        const poktToStake = checkoutService.getPoktToStake(paymentHistory.amount);
+
+        const application = await applicationService.stakeApplication(data.application, data.networkChains, poktToStake.toString());
 
         if (application) {
           const applicationEmailData = {
@@ -295,7 +299,7 @@ router.post("/stake", async (request, response) => {
           const paymentEmailData = {
             amountPaid: paymentHistory.amount,
             maxRelayPerDayAmount: item.maxRelay,
-            poktStaked: item.pokt
+            poktStaked: poktToStake.toString()
           };
 
           await EmailService.to(application.user).sendStakeAppEmail(application.user, applicationEmailData, paymentEmailData);

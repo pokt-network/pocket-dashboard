@@ -3,16 +3,19 @@ import "./SelectRelays.scss";
 import {Col, Form, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {STYLING} from "../../../_constants";
-import {formatNumbers} from "../../../_helpers";
+import {ITEM_TYPES, STYLING} from "../../../_constants";
+import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
+import PocketPaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
-import ApplicationService from "../../../core/services/PocketApplicationService";
+import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import LoadingButton from "../../../core/components/LoadingButton";
 import {faCaretUp} from "@fortawesome/free-solid-svg-icons";
 import AppAlert from "../../../core/components/AppAlert";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
 import Loader from "../../../core/components/Loader";
+import PocketAccountService from "../../../core/services/PocketAccountService";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -35,7 +38,7 @@ class SelectRelays extends Component {
   }
 
   componentDidMount() {
-    const {address: accountAddress} = ApplicationService.getApplicationInfo();
+    const {address: accountAddress} = PocketApplicationService.getApplicationInfo();
 
     PaymentService.getAvailableCurrencies()
       .then(currencies => {
@@ -59,7 +62,7 @@ class SelectRelays extends Component {
           });
 
         if (accountAddress) {
-          PocketCheckoutService.getAccountBalance(accountAddress)
+          PocketAccountService.getBalance(accountAddress)
             .then(({balance}) => {
               this.setState({currentBalance: parseFloat(balance)});
             });
@@ -76,58 +79,56 @@ class SelectRelays extends Component {
       });
   }
 
-  async createPaymentIntent(amount, currency, pokt) {
-    // const {address} = ApplicationService.getApplicationInfo();
-    // const {pocketApplication} = await ApplicationService.getApplication(address);
-    //
-    // const item = {
-    //   account: UserService.getUserInfo().email,
-    //   name: pocketApplication.name,
-    //   pokt,
-    // };
-    //
-    // const {success, data} = await StripePaymentService.createNewPaymentIntent(
-    //   ITEM_TYPES.APPLICATION, item, currency, amount
-    // );
-    //
-    // return {success, data};
+  async createPaymentIntent(relays, currency, amount) {
+    const {address} = PocketApplicationService.getApplicationInfo();
+    const {pocketApplication} = await PocketApplicationService.getApplication(address);
+
+    const item = {
+      account: address,
+      name: pocketApplication.name,
+      maxRelays: relays
+    };
+
+    const {success, data} = await PocketPaymentService
+      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, amount);
+
+    return {success, data};
   }
 
   async goToCheckout() {
-    // this.setState({loading: true});
-    // const {relaysSelected, relaysPrice, currencies, total: totalCost} = this.state;
-    //
-    // // At the moment the only available currency is USD.
-    // const usd = currencies[0];
-    //
-    // // Avoiding floating point precision errors.
-    // const total = parseFloat(numeral(totalCost).format("0.00")).toFixed(2);
-    //
-    // // TODO: Calculate pokt from formula
-    // const {success, data: paymentIntentData} = await this.createPaymentIntent(total, usd, relaysSelected);
-    //
-    // if (!success) {
-    //   this.setState({
-    //     error: {show: true, message: paymentIntentData.data.message},
-    //     loading: false,
-    //   });
-    //   scrollToId("alert");
-    //   return;
-    // }
-    //
-    // PaymentService.savePurchaseInfoInCache({relays: relaysSelected, costPerRelay: total});
-    //
-    // // eslint-disable-next-line react/prop-types
-    // this.props.history.push({
-    //   pathname: _getDashboardPath(DASHBOARD_PATHS.appOrderSummary),
-    //   state: {
-    //     type: ITEM_TYPES.APPLICATION,
-    //     paymentIntent: paymentIntentData,
-    //     quantity: {number: relaysSelected, description: "Relays per day"},
-    //     cost: {number: relaysPrice, description: "Relays per day cost"},
-    //     total: total,
-    //   },
-    // });
+    this.setState({loading: true});
+    const {relaysSelected, relaysPrice, currencies, total: totalCost} = this.state;
+
+    // At the moment the only available currency is USD.
+    const currency = currencies[0];
+
+    // Avoiding floating point precision errors.
+    const amount = parseFloat(numeral(totalCost).format("0.000")).toFixed(3);
+
+    const {success, data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, amount);
+
+    if (!success) {
+      this.setState({
+        error: {show: true, message: paymentIntentData.data.message},
+        loading: false,
+      });
+      scrollToId("alert");
+      return;
+    }
+
+    PaymentService.savePurchaseInfoInCache({relays: parseInt(relaysSelected), costPerRelay: parseFloat(amount)});
+
+    // eslint-disable-next-line react/prop-types
+    this.props.history.push({
+      pathname: _getDashboardPath(DASHBOARD_PATHS.appOrderSummary),
+      state: {
+        type: ITEM_TYPES.APPLICATION,
+        paymentIntent: paymentIntentData,
+        quantity: {number: relaysSelected, description: "Relays per day"},
+        cost: {number: relaysPrice, description: "Relays per day cost"},
+        total: amount,
+      },
+    });
   }
 
   render() {
@@ -232,8 +233,7 @@ class SelectRelays extends Component {
                   onClick: this.goToCheckout,
                   variant: "primary",
                   className: "mb-3"
-                }}
-              >
+                }}>
                 <span>Checkout</span>
               </LoadingButton>
             </div>
