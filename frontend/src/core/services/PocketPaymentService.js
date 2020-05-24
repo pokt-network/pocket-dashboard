@@ -146,10 +146,10 @@ class PocketPaymentService extends PocketBaseService {
     let path;
 
     switch (type) {
-      case type === ITEM_TYPES.APPLICATION:
+      case ITEM_TYPES.APPLICATION:
         path = "apps";
         break;
-      case type === ITEM_TYPES.NODE:
+      case ITEM_TYPES.NODE:
         path = "nodes";
         break;
       default:

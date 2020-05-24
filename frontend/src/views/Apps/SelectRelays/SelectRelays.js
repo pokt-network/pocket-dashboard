@@ -90,7 +90,7 @@ class SelectRelays extends Component {
     };
 
     const {success, data} = await PocketPaymentService
-      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, amount);
+      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, parseFloat(amount));
 
     return {success, data};
   }

@@ -180,7 +180,7 @@ export class PaymentHistory {
 
     paymentHistory.paymentMethodID = paymentMethodID;
     paymentHistory.billingDetails = billingDetails;
-    paymentHistory.status = status;
+    paymentHistory.status = status ?? "pending";
 
     return paymentHistory;
   }
