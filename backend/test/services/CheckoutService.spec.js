@@ -2,9 +2,9 @@ import {describe, it} from "mocha";
 import {assert} from "chai";
 import CheckoutService from "../../src/services/CheckoutService";
 
-const checkoutOptions = {
+const POKT_MARKET_PRICE = 0.06;
+const CHECKOUT_OPTIONS = {
   default_currency: "USD",
-  pokt_market_price: 0.06,
   relays_per_day: {
     min: 1,
     max: 6912,
@@ -15,7 +15,7 @@ const checkoutOptions = {
   p_rate: 0.1
 };
 
-const checkoutService = CheckoutService.getInstance(checkoutOptions);
+const checkoutService = CheckoutService.getInstance(CHECKOUT_OPTIONS, POKT_MARKET_PRICE);
 
 describe("CheckoutService", () => {
 

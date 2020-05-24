@@ -87,9 +87,9 @@ export const Configurations = {
     max_dispatchers: process.env.POCKET_NETWORK_MAX_DISPATCHER,
     request_timeout: process.env.POCKET_NETWORK_REQUEST_TIMEOUT,
     max_sessions: process.env.POCKET_NETWORK_MAX_SESSIONS,
+    pokt_market_price: process.env.POKT_MARKET_PRICE,
     checkout: {
       default_currency: process.env.CHECKOUT_DEFAULT_CURRENCY,
-      pokt_market_price: process.env.CHECKOUT_POKT_MARKET_PRICE,
       relays_per_day: {
         min: process.env.CHECKOUT_MIN_RELAYS_PER_DAY,
         max: process.env.CHECKOUT_MAX_RELAYS_PER_DAY,

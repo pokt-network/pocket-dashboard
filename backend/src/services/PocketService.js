@@ -19,6 +19,10 @@ const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 const POCKET_CONFIGURATION = new Configuration(
   POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
 
+export const POKT_DENOMINATIONS = {
+  pokt: 0,
+  upokt: 6
+};
 
 /**
  * Convert list of string nodes to URL nodes.

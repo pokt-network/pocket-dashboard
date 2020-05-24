@@ -1,5 +1,4 @@
 import BaseService from "./BaseService";
-import {CoinDenom} from "@pokt-network/pocket-js";
 import {Configurations} from "../_configuration";
 
 export default class CheckoutService extends BaseService {
@@ -7,7 +6,6 @@ export default class CheckoutService extends BaseService {
   /**
    * @param {object} options Options used in checkout service.
    * @param {string} options.default_currency Default currency.
-   * @param {number} options.pokt_market_price Market price of POKT.
    * @param {object} options.relays_per_day Relays per day data.
    * @param {number} options.relays_per_day.min Min of Relays per day.
    * @param {number} options.relays_per_day.max Max of Relays per day.
@@ -15,29 +13,28 @@ export default class CheckoutService extends BaseService {
    * @param {number} options.stability Stability
    * @param {number} options.sessions_per_day Sessions per day.
    * @param {number} options.p_rate P rate.
+   * @param {number} poktMarketPrice Pokt market price.
    */
-  constructor(options) {
+  constructor(options, poktMarketPrice) {
     super();
 
     this.options = options;
-
-    this.__pocketDenominations = {
-      pokt: 0,
-      upokt: 6
-    };
+    this.poktMarketPrice = poktMarketPrice;
   }
 
   /**
    * Get instance of CheckoutService.
    *
    * @param {object} [options] Options used by service.
+   * @param {number} [poktMarketPrice] Pokt market price.
    *
    * @returns {CheckoutService} An instance.
    */
-  static getInstance(options = undefined) {
+  static getInstance(options = undefined, poktMarketPrice = undefined) {
     const serviceOptions = options ?? Configurations.pocket_network.checkout;
+    const servicePoktMarketPrice = poktMarketPrice ?? Configurations.pocket_network.pokt_market_price;
 
-    return new CheckoutService(serviceOptions);
+    return new CheckoutService(serviceOptions, servicePoktMarketPrice);
   }
 
   /**
@@ -49,7 +46,7 @@ export default class CheckoutService extends BaseService {
     return {
       min: this.options.relays_per_day.min,
       max: this.options.relays_per_day.max,
-      price: this.options.pokt_market_price
+      price: this.poktMarketPrice
     };
   }
 
@@ -61,9 +58,7 @@ export default class CheckoutService extends BaseService {
    * @returns {number} Pokt to use.
    */
   getPoktToStake(moneySpent) {
-    const marketPrice = this.options.pokt_market_price;
-
-    return moneySpent / marketPrice;
+    return moneySpent / this.poktMarketPrice;
   }
 
   /**
@@ -87,8 +82,7 @@ export default class CheckoutService extends BaseService {
    * @returns {number} Max Relays Session.
    */
   getMaxRelaysSession(baseThroughtput) {
-    const pRate = this.options.p_rate;
-    const stability = this.options.stability;
+    const {p_rate: pRate, stability} = this.options;
 
     return (baseThroughtput * pRate) + stability;
   }
@@ -107,23 +101,6 @@ export default class CheckoutService extends BaseService {
   }
 
   /**
-   * Get balance of account
-   *
-   * @param {string} accountAddress Account address to get balance.
-   * @param {CoinDenom} pocketDenomination Pocket denomination.
-   *
-   * @returns {Promise<number>} Account balance.
-   * @async
-   */
-  async getAccountBalance(accountAddress, pocketDenomination = CoinDenom.Pokt) {
-    const poktMarketPrice = this.options.pokt_market_price;
-    const balance = await this.pocketService.getBalance(accountAddress);
-    const pokt = parseInt(balance) / Math.pow(10, this.__pocketDenominations[pocketDenomination]);
-
-    return pokt * poktMarketPrice;
-  }
-
-  /**
    * Get money to spent.
    *
    * @param {number} relaysPerDay Relays per day.
@@ -136,7 +113,6 @@ export default class CheckoutService extends BaseService {
       sessions_per_day: sessionsInADay,
       p_rate: pRate,
       stability,
-      pokt_market_price: poktMarketPrice,
       relays_per_day: {
         min: minRelaysPerDay,
         max: maxRelaysPerDay,
@@ -145,9 +121,9 @@ export default class CheckoutService extends BaseService {
     } = this.options;
 
     if (relaysPerDay < minRelaysPerDay && relaysPerDay > maxRelaysPerDay) {
-      throw new Error("Relays per Day out of allowed range.");
+      throw new Error("Relays per day out of allowed range.");
     }
 
-    return (((((relaysPerDay / sessionsInADay) - stability) / pRate)) / baseRelayPerPOKT) * poktMarketPrice;
+    return (((((relaysPerDay / sessionsInADay) - stability) / pRate)) / baseRelayPerPOKT) * this.poktMarketPrice;
   }
 }
