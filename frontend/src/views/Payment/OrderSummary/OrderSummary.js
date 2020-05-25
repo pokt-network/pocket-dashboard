@@ -28,6 +28,7 @@ class OrderSummary extends Component {
     this.goToInvoice = this.goToInvoice.bind(this);
 
     this.state = {
+      setMethodDefault: false,
       type: "",
       paymentIntent: {},
       quantity: {
@@ -74,12 +75,17 @@ class OrderSummary extends Component {
     const user = UserService.getUserInfo().email;
     const paymentMethods = await PaymentService.getPaymentMethods(user);
 
+    const selectedPaymentMethod =
+      paymentMethods.find(
+        (pm) => PaymentService.getDefaultPaymentMethod() === pm.id
+      ) || paymentMethods[0];
+
     this.setState({
       loading: false,
       paymentMethods,
       type,
       paymentIntent,
-      selectedPaymentMethod: paymentMethods[0],
+      selectedPaymentMethod: selectedPaymentMethod,
       quantity,
       total,
       cost,
@@ -171,6 +177,8 @@ class OrderSummary extends Component {
   saveNewCardNoAddress(e, cardData, stripe) {
     e.preventDefault();
 
+    const {setMethodDefault} = this.state;
+
     const {cardHolderName: name} = cardData;
 
     const billingDetails = {
@@ -205,6 +213,10 @@ class OrderSummary extends Component {
           message: "Your payment method was successfully added",
         };
 
+        if (setMethodDefault) {
+          PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
+        }
+
         this.setState({alert, paymentMethods, selectedPaymentMethod});
       }
     });
@@ -222,7 +234,7 @@ class OrderSummary extends Component {
       agreeTerms,
       alert,
       unauthorized,
-      purchasing
+      purchasing,
     } = this.state;
 
     const cards = [
@@ -300,6 +312,9 @@ class OrderSummary extends Component {
             <NewCardNoAddressForm
               formActionHandler={this.saveNewCardNoAddress}
               actionButtonName="Add card"
+              setDefaultHandler={(setMethodDefault) =>
+                this.setState({setMethodDefault})
+              }
             />
           </Col>
           <Col lg="4" md="4" sm="4" className="title-page pr-5">
