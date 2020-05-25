@@ -614,8 +614,9 @@ textarea.form-control::placeholder {
   position: absolute;
 }
 
-input[type="checkbox"],
-input[type="radio"] {
+input[type="checkbox"] // input[type="radio"]
+
+  {
   position: relative;
   width: 1.4em;
   height: 1.4em;
@@ -658,10 +659,30 @@ input[type="radio"] {
 }
 
 input[type="radio"] {
+  position: relative;
+  width: 1.4em;
+  height: 1.4em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: $black;
+  border: 1px solid $primary-color;
   border-radius: 50%;
+  appearance: none;
+  outline: 0;
+  cursor: pointer;
 
-  &::before {
-    opacity: 0 !important;
+  &:checked {
+
+    ~label {
+      margin-top: 0px;
+      margin-left: 3px;
+      height: 25%;
+      position: absolute;
+      background-color: $primary-color;
+      width: 60%;
+      border-radius: 50%;
+    }
   }
 }
 
