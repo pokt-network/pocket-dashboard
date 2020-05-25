@@ -36,38 +36,39 @@ class Checkout extends Component {
   }
 
   async componentDidMount() {
-    // this.setState({loading: true});
-    // if (this.props.location.state === undefined) {
-    //   this.setState({loading: false, unauthorized: true});
-    //   return;
-    // }
-    // const {type, paymentId, paymentMethod, detail} = this.props.location.state;
-    // const address =
-    //   type === ITEM_TYPES.APPLICATION
-    //     ? ApplicationService.getApplicationInfo().address
-    //     : NodeService.getNodeInfo().address;
-    // const {
-    //   paymentID: id,
-    //   createdDate: date,
-    //   item,
-    //   amount: total,
-    // } = await PaymentService.getPaymentDetail(paymentId);
-    // const {type: brand, digits} = paymentMethod.cardData;
-    // const invoice = {
-    //   id,
-    //   date: moment(date).format("DD MM YYYY"),
-    //   owner: item.account,
-    //   card: `${brand.charAt(0).toUpperCase() + brand.slice(1)} ${digits}`,
-    // };
-    // this.setState({
-    //   loading: false,
-    //   type,
-    //   address,
-    //   invoice,
-    //   total,
-    //   detail,
-    //   paymentMethod,
-    // });
+    this.setState({loading: true});
+    if (this.props.location.state === undefined) {
+      this.setState({loading: false, unauthorized: true});
+      return;
+    }
+    const {type, paymentId, paymentMethod, detail} = this.props.location.state;
+    const address =
+      type === ITEM_TYPES.APPLICATION
+        ? ApplicationService.getApplicationInfo().address
+        : NodeService.getNodeInfo().address;
+    const {
+      paymentID: id,
+      createdDate: date,
+      item,
+      amount: total,
+    } = await PaymentService.getPaymentDetail(paymentId);
+    const {type: brand, digits} = paymentMethod.cardData;
+    const invoice = {
+      id,
+      date: moment(date).format("DD MM YYYY"),
+      owner: item.account,
+      card: `${brand.charAt(0).toUpperCase() + brand.slice(1)} ${digits}`,
+    };
+
+    this.setState({
+      loading: false,
+      type,
+      address,
+      invoice,
+      total,
+      detail,
+      paymentMethod,
+    });
   }
   render() {
     const {owner, id, date, card} = this.state.invoice;
