@@ -152,18 +152,20 @@ export const tableShow = (table, handleClick) => {
   };
 
   const tableFormatted = [...table];
-  const formatter = Object.assign({}, table[table.length-1]);
-  
+  const formatter = Object.assign({}, table[table.length - 1]);
+
   formatter.headerFormatter = showFormatter;
-  tableFormatted[tableFormatted.length-1] = formatter;
-  return tableFormatted;  
+  tableFormatted[tableFormatted.length - 1] = formatter;
+  return tableFormatted;
 };
 
-export const formatHoursAndMinutesFromNow = (endTime) => {
+export const formatHoursAndMinutes = (time, daysFromTime) => {
   const now = moment(new Date());
-  const duration = moment.duration(now.diff(moment(endTime)));
+  const eventTime = moment(time).add(daysFromTime, "days");
+  const duration = moment.duration(eventTime.diff(now));
+  const days = duration.days().toString().padStart(2, "0");
   const hours = duration.hours().toString().padStart(2, "0");
   const minutes = duration.minutes().toString().padStart(2, "0");
-  
-  return `${hours}:${minutes}`;
+
+  return `${days}:${hours}:${minutes}`;
 };
