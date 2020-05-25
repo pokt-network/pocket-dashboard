@@ -165,7 +165,7 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
-   * Delete a node from dashboard (but not from the network).
+   * Unstake a node.
    *
    * @param {string} nodeAccountAddress Node account address.
    *
