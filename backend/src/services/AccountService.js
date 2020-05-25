@@ -111,7 +111,7 @@ export default class AccountService extends BaseService {
    * @returns {Promise<number>} Account balance.
    * @async
    */
-  async getBalance(accountAddress, pocketDenomination = CoinDenom.Pokt) {
+  async getBalance(accountAddress, pocketDenomination = CoinDenom.Upokt) {
     const {pokt_market_price: poktMarketPrice} = Configurations.pocket_network;
     const balance = await this.pocketService.getBalance(accountAddress);
     const pokt = parseInt(balance) / Math.pow(10, POKT_DENOMINATIONS[pocketDenomination]);
