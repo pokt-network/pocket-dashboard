@@ -1,7 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import AppTable from "../../../core/components/AppTable";
-import "./AppsMain.scss";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
@@ -163,14 +162,14 @@ class AppsMain extends Main {
     }
 
     return (
-      <div className="app-main">
+      <div className="main">
         <Row>
           <Col sm="8" md="8" lg="8" className="page-title">
             <h1 className="ml-1">General Apps Information</h1>
           </Col>
           <Col sm="4" md="4" lg="4" className="d-flex justify-content-end cta-buttons">
             <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
-              <Button className="ml-4 pl-4 pr-4 mr-3 create-app-button">
+              <Button variant={"dark"} className="ml-4 pl-4 pr-4 mr-3 create-app-button">
                 <span>Create New App</span>
               </Button>
             </Link>
@@ -185,9 +184,9 @@ class AppsMain extends Main {
           <InfoCards cards={cards}/>
         </Row>
         <Row className="mb-4 app-tables">
-          <Col sm="6" md="6" lg="6" className="my-apps-segment">
+          <Col sm="6" md="6" lg="6" className="my-items-segment">
             <Segment bordered scroll={false} label="My Apps">
-              <Row className={`search-panel ${!hasApps ? "search-panel-without-apps" : null}`}>
+              <Row className={`search-panel ${!hasApps ? "search-panel-without-items" : null}`}>
                 <Col>
                   <InputGroup className="search-input mb-3">
                     <FormControl
