@@ -15,28 +15,37 @@ class PocketNodeService extends PocketBaseService {
   removeNodeInfoFromCache() {
     this.ls.remove("node_address");
     this.ls.remove("node_private_key");
+    this.ls.remove("node_passphrase");
+    this.ls.remove("node_id");
     this.ls.remove("node_chains");
+    this.ls.remove("node_data");
   }
 
   /**
-   * Get Address and chains for node creating/importing
+   * Get node information from localstorage
    */
   getNodeInfo() {
     return {
+      id: this.ls.get("node_id").data,
       address: this.ls.get("node_address").data,
       privateKey: this.ls.get("node_private_key").data,
+      passphrase: this.ls.get("node_passphrase").data,
       chains: this.ls.get("node_chains").data,
+      data: this.ls.get("node_data").data,
     };
   }
 
   /**
    * Save node data in local storage encrypted.
    *
+   * @param {string} [nodeID] Pocket node DB ID.
    * @param {string} address Pocket node address
    * @param {string} privateKey Pocket node private key
+   * @param {string} [passphrase] Pocket node private key.
+   * @param {object} [data] Pocket node dashboard data.
    * @param {Array<string>} chains Pocket node chosen chains.
    */
-  saveNodeInfoInCache({address, privateKey, chains}) {
+  saveNodeInfoInCache({nodeID, address, privateKey, passphrase, data, chains}) {
     if (address) {
       this.ls.set("node_address", {data: address});
     }
@@ -45,6 +54,15 @@ class PocketNodeService extends PocketBaseService {
     }
     if (chains) {
       this.ls.set("node_chains", {data: chains});
+    }
+    if (nodeID) {
+      this.ls.set("node_id", {data: nodeID});
+    }
+    if (passphrase) {
+      this.ls.set("node_passphrase", {data: passphrase});
+    }
+    if (data) {
+      this.ls.set("node_data", {data: data});
     }
   }
 
@@ -158,9 +176,11 @@ class PocketNodeService extends PocketBaseService {
    *
    * @returns {Promise|Promise<*>}
    */
-  deleteNodeFromDashboard(nodeAccountAddress) {
+  deleteNodeFromDashboard(nodeAccountAddress, user, nodesLink) {
+    const data = {user, nodesLink};
+
     return axios
-      .delete(this._getURL(`/${nodeAccountAddress}`))
+      .post(this._getURL(`/${nodeAccountAddress}`), data)
       .then((response) => response.data);
   }
 
@@ -171,8 +191,8 @@ class PocketNodeService extends PocketBaseService {
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeNode(nodeAccountAddress) {
-    const data = {nodeAccountAddress};
+  unstakeNode(privateKey, passPhrase, accountAddress, nodeLink) {
+    const data = {node: {privateKey, passPhrase, accountAddress}, nodeLink};
 
     return axios
       .post(this._getURL("/unstake"), data)

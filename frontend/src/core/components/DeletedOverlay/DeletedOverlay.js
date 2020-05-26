@@ -11,8 +11,8 @@ class DeletedOverlay extends Component {
 
     return (
       <div className="deleted-overlay d-flex flex-column align-items-center mt-5">
-        <img src={"/assets/trash-blue.svg"} alt="item-deleted-icon"/>
-        <p>{text}</p>
+        <img src={"/assets/trash-blue.svg"} alt="item-deleted-icon" />
+        {text}
         <Link to={buttonLink}>
           <Button>
             <span>{buttonText}</span>
@@ -24,7 +24,11 @@ class DeletedOverlay extends Component {
 }
 
 DeletedOverlay.propTypes = {
-  text: PropTypes.string,
+  text: PropTypes.oneOfType([
+    PropTypes.arrayOf(PropTypes.node),
+    PropTypes.node,
+    PropTypes.string,
+  ]),
   buttonText: PropTypes.string,
   buttonLink: PropTypes.string,
 };

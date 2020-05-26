@@ -12,7 +12,7 @@ import {
   formatNumbers,
 } from "../../../_helpers";
 import {Link} from "react-router-dom";
-// import PocketUserService from "../../../core/services/PocketUserService";
+import PocketUserService from "../../../core/services/PocketUserService";
 import moment from "moment";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
@@ -76,16 +76,13 @@ class NodeDetail extends Component {
   async deleteNode() {
     const {address} = this.state.pocketNode.publicPocketAccount;
 
-    // TODO: Modify endpoint for email integration.
-    // const nodesLink = `${window.location.origin}${_getDashboardPath(
-    //   DASHBOARD_PATHS.nodes
-    // )}`;
-    // const userEmail = PocketUserService.getUserInfo().email;
+    const nodesLink = `${window.location.origin}${_getDashboardPath(
+      DASHBOARD_PATHS.nodes
+    )}`;
+    const userEmail = PocketUserService.getUserInfo().email;
 
     const success = await NodeService.deleteNodeFromDashboard(
-      address
-      // userEmail,
-      // nodesLink
+      address, userEmail, nodesLink
     );
 
     if (success) {
@@ -94,12 +91,13 @@ class NodeDetail extends Component {
   }
 
   async unstakeNode({privateKey, passphrase, address}) {
-    // TODO: Add node staking through privateKey/passphrase
-    // const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
-    // const detail = url.replace(":address", address);
-    // const link = `${window.location.origin}${detail}`;
+    const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
+    const detail = url.replace(":address", address);
+    const link = `${window.location.origin}${detail}`;
 
-    const {success, data} = NodeService.unstakeNode(address);
+    const {success, data} = NodeService.unstakeNode(
+      privateKey, passphrase, address, link
+    );
 
     if (success) {
       // "Reload page" for updated networkData
