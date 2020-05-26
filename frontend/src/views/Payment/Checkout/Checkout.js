@@ -128,11 +128,8 @@ class Checkout extends Component {
           return url.replace(":address", address);
         }}
       >
-        <Button
-          variant="primary"
-          className="mt-3  pl-4 pr-4 float-right font-weight-light"
-        >
-          Go to {isApp ? "app" : "nodes"} detail
+        <Button variant="primary" className="mt-3 float-right pr-4 pl-4 cta">
+          <span>Go to {isApp ? "app" : "node"} detail</span>
         </Button>
       </Link>
     );
@@ -147,24 +144,31 @@ class Checkout extends Component {
 
     return (
       <div id="nodes-checkout" className="mb-5">
+        <Row>
+          <Col className="header">
+            {detailButton}
+            <h1>Enjoy your purchase</h1>
+            <p>Please wait a few minutes until the process is completed</p>
+          </Col>
+        </Row>
         <Row className="segment mb-3">
           <Col className="title-page">
-            {detailButton}
-            <h2>Enjoy your purchase</h2>
-            <p>Please wait a few minutes until the process is completed</p>
             <AppSteps
               icons={icons}
               current={2}
               steps={[
                 "Purchase",
-                "Encode and sign stake transaction",
+                <>
+                  Encode and sign
+                  <br /> stake transaction
+                </>,
                 "throughput available",
               ]}
             />
           </Col>
         </Row>
-        <div className="mt-4 mb-4 title-page">
-          <h3>Your invoice</h3>
+        <div className="mt-4 ml-4 mb-4 title-page">
+          <h2>Your invoice</h2>
         </div>
         <Row className="segment mb-2">
           <Invoice
@@ -174,12 +178,10 @@ class Checkout extends Component {
             total={totalAmount}
           />
         </Row>
-        <p className="mt-4 ml-3 font-weight-light">
+        <p className="mt-4 ml-3 print">
           {/* TODO: Add print functionality */}
-          <Button variant="link" className="print font-weight-light">
-            Print
-          </Button>{" "}
-          your invoice
+          <img src="/assets/printer.svg" className="icon" />{" "}
+          <span className="link">Print</span> your invoice
         </p>
       </div>
     );

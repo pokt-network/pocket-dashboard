@@ -1,13 +1,13 @@
 import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
-import ApplicationService, {PocketApplicationService,} from "../../../core/services/PocketApplicationService";
+import {STAKE_STATUS, TABLE_COLUMNS, POKT_UNSTAKING_DAYS} from "../../../_constants";
+import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatHoursAndMinutesFromNow, formatNetworkData, getStakeStatus,} from "../../../_helpers";
+import {formatHoursAndMinutes, formatNetworkData, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -183,7 +183,7 @@ class AppDetail extends Component {
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
-      ? formatHoursAndMinutesFromNow(unstakingCompletionTime)
+      ? formatHoursAndMinutes(unstakingCompletionTime, POKT_UNSTAKING_DAYS)
       : undefined;
 
     const generalInfo = [

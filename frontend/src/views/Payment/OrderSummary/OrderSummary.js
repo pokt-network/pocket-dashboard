@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, {Component} from "react";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import {Col, Form, Row} from "react-bootstrap";
 import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDisplay";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
@@ -17,6 +17,7 @@ import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import {Link} from "react-router-dom";
 import {formatCurrency, scrollToId} from "../../../_helpers";
 import ApplicationService from "../../../core/services/PocketApplicationService";
+import LoadingButton from "../../../core/components/LoadingButton";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -27,6 +28,7 @@ class OrderSummary extends Component {
     this.goToInvoice = this.goToInvoice.bind(this);
 
     this.state = {
+      setMethodDefault: false,
       type: "",
       paymentIntent: {},
       quantity: {
@@ -50,6 +52,7 @@ class OrderSummary extends Component {
         message: "",
       },
       unauthorized: false,
+      purchasing: false,
     };
   }
 
@@ -75,9 +78,14 @@ class OrderSummary extends Component {
     PaymentService.getPaymentMethods(user)
       .then(paymentMethods => {
 
+        const selectedPaymentMethod =
+          paymentMethods.find(
+            (pm) => PaymentService.getDefaultPaymentMethod() === pm.id
+          ) || paymentMethods[0];
+
         this.setState({
           loading: false,
-          selectedPaymentMethod: paymentMethods[0],
+          selectedPaymentMethod,
           paymentMethods,
           type,
           paymentIntent,
@@ -118,6 +126,7 @@ class OrderSummary extends Component {
 
   async makePurchaseWithSavedCard(e, stripe) {
     e.preventDefault();
+    this.setState({purchasing: true});
 
     const {paymentIntent, selectedPaymentMethod} = this.state;
 
@@ -126,6 +135,7 @@ class OrderSummary extends Component {
 
     if (result.error) {
       this.setState({
+        purchasing: false,
         alert: {
           show: true,
           variant: "warning",
@@ -151,15 +161,15 @@ class OrderSummary extends Component {
 
     this.setState({loading: true});
 
-    ApplicationService.stakeApplication(application, chains, result.paymentIntent.id, applicationLink)
-      .then(_ => {
-      });
+    await ApplicationService.stakeApplication(application, chains, result.paymentIntent.id, applicationLink);
 
     this.goToInvoice();
   }
 
   saveNewCard(e, cardData, stripe) {
     e.preventDefault();
+
+    const {setMethodDefault} = this.state;
 
     const {cardHolderName: name} = cardData;
 
@@ -197,7 +207,14 @@ class OrderSummary extends Component {
           this.setState({alert, paymentMethods, selectedPaymentMethod});
         }
       });
-  }
+        if (setMethodDefault) {
+          PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
+        }
+
+        this.setState({alert, paymentMethods, selectedPaymentMethod});
+      }
+    });
+}
 
   render() {
     const {
@@ -211,6 +228,7 @@ class OrderSummary extends Component {
       agreeTerms,
       alert,
       unauthorized,
+      purchasing,
     } = this.state;
 
     const cards = [
@@ -280,12 +298,17 @@ class OrderSummary extends Component {
               })}
             </Form>
             <h5 className="mt-5 mb-4">Add a new card</h5>
+
+            <h5 className="card-form-title">Enter your card information</h5>
             <NewCardNoAddressForm
               formActionHandler={this.saveNewCard}
               actionButtonName="Add card"
+              setDefaultHandler={(setMethodDefault) =>
+                this.setState({setMethodDefault})
+              }
             />
           </Col>
-          <Col lg="4" md="4" sm="4" className="title-page">
+          <Col lg="4" md="4" sm="4" className="title-page pr-5">
             <h2 className="sub">Review your order</h2>
             <div className="mt-5 order">
               {cards.map((c, idx) => (
@@ -308,7 +331,7 @@ class OrderSummary extends Component {
               className="mb-3"
               label={
                 <p className="agree">
-                  I agree to Pocket Purchase&#39;s{" "}
+                  I agree to Pocket Network&#39;s Purchase{" "}
                   <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>
                     <br/>
                     Terms and Conditions.
@@ -322,14 +345,19 @@ class OrderSummary extends Component {
                 {({_, stripe}) => (
                   <Form
                     onSubmit={(e) => this.makePurchaseWithSavedCard(e, stripe)}
-                    className="">
-                    <Button
-                      disabled={!agreeTerms}
-                      variant="primary"
-                      className="confirm pr-5 pl-5"
-                      type="submit">
+                    className=""
+                  >
+                    <LoadingButton
+                      loading={purchasing}
+                      buttonProps={{
+                        disabled: !agreeTerms,
+                        variant: "primary",
+                        className: "confirm pr-5 pl-5",
+                        type: "submit",
+                      }}
+                    >
                       <span>Confirm payment</span>
-                    </Button>
+                    </LoadingButton>
                   </Form>
                 )}
               </ElementsConsumer>

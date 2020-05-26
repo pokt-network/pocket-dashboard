@@ -209,7 +209,7 @@ class SelectRelays extends Component {
     // At the moment the only available currency is USD.
     const currency = currencies[0];
     const subTotalFixed = numeral(subTotal).format("$0,0.000");
-    const totalFixed = numeral(total).format("$0,0.000");
+    const totalFixed = formatNumbers(total);
 
     if (loading) {
       return <Loader/>;
@@ -217,7 +217,7 @@ class SelectRelays extends Component {
 
     return (
       <div id="select-relays">
-        <Row className="mt-4 mb-5">
+        <Row className="mt-4 mb-4">
           <Col lg="11" md="11" sm="11" className="title-page">
             {error.show && (
               <AppAlert
@@ -228,7 +228,7 @@ class SelectRelays extends Component {
               />
             )}
             <h1>Custom tier</h1>
-            <p>
+            <p className="subtitle">
               With the custom tier, you only need to pay for the API throughput
               you application needs. If you expect your application to grow in
               the short term, we recommend giving it a small buffer.
@@ -237,7 +237,7 @@ class SelectRelays extends Component {
         </Row>
         <Row>
           <Col lg="8" md="8" sm="8" className="title-page">
-            <h4>Slide to Select how much relays per day you want to buy</h4>
+            <h2 className="mb-5">Slide to Select how much relays per day you want to buy</h2>
             <div className="relays-calc">
               <div className="slider-wrapper">
                 <AppSlider
@@ -273,8 +273,8 @@ class SelectRelays extends Component {
               </p>
             </AppAlert>
           </Col>
-          <Col lg="4" md="4" sm="4" className="title-page">
-            <h4 className="mb-4">Order Summary</h4>
+          <Col lg="4" md="4" sm="4" className="pr-5 title-page">
+            <h2 className="mb-4">Order Summary</h2>
             <div className="summary">
               <div className="item">
                 <p>App</p>
@@ -303,7 +303,7 @@ class SelectRelays extends Component {
                 buttonProps={{
                   onClick: this.goToSummary,
                   variant: "primary",
-                  className: "mb-3"
+                  className: "mb-5"
                 }}>
                 <span>Checkout</span>
               </LoadingButton>
