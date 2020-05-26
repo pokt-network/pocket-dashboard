@@ -15,7 +15,7 @@ import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCar
 import AppAlert from "../../../core/components/AppAlert";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import {Link} from "react-router-dom";
-import {scrollToId} from "../../../_helpers";
+import {formatCurrency, scrollToId} from "../../../_helpers";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import LoadingButton from "../../../core/components/LoadingButton";
 
@@ -24,7 +24,7 @@ class OrderSummary extends Component {
     super(props, context);
 
     this.makePurchaseWithSavedCard = this.makePurchaseWithSavedCard.bind(this);
-    this.saveNewCardNoAddress = this.saveNewCardNoAddress.bind(this);
+    this.saveNewCard = this.saveNewCard.bind(this);
     this.goToInvoice = this.goToInvoice.bind(this);
 
     this.state = {
@@ -35,12 +35,12 @@ class OrderSummary extends Component {
         number: 0,
         description: "",
       },
-      total: 0,
       cost: {
         number: 0,
         description: "",
       },
-      balance: 50,
+      total: 0,
+      currentAccountBalance: 0,
       paymentMethods: [],
       selectedPaymentMethod: {},
       loading: false,
@@ -56,7 +56,7 @@ class OrderSummary extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this.setState({loading: true});
     // eslint-disable-next-line react/prop-types
     if (this.props.location.state === undefined) {
@@ -68,28 +68,33 @@ class OrderSummary extends Component {
       type,
       paymentIntent,
       quantity,
-      total,
       cost,
+      total,
+      currentAccountBalance
     } = this.props.location.state;
 
     const user = UserService.getUserInfo().email;
-    const paymentMethods = await PaymentService.getPaymentMethods(user);
 
-    const selectedPaymentMethod =
-      paymentMethods.find(
-        (pm) => PaymentService.getDefaultPaymentMethod() === pm.id
-      ) || paymentMethods[0];
+    PaymentService.getPaymentMethods(user)
+      .then(paymentMethods => {
 
-    this.setState({
-      loading: false,
-      paymentMethods,
-      type,
-      paymentIntent,
-      selectedPaymentMethod: selectedPaymentMethod,
-      quantity,
-      total,
-      cost,
-    });
+        const selectedPaymentMethod =
+          paymentMethods.find(
+            (pm) => PaymentService.getDefaultPaymentMethod() === pm.id
+          ) || paymentMethods[0];
+
+        this.setState({
+          loading: false,
+          selectedPaymentMethod,
+          paymentMethods,
+          type,
+          paymentIntent,
+          quantity,
+          cost,
+          total,
+          currentAccountBalance
+        });
+      });
   }
 
   goToInvoice() {
@@ -99,18 +104,22 @@ class OrderSummary extends Component {
       selectedPaymentMethod,
       quantity,
       cost,
+      total,
+      currentAccountBalance
     } = this.state;
 
     return this.props.history.replace({
-      pathname: _getDashboardPath(DASHBOARD_PATHS.nodesCheckout),
+      pathname: _getDashboardPath(DASHBOARD_PATHS.invoice),
       state: {
         type,
         paymentId: paymentIntent.id,
         paymentMethod: selectedPaymentMethod,
-        detail: [
-          {value: quantity.number, text: quantity.description},
-          {value: cost.number, text: cost.description},
+        details: [
+          {value: quantity.number, text: quantity.description, format: false},
+          {value: cost.number, text: cost.description, format: true},
         ],
+        total,
+        currentAccountBalance
       },
     });
   }
@@ -121,11 +130,8 @@ class OrderSummary extends Component {
 
     const {paymentIntent, selectedPaymentMethod} = this.state;
 
-    const result = await StripePaymentService.confirmPaymentWithSavedCard(
-      // eslint-disable-next-line function-call-argument-newline
-      stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id,
-      selectedPaymentMethod.billingDetails
-    );
+    const result = await StripePaymentService
+      .confirmPaymentWithSavedCard(stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails);
 
     if (result.error) {
       this.setState({
@@ -141,7 +147,6 @@ class OrderSummary extends Component {
     }
 
     // Stake application
-    // TODO: Add node staking when implementing nodes.
     const {
       privateKey,
       passphrase,
@@ -150,76 +155,62 @@ class OrderSummary extends Component {
     } = ApplicationService.getApplicationInfo();
     const application = {privateKey, passphrase};
 
-    const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
+    const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
     const detail = url.replace(":address", address);
-    const applicationlink = `${window.location.origin}${detail}`;
+    const applicationLink = `${window.location.origin}${detail}`;
 
-    const {success, data} = ApplicationService.stakeApplication(
-      application, chains, result.paymentIntent.id, applicationlink
-    );
+    this.setState({loading: true});
 
-    if (success && data === true) {
-      this.goToInvoice();
-    } else {
-      // TODO: Add meaningful message on backend instead of false
-      this.setState({
-        purchasing: false,
-        alert: {
-          show: true,
-          variant: "warning",
-          message: "There was an error staking your app.",
-        },
+    ApplicationService.stakeApplication(application, chains, result.paymentIntent.id, applicationLink)
+      .then(() => {
       });
-      scrollToId("alert");
-    }
+
+    this.goToInvoice();
   }
 
-  saveNewCardNoAddress(e, cardData, stripe) {
+  saveNewCard(e, cardData, stripe) {
     e.preventDefault();
 
     const {setMethodDefault} = this.state;
-
     const {cardHolderName: name} = cardData;
+    const billingDetails = {name};
 
-    const billingDetails = {
-      name,
-    };
-
-    StripePaymentService.createPaymentMethod(
-      stripe, cardData.card, billingDetails
-    ).then(async (result) => {
-      if (result.errors) {
-        this.setState({
-          alert: {
-            show: true,
-            variant: "warning",
-            message: "There was an error adding your card",
-          },
-        });
-        return;
-      }
-
-      if (result.paymentMethod) {
-        const user = UserService.getUserInfo().email;
-        const paymentMethods = await PaymentService.getPaymentMethods(user);
-
-        const selectedPaymentMethod = paymentMethods.find(
-          (pm) => result.paymentMethod.id === pm.id
-        );
-
-        const alert = {
-          show: true,
-          variant: "primary",
-          message: "Your payment method was successfully added",
-        };
-
-        if (setMethodDefault) {
-          PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
+    StripePaymentService.createPaymentMethod(stripe, cardData.card, billingDetails)
+      .then(async (result) => {
+        if (result.errors) {
+          this.setState({
+            alert: {
+              show: true,
+              variant: "warning",
+              message: "There was an error adding your card",
+            },
+          });
+          return;
         }
 
-        this.setState({alert, paymentMethods, selectedPaymentMethod});
-      }
-    });
+        if (result.paymentMethod) {
+          const user = UserService.getUserInfo().email;
+          const paymentMethods = await PaymentService.getPaymentMethods(user);
+
+          const selectedPaymentMethod = paymentMethods.find(
+            (pm) => result.paymentMethod.id === pm.id
+          );
+
+          const alert = {
+            show: true,
+            variant: "primary",
+            message: "Your payment method was successfully added",
+          };
+
+          if (setMethodDefault) {
+            PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
+          }
+
+          this.setState({alert, paymentMethods, selectedPaymentMethod});
+
+        }
+      });
+
   }
 
   render() {
@@ -227,9 +218,9 @@ class OrderSummary extends Component {
       selectedPaymentMethod,
       paymentMethods: allPaymentMethods,
       quantity,
-      total,
       cost,
-      balance,
+      total,
+      currentAccountBalance,
       loading,
       agreeTerms,
       alert,
@@ -240,10 +231,7 @@ class OrderSummary extends Component {
     const cards = [
       {title: quantity.number, subtitle: quantity.description},
       {title: `${cost.number} USD`, subtitle: cost.description},
-      {
-        title: `-${balance} USD`,
-        subtitle: "Current Balance",
-      },
+      {title: `-${formatCurrency(currentAccountBalance)} USD`, subtitle: "Current balance"}
     ];
 
     const paymentMethods = allPaymentMethods.map((method) => {
@@ -258,11 +246,11 @@ class OrderSummary extends Component {
     });
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     if (unauthorized) {
-      return <UnauthorizedAlert />;
+      return <UnauthorizedAlert/>;
     }
 
     return (
@@ -310,7 +298,7 @@ class OrderSummary extends Component {
 
             <h5 className="card-form-title">Enter your card information</h5>
             <NewCardNoAddressForm
-              formActionHandler={this.saveNewCardNoAddress}
+              formActionHandler={this.saveNewCard}
               actionButtonName="Add card"
               setDefaultHandler={(setMethodDefault) =>
                 this.setState({setMethodDefault})
@@ -342,13 +330,13 @@ class OrderSummary extends Component {
                 <p className="agree">
                   I agree to Pocket Network&#39;s Purchase{" "}
                   <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>
-                    <br />
-                    Terms and Condititons.
+                    <br/>
+                    Terms and Conditions.
                   </Link>
                 </p>
               }
             />
-            <br />
+            <br/>
             <PaymentContainer>
               <ElementsConsumer>
                 {({_, stripe}) => (

@@ -24,5 +24,41 @@ router.post("/import", async (request, response) => {
   }
 });
 
+router.get("/balance/:accountAddress", async (request, response) => {
+  try {
+
+    /** @type {{accountAddress:string}} */
+    const params = request.params;
+
+    const balance = await accountService.getBalance(params.accountAddress);
+
+    response.send({balance});
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+router.get("/balance/pokt/:accountAddress", async (request, response) => {
+  try {
+
+    /** @type {{accountAddress:string}} */
+    const params = request.params;
+
+    const balance = await accountService.getPoktBalance(params.accountAddress);
+
+    response.send({balance});
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
 
 export default router;

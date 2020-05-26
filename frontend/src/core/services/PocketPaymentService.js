@@ -1,5 +1,7 @@
 import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
+import PocketUserService from "./PocketUserService";
+import {ITEM_TYPES} from "../../_constants";
 import SecureLS from "secure-ls";
 import {Configurations} from "../../_configuration";
 
@@ -36,49 +38,43 @@ class PocketPaymentService extends PocketBaseService {
   /**
    * Save custom tier application's relays per day in localstorage
    *
-   * @param {Object} {} anonymous object.
-   * @param {number} Object.relays Relays per day.
-   * @param {number} Object.costPerRelay cost per relay.
-   * @param {number} Object.validationPower validation power.
-   * @param {number} Object.validationPowerCost cost of validation power.
+   * @param {object} data anonymous object.
+   * @param {number} [data.relays] Relays per day.
+   * @param {number} [data.costPerRelay] cost per relay.
+   * @param {number} [data.validationPower] validation power.
+   * @param {number} [data.validationPowerCost] cost of validation power.
    */
-  savePurchaseInfoInCache({
-    relays,
-    costPerRelay,
-    validationPower,
-    validationPowerCost,
-  }) {
+  savePurchaseInfoInCache({relays, costPerRelay, validationPower, validationPowerCost}) {
     /**
      * The reason this is made manually is as there are only a few fields
      * and want to let clear what items from localstorage are being used,
      * rather than automatically generate them from fields.
      */
     if (relays) {
-      localStorage.setItem("app_relays", relays);
+      localStorage.setItem("app_relays", relays.toString());
     }
     if (costPerRelay) {
-      localStorage.setItem("app_relay_cost", costPerRelay);
+      localStorage.setItem("app_relay_cost", costPerRelay.toString());
     }
     if (validationPower) {
-      localStorage.setItem("node_validation_power", validationPower);
+      localStorage.setItem("node_validation_power", validationPower.toString());
     }
     if (validationPowerCost) {
-      localStorage.setItem("node_validation_power_cost", validationPowerCost);
+      localStorage.setItem("node_validation_power_cost", validationPowerCost.toString());
     }
   }
 
   /**
-   * Get custom app relays per day
+   * Get custom app relays per day.
    *
-   * @return {{relays: number, costPerRelay: number, validationPower:number,
-   *           validationPowerCost: number}}
+   * @return {{relays: number, costPerRelay: number, validationPower:number, validationPowerCost: number}}
    */
   getPurchaseInfo() {
     return {
-      relays: localStorage.getItem("app_relays"),
-      costPerRelay: localStorage.getItem("app_relay_cost"),
-      validationPower: localStorage.getItem("node_validation_power"),
-      validationPowerCost: localStorage.getItem("node_validation_power_cost"),
+      relays: parseInt(localStorage.getItem("app_relays")),
+      costPerRelay: parseFloat(localStorage.getItem("app_relay_cost")),
+      validationPower: parseInt(localStorage.getItem("node_validation_power")),
+      validationPowerCost: parseFloat(localStorage.getItem("node_validation_power_cost")),
     };
   }
 
@@ -95,6 +91,7 @@ class PocketPaymentService extends PocketBaseService {
   /**
    * Get payment history.
    *
+   * @param {string} user User.
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
    *
@@ -128,7 +125,7 @@ class PocketPaymentService extends PocketBaseService {
   }
 
   /**
-   * Get user available payment methods
+   * Get user available payment methods.
    *
    * @param {string} user User email
    */
@@ -138,6 +135,11 @@ class PocketPaymentService extends PocketBaseService {
       .then((response) => response.data);
   }
 
+  /**
+   * Delete a payment method from dashboard.
+   *
+   * @param {string} paymentMethodID Payment method ID.
+   */
   deletePaymentMethod(paymentMethodID) {
     return axios
       .delete(this._getURL(`payment_method/${paymentMethodID}`))
@@ -145,14 +147,50 @@ class PocketPaymentService extends PocketBaseService {
   }
 
   /**
-   * Get user available payment methods
-   *
-   * @param {string} user User email
+   * Get available currencies.
    */
   getAvailableCurrencies() {
     return axios
       .get(this._getURL("currencies"))
       .then((response) => response.data);
+  }
+
+  /**
+   * Create new payment intent for purchase.
+   *
+   * @param {string} type Type of item (e.x. application, node).
+   * @param {object} item Item data to purchase.
+   * @param {string} currency Currency.
+   * @param {number} amount Amount to pay.
+   *
+   * @return {Promise<*>}
+   * @async
+   */
+  async createNewPaymentIntent(type, item, currency, amount) {
+    const user = PocketUserService.getUserInfo().email;
+    const data = {type: "card", user, item, currency, amount};
+
+    let path;
+
+    switch (type) {
+      case ITEM_TYPES.APPLICATION:
+        path = "apps";
+        break;
+      case ITEM_TYPES.NODE:
+        path = "nodes";
+        break;
+      default:
+        throw new Error("Invalid item type");
+    }
+
+    return axios
+      .post(this._getURL(`new_intent/${path}`), data)
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {success: false, data: err.response};
+      });
   }
 }
 

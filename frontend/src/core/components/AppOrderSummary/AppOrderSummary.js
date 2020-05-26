@@ -12,6 +12,7 @@ class AppOrderSummary extends Component {
       actionButtonName,
       items,
       balance,
+      balanceOnChange,
       loading,
       total,
     } = this.props;
@@ -27,7 +28,7 @@ class AppOrderSummary extends Component {
         <div className="item">
           <p>Current balance</p>
           {/* TODO: Get balance */}
-          <Form.Control value={`${balance} USD`} readOnly />
+          <Form.Control value={balance} onChange={balanceOnChange} readOnly />
         </div>
         <hr />
         <div className="item total">
@@ -64,6 +65,7 @@ AppOrderSummary.propTypes = {
   actionButtonName: PropTypes.string,
   total: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   balance: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  balanceOnChange: PropTypes.func,
   loading: PropTypes.bool,
 };
 

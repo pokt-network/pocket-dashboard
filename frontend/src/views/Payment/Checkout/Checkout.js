@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import "./Checkout.scss";
 import {Button, Col, Row} from "react-bootstrap";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
-import Invoice from "./Invoice";
+import Invoice from "../../../core/components/Payment/Invoice";
 import {formatCurrency} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import moment from "moment";
@@ -14,6 +14,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import Loader from "../../../core/components/Loader";
+import PocketUserService from "../../../core/services/PocketUserService";
 
 class Checkout extends Component {
   constructor(props, context) {
@@ -28,8 +29,9 @@ class Checkout extends Component {
         date: "",
         card: "",
       },
-      detail: [],
+      details: [],
       total: 0,
+      currentAccountBalance: 0,
       address: "",
       unauthorized: false,
     };
@@ -41,23 +43,26 @@ class Checkout extends Component {
       this.setState({loading: false, unauthorized: true});
       return;
     }
-    const {type, paymentId, paymentMethod, detail} = this.props.location.state;
+
+    const {type, paymentId, paymentMethod, details, total, currentAccountBalance} = this.props.location.state;
     const address =
       type === ITEM_TYPES.APPLICATION
         ? ApplicationService.getApplicationInfo().address
         : NodeService.getNodeInfo().address;
+
     const {
       paymentID: id,
       createdDate: date,
-      item,
-      amount: total,
     } = await PaymentService.getPaymentDetail(paymentId);
-    const {type: brand, digits} = paymentMethod.cardData;
+
+    const {brand, lastDigits} = paymentMethod;
+    const userName = PocketUserService.getUserInfo().name;
+
     const invoice = {
-      id,
+      id: id.replace("pi_", "").toLowerCase(),
       date: moment(date).format("DD MM YYYY"),
-      owner: item.account,
-      card: `${brand.charAt(0).toUpperCase() + brand.slice(1)} ${digits}`,
+      owner: userName,
+      card: `${brand.charAt(0).toUpperCase() + brand.slice(1)} ${lastDigits}`,
     };
 
     this.setState({
@@ -65,20 +70,23 @@ class Checkout extends Component {
       type,
       address,
       invoice,
+      details,
       total,
-      detail,
+      currentAccountBalance,
       paymentMethod,
     });
   }
+
   render() {
     const {owner, id, date, card} = this.state.invoice;
     const {
-      detail,
-      total: totalCost,
+      details,
+      total,
       type,
       address,
       loading,
       unauthorized,
+      currentAccountBalance
     } = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
@@ -90,21 +98,23 @@ class Checkout extends Component {
     ];
 
     const items = [
-      ...detail,
-      // TODO: Get balance
-      {text: "Balance", value: 1500},
+      ...details,
+      {text: "Current balance", value: currentAccountBalance, format: true}
     ].map((it) => {
+      if (!it.format) {
+        return it;
+      }
       return {text: it.text, value: formatCurrency(it.value)};
     });
 
-    const total = formatCurrency(totalCost);
+    const totalAmount = formatCurrency(total);
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     if (unauthorized) {
-      return <UnauthorizedAlert />;
+      return <UnauthorizedAlert/>;
     }
 
     const detailButton = (
@@ -123,12 +133,10 @@ class Checkout extends Component {
         </Button>
       </Link>
     );
-
-    /* eslint-disable jsx-a11y/alt-text */
     const icons = [
-      <img key={0} src="/assets/cart.svg" className="step-icon" />,
-      <img key={1} src="/assets/arrows.svg" className="step-icon" />,
-      <img key={2} src="/assets/check.svg" className="step-icon" />,
+      <img key={0} src={"/assets/cart.svg"} className="step-icon" alt="step-icon"/>,
+      <img key={1} src={"/assets/arrows.svg"} className="step-icon" alt="step-icon"/>,
+      <img key={2} src={"/assets/check.svg"} className="step-icon" alt="step-icon"/>,
     ];
 
     if (unauthorized) {
@@ -167,12 +175,12 @@ class Checkout extends Component {
             title={`Invoice ${id}`}
             information={information}
             items={items}
-            total={total}
+            total={totalAmount}
           />
         </Row>
         <p className="mt-4 ml-3 print">
           {/* TODO: Add print functionality */}
-          <img src="/assets/printer.svg" className="icon" />{" "}
+          <img src={"/assets/printer.svg"} className="icon" alt="print-icon"/>{" "}
           <span className="link">Print</span> your invoice
         </p>
       </div>

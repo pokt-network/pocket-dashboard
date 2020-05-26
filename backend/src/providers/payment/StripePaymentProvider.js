@@ -1,7 +1,7 @@
 import BasePaymentProvider, {CardPaymentMethod, PaymentResult} from "./BasePaymentProvider";
 import Stripe from "stripe";
 
-const AMOUNT_CONVERT_NUMBER = 100;
+const AMOUNT_CONVERT_NUMBER = 1000;
 
 class StripePaymentProvider extends BasePaymentProvider {
 

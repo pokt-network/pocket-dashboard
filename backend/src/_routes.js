@@ -6,6 +6,7 @@ import Payment from "./apis/PaymentApi";
 import Application from "./apis/ApplicationApi";
 import Node from "./apis/NodeApi";
 import Network from "./apis/NetworkApi";
+import Checkout from "./apis/CheckoutApis";
 
 /**
  * @param {object} expressApp Express application object.
@@ -34,4 +35,7 @@ export function configureRoutes(expressApp) {
 
   // Network API
   expressApp.use("/api/network", Network);
+
+  // Checkout API
+  expressApp.use("/api/checkout", Checkout);
 }

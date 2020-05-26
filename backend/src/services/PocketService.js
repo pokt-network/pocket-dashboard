@@ -19,6 +19,10 @@ const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 const POCKET_CONFIGURATION = new Configuration(
   POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
 
+export const POKT_DENOMINATIONS = {
+  pokt: 0,
+  upokt: 6
+};
 
 /**
  * Convert list of string nodes to URL nodes.
@@ -70,7 +74,10 @@ export default class PocketService {
    * @param {string} rpcProvider RPC provider of Pokt network.
    */
   constructor(nodes, rpcProvider) {
-    /** @private */
+    /**
+     * @type {Pocket}
+     * @private
+     */
     this.__pocket = new Pocket(getNodeURLS(nodes), getRPCDispatcher(rpcProvider), POCKET_CONFIGURATION);
   }
 
@@ -198,21 +205,21 @@ export default class PocketService {
    * @async
    */
   async hasBalance(account, throwError = true) {
-    return (await this.getBalance(account, throwError)) !== "0";
+    return (await this.getBalance(account.addressHex, throwError)) !== "0";
   }
 
 
   /**
    * Check if account has sufficient balance.
    *
-   * @param {Account} account Account to query.
+   * @param {string} accountAddress Account address to query.
    * @param {boolean} throwError If true throw the response error.
    *
    * @returns {Promise<string>} The account balance.
    * @async
    */
-  async getBalance(account, throwError = true) {
-    const accountQueryResponse = await this.__pocket.rpc().query.getBalance(account.addressHex);
+  async getBalance(accountAddress, throwError = true) {
+    const accountQueryResponse = await this.__pocket.rpc().query.getBalance(accountAddress);
 
     if (accountQueryResponse instanceof Error) {
       if (throwError) {

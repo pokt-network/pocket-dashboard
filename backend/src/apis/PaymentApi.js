@@ -91,7 +91,7 @@ router.post("/payment_methods", async (request, response) => {
  */
 router.post("/new_intent/apps", async (request, response) => {
   try {
-    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, pokt:string, maxRelay: string}, amount: number}} */
+    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, maxRelays: string}, amount: number}} */
     const data = request.body;
 
     const paymentIntent = await paymentService.createPocketPaymentIntentForApps(data.type, data.currency, data.item, data.amount);
@@ -117,7 +117,7 @@ router.post("/new_intent/apps", async (request, response) => {
  */
 router.post("/new_intent/nodes", async (request, response) => {
   try {
-    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, pokt:string, validatorPower: string}, amount: number}} */
+    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, validatorPower: string}, amount: number}} */
     const data = request.body;
 
     const paymentIntent = await paymentService.createPocketPaymentIntentForNodes(data.type, data.currency, data.item, data.amount);
