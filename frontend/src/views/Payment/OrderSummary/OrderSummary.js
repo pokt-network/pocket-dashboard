@@ -161,7 +161,9 @@ class OrderSummary extends Component {
 
     this.setState({loading: true});
 
-    await ApplicationService.stakeApplication(application, chains, result.paymentIntent.id, applicationLink);
+    ApplicationService.stakeApplication(application, chains, result.paymentIntent.id, applicationLink)
+      .then(() => {
+      });
 
     this.goToInvoice();
   }
@@ -170,12 +172,8 @@ class OrderSummary extends Component {
     e.preventDefault();
 
     const {setMethodDefault} = this.state;
-
     const {cardHolderName: name} = cardData;
-
-    const billingDetails = {
-      name,
-    };
+    const billingDetails = {name};
 
     StripePaymentService.createPaymentMethod(stripe, cardData.card, billingDetails)
       .then(async (result) => {
@@ -204,17 +202,16 @@ class OrderSummary extends Component {
             message: "Your payment method was successfully added",
           };
 
+          if (setMethodDefault) {
+            PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
+          }
+
           this.setState({alert, paymentMethods, selectedPaymentMethod});
+
         }
       });
-        if (setMethodDefault) {
-          PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
-        }
 
-        this.setState({alert, paymentMethods, selectedPaymentMethod});
-      }
-    });
-}
+  }
 
   render() {
     const {
