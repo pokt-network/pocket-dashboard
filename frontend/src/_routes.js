@@ -32,6 +32,7 @@ import ResetPassword from "./views/Auth/ResetPassword/ResetPassword";
 import AppPassphrase from "./views/Apps/AppPassphrase/AppPassphrase";
 import TermsOfService from "./views/Support/TermsOfService";
 import PrivacyPolicy from "./views/Support/PrivacyPolicy";
+import SelectValidatorPower from "./views/Nodes/SelectValidatorPower/SelectValidatorPower";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -61,6 +62,7 @@ export const DASHBOARD_PATHS = {
   profile: "/profile",
   createNodeForm: "/nodes/new",
   nodeChainList: "/nodes/chains",
+  selectValidatorPower: "/nodes/new/validator-power",
   importNode: "/nodes/import",
   orderSummary: "/payment/summary",
   invoice: "/payment/invoice",
@@ -187,6 +189,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Nodes Chain List",
     component: NodeChainList,
+  },
+  {
+    path: DASHBOARD_PATHS.selectValidatorPower,
+    exact: true,
+    name: "Nodes Select Validator Power",
+    component: SelectValidatorPower,
   },
   {
     path: DASHBOARD_PATHS.nodes,

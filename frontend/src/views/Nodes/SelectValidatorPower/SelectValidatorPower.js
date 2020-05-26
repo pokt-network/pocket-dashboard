@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import "./SelectRelays.scss";
+import React from "react";
+import "./SelectValidatorPower.scss";
 import {Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
@@ -15,29 +15,19 @@ import PocketCheckoutService from "../../../core/services/PocketCheckoutService"
 import Loader from "../../../core/components/Loader";
 import PocketAccountService from "../../../core/services/PocketAccountService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import {isNaN} from "formik";
 import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
+import Purchase from "../../../core/components/Purchase/Purchase";
+import NodeService from "../../../core/services/PocketNodeService";
 
-class SelectRelays extends Component {
+class SelectValidatorPower extends Purchase {
+  // TODO: On a later release, find a way to simplify the code and reduce
+  // duplication.
   constructor(props, context) {
     super(props, context);
 
     this.onSliderChange = this.onSliderChange.bind(this);
     this.onCurrentBalanceChange = this.onCurrentBalanceChange.bind(this);
     this.goToSummary = this.goToSummary.bind(this);
-
-    this.state = {
-      minRelays: 0,
-      maxRelays: 0,
-      relaysSelected: 0,
-      total: 0,
-      subTotal: 0,
-      originalAccountBalance: 0,
-      currentAccountBalance: 0,
-      currencies: [],
-      loading: true,
-      error: {show: false, message: ""},
-    };
   }
 
   componentDidMount() {
@@ -47,9 +37,10 @@ class SelectRelays extends Component {
 
     PaymentService.getAvailableCurrencies().then((currencies) => {
       PocketCheckoutService.getRelaysPerDay().then((relaysPerDay) => {
-        const minRelays = parseInt(relaysPerDay.min);
+        const min = parseInt(relaysPerDay.min);
 
-        PocketCheckoutService.getMoneyToSpent(minRelays).then(({cost}) => {
+        // TODO: Get data based on Validation Power
+        PocketCheckoutService.getMoneyToSpent(min).then(({cost}) => {
           PocketAccountService.getBalance(accountAddress).then(({balance}) => {
             const currentAccountBalance = parseFloat(balance);
             const subTotal = parseFloat(cost);
@@ -58,12 +49,14 @@ class SelectRelays extends Component {
             this.setState({
               currentAccountBalance: currentAccountBalance,
               originalAccountBalance: currentAccountBalance,
-              minRelays: minRelays,
-              maxRelays: parseInt(relaysPerDay.max),
+              min: min,
+              max: parseInt(relaysPerDay.max),
               loading: false,
-              relaysSelected: minRelays,
+              selected: min,
               subTotal,
               total,
+              type: ITEM_TYPES.NODE,
+              purchaseType: PURCHASE_ITEM_NAME.NODES,
             });
           });
         });
@@ -74,13 +67,14 @@ class SelectRelays extends Component {
   }
 
   onCurrentBalanceChange(e) {
-    let {relaysSelected} = this.state;
+    let {selected} = this.state;
     const {
       target: {value},
     } = e;
     const currentAccountBalance = parseFloat(value);
 
-    PocketCheckoutService.getMoneyToSpent(relaysSelected).then(({cost}) => {
+    // TODO: Change calculation to validation power
+    PocketCheckoutService.getMoneyToSpent(selected).then(({cost}) => {
       const subTotal = parseFloat(cost);
       const total = subTotal - currentAccountBalance;
 
@@ -95,67 +89,30 @@ class SelectRelays extends Component {
   onSliderChange(value) {
     const {currentAccountBalance} = this.state;
 
+    // TODO: Change calculation to validation power
     PocketCheckoutService.getMoneyToSpent(value).then(({cost}) => {
       const subTotal = parseFloat(cost);
       const total = subTotal - currentAccountBalance;
 
-      this.setState({relaysSelected: value, subTotal, total});
+      this.setState({selected: value, subTotal, total});
     });
   }
 
-  validate(currency) {
-    const {
-      minRelays,
-      maxRelays,
-      relaysSelected,
-      subTotal,
-      total,
-      currentAccountBalance,
-      originalAccountBalance,
-    } = this.state;
-
-    if (relaysSelected < minRelays || relaysSelected > maxRelays) {
-      throw new Error("Relays per days is not in range allowed.");
-    }
-
-    if (currentAccountBalance < 0) {
-      throw new Error("Current balance cannot be minor than 0.");
-    }
-
-    if (currentAccountBalance > originalAccountBalance) {
-      throw new Error(
-        `Current balance cannot be greater than ${originalAccountBalance} ${currency}.`
-      );
-    }
-
-    if (subTotal <= 0 || isNaN(subTotal)) {
-      throw new Error("Relays per day cost must be a positive value.");
-    }
-
-    if (total <= 0 || isNaN(total)) {
-      throw new Error("Total Cost must be a positive value.");
-    }
-
-    return true;
-  }
-
-  async createPaymentIntent(relays, currency, amount) {
-    const {address} = PocketApplicationService.getApplicationInfo();
-    const {pocketApplication} = await PocketApplicationService.getApplication(
-      address
-    );
+  async createPaymentIntent(validatorPower, currency, amount) {
+    const {address} = NodeService.getNodeInfo();
+    const {pocketNode} = await NodeService.getNode(address);
 
     const item = {
       account: address,
-      name: pocketApplication.name,
-      maxRelays: relays,
+      name: pocketNode.name,
+      validatorPower,
     };
 
     const {
       success,
       data: paymentIntentData,
     } = await PocketPaymentService.createNewPaymentIntent(
-      ITEM_TYPES.APPLICATION, item, currency, parseFloat(amount)
+      ITEM_TYPES.NODE, item, currency, parseFloat(amount)
     );
 
     if (!success) {
@@ -167,7 +124,7 @@ class SelectRelays extends Component {
 
   async goToSummary() {
     const {
-      relaysSelected,
+      selected,
       currencies,
       subTotal,
       total,
@@ -189,11 +146,11 @@ class SelectRelays extends Component {
       const totalAmount = parseFloat(numeral(total).format("0.000")).toFixed(3);
 
       const {data: paymentIntentData} = await this.createPaymentIntent(
-        relaysSelected, currency, totalAmount
+        selected, currency, totalAmount
       );
 
       PaymentService.savePurchaseInfoInCache({
-        relays: parseInt(relaysSelected),
+        relays: parseInt(selected),
         costPerRelay: parseFloat(totalAmount),
       });
 
@@ -201,15 +158,15 @@ class SelectRelays extends Component {
       this.props.history.push({
         pathname: _getDashboardPath(DASHBOARD_PATHS.orderSummary),
         state: {
-          type: ITEM_TYPES.APPLICATION,
+          type: ITEM_TYPES.NODE,
           paymentIntent: paymentIntentData,
           quantity: {
-            number: relaysSelected,
-            description: PURCHASE_ITEM_NAME.APPS,
+            number: selected,
+            description: PURCHASE_ITEM_NAME.NODES,
           },
           cost: {
             number: subTotalAmount,
-            description: `${PURCHASE_ITEM_NAME.APPS} cost`,
+            description: `${PURCHASE_ITEM_NAME.NODES} cost`,
           },
           total: totalAmount,
           currentAccountBalance,
@@ -228,13 +185,14 @@ class SelectRelays extends Component {
     const {
       error,
       currencies,
-      relaysSelected,
+      selected,
       subTotal,
       total,
-      minRelays,
-      maxRelays,
+      min,
+      max,
       currentAccountBalance,
       loading,
+      purchaseType,
     } = this.state;
 
     // At the moment the only available currency is USD.
@@ -247,7 +205,7 @@ class SelectRelays extends Component {
     }
 
     return (
-      <div id="select-relays">
+      <div id="purchase">
         <Row className="mt-4 mb-4">
           <Col lg="11" md="11" sm="11" className="title-page">
             {error.show && (
@@ -258,27 +216,27 @@ class SelectRelays extends Component {
                 onClose={() => this.setState({error: false})}
               />
             )}
-            <h1>Custom tier</h1>
+            <h1>Run actually decentralized infrastructure</h1>
             <p className="subtitle">
-              With the custom tier, you only need to pay for the API throughput
-              you application needs. If you expect your application to grow in
-              the short term, we recommend giving it a small buffer.
+              Starting at 900 USD you will be able to run a node in the Pocket
+              Network and increasing the Validator Power (VP) you increase the
+              node chances to produce blocks and win the block&lsquo;s reward.
             </p>
           </Col>
         </Row>
         <Row>
           <Col sm="7" className="title-page">
             <h2 className="mb-5">
-              Slide to Select how much relays per day you want to buy
+              Slide to Select how much ${purchaseType} your node will require
             </h2>
-            <div className="relays-calc">
+            <div className="calc">
               <div className="slider-wrapper">
                 <AppSlider
                   onChange={this.onSliderChange}
-                  type={PURCHASE_ITEM_NAME.APPS}
+                  type={PURCHASE_ITEM_NAME.NODES}
                   marks={{
-                    [minRelays]: `${minRelays} RPD`,
-                    [maxRelays / 2]: {
+                    [min]: `${min} RPD`,
+                    [max / 2]: {
                       label: (
                         <span>
                           <FontAwesomeIcon
@@ -289,22 +247,22 @@ class SelectRelays extends Component {
                         </span>
                       ),
                     },
-                    [maxRelays]: `*${formatNumbers(maxRelays)} RPD`,
+                    [max]: `*${formatNumbers(max)} RPD`,
                   }}
-                  min={minRelays}
-                  max={maxRelays}
+                  min={min}
+                  max={max}
                 />
               </div>
             </div>
             <AppAlert
               className="pt-4 pb-4"
               variant="primary"
-              title={<h4 className="alert-relays">*More relays?</h4>}
+              title={<h4 className="alert-max">*More relays?</h4>}
             >
-              <p className="alert-relays">
-                If your app requires more than {formatNumbers(maxRelays)} Relays
-                Per Day please <a href="/todo">Contact us</a> directly to find a
-                solution specially designed for your app.
+              <p className="alert-max">
+                If your node requires more than {formatNumbers(max)} VP, please{" "}
+                <a href="/todo">Contact us</a> directly to find a solution
+                specially designed for your node.
               </p>
             </AppAlert>
           </Col>
@@ -312,10 +270,10 @@ class SelectRelays extends Component {
             <h2 className="mb-4">Order Summary</h2>
             <AppOrderSummary
               items={[
-                {label: "App", quantity: 1},
-                {label: PURCHASE_ITEM_NAME.APPS, quantity: relaysSelected},
+                {label: "Node", quantity: 1},
+                {label: PURCHASE_ITEM_NAME.NODES, quantity: selected},
                 {
-                  label: `${PURCHASE_ITEM_NAME.APPS} cost`,
+                  label: `${PURCHASE_ITEM_NAME.NODES} cost`,
                   quantity: `${subTotalFixed} ${currency.toUpperCase()}`,
                 },
               ]}
@@ -335,4 +293,4 @@ class SelectRelays extends Component {
   }
 }
 
-export default SelectRelays;
+export default SelectValidatorPower;
