@@ -275,7 +275,7 @@ router.post("/freetier/unstake", async (request, response) => {
 /**
  * Stake an application.
  */
-router.post("/stake", async (request, response) => {
+router.post("/custom/stake", async (request, response) => {
   try {
 
     /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[], payment:{id: string}, applicationLink: string}} */
@@ -298,7 +298,7 @@ router.post("/stake", async (request, response) => {
 
           const paymentEmailData = {
             amountPaid: paymentHistory.amount,
-            maxRelayPerDayAmount: item.maxRelay,
+            maxRelayPerDayAmount: item.maxRelays,
             poktStaked: poktToStake.toString()
           };
 
@@ -306,9 +306,16 @@ router.post("/stake", async (request, response) => {
 
           response.send(true);
         } else {
-          response.send(false);
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error("Error has occurred trying to stake application.");
         }
+      } else {
+        // noinspection ExceptionCaughtLocallyJS
+        throw new Error("The payment made, is not a valid application payment.");
       }
+    } else {
+      // noinspection ExceptionCaughtLocallyJS
+      throw new Error("The payment id used was not succeed.");
     }
   } catch (e) {
     const error = {

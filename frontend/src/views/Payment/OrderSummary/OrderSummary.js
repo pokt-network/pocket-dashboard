@@ -23,7 +23,7 @@ class OrderSummary extends Component {
     super(props, context);
 
     this.makePurchaseWithSavedCard = this.makePurchaseWithSavedCard.bind(this);
-    this.saveNewCardNoAddress = this.saveNewCardNoAddress.bind(this);
+    this.saveNewCard = this.saveNewCard.bind(this);
     this.goToInvoice = this.goToInvoice.bind(this);
 
     this.state = {
@@ -88,8 +88,9 @@ class OrderSummary extends Component {
       paymentIntent,
       type,
       selectedPaymentMethod,
-      quantity,
-      cost,
+      relaysSelected,
+      subTotal,
+      total,
     } = this.state;
 
     return this.props.history.replace({
@@ -98,10 +99,9 @@ class OrderSummary extends Component {
         type,
         paymentId: paymentIntent.id,
         paymentMethod: selectedPaymentMethod,
-        detail: [
-          {value: quantity.number, text: quantity.description},
-          {value: cost.number, text: cost.description},
-        ],
+        relaysSelected,
+        subTotal,
+        total
       },
     });
   }
@@ -111,11 +111,8 @@ class OrderSummary extends Component {
 
     const {paymentIntent, selectedPaymentMethod} = this.state;
 
-    const result = await StripePaymentService.confirmPaymentWithSavedCard(
-      // eslint-disable-next-line function-call-argument-newline
-      stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id,
-      selectedPaymentMethod.billingDetails
-    );
+    const result = await StripePaymentService
+      .confirmPaymentWithSavedCard(stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails);
 
     if (result.error) {
       this.setState({
@@ -130,7 +127,6 @@ class OrderSummary extends Component {
     }
 
     // Stake application
-    // TODO: Add node staking when implementing nodes.
     const {
       privateKey,
       passphrase,
@@ -139,30 +135,19 @@ class OrderSummary extends Component {
     } = ApplicationService.getApplicationInfo();
     const application = {privateKey, passphrase};
 
-    const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
+    const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
     const detail = url.replace(":address", address);
-    const applicationlink = `${window.location.origin}${detail}`;
+    const applicationLink = `${window.location.origin}${detail}`;
 
-    const {success, data} = ApplicationService.stakeApplication(
-      application, chains, result.paymentIntent.id, applicationlink
-    );
+    this.setState({loading: true});
 
-    if (success && data === true) {
-      this.goToInvoice();
-    } else {
-      // TODO: Add meaningful message on backend instead of false
-      this.setState({
-        alert: {
-          show: true,
-          variant: "warning",
-          message: "There was an error staking your app",
-        },
-      });
-      scrollToId("alert");
-    }
+    // noinspection ES6MissingAwait
+    ApplicationService.stakeApplication(application, chains, result.paymentIntent.id, applicationLink);
+
+    this.goToInvoice();
   }
 
-  saveNewCardNoAddress(e, cardData, stripe) {
+  saveNewCard(e, cardData, stripe) {
     e.preventDefault();
 
     const {cardHolderName: name} = cardData;
@@ -171,37 +156,36 @@ class OrderSummary extends Component {
       name,
     };
 
-    StripePaymentService.createPaymentMethod(
-      stripe, cardData.card, billingDetails
-    ).then(async (result) => {
-      if (result.errors) {
-        this.setState({
-          alert: {
+    StripePaymentService.createPaymentMethod(stripe, cardData.card, billingDetails)
+      .then(async (result) => {
+        if (result.errors) {
+          this.setState({
+            alert: {
+              show: true,
+              variant: "warning",
+              message: "There was an error adding your card",
+            },
+          });
+          return;
+        }
+
+        if (result.paymentMethod) {
+          const user = UserService.getUserInfo().email;
+          const paymentMethods = await PaymentService.getPaymentMethods(user);
+
+          const selectedPaymentMethod = paymentMethods.find(
+            (pm) => result.paymentMethod.id === pm.id
+          );
+
+          const alert = {
             show: true,
-            variant: "warning",
-            message: "There was an error adding your card",
-          },
-        });
-        return;
-      }
+            variant: "primary",
+            message: "Your payment method was successfully added",
+          };
 
-      if (result.paymentMethod) {
-        const user = UserService.getUserInfo().email;
-        const paymentMethods = await PaymentService.getPaymentMethods(user);
-
-        const selectedPaymentMethod = paymentMethods.find(
-          (pm) => result.paymentMethod.id === pm.id
-        );
-
-        const alert = {
-          show: true,
-          variant: "primary",
-          message: "Your payment method was successfully added",
-        };
-
-        this.setState({alert, paymentMethods, selectedPaymentMethod});
-      }
-    });
+          this.setState({alert, paymentMethods, selectedPaymentMethod});
+        }
+      });
   }
 
   render() {
@@ -286,7 +270,7 @@ class OrderSummary extends Component {
             </Form>
             <h5 className="mt-5 mb-4">Add a new card</h5>
             <NewCardNoAddressForm
-              formActionHandler={this.saveNewCardNoAddress}
+              formActionHandler={this.saveNewCard}
               actionButtonName="Add card"
             />
           </Col>

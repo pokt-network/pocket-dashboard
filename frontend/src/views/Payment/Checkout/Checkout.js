@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import "./Checkout.scss";
 import {Button, Col, Row} from "react-bootstrap";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
-import Invoice from "./Invoice";
+import Invoice from "../Invoice/Invoice";
 import {formatCurrency} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import moment from "moment";

@@ -222,12 +222,9 @@ export class PaymentHistory {
    */
   isApplicationPaymentItem(throwError = false) {
     /** @type {string} */
-    const type = this.item.type;
+    const maxRelays = this.item.maxRelays;
 
-    /** @type {string} */
-    const maxRelay = this.item.maxRelay;
-
-    const isApplication = type.toLowerCase() === "application" && maxRelay !== undefined;
+    const isApplication = maxRelays !== undefined;
 
     if (throwError && !isApplication) {
       throw Error("The payment item is not an application");

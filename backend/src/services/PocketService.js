@@ -74,7 +74,10 @@ export default class PocketService {
    * @param {string} rpcProvider RPC provider of Pokt network.
    */
   constructor(nodes, rpcProvider) {
-    /** @private */
+    /**
+     * @type {Pocket}
+     * @private
+     */
     this.__pocket = new Pocket(getNodeURLS(nodes), getRPCDispatcher(rpcProvider), POCKET_CONFIGURATION);
   }
 

@@ -367,8 +367,7 @@ export class PocketApplicationService extends PocketBaseService {
    * @param {string} application.privateKey Application private key.
    * @param {string} application.passphrase Application passphrase.
    * @param {string[]} networkChains Application network chains.
-   * @param {Object} payment payment data.
-   * @param {string} payment.id payment's stripe confirmation id.
+   * @param {string} paymentId payment's stripe confirmation id.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
@@ -377,18 +376,18 @@ export class PocketApplicationService extends PocketBaseService {
     const data = {
       application,
       networkChains,
-      payment: {paymentId},
+      payment: {id: paymentId},
       applicationLink
     };
 
     return axios
-    .post(this._getURL("stake"), data)
-    .then((response) => {
-      return {success: true, data: response.data};
-    })
-    .catch((err) => {
-      return {success: false, data: err.response};
-    });
+      .post(this._getURL("custom/stake"), data)
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {success: false, error: err.response};
+      });
   }
 
   /**
@@ -427,7 +426,7 @@ export class PocketApplicationService extends PocketBaseService {
       .then((response) => response.data);
   }
 
-  
+
 }
 
 export default new PocketApplicationService();

@@ -1,5 +1,7 @@
 import BaseService from "./BaseService";
 import {Configurations} from "../_configuration";
+import {CoinDenom} from "@pokt-network/pocket-js";
+import {POKT_DENOMINATIONS} from "./PocketService";
 
 export default class CheckoutService extends BaseService {
 
@@ -40,13 +42,12 @@ export default class CheckoutService extends BaseService {
   /**
    *  Get relays per day data.
    *
-   *  @returns {{min:number, max: number, price: number}} Relays per day data.
+   *  @returns {{min:number, max: number}} Relays per day data.
    */
   getRelaysPerDay() {
     return {
       min: this.options.relays_per_day.min,
       max: this.options.relays_per_day.max,
-      price: this.poktMarketPrice
     };
   }
 
@@ -54,11 +55,15 @@ export default class CheckoutService extends BaseService {
    * Get Pokt to Stake.
    *
    * @param {number} moneySpent Money to spent.
+   * @param {CoinDenom} poktDenomination Pokt denomination.
    *
    * @returns {number} Pokt to use.
    */
-  getPoktToStake(moneySpent) {
-    return moneySpent / this.poktMarketPrice;
+  getPoktToStake(moneySpent, poktDenomination = CoinDenom.Upokt) {
+    const pokt = moneySpent / this.poktMarketPrice;
+    const poktWithDenomination = pokt * Math.pow(10, POKT_DENOMINATIONS[poktDenomination]);
+
+    return Math.round(poktWithDenomination);
   }
 
   /**
