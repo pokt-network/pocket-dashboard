@@ -9,6 +9,7 @@ import {
 import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
+import moment from "moment";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
@@ -156,4 +157,13 @@ export const tableShow = (table, handleClick) => {
   formatter.headerFormatter = showFormatter;
   tableFormatted[tableFormatted.length-1] = formatter;
   return tableFormatted;  
+};
+
+export const formatHoursAndMinutesFromNow = (endTime) => {
+  const now = moment(new Date());
+  const duration = moment.duration(now.diff(moment(endTime)));
+  const hours = duration.hours().toString().padStart(2, "0");
+  const minutes = duration.minutes().toString().padStart(2, "0");
+  
+  return `${hours}:${minutes}`;
 };
