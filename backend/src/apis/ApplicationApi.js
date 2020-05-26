@@ -329,7 +329,7 @@ router.post("/custom/stake", async (request, response) => {
 /**
  * Unstake an application.
  */
-router.post("/unstake", async (request, response) => {
+router.post("/custom/unstake", async (request, response) => {
   try {
 
     /** @type {{application:{privateKey:string, passphrase:string, accountAddress: string}, applicationLink: string}} */

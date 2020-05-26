@@ -421,10 +421,7 @@ export default class ApplicationService extends BaseService {
         .transferPoktBetweenAccounts(applicationAccount, applicationData.passphrase, freeTierAccount, stakeAmount);
 
       if (this.pocketService.isTransactionSuccess(transferTransaction)) {
-
         const clientApplication = PocketApplication.createPocketApplication(applicationDB);
-
-        await this._waitUntilIsOnNetwork(applicationAccount, StakingStatus.Unstaking);
 
         await this.__markApplicationAsFreeTier(clientApplication, false);
 
@@ -512,7 +509,7 @@ export default class ApplicationService extends BaseService {
     // Unstake application
     const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passphrase);
 
-    if (unstakedTransaction.logs && unstakedTransaction.logs[0].success) {
+    if (this.pocketService.isTransactionSuccess(unstakedTransaction)) {
       return PocketApplication.createPocketApplication(applicationDB);
     }
     return false;

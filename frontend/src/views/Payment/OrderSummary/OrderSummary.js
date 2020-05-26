@@ -15,7 +15,7 @@ import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCar
 import AppAlert from "../../../core/components/AppAlert";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import {Link} from "react-router-dom";
-import {scrollToId} from "../../../_helpers";
+import {formatCurrency, scrollToId} from "../../../_helpers";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 
 class OrderSummary extends Component {
@@ -29,10 +29,16 @@ class OrderSummary extends Component {
     this.state = {
       type: "",
       paymentIntent: {},
-      relaysSelected: 0,
-      subTotal: 0,
+      quantity: {
+        number: 0,
+        description: "",
+      },
+      cost: {
+        number: 0,
+        description: "",
+      },
       total: 0,
-      currentAccountBalance: 50,
+      currentAccountBalance: 0,
       paymentMethods: [],
       selectedPaymentMethod: {},
       loading: false,
@@ -58,10 +64,10 @@ class OrderSummary extends Component {
     const {
       type,
       paymentIntent,
-      relaysSelected,
-      subTotal,
-      currentAccountBalance,
-      total
+      quantity,
+      cost,
+      total,
+      currentAccountBalance
     } = this.props.location.state;
 
     const user = UserService.getUserInfo().email;
@@ -75,10 +81,10 @@ class OrderSummary extends Component {
           paymentMethods,
           type,
           paymentIntent,
-          relaysSelected,
-          subTotal,
-          currentAccountBalance,
-          total
+          quantity,
+          cost,
+          total,
+          currentAccountBalance
         });
       });
   }
@@ -88,20 +94,24 @@ class OrderSummary extends Component {
       paymentIntent,
       type,
       selectedPaymentMethod,
-      relaysSelected,
-      subTotal,
+      quantity,
+      cost,
       total,
+      currentAccountBalance
     } = this.state;
 
     return this.props.history.replace({
-      pathname: _getDashboardPath(DASHBOARD_PATHS.nodesCheckout),
+      pathname: _getDashboardPath(DASHBOARD_PATHS.invoice),
       state: {
         type,
         paymentId: paymentIntent.id,
         paymentMethod: selectedPaymentMethod,
-        relaysSelected,
-        subTotal,
-        total
+        details: [
+          {value: quantity.number, text: quantity.description, format: false},
+          {value: cost.number, text: cost.description, format: true},
+        ],
+        total,
+        currentAccountBalance
       },
     });
   }
@@ -141,8 +151,9 @@ class OrderSummary extends Component {
 
     this.setState({loading: true});
 
-    // noinspection ES6MissingAwait
-    ApplicationService.stakeApplication(application, chains, result.paymentIntent.id, applicationLink);
+    ApplicationService.stakeApplication(application, chains, result.paymentIntent.id, applicationLink)
+      .then(_ => {
+      });
 
     this.goToInvoice();
   }
@@ -192,10 +203,10 @@ class OrderSummary extends Component {
     const {
       selectedPaymentMethod,
       paymentMethods: allPaymentMethods,
-      relaysSelected,
-      subTotal,
-      currentAccountBalance,
+      quantity,
+      cost,
       total,
+      currentAccountBalance,
       loading,
       agreeTerms,
       alert,
@@ -203,9 +214,9 @@ class OrderSummary extends Component {
     } = this.state;
 
     const cards = [
-      {title: relaysSelected, subtitle: "Relays per day"},
-      {title: `${subTotal} USD`, subtitle: "Relays Per day cost"},
-      {title: `-${currentAccountBalance} USD`, subtitle: "Balance selected"}
+      {title: quantity.number, subtitle: quantity.description},
+      {title: `${cost.number} USD`, subtitle: cost.description},
+      {title: `-${formatCurrency(currentAccountBalance)} USD`, subtitle: "Current balance"}
     ];
 
     const paymentMethods = allPaymentMethods.map((method) => {

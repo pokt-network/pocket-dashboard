@@ -24,7 +24,7 @@ class SelectRelays extends Component {
 
     this.onSliderChange = this.onSliderChange.bind(this);
     this.onCurrentBalanceChange = this.onCurrentBalanceChange.bind(this);
-    this.goToCheckout = this.goToCheckout.bind(this);
+    this.goToSummary = this.goToSummary.bind(this);
 
     this.state = {
       minRelays: 0,
@@ -156,7 +156,7 @@ class SelectRelays extends Component {
     return {success, data: paymentIntentData};
   }
 
-  async goToCheckout() {
+  async goToSummary() {
     const {
       relaysSelected, currencies, subTotal, total,
       currentAccountBalance
@@ -180,14 +180,14 @@ class SelectRelays extends Component {
 
       // eslint-disable-next-line react/prop-types
       this.props.history.push({
-        pathname: _getDashboardPath(DASHBOARD_PATHS.appOrderSummary),
+        pathname: _getDashboardPath(DASHBOARD_PATHS.orderSummary),
         state: {
           type: ITEM_TYPES.APPLICATION,
           paymentIntent: paymentIntentData,
-          subTotal: subTotalAmount,
+          quantity: {number: relaysSelected, description: "Relays per day"},
+          cost: {number: subTotalAmount, description: "Relays per day cost"},
           total: totalAmount,
-          relaysSelected,
-          currentAccountBalance,
+          currentAccountBalance
         },
       });
 
@@ -203,7 +203,7 @@ class SelectRelays extends Component {
   render() {
     const {
       error, currencies, relaysSelected, subTotal, total,
-      minRelays, maxRelays, currentAccountBalance, originalAccountBalance, loading
+      minRelays, maxRelays, currentAccountBalance, loading
     } = this.state;
 
     // At the moment the only available currency is USD.
@@ -290,8 +290,7 @@ class SelectRelays extends Component {
               </div>
               <div className="item">
                 <p>Current balance ({currency})</p>
-                <Form.Control type="number" min={0} max={originalAccountBalance}
-                              value={currentAccountBalance}
+                <Form.Control value={currentAccountBalance}
                               onChange={this.onCurrentBalanceChange}/>
               </div>
               <hr/>
@@ -302,7 +301,7 @@ class SelectRelays extends Component {
               <LoadingButton
                 loading={loading}
                 buttonProps={{
-                  onClick: this.goToCheckout,
+                  onClick: this.goToSummary,
                   variant: "primary",
                   className: "mb-3"
                 }}>
