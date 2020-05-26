@@ -42,6 +42,19 @@ export class PocketAccountService extends PocketBaseService {
       .get(this._getURL(`balance/${accountAddress}`))
       .then((response) => response.data);
   }
+
+  /**
+   * Get account POKT balance.
+   *
+   * @param {string} accountAddress Account address in hex to query.
+   *
+   * @returns {Promise<number|*>} The balance of account.
+   */
+  getPoktBalance(accountAddress) {
+    return axios
+      .get(this._getURL(`balance/pokt/${accountAddress}`))
+      .then((response) => response.data);
+  }
 }
 
 export default new PocketAccountService();

@@ -16,6 +16,7 @@ import AppAlert from "../../../core/components/AppAlert";
 import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
 import Segment from "../../../core/components/Segment/Segment";
 import "./AppDetail.scss";
+import PocketAccountService from "../../../core/services/PocketAccountService";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -24,6 +25,7 @@ class AppDetail extends Component {
     this.state = {
       pocketApplication: {},
       networkData: {},
+      accountBalance: 0,
       chains: [],
       aat: {},
       loading: true,
@@ -41,14 +43,9 @@ class AppDetail extends Component {
     this.deleteApplication = this.deleteApplication.bind(this);
     this.unstakeApplication = this.unstakeApplication.bind(this);
     this.stakeApplication = this.stakeApplication.bind(this);
-    this.fetchData = this.fetchData.bind(this);
   }
 
   async componentDidMount() {
-    await this.fetchData();
-  }
-
-  async fetchData() {
     let message;
     let purchase = true;
 
@@ -73,15 +70,13 @@ class AppDetail extends Component {
       return;
     }
 
+    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(address);
     const chains = await NetworkService.getNetworkChains(networkData.chains);
-
     const {freeTier} = pocketApplication;
 
     let aat;
 
     if (freeTier) {
-      const {address} = pocketApplication.publicPocketAccount;
-
       aat = await ApplicationService.getFreeTierAppAAT(address);
     }
 
@@ -92,6 +87,7 @@ class AppDetail extends Component {
       networkData,
       chains,
       aat,
+      accountBalance,
       loading: false,
     });
   }
@@ -152,13 +148,15 @@ class AppDetail extends Component {
       freeTier,
       publicPocketAccount,
     } = this.state.pocketApplication;
+
     const {
       max_relays: maxRelays,
       staked_tokens: stakedTokens,
-      status: bondStatus,
+      status: stakeStatus,
       unstaking_time: unstakingCompletionTime,
     } = this.state.networkData;
-    const status = getStakeStatus(bondStatus);
+
+    const status = getStakeStatus(stakeStatus);
     const isStaked = status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
     let address;
@@ -180,6 +178,7 @@ class AppDetail extends Component {
       unstake,
       stake,
       ctaButtonPressed,
+      accountBalance,
     } = this.state;
 
     const generalInfo = [
@@ -187,9 +186,8 @@ class AppDetail extends Component {
         title: `${formatNetworkData(stakedTokens)} POKT`,
         subtitle: "Staked tokens",
       },
-      // TODO: Change this value.
       {
-        title: `${formatNetworkData((freeTier ? 0 : 2000))} POKT`,
+        title: `${formatNetworkData(freeTier ? 0 : accountBalance)} POKT`,
         subtitle: "Balance"
       },
       {
