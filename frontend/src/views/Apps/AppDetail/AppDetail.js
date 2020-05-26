@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
+import {STAKE_STATUS, TABLE_COLUMNS, POKT_UNSTAKING_DAYS} from "../../../_constants";
 import ApplicationService, {
   PocketApplicationService,
 } from "../../../core/services/PocketApplicationService";
@@ -12,7 +12,7 @@ import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverl
 import {
   formatNetworkData,
   getStakeStatus,
-  formatHoursAndMinutesFromNow,
+  formatHoursAndMinutes,
 } from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
@@ -191,7 +191,7 @@ class AppDetail extends Component {
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
-      ? formatHoursAndMinutesFromNow(unstaking_time)
+      ? formatHoursAndMinutes(unstaking_time, POKT_UNSTAKING_DAYS)
       : undefined;
 
     const generalInfo = [
