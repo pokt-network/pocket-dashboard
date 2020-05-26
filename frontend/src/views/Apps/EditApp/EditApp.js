@@ -41,7 +41,7 @@ class EditApp extends CreateForm {
     const {name, owner, contactEmail, description, url} = this.state.data;
     const {icon} = this.state;
 
-    const {success} = await ApplicationService.editApplication(address, {
+    const {success, data} = await ApplicationService.editApplication(address, {
       name,
       contactEmail,
       description,
@@ -54,7 +54,7 @@ class EditApp extends CreateForm {
     if (success) {
       this.setState({success: true});
     } else {
-      this.setState({error: true});
+      this.setState({error: {show: true, message: data}});
     }
   }
 
@@ -79,7 +79,7 @@ class EditApp extends CreateForm {
             {error.show && (
               <AppAlert
                 variant="danger"
-                title="There was an error saving your app changes, please try again later."
+                title={error.message}
                 dismissible
                 onClose={() => this.setState({error: false})}
               />
