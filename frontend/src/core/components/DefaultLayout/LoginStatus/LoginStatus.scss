@@ -1,18 +1,21 @@
 @import "../../../../scss/Variables/DefaultLayout";
 
 .user-dropdown {
+  display: flex;
 
   .label-dropdown {
+    display: inherit;
+    justify-content: center;
+    align-items: center;
     width: 160px;
     height: 32px;
+    line-height: 31px;
     padding: 8px;
-    display: flex;
-    justify-content: center;
     border-radius: $default-border-radius;
     border-style: solid;
     border-width: 1px;
 
-    p {
+    span {
       @include font-style($user-login-font);
       color: map_get($user-login-font, color);
 
@@ -21,7 +24,6 @@
     }
 
     svg {
-      margin-top: 5px;
       font-size: 8px;
     }
   }

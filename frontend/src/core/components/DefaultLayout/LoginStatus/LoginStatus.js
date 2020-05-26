@@ -4,7 +4,11 @@ import {Dropdown} from "react-bootstrap";
 import UserService from "../../../services/PocketUserService";
 import "./LoginStatus.scss";
 import {Redirect, withRouter} from "react-router-dom";
-import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../../_routes";
+import {
+  _getDashboardPath,
+  DASHBOARD_PATHS,
+  ROUTE_PATHS,
+} from "../../../../_routes";
 import LabelToggle from "../../LabelToggle";
 
 class LoginStatus extends Component {
@@ -50,7 +54,11 @@ class LoginStatus extends Component {
           {/*  User Profile*/}
           {/*</Dropdown.Item>*/}
           <Dropdown.Item onClick={() => this.logout()}>
-            <img src={"/assets/log-out.svg"} className="icon" alt="logout-profile-icon"/>
+            <img
+              src={"/assets/log-out.svg"}
+              className="icon"
+              alt="logout-profile-icon"
+            />
             Logout
           </Dropdown.Item>
         </Dropdown.Menu>
