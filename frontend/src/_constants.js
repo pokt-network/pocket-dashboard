@@ -21,6 +21,11 @@ export const ITEM_TYPES = {
   NODE: "node",
 };
 
+export const PURCHASE_ITEM_NAME = {
+  APPS: "Relays per day",
+  NODES: "Validator power",
+};
+
 export const POKT_UNSTAKING_DAYS = 21;
 
 export const DEFAULT_POKT_DENOMINATION_BASE = 6;

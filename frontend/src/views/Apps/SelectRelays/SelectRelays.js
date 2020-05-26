@@ -1,9 +1,14 @@
 import React, {Component} from "react";
 import "./SelectRelays.scss";
-import {Col, Form, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {ITEM_TYPES, MAX_RELAYS, STYLING} from "../../../_constants";
+import {
+  ITEM_TYPES,
+  MAX_RELAYS,
+  STYLING,
+  PURCHASE_ITEM_NAME,
+} from "../../../_constants";
 import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
@@ -11,9 +16,9 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
-import LoadingButton from "../../../core/components/LoadingButton";
 import {faCaretUp} from "@fortawesome/free-solid-svg-icons";
 import AppAlert from "../../../core/components/AppAlert";
+import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -46,7 +51,9 @@ class SelectRelays extends Component {
 
   async createPaymentIntent(amount, currency, pokt) {
     const {address} = ApplicationService.getApplicationInfo();
-    const {pocketApplication} = await ApplicationService.getApplication(address);
+    const {pocketApplication} = await ApplicationService.getApplication(
+      address
+    );
 
     const item = {
       account: UserService.getUserInfo().email,
@@ -93,8 +100,11 @@ class SelectRelays extends Component {
       state: {
         type: ITEM_TYPES.APPLICATION,
         paymentIntent: paymentIntentData,
-        quantity: {number: relays, description: "Relays per day"},
-        cost: {number: poktPrice, description: "Relays per day cost"},
+        quantity: {number: relays, description: PURCHASE_ITEM_NAME.APPS},
+        cost: {
+          number: poktPrice,
+          description: `${PURCHASE_ITEM_NAME.APPS} cost`,
+        },
         total: total,
       },
     });
@@ -127,7 +137,9 @@ class SelectRelays extends Component {
         </Row>
         <Row>
           <Col lg="8" md="8" sm="8" className="title-page">
-            <h2 className="mb-5">Slide to Select how much relays per day you want to buy</h2>
+            <h2 className="mb-5">
+              Slide to Select how much relays per day you want to buy
+            </h2>
             <div className="relays-calc">
               <div className="slider-wrapper">
                 <AppSlider
@@ -166,40 +178,18 @@ class SelectRelays extends Component {
           </Col>
           <Col lg="4" md="4" sm="4" className="pr-5 title-page">
             <h2 className="mb-4">Order Summary</h2>
-            <div className="summary">
-              <div className="item">
-                <p>App</p>
-                <p>1</p>
-              </div>
-              <div className="item">
-                <p>Relays per day</p>
-                <p>{relays}</p>
-              </div>
-              <div className="item">
-                <p>Relays per day cost</p>
-                <p>{poktPrice} USD</p>
-              </div>
-              <div className="item">
-                <p>Current balance</p>
-                {/* TODO: Get balance */}
-                <Form.Control value="50 USD" readOnly />
-              </div>
-              <hr />
-              <div className="item total">
-                <p>Total cost</p>
-                <p>{total} USD</p>
-              </div>
-              <LoadingButton
-                loading={loading}
-                buttonProps={{
-                  onClick: this.goToCheckout,
-                  variant: "primary",
-                  className: "mb-5"
-                }}
-              >
-                <span>Checkout</span>
-              </LoadingButton>
-            </div>
+            <AppOrderSummary
+              items={[
+                {label: "App", quantity: 1},
+                {label: PURCHASE_ITEM_NAME.APPS, quantity: relays},
+                {label: `${PURCHASE_ITEM_NAME.APPS} cost`, quantity: poktPrice},
+              ]}
+              // TODO: Get balance
+              balance={50}
+              total={total}
+              loading={loading}
+              formActionHandler={this.goToCheckout}
+            />
           </Col>
         </Row>
         <Row>
