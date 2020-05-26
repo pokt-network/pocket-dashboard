@@ -102,8 +102,7 @@ export const Configurations = {
     free_tier: {
       account: process.env.POCKET_FREE_TIER_ACCOUNT,
       passphrase: process.env.POCKET_FREE_TIER_ACCOUNT_PASSPRHASE,
-      stake_amount: process.env.POCKET_FREE_TIER_STAKE_AMOUNT,
-      max_relay_per_application: process.env.POCKET_FREE_TIER_MAX_RELAY_PER_APPLICATION,
+      stake_amount: process.env.POCKET_FREE_TIER_STAKE_AMOUNT
     },
     nodes: {
       test_rpc_provider: "http://node4.testnet.pokt.network",
