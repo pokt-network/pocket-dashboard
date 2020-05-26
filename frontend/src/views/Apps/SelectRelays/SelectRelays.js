@@ -171,11 +171,12 @@ class SelectRelays extends Component {
       this.validate(currency);
 
       // Avoiding floating point precision errors.
-      const amount = parseFloat(numeral(total).format("0.000")).toFixed(3);
+      const subTotalAmount = parseFloat(numeral(subTotal).format("0.000")).toFixed(3);
+      const totalAmount = parseFloat(numeral(total).format("0.000")).toFixed(3);
 
-      const {data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, amount);
+      const {data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, totalAmount);
 
-      PaymentService.savePurchaseInfoInCache({relays: parseInt(relaysSelected), costPerRelay: parseFloat(amount)});
+      PaymentService.savePurchaseInfoInCache({relays: parseInt(relaysSelected), costPerRelay: parseFloat(totalAmount)});
 
       // eslint-disable-next-line react/prop-types
       this.props.history.push({
@@ -183,9 +184,9 @@ class SelectRelays extends Component {
         state: {
           type: ITEM_TYPES.APPLICATION,
           paymentIntent: paymentIntentData,
-          total: amount,
+          subTotal: subTotalAmount,
+          total: totalAmount,
           relaysSelected,
-          subTotal,
           currentAccountBalance,
         },
       });

@@ -29,16 +29,10 @@ class OrderSummary extends Component {
     this.state = {
       type: "",
       paymentIntent: {},
-      quantity: {
-        number: 0,
-        description: "",
-      },
+      relaysSelected: 0,
+      subTotal: 0,
       total: 0,
-      cost: {
-        number: 0,
-        description: "",
-      },
-      balance: 50,
+      currentAccountBalance: 50,
       paymentMethods: [],
       selectedPaymentMethod: {},
       loading: false,
@@ -53,7 +47,7 @@ class OrderSummary extends Component {
     };
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this.setState({loading: true});
     // eslint-disable-next-line react/prop-types
     if (this.props.location.state === undefined) {
@@ -64,24 +58,29 @@ class OrderSummary extends Component {
     const {
       type,
       paymentIntent,
-      quantity,
-      total,
-      cost,
+      relaysSelected,
+      subTotal,
+      currentAccountBalance,
+      total
     } = this.props.location.state;
 
     const user = UserService.getUserInfo().email;
-    const paymentMethods = await PaymentService.getPaymentMethods(user);
 
-    this.setState({
-      loading: false,
-      paymentMethods,
-      type,
-      paymentIntent,
-      selectedPaymentMethod: paymentMethods[0],
-      quantity,
-      total,
-      cost,
-    });
+    PaymentService.getPaymentMethods(user)
+      .then(paymentMethods => {
+
+        this.setState({
+          loading: false,
+          selectedPaymentMethod: paymentMethods[0],
+          paymentMethods,
+          type,
+          paymentIntent,
+          relaysSelected,
+          subTotal,
+          currentAccountBalance,
+          total
+        });
+      });
   }
 
   goToInvoice() {
@@ -209,10 +208,10 @@ class OrderSummary extends Component {
     const {
       selectedPaymentMethod,
       paymentMethods: allPaymentMethods,
-      quantity,
+      relaysSelected,
+      subTotal,
+      currentAccountBalance,
       total,
-      cost,
-      balance,
       loading,
       agreeTerms,
       alert,
@@ -220,12 +219,9 @@ class OrderSummary extends Component {
     } = this.state;
 
     const cards = [
-      {title: quantity.number, subtitle: quantity.description},
-      {title: `${cost.number} USD`, subtitle: cost.description},
-      {
-        title: `-${balance} USD`,
-        subtitle: "Current Balance",
-      },
+      {title: relaysSelected, subtitle: "Relays per day"},
+      {title: `${subTotal} USD`, subtitle: "Relays Per day cost"},
+      {title: `-${currentAccountBalance} USD`, subtitle: "Balance selected"}
     ];
 
     const paymentMethods = allPaymentMethods.map((method) => {
@@ -240,11 +236,11 @@ class OrderSummary extends Component {
     });
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     if (unauthorized) {
-      return <UnauthorizedAlert />;
+      return <UnauthorizedAlert/>;
     }
 
     return (
@@ -319,26 +315,24 @@ class OrderSummary extends Component {
                 <p className="agree">
                   I agree to Pocket Purchase&#39;s{" "}
                   <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>
-                    <br />
-                    Terms and Condititons.
+                    <br/>
+                    Terms and Conditions.
                   </Link>
                 </p>
               }
             />
-            <br />
+            <br/>
             <PaymentContainer>
               <ElementsConsumer>
                 {({_, stripe}) => (
                   <Form
                     onSubmit={(e) => this.makePurchaseWithSavedCard(e, stripe)}
-                    className=""
-                  >
+                    className="">
                     <Button
                       disabled={!agreeTerms}
                       variant="primary"
                       className="confirm pr-5 pl-5"
-                      type="submit"
-                    >
+                      type="submit">
                       <span>Confirm payment</span>
                     </Button>
                   </Form>
