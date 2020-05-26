@@ -683,12 +683,16 @@ input[type="radio"] {
 .dropdown-menu.show {
   margin-top: 1px;
   border-radius: $cta-panel-radius;
+  border: none;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.24);
   background-color: white;
 
   .dropdown-item {
+    display: flex;
+    align-items: center;
     font-family: $primary-font-family;
     font-size: 12px;
+    line-height: 16px;
     font-weight: 300;
     color: #282828;
 
