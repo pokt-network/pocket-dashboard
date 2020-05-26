@@ -28,9 +28,10 @@ class ApplicationChainList extends Chains {
       data: {...data, serviceURL},
     });
 
-    // TODO: Redirect to select validator power
     // eslint-disable-next-line react/prop-types
-    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.tierSelection));
+    this.props.history.push(
+      _getDashboardPath(DASHBOARD_PATHS.selectValidatorPower)
+    );
   }
 
   render() {
