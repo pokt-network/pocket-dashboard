@@ -12,7 +12,7 @@ import CreateAppForm from "./views/Apps/CreateAppForm/CreateAppForm";
 import TierSelection from "./views/Apps/TierSelection/TierSelection";
 import FreeTier from "./views/FreeTier/FreeTier";
 import ApplicationChainList from "./views/Apps/ChainList/ApplicationChainList";
-import Import from "./views/Apps/Import/ImportApp";
+import Import from "./views/Apps/Import/Import";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
@@ -26,7 +26,6 @@ import NodeChainList from "./views/Nodes/NodeChainList/NodeChainList";
 import EditApp from "./views/Apps/EditApp/EditApp";
 import NodeDetail from "./views/Nodes/NodeDetail/NodeDetail";
 import EditNode from "./views/Nodes/EditNode/EditNode";
-import ImportNode from "./views/Nodes/ImportNode/ImportNode";
 import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
 import OrderSummary from "./views/Payment/OrderSummary/OrderSummary";
 import ResetPassword from "./views/Auth/ResetPassword/ResetPassword";
@@ -206,7 +205,7 @@ export const dashboardRoutes = [
     exact: true,
 
     name: "Node Detail",
-    component: ImportNode,
+    component: Import,
   },
   {
     path: DASHBOARD_PATHS.nodeEdit,

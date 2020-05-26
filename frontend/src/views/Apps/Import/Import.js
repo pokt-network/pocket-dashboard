@@ -1,13 +1,14 @@
 import React, {Component} from "react";
 import {Button, Col, Form, Row, Alert} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {TABLE_COLUMNS} from "../../../_constants";
+import {TABLE_COLUMNS, ITEM_TYPES} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import {Redirect, Link} from "react-router-dom";
-import "./ImportApp.scss";
+import {Link} from "react-router-dom";
+import "./Import.scss";
 import AccountService from "../../../core/services/PocketAccountService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import AppTable from "../../../core/components/AppTable";
+import NodeService from "../../../core/services/PocketNodeService";
 
 class Import extends Component {
   constructor(props, context) {
@@ -23,6 +24,7 @@ class Import extends Component {
     };
 
     this.state = {
+      type: "",
       created: false,
       error: {show: false, message: ""},
       hasPrivateKey: false,
@@ -36,10 +38,18 @@ class Import extends Component {
         passphrase: "",
         privateKey: "",
       },
-      redirectPath: "",
-      redirectParams: {},
       imported: false,
     };
+  }
+
+  componentDidMount() {
+    const path = window.location.pathname;
+
+    if (path === _getDashboardPath(DASHBOARD_PATHS.importApp)) {
+      this.setState({type: ITEM_TYPES.APPLICATION});
+    } else if (path === _getDashboardPath(DASHBOARD_PATHS.importNode)) {
+      this.setState({type: ITEM_TYPES.NODE});
+    }
   }
 
   handleChange({currentTarget: input}) {
@@ -87,18 +97,28 @@ class Import extends Component {
   async importApp(e) {
     e.preventDefault();
 
+    const {type} = this.state;
     const {privateKey, passphrase} = this.state.data;
 
     const {success, data} = await AccountService.importAccount(
-      privateKey, passphrase);
+      privateKey, passphrase
+    );
 
     if (success) {
-      ApplicationService.saveAppInfoInCache({
-        imported: true,
-        privateKey,
-        passphrase,
-        address: data.address,
-      });
+      if (type === ITEM_TYPES.APPLICATION) {
+        ApplicationService.saveAppInfoInCache({
+          imported: true,
+          privateKey,
+          passphrase,
+          address: data.address,
+        });
+      } else {
+        NodeService.saveNodeInfoInCache({
+          privateKey,
+          passphrase,
+          address: data.address,
+        });
+      }
       this.setState({imported: true, address: data.address});
     } else {
       this.setState({error: {show: true, message: data.message}});
@@ -107,30 +127,17 @@ class Import extends Component {
 
   render() {
     const {
-      fileDownloaded,
       inputType,
       showPassphraseIconURL,
       address,
-      redirectPath,
-      redirectParams,
       uploadedPrivateKey,
       hasPrivateKey,
       error,
       imported,
+      type,
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
-
-    if (fileDownloaded) {
-      return (
-        <Redirect
-          to={{
-            pathname: redirectPath,
-            state: redirectParams,
-          }}
-        />
-      );
-    }
 
     const generalInfo = [
       {title: "0 POKT", subtitle: "Staked tokens"},
@@ -149,9 +156,17 @@ class Import extends Component {
         <Row>
           <Col className="page-title">
             <p>
-              Import to the dashboard a pocket account previously created as an
-              application in the network. If your account is not an app go to{" "}
-              <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
+              Import to the dashboard a pocket account previously created as a
+              {type === ITEM_TYPES.APPLICATION ? "n " : " "}
+              {type} in the network. If your account is not a
+              {type === ITEM_TYPES.APPLICATION ? "n " : " "} {type} go to{" "}
+              <Link
+                to={_getDashboardPath(
+                  type === ITEM_TYPES.APPLICATION
+                    ? DASHBOARD_PATHS.createAppInfo
+                    : DASHBOARD_PATHS.createNodeForm
+                )}
+              >
                 Create.
               </Link>
             </p>
@@ -256,7 +271,9 @@ class Import extends Component {
                                   // eslint-disable-next-line react/prop-types
                                   this.props.history.push({
                                     pathname: _getDashboardPath(
-                                      DASHBOARD_PATHS.createAppInfo
+                                      type === ITEM_TYPES.APPLICATION
+                                        ? DASHBOARD_PATHS.createAppInfo
+                                        : DASHBOARD_PATHS.createNodeForm
                                     ),
                                     state: {imported: true},
                                   });
