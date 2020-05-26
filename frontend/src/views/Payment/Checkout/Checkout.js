@@ -180,7 +180,7 @@ class Checkout extends Component {
         </Row>
         <p className="mt-4 ml-3 print">
           {/* TODO: Add print functionality */}
-          <img src="/assets/printer.svg" className="icon" />{" "}
+          <img src={"/assets/printer.svg"} className="icon" alt="print-icon"/>{" "}
           <span className="link">Print</span> your invoice
         </p>
       </div>
