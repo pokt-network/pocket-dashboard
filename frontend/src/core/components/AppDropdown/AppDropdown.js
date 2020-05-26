@@ -1,6 +1,6 @@
-import React, { Component } from "react";
-import { Dropdown } from "react-bootstrap";
-import { PropTypes } from "prop-types";
+import React, {Component} from "react";
+import {Dropdown} from "react-bootstrap";
+import {PropTypes} from "prop-types";
 import "./AppDropdown.scss";
 import LabelToggle from "../LabelToggle";
 
@@ -15,12 +15,12 @@ class AppDropdown extends Component {
     };
   }
 
-  handleSelect({ target: input }) {
+  handleSelect({target: input}) {
     const selected = input.text;
 
-    const { onSelect, options } = this.props;
+    const {onSelect, options} = this.props;
 
-    this.setState({ selected });
+    this.setState({selected});
 
     const idx = options.map((op) => op.text).indexOf(selected);
 
@@ -28,15 +28,15 @@ class AppDropdown extends Component {
   }
 
   componentDidMount() {
-    const { options, defaultText } = this.props;
+    const {options, defaultText} = this.props;
     const selected = defaultText ? defaultText : options[0].text;
 
-    this.setState({ selected });
+    this.setState({selected});
   }
 
   render() {
-    const { options } = this.props;
-    const { selected } = this.state;
+    const {options} = this.props;
+    const {selected} = this.state;
 
     return (
       <Dropdown alignRight className="app-dropdown">
