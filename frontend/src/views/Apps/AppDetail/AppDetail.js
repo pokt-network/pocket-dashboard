@@ -2,18 +2,12 @@ import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
-import ApplicationService, {
-  PocketApplicationService,
-} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {PocketApplicationService,} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {
-  formatNetworkData,
-  getStakeStatus,
-  formatHoursAndMinutesFromNow,
-} from "../../../_helpers";
+import {formatHoursAndMinutesFromNow, formatNetworkData, getStakeStatus,} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -40,7 +34,7 @@ class AppDetail extends Component {
       purchase: true,
       hideTable: false,
       exists: true,
-      unstaked: false,
+      unstake: false,
       stake: false,
       ctaButtonPressed: false,
     };
@@ -127,9 +121,9 @@ class AppDetail extends Component {
 
     if (success) {
       // "Reload page" for updated networkData
-      this.setState({loading: true, unstaked: false, ctaButtonPressed: false});
+      this.setState({loading: true, unstake: false, ctaButtonPressed: false});
     } else {
-      this.setState({unstaked: false, ctaButtonPressed: false, message: data});
+      this.setState({unstake: false, ctaButtonPressed: false, message: data});
     }
   }
 
