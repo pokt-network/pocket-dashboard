@@ -4,7 +4,7 @@ import {Col, Form, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
 import {ITEM_TYPES, MAX_RELAYS, STYLING} from "../../../_constants";
-import {formatCurrency, formatNumbers, scrollToId} from "../../../_helpers";
+import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -103,11 +103,11 @@ class SelectRelays extends Component {
   render() {
     const {error, relays, poktPrice, total: currentTotal, loading} = this.state;
 
-    const total = formatCurrency(currentTotal);
+    const total = formatNumbers(currentTotal);
 
     return (
       <div id="select-relays">
-        <Row className="mt-4 mb-5">
+        <Row className="mt-4 mb-4">
           <Col lg="11" md="11" sm="11" className="title-page">
             {error.show && (
               <AppAlert
@@ -118,7 +118,7 @@ class SelectRelays extends Component {
               />
             )}
             <h1>Custom tier</h1>
-            <p>
+            <p className="subtitle">
               With the custom tier, you only need to pay for the API throughput
               you application needs. If you expect your application to grow in
               the short term, we recommend giving it a small buffer.
@@ -127,7 +127,7 @@ class SelectRelays extends Component {
         </Row>
         <Row>
           <Col lg="8" md="8" sm="8" className="title-page">
-            <h4>Slide to Select how much relays per day you want to buy</h4>
+            <h2 className="mb-5">Slide to Select how much relays per day you want to buy</h2>
             <div className="relays-calc">
               <div className="slider-wrapper">
                 <AppSlider
@@ -164,8 +164,8 @@ class SelectRelays extends Component {
               </p>
             </AppAlert>
           </Col>
-          <Col lg="4" md="4" sm="4" className="title-page">
-            <h4 className="mb-4">Order Summary</h4>
+          <Col lg="4" md="4" sm="4" className="pr-5 title-page">
+            <h2 className="mb-4">Order Summary</h2>
             <div className="summary">
               <div className="item">
                 <p>App</p>
@@ -194,7 +194,7 @@ class SelectRelays extends Component {
                 buttonProps={{
                   onClick: this.goToCheckout,
                   variant: "primary",
-                  className: "mb-3"
+                  className: "mb-5"
                 }}
               >
                 <span>Checkout</span>

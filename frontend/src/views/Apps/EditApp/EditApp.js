@@ -178,12 +178,11 @@ class EditApp extends CreateForm {
                   </Form.Group>
                   <div className="submit mt-2 mb-4">
                     <Button
-                      className="pl-5 pr-5"
                       variant="primary"
                       size="md"
                       type="submit"
                     >
-                      save
+                      <span>Save</span>
                     </Button>
                   </div>
                 </Form>

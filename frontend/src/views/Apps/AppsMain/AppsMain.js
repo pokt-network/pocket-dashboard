@@ -281,7 +281,7 @@ class AppsMain extends Main {
                   classes={`flex-body ${hasMoreRegisteredItems ? "loading" : ""} `}
                   headerClasses="d-flex"
                   toggle={registeredItems.length > 0}
-                  keyField="pocketApplication.publicPocketAccount.address"
+                  keyField="pocketApplication.id"
                   data={registeredItems}
                   columns={TABLE_COLUMNS.APPS}
                   bordered={false}

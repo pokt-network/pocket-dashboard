@@ -1,16 +1,21 @@
 import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
-import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
+import {STAKE_STATUS, TABLE_COLUMNS, POKT_UNSTAKING_DAYS} from "../../../_constants";
+import ApplicationService, {
+  PocketApplicationService,
+} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatNetworkData, getStakeStatus} from "../../../_helpers";
+import {
+  formatNetworkData,
+  getStakeStatus,
+  formatHoursAndMinutes,
+} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
-import moment from "moment";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
 import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
@@ -35,7 +40,7 @@ class AppDetail extends Component {
       exists: true,
       unstake: false,
       stake: false,
-      ctaButtonPressed: false
+      ctaButtonPressed: false,
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -126,10 +131,10 @@ class AppDetail extends Component {
 
     if (success) {
       // "Reload page" for updated networkData
-      this.setState({loading: true, unstaking: false});
+      this.setState({loading: true, unstake: false, ctaButtonPressed: false});
       this.fetchData();
     } else {
-      this.setState({unstaking: false, message: data});
+      this.setState({unstake: false, ctaButtonPressed: false, message: data});
     }
   }
 
@@ -158,10 +163,11 @@ class AppDetail extends Component {
       max_relays: maxRelays,
       staked_tokens: stakedTokens,
       status: bondStatus,
-      unstakingCompletionTime,
+      unstaking_time,
     } = this.state.networkData;
     const status = getStakeStatus(bondStatus);
-    const isStaked = status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
+    const isStaked =
+      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
     let address;
     let publicKey;
@@ -184,6 +190,10 @@ class AppDetail extends Component {
       ctaButtonPressed,
     } = this.state;
 
+    const unstakingTime = status === STAKE_STATUS.Unstaking
+      ? formatHoursAndMinutes(unstaking_time, POKT_UNSTAKING_DAYS)
+      : undefined;
+
     const generalInfo = [
       {
         title: `${formatNetworkData(stakedTokens)} POKT`,
@@ -199,9 +209,7 @@ class AppDetail extends Component {
         subtitle: "Stake Status",
         children:
           status === STAKE_STATUS.Unstaking ? (
-            <p className="unstaking-time">{`Unstaking time: ${moment
-              .duration({seconds: unstakingCompletionTime})
-              .humanize()}`}</p>
+            <p className="unstaking-time">{`Unstaking time: ${unstakingTime}`}</p>
           ) : undefined,
       },
       {title: formatNetworkData(maxRelays), subtitle: "Max Relays Per Day"},
@@ -296,16 +304,18 @@ class AppDetail extends Component {
             <h1>General Information</h1>
           </Col>
           <Col sm="1" md="1" lg="1">
-            <Button
-              className="float-right cta"
-              onClick={() => {
-                this.setState({ctaButtonPressed: true});
+            {status !== STAKE_STATUS.Unstaking && 
+              <Button
+                className="float-right cta"
+                onClick={() => {
+                  this.setState({ctaButtonPressed: true});
 
-                isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
-              }}
-              variant="primary">
-              <span>{isStaked ? "Unstake" : "Stake"}</span>
-            </Button>
+                  isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
+                }}
+                variant="primary">
+                  <span>{isStaked ? "Unstake" : "Stake"}</span>
+              </Button>
+            }
           </Col>
         </Row>
         <Row className="stats">

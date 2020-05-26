@@ -1,9 +1,36 @@
 import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
+import SecureLS from "secure-ls";
+import {Configurations} from "../../_configuration";
 
 class PocketPaymentService extends PocketBaseService {
   constructor() {
     super("api/payments");
+
+    this.ls = new SecureLS(Configurations.secureLS);
+  }
+
+  /**
+   * Get default payment method.
+   *
+   * @returns {string}
+   */
+  getDefaultPaymentMethod() {
+    return this.ls.get("default_payment_method").data;
+  }
+
+  /**
+   * Save default payment method in localsotrage
+   *
+   * @param {string} paymentMethodId payment method id.
+   */
+  setDefaultPaymentMethod(paymentMethodId) {
+    this.ls.set("default_payment_method", {data: paymentMethodId});
+  }
+
+  /* Remove default payment method*/
+  removeDefaultPaymentMethod() {
+    this.ls.remove("default_payment_method");
   }
 
   /**

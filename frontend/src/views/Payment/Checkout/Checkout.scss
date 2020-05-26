@@ -1,6 +1,40 @@
 @import "../../../scss/Core.scss";
 
 #nodes-checkout {
+  .header {
+    padding-left: 35px;
+    padding-right: 35px;
+
+    h1 {
+      text-transform: uppercase;
+      font-family: $secondary-font-family;
+      color: $form-label-font-color;
+      font-size: 30px;
+      font-weight: 800;
+    }
+
+    p {
+      font-family: $primary-font-family;
+      color: $dark-gray;
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: normal;
+      margin-bottom: 0;
+    }
+  }
+
+
+  h2 {
+    text-transform: uppercase;
+    font-family: $secondary-font-family;
+    color: $title-secondary-color;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 2.11;
+    letter-spacing: -0.49px;
+  }
+
+
   .segment {
     padding: 35px;
     margin-left: 20px;
@@ -13,6 +47,10 @@
     }
   }
 
+  .cta {
+    width: auto;
+  }
+
   .title-page h3 {
     font-size: 18px;
     margin-left: 25px;
@@ -21,20 +59,46 @@
   .app-steps {
     .rc-steps-item-title {
       white-space: pre-wrap;
+      margin-top: 10px;
     }
+
+    .rc-steps-item-custom:nth-of-type(2) {
+      .rc-steps-item-title {
+        white-space: pre;
+      }
+    }
+  }
+
+  .invoice {
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .field {
     display: flex;
     justify-content: space-between;
 
+    &:first-of-type {
+      margin-top: 30px;
+    }
+
     p {
       font-size: 16px;
       color: #656565;
     }
+
+    p:last-of-type {
+      font-size: 14px;
+      font-weight: 300;
+    }
   }
 
   .print {
+    .icon {
+      width: 27px;
+      height: 27px;
+    }
+
     padding: 0;
   }
 
@@ -62,8 +126,24 @@
     .label {
       text-transform: uppercase;
       font-weight: bold;
+    }
+  }
 
-      p {}
+  .print {
+    font-size: 16px;
+    font-family: $primary-font-family;
+    color: $dark-gray;
+    font-weight: 300;
+    letter-spacing: normal;
+
+    .link {
+      font-weight: 300;
+      color: $primary-color;
+      cursor: pointer;
+    }
+
+    .link:hover {
+      color: $primary-color-darker;
     }
   }
 }
