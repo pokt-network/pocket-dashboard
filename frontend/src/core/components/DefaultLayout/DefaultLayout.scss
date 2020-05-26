@@ -3,7 +3,11 @@
 .default-layout {
   max-height: 90vh;
   overflow-x: hidden;
-  padding: 0 20px 0 $default-layout-item-padding-left !important;
+  padding: 0 42px 0 $default-layout-item-padding-left !important;
+
+  .default-layout-wrapper {
+    width: calc(100% + 8px);
+  }
 
   .default-layout-footer {
     height: 3em;

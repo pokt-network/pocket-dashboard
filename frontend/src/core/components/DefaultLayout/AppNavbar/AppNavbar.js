@@ -9,7 +9,7 @@ class AppNavbar extends Component {
     // const {helpLink} = this.props;
 
     return (
-      <Row className="app-navbar">
+      <Row className="app-navbar" noGutters>
         <div id="main-logo">
           <img src="/assets/logo.svg" alt="logo"/>
           <span className="app-name">

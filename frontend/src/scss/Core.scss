@@ -23,6 +23,16 @@
   }
 }
 
+.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.row {
+  margin-right: 0;
+  margin-left: 0;
+}
+
 .page-title {
   padding-left: 0;
 
@@ -39,6 +49,7 @@
     line-height: 1.27;
     letter-spacing: -0.82px;
     color: $title-primary-color;
+    margin-bottom: 0;
   }
 
   h2 {
@@ -289,6 +300,7 @@ label.form-label {
 #sidebar {
   background: $gradient;
   color: color(white);
+  padding: 0;
 
   #title {
     margin-top: 50px;

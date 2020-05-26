@@ -20,21 +20,19 @@ class DefaultLayout extends Component {
     return (
       <Container fluid>
         <Row>
-          <Col lg="12">
-            <AppNavbar />
-          </Col>
+          <AppNavbar />
         </Row>
         <Row>
-          <AppSidebar/>
+          <AppSidebar />
           <Col className="default-layout">
-            <Row>
-              {/* TODO: Remove manually written links for testing purposes. */}
+            <div className="default-layout-wrapper">
+              <Row>
+                {/* TODO: Remove manually written links for testing purposes. */}
 
-              <Breadcrumbs
-                links={[{url: "#", label: "Network Status", active: true}]}
-              />
-            </Row>
-            <div className={"pl-3 pr-3"}>
+                <Breadcrumbs
+                  links={[{url: "#", label: "Network Status", active: true}]}
+                />
+              </Row>
               {dashboardRoutes.map((route, idx) => {
                 return (
                   <Route
@@ -47,9 +45,7 @@ class DefaultLayout extends Component {
                 );
               })}
             </div>
-            <Row className="default-layout-footer">
-
-            </Row>
+            <Row className="default-layout-footer"></Row>
           </Col>
         </Row>
       </Container>

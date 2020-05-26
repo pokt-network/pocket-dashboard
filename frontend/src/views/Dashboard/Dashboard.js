@@ -87,12 +87,12 @@ class Dashboard extends Component {
             </h4>
           </Alert>
         )}
-        <Row>
+        <Row noGutters>
           <Col sm="8" className="page-title">
-            <h1 className="ml-1">NETWORK INFORMATION</h1>
+            <h1>NETWORK INFORMATION</h1>
           </Col>
           <Col sm="4" className="d-flex justify-content-end cta-buttons">
-            <Dropdown className="cta mr-2">
+            <Dropdown className="cta">
               <Dropdown.Toggle
                 className="pl-4 pr-4"
                 variant="primary"
@@ -167,9 +167,11 @@ class Dashboard extends Component {
             {/*</Dropdown>*/}
           </Col>
         </Row>
-        <Row className="stats mt-3 mb-4">
+        <Row className="stats mb-4" noGutters>
           {CARDS.map((card, idx) => (
-            <InfoCard key={idx} title={card.title} subtitle={card.subtitle} />
+            <Col key={idx} className="stat-column" md={2}>
+              <InfoCard title={card.title} subtitle={card.subtitle} />
+            </Col>
           ))}
         </Row>
         <div className="network-status-tables">
