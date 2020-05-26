@@ -140,14 +140,14 @@ class NodesMain extends Main {
     const registeredItems = allRegisteredItems.map(mapStatusToField);
 
     const cards = [
-      {title: formatNumbers(total), subtitle: "Total of Apps"},
+      {title: formatNumbers(total), subtitle: "Total of Nodes"},
       {
         title: formatNetworkData(averageStaked, false),
-        subtitle: "Average Staked",
+        subtitle: "Average Staked Token Per Node",
       },
       {
         title: formatNetworkData(averageRelays, false),
-        subtitle: "Average Relays Per Application",
+        subtitle: "Avr Validator Power Per Node",
       },
     ];
 

@@ -20,6 +20,15 @@
     }
   }
 
+  p.info:first-of-type {
+    margin-bottom: 0;
+    line-height: 1;
+  }
+
+  p.info {
+    margin-bottom: 20px;
+  }
+
   .create-form-right-side {
     margin-top: 5px;
     padding-left: 60px;
@@ -42,7 +51,7 @@
       font-weight: bold;
     }
 
-    ul > li {
+    ul>li {
       margin-bottom: 8px;
       font-weight: 300;
     }
@@ -55,7 +64,8 @@
         height: 18px;
       }
 
-      p, a {
+      p,
+      a {
         font-family: $primary-font-family;
         color: $secondary-color;
         font-size: 14px;

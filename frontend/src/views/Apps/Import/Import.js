@@ -150,7 +150,7 @@ class Import extends Component {
       <div id="app-passphrase" className="import">
         <Row>
           <Col className="page-title">
-            <h1>Import App</h1>
+            <h1>Import {type === ITEM_TYPES.APPLICATION ? "App" : "Node"}</h1>
           </Col>
         </Row>
         <Row>
@@ -161,6 +161,7 @@ class Import extends Component {
               {type} in the network. If your account is not a
               {type === ITEM_TYPES.APPLICATION ? "n " : " "} {type} go to{" "}
               <Link
+                className="font-weight-light"
                 to={_getDashboardPath(
                   type === ITEM_TYPES.APPLICATION
                     ? DASHBOARD_PATHS.createAppInfo

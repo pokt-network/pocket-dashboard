@@ -5,7 +5,7 @@ import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileU
 import {BOND_STATUS_STR} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {generateIcon, nodeFormSchema} from "../../../_helpers";
+import {generateIcon, nodeFormSchema, scrollToId} from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
 import NodeService from "../../../core/services/PocketNodeService";
 import {Formik} from "formik";
@@ -91,8 +91,8 @@ class CreateNodeForm extends CreateForm {
       NodeService.saveNodeInfoInCache({address, privateKey});
       this.setState({created: true});
     } else {
-      // TODO: Show proper error message on front-end.
-      console.log(data.message);
+      this.setState({error: {show: true, message: data.message}});
+      scrollToId("alert");
     }
   }
 
@@ -125,6 +125,17 @@ class CreateNodeForm extends CreateForm {
             <p className="info">
               Fill in these quick questions to identity your node on the
               dashboard. Fields marked with * are required to continue.
+            </p>
+            <p className="info">
+              If you have an existing account in Pocket Network with an assigned
+              Private Key and you want to register it as a node, please proceed
+              to{" "}
+              <Link
+                className="font-weight-light"
+                to={_getDashboardPath(DASHBOARD_PATHS.importNode)}
+              >
+                Import.
+              </Link>
             </p>
           </Col>
         </Row>
