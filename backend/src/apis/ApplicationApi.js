@@ -257,7 +257,7 @@ router.post("/freetier/stake", async (request, response) => {
 router.post("/freetier/unstake", async (request, response) => {
   try {
 
-    /** @type {{application: {privateKey:string, passphrase:string, accountAddress: string}, user: string, appLink: string}} */
+    /** @type {{application: {privateKey:string, passphrase:string, accountAddress: string}}} */
     const data = request.body;
 
     const application = await applicationService.unstakeFreeTierApplication(data.application);

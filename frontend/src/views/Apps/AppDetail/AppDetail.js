@@ -45,7 +45,7 @@ class AppDetail extends Component {
   }
 
   async componentDidMount() {
-    this.fetchData();
+    await this.fetchData();
   }
 
   async fetchData() {
@@ -118,16 +118,16 @@ class AppDetail extends Component {
     const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
     const detail = url.replace(":address", address);
     const link = `${window.location.origin}${detail}`;
+    const application = {privateKey, passphrase, accountAddress: address};
 
     const {success, data} = freeTier
-      ? await ApplicationService.unstakeFreeTierApplication({privateKey, passphrase, accountAddress: address}, link)
-      : await ApplicationService.unstakeApplication(
-        privateKey, passphrase, address, link);
+      ? await ApplicationService.unstakeFreeTierApplication(application)
+      : await ApplicationService.unstakeApplication(application, link);
 
     if (success) {
       // "Reload page" for updated networkData
-      this.setState({loading: true, unstaking: false});
-      this.fetchData();
+      this.setState({loading: true, unstaking: true});
+      await this.fetchData();
     } else {
       this.setState({unstaking: false, message: data});
     }
@@ -158,7 +158,7 @@ class AppDetail extends Component {
       max_relays: maxRelays,
       staked_tokens: stakedTokens,
       status: bondStatus,
-      unstakingCompletionTime,
+      unstaking_time: unstakingCompletionTime,
     } = this.state.networkData;
     const status = getStakeStatus(bondStatus);
     const isStaked = status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
@@ -191,7 +191,7 @@ class AppDetail extends Component {
       },
       // TODO: Change this value.
       {
-        title: `${formatNetworkData(freeTier ? 0 : 20000)} POKT`,
+        title: `${formatNetworkData(freeTier ? 0 : 2000)} POKT`,
         subtitle: "Balance"
       },
       {

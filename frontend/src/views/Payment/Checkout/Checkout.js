@@ -136,12 +136,10 @@ class Checkout extends Component {
         </Button>
       </Link>
     );
-
-    /* eslint-disable jsx-a11y/alt-text */
     const icons = [
-      <img key={0} src={"/assets/cart.svg"} className="step-icon"/>,
-      <img key={1} src={"/assets/arrows.svg"} className="step-icon"/>,
-      <img key={2} src={"/assets/check.svg"} className="step-icon"/>,
+      <img key={0} src={"/assets/cart.svg"} className="step-icon" alt="step-icon"/>,
+      <img key={1} src={"/assets/arrows.svg"} className="step-icon" alt="step-icon"/>,
+      <img key={2} src={"/assets/check.svg"} className="step-icon" alt="step-icon"/>,
     ];
 
     if (unauthorized) {
