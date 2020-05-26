@@ -181,7 +181,7 @@ class Dashboard extends Component {
                   classes="flex-body"
                   headerClasses="d-flex"
                   toggle={userApps.length > 0}
-                  keyField="pocketNode.publicPocketAccount.address"
+                  keyField="pocketApplication.id"
                   data={userApps}
                   columns={TABLE_COLUMNS.APPS}
                   bordered={false}
