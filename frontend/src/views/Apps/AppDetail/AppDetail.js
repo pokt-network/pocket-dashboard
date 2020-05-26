@@ -125,9 +125,7 @@ class AppDetail extends Component {
       : await ApplicationService.unstakeApplication(application, link);
 
     if (success) {
-      // "Reload page" for updated networkData
-      this.setState({loading: true, unstaking: true});
-      await this.fetchData();
+      window.location.reload(false);
     } else {
       this.setState({unstaking: false, message: data});
     }
@@ -139,7 +137,7 @@ class AppDetail extends Component {
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(
-      _getDashboardPath(DASHBOARD_PATHS.applicationChangeList)
+      _getDashboardPath(DASHBOARD_PATHS.applicationChainsList)
     );
   }
 
@@ -191,7 +189,7 @@ class AppDetail extends Component {
       },
       // TODO: Change this value.
       {
-        title: `${formatNetworkData(freeTier ? 0 : 2000)} POKT`,
+        title: `${formatNetworkData((freeTier ? 0 : 2000))} POKT`,
         subtitle: "Balance"
       },
       {
@@ -199,9 +197,7 @@ class AppDetail extends Component {
         subtitle: "Stake Status",
         children:
           status === STAKE_STATUS.Unstaking ? (
-            <p className="unstaking-time">{`Unstaking time: ${moment
-              .duration({seconds: unstakingCompletionTime})
-              .humanize()}`}</p>
+            <p className="unstaking-time">{`Unstaking time: ${moment(unstakingCompletionTime).fromNow()}`}</p>
           ) : undefined,
       },
       {title: formatNetworkData(maxRelays), subtitle: "Max Relays Per Day"},

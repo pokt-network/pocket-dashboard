@@ -52,7 +52,7 @@ export const DASHBOARD_PATHS = {
   importApp: "/apps/import",
   createAppInfo: "/apps/new",
   appPassphrase: "/apps/new/passphrase",
-  applicationChangeList: "/apps/new/chains",
+  applicationChainsList: "/apps/new/chains",
   tierSelection: "/apps/new/tiers",
   selectRelays: "/apps/new/relays",
   freeTier: "/apps/free-tier",
@@ -227,7 +227,7 @@ export const dashboardRoutes = [
     component: Import,
   },
   {
-    path: DASHBOARD_PATHS.applicationChangeList,
+    path: DASHBOARD_PATHS.applicationChainsList,
     exact: true,
     name: "Application Chain list",
     component: ApplicationChainList,
