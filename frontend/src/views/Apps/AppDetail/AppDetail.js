@@ -2,18 +2,12 @@ import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {STAKE_STATUS, TABLE_COLUMNS, POKT_UNSTAKING_DAYS} from "../../../_constants";
-import ApplicationService, {
-  PocketApplicationService,
-} from "../../../core/services/PocketApplicationService";
+import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {
-  formatNetworkData,
-  getStakeStatus,
-  formatHoursAndMinutes,
-} from "../../../_helpers";
+import {formatHoursAndMinutes, formatNetworkData, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -21,6 +15,7 @@ import AppAlert from "../../../core/components/AppAlert";
 import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
 import Segment from "../../../core/components/Segment/Segment";
 import "./AppDetail.scss";
+import PocketAccountService from "../../../core/services/PocketAccountService";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -29,6 +24,7 @@ class AppDetail extends Component {
     this.state = {
       pocketApplication: {},
       networkData: {},
+      accountBalance: 0,
       chains: [],
       aat: {},
       loading: true,
@@ -46,14 +42,9 @@ class AppDetail extends Component {
     this.deleteApplication = this.deleteApplication.bind(this);
     this.unstakeApplication = this.unstakeApplication.bind(this);
     this.stakeApplication = this.stakeApplication.bind(this);
-    this.fetchData = this.fetchData.bind(this);
   }
 
   async componentDidMount() {
-    this.fetchData();
-  }
-
-  async fetchData() {
     let message;
     let purchase = true;
 
@@ -78,15 +69,13 @@ class AppDetail extends Component {
       return;
     }
 
+    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(address);
     const chains = await NetworkService.getNetworkChains(networkData.chains);
-
     const {freeTier} = pocketApplication;
 
     let aat;
 
     if (freeTier) {
-      const {address} = pocketApplication.publicPocketAccount;
-
       aat = await ApplicationService.getFreeTierAppAAT(address);
     }
 
@@ -97,6 +86,7 @@ class AppDetail extends Component {
       networkData,
       chains,
       aat,
+      accountBalance,
       loading: false,
     });
   }
@@ -123,16 +113,15 @@ class AppDetail extends Component {
     const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
     const detail = url.replace(":address", address);
     const link = `${window.location.origin}${detail}`;
+    const application = {privateKey, passphrase, accountAddress: address};
 
     const {success, data} = freeTier
-      ? await ApplicationService.unstakeFreeTierApplication({privateKey, passphrase, accountAddress: address}, link)
-      : await ApplicationService.unstakeApplication(
-        privateKey, passphrase, address, link);
+      ? await ApplicationService.unstakeFreeTierApplication(application)
+      : await ApplicationService.unstakeApplication(application, link);
 
     if (success) {
       // "Reload page" for updated networkData
       this.setState({loading: true, unstake: false, ctaButtonPressed: false});
-      this.fetchData();
     } else {
       this.setState({unstake: false, ctaButtonPressed: false, message: data});
     }
@@ -144,7 +133,7 @@ class AppDetail extends Component {
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(
-      _getDashboardPath(DASHBOARD_PATHS.applicationChangeList)
+      _getDashboardPath(DASHBOARD_PATHS.applicationChainsList)
     );
   }
 
@@ -159,12 +148,14 @@ class AppDetail extends Component {
       freeTier,
       publicPocketAccount,
     } = this.state.pocketApplication;
+
     const {
       max_relays: maxRelays,
       staked_tokens: stakedTokens,
       status: bondStatus,
-      unstaking_time,
+      unstaking_time: unstakingCompletionTime,
     } = this.state.networkData;
+
     const status = getStakeStatus(bondStatus);
     const isStaked =
       status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
@@ -188,10 +179,11 @@ class AppDetail extends Component {
       unstake,
       stake,
       ctaButtonPressed,
+      accountBalance,
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
-      ? formatHoursAndMinutes(unstaking_time, POKT_UNSTAKING_DAYS)
+      ? formatHoursAndMinutes(unstakingCompletionTime, POKT_UNSTAKING_DAYS)
       : undefined;
 
     const generalInfo = [
@@ -199,9 +191,8 @@ class AppDetail extends Component {
         title: `${formatNetworkData(stakedTokens)} POKT`,
         subtitle: "Staked tokens",
       },
-      // TODO: Change this value.
       {
-        title: `${formatNetworkData(freeTier ? 0 : 20000)} POKT`,
+        title: `${formatNetworkData(freeTier ? 0 : accountBalance)} POKT`,
         subtitle: "Balance"
       },
       {
@@ -304,7 +295,7 @@ class AppDetail extends Component {
             <h1>General Information</h1>
           </Col>
           <Col sm="1" md="1" lg="1">
-            {status !== STAKE_STATUS.Unstaking && 
+            {status !== STAKE_STATUS.Unstaking &&
               <Button
                 className="float-right cta"
                 onClick={() => {

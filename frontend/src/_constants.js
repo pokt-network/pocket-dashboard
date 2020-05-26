@@ -124,8 +124,6 @@ export const FILTER_OPTIONS = [
   {text: "Unstaked", dataField: "unstaked"},
 ];
 
-export const MAX_RELAYS = 20000;
-
 export const VALIDATION_MESSAGES = {
   REQUIRED: "This field is required.",
   MAX: (max) =>

@@ -51,12 +51,13 @@ export default class PaymentService extends BaseService {
       return false;
     }
 
+    const amountFixed = Math.round(amount);
     const paymentItem = {
       ...item,
       type: itemType
     };
 
-    return this.__createPocketPaymentIntent(type, currency, paymentItem, amount, itemType);
+    return this.__createPocketPaymentIntent(type, currency, paymentItem, amountFixed, itemType);
   }
 
   /**
