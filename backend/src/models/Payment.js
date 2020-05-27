@@ -186,7 +186,7 @@ export class PaymentHistory {
   }
 
   /**
-   * @returns {{account: string, name: string, type: string, validatorPower?: string, maxRelay?: string}} Payment item.
+   * @returns {{account: string, name: string, type: string, validatorPower?: string, maxRelays?: string}} Payment item.
    */
   getItem() {
     return this.item;
