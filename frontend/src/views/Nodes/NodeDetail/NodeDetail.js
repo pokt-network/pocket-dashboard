@@ -368,13 +368,11 @@ class NodeDetail extends Component {
           onHide={() => this.setState({deleteModal: false})}
           animation={false}
           centered
+          dialogClassName="app-modal"
         >
-          <Modal.Header closeButton>
-            <Modal.Title>
-              Are you sure you want to remove this Node?
-            </Modal.Title>
-          </Modal.Header>
+          <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
+            <h4> Are you sure you want to remove this Node?</h4>
             Your Node will be removed from the Pocket Dashboard. However, you
             will be able access it through the command line interface (CLI) or
             import it back into Pocket Dashboard with the private key assigned

@@ -480,6 +480,10 @@ button {
   }
 }
 
+.modal {
+  background-color: rgba(6, 32, 46, 0.6);
+}
+
 .modal-dialog {
 
   .modal-content {
@@ -488,7 +492,8 @@ button {
     box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
   }
 
-  .modal-title {
+  .modal-title,
+  .modal-content h4 {
     text-transform: uppercase;
     font-family: $secondary-font-family;
     color: $primary-color;

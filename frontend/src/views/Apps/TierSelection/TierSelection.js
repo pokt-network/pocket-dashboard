@@ -161,11 +161,12 @@ class TierSelection extends Component {
           onHide={() => this.setState({customTierModal: false})}
           animation={false}
           centered
+          dialogClassName="tier-modal"
         >
           <Modal.Header closeButton>
-            <Modal.Title>How the custom tier works?</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <h4>How the custom tier works?</h4>
             <p>
               The custom tier is a plan for the apps to be able to purchase the
               required amount of throughput and scale up the application as it
@@ -216,11 +217,12 @@ class TierSelection extends Component {
           onHide={() => this.setState({freeTierModal: false})}
           animation={false}
           centered
+          dialogClassName="tier-modal"
         >
           <Modal.Header closeButton>
-            <Modal.Title>How the free tier works?</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <h4>How the free tier works?</h4>
             <p>
               The free tier is a plan for any app to receive free throughput
               limited to 9999 amount of relays for an unlimited time.

@@ -286,12 +286,22 @@
 }
 
 .modal-dialog {
+  &.app-modal {
+    max-width: 680px;
+  }
+
   .modal-content {
-    padding: 40px 0 !important;
+    button.close {
+      padding-bottom: 40px;
+      padding-right: 0;
+    }
+
+    padding: 10px 0px 20px 40px !important;
+    background-color: $form-label-font-color !important;
 
     .modal-body {
+      padding-right: 60px;
       opacity: 1;
-
       font-family: $primary-font-family;
       font-size: 18px;
       font-weight: 300;

@@ -15,7 +15,6 @@ import AppAlert from "../../../core/components/AppAlert";
 import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
 import Segment from "../../../core/components/Segment/Segment";
 import "../../../scss/Views/Detail.scss";
-import "./AppDetail.scss";
 import PocketAccountService from "../../../core/services/PocketAccountService";
 
 class AppDetail extends Component {
@@ -421,11 +420,13 @@ class AppDetail extends Component {
           show={deleteModal}
           onHide={() => this.setState({deleteModal: false})}
           animation={false}
-          centered>
+          centered
+          dialogClassName="app-modal"
+          >
           <Modal.Header closeButton>
-            <Modal.Title>Are you sure you want to remove this App?</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <h4>Are you sure you want to remove this App?</h4>
             Your application will be removed from the Pocket Dashboard.
             However, you will be able access it through the command line interface (CLI) or import it
             back into Pocket Dashboard with the private key assigned to it.
