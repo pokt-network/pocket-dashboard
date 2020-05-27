@@ -4,11 +4,7 @@ import {Dropdown} from "react-bootstrap";
 import UserService from "../../../services/PocketUserService";
 import "./LoginStatus.scss";
 import {Redirect, withRouter} from "react-router-dom";
-import {
-  _getDashboardPath,
-  DASHBOARD_PATHS,
-  ROUTE_PATHS,
-} from "../../../../_routes";
+import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS,} from "../../../../_routes";
 import LabelToggle from "../../LabelToggle";
 
 class LoginStatus extends Component {
@@ -48,15 +44,15 @@ class LoginStatus extends Component {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          {/* TODO: Uncomment when second release */}
-          <Dropdown.Item onClick={() => this.goToProfile()}>
-            <img
-              src={"/assets/user_icon_circle.svg"}
-              className="icon"
-              alt="user-profile-icon"
-            />
-            User Profile
-          </Dropdown.Item>
+          {/* TODO: Uncomment when third release */}
+          {/*<Dropdown.Item onClick={() => this.goToProfile()}>*/}
+          {/*  <img*/}
+          {/*    src={"/assets/user_icon_circle.svg"}*/}
+          {/*    className="icon"*/}
+          {/*    alt="user-profile-icon"*/}
+          {/*  />*/}
+          {/*  User Profile*/}
+          {/*</Dropdown.Item>*/}
           <Dropdown.Item onClick={() => this.logout()}>
             <img
               src={"/assets/log-out.svg"}
