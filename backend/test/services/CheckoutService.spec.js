@@ -1,6 +1,6 @@
 import {describe, it} from "mocha";
 import {assert} from "chai";
-import CheckoutService from "../../src/services/CheckoutService";
+import ApplicationCheckoutService from "../../src/services/ApplicationCheckoutService";
 
 const POKT_MARKET_PRICE = 0.06;
 const CHECKOUT_OPTIONS = {
@@ -15,13 +15,13 @@ const CHECKOUT_OPTIONS = {
   p_rate: 0.1
 };
 
-const checkoutService = CheckoutService.getInstance(CHECKOUT_OPTIONS, POKT_MARKET_PRICE);
+const applicationCheckoutService = ApplicationCheckoutService.getInstance(CHECKOUT_OPTIONS, POKT_MARKET_PRICE);
 
 describe("CheckoutService", () => {
 
-  describe("getRelaysPerDay", () => {
+  describe("Application getRelaysPerDay", () => {
     it("Expect a json data of relays per day", () => {
-      const relaysPerDay = checkoutService.getRelaysPerDay();
+      const relaysPerDay = applicationCheckoutService.getRelaysPerDay();
 
       assert.isObject(relaysPerDay);
 
@@ -30,11 +30,11 @@ describe("CheckoutService", () => {
     });
   });
 
-  describe("getMoneyToSpent", () => {
+  describe("Application getMoneyToSpent", () => {
     it("Expect an integer value greater than 0.", () => {
       const relaysPerDay = 4000;
 
-      const cost = checkoutService.getMoneyToSpent(relaysPerDay);
+      const cost = applicationCheckoutService.getMoneyToSpent(relaysPerDay);
 
       assert.isNumber(cost);
       assert.isAbove(cost, 0);
