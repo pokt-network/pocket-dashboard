@@ -269,7 +269,7 @@ class PocketUserService extends PocketBaseService {
 
   /**
    * Validate reCAPTCHA token.
-   * 
+   *
    * @param {string} token recaptcha generated token.
    * @return {Promise<{object}>}
    * @async
