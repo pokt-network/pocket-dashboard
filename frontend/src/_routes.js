@@ -33,6 +33,7 @@ import AppPassphrase from "./views/Apps/AppPassphrase/AppPassphrase";
 import TermsOfService from "./views/Support/TermsOfService";
 import PrivacyPolicy from "./views/Support/PrivacyPolicy";
 import SelectValidatorPower from "./views/Nodes/SelectValidatorPower/SelectValidatorPower";
+import NodePassphrase from "./views/Nodes/NodePassphrase/Nodepassphrase";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -61,6 +62,7 @@ export const DASHBOARD_PATHS = {
   nodeEdit: "/nodes/edit/:address",
   profile: "/profile",
   createNodeForm: "/nodes/new",
+  nodePassphrase: "/nodes/new/passphrase",
   nodeChainList: "/nodes/chains",
   selectValidatorPower: "/nodes/new/validator-power",
   importNode: "/nodes/import",
@@ -183,6 +185,12 @@ export const dashboardRoutes = [
     exact: true,
     name: "Create App Passhprase",
     component: AppPassphrase,
+  },
+  {
+    path: DASHBOARD_PATHS.nodePassphrase,
+    exact: true,
+    name: "Create Node Passhprase",
+    component: NodePassphrase,
   },
   {
     path: DASHBOARD_PATHS.nodeChainList,
