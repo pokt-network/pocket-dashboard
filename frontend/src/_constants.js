@@ -36,6 +36,10 @@ export const NODES_LIMIT = 10;
 
 export const PAYMENT_HISTORY_LIMIT = 10;
 
+export const DEFAULT_VALIDATOR_POWER = 25000;
+
+export const DEFAULT_RELAYS = 1000;
+
 export const STYLING = {
   primaryColor: "#27a9e0",
   lightGray: "#afafaf",

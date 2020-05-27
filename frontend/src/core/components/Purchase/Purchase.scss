@@ -109,6 +109,16 @@
         font-size: 1.5em;
         font-weight: 300;
         font-family: "Lato";
+
+        &:first-of-type {
+          margin-top: 10px;
+          transform: translateX(0) !important;
+        }
+
+        &:last-of-type {
+          margin-top: 10px;
+          transform: translateX(-52%) !important;
+        }
       }
 
       .rc-slider-mark-text:last-of-type {

@@ -3,7 +3,12 @@ import "./SelectValidatorPower.scss";
 import {Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {ITEM_TYPES, STYLING, PURCHASE_ITEM_NAME} from "../../../_constants";
+import {
+  ITEM_TYPES,
+  STYLING,
+  PURCHASE_ITEM_NAME,
+  DEFAULT_VALIDATOR_POWER,
+} from "../../../_constants";
 import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import PocketPaymentService from "../../../core/services/PocketPaymentService";
@@ -36,30 +41,34 @@ class SelectValidatorPower extends Purchase {
     } = PocketApplicationService.getApplicationInfo();
 
     PaymentService.getAvailableCurrencies().then((currencies) => {
-      PocketCheckoutService.getRelaysPerDay().then((relaysPerDay) => {
-        const min = parseInt(relaysPerDay.min);
+      PocketCheckoutService.getValidatorPower().then((validatorPower) => {
+        const min = parseInt(validatorPower.min);
 
         // TODO: Get data based on Validation Power
-        PocketCheckoutService.getMoneyToSpent(min).then(({cost}) => {
-          PocketAccountService.getBalance(accountAddress).then(({balance}) => {
-            const currentAccountBalance = parseFloat(balance);
-            const subTotal = parseFloat(cost);
-            const total = subTotal - currentAccountBalance;
+        PocketCheckoutService.getNodeMoneyToSpent(DEFAULT_VALIDATOR_POWER).then(
+          ({cost}) => {
+            PocketAccountService.getBalance(accountAddress).then(
+              ({balance}) => {
+                const currentAccountBalance = parseFloat(balance);
+                const subTotal = parseFloat(cost);
+                const total = subTotal - currentAccountBalance;
 
-            this.setState({
-              currentAccountBalance: currentAccountBalance,
-              originalAccountBalance: currentAccountBalance,
-              min: min,
-              max: parseInt(relaysPerDay.max),
-              loading: false,
-              selected: min,
-              subTotal,
-              total,
-              type: ITEM_TYPES.NODE,
-              purchaseType: PURCHASE_ITEM_NAME.NODES,
-            });
-          });
-        });
+                this.setState({
+                  currentAccountBalance: currentAccountBalance,
+                  originalAccountBalance: currentAccountBalance,
+                  min: min,
+                  max: parseInt(validatorPower.max),
+                  loading: false,
+                  selected: DEFAULT_VALIDATOR_POWER,
+                  subTotal,
+                  total,
+                  type: ITEM_TYPES.NODE,
+                  purchaseType: PURCHASE_ITEM_NAME.NODES,
+                });
+              }
+            );
+          }
+        );
       });
 
       this.setState({currencies});
@@ -73,8 +82,7 @@ class SelectValidatorPower extends Purchase {
     } = e;
     const currentAccountBalance = parseFloat(value);
 
-    // TODO: Change calculation to validation power
-    PocketCheckoutService.getMoneyToSpent(selected).then(({cost}) => {
+    PocketCheckoutService.getNodeMoneyToSpent(selected).then(({cost}) => {
       const subTotal = parseFloat(cost);
       const total = subTotal - currentAccountBalance;
 
@@ -90,7 +98,7 @@ class SelectValidatorPower extends Purchase {
     const {currentAccountBalance} = this.state;
 
     // TODO: Change calculation to validation power
-    PocketCheckoutService.getMoneyToSpent(value).then(({cost}) => {
+    PocketCheckoutService.getNodeMoneyToSpent(value).then(({cost}) => {
       const subTotal = parseFloat(cost);
       const total = subTotal - currentAccountBalance;
 
@@ -150,8 +158,8 @@ class SelectValidatorPower extends Purchase {
       );
 
       PaymentService.savePurchaseInfoInCache({
-        relays: parseInt(selected),
-        costPerRelay: parseFloat(totalAmount),
+        validationPower: parseInt(selected),
+        validationPowerCost: parseFloat(totalAmount),
       });
 
       // eslint-disable-next-line react/prop-types
@@ -227,15 +235,16 @@ class SelectValidatorPower extends Purchase {
         <Row>
           <Col sm="7" className="title-page">
             <h2 className="mb-5">
-              Slide to Select how much ${purchaseType} your node will require
+              Slide to Select how much {purchaseType} your node will require
             </h2>
             <div className="calc">
               <div className="slider-wrapper">
                 <AppSlider
+                  defaultValue={DEFAULT_VALIDATOR_POWER}
                   onChange={this.onSliderChange}
                   type={PURCHASE_ITEM_NAME.NODES}
                   marks={{
-                    [min]: `${min} RPD`,
+                    [min]: `${min} VP`,
                     [max / 2]: {
                       label: (
                         <span>
@@ -257,7 +266,7 @@ class SelectValidatorPower extends Purchase {
             <AppAlert
               className="pt-4 pb-4"
               variant="primary"
-              title={<h4 className="alert-max">*More relays?</h4>}
+              title={<h4 className="alert-max">*More Validator Power?</h4>}
             >
               <p className="alert-max">
                 If your node requires more than {formatNumbers(max)} VP, please{" "}

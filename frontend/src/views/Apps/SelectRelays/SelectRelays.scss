@@ -108,11 +108,18 @@
         font-size: 1.5em;
         font-weight: 300;
         font-family: "Lato";
-      }
 
-      .rc-slider-mark-text:last-of-type {
-        margin-left: -42px;
-        width: 100%;
+        &:first-of-type {
+          margin-top: 10px;
+          transform: translateX(0) !important;
+        }
+
+        &:last-of-type {
+          margin-top: 10px;
+          transform: translateX(-58%) !important;
+          width: 100%;
+
+        }
       }
 
       .rc-slider-dot {

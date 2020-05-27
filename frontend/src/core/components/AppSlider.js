@@ -8,8 +8,12 @@ import {formatNumbers} from "../../_helpers";
 class AppSlider extends Component {
   constructor(props) {
     super(props);
+
+    // eslint-disable-next-line react/prop-types
+    const {defaultValue} = this.props;
+
     this.state = {
-      value: 0,
+      value: defaultValue || 0,
     };
   }
 
