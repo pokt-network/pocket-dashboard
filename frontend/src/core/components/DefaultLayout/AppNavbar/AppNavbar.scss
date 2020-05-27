@@ -1,7 +1,8 @@
 @import "../../../../scss/Core.scss";
 
 .app-navbar {
-  padding: $navbar-padding;
+  width: 100%;
+  padding: 0 50px;
   background-color: $navbar-color;
   display: flex;
   flex-direction: row;
@@ -14,10 +15,6 @@
     img {
       width: map_get($main-logo-size, width);
       height: map_get($main-logo-size, height);
-    }
-
-    img, .logo-divider {
-      margin-right: 13px;
     }
 
     .app-name {

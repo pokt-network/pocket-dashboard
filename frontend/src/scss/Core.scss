@@ -1,13 +1,11 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "Variables/All";
 
-
 @mixin bordered-layout {
   border: 2px solid $primary-color;
   padding: 10px 30px 7px 30px;
   border-radius: $default-border-radius;
 }
-
 
 // TODO: Review these values.
 // Headers
@@ -21,6 +19,16 @@
   h#{$i} {
     color: $primary-color;
   }
+}
+
+.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.row {
+  margin-right: 0;
+  margin-left: 0;
 }
 
 .page-title {
@@ -39,6 +47,7 @@
     line-height: 1.27;
     letter-spacing: -0.82px;
     color: $title-primary-color;
+    margin-bottom: 0;
   }
 
   h2 {
@@ -63,7 +72,6 @@
     letter-spacing: -0.44px;
     color: $secondary-color;
   }
-
 }
 
 // Paragraphs, Labels, Links
@@ -142,7 +150,7 @@ form {
 .btn-primary:focus,
 .btn-outline-primary:active,
 .btn-primary:active,
-.show>.btn-primary.dropdown-toggle,
+.show > .btn-primary.dropdown-toggle,
 .btn-primary:not(:disabled):not(.disabled):active {
   background-color: $primary-color-darker;
   border-color: $primary-color-darker;
@@ -165,23 +173,37 @@ input {
 }
 
 .alert {
+  min-height: 60px;
   font-family: $secondary-font-family;
-  box-shadow: 0 6px 25px -8px rgba(6, 32, 46, 0.1);
+  box-shadow: $default-box-shadow;
   background-color: #07212f;
-  padding-top: 20px;
-  padding-bottom: 20px;
-  padding-left: 30px;
+  padding: 0 20px 0 24px;
   border-color: $dark-blue;
   color: white;
   border-radius: 10px;
 
+  &.alert-primary {
+    button {
+      height: 100%;
+      padding: 0 !important;
+    }
+  }
+
   button.close {
     span {
-      left: 20px !important;
+      position: absolute;
+      top: 0;
+      right: 18px;
       color: white;
       font-size: 1.5em;
       font-weight: 300;
     }
+  }
+
+  h4 {
+    font-size: 1.125rem;
+    line-height: 60px;
+    margin-bottom: 0;
   }
 
   p {
@@ -244,6 +266,10 @@ input {
   button {
     min-width: unset;
     padding: 0.2em 1.25rem;
+
+    &:focus {
+      box-shadow: none;
+    }
   }
 
   button:hover {
@@ -289,6 +315,7 @@ label.form-label {
 #sidebar {
   background: $gradient;
   color: color(white);
+  padding: 0;
 
   #title {
     margin-top: 50px;
@@ -297,23 +324,24 @@ label.form-label {
   }
 }
 
-
 button {
   height: 32px;
   width: 105px;
 
   span {
-    position: relative;
-    top: -5px;
-
     font-family: $primary-font-family;
     font-size: 12px;
+  }
+
+  &:focus {
+    box-shadow: none;
   }
 }
 
 .app-table {
   margin-bottom: 0;
   box-shadow: $default-box-shadow;
+  border-radius: $table-radius;
 
   input[type="checkbox"] {
     margin-left: -32px;
@@ -325,6 +353,7 @@ button {
     text-transform: uppercase;
     color: black;
     height: 50px;
+    margin-left: 22px;
 
     th {
       margin-top: -10px;
@@ -336,15 +365,20 @@ button {
       font-weight: bold;
       letter-spacing: -0.33px;
       padding-bottom: 14px;
+
+      &:first-child {
+        padding-left: 0;
+      }
     }
 
     th:focus {
       outline: none;
     }
-
   }
 
   tbody {
+    padding: 0 14px 0 22px;
+
     tr {
       color: gray;
     }
@@ -358,11 +392,14 @@ button {
       font-weight: 300;
       letter-spacing: -0.33px;
       overflow-wrap: anywhere;
+
+      &:first-child {
+        padding-left: 0;
+      }
     }
   }
 
   &.scroll {
-
     thead,
     tbody tr {
       display: table;
@@ -371,14 +408,17 @@ button {
     }
 
     thead {
-      width: calc(100% - 1em);
+      // 50px comes from -8px from the scroll, 22px from the wireframes and 22px from margin-left and 6px extra from padding-right 6px from tbody
+      width: calc(100% - 50px);
     }
 
     tbody {
+      width: calc(100% - 8px);
       display: block;
       height: auto;
-      max-height: 60vh;
-      overflow: scroll;
+      max-height: 62vh;
+      overflow: auto;
+      padding-right: 6px;
     }
   }
 
@@ -447,7 +487,6 @@ button {
   margin-left: 45%;
 }
 
-
 .order-by {
   display: flex;
   align-items: baseline;
@@ -485,11 +524,10 @@ button {
 }
 
 .modal-dialog {
-
   .modal-content {
     background-color: $dark-blue;
     border-radius: 10px;
-    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   }
 
   .modal-title,
@@ -568,7 +606,6 @@ textarea.form-control::placeholder {
     }
   }
 }
-
 
 .divider {
   display: flex;
@@ -656,7 +693,7 @@ input[type="checkbox"] // input[type="radio"]
       opacity: 1;
     }
 
-    ~label::before {
+    ~ label::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
 
@@ -673,11 +710,36 @@ input[type="radio"] {
   color: $black;
   border: 1px solid $primary-color;
   border-radius: 50%;
-  appearance: none;
-  outline: 0;
-  cursor: pointer;
+}
 
-  &:checked {
+#general {
+  box-shadow: $default-box-shadow;
+
+  .body {
+    padding-bottom: 100px;
+  }
+
+  h1 {
+    color: $dark-gray;
+    margin-bottom: 85px;
+  }
+}
+
+.dropdown-menu.show {
+  margin-top: 1px;
+  border-radius: $cta-panel-radius;
+  border: none;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.24);
+  background-color: white;
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    font-family: $primary-font-family;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 300;
+    color: #282828;
 
     ~label {
       margin-top: 0px;
@@ -724,7 +786,6 @@ input[type="radio"] {
 ::-webkit-scrollbar-button {
   display: none;
 }
-
 
 //TODO: Remove when second release.
 .breadcrumb {

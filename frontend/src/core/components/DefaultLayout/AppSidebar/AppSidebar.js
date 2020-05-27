@@ -11,7 +11,7 @@ class AppSidebar extends Component {
     const currentYear = new Date().getFullYear();
 
     return (
-      <Sidebar xs={2} sm={2} lg={2} className="app-sidebar">
+      <Sidebar xs={2} className="app-sidebar">
         <Row>
           <ul className="sidebar-menu">
             {navRoutes.items.map((route, idx) => (
