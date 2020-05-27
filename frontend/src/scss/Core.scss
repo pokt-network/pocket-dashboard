@@ -404,11 +404,12 @@ button {
     }
 
     thead {
-      // 52px comes from 8px from the scroll, 22px from the wireframes and 22px from margin-left and ^px extra from padding-right 6px from tbody
-      width: calc(100% - 58px);
+      // 50px comes from -8px from the scroll, 22px from the wireframes and 22px from margin-left and 6px extra from padding-right 6px from tbody
+      width: calc(100% - 50px);
     }
 
     tbody {
+      width: calc(100% - 8px);
       display: block;
       height: auto;
       max-height: 62vh;

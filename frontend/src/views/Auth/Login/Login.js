@@ -117,7 +117,6 @@ class Login extends Component {
                     validate={this.validate}
                     // validationSchema={this.schema}
                     onSubmit={() => {
-                      debugger;
                       UserService.saveUserInCache(this.state.user, true);
                       UserService.showWelcomeMessage(true);
                       this.setState({loggedIn: true});

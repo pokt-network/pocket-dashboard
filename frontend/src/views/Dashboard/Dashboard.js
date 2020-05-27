@@ -52,8 +52,6 @@ class Dashboard extends Component {
     const chains = await NetworkService.getAvailableNetworkChains();
     const alert = UserService.getShowWelcomeMessage();
 
-    console.log("REQUESTS", userEmail, userApps, alert);
-
     this.setState({alert, userApps, chains, loading: false});
   }
 
