@@ -2,7 +2,9 @@ import PersistenceProvider from "../providers/data/PersistenceProvider";
 import PocketService, {get_default_pocket_network} from "./PocketService";
 import {Account, StakingStatus} from "@pokt-network/pocket-js";
 
-
+/**
+ *  @abstract
+ */
 export default class BaseService {
   constructor() {
     const pocketData = get_default_pocket_network();
@@ -55,7 +57,6 @@ export default class BaseService {
    * @async
    */
   async _waitUntilIsOnNetwork(account, status) {
-    // Wait until application was staked.
     while (!await this._isApplicationOnNetwork(account, status)) {
       this._noop();
     }

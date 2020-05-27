@@ -3,13 +3,13 @@ import NodeService from "../services/NodeService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
-import CheckoutService from "../services/CheckoutService";
+import ApplicationCheckoutService from "../services/ApplicationCheckoutService";
 
 const router = express.Router();
 
 const nodeService = new NodeService();
 const paymentService = new PaymentService();
-const checkoutService = CheckoutService.getInstance();
+const checkoutService = ApplicationCheckoutService.getInstance();
 
 /**
  * Create new node.
