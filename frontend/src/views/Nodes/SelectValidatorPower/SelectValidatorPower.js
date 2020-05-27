@@ -97,7 +97,6 @@ class SelectValidatorPower extends Purchase {
   onSliderChange(value) {
     const {currentAccountBalance} = this.state;
 
-    // TODO: Change calculation to validation power
     PocketCheckoutService.getNodeMoneyToSpent(value).then(({cost}) => {
       const subTotal = parseFloat(cost);
       const total = subTotal - currentAccountBalance;
