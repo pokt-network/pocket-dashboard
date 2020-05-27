@@ -52,19 +52,19 @@ export const DASHBOARD_PATHS = {
   importApp: "/apps/import",
   createAppInfo: "/apps/new",
   appPassphrase: "/apps/new/passphrase",
-  applicationChangeList: "/apps/new/chains",
+  applicationChainsList: "/apps/new/chains",
   tierSelection: "/apps/new/tiers",
   selectRelays: "/apps/new/relays",
-  appOrderSummary: "/apps/new/summary",
   freeTier: "/apps/free-tier",
   nodes: "/nodes",
   nodeDetail: "/nodes/detail/:address",
   nodeEdit: "/nodes/edit/:address",
-  nodesCheckout: "/apps/new/checkout",
   profile: "/profile",
   createNodeForm: "/nodes/new",
   nodeChainList: "/nodes/chains",
   importNode: "/nodes/import",
+  orderSummary: "/payment/summary",
+  invoice: "/payment/invoice",
   termsOfService: "/support/terms-of-service",
   privacyPolicy: "/support/privacy-policy"
 };
@@ -215,9 +215,9 @@ export const dashboardRoutes = [
     component: EditNode,
   },
   {
-    path: DASHBOARD_PATHS.nodesCheckout,
+    path: DASHBOARD_PATHS.invoice,
     exact: true,
-    name: "Nodes Checkout",
+    name: "Invoice",
     component: Checkout,
   },
   {
@@ -227,7 +227,7 @@ export const dashboardRoutes = [
     component: Import,
   },
   {
-    path: DASHBOARD_PATHS.applicationChangeList,
+    path: DASHBOARD_PATHS.applicationChainsList,
     exact: true,
     name: "Application Chain list",
     component: ApplicationChainList,
@@ -245,9 +245,9 @@ export const dashboardRoutes = [
     component: SelectRelays,
   },
   {
-    path: DASHBOARD_PATHS.appOrderSummary,
+    path: DASHBOARD_PATHS.orderSummary,
     exact: true,
-    name: "App Order Summary",
+    name: "Order Summary",
     component: OrderSummary,
   },
   {

@@ -76,7 +76,7 @@ class CreateAppForm extends CreateForm {
           data: data,
         });
         this.props.history.replace(
-          _getDashboardPath(DASHBOARD_PATHS.applicationChangeList)
+          _getDashboardPath(DASHBOARD_PATHS.applicationChainsList)
         );
       }
     } else {

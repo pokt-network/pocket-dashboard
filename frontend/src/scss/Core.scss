@@ -343,12 +343,6 @@ button {
     margin-left: -32px;
     width: 18px;
     height: 18px;
-
-    &::before {
-      opacity: 1;
-      margin-left: -2px;
-      margin-top: -2px;
-    }
   }
 
   thead {
@@ -652,11 +646,15 @@ textarea.form-control::placeholder {
   position: absolute;
 }
 
-input[type="checkbox"],
-input[type="radio"] {
+input[type="checkbox"] // input[type="radio"]
+
+  {
   position: relative;
-  width: 1.6em;
-  height: 1.6em;
+  width: 1.4em;
+  height: 1.4em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
   color: $black;
   border: 1px solid $light-gray;
   border-radius: 4px;
@@ -666,13 +664,9 @@ input[type="radio"] {
   transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
 
   &::before {
-    position: absolute;
-    content: "";
-    display: block;
-    top: 2px;
-    left: 7px;
-    width: 8px;
-    height: 14px;
+    content: '';
+    height: 70%;
+    width: 45%;
     border-style: solid;
     border-color: $white;
     border-width: 0 2px 2px 0;
@@ -692,10 +686,19 @@ input[type="radio"] {
     ~ label::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
+
   }
 }
 
 input[type="radio"] {
+  position: relative;
+  width: 1.4em;
+  height: 1.4em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: $black;
+  border: 1px solid $primary-color;
   border-radius: 50%;
 }
 
@@ -728,17 +731,15 @@ input[type="radio"] {
     font-weight: 300;
     color: #282828;
 
-    .icon {
-      color: $primary-color;
-      margin-right: 15px;
-      width: 16px;
-      height: 16px;
+    ~label {
+      margin-top: 0px;
+      margin-left: 3px;
+      height: 25%;
+      position: absolute;
+      background-color: $primary-color;
+      width: 60%;
+      border-radius: 50%;
     }
-  }
-
-  .dropdown-item:active {
-    background-color: transparent;
-    border-color: transparent;
   }
 }
 

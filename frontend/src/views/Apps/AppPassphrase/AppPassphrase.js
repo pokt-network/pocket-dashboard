@@ -7,11 +7,7 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
-import {
-  createAndDownloadJSONFile,
-  validateYup,
-  scrollToId,
-} from "../../../_helpers";
+import {createAndDownloadJSONFile, scrollToId, validateYup} from "../../../_helpers";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -136,7 +132,7 @@ class AppPassphrase extends Component {
 
     this.setState({
       fileDownloaded: true,
-      redirectPath: _getDashboardPath(DASHBOARD_PATHS.applicationChangeList),
+      redirectPath: _getDashboardPath(DASHBOARD_PATHS.applicationChainsList),
     });
   }
 

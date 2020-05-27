@@ -1,8 +1,10 @@
 import BaseService from "./BaseService";
 import {PublicPocketAccount} from "../models/Account";
-import {Account} from "@pokt-network/pocket-js";
+import {Account, CoinDenom} from "@pokt-network/pocket-js";
 import bcrypt from "bcrypt";
-import PocketService from "./PocketService";
+import PocketService, {POKT_DENOMINATIONS} from "./PocketService";
+import {Configurations} from "../_configuration";
+
 
 export default class AccountService extends BaseService {
 
@@ -98,5 +100,35 @@ export default class AccountService extends BaseService {
     }
 
     return PublicPocketAccount.createPublicPocketAccount(applicationAccount);
+  }
+
+  /**
+   * Get POKT balance of account
+   *
+   * @param {string} accountAddress Account address to get balance.
+   *
+   * @returns {Promise<number>} Account balance.
+   * @async
+   */
+  async getPoktBalance(accountAddress) {
+    const balance = await this.pocketService.getBalance(accountAddress);
+
+    return parseInt(balance);
+  }
+
+  /**
+   * Get balance of account
+   *
+   * @param {string} accountAddress Account address to get balance.
+   * @param {CoinDenom} pocketDenomination Pocket denomination.
+   *
+   * @returns {Promise<number>} Account balance.
+   * @async
+   */
+  async getBalance(accountAddress, pocketDenomination = CoinDenom.Upokt) {
+    const {pokt_market_price: poktMarketPrice} = Configurations.pocket_network;
+    const pokt = await this.getPoktBalance(accountAddress);
+
+    return (pokt / Math.pow(10, POKT_DENOMINATIONS[pocketDenomination])) * poktMarketPrice;
   }
 }

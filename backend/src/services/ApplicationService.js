@@ -1,8 +1,7 @@
 import BaseService from "./BaseService";
 import {ExtendedPocketApplication, PocketApplication, StakedApplicationSummary} from "../models/Application";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
-import PocketAAT from "@pokt-network/aat-js";
-import {Account, Application, StakingStatus} from "@pokt-network/pocket-js";
+import {Account, Application, PocketAAT, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import {Configurations} from "../_configuration";
 import AccountService from "./AccountService";
@@ -336,59 +335,6 @@ export default class ApplicationService extends BaseService {
   }
 
   /**
-   * Unstake free tier application.
-   *
-   * @param {{privateKey:string, passphrase:string, accountAddress: string}} applicationData Application data.
-   *
-   * @returns {Promise<PocketApplication | boolean>} If application was unstaked return the application, if not return false.
-   * @async
-   */
-  async unstakeFreeTierApplication(applicationData) {
-    const filter = {
-      "publicPocketAccount.address": applicationData.accountAddress
-    };
-
-    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
-
-    if (!applicationDB) {
-      return false;
-    }
-    const accountService = new AccountService();
-
-    try {
-      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.privateKey, applicationData.passphrase);
-
-      // Unstake application
-      const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passphrase);
-
-      if (this.pocketService.isTransactionSuccess(unstakedTransaction)) {
-        const {account: freeTierAccount} = this.pocketService.getFreeTierAccount();
-        const {stake_amount: stakeAmount} = Configurations.pocket_network.free_tier;
-
-        const transferTransaction = await this.pocketService
-          .transferPoktBetweenAccounts(applicationAccount, applicationData.passphrase, freeTierAccount, stakeAmount);
-
-        if (this.pocketService.isTransactionSuccess(transferTransaction)) {
-
-          const clientApplication = PocketApplication.createPocketApplication(applicationDB);
-
-          await this._waitUntilIsOnNetwork(applicationAccount, StakingStatus.Unstaking);
-
-          await this.__markApplicationAsFreeTier(clientApplication, false);
-
-          return clientApplication;
-        }
-
-        return false;
-      }
-
-      return false;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  /**
    * Stake a free tier application.
    *
    * @param {{privateKey: string, passphrase:string}} application Application to stake.
@@ -420,34 +366,69 @@ export default class ApplicationService extends BaseService {
       throw Error("Free tier account does not have sufficient balance.");
     }
 
-    try {
+    const transferTransaction = await this.pocketService
+      .transferPoktBetweenAccounts(freeTierAccount, freeTierPassphrase, applicationAccount, stakeAmount);
 
-      const transferTransaction = await this.pocketService
-        .transferPoktBetweenAccounts(freeTierAccount, freeTierPassphrase, applicationAccount, stakeAmount);
+    if (this.pocketService.isTransactionSuccess(transferTransaction)) {
 
-      if (this.pocketService.isTransactionSuccess(transferTransaction)) {
+      // Wait until account has balance.
+      await this._waitUntilHasBalance(applicationAccount);
 
-        // Wait until account has balance.
-        await this._waitUntilHasBalance(applicationAccount);
+      // Stake application
+      const stakeTransaction = await this.pocketService
+        .stakeApplication(applicationAccount, application.passphrase, stakeAmount, networkChains);
 
-        // Stake application
-        const stakeTransaction = await this.pocketService
-          .stakeApplication(applicationAccount, application.passphrase, stakeAmount, networkChains);
+      if (this.pocketService.isTransactionSuccess(stakeTransaction)) {
 
-        if (this.pocketService.isTransactionSuccess(stakeTransaction)) {
+        await this.__markApplicationAsFreeTier(clientApplication, true);
 
-          await this._waitUntilIsOnNetwork(applicationAccount, StakingStatus.Staked);
-
-          await this.__markApplicationAsFreeTier(clientApplication, true);
-
-          return this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, freeTierPassphrase);
-        }
+        return this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, freeTierPassphrase);
       }
-      return false;
-    } catch (e) {
+    }
+    return false;
+  }
 
+  /**
+   * Unstake free tier application.
+   *
+   * @param {{privateKey:string, passphrase:string, accountAddress: string}} applicationData Application data.
+   *
+   * @returns {Promise<PocketApplication | boolean>} If application was unstaked return the application, if not return false.
+   * @async
+   */
+  async unstakeFreeTierApplication(applicationData) {
+    const filter = {
+      "publicPocketAccount.address": applicationData.accountAddress
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (!applicationDB) {
       return false;
     }
+
+    const accountService = new AccountService();
+    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.privateKey, applicationData.passphrase);
+
+    // Unstake application
+    const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passphrase);
+
+    if (this.pocketService.isTransactionSuccess(unstakedTransaction)) {
+      const {account: freeTierAccount} = this.pocketService.getFreeTierAccount();
+      const {stake_amount: stakeAmount} = Configurations.pocket_network.free_tier;
+
+      const transferTransaction = await this.pocketService
+        .transferPoktBetweenAccounts(applicationAccount, applicationData.passphrase, freeTierAccount, stakeAmount);
+
+      if (this.pocketService.isTransactionSuccess(transferTransaction)) {
+        const clientApplication = PocketApplication.createPocketApplication(applicationDB);
+
+        await this.__markApplicationAsFreeTier(clientApplication, false);
+
+        return clientApplication;
+      }
+    }
+    return false;
   }
 
   /**
@@ -476,19 +457,31 @@ export default class ApplicationService extends BaseService {
       throw Error("Application does not exists on dashboard");
     }
 
-    try {
+    // FIXME: Now we use free tier for account to transfer the amount to stake the app on custom tier,
+    //  we dont know from where get these.
+    const {account: freeTierAccount, passphrase: freeTierPassphrase} = await this.pocketService.getFreeTierAccount();
+
+    if (!await this.pocketService.hasBalance(freeTierAccount)) {
+      throw Error("Account does not have sufficient balance.");
+    }
+
+    const transferTransaction = await this.pocketService
+      .transferPoktBetweenAccounts(freeTierAccount, freeTierPassphrase, applicationAccount, uPoktAmount);
+
+    if (this.pocketService.isTransactionSuccess(transferTransaction)) {
+
+      // Wait until account has balance.
+      await this._waitUntilHasBalance(applicationAccount);
+
       // Stake application
       const stakeTransaction = await this.pocketService
         .stakeApplication(applicationAccount, application.passphrase, uPoktAmount, networkChains);
 
-      if (stakeTransaction.logs && stakeTransaction.logs[0].success) {
+      if (this.pocketService.isTransactionSuccess(stakeTransaction)) {
         return PocketApplication.createPocketApplication(applicationDB);
       }
-
-      return false;
-    } catch (e) {
-      return false;
     }
+    return false;
   }
 
   /**
@@ -511,20 +504,15 @@ export default class ApplicationService extends BaseService {
     }
     const accountService = new AccountService();
 
-    try {
-      const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.privateKey, applicationData.passphrase);
+    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.privateKey, applicationData.passphrase);
 
-      // Unstake application
-      const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passphrase);
+    // Unstake application
+    const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passphrase);
 
-      if (unstakedTransaction.logs && unstakedTransaction.logs[0].success) {
-        return PocketApplication.createPocketApplication(applicationDB);
-      }
-
-      return false;
-    } catch (e) {
-      return false;
+    if (this.pocketService.isTransactionSuccess(unstakedTransaction)) {
+      return PocketApplication.createPocketApplication(applicationDB);
     }
+    return false;
   }
 
   /**
@@ -602,7 +590,7 @@ export default class ApplicationService extends BaseService {
    * @param {string} applicationAccountAddress Application account address.
    * @param {string} user Owner email of application.
    *
-   * @returns {Promise<*>} The deleted application.
+   * @returns {Promise<PocketApplication>} The deleted application.
    * @async
    */
   async deleteApplication(applicationAccountAddress, user) {
@@ -611,11 +599,11 @@ export default class ApplicationService extends BaseService {
       user
     };
 
-    const application = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
     await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
 
-    return application;
+    return PocketApplication.createPocketApplication(applicationDB);
   }
 
   /**

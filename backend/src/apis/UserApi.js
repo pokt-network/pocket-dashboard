@@ -66,7 +66,9 @@ router.post("/auth/signup", async (request, response) => {
     if (result) {
       const postValidationLink = `${data.postValidationBaseLink}?d=${await userService.generateToken(data.email)}`;
 
-      await EmailService.to(data.email).sendSignUpEmail(data.username, postValidationLink);
+      await EmailService
+        .to(data.email)
+        .sendSignUpEmail(data.username, postValidationLink);
     }
 
     response.send(result);
@@ -93,7 +95,9 @@ router.post("/auth/resend_signup_email", async (request, response) => {
     if (user) {
       const postValidationLink = `${data.postValidationBaseLink}?d=${await userService.generateToken(data.email)}`;
 
-      await EmailService.to(data.email).sendSignUpEmail(user.username, postValidationLink);
+      await EmailService
+        .to(data.email)
+        .sendSignUpEmail(user.username, postValidationLink);
     }
 
     response.send(user !== undefined);
@@ -166,10 +170,10 @@ router.post("/verify-captcha", async (request, response) => {
     /** @type {{token:string}} */
     const {token} = request.body;
     const result = await userService.verifyCaptcha(token);
-    
+
     response.send(result.data);
   } catch (e) {
-    response.status(400).send(false); 
+    response.status(400).send(false);
   }
 });
 

@@ -3,13 +3,27 @@
 .rc-slider-tooltip {
 
   .rc-slider-tooltip-arrow {
-    border-top-color: #06022e !important;
+    border-top-color: transparent !important;
+  }
+
+  .rc-slider-tooltip-arrow::after {
+    content: "";
+    background-image: url(/assets/caret_down.svg);
+    background-repeat: no-repeat;
+    background-size: 30px 34px;
+    display: inline-block;
+    width: 41px;
+    height: 41px;
+    margin-left: -16px;
+    margin-top: -22px;
+    position: absolute;
   }
 
   .rc-slider-tooltip-inner {
-    background-color: $dark-blue;
-    font-size: 1.2em;
-    height: 100%;
+    background-color: $form-label-font-color;
+    font-family: $primary-font-family;
+    font-size: 14px;
+    height: 32px;
     padding-left: 35px;
     padding-right: 35px;
     padding-top: 10px;
@@ -23,6 +37,34 @@
 }
 
 #select-relays {
+
+  h1 {
+    text-transform: uppercase;
+    font-family: $secondary-font-family;
+    color: $form-label-font-color;
+    font-size: 30px;
+    font-weight: 800;
+  }
+
+  h2 {
+    text-transform: uppercase;
+    font-family: $secondary-font-family;
+    color: $title-secondary-color;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 2.11;
+    letter-spacing: -0.49px;
+  }
+
+  .subtitle {
+    font-family: $primary-font-family;
+    color: $dark-gray;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: normal;
+    margin-bottom: 0;
+  }
+
   .price-card {
 
     margin: 0px 10px 10px 0px;
@@ -46,13 +88,14 @@
 
   p.alert-relays {
     font-weight: 400 !important;
+    font-size: 18px !important;
   }
 
   .relays-calc {
     display: flex;
 
     .slider-wrapper {
-      height: 285px;
+      height: 228px;
       margin-bottom: 50px;
       display: flex;
       align-items: center;
@@ -104,7 +147,7 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
 
       p {
         color: $light-gray;
@@ -115,6 +158,7 @@
       .form-control {
         width: 40%;
         text-align: right;
+        background-color: transparent;
       }
 
     }

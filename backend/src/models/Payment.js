@@ -180,13 +180,13 @@ export class PaymentHistory {
 
     paymentHistory.paymentMethodID = paymentMethodID;
     paymentHistory.billingDetails = billingDetails;
-    paymentHistory.status = status;
+    paymentHistory.status = status ?? "pending";
 
     return paymentHistory;
   }
 
   /**
-   * @returns {{account: string, name: string, pokt: string, type: string, validatorPower?: string, maxRelay?: string}} Payment item.
+   * @returns {{account: string, name: string, type: string, validatorPower?: string, maxRelays?: string}} Payment item.
    */
   getItem() {
     return this.item;
@@ -222,12 +222,9 @@ export class PaymentHistory {
    */
   isApplicationPaymentItem(throwError = false) {
     /** @type {string} */
-    const type = this.item.type;
+    const maxRelays = this.item.maxRelays;
 
-    /** @type {string} */
-    const maxRelay = this.item.maxRelay;
-
-    const isApplication = type.toLowerCase() === "application" && maxRelay !== undefined;
+    const isApplication = maxRelays !== undefined;
 
     if (throwError && !isApplication) {
       throw Error("The payment item is not an application");

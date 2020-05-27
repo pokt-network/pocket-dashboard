@@ -75,10 +75,6 @@ export class Payment {
       if (!paymentData.item.name) {
         throw Error("Item name is required");
       }
-
-      if (!paymentData.item.pokt) {
-        throw Error("Item pokt is required");
-      }
     }
 
     return true;

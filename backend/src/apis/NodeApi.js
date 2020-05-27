@@ -3,11 +3,13 @@ import NodeService from "../services/NodeService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
+import ApplicationCheckoutService from "../services/ApplicationCheckoutService";
 
 const router = express.Router();
 
 const nodeService = new NodeService();
 const paymentService = new PaymentService();
+const checkoutService = ApplicationCheckoutService.getInstance();
 
 /**
  * Create new node.
@@ -28,7 +30,9 @@ router.post("", async (request, response) => {
       link: `${data.nodeBaseLink}/${node.privateNodeData.address}`
     };
 
-    await EmailService.to(data.node.contactEmail).sendCreateOrImportNodeEmail(emailAction, data.node.user, nodeEmailData);
+    await EmailService
+      .to(data.node.contactEmail)
+      .sendCreateOrImportNodeEmail(emailAction, data.node.contactEmail, nodeEmailData);
 
     response.send(node);
   } catch (e) {
@@ -101,7 +105,9 @@ router.post("/:nodeAccountAddress", async (request, response) => {
         nodesLink: bodyData.nodesLink
       };
 
-      await EmailService.to(bodyData.user).sendNodeDeletedEmail(bodyData.user, nodeEmailData);
+      await EmailService
+        .to(node.contactEmail)
+        .sendNodeDeletedEmail(node.contactEmail, nodeEmailData);
     }
 
     response.send(node !== undefined);
@@ -203,7 +209,9 @@ router.post("/stake", async (request, response) => {
 
       if (paymentHistory.isNodePaymentItem(true)) {
         const item = paymentHistory.getItem();
-        const node = await nodeService.stakeNode(data.node, item.pokt);
+        const poktToStake = checkoutService.getPoktToStake(paymentHistory.amount);
+
+        const node = await nodeService.stakeNode(data.node, poktToStake.toString());
 
         if (node) {
           const nodeEmailData = {
@@ -214,10 +222,12 @@ router.post("/stake", async (request, response) => {
           const paymentEmailData = {
             amountPaid: paymentHistory.amount,
             validatorPowerAmount: item.validatorPower,
-            poktStaked: item.pokt
+            poktStaked: poktToStake.toString()
           };
 
-          await EmailService.to(node.user).sendStakeNodeEmail(node.user, nodeEmailData, paymentEmailData);
+          await EmailService
+            .to(node.contactEmail)
+            .sendStakeNodeEmail(node.contactEmail, nodeEmailData, paymentEmailData);
 
           response.send(true);
         } else {
@@ -251,7 +261,9 @@ router.post("/unstake", async (request, response) => {
         link: data.nodeLink
       };
 
-      await EmailService.to(node.user).sendUnstakeNodeEmail(node.user, nodeEmailData);
+      await EmailService
+        .to(node.contactEmail)
+        .sendUnstakeNodeEmail(node.contactEmail, nodeEmailData);
 
       response.send(true);
     } else {
@@ -283,7 +295,9 @@ router.post("/unjail", async (request, response) => {
         link: data.nodeLink
       };
 
-      await EmailService.to(node.user).sendNodeUnJailedEmail(node.user, nodeEmailData);
+      await EmailService
+        .to(node.contactEmail)
+        .sendNodeUnJailedEmail(node.contactEmail, nodeEmailData);
 
       response.send(true);
     } else {

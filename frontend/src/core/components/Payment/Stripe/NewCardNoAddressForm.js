@@ -15,6 +15,7 @@ class NewCardNoAddressForm extends Component {
     super(props, context);
 
     this.state = {
+      agreeDefault: "",
       data: {
         cardHolderName: "",
         billingAddressLine1: "",
@@ -70,8 +71,9 @@ class NewCardNoAddressForm extends Component {
   }
 
   render() {
+    const {agreeDefault} = this.state;
     const {cardHolderName} = this.state.data;
-    const {formTitle, actionButtonName} = this.props;
+    const {formTitle, actionButtonName, setDefaultHandler} = this.props;
 
     return (
       <PaymentContainer>
@@ -84,7 +86,7 @@ class NewCardNoAddressForm extends Component {
 
               <Form onSubmit={(e) => this.handlePayMethod(e, elements, stripe)}>
                 <Row>
-                  <Col sm="6" md="6" lg="6">
+                  <Col sm="4" md="4" lg="4">
                     <Form.Group>
                       <Form.Label>Name on card*</Form.Label>
                       <Form.Control
@@ -96,28 +98,46 @@ class NewCardNoAddressForm extends Component {
                       />
                     </Form.Group>
                   </Col>
-                  <Col sm="6" md="6" lg="6">
+                  <Col sm="4" md="4" lg="4">
                     <Form.Group>
                       <Form.Label>Card number*</Form.Label>
                       <CardNumberInput />
                     </Form.Group>
                   </Col>
-                </Row>
-
-                <Row>
-                  <Col sm="6" md="6" lg="6">
+                  <Col sm="2" md="2" lg="2">
                     <Form.Group>
-                      <Form.Label>Expiration Date*</Form.Label>
+                      <Form.Label className="text-nowrap">
+                        Expiration Date*
+                      </Form.Label>
                       <CardExpirationDateInput />
                     </Form.Group>
                   </Col>
-                  <Col sm="6" md="6" lg="6">
+                  <Col sm="2" md="2" lg="2">
                     <Form.Group>
                       <Form.Label>CVC/CVC2*</Form.Label>
                       <CardCVCNumberInput />
                     </Form.Group>
                   </Col>
                 </Row>
+                {setDefaultHandler && (
+                  <div>
+                    <Form.Check
+                      checked={agreeDefault}
+                      onChange={() => {
+                        this.setState({agreeDefault: !agreeDefault});
+                        setDefaultHandler(!agreeDefault);
+                      }}
+                      id="terms-checkbox"
+                      type="checkbox"
+                      className="mb-3"
+                      label={
+                        <span className="font-weight-light">
+                          Set as default payment method
+                        </span>
+                      }
+                    />
+                  </div>
+                )}
                 <div className="submit ml-3 mt-2">
                   <Button variant="dark" size="sm" type="submit">
                     {actionButtonName}
@@ -135,6 +155,7 @@ class NewCardNoAddressForm extends Component {
 // noinspection JSUnusedGlobalSymbols,JSUnusedLocalSymbols
 NewCardNoAddressForm.defaultProps = {
   actionButtonName: "Save",
+  setDefault: undefined,
   formActionHandler: (event, formData, stripe) => {},
 };
 
@@ -142,6 +163,7 @@ NewCardNoAddressForm.propTypes = {
   formTitle: PropTypes.string,
   actionButtonName: PropTypes.string,
   formActionHandler: PropTypes.func,
+  setDefaultHandler: PropTypes.func,
 };
 
 export default NewCardNoAddressForm;

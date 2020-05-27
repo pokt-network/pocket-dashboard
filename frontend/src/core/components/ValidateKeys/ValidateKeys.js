@@ -100,7 +100,7 @@ class ValidateKeys extends Component {
           show: true,
           message: data.message
             ? data.message
-            : "Invalid public key / passphrase",
+            : "Invalid private key / passphrase",
         },
       });
     }

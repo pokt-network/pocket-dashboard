@@ -21,6 +21,8 @@ export const ITEM_TYPES = {
   NODE: "node",
 };
 
+export const POKT_UNSTAKING_DAYS = 21;
+
 export const DEFAULT_POKT_DENOMINATION_BASE = 6;
 
 export const APPLICATIONS_LIMIT = 10;
@@ -121,8 +123,6 @@ export const FILTER_OPTIONS = [
   {text: "Unstaking", dataField: "unstaking"},
   {text: "Unstaked", dataField: "unstaked"},
 ];
-
-export const MAX_RELAYS = 20000;
 
 export const VALIDATION_MESSAGES = {
   REQUIRED: "This field is required.",

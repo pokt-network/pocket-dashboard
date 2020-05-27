@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import "./Checkout.scss";
 import {Button, Col, Row} from "react-bootstrap";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
-import Invoice from "./Invoice";
+import Invoice from "../../../core/components/Payment/Invoice";
 import {formatCurrency} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import moment from "moment";
@@ -14,6 +14,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import Loader from "../../../core/components/Loader";
+import PocketUserService from "../../../core/services/PocketUserService";
 
 class Checkout extends Component {
   constructor(props, context) {
@@ -28,8 +29,9 @@ class Checkout extends Component {
         date: "",
         card: "",
       },
-      detail: [],
+      details: [],
       total: 0,
+      currentAccountBalance: 0,
       address: "",
       unauthorized: false,
     };
@@ -42,25 +44,25 @@ class Checkout extends Component {
       return;
     }
 
-    const {type, paymentId, paymentMethod, detail} = this.props.location.state;
+    const {type, paymentId, paymentMethod, details, total, currentAccountBalance} = this.props.location.state;
     const address =
       type === ITEM_TYPES.APPLICATION
         ? ApplicationService.getApplicationInfo().address
         : NodeService.getNodeInfo().address;
+
     const {
       paymentID: id,
       createdDate: date,
-      item,
-      amount: total,
     } = await PaymentService.getPaymentDetail(paymentId);
 
-    const {type: brand, digits} = paymentMethod.cardData;
+    const {brand, lastDigits} = paymentMethod;
+    const userName = PocketUserService.getUserInfo().name;
 
     const invoice = {
-      id,
+      id: id.replace("pi_", "").toLowerCase(),
       date: moment(date).format("DD MM YYYY"),
-      owner: item.account,
-      card: `${brand.charAt(0).toUpperCase() + brand.slice(1)} ${digits}`,
+      owner: userName,
+      card: `${brand.charAt(0).toUpperCase() + brand.slice(1)} ${lastDigits}`,
     };
 
     this.setState({
@@ -68,20 +70,23 @@ class Checkout extends Component {
       type,
       address,
       invoice,
+      details,
       total,
-      detail,
+      currentAccountBalance,
       paymentMethod,
     });
   }
+
   render() {
     const {owner, id, date, card} = this.state.invoice;
     const {
-      detail,
-      total: totalCost,
+      details,
+      total,
       type,
       address,
       loading,
       unauthorized,
+      currentAccountBalance
     } = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
@@ -93,21 +98,23 @@ class Checkout extends Component {
     ];
 
     const items = [
-      ...detail,
-      // TODO: Get balance
-      {text: "Balance", value: 1500},
+      ...details,
+      {text: "Current balance", value: currentAccountBalance, format: true}
     ].map((it) => {
+      if (!it.format) {
+        return it;
+      }
       return {text: it.text, value: formatCurrency(it.value)};
     });
 
-    const total = formatCurrency(totalCost);
+    const totalAmount = formatCurrency(total);
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     if (unauthorized) {
-      return <UnauthorizedAlert />;
+      return <UnauthorizedAlert/>;
     }
 
     const detailButton = (
@@ -121,20 +128,15 @@ class Checkout extends Component {
           return url.replace(":address", address);
         }}
       >
-        <Button
-          variant="primary"
-          className="mt-3  pl-4 pr-4 float-right font-weight-light"
-        >
-          Go to {isApp ? "app" : "nodes"} detail
+        <Button variant="primary" className="mt-3 float-right pr-4 pl-4 cta">
+          <span>Go to {isApp ? "app" : "node"} detail</span>
         </Button>
       </Link>
     );
-
-    /* eslint-disable jsx-a11y/alt-text */
     const icons = [
-      <img key={0} src="/assets/cart.svg" className="step-icon" />,
-      <img key={1} src="/assets/arrows.svg" className="step-icon" />,
-      <img key={2} src="/assets/check.svg" className="step-icon" />,
+      <img key={0} src={"/assets/cart.svg"} className="step-icon" alt="step-icon"/>,
+      <img key={1} src={"/assets/arrows.svg"} className="step-icon" alt="step-icon"/>,
+      <img key={2} src={"/assets/check.svg"} className="step-icon" alt="step-icon"/>,
     ];
 
     if (unauthorized) {
@@ -142,39 +144,44 @@ class Checkout extends Component {
 
     return (
       <div id="nodes-checkout" className="mb-5">
+        <Row>
+          <Col className="header">
+            {detailButton}
+            <h1>Enjoy your purchase</h1>
+            <p>Please wait a few minutes until the process is completed</p>
+          </Col>
+        </Row>
         <Row className="segment mb-3">
           <Col className="title-page">
-            {detailButton}
-            <h2>Enjoy your purchase</h2>
-            <p>Please wait a few minutes until the process is completed</p>
             <AppSteps
               icons={icons}
               current={2}
               steps={[
                 "Purchase",
-                "Encode and sign stake transaction",
+                <>
+                  Encode and sign
+                  <br /> stake transaction
+                </>,
                 "throughput available",
               ]}
             />
           </Col>
         </Row>
-        <div className="mt-4 mb-4 title-page">
-          <h3>Your invoice</h3>
+        <div className="mt-4 ml-4 mb-4 title-page">
+          <h2>Your invoice</h2>
         </div>
         <Row className="segment mb-2">
           <Invoice
             title={`Invoice ${id}`}
             information={information}
             items={items}
-            total={total}
+            total={totalAmount}
           />
         </Row>
-        <p className="mt-4 ml-3 font-weight-light">
+        <p className="mt-4 ml-3 print">
           {/* TODO: Add print functionality */}
-          <Button variant="link" className="print font-weight-light">
-            Print
-          </Button>{" "}
-          your invoice
+          <img src={"/assets/printer.svg"} className="icon" alt="print-icon"/>{" "}
+          <span className="link">Print</span> your invoice
         </p>
       </div>
     );

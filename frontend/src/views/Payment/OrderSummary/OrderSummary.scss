@@ -32,6 +32,16 @@
     color: $primary-color;
   }
 
+  .card-form-title {
+    font-family: $primary-font-family;
+    color: $dark-gray;
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 2.38;
+    letter-spacing: -0.44px;
+    margin-bottom: 0;
+  }
+
   .agree {
     font-family: $primary-font-family;
     font-size: 14px;

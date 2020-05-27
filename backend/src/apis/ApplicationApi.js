@@ -3,10 +3,12 @@ import ApplicationService from "../services/ApplicationService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
+import ApplicationCheckoutService from "../services/ApplicationCheckoutService";
 
 const router = express.Router();
 
 const applicationService = new ApplicationService();
+const applicationCheckoutService = ApplicationCheckoutService.getInstance();
 const paymentService = new PaymentService();
 
 /**
@@ -104,7 +106,9 @@ router.post("/:applicationAccountAddress", async (request, response) => {
         appsLink: bodyData.appsLink
       };
 
-      await EmailService.to(bodyData.user).sendAppDeletedEmail(bodyData.user, applicationEmailData);
+      await EmailService
+        .to(application.contactEmail)
+        .sendAppDeletedEmail(application.contactEmail, applicationEmailData);
     }
 
     response.send(application !== undefined);
@@ -255,23 +259,12 @@ router.post("/freetier/stake", async (request, response) => {
 router.post("/freetier/unstake", async (request, response) => {
   try {
 
-    /** @type {{application: {privateKey:string, passphrase:string, accountAddress: string}, user: string, appLink: string}} */
+    /** @type {{application: {privateKey:string, passphrase:string, accountAddress: string}}} */
     const data = request.body;
 
     const application = await applicationService.unstakeFreeTierApplication(data.application);
 
-    if (application) {
-      const applicationEmailData = {
-        name: application.name,
-        link: data.appLink
-      };
-
-      await EmailService.to(data.user).sendUnstakeAppEmail(data.user, applicationEmailData);
-
-      response.send(true);
-    } else {
-      response.send(false);
-    }
+    response.send(application !== undefined);
   } catch (e) {
     const error = {
       message: e.toString()
@@ -284,7 +277,7 @@ router.post("/freetier/unstake", async (request, response) => {
 /**
  * Stake an application.
  */
-router.post("/stake", async (request, response) => {
+router.post("/custom/stake", async (request, response) => {
   try {
 
     /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[], payment:{id: string}, applicationLink: string}} */
@@ -295,7 +288,10 @@ router.post("/stake", async (request, response) => {
 
       if (paymentHistory.isApplicationPaymentItem(true)) {
         const item = paymentHistory.getItem();
-        const application = await applicationService.stakeApplication(data.application, data.networkChains, item.pokt);
+        const amountToSpent = applicationCheckoutService.getMoneyToSpent(parseInt(item.maxRelays));
+        const poktToStake = applicationCheckoutService.getPoktToStake(amountToSpent);
+
+        const application = await applicationService.stakeApplication(data.application, data.networkChains, poktToStake.toString());
 
         if (application) {
           const applicationEmailData = {
@@ -305,17 +301,26 @@ router.post("/stake", async (request, response) => {
 
           const paymentEmailData = {
             amountPaid: paymentHistory.amount,
-            maxRelayPerDayAmount: item.maxRelay,
-            poktStaked: item.pokt
+            maxRelayPerDayAmount: item.maxRelays,
+            poktStaked: poktToStake.toString()
           };
 
-          await EmailService.to(application.user).sendStakeAppEmail(application.user, applicationEmailData, paymentEmailData);
+          await EmailService
+            .to(application.contactEmail)
+            .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
 
           response.send(true);
         } else {
-          response.send(false);
+          // noinspection ExceptionCaughtLocallyJS
+          throw new Error("Error has occurred trying to stake application.");
         }
+      } else {
+        // noinspection ExceptionCaughtLocallyJS
+        throw new Error("The payment made, is not a valid application payment.");
       }
+    } else {
+      // noinspection ExceptionCaughtLocallyJS
+      throw new Error("The payment id used was not succeed.");
     }
   } catch (e) {
     const error = {
@@ -329,7 +334,7 @@ router.post("/stake", async (request, response) => {
 /**
  * Unstake an application.
  */
-router.post("/unstake", async (request, response) => {
+router.post("/custom/unstake", async (request, response) => {
   try {
 
     /** @type {{application:{privateKey:string, passphrase:string, accountAddress: string}, applicationLink: string}} */
@@ -343,7 +348,9 @@ router.post("/unstake", async (request, response) => {
         link: data.applicationLink
       };
 
-      await EmailService.to(application.user).sendUnstakeAppEmail(application.user, applicationEmailData);
+      await EmailService
+        .to(application.contactEmail)
+        .sendUnstakeAppEmail(application.contactEmail, applicationEmailData);
 
       response.send(true);
     } else {
