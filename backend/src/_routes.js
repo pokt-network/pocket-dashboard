@@ -6,7 +6,7 @@ import Payment from "./apis/PaymentApi";
 import Application from "./apis/ApplicationApi";
 import Node from "./apis/NodeApi";
 import Network from "./apis/NetworkApi";
-import Checkout from "./apis/CheckoutApis";
+import Checkout from "./apis/CheckoutApi";
 
 /**
  * @param {object} expressApp Express application object.
