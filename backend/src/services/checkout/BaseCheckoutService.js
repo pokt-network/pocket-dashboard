@@ -1,7 +1,5 @@
-import {Configurations} from "../_configuration";
-import {POKT_DENOMINATIONS} from "./PocketService";
-import ApplicationCheckoutService from "./ApplicationCheckoutService";
-import BaseService from "./BaseService";
+import {POKT_DENOMINATIONS} from "../PocketService";
+import BaseService from "../BaseService";
 import {CoinDenom} from "@pokt-network/pocket-js";
 
 
@@ -17,6 +15,9 @@ export class BaseCheckoutService extends BaseService {
    * @param {object} options.relays_per_day Relays per day data.
    * @param {number} options.relays_per_day.min Min of Relays per day.
    * @param {number} options.relays_per_day.max Max of Relays per day.
+   * @param {object} options.validator_power Validator power data.
+   * @param {number} options.validator_power.min Min of Validator power.
+   * @param {number} options.validator_power.max Max of Validator power.
    * @param {number} options.relays_per_day.base_relay_per_pokt Base Relays per POKT
    * @param {number} options.stability Stability
    * @param {number} options.sessions_per_day Sessions per day.
@@ -28,21 +29,6 @@ export class BaseCheckoutService extends BaseService {
 
     this.options = options;
     this.poktMarketPrice = poktMarketPrice;
-  }
-
-  /**
-   * Get instance of CheckoutService.
-   *
-   * @param {object} [options] Options used by service.
-   * @param {number} [poktMarketPrice] Pokt market price.
-   *
-   * @returns {ApplicationCheckoutService} An instance.
-   */
-  static getInstance(options = undefined, poktMarketPrice = undefined) {
-    const serviceOptions = options ?? Configurations.pocket_network.checkout;
-    const servicePoktMarketPrice = poktMarketPrice ?? Configurations.pocket_network.pokt_market_price;
-
-    return new ApplicationCheckoutService(serviceOptions, servicePoktMarketPrice);
   }
 
   /**
