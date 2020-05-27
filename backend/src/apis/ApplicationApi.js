@@ -310,18 +310,11 @@ router.post("/custom/stake", async (request, response) => {
             .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
 
           response.send(true);
-        } else {
-          // noinspection ExceptionCaughtLocallyJS
-          throw new Error("Error has occurred trying to stake application.");
         }
-      } else {
-        // noinspection ExceptionCaughtLocallyJS
-        throw new Error("The payment made, is not a valid application payment.");
       }
-    } else {
-      // noinspection ExceptionCaughtLocallyJS
-      throw new Error("The payment id used was not succeed.");
     }
+    // noinspection ExceptionCaughtLocallyJS
+    throw new Error("Error has occurred trying to stake application.");
   } catch (e) {
     const error = {
       message: e.toString()

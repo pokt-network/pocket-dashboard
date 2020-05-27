@@ -3,13 +3,13 @@ import NodeService from "../services/NodeService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
-import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
+import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
 
 const router = express.Router();
 
 const nodeService = new NodeService();
 const paymentService = new PaymentService();
-const checkoutService = ApplicationCheckoutService.getInstance();
+const nodeCheckoutService = NodeCheckoutService.getInstance();
 
 /**
  * Create new node.
@@ -221,7 +221,7 @@ router.post("/user/all", async (request, response) => {
 router.post("/stake", async (request, response) => {
   try {
 
-    /** @type {{node: {privateKey: string, passPhrase: string, networkChains: string[], serviceURL: string}, payment:{id: string}, nodeLink: string}} */
+    /** @type {{node: {privateKey: string, passphrase: string, serviceURL: string}, networkChains: string[], payment:{id: string}, nodeLink: string}} */
     const data = request.body;
     const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
@@ -229,9 +229,10 @@ router.post("/stake", async (request, response) => {
 
       if (paymentHistory.isNodePaymentItem(true)) {
         const item = paymentHistory.getItem();
-        const poktToStake = checkoutService.getPoktToStake(paymentHistory.amount);
+        const amountToSpent = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
+        const poktToStake = nodeCheckoutService.getPoktToStake(amountToSpent);
 
-        const node = await nodeService.stakeNode(data.node, poktToStake.toString());
+        const node = await nodeService.stakeNode(data.node, data.networkChains, poktToStake.toString());
 
         if (node) {
           const nodeEmailData = {
@@ -250,11 +251,11 @@ router.post("/stake", async (request, response) => {
             .sendStakeNodeEmail(node.contactEmail, nodeEmailData, paymentEmailData);
 
           response.send(true);
-        } else {
-          response.send(false);
         }
       }
     }
+    // noinspection ExceptionCaughtLocallyJS
+    throw new Error("Error has occurred trying to stake node.");
   } catch (e) {
     const error = {
       message: e.toString()
@@ -270,7 +271,7 @@ router.post("/stake", async (request, response) => {
 router.post("/unstake", async (request, response) => {
   try {
 
-    /** @type {{node:{privateKey:string, passPhrase:string, accountAddress: string}, nodeLink: string}} */
+    /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */
     const data = request.body;
 
     const node = await nodeService.unstakeNode(data.node);
@@ -304,7 +305,7 @@ router.post("/unstake", async (request, response) => {
 router.post("/unjail", async (request, response) => {
   try {
 
-    /** @type {{node:{privateKey:string, passPhrase:string, accountAddress: string}, nodeLink: string}} */
+    /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */
     const data = request.body;
 
     const node = await nodeService.unJailNode(data.node);
