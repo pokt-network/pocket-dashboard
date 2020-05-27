@@ -169,3 +169,5 @@ export const formatHoursAndMinutes = (time, daysFromTime) => {
 
   return `${days}:${hours}:${minutes}`;
 };
+
+export const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1); 
