@@ -21,10 +21,6 @@
             font-size: 8px;
           }
         }
-
-        &:focus {
-          box-shadow: none;
-        }
       }
 
       button::after {
@@ -57,8 +53,6 @@
   }
 
   .network-status-tables {
-    margin-top: 50px;
-
     .network-status-table {
       padding: 0;
     }

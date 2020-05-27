@@ -52,6 +52,8 @@ class Dashboard extends Component {
     const chains = await NetworkService.getAvailableNetworkChains();
     const alert = UserService.getShowWelcomeMessage();
 
+    console.log("REQUESTS", userEmail, userApps, alert);
+
     this.setState({alert, userApps, chains, loading: false});
   }
 
@@ -82,8 +84,8 @@ class Dashboard extends Component {
             }}
             dismissible
           >
-            <h4 className="font-weight-bold ml-3 mt-2 mb-4">
-              WELCOME BACK {UserService.getUserInfo().name}!
+            <h4 className="font-weight-bold">
+              WELCOME BACK {UserService.getUserInfo().name.toUpperCase()}!
             </h4>
           </Alert>
         )}
@@ -201,7 +203,7 @@ class Dashboard extends Component {
               </Segment>
             </Col>
           </Row>
-          <Row className="mt-5 mb-4">
+          <Row>
             <Col
               sm="12"
               className={`network-status-table ${

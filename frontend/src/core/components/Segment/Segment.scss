@@ -1,6 +1,8 @@
 @import "../../../scss/Core.scss";
 
 .app-segment {
+  margin-top: 40px;
+
   .head {
     display: flex;
     justify-content: space-between;
@@ -28,7 +30,6 @@
 
   .body {
     margin-top: 5px;
-    margin-bottom: 10px;
   }
 
 
