@@ -8,6 +8,8 @@
   }
 
   .stats {
+    margin-top: 2.5rem;
+
     .info-card-column {
       padding: 0 9px;
       &:first-child {
@@ -21,12 +23,17 @@
   }
 
   .cta-buttons {
-    margin-bottom: 20px;
-
     .create-app-button {
       background-color: $dark-gray;
       border-color: $dark-gray;
       width: 140px;
+
+      &.btn-primary {
+        &:active {
+          background-color: $dark-gray;
+          border-color: $dark-gray;
+        }
+      }
     }
 
     .import-app-button {

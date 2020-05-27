@@ -185,7 +185,7 @@ class AppsMain extends Main {
           <Col sm="8" className="page-title">
             <h1>General Apps Information</h1>
           </Col>
-          <Col sm="4" className="d-flex justify-content-end cta-buttons">
+          <Col sm="4" className="d-flex align-items-center justify-content-end cta-buttons">
             <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
               <Button className="ml-4 mr-3 create-app-button">
                 <span>Create New App</span>
