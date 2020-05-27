@@ -3,7 +3,7 @@ import NodeService from "../services/NodeService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
-import ApplicationCheckoutService from "../services/ApplicationCheckoutService";
+import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
 
 const router = express.Router();
 

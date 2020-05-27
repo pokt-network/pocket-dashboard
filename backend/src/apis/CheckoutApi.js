@@ -1,5 +1,5 @@
 import express from "express";
-import ApplicationCheckoutService from "../services/ApplicationCheckoutService";
+import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
 import {getQueryOption} from "./_helpers";
 
 const router = express.Router();
