@@ -41,5 +41,6 @@
 
   &.bordered .body {
     box-shadow: $default-box-shadow;
+    border-radius: $panel-radius;
   }
 }

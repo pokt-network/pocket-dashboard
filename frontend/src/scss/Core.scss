@@ -126,6 +126,20 @@ form {
   }
 }
 
+.cta-buttons {
+  button {
+    display: flex;
+    justify-content: center;
+    padding: 0 !important;
+
+    span {
+      display: flex;
+      align-items: center;
+      line-height: 30px;
+    }
+  }
+}
+
 .btn-primary,
 .btn-outline-primary {
   border-color: $primary-color;
@@ -133,6 +147,10 @@ form {
 
 .btn-primary {
   background-color: $primary-color;
+
+  &:focus {
+    box-shadow: none;
+  }
 }
 
 .btn-link {
@@ -154,6 +172,10 @@ form {
 .btn-primary:not(:disabled):not(.disabled):active {
   background-color: $primary-color-darker;
   border-color: $primary-color-darker;
+
+  &:focus {
+    box-shadow: none;
+  }
 }
 
 .btn-primary.disabled,
@@ -266,10 +288,6 @@ input {
   button {
     min-width: unset;
     padding: 0.2em 1.25rem;
-
-    &:focus {
-      box-shadow: none;
-    }
   }
 
   button:hover {
@@ -331,6 +349,10 @@ button {
   span {
     font-family: $primary-font-family;
     font-size: 12px;
+  }
+
+  &:focus {
+    box-shadow: none;
   }
 
   &:focus {
@@ -471,7 +493,6 @@ button {
 .segment-table-empty {
   .body {
     height: 60px;
-    overflow-y: hidden;
   }
 }
 
@@ -507,6 +528,7 @@ button {
   img {
     width: 132px;
     height: 105px;
+    margin-bottom: 17px;
   }
 
   p {
@@ -652,8 +674,7 @@ textarea.form-control::placeholder {
 }
 
 input[type="checkbox"] // input[type="radio"]
-
-  {
+{
   position: relative;
   width: 1.4em;
   height: 1.4em;
@@ -669,7 +690,7 @@ input[type="checkbox"] // input[type="radio"]
   transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
 
   &::before {
-    content: '';
+    content: "";
     height: 70%;
     width: 45%;
     border-style: solid;
@@ -691,7 +712,6 @@ input[type="checkbox"] // input[type="radio"]
     ~ label::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
-
   }
 }
 
@@ -736,7 +756,7 @@ input[type="radio"] {
     font-weight: 300;
     color: #282828;
 
-    ~label {
+    ~ label {
       margin-top: 0px;
       margin-left: 3px;
       height: 25%;
