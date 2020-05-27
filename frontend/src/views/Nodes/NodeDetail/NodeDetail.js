@@ -46,6 +46,7 @@ class NodeDetail extends Component {
   async deleteNode() {
     const {address} = this.state.pocketNode.publicPocketAccount;
 
+    // FIXME: The firm of this method has been changed.
     const success = await NodeService.deleteNodeFromDashboard(address);
 
     if (success) {

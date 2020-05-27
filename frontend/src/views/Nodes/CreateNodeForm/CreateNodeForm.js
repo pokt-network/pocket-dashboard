@@ -43,6 +43,7 @@ class CreateNodeForm extends CreateForm {
       imported = false;
     }
 
+    // FIXME: The firm of this method has been changed.
     const {success, data} = imported
       ? await NodeService.createNode(nodeData, privateKey)
       : await NodeService.createNode(nodeData);
