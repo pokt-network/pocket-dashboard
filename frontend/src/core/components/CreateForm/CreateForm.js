@@ -9,6 +9,8 @@ class CreateForm extends Component {
     this.handleDrop = this.handleDrop.bind(this);
 
     this.state = {
+      redirectPath: "",
+      redirectParams: {},
       data: {
         name: "",
         owner: "",
@@ -20,8 +22,8 @@ class CreateForm extends Component {
       created: false,
       error: {
         show: false,
-        message: ""
-      }
+        message: "",
+      },
     };
   }
 

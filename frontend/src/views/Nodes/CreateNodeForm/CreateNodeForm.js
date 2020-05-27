@@ -2,7 +2,6 @@ import React from "react";
 import {Redirect, Link} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
-import {BOND_STATUS_STR} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
 import {generateIcon, nodeFormSchema, scrollToId} from "../../../_helpers";
@@ -10,13 +9,13 @@ import UserService from "../../../core/services/PocketUserService";
 import NodeService from "../../../core/services/PocketNodeService";
 import {Formik} from "formik";
 import AppAlert from "../../../core/components/AppAlert";
+import {STAKE_STATUS} from "../../../_constants";
 
 class CreateNodeForm extends CreateForm {
   constructor(props, context) {
     super(props, context);
 
     this.handleCreate = this.handleCreate.bind(this);
-    this.createNode = this.createNode.bind(this);
     this.state = {
       ...this.state,
       data: {
@@ -26,57 +25,58 @@ class CreateNodeForm extends CreateForm {
       },
       nodeData: {},
       agreeTerms: false,
+      imported: false,
     };
   }
 
-  async createNode(nodeData) {
+  componentDidMount() {
     let imported;
-    let stakeStatus;
-    let address;
-    let privateKey;
 
-    if (this.props.location.state !== undefined) {
-      stakeStatus = this.props.location.state.stakeStatus;
-      address = this.props.location.state.address;
-      privateKey = this.props.location.state.privateKey;
+    if (this.props.location.state) {
       imported = this.props.location.state.imported;
-    } else {
-      imported = false;
+      this.setState({imported});
     }
+  }
 
-    // FIXME: The firm of this method has been changed.
-    const {success, data} = imported
-      ? await NodeService.createNode(nodeData, privateKey)
-      : await NodeService.createNode(nodeData);
-    const unstakedNode =
-      !imported ||
-      (imported &&
-        (stakeStatus === BOND_STATUS_STR.unbonded ||
-          stakeStatus === BOND_STATUS_STR.unbonding));
+  async handleCreateImported(nodeID) {
+    const {address, privateKey, passphrase} = NodeService.getNodeInfo();
+    const data = this.state.data;
 
-    if (unstakedNode) {
-      this.setState({
-        redirectPath: _getDashboardPath(DASHBOARD_PATHS.nodeChainList),
-      });
+    const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
+    const nodeDetail = url.replace(":address", address);
+
+    const nodeBaseLink = `${window.location.origin}${nodeDetail}`;
+
+    const {success, data: importData} = await NodeService.createNodeAccount(
+      nodeID, passphrase, nodeBaseLink, privateKey
+    );
+
+    if (success) {
+      const {status} = importData.networkData;
+
+      if (status === STAKE_STATUS.Staked) {
+        this.props.history.push(nodeDetail);
+      } else {
+        NodeService.saveNodeInfoInCache({
+          data: data,
+        });
+        this.props.history.replace(
+          _getDashboardPath(DASHBOARD_PATHS.nodeChainList)
+        );
+      }
     } else {
-      const url = _getDashboardPath(DASHBOARD_PATHS.nodeChainList);
-
-      const detail = url.replace(":address", address);
-
-      this.setState({
-        redirectPath: detail,
-      });
+      this.setState({error: {show: true, message: data}});
+      scrollToId("alert");
     }
-    return {success, data};
   }
 
   async handleCreate() {
-    // TODO: Change creation process like apps.
     const {name, contactEmail, description, operator} = this.state.data;
+    const {imported} = this.state;
     const icon = this.state.icon ? this.state.icon : generateIcon();
     const user = UserService.getUserInfo().email;
 
-    const {success, data} = await this.createNode({
+    const {success, data} = await NodeService.createNode({
       name,
       operator,
       contactEmail,
@@ -86,11 +86,17 @@ class CreateNodeForm extends CreateForm {
     });
 
     if (success) {
-      const {privateNodeData} = data;
-      const {address, privateKey} = privateNodeData;
+      if (imported) {
+        this.handleCreateImported(data);
+        return;
+      } else {
+        NodeService.saveNodeInfoInCache({nodeID: data, data: {name}});
+      }
 
-      NodeService.saveNodeInfoInCache({address, privateKey});
-      this.setState({created: true});
+      this.setState({
+        created: true,
+        redirectPath: _getDashboardPath(DASHBOARD_PATHS.nodePassphrase),
+      });
     } else {
       this.setState({error: {show: true, message: data.message}});
       scrollToId("alert");
@@ -98,13 +104,13 @@ class CreateNodeForm extends CreateForm {
   }
 
   render() {
-    const {created, agreeTerms, error} = this.state;
+    const {created, agreeTerms, error, redirectPath} = this.state;
 
     if (created) {
       return (
         <Redirect
           to={{
-            pathname: _getDashboardPath(DASHBOARD_PATHS.nodeChainList),
+            pathname: redirectPath,
           }}
         />
       );

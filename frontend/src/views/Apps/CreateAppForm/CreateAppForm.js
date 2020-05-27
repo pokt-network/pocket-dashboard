@@ -21,8 +21,6 @@ class CreateAppForm extends CreateForm {
     this.state = {
       ...this.state,
       applicationData: {},
-      redirectPath: "",
-      redirectParams: {},
       agreeTerms: false,
       imported: false,
     };
@@ -114,12 +112,11 @@ class CreateAppForm extends CreateForm {
           applicationID: data,
           data: {name},
         });
+        this.setState({
+          created: true,
+          redirectPath: _getDashboardPath(DASHBOARD_PATHS.appPassphrase),
+        });
       }
-
-      this.setState({
-        created: true,
-        redirectPath: _getDashboardPath(DASHBOARD_PATHS.appPassphrase),
-      });
     } else {
       this.setState({error: {show: true, message: data}});
       scrollToId("alert");
