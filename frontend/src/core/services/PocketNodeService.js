@@ -13,16 +13,18 @@ class PocketNodeService extends PocketBaseService {
    * Remove node data from local storage.
    */
   removeNodeInfoFromCache() {
+    this.ls.remove("node_id");
     this.ls.remove("node_address");
     this.ls.remove("node_private_key");
     this.ls.remove("node_passphrase");
-    this.ls.remove("node_id");
     this.ls.remove("node_chains");
     this.ls.remove("node_data");
+    this.ls.remove("node_imported");
+    this.ls.remove("node_service_url");
   }
 
   /**
-   * Get node information from localstorage
+   * Get node information from local storage
    */
   getNodeInfo() {
     return {
@@ -32,53 +34,72 @@ class PocketNodeService extends PocketBaseService {
       passphrase: this.ls.get("node_passphrase").data,
       chains: this.ls.get("node_chains").data,
       data: this.ls.get("node_data").data,
+      imported: this.ls.get("node_imported").data,
+      serviceURL: this.ls.get("node_service_url").data
     };
   }
 
   /**
    * Save node data in local storage encrypted.
    *
-   * @param {string} [nodeID] Pocket node DB ID.
-   * @param {string} address Pocket node address
-   * @param {string} privateKey Pocket node private key
+   * @param {string} [nodeID] Pocket application ID.
+   * @param {string} [address] Pocket node address.
+   * @param {string} [privateKey] Pocket node private key.
    * @param {string} [passphrase] Pocket node private key.
+   * @param {Array<string>} [chains] Pocket node chosen chains.
    * @param {object} [data] Pocket node dashboard data.
-   * @param {Array<string>} chains Pocket node chosen chains.
+   * @param {boolean} [imported] If the node is imported.
+   * @param {string} [serviceURL] The service URL.
    */
-  saveNodeInfoInCache({nodeID, address, privateKey, passphrase, data, chains}) {
+  saveNodeInfoInCache({
+                        nodeID,
+                        address,
+                        privateKey,
+                        passphrase,
+                        chains,
+                        data,
+                        imported,
+                        serviceURL
+                      }) {
+    if (nodeID) {
+      this.ls.set("node_id", {data: nodeID});
+    }
     if (address) {
       this.ls.set("node_address", {data: address});
     }
     if (privateKey) {
       this.ls.set("node_private_key", {data: privateKey});
     }
-    if (chains) {
-      this.ls.set("node_chains", {data: chains});
-    }
-    if (nodeID) {
-      this.ls.set("node_id", {data: nodeID});
-    }
     if (passphrase) {
       this.ls.set("node_passphrase", {data: passphrase});
     }
+    if (chains) {
+      this.ls.set("node_chains", {data: chains});
+    }
     if (data) {
       this.ls.set("node_data", {data: data});
+    }
+    if (serviceURL) {
+      this.ls.set("node_service_url", {data: serviceURL});
+    }
+    if (imported !== undefined) {
+      this.ls.set("node_imported", {data: imported});
     }
   }
 
   /**
    * Create a new node
-   * @param {Object} nodeData Node information
-   * @param {string} nodeData.name - Name.
-   * @param {string} nodeData.owner Owner.
-   * @param {string} nodeData.contactEmail Contact Email.
-   * @param {string} nodeData.description Description.
-   * @param {string} nodeData.icon Icon (string in base64 format).
-   * @param {string} nodeData.user User Email.
-   * @param {string} privateKey Private Key (if node is imported).
+   *
+   * @param {Object} node Node information.
+   * @param {string} node.name Name.
+   * @param {string} node.owner Owner.
+   * @param {string} node.contactEmail Contact Email.
+   * @param {string} node.description Description.
+   * @param {string} node.icon Icon (string in base64 format).
+   * @param {string} node.user User Email.
    */
-  createNode(nodeData, privateKey = undefined) {
-    const data = privateKey ? {node: nodeData, privateKey} : {node: nodeData};
+  createNode(node) {
+    const data = {node};
 
     return axios
       .post(this._getURL(""), data)
@@ -95,6 +116,51 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
+   * Create node account.
+   *
+   * @param {string} nodeID Node ID.
+   * @param {string} passphrase Passphrase.
+   * @param {string} nodeBaseLink Node base link.
+   * @param {string} privateKey? Private Key(is imported).
+   *
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   * @async
+   */
+  async createNodeAccount(
+    nodeID,
+    passphrase,
+    nodeBaseLink,
+    privateKey = undefined
+  ) {
+    let data = {nodeID, passphrase, nodeBaseLink};
+
+    if (privateKey) {
+      data["privateKey"] = privateKey;
+    }
+
+    return axios
+      .post(this._getURL("account"), data)
+      .then((response) => {
+        if (response.status === 200) {
+          return {
+            success: true,
+            data: response.data,
+          };
+        }
+
+        return {
+          success: false,
+        };
+      })
+      .catch((err) => {
+        return {
+          success: false,
+          data: err.response.data.message,
+        };
+      });
+  }
+
+  /**
    * Edit node
    * @param {string} nodeAccountAddress Node address.
    * @param {Object} nodeData Node information
@@ -104,7 +170,6 @@ class PocketNodeService extends PocketBaseService {
    * @param {string} nodeData.description Description.
    * @param {string} nodeData.icon Icon (string in base64 format).
    * @param {string} nodeData.user User Email.
-   * @param {string} privateKey Private Key (if node is imported).
    */
   editNode(nodeAccountAddress, nodeData) {
     const data = {...nodeData};
@@ -173,11 +238,13 @@ class PocketNodeService extends PocketBaseService {
    * Delete a node from dashboard (but not from the network).
    *
    * @param {string} nodeAccountAddress Node account address.
+   * @param {string} userEmail User email address.
+   * @param {string} nodesLink Nodes links.
    *
    * @returns {Promise|Promise<*>}
    */
-  deleteNodeFromDashboard(nodeAccountAddress, user, nodesLink) {
-    const data = {user, nodesLink};
+  deleteNodeFromDashboard(nodeAccountAddress, userEmail, nodesLink) {
+    const data = {user: userEmail, nodesLink};
 
     return axios
       .post(this._getURL(`/${nodeAccountAddress}`), data)

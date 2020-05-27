@@ -3,12 +3,12 @@ import ApplicationService from "../services/ApplicationService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
-import CheckoutService from "../services/CheckoutService";
+import ApplicationCheckoutService from "../services/ApplicationCheckoutService";
 
 const router = express.Router();
 
 const applicationService = new ApplicationService();
-const checkoutService = CheckoutService.getInstance();
+const applicationCheckoutService = ApplicationCheckoutService.getInstance();
 const paymentService = new PaymentService();
 
 /**
@@ -17,7 +17,7 @@ const paymentService = new PaymentService();
 router.post("", async (request, response) => {
   try {
     /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}}} */
-    let data = request.body;
+    const data = request.body;
 
     const applicationID = await applicationService.createApplication(data.application);
 
@@ -106,7 +106,9 @@ router.post("/:applicationAccountAddress", async (request, response) => {
         appsLink: bodyData.appsLink
       };
 
-      await EmailService.to(bodyData.user).sendAppDeletedEmail(bodyData.user, applicationEmailData);
+      await EmailService
+        .to(application.contactEmail)
+        .sendAppDeletedEmail(application.contactEmail, applicationEmailData);
     }
 
     response.send(application !== undefined);
@@ -286,7 +288,8 @@ router.post("/custom/stake", async (request, response) => {
 
       if (paymentHistory.isApplicationPaymentItem(true)) {
         const item = paymentHistory.getItem();
-        const poktToStake = checkoutService.getPoktToStake(paymentHistory.amount);
+        const amountToSpent = applicationCheckoutService.getMoneyToSpent(parseInt(item.maxRelays));
+        const poktToStake = applicationCheckoutService.getPoktToStake(amountToSpent);
 
         const application = await applicationService.stakeApplication(data.application, data.networkChains, poktToStake.toString());
 
@@ -302,7 +305,9 @@ router.post("/custom/stake", async (request, response) => {
             poktStaked: poktToStake.toString()
           };
 
-          await EmailService.to(application.user).sendStakeAppEmail(application.user, applicationEmailData, paymentEmailData);
+          await EmailService
+            .to(application.contactEmail)
+            .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
 
           response.send(true);
         } else {
@@ -343,7 +348,9 @@ router.post("/custom/unstake", async (request, response) => {
         link: data.applicationLink
       };
 
-      await EmailService.to(application.user).sendUnstakeAppEmail(application.user, applicationEmailData);
+      await EmailService
+        .to(application.contactEmail)
+        .sendUnstakeAppEmail(application.contactEmail, applicationEmailData);
 
       response.send(true);
     } else {
