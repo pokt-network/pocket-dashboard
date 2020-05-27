@@ -266,6 +266,10 @@ input {
   button {
     min-width: unset;
     padding: 0.2em 1.25rem;
+
+    &:focus {
+      box-shadow: none;
+    }
   }
 
   button:hover {
