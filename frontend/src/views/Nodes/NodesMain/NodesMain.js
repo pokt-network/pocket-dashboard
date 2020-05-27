@@ -251,18 +251,16 @@ class NodesMain extends Main {
                             to={() => {
                               const address = node.networkData.address;
 
-                              /*
-                               * TODO: Add id creating logic on backend.
-                              const applicationID = node.pockeNode.id;
+                              const nodeID = node.pocketNode.id;
 
                               if (!address) {
-                                NodeService.saveNodenfoInCache({
-                                  applicationID,
+                                NodeService.saveNodeInfoInCache({
+                                  nodeID,
                                 });
                                 return _getDashboardPath(
                                   DASHBOARD_PATHS.nodePassphrase
                                 );
-                              }*/
+                              }
                               const url = _getDashboardPath(
                                 DASHBOARD_PATHS.nodeDetail
                               );
@@ -321,7 +319,7 @@ class NodesMain extends Main {
                   } `}
                   headerClasses="d-flex"
                   toggle={registeredItems.length > 0}
-                  keyField="pocketNode.publicPocketAccount.address"
+                  keyField="pocketNode.id"
                   data={registeredItems}
                   columns={TABLE_COLUMNS.NODES}
                   bordered={false}

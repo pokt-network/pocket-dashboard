@@ -20,7 +20,6 @@ class PocketNodeService extends PocketBaseService {
     this.ls.remove("node_chains");
     this.ls.remove("node_data");
     this.ls.remove("node_imported");
-    this.ls.remove("node_service_url");
   }
 
   /**
