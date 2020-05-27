@@ -6,7 +6,7 @@ const router = express.Router();
 
 const applicationCheckoutService = ApplicationCheckoutService.getInstance();
 
-router.get("/relays-per-day", (request, response) => {
+router.get("/applications/relays-per-day", (request, response) => {
   try {
     const relaysPerDay = applicationCheckoutService.getRelaysPerDay();
 
@@ -20,7 +20,7 @@ router.get("/relays-per-day", (request, response) => {
   }
 });
 
-router.get("/cost", (request, response) => {
+router.get("/applications/cost", (request, response) => {
   try {
     const relaysPerDay = parseInt(getQueryOption(request, "rpd"));
 

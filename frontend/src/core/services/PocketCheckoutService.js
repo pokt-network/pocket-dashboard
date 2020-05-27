@@ -13,7 +13,7 @@ export class PocketCheckoutService extends PocketBaseService {
    */
   getRelaysPerDay() {
     return axios
-      .get(this._getURL("relays-per-day"))
+      .get(this._getURL("applications/relays-per-day"))
       .then((response) => response.data);
   }
 
@@ -24,9 +24,9 @@ export class PocketCheckoutService extends PocketBaseService {
    *
    * @returns {Promise<number|*>} Cost to spent.
    */
-  getMoneyToSpent(relaysPerDay) {
+  getApplicationMoneyToSpent(relaysPerDay) {
     return axios
-      .get(this._getURL(`cost?rpd=${relaysPerDay}`))
+      .get(this._getURL(`applications/cost?rpd=${relaysPerDay}`))
       .then((response) => response.data);
   }
 }

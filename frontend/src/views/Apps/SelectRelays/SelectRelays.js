@@ -50,7 +50,7 @@ class SelectRelays extends Component {
           .then(relaysPerDay => {
             const minRelays = parseInt(relaysPerDay.min);
 
-            PocketCheckoutService.getMoneyToSpent(minRelays)
+            PocketCheckoutService.getApplicationMoneyToSpent(minRelays)
               .then(({cost}) => {
 
                 PocketAccountService.getBalance(accountAddress)
@@ -82,7 +82,7 @@ class SelectRelays extends Component {
     const {target: {value}} = e;
     const currentAccountBalance = parseFloat(value);
 
-    PocketCheckoutService.getMoneyToSpent(relaysSelected)
+    PocketCheckoutService.getApplicationMoneyToSpent(relaysSelected)
       .then(({cost}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
@@ -98,7 +98,7 @@ class SelectRelays extends Component {
   onSliderChange(value) {
     const {currentAccountBalance} = this.state;
 
-    PocketCheckoutService.getMoneyToSpent(value)
+    PocketCheckoutService.getApplicationMoneyToSpent(value)
       .then(({cost}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
