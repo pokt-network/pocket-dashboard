@@ -175,7 +175,7 @@ input {
 .alert {
   min-height: 60px;
   font-family: $secondary-font-family;
-  box-shadow: 0 6px 25px -8px rgba(6, 32, 46, 0.1);
+  box-shadow: $default-box-shadow;
   background-color: #07212f;
   padding: 0 20px 0 24px;
   border-color: $dark-blue;
