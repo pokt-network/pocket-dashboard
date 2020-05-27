@@ -1,8 +1,8 @@
 import {Component} from "react";
 import _ from "lodash";
+import "../../../scss/Views/Main.scss";
 
 class Main extends Component {
-
   constructor(props, context) {
     super(props, context);
 
@@ -41,7 +41,7 @@ class Main extends Component {
     let filteredItems = userItems;
 
     if (searchQuery) {
-      filteredItems = userItems.filter(item => {
+      filteredItems = userItems.filter((item) => {
         const data = _.get(item, dataField);
 
         if (!data) {

@@ -1,15 +1,14 @@
 import React, {Component} from "react";
 import "./SelectRelays.scss";
-import {Col, Form, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {ITEM_TYPES, STYLING} from "../../../_constants";
+import {ITEM_TYPES, STYLING, PURCHASE_ITEM_NAME} from "../../../_constants";
 import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import PocketPaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
-import LoadingButton from "../../../core/components/LoadingButton";
 import {faCaretUp} from "@fortawesome/free-solid-svg-icons";
 import AppAlert from "../../../core/components/AppAlert";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
@@ -17,6 +16,7 @@ import Loader from "../../../core/components/Loader";
 import PocketAccountService from "../../../core/services/PocketAccountService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {isNaN} from "formik";
+import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -79,7 +79,9 @@ class SelectRelays extends Component {
 
   onCurrentBalanceChange(e) {
     let {relaysSelected} = this.state;
-    const {target: {value}} = e;
+    const {
+      target: {value},
+    } = e;
     const currentAccountBalance = parseFloat(value);
 
     PocketCheckoutService.getApplicationMoneyToSpent(relaysSelected)
@@ -109,8 +111,13 @@ class SelectRelays extends Component {
 
   validate(currency) {
     const {
-      minRelays, maxRelays, relaysSelected, subTotal, total,
-      currentAccountBalance, originalAccountBalance
+      minRelays,
+      maxRelays,
+      relaysSelected,
+      subTotal,
+      total,
+      currentAccountBalance,
+      originalAccountBalance,
     } = this.state;
 
     if (relaysSelected < minRelays || relaysSelected > maxRelays) {
@@ -158,8 +165,11 @@ class SelectRelays extends Component {
 
   async goToSummary() {
     const {
-      relaysSelected, currencies, subTotal, total,
-      currentAccountBalance
+      relaysSelected,
+      currencies,
+      subTotal,
+      total,
+      currentAccountBalance,
     } = this.state;
 
     this.setState({loading: true});
@@ -184,13 +194,18 @@ class SelectRelays extends Component {
         state: {
           type: ITEM_TYPES.APPLICATION,
           paymentIntent: paymentIntentData,
-          quantity: {number: relaysSelected, description: "Relays per day"},
-          cost: {number: subTotalAmount, description: "Relays per day cost"},
+          quantity: {
+            number: relaysSelected,
+            description: PURCHASE_ITEM_NAME.APPS,
+          },
+          cost: {
+            number: subTotalAmount,
+            description: `${PURCHASE_ITEM_NAME.APPS} cost`,
+          },
           total: totalAmount,
           currentAccountBalance
         },
       });
-
     } catch (e) {
       this.setState({
         error: {show: true, message: e.toString()},
@@ -202,8 +217,15 @@ class SelectRelays extends Component {
 
   render() {
     const {
-      error, currencies, relaysSelected, subTotal, total,
-      minRelays, maxRelays, currentAccountBalance, loading
+      error,
+      currencies,
+      relaysSelected,
+      subTotal,
+      total,
+      minRelays,
+      maxRelays,
+      currentAccountBalance,
+      loading,
     } = this.state;
 
     // At the moment the only available currency is USD.
@@ -212,7 +234,7 @@ class SelectRelays extends Component {
     const totalFixed = formatNumbers(total);
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     return (
@@ -236,12 +258,15 @@ class SelectRelays extends Component {
           </Col>
         </Row>
         <Row>
-          <Col lg="8" md="8" sm="8" className="title-page">
-            <h2 className="mb-5">Slide to Select how much relays per day you want to buy</h2>
+          <Col sm="7" className="title-page">
+            <h2 className="mb-5">
+              Slide to Select how much relays per day you want to buy
+            </h2>
             <div className="relays-calc">
               <div className="slider-wrapper">
                 <AppSlider
                   onChange={this.onSliderChange}
+                  type={PURCHASE_ITEM_NAME.APPS}
                   marks={{
                     [minRelays]: `${minRelays} RPD`,
                     [maxRelays / 2]: {
@@ -265,49 +290,32 @@ class SelectRelays extends Component {
             <AppAlert
               className="pt-4 pb-4"
               variant="primary"
-              title={<h4 className="alert-relays">*More relays?</h4>}>
+              title={<h4 className="alert-relays">*More relays?</h4>}
+            >
               <p className="alert-relays">
-                If your app requires more than {formatNumbers(maxRelays)}{" "}
-                Relays Per Day please <a href="/todo">Contact us</a> directly to
-                find a solution specially designed for your app.
+                If your app requires more than {formatNumbers(maxRelays)} Relays
+                Per Day please <a href="/todo">Contact us</a> directly to find a
+                solution specially designed for your app.
               </p>
             </AppAlert>
           </Col>
-          <Col lg="4" md="4" sm="4" className="pr-5 title-page">
+          <Col sm="5" className="pr-5 title-page">
             <h2 className="mb-4">Order Summary</h2>
-            <div className="summary">
-              <div className="item">
-                <p>App</p>
-                <p>1</p>
-              </div>
-              <div className="item">
-                <p>Relays per day</p>
-                <p>{relaysSelected}</p>
-              </div>
-              <div className="item">
-                <p>Relays per day cost</p>
-                <p>{subTotalFixed} {currency}</p>
-              </div>
-              <div className="item">
-                <p>Current balance ({currency})</p>
-                <Form.Control value={currentAccountBalance}
-                              onChange={this.onCurrentBalanceChange}/>
-              </div>
-              <hr/>
-              <div className="item total">
-                <p>Total cost</p>
-                <p>{totalFixed} {currency}</p>
-              </div>
-              <LoadingButton
-                loading={loading}
-                buttonProps={{
-                  onClick: this.goToSummary,
-                  variant: "primary",
-                  className: "mb-5"
-                }}>
-                <span>Checkout</span>
-              </LoadingButton>
-            </div>
+            <AppOrderSummary
+              items={[
+                {label: "App", quantity: 1},
+                {label: PURCHASE_ITEM_NAME.APPS, quantity: relaysSelected},
+                {
+                  label: `${PURCHASE_ITEM_NAME.APPS} cost`,
+                  quantity: `${subTotalFixed} ${currency.toUpperCase()}`,
+                },
+              ]}
+              balance={currentAccountBalance}
+              balanceOnChange={this.onCurrentBalanceChange}
+              total={totalFixed}
+              loading={loading}
+              formActionHandler={this.goToSummary}
+            />
           </Col>
         </Row>
         <Row>

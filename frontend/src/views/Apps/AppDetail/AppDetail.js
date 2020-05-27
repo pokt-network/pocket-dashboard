@@ -14,6 +14,7 @@ import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
 import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
 import Segment from "../../../core/components/Segment/Segment";
+import "../../../scss/Views/Detail.scss";
 import "./AppDetail.scss";
 import PocketAccountService from "../../../core/services/PocketAccountService";
 
@@ -110,7 +111,7 @@ class AppDetail extends Component {
   async unstakeApplication({privateKey, passphrase, address}) {
     const {freeTier} = this.state.pocketApplication;
 
-    const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
+    const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
     const detail = url.replace(":address", address);
     const link = `${window.location.origin}${detail}`;
     const application = {privateKey, passphrase, accountAddress: address};
@@ -263,7 +264,7 @@ class AppDetail extends Component {
     }
 
     return (
-      <div className="app-detail">
+      <div className="detail">
         <Row>
           <Col>
             {message && (
@@ -319,7 +320,7 @@ class AppDetail extends Component {
           ))}
         </Row>
         <Row>
-          <Col>
+          <Col className={chains.length === 0 ? "mb-1" : ""}>
             <Segment scroll={false} label="Networks">
               <AppTable
                 scroll
@@ -332,7 +333,7 @@ class AppDetail extends Component {
             </Segment>
           </Col>
         </Row>
-        <Row className="app-data">
+        <Row className="item-data">
           <Col sm="6" md="6" lg="6">
             <div className="page-title">
               <h2>Address</h2>

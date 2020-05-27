@@ -24,7 +24,7 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
-   * Get Address and chains for node creating/importing
+   * Get node information from local storage
    */
   getNodeInfo() {
     return {
@@ -252,14 +252,14 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
-   * Delete a node from dashboard (but not from the network).
+   * Unstake a node.
    *
    * @param {string} nodeAccountAddress Node account address.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeNode(nodeAccountAddress) {
-    const data = {nodeAccountAddress};
+  unstakeNode(privateKey, passPhrase, accountAddress, nodeLink) {
+    const data = {node: {privateKey, passPhrase, accountAddress}, nodeLink};
 
     return axios
       .post(this._getURL("/unstake"), data)

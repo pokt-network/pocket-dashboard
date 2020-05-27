@@ -1,0 +1,89 @@
+@import "../Core";
+
+.main {
+
+  .page-title {
+    h1 {
+      color: $title-secondary-color;
+    }
+  }
+
+  .stats {
+    margin-left: -25px;
+
+    .p-badge {
+      height: 100px;
+    }
+
+  }
+
+  .cta-buttons {
+    margin-left: -20px;
+    margin-bottom: 20px;
+
+    .create-app-button {
+      width: 140px;
+    }
+
+    .import-app-button {
+      width: 115px;
+    }
+
+    .create-node-button {
+      width: 145px;
+    }
+
+    .import-node-button {
+      width: 120px;
+    }
+  }
+
+  .app-table {
+    &.loading {
+      margin-bottom: 20px;
+    }
+  }
+
+
+  .app-tables {
+    margin-left: -25px;
+    margin-top: -30px;
+
+    .search-panel {
+      margin-top: 20px;
+      margin-bottom: -10px;
+
+      button {
+        width: 30px;
+
+        img {
+          left: -12px;
+        }
+      }
+    }
+
+    .search-panel-without-items {
+      display: none;
+    }
+
+    .app-segment {
+      .head {
+        margin-bottom: -10px;
+      }
+    }
+
+    .my-items-segment {
+      .app-segment {
+        .head {
+          h2 {
+            margin-left: 28px;
+          }
+        }
+
+        .body {
+          overflow-x: hidden;
+        }
+      }
+    }
+  }
+}

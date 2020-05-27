@@ -53,7 +53,7 @@
 
           input[type="checkbox"] {
             position: absolute;
-            top: 64px;
+            top: 68px;
             left: 52px;
           }
         }
@@ -72,5 +72,9 @@
         }
       }
     }
+  }
+
+  .service-url-label {
+    font-size: 16px;
   }
 }
