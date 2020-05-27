@@ -6,11 +6,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {
-  formatNetworkData,
-  getStakeStatus,
-  formatNumbers,
-} from "../../../_helpers";
+import {formatNetworkData, formatNumbers, getStakeStatus,} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import moment from "moment";
@@ -95,6 +91,7 @@ class NodeDetail extends Component {
     const detail = url.replace(":address", address);
     const link = `${window.location.origin}${detail}`;
 
+    // FIXME: The firm of this method has been changed.
     const {success, data} = NodeService.unstakeNode(
       privateKey, passphrase, address, link
     );
@@ -111,6 +108,8 @@ class NodeDetail extends Component {
   async stakeNode({privateKey, passphrase, address}) {
     NodeService.removeNodeInfoFromCache();
     NodeService.saveNodeInfoInCache({address, privateKey, passphrase});
+
+    // TODO: Use stakeNode method from PocketNodeService.
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.nodeChainList));

@@ -384,7 +384,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a custom tier application.
    *
-   * @param {{privateKey:string, passphrase: string, accountAddress: string}} application Application private Key.
+   * @param {{privateKey:string, passphrase: string, accountAddress: string}} application Application data.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}

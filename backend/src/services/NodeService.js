@@ -383,6 +383,7 @@ export default class NodeService extends BaseService {
     if (!nodeDB) {
       return false;
     }
+
     const accountService = new AccountService();
     const nodeAccount = await accountService
       .importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passphrase);
@@ -399,7 +400,7 @@ export default class NodeService extends BaseService {
   /**
    * UnJail node.
    *
-   * @param {{privateKey:string, passPhrase:string, accountAddress: string}} nodeData Node data.
+   * @param {{privateKey:string, passphrase:string, accountAddress: string}} nodeData Node data.
    *
    * @returns {Promise<PocketNode | boolean>} If node was unJail return node, if not return false.
    * @async
@@ -416,18 +417,16 @@ export default class NodeService extends BaseService {
     }
 
     const accountService = new AccountService();
+    const nodeAccount = await accountService
+      .importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passphrase);
 
-    try {
+    // UnJail node
+    const unJailTransaction = await this.pocketService.unJailNode(nodeAccount, nodeData.passphrase);
 
-      const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passPhrase);
-
-      // UnJail node
-      const transaction = await this.pocketService.unJailNode(nodeAccount, nodeData.passPhrase);
-
-      return transaction.tx !== undefined ? PocketNode.createPocketNode(nodeDB) : false;
-    } catch (e) {
-      return false;
+    if (this.pocketService.isTransactionSuccess(unJailTransaction)) {
+      return PocketNode.createPocketNode(nodeDB);
     }
+    return false;
   }
 
   /**

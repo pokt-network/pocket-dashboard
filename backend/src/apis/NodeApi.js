@@ -305,7 +305,7 @@ router.post("/unstake", async (request, response) => {
 router.post("/unjail", async (request, response) => {
   try {
 
-    /** @type {{node:{privateKey:string, passPhrase:string, accountAddress: string}, nodeLink: string}} */
+    /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */
     const data = request.body;
 
     const node = await nodeService.unJailNode(data.node);
