@@ -20,7 +20,7 @@ export class PocketCheckoutService extends PocketBaseService {
   /**
    * Get validator power data.
    *
-   * @returns {Promise<object|*>} Relays per day data.
+   * @returns {Promise<object|*>} Validator power data.
    */
   getValidatorPower() {
     return axios
