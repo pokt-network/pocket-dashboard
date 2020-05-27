@@ -17,7 +17,7 @@ const paymentService = new PaymentService();
 router.post("", async (request, response) => {
   try {
     /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}}} */
-    let data = request.body;
+    const data = request.body;
 
     const applicationID = await applicationService.createApplication(data.application);
 

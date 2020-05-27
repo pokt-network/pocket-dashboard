@@ -554,7 +554,7 @@ export default class ApplicationService extends BaseService {
    * @param {string} passphrase Application account passphrase.
    * @param {string} [privateKey] Application private key if is imported.
    *
-   * @returns {Promise<{application: PocketApplication,privateApplicationData: PrivatePocketAccount, networkData:Application}>} An application information.
+   * @returns {Promise<{application: PocketApplication, privateApplicationData: PrivatePocketAccount, networkData:Application}>} An application information.
    * @throws {Error} If application does not exists.
    * @async
    */

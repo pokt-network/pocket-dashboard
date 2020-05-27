@@ -20,16 +20,16 @@ export default class NodeService extends BaseService {
    *
    * @param {PocketNode} node Node to persist.
    *
-   * @returns {Promise<boolean>} If node was persisted or not.
+   * @returns {Promise<string | boolean>} If node was was persisted return id, if not return false.
    * @private
    * @async
    */
   async __persistNodeIfNotExists(node) {
     if (!await this.nodeExists(node)) {
-      /** @type {{result: {n:number, ok: number}}} */
+      /** @type {{insertedId: string, result: {n:number, ok: number}}} */
       const result = await this.persistenceService.saveEntity(NODE_COLLECTION_NAME, node);
 
-      return result.result.ok === 1;
+      return result.result.ok === 1 ? result.insertedId : "0";
     }
 
     return false;
@@ -57,6 +57,23 @@ export default class NodeService extends BaseService {
     }
 
     return false;
+  }
+
+  /**
+   * Update node on db by ID.
+   *
+   * @param {string} nodeID Node ID.
+   * @param {PocketNode} nodeData Node data.
+   *
+   * @returns {Promise<boolean>} If node was updated or not.
+   * @private
+   * @async
+   */
+  async __updateNodeByID(nodeID, nodeData) {
+    /** @type {{result: {n:number, ok: number}}} */
+    const result = await this.persistenceService.updateEntityByID(NODE_COLLECTION_NAME, nodeID, nodeData);
+
+    return result.result.ok === 1;
   }
 
   /**
@@ -109,7 +126,7 @@ export default class NodeService extends BaseService {
   async nodeExists(node) {
     let filter = {};
 
-    if (node.publicPocketAccount) {
+    if (node.publicPocketAccount.address) {
       filter["publicPocketAccount.address"] = node.publicPocketAccount.address;
     } else {
       filter["name"] = node.name;
@@ -148,22 +165,45 @@ export default class NodeService extends BaseService {
       if (await this.nodeExists(node)) {
         throw new Error("Node already exists");
       }
-      const accountService = new AccountService();
-      const passPhrase = await accountService.generatePassphrase(node.name);
-      const pocketAccount = await accountService.createPocketAccount(this.pocketService, passPhrase, privateKey);
 
-      node.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
-
-      await this.__persistNodeIfNotExists(node);
-
-      const nodeParameters = await this.pocketService.getNodeParameters();
-
-      const privateNodeData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passPhrase);
-      const networkData = ExtendedPocketNode.createNetworkNode(node.publicPocketAccount, nodeParameters);
-
-      // noinspection JSValidateTypes
-      return {privateNodeData, networkData};
+      return this.__persistNodeIfNotExists(node);
     }
+  }
+
+  /**
+   * Create a node account.
+   *
+   * @param {string} nodeID Node ID.
+   * @param {string} passphrase Application account passphrase.
+   * @param {string} [privateKey] Application private key if is imported.
+   *
+   * @returns {Promise<{node: PocketNode, privateNodeData: PrivatePocketAccount, networkData:Node}>} A node information.
+   * @throws {Error} If application does not exists.
+   * @async
+   */
+  async createNodeAccount(nodeID, passphrase, privateKey) {
+    const nodeDB = await this.persistenceService.getEntityByID(NODE_COLLECTION_NAME, nodeID);
+
+    if (!nodeDB) {
+      throw new Error("Node does not exists");
+    }
+
+    const node = PocketNode.createPocketNode(nodeDB);
+
+    const accountService = new AccountService();
+    const pocketAccount = await accountService.createPocketAccount(this.pocketService, passphrase, privateKey);
+
+    node.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
+
+    await this.__updateNodeByID(nodeID, node);
+
+    const nodeParameters = await this.pocketService.getNodeParameters();
+
+    const privateNodeData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passphrase);
+    const networkData = ExtendedPocketNode.createNetworkNode(node.publicPocketAccount, nodeParameters);
+
+    // noinspection JSValidateTypes
+    return {node, privateNodeData, networkData};
   }
 
   /**
@@ -271,7 +311,6 @@ export default class NodeService extends BaseService {
 
     return [];
   }
-
 
   /**
    * Stake a node on network.
@@ -438,5 +477,4 @@ export default class NodeService extends BaseService {
     }
     return false;
   }
-
 }
