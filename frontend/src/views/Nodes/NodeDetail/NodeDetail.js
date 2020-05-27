@@ -80,7 +80,7 @@ class NodeDetail extends Component {
       DASHBOARD_PATHS.nodes
     )}`;
     const userEmail = PocketUserService.getUserInfo().email;
-    // FIXME: The firm of this method has been changed.
+
     const success = await NodeService.deleteNodeFromDashboard(
       address, userEmail, nodesLink
     );

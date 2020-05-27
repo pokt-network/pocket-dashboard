@@ -20,7 +20,7 @@ class Dashboard extends Component {
     super(props, context);
 
     this.state = {
-      alert: true,
+      welcomeAlert: true,
       loading: true,
       chains: [],
       userApps: [],
@@ -34,14 +34,18 @@ class Dashboard extends Component {
     const userApps = await ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT);
     // const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
     const chains = await NetworkService.getAvailableNetworkChains();
-    const alert = UserService.getShowWelcomeMessage();
+    const welcomeAlert = UserService.getShowWelcomeMessage();
 
-    this.setState({alert, userApps, chains, loading: false});
+    if (welcomeAlert) {
+      UserService.showWelcomeMessage(false);
+    }
+
+    this.setState({welcomeAlert, userApps, chains, loading: false});
   }
 
   render() {
     const {
-      alert,
+      welcomeAlert,
       chains,
       loading,
       userApps: allUserApps,
@@ -67,12 +71,11 @@ class Dashboard extends Component {
 
     return (
       <div id="dashboard">
-        {alert && (
+        {welcomeAlert && (
           <Alert
             variant="primary"
             onClose={() => {
-              UserService.showWelcomeMessage(true);
-              this.setState({alert: false});
+              this.setState({welcomeAlert: false});
             }}
             dismissible
           >

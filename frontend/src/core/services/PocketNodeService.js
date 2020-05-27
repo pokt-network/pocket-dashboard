@@ -35,7 +35,7 @@ class PocketNodeService extends PocketBaseService {
       chains: this.ls.get("node_chains").data,
       data: this.ls.get("node_data").data,
       imported: this.ls.get("node_imported").data,
-      serviceURL: this.ls.get("node_service_url").data
+      serviceURL: this.ls.get("node_service_url").data,
     };
   }
 
@@ -52,15 +52,15 @@ class PocketNodeService extends PocketBaseService {
    * @param {string} [serviceURL] The service URL.
    */
   saveNodeInfoInCache({
-                        nodeID,
-                        address,
-                        privateKey,
-                        passphrase,
-                        chains,
-                        data,
-                        imported,
-                        serviceURL
-                      }) {
+    nodeID,
+    address,
+    privateKey,
+    passphrase,
+    chains,
+    data,
+    imported,
+    serviceURL,
+  }) {
     if (nodeID) {
       this.ls.set("node_id", {data: nodeID});
     }
@@ -92,7 +92,7 @@ class PocketNodeService extends PocketBaseService {
    *
    * @param {Object} node Node information.
    * @param {string} node.name Name.
-   * @param {string} node.owner Owner.
+   * @param {string} node.operator Operator.
    * @param {string} node.contactEmail Contact Email.
    * @param {string} node.description Description.
    * @param {string} node.icon Icon (string in base64 format).

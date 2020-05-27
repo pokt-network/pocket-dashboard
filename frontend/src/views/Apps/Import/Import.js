@@ -14,7 +14,7 @@ class Import extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.importApp = this.importApp.bind(this);
+    this.importAccount = this.importAccount.bind(this);
     this.changeInputType = this.changeInputType.bind(this);
     this.handleChange = this.handleChange.bind(this);
 
@@ -45,7 +45,7 @@ class Import extends Component {
   componentDidMount() {
     const path = window.location.pathname;
 
-    if (path === _getDashboardPath(DASHBOARD_PATHS.importApp)) {
+    if (path === _getDashboardPath(DASHBOARD_PATHS.importAccount)) {
       this.setState({type: ITEM_TYPES.APPLICATION});
     } else if (path === _getDashboardPath(DASHBOARD_PATHS.importNode)) {
       this.setState({type: ITEM_TYPES.NODE});
@@ -94,7 +94,7 @@ class Import extends Component {
     reader.readAsText(e.target.files[0], "utf8");
   };
 
-  async importApp(e) {
+  async importAccount(e) {
     e.preventDefault();
 
     const {type} = this.state;
@@ -267,7 +267,7 @@ class Import extends Component {
                           type="submit"
                           onClick={
                             !imported
-                              ? this.importApp
+                              ? this.importAccount
                               : () => {
                                   // eslint-disable-next-line react/prop-types
                                   this.props.history.push({
