@@ -18,7 +18,7 @@ export class PocketCheckoutService extends PocketBaseService {
   }
 
   /**
-   * Get relays per day data.
+   * Get validator power data.
    *
    * @returns {Promise<object|*>} Relays per day data.
    */
