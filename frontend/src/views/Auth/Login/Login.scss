@@ -1,1 +1,40 @@
+.center {
+  padding: 0rem 1rem !important;
+}
 
+h2 {
+  width: 93px;
+  height: 38px;
+  font-family: OpenSans;
+  font-size: 30px;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.27;
+  letter-spacing: -0.82px;
+  color: #25a9e0;
+}
+
+.inputControl {
+  width: 400px !important;
+  height: 34px;
+  border-radius: 25px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.inputButton {
+  width: 400px !important;
+  height: 32px;
+}
+
+.providerButton {
+  width: 195px !important;
+  height: 32px !important;
+  border-radius: 31px;
+  background-color: #474747;
+}
+
+.containerDiv {
+  width: 400px !important;
+}

@@ -1,7 +1,7 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {Button} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { Button } from "react-bootstrap";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const AuthProviderType = {
   login: "Login",
@@ -16,13 +16,13 @@ export class AuthProviderButton extends Component {
   }
 
   onButtonClick(e) {
-    const {consent_url} = this.props.authProvider;
+    const { consent_url } = this.props.authProvider;
 
     window.open(consent_url, "_parent");
   }
 
   render() {
-    const {block, icon, className, authProvider, type} = this.props;
+    const { block, icon, className, authProvider, type } = this.props;
 
     return (
       <Button
@@ -33,7 +33,8 @@ export class AuthProviderButton extends Component {
         onClick={this.onButtonClick}
       >
         {icon ? <FontAwesomeIcon icon={icon} /> : null} {type} with{" "}
-        {authProvider.name}
+        {authProvider.name.slice(0, 1).toUpperCase() +
+          authProvider.name.slice(1, authProvider.name.length)}
       </Button>
     );
   }

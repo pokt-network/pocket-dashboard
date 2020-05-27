@@ -1,19 +1,19 @@
-import React, {Component} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import "./Login.scss";
 import {
   AuthProviderButton,
   AuthProviderType,
 } from "../../../core/components/AuthProviderButton";
 import UserService from "../../../core/services/PocketUserService";
-import {ROUTE_PATHS} from "../../../_routes";
-import {Link, Redirect} from "react-router-dom";
+import { ROUTE_PATHS } from "../../../_routes";
+import { Link, Redirect } from "react-router-dom";
 import AuthSidebar from "../../../core/components/AuthSidebar/AuthSidebar";
-import {faGithub, faGoogle} from "@fortawesome/free-brands-svg-icons";
-import {Formik} from "formik";
+import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { Formik } from "formik";
 import * as yup from "yup";
-import {VALIDATION_MESSAGES} from "../../../_constants";
-import {validateYup} from "../../../_helpers";
+import { VALIDATION_MESSAGES } from "../../../_constants";
+import { validateYup } from "../../../_helpers";
 
 class Login extends Component {
   constructor(props, context) {
@@ -45,21 +45,21 @@ class Login extends Component {
   componentDidMount() {
     /** @type {UserService} */
     UserService.getAuthProviders().then((providers) => {
-      this.setState({authProviders: providers});
+      this.setState({ authProviders: providers });
     });
   }
 
   async handleLogin(e) {
     e.preventDefault();
 
-    this.setState({loggedIn: true});
+    this.setState({ loggedIn: true });
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   async validate(values) {
@@ -72,11 +72,13 @@ class Login extends Component {
       return yupErr;
     }
 
-    const {success, data} = await UserService.login(
-      values.email, values.password);
+    const { success, data } = await UserService.login(
+      values.email,
+      values.password
+    );
 
     if (!success) {
-      const {message: err} = data.response.data;
+      const { message: err } = data.response.data;
 
       if (err === "Error: Passwords do not match") {
         errors.password = "Wrong password";
@@ -84,15 +86,15 @@ class Login extends Component {
         errors.email = "invalid email.";
       }
     } else {
-      this.setState({user: data});
+      this.setState({ user: data });
     }
 
     return errors;
   }
 
   render() {
-    const {home, signup, forgot_password} = ROUTE_PATHS;
-    const {loggedIn} = this.state;
+    const { home, signup, forgot_password } = ROUTE_PATHS;
+    const { loggedIn } = this.state;
 
     if (loggedIn) {
       return <Redirect to={home} />;
@@ -110,8 +112,8 @@ class Login extends Component {
               </p>
             </div>
             <Row>
-              <Col lg={{span: 5, offset: 3}}>
-                <div className={"main"}>
+              <Col lg={{ span: 5, offset: 3 }}>
+                <div className={"main"} style={{ marginTop: -40 }}>
                   <h2>Login</h2>
                   <Formik
                     validate={this.validate}
@@ -119,14 +121,14 @@ class Login extends Component {
                     onSubmit={() => {
                       UserService.saveUserInCache(this.state.user, true);
                       UserService.showWelcomeMessage(true);
-                      this.setState({loggedIn: true});
+                      this.setState({ loggedIn: true });
                     }}
                     initialValues={this.state.data}
                     values={this.state.data}
                     validateOnChange={false}
                     validateOnBlur={false}
                   >
-                    {({handleSubmit, handleChange, values, errors}) => (
+                    {({ handleSubmit, handleChange, values, errors }) => (
                       <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
                         <Form.Group>
                           <Form.Label>Email</Form.Label>
@@ -137,6 +139,7 @@ class Login extends Component {
                             value={values.email}
                             onChange={handleChange}
                             isInvalid={!!errors.email}
+                            className="inputControl"
                           />
                           <Form.Control.Feedback type="invalid">
                             {errors.email}
@@ -151,40 +154,49 @@ class Login extends Component {
                             value={values.password}
                             onChange={handleChange}
                             isInvalid={!!errors.password}
+                            className="inputControl"
                           />
                           <Form.Control.Feedback type="invalid">
                             {errors.password}
                           </Form.Control.Feedback>
-                        </Form.Group>
-                        <p>
                           <Link to={forgot_password}>
                             Forgot your password?
                           </Link>
-                        </p>
+                        </Form.Group>
 
-                        <Button type="submit" size="md" variant="primary" block>
+                        <Button
+                          type="submit"
+                          size="md"
+                          variant="primary"
+                          block
+                          className="center inputButton"
+                        >
                           Sign in
                         </Button>
-                        <div className="divider mt-4 mb-3">Or</div>
-                        <div id={"provider-buttons"}>
-                          <AuthProviderButton
-                            block={true}
-                            className="brand pl-5 pr-5 mr-3"
-                            icon={faGoogle}
-                            type={AuthProviderType.login}
-                            authProvider={UserService.getAuthProvider(
-                              this.state.authProviders, "google"
-                            )}
-                          />
-                          <AuthProviderButton
-                            block={true}
-                            className="brand pl-4 pr-4"
-                            icon={faGithub}
-                            type={AuthProviderType.login}
-                            authProvider={UserService.getAuthProvider(
-                              this.state.authProviders, "github"
-                            )}
-                          />
+                        <div className="containerDiv">
+                          <div className="divider mt-4 mb-3">Or</div>
+                          <div id={"provider-buttons"}>
+                            <AuthProviderButton
+                              block={true}
+                              className="brand pl-4 pr-4 mr-3 center"
+                              icon={faGoogle}
+                              type={AuthProviderType.login}
+                              authProvider={UserService.getAuthProvider(
+                                this.state.authProviders,
+                                "google"
+                              )}
+                            />
+                            <AuthProviderButton
+                              block={true}
+                              className="brand pl-4 pr-4 center"
+                              icon={faGithub}
+                              type={AuthProviderType.login}
+                              authProvider={UserService.getAuthProvider(
+                                this.state.authProviders,
+                                "github"
+                              )}
+                            />
+                          </div>
                         </div>
                       </Form>
                     )}
