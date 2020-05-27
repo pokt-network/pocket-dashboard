@@ -251,30 +251,67 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
-   * Unstake a node.
+   * Stake a node.
    *
-   * @param {string} nodeAccountAddress Node account address.
+   * @param {object} node Node data.
+   * @param {string} node.privateKey Node private key.
+   * @param {string} node.passphrase Node passphrase.
+   * @param {string} node.serviceURL Node service URL.
+   * @param {string[]} networkChains Node network chains.
+   * @param {string} paymentId payment's stripe confirmation id.
+   * @param {string} nodeLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeNode(privateKey, passPhrase, accountAddress, nodeLink) {
-    const data = {node: {privateKey, passPhrase, accountAddress}, nodeLink};
+  stakeNode(node, networkChains, paymentId, nodeLink) {
+    const data = {
+      node,
+      networkChains,
+      payment: {id: paymentId},
+      nodeLink
+    };
 
     return axios
-      .post(this._getURL("/unstake"), data)
-      .then((response) => response.data)
-      .catch((err) => err.response);
+      .post(this._getURL("stake"), data)
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {success: false, error: err.response};
+      });
+  }
+
+  /**
+   * Unstake a node.
+   *
+   * @param {{privateKey:string, passphrase: string, accountAddress: string}} node Node data.
+   * @param {string} nodeLink Link to detail for email.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  unstakeNode(node, nodeLink) {
+    const data = {node, nodeLink};
+
+    return axios
+      .post(this._getURL("unstake"), data)
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {success: false, data: err.response};
+      });
   }
 
   /**
    * Unjail a jailed node
    *
-   * @param {string} nodeAccountAddress Node account address.
+   * @param {{privateKey:string, passphrase: string, accountAddress: string}} node Node data.
+   * @param {string} nodeLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unjailNode(nodeAccountAddress) {
-    const data = {nodeAccountAddress};
+  unjailNode(node, nodeLink) {
+    const data = {node, nodeLink};
 
     return axios
       .post(this._getURL("/unjail"), data)

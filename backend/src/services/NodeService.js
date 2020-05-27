@@ -315,16 +315,17 @@ export default class NodeService extends BaseService {
   /**
    * Stake a node on network.
    *
-   * @param {{privateKey: string, passPhrase:string, networkChains: string[], serviceURL: string}} node Node to stake.
+   * @param {{privateKey: string, passphrase:string, serviceURL: string}} node Node to stake.
+   * @param {string[]} networkChains Network chains to stake node.
    * @param {string} uPoktAmount uPokt amount used to stake.
    *
    * @returns {Promise<PocketNode | boolean>} If was staked return the node, if not return false.
    * @throws Error If private key is not valid or node does not exists on dashboard.
    */
-  async stakeNode(node, uPoktAmount) {
+  async stakeNode(node, networkChains, uPoktAmount) {
     const accountService = new AccountService();
-
-    const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, node.privateKey, node.passPhrase);
+    const nodeAccount = await accountService
+      .importAccountToNetwork(this.pocketService, node.privateKey, node.passphrase);
 
     const filter = {
       "publicPocketAccount.address": nodeAccount.addressHex
@@ -336,21 +337,38 @@ export default class NodeService extends BaseService {
       throw Error("Node does not exists on dashboard");
     }
 
-    try {
+    // FIXME: Now we use free tier for account to transfer the amount to stake the app on custom tier,
+    //  we dont know from where get these.
+    const {account: freeTierAccount, passphrase: freeTierPassphrase} = await this.pocketService.getFreeTierAccount();
+
+    if (!await this.pocketService.hasBalance(freeTierAccount)) {
+      throw Error("Account does not have sufficient balance.");
+    }
+
+    const transferTransaction = await this.pocketService
+      .transferPoktBetweenAccounts(freeTierAccount, freeTierPassphrase, nodeAccount, uPoktAmount);
+
+    if (this.pocketService.isTransactionSuccess(transferTransaction)) {
+
+      // Wait until account has balance.
+      await this._waitUntilHasBalance(nodeAccount);
+
       // Stake node
       const serviceURL = new URL(node.serviceURL);
-      const transaction = await this.pocketService.stakeNode(nodeAccount, node.passPhrase, uPoktAmount, node.networkChains, serviceURL);
+      const stakeTransaction = await this.pocketService
+        .stakeNode(nodeAccount, node.passphrase, uPoktAmount, networkChains, serviceURL);
 
-      return transaction.tx !== undefined ? PocketNode.createPocketNode(nodeDB) : false;
-    } catch (e) {
-      return false;
+      if (this.pocketService.isTransactionSuccess(stakeTransaction)) {
+        return PocketNode.createPocketNode(nodeDB);
+      }
     }
+    return false;
   }
 
   /**
    * Unstake node.
    *
-   * @param {{privateKey:string, passPhrase:string, accountAddress: string}} nodeData Node data.
+   * @param {{privateKey:string, passphrase:string, accountAddress: string}} nodeData Node data.
    *
    * @returns {Promise<PocketNode | boolean>} If node was unstaked return node, if not return false.
    * @async
@@ -365,24 +383,24 @@ export default class NodeService extends BaseService {
     if (!nodeDB) {
       return false;
     }
+
     const accountService = new AccountService();
+    const nodeAccount = await accountService
+      .importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passphrase);
 
-    try {
-      const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passPhrase);
+    // Unstake node
+    const unstakedTransaction = await this.pocketService.unstakeNode(nodeAccount, nodeData.passphrase);
 
-      // Unstake node
-      const transaction = await this.pocketService.unstakeNode(nodeAccount, nodeData.passPhrase);
-
-      return transaction.tx !== undefined ? PocketNode.createPocketNode(nodeDB) : false;
-    } catch (e) {
-      return false;
+    if (this.pocketService.isTransactionSuccess(unstakedTransaction)) {
+      return PocketNode.createPocketNode(nodeDB);
     }
+    return false;
   }
 
   /**
    * UnJail node.
    *
-   * @param {{privateKey:string, passPhrase:string, accountAddress: string}} nodeData Node data.
+   * @param {{privateKey:string, passphrase:string, accountAddress: string}} nodeData Node data.
    *
    * @returns {Promise<PocketNode | boolean>} If node was unJail return node, if not return false.
    * @async
@@ -399,18 +417,16 @@ export default class NodeService extends BaseService {
     }
 
     const accountService = new AccountService();
+    const nodeAccount = await accountService
+      .importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passphrase);
 
-    try {
+    // UnJail node
+    const unJailTransaction = await this.pocketService.unJailNode(nodeAccount, nodeData.passphrase);
 
-      const nodeAccount = await accountService.importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passPhrase);
-
-      // UnJail node
-      const transaction = await this.pocketService.unJailNode(nodeAccount, nodeData.passPhrase);
-
-      return transaction.tx !== undefined ? PocketNode.createPocketNode(nodeDB) : false;
-    } catch (e) {
-      return false;
+    if (this.pocketService.isTransactionSuccess(unJailTransaction)) {
+      return PocketNode.createPocketNode(nodeDB);
     }
+    return false;
   }
 
   /**
