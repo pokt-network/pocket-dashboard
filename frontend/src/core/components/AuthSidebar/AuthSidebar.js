@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { Row } from "react-bootstrap";
+import React, {Component} from "react";
+import {Row} from "react-bootstrap";
 import Sidebar from "../Sidebar";
 import "./AuthSidebar.scss";
 
@@ -13,7 +13,7 @@ export default class AuthSidebar extends Component {
           alt=""
           className="white"
         />
-        <div id="auth-sidebar" style={{ paddingLeft: 60, paddingTop: 30 }}>
+        <div id="auth-sidebar" style={{paddingLeft: 60, paddingTop: 30}}>
           <Row>
             <h1>
               POCKET <br />
