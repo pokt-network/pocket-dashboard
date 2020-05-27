@@ -160,6 +160,17 @@ class CreateAppForm extends CreateForm {
               Fill in these quick questions to identity your app on the
               dashboard. Fields marked with * are required to continue.
             </p>
+            <p className="info">
+              If you have an existing account in Pocket Network with an assigned
+              Private Key and you want to register it as an app, please proceed
+              to{" "}
+              <Link
+                className="font-weight-light"
+                to={_getDashboardPath(DASHBOARD_PATHS.importApp)}
+              >
+                Import.
+              </Link>
+            </p>
           </Col>
         </Row>
         <Row>

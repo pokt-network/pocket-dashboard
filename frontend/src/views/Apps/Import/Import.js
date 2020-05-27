@@ -45,7 +45,7 @@ class Import extends Component {
   componentDidMount() {
     const path = window.location.pathname;
 
-    if (path === _getDashboardPath(DASHBOARD_PATHS.importAccount)) {
+    if (path === _getDashboardPath(DASHBOARD_PATHS.importApp)) {
       this.setState({type: ITEM_TYPES.APPLICATION});
     } else if (path === _getDashboardPath(DASHBOARD_PATHS.importNode)) {
       this.setState({type: ITEM_TYPES.NODE});
