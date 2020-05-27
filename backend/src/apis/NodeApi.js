@@ -30,7 +30,9 @@ router.post("", async (request, response) => {
       link: `${data.nodeBaseLink}/${node.privateNodeData.address}`
     };
 
-    await EmailService.to(data.node.contactEmail).sendCreateOrImportNodeEmail(emailAction, data.node.user, nodeEmailData);
+    await EmailService
+      .to(data.node.contactEmail)
+      .sendCreateOrImportNodeEmail(emailAction, data.node.contactEmail, nodeEmailData);
 
     response.send(node);
   } catch (e) {
@@ -103,7 +105,9 @@ router.post("/:nodeAccountAddress", async (request, response) => {
         nodesLink: bodyData.nodesLink
       };
 
-      await EmailService.to(bodyData.user).sendNodeDeletedEmail(bodyData.user, nodeEmailData);
+      await EmailService
+        .to(node.contactEmail)
+        .sendNodeDeletedEmail(node.contactEmail, nodeEmailData);
     }
 
     response.send(node !== undefined);
@@ -221,7 +225,9 @@ router.post("/stake", async (request, response) => {
             poktStaked: poktToStake.toString()
           };
 
-          await EmailService.to(node.user).sendStakeNodeEmail(node.user, nodeEmailData, paymentEmailData);
+          await EmailService
+            .to(node.contactEmail)
+            .sendStakeNodeEmail(node.contactEmail, nodeEmailData, paymentEmailData);
 
           response.send(true);
         } else {
@@ -255,7 +261,9 @@ router.post("/unstake", async (request, response) => {
         link: data.nodeLink
       };
 
-      await EmailService.to(node.user).sendUnstakeNodeEmail(node.user, nodeEmailData);
+      await EmailService
+        .to(node.contactEmail)
+        .sendUnstakeNodeEmail(node.contactEmail, nodeEmailData);
 
       response.send(true);
     } else {
@@ -287,7 +295,9 @@ router.post("/unjail", async (request, response) => {
         link: data.nodeLink
       };
 
-      await EmailService.to(node.user).sendNodeUnJailedEmail(node.user, nodeEmailData);
+      await EmailService
+        .to(node.contactEmail)
+        .sendNodeUnJailedEmail(node.contactEmail, nodeEmailData);
 
       response.send(true);
     } else {

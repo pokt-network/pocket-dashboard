@@ -106,7 +106,9 @@ router.post("/:applicationAccountAddress", async (request, response) => {
         appsLink: bodyData.appsLink
       };
 
-      await EmailService.to(bodyData.user).sendAppDeletedEmail(bodyData.user, applicationEmailData);
+      await EmailService
+        .to(application.contactEmail)
+        .sendAppDeletedEmail(application.contactEmail, applicationEmailData);
     }
 
     response.send(application !== undefined);
@@ -302,7 +304,9 @@ router.post("/custom/stake", async (request, response) => {
             poktStaked: poktToStake.toString()
           };
 
-          await EmailService.to(application.user).sendStakeAppEmail(application.user, applicationEmailData, paymentEmailData);
+          await EmailService
+            .to(application.contactEmail)
+            .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
 
           response.send(true);
         } else {
@@ -343,7 +347,9 @@ router.post("/custom/unstake", async (request, response) => {
         link: data.applicationLink
       };
 
-      await EmailService.to(application.user).sendUnstakeAppEmail(application.user, applicationEmailData);
+      await EmailService
+        .to(application.contactEmail)
+        .sendUnstakeAppEmail(application.contactEmail, applicationEmailData);
 
       response.send(true);
     } else {
