@@ -4,7 +4,7 @@ import {Configurations} from "../../_configuration";
 export default class NodeCheckoutService extends BaseCheckoutService {
 
   /**
-   * Get instance of Node CheckoutService.
+   * Get instance of Node Checkout Service.
    *
    * @param {object} [options] Options used by service.
    * @param {number} [poktMarketPrice] POKT market price.
