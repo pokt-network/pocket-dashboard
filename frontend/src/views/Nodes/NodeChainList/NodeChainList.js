@@ -9,11 +9,21 @@ import {Formik} from "formik";
 import * as yup from "yup";
 import NodeService from "../../../core/services/PocketNodeService";
 
-class ApplicationChainList extends Chains {
+class NodeChainList extends Chains {
   constructor(props, context) {
     super(props, context);
 
     this.handleChains = this.handleChains.bind(this);
+
+    const {serviceURL} = NodeService.getNodeInfo();
+
+    this.state = {
+      ...this.state,
+      data: {
+        ...this.state.data,
+        serviceURL: serviceURL || "",
+      },
+    };
   }
 
   handleChains() {
@@ -21,11 +31,9 @@ class ApplicationChainList extends Chains {
     const {serviceURL} = this.state.data;
     const chainsHashes = chosenChains.map((ch) => ch.hash);
 
-    const {data} = NodeService.getNodeInfo();
-
     NodeService.saveNodeInfoInCache({
       chains: chainsHashes,
-      data: {...data, serviceURL},
+      serviceURL,
     });
 
     // eslint-disable-next-line react/prop-types
@@ -163,4 +171,4 @@ class ApplicationChainList extends Chains {
   }
 }
 
-export default ApplicationChainList;
+export default NodeChainList;
