@@ -95,6 +95,16 @@
     margin-left: -30px;
   }
 
+  .unjail {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .unjail:hover {
+    color: darken($color: #888888, $amount: 10%);
+  }
+
+  .unjail,
   .unstaking-time {
     margin-top: 5px;
     font-size: 0.75em;

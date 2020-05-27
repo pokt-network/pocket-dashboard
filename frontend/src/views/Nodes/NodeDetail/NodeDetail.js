@@ -6,7 +6,11 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatNetworkData, formatNumbers, getStakeStatus,} from "../../../_helpers";
+import {
+  formatNetworkData,
+  formatNumbers,
+  getStakeStatus,
+} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import moment from "moment";
@@ -16,6 +20,7 @@ import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
 import Segment from "../../../core/components/Segment/Segment";
 import NodeService from "../../../core/services/PocketNodeService";
 import "../../../scss/Views/Detail.scss";
+import PocketAccountService from "../../../core/services/PocketAccountService";
 
 class NodeDetail extends Component {
   constructor(props, context) {
@@ -26,6 +31,7 @@ class NodeDetail extends Component {
       networkData: {},
       chains: [],
       aat: {},
+      accountBalance: 0,
       loading: true,
       deleteModal: false,
       deleted: false,
@@ -34,6 +40,7 @@ class NodeDetail extends Component {
       hideTable: false,
       exists: true,
       unstake: false,
+      unjail: false,
       stake: false,
       ctaButtonPressed: false,
     };
@@ -42,6 +49,7 @@ class NodeDetail extends Component {
     this.unstakeNode = this.unstakeNode.bind(this);
     this.stakeNode = this.stakeNode.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.unjailNode = this.unjailNode.bind(this);
   }
 
   async componentDidMount() {
@@ -61,10 +69,15 @@ class NodeDetail extends Component {
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
 
+    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(
+      address
+    );
+
     this.setState({
       pocketNode,
       networkData,
       chains,
+      accountBalance,
       loading: false,
     });
   }
@@ -86,14 +99,13 @@ class NodeDetail extends Component {
     }
   }
 
-  async unstakeNode({privateKey, passphrase, address}) {
+  async unstakeNode({privateKey, passphrase, address: accountAddress}) {
     const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
-    const detail = url.replace(":address", address);
-    const link = `${window.location.origin}${detail}`;
+    const detail = url.replace(":address", accountAddress);
+    const nodeLink = `${window.location.origin}${detail}`;
 
-    // FIXME: The firm of this method has been changed.
     const {success, data} = NodeService.unstakeNode(
-      privateKey, passphrase, address, link
+      {privateKey, passphrase, accountAddress}, nodeLink
     );
 
     if (success) {
@@ -105,11 +117,27 @@ class NodeDetail extends Component {
     }
   }
 
+  async unjailNode({privateKey, passphrase, address: accountAddress}) {
+    const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
+    const detail = url.replace(":address", accountAddress);
+    const nodeLink = `${window.location.origin}${detail}`;
+
+    const {success, data} = NodeService.unjailNode(
+      {privateKey, passphrase, accountAddress}, nodeLink
+    );
+
+    if (success) {
+      // "Reload page" for updated networkData
+    this.setState({loading: true, unjail: false});
+    this.fetchData();
+    } else {
+      this.setState({unstaking: false, message: data});
+    }
+  }
+
   async stakeNode({privateKey, passphrase, address}) {
     NodeService.removeNodeInfoFromCache();
     NodeService.saveNodeInfoInCache({address, privateKey, passphrase});
-
-    // TODO: Use stakeNode method from PocketNodeService.
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.nodeChainList));
@@ -118,7 +146,6 @@ class NodeDetail extends Component {
   render() {
     const {
       name,
-      url,
       contactEmail,
       operator,
       description,
@@ -130,6 +157,7 @@ class NodeDetail extends Component {
       staked_tokens: stakedTokens,
       status: bondStatus,
       unstakingCompletionTime,
+      serviceURL,
     } = this.state.networkData;
     const status = getStakeStatus(bondStatus);
     const isStaked =
@@ -151,8 +179,10 @@ class NodeDetail extends Component {
       message,
       exists,
       unstake,
+      unjail,
       stake,
       ctaButtonPressed,
+      accountBalance,
     } = this.state;
 
     const generalInfo = [
@@ -160,9 +190,8 @@ class NodeDetail extends Component {
         title: `${formatNetworkData(stakedTokens)} POKT`,
         subtitle: "Staked tokens",
       },
-      // TODO: Change this value.
       {
-        title: `${formatNetworkData(20000)} POKT`,
+        title: `${formatNetworkData(accountBalance)} POKT`,
         subtitle: "Balance",
       },
       {
@@ -175,14 +204,26 @@ class NodeDetail extends Component {
               .humanize()}`}</p>
           ) : undefined,
       },
-      {title: jailed ? "YES" : "NO", subtitle: "Jailed"},
+      {
+        title: jailed ? "YES" : "NO",
+        subtitle: "Jailed",
+        children: jailed ? (
+          <p
+            onClick={() =>
+              this.setState({ctaButtonPressed: true, unjail: true})
+            }
+            className="unjail"
+          >
+            Take out of jail
+          </p>
+        ) : undefined,
+      },
       // TODO: Get validator power
       {title: formatNumbers(10000), subtitle: "Validator Power"},
     ];
 
     const contactInfo = [
-      // TODO: Get service URL
-      {title: "Service URL", subtitle: url},
+      {title: "Service URL", subtitle: serviceURL || ""},
       {title: "Contact email", subtitle: contactEmail},
     ];
 
@@ -202,6 +243,10 @@ class NodeDetail extends Component {
 
     if (ctaButtonPressed && unstake) {
       return renderValidation(this.unstakeNode);
+    }
+
+    if (ctaButtonPressed && unjail) {
+      return renderValidation(this.unjailNode);
     }
 
     if (loading) {
@@ -375,7 +420,6 @@ class NodeDetail extends Component {
             Your Node will be removed from the Pocket Dashboard. However, you
             will be able access it through the command line interface (CLI) or
             import it back into Pocket Dashboard with the private key assigned
-            to it.
           </Modal.Body>
           <Modal.Footer>
             <Button
