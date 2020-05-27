@@ -590,7 +590,7 @@ export default class ApplicationService extends BaseService {
    * @param {string} applicationAccountAddress Application account address.
    * @param {string} user Owner email of application.
    *
-   * @returns {Promise<*>} The deleted application.
+   * @returns {Promise<PocketApplication>} The deleted application.
    * @async
    */
   async deleteApplication(applicationAccountAddress, user) {
@@ -599,11 +599,11 @@ export default class ApplicationService extends BaseService {
       user
     };
 
-    const application = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
     await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
 
-    return application;
+    return PocketApplication.createPocketApplication(applicationDB);
   }
 
   /**

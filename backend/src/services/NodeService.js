@@ -380,7 +380,7 @@ export default class NodeService extends BaseService {
    * @param {string} nodeAccountAddress Node account address.
    * @param {string} user Owner email of node.
    *
-   * @returns {Promise<*>} The deleted node.
+   * @returns {Promise<PocketNode>} The deleted node.
    * @async
    */
   async deleteNode(nodeAccountAddress, user) {
@@ -389,11 +389,11 @@ export default class NodeService extends BaseService {
       user
     };
 
-    const node = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
 
     await this.persistenceService.deleteEntities(NODE_COLLECTION_NAME, filter);
 
-    return node;
+    return PocketNode.createPocketNode(nodeDB);
   }
 
   /**
