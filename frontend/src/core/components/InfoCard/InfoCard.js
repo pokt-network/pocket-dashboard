@@ -3,10 +3,6 @@ import PropTypes from "prop-types";
 import "./InfoCard.scss";
 
 class InfoCard extends Component {
-  constructor(props, context) {
-    super(props, context);
-  }
-
   render() {
     const {title, subtitle, className, children} = this.props;
 

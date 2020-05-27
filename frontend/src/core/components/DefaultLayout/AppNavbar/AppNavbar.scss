@@ -17,10 +17,6 @@
       height: map_get($main-logo-size, height);
     }
 
-    img, .logo-divider {
-      margin-right: 13px;
-    }
-
     .app-name {
       @include font-style($app-title-font);
       color: $app-name-color;

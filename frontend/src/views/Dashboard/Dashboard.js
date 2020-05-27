@@ -46,7 +46,8 @@ class Dashboard extends Component {
     const userEmail = UserService.getUserInfo().email;
 
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
+      userEmail,
+      APPLICATIONS_LIMIT
     );
     // const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
     const chains = await NetworkService.getAvailableNetworkChains();
@@ -93,11 +94,7 @@ class Dashboard extends Component {
           </Col>
           <Col sm="4" className="d-flex justify-content-end cta-buttons">
             <Dropdown className="cta">
-              <Dropdown.Toggle
-                className="pl-4 pr-4"
-                variant="primary"
-                id="dropdown-basic"
-              >
+              <Dropdown.Toggle variant="primary" id="dropdown-basic">
                 <span>
                   Apps
                   <FontAwesomeIcon
@@ -175,7 +172,7 @@ class Dashboard extends Component {
           ))}
         </Row>
         <div className="network-status-tables">
-          <Row>
+          <Row className="network-status-tables-row">
             <Col sm="6" className="network-status-table">
               <Segment scroll={false} label="Registered Nodes">
                 <AppTable

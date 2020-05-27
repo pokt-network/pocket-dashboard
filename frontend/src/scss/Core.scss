@@ -315,9 +315,6 @@ button {
   width: 105px;
 
   span {
-    position: relative;
-    top: -5px;
-
     font-family: $primary-font-family;
     font-size: 12px;
   }
@@ -326,6 +323,7 @@ button {
 .app-table {
   margin-bottom: 0;
   box-shadow: $default-box-shadow;
+  border-radius: $table-radius;
 
   input[type="checkbox"] {
     margin-left: -32px;

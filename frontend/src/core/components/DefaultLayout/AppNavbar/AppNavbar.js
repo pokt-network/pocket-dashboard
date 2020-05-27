@@ -11,11 +11,7 @@ class AppNavbar extends Component {
     return (
       <Row className="app-navbar" noGutters>
         <div id="main-logo">
-          <img src="/assets/logo.svg" alt="logo"/>
-          <span className="app-name">
-            <span className="logo-divider">/</span>
-            DASHBOARD
-          </span>
+          <img src="/assets/logo-dashboard-color.svg" alt="logo"/>
         </div>
         <div className="items">
           {/* TODO: Uncomment when second release*/}
