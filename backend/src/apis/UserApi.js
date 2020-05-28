@@ -6,6 +6,24 @@ const router = express.Router();
 
 const userService = new UserService();
 
+
+/**
+ * Check if user exists.
+ */
+router.post("/exists", async (request, response) => {
+  try {
+    /** @type {{email:string, authProvider: string}} */
+    const data = request.body;
+
+    const exists = await userService.userExists(data.email, data.authProvider);
+
+    response.send(exists);
+  } catch (e) {
+    response.send(false);
+  }
+
+});
+
 /**
  * Provides Auth provider urls to show consent.
  */
@@ -108,6 +126,42 @@ router.post("/auth/resend-signup-email", async (request, response) => {
 });
 
 /**
+ * User logout.
+ */
+router.post("/auth/logout", async (request, response) => {
+  try {
+    /** @type {{email:string}} */
+    const data = request.body;
+
+    const result = await userService.logout(data.email);
+
+    response.send(result);
+  } catch (e) {
+    response.send(false);
+  }
+
+});
+
+
+/**
+ * Check if user is validated.
+ */
+router.post("/auth/is-validated", async (request, response) => {
+  try {
+    /** @type {{email:string, authProvider: string}} */
+    const data = request.body;
+
+    const validated = await userService.isUserValidated(data.email, data.authProvider);
+
+    response.send(validated);
+  } catch (e) {
+    response.send(false);
+  }
+
+});
+
+
+/**
  * Validate token.
  */
 router.post("/validate-token", async (request, response) => {
@@ -137,40 +191,6 @@ router.post("/validate-token", async (request, response) => {
     };
 
     response.status(400).send(error);
-  }
-
-});
-
-/**
- * User logout.
- */
-router.post("/auth/logout", async (request, response) => {
-  try {
-    /** @type {{email:string}} */
-    const data = request.body;
-
-    const result = await userService.logout(data.email);
-
-    response.send(result);
-  } catch (e) {
-    response.send(false);
-  }
-
-});
-
-/**
- * Check if user exists.
- */
-router.post("/auth/user-exists", async (request, response) => {
-  try {
-    /** @type {{email:string, authProvider: string}} */
-    const data = request.body;
-
-    const exists = await userService.userExists(data.email, data.authProvider);
-
-    response.send(exists);
-  } catch (e) {
-    response.send(false);
   }
 
 });

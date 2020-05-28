@@ -93,6 +93,30 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * Check if user is validated on DB.
+   *
+   * @param {string} userEmail User email to check if is validated.
+   * @param {string} [authProvider] User auth provider type.
+   *
+   * @returns {Promise<boolean>} If user is validated or not.
+   * @async
+   */
+  async isUserValidated(userEmail, authProvider = undefined) {
+    let filter = {
+      email: userEmail,
+      securityQuestions: {$ne: null}
+    };
+
+    if (authProvider) {
+      filter["provider"] = authProvider;
+    }
+
+    const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    return dbUser !== undefined;
+  }
+
+  /**
    * Get User from DB.
    *
    * @param {string} email User email.
