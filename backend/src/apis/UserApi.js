@@ -83,7 +83,7 @@ router.post("/auth/signup", async (request, response) => {
 /**
  * User sign up using email.
  */
-router.post("/auth/resend_signup_email", async (request, response) => {
+router.post("/auth/resend-signup-email", async (request, response) => {
   try {
     /** @type {{email:string, postValidationBaseLink:string}} */
     const data = request.body;
@@ -110,7 +110,7 @@ router.post("/auth/resend_signup_email", async (request, response) => {
 /**
  * Validate token.
  */
-router.post("/validate_token", async (request, response) => {
+router.post("/validate-token", async (request, response) => {
   try {
     /** @type {{token:string}} */
     const data = request.body;

@@ -82,7 +82,7 @@ class PocketUserService extends PocketBaseService {
    * @return {Promise<*>}
    */
   validateToken(token) {
-    return axios.post(this._getURL("validate_token"), {token})
+    return axios.post(this._getURL("validate-token"), {token})
       .then(response => response.data)
       .catch(err => {
         return {
@@ -241,7 +241,7 @@ class PocketUserService extends PocketBaseService {
       postValidationBaseLink: securityQuestionPageLink
     };
 
-    return axios.post(this._getURL("auth/resend_signup_email"), data)
+    return axios.post(this._getURL("auth/resend-signup-email"), data)
       .then(response => {
         return {
           success: response.data
@@ -268,15 +268,34 @@ class PocketUserService extends PocketBaseService {
   }
 
   /**
+   * Check if user exists or not.
+   *
+   * @param {string} userEmail User email.
+   *
+   * @return {Promise<*>} If exists returns true, otherwise false.
+   */
+  userExists(userEmail) {
+    const data = {
+      email: userEmail,
+    };
+
+    return axios
+      .post(this._getURL("auth/user-exists"), data)
+      .then(response => response.data);
+  }
+
+  /**
    * Validate reCAPTCHA token.
-   * 
+   *
    * @param {string} token recaptcha generated token.
-   * @return {Promise<{object}>}
+   *
+   * @return {Promise<*>}
    * @async
    */
   verifyCaptcha(token) {
 
-    return axios.post(this._getURL("verify-captcha"), {token})
+    return axios
+      .post(this._getURL("verify-captcha"), {token})
       .then(response => response.data);
   }
 
