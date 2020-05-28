@@ -107,7 +107,7 @@ class CreateAppForm extends CreateForm {
     if (success) {
       if (imported) {
         this.handleCreateImported(data);
-        return;
+
       } else {
         ApplicationService.saveAppInfoInCache({
           applicationID: data,
@@ -165,17 +165,6 @@ class CreateAppForm extends CreateForm {
               Private Key and you want to register it as an app, please proceed
               to{" "}
               <Link to={_getDashboardPath(DASHBOARD_PATHS.importApp)}>
-                Import.
-              </Link>
-            </p>
-            <p className="info">
-              If you have an existing account in Pocket Network with an assigned
-              Private Key and you want to register it as an app, please proceed
-              to{" "}
-              <Link
-                className="font-weight-light"
-                to={_getDashboardPath(DASHBOARD_PATHS.importApp)}
-              >
                 Import.
               </Link>
             </p>
