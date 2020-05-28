@@ -1,7 +1,8 @@
 import React, {Component} from "react";
-import {Button, Col, Form, Modal, Row} from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import PocketUserService from "../../../core/services/PocketUserService";
 import "./General.scss";
+import SecurityQuestionModal from "../../../core/components/SecurityQuestionModal";
 
 class General extends Component {
   constructor(props, context) {
@@ -82,33 +83,16 @@ class General extends Component {
             </div>
           </Col>
         </Row>
-        <Modal
-          className="app-modal"
-          show={passwordModal}
-          onHide={() => this.setState({passwordModal: false})}
-          animation={false}
-          centered
-        >
-          <Modal.Header closeButton>
-            <Modal.Title>Answer this question before continuing</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <Form.Group>
-              {/* TODO: Add retrieve question from backend */}
-              <Form.Label>What was the name of your first child?</Form.Label>
-              <Form.Control
-                name="username"
-                value={username}
-                onChange={this.handleChange}
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button block variant="dark" onClick={this.handleSubmit}>
-              Continue
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        {passwordModal && (
+          <SecurityQuestionModal
+            show={passwordModal}
+            onClose={() => {
+              this.setState({passwordModal: false});
+            }}
+            // TODO: Implement change password
+            onAfterValidation={() => {}}
+          />
+        )}
       </>
     );
   }

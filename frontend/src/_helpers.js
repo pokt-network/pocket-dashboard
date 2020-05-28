@@ -112,6 +112,18 @@ export const nodeFormSchema = yup.object().shape({
   description: yup.string().max(150, VALIDATION_MESSAGES.MAX(150)),
 });
 
+export const passwordChangeSchema = yup.object().shape({
+  password1: yup
+    .string()
+    .min(8, VALIDATION_MESSAGES.MIN(8))
+    .required(VALIDATION_MESSAGES.REQUIRED),
+  password2: yup
+    .string()
+    .required(VALIDATION_MESSAGES.REQUIRED)
+    .oneOf([yup.ref("password1"), null], "Passwords must match"),
+});
+
+
 export const validateYup = async (values, schema) => {
   let errors = {};
   let yupErrors;

@@ -572,6 +572,14 @@ button {
   }
 }
 
+.security-question-modal {
+  .form-label {
+    color: white;
+    font-size: 18px;
+    margin-top: 10px;
+  }
+}
+
 .scrollable {
   overflow-x: auto;
   max-height: 60vh;
@@ -601,6 +609,7 @@ textarea.form-control::placeholder {
 
   button {
     color: $primary-color;
+    width: 50px;
     border-left-color: transparent;
 
     img {

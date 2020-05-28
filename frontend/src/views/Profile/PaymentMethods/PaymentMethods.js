@@ -7,6 +7,7 @@ import UserService from "../../../core/services/PocketUserService";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
 import NewCardForm from "../../../core/components/Payment/Stripe/NewCardForm";
 import Loader from "../../../core/components/Loader";
+import AppAlert from "../../../core/components/AppAlert";
 
 class PaymentMethods extends Component {
   constructor(props, context) {
@@ -15,6 +16,7 @@ class PaymentMethods extends Component {
     this.deleteCard = this.deleteCard.bind(this);
 
     this.state = {
+      alert: {show: false, text: "", variant: ""},
       paymentMethods: [],
       newCard: false,
       loading: false,
@@ -49,14 +51,24 @@ class PaymentMethods extends Component {
       stripe, cardData.card, billingDetails
     ).then((result) => {
       if (result.errors) {
-        // TODO: Show message to frontend
-        console.log(result.errors);
+        this.setState({
+          alert: {
+            show: true,
+            variant: "danger",
+            text: result.errors,
+          },
+        });
         return;
       }
 
       if (result.paymentMethod) {
-        // TODO: Show message to frontend
-        console.log(true);
+        this.setState({
+          alert: {
+            show: true,
+            variant: "primary",
+            text: "Your payment method was successfully added.",
+          },
+        });
       }
     });
   }
@@ -73,12 +85,23 @@ class PaymentMethods extends Component {
     if (success) {
       this.setState({paymentMethods});
     } else {
-      // TODO: Show message on frontend.
+      this.setState({
+        alert: {
+          show: true,
+          variant: "danger",
+          text: "There was an error deleting you payment method.",
+        },
+      });
     }
   }
 
   render() {
-    const {paymentMethods: allPaymentMethods, newCard, loading} = this.state;
+    const {
+      alert,
+      paymentMethods: allPaymentMethods,
+      newCard,
+      loading,
+    } = this.state;
     const paymentMethods = allPaymentMethods.map((method) => {
       return {
         id: method.id,
@@ -97,6 +120,14 @@ class PaymentMethods extends Component {
     return (
       <Row id="general" className="payment-methods">
         <Col lg={{span: 10, offset: 1}} className="title-page">
+          {alert.show && (
+            <AppAlert
+              variant={alert.variant}
+              title={alert.text}
+              dismissible
+              onClose={() => this.setState({alert: {show: false}})}
+            />
+          )}
           <div className="body">
             <h1> Payment methods</h1>
             <div id="cards">

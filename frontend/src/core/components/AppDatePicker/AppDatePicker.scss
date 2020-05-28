@@ -2,11 +2,11 @@
 
 .date-picker {
   .wrapper {
+    width: auto;
     background-color: transparent;
     color: $light-gray;
     @include bordered-layout;
-    padding-left: 35px;
-    padding-right: 15px;
+    padding: 2px 15px 7px 35px;
 
     .icon {
       margin-left: 20px;

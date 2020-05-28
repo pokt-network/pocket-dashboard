@@ -131,54 +131,56 @@ class PaymentHistory extends Component {
     return (
       <Row id="general" className="payment-history">
         <Col lg={{span: 10, offset: 1}} className="title-page">
-          <h1>Payment history</h1>
-          <div className="filters mt-4">
-            <span className="filter">
-              <AppDatePicker
-                onChange={(date) => this.handleDateChange(date, "startDate")}
-              />
-            </span>
-            <p className="label-text">To</p>
-            <span className="filter">
-              <AppDatePicker
-                onChange={(date) => this.handleDateChange(date, "endDate")}
-              />
-            </span>
-            <span className="filter search">
-              <InputGroup className="search-input mb-3">
-                <FormControl
-                  placeholder="Search invoice"
-                  name="searchQflex-wrapuery"
-                  onChange={this.handleChange}
-                  onKeyPress={({key}) => {
-                    if (key === "Enter") {
-                      this.handleSearch();
-                    }
-                  }}
+          <div className="body">
+            <h1>Payment history</h1>
+            <div className="filters mt-4">
+              <span className="filter">
+                <AppDatePicker
+                  onChange={(date) => this.handleDateChange(date, "startDate")}
                 />
-                <InputGroup.Append>
-                  <Button
-                    type="submit"
-                    onClick={this.handleSearch}
-                    variant="outline-primary"
-                  >
-                    <FontAwesomeIcon icon={faSearch} />
-                  </Button>
-                </InputGroup.Append>
-              </InputGroup>
-            </span>
-          </div>
-          <div className="payments mt-3">
-            <BootstrapTable
-              remote
-              classes="app-table"
-              keyField="paymentID"
-              data={history}
-              bordered={false}
-              columns={columns}
-              pagination={paginationFactory(PaginationOptions)}
-              onTableChange={this.onTablePagination}
-            />
+              </span>
+              <p className="label-text">To</p>
+              <span className="filter">
+                <AppDatePicker
+                  onChange={(date) => this.handleDateChange(date, "endDate")}
+                />
+              </span>
+              <span className="filter search">
+                <InputGroup className="search-input mb-3">
+                  <FormControl
+                    placeholder="Search invoice"
+                    name="searchQuery"
+                    onChange={this.handleChange}
+                    onKeyPress={({key}) => {
+                      if (key === "Enter") {
+                        this.handleSearch();
+                      }
+                    }}
+                  />
+                  <InputGroup.Append>
+                    <Button
+                      type="submit"
+                      onClick={this.handleSearch}
+                      variant="outline-primary"
+                    >
+                      <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                  </InputGroup.Append>
+                </InputGroup>
+              </span>
+            </div>
+            <div className="payments mt-3">
+              <BootstrapTable
+                remote
+                classes="app-table"
+                keyField="paymentID"
+                data={history}
+                bordered={false}
+                columns={columns}
+                pagination={paginationFactory(PaginationOptions)}
+                onTableChange={this.onTablePagination}
+              />
+            </div>
           </div>
         </Col>
       </Row>
