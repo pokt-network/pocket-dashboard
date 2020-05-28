@@ -251,7 +251,8 @@ class PocketUserService extends PocketBaseService {
         return {
           success: response.data
         };
-      }).catch(err => {
+      })
+      .catch(err => {
         return {
           success: false,
           data: err
@@ -308,6 +309,37 @@ class PocketUserService extends PocketBaseService {
     return axios
       .post(this._getURL("auth/is-validated"), data)
       .then(response => response.data);
+  }
+
+  /**
+   * Change user password.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} password1 New password.
+   * @param {string} password2 Password confirmation.
+   *
+   * @return {Promise<*>} If password was changed returns true, otherwise false.
+   */
+  changePassword(userEmail, password1, password2) {
+    const data = {
+      email: userEmail,
+      password1,
+      password2
+    };
+
+    return axios
+      .put(this._getURL("auth/change-password"), data)
+      .then(response => {
+        return {
+          success: response.data
+        };
+      })
+      .catch(err => {
+        return {
+          success: false,
+          data: err
+        };
+      });
   }
 
   /**

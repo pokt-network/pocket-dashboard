@@ -84,7 +84,9 @@ router.post("/auth/signup", async (request, response) => {
     if (result) {
       const postValidationLink = `${data.postValidationBaseLink}?d=${await userService.generateToken(data.email)}`;
 
-      await EmailService.to(data.email).sendSignUpEmail(data.username, postValidationLink);
+      await EmailService
+        .to(data.email)
+        .sendSignUpEmail(data.username, postValidationLink);
     }
 
     response.send(result);
@@ -111,7 +113,9 @@ router.post("/auth/resend-signup-email", async (request, response) => {
     if (user) {
       const postValidationLink = `${data.postValidationBaseLink}?d=${await userService.generateToken(data.email)}`;
 
-      await EmailService.to(data.email).sendSignUpEmail(user.username, postValidationLink);
+      await EmailService
+        .to(data.email)
+        .sendSignUpEmail(user.username, postValidationLink);
     }
 
     response.send(user !== undefined);
@@ -142,7 +146,6 @@ router.post("/auth/logout", async (request, response) => {
 
 });
 
-
 /**
  * Check if user is validated.
  */
@@ -160,6 +163,31 @@ router.post("/auth/is-validated", async (request, response) => {
 
 });
 
+/**
+ * Reset password.
+ */
+router.put("/auth/change-password", async (request, response) => {
+  try {
+    /** @type {{email:string, password1: string, password2: string}} */
+    const data = request.body;
+
+    const passwordChanged = await userService.changePassword(data.email, data.password1, data.password2);
+
+    if (passwordChanged) {
+      await EmailService
+        .to(data.email)
+        .sendPasswordChangedEmail(data.email);
+    }
+
+    response.send(passwordChanged);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
 
 /**
  * Validate token.
