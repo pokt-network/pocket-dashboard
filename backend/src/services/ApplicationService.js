@@ -443,7 +443,6 @@ export default class ApplicationService extends BaseService {
    */
   async stakeApplication(application, networkChains, uPoktAmount) {
     const accountService = new AccountService();
-
     const applicationAccount = await accountService
       .importAccountToNetwork(this.pocketService, application.privateKey, application.passphrase);
 
@@ -503,8 +502,8 @@ export default class ApplicationService extends BaseService {
       return false;
     }
     const accountService = new AccountService();
-
-    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.privateKey, applicationData.passphrase);
+    const applicationAccount = await accountService
+      .importAccountToNetwork(this.pocketService, applicationData.privateKey, applicationData.passphrase);
 
     // Unstake application
     const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passphrase);
@@ -554,7 +553,7 @@ export default class ApplicationService extends BaseService {
    * @param {string} passphrase Application account passphrase.
    * @param {string} [privateKey] Application private key if is imported.
    *
-   * @returns {Promise<{application: PocketApplication,privateApplicationData: PrivatePocketAccount, networkData:Application}>} An application information.
+   * @returns {Promise<{application: PocketApplication, privateApplicationData: PrivatePocketAccount, networkData:Application}>} An application information.
    * @throws {Error} If application does not exists.
    * @async
    */

@@ -1,71 +1,49 @@
 import React, {Component} from "react";
-import BootstrapTable from "react-bootstrap-table-next";
 import {Alert, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
+import {POKT_UNSTAKING_DAYS, STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import "../../Apps/AppDetail/AppDetail.scss";
+import {formatDaysCountdown, formatNetworkData, formatNumbers, getStakeStatus} from "../../../_helpers";
+import {Link} from "react-router-dom";
+import PocketUserService from "../../../core/services/PocketUserService";
+import AppTable from "../../../core/components/AppTable";
+import AppAlert from "../../../core/components/AppAlert";
+import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
+import Segment from "../../../core/components/Segment/Segment";
 import NodeService from "../../../core/services/PocketNodeService";
-import {getStakeStatus} from "../../../_helpers";
+import "../../../scss/Views/Detail.scss";
+import PocketAccountService from "../../../core/services/PocketAccountService";
 
 class NodeDetail extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.deleteNode = this.deleteNode.bind(this);
-    this.unstakeNode = this.unstakeNode.bind(this);
-    this.stakeNode = this.stakeNode.bind(this);
-    this.unjailNode = this.unjailNode.bind(this);
-
     this.state = {
       pocketNode: {},
       networkData: {},
       chains: [],
+      aat: {},
+      accountBalance: 0,
       loading: true,
       deleteModal: false,
       deleted: false,
+      message: "",
+      purchase: true,
+      hideTable: false,
+      exists: true,
+      unstake: false,
+      unjail: false,
+      stake: false,
+      ctaButtonPressed: false,
     };
-  }
 
-  async unjailNode() {
-    const {address} = this.state.pocketNode.publicPocketAccount;
-
-    const {success} = await NodeService.unjailNode(address);
-
-    // TODO: Show message on frontend on success/failure
-    if (success) {
-      console.log("Node successfully unjailed");
-    } else {
-      console.log("There was an error unjailing the node");
-    }
-  }
-
-  async deleteNode() {
-    const {address} = this.state.pocketNode.publicPocketAccount;
-
-    const success = await NodeService.deleteNodeFromDashboard(address);
-
-    if (success) {
-      this.setState({deleted: true});
-    }
-  }
-
-  async unstakeNode() {
-    const {address} = this.state.pocketNode.publicPocketAccount;
-
-    const success = NodeService.unstakeNode(address);
-
-    /* TOOD: Show message on success/failure */
-    if (success) {
-    } else {
-    }
-  }
-
-  async stakeNode() {
-    // TODO: Implement
+    this.deleteNode = this.deleteNode.bind(this);
+    this.unstakeNode = this.unstakeNode.bind(this);
+    this.stakeNode = this.stakeNode.bind(this);
+    this.unjailNode = this.unjailNode.bind(this);
   }
 
   async componentDidMount() {
@@ -74,187 +52,391 @@ class NodeDetail extends Component {
 
     const {pocketNode, networkData} = await NodeService.getNode(address);
 
+    if (pocketNode === undefined) {
+      this.setState({loading: false, exists: false});
+      return;
+    }
+
     const chains = await NetworkService.getNetworkChains(networkData.chains);
+
+    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(
+      address
+    );
 
     this.setState({
       pocketNode,
       networkData,
       chains,
+      accountBalance,
       loading: false,
     });
+  }
+
+
+  async deleteNode() {
+    const {address} = this.state.pocketNode.publicPocketAccount;
+
+    const nodesLink = `${window.location.origin}${_getDashboardPath(
+      DASHBOARD_PATHS.nodes
+    )}`;
+    const userEmail = PocketUserService.getUserInfo().email;
+
+    const success = await NodeService.deleteNodeFromDashboard(
+      address, userEmail, nodesLink
+    );
+
+    NodeService.removeNodeInfoFromCache();
+
+    if (success) {
+      this.setState({deleted: true});
+    }
+  }
+
+  async unstakeNode({privateKey, passphrase, address: accountAddress}) {
+    const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
+    const detail = url.replace(":address", accountAddress);
+    const nodeLink = `${window.location.origin}${detail}`;
+
+    const {success, data} = await NodeService.unstakeNode(
+      {privateKey, passphrase, accountAddress}, nodeLink
+    );
+
+    if (success) {
+      window.location.reload(false);
+    } else {
+      this.setState({unstaking: false, message: data});
+    }
+  }
+
+  async unjailNode({privateKey, passphrase, address: accountAddress}) {
+    const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
+    const detail = url.replace(":address", accountAddress);
+    const nodeLink = `${window.location.origin}${detail}`;
+
+    const {success, data} = NodeService.unjailNode(
+      {privateKey, passphrase, accountAddress}, nodeLink
+    );
+
+    if (success) {
+      window.location.reload(false);
+    } else {
+      this.setState({unstaking: false, message: data});
+    }
+  }
+
+  async stakeNode({privateKey, passphrase, address}) {
+    NodeService.removeNodeInfoFromCache();
+    NodeService.saveNodeInfoInCache({address, privateKey, passphrase});
+
+    // eslint-disable-next-line react/prop-types
+    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.nodeChainList));
   }
 
   render() {
     const {
       name,
       contactEmail,
+      operator,
       description,
       icon,
+      jailed,
       publicPocketAccount,
     } = this.state.pocketNode;
-    const {stakedTokens, status: bondStatus, jailed} = this.state.networkData;
-    const status = getStakeStatus(bondStatus);
+    const {
+      tokens: stakedTokens,
+      status: stakeStatus,
+      unstaking_time: unstakingCompletionTime,
+      service_url: serviceURL,
+    } = this.state.networkData;
+    const status = getStakeStatus(parseInt(stakeStatus));
     const isStaked =
       status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
-    const address = publicPocketAccount
-      ? publicPocketAccount.address
+    let address;
+    let publicKey;
+
+    if (publicPocketAccount) {
+      address = publicPocketAccount.address;
+      publicKey = publicPocketAccount.publicKey;
+    }
+
+    const {
+      chains,
+      loading,
+      deleteModal,
+      deleted,
+      message,
+      exists,
+      unstake,
+      unjail,
+      stake,
+      ctaButtonPressed,
+      accountBalance,
+    } = this.state;
+
+    const unstakingTime = status === STAKE_STATUS.Unstaking
+      ? formatDaysCountdown(unstakingCompletionTime, POKT_UNSTAKING_DAYS)
       : undefined;
 
-    const publicKey = publicPocketAccount
-      ? publicPocketAccount.publicKey
-      : undefined;
+    let jailStatus;
+    let jailActionItem;
 
-    const {chains, loading, deleteModal, deleted} = this.state;
+    const JAIL_STATUS_STR = {
+      JAILED: "YES",
+      UNJAILED: "NO",
+      UNJAILING: "Processing",
+    };
+
+    if (jailed) {
+      jailStatus = JAIL_STATUS_STR.JAILED;
+      jailActionItem = (
+        <p
+          onClick={() => this.setState({ctaButtonPressed: true, unjail: true})}
+          className="unjail"
+        >
+          Take out of jail
+        </p>
+      );
+    } else if (!jailed) {
+      jailStatus = JAIL_STATUS_STR.UNJAILED;
+    } else {
+      jailStatus = JAIL_STATUS_STR.UNJAILING;
+      // TODO: Set unjailing time format
+      jailActionItem = <p className="unjailing">Remaining: {"5:00"} ming</p>;
+    }
 
     const generalInfo = [
-      {title: `${stakedTokens} POKT`, subtitle: "Stake tokens"},
-      {title: status, subtitle: "Stake status"},
+      {
+        title: `${formatNetworkData(stakedTokens)} POKT`,
+        subtitle: "Staked tokens",
+      },
+      {
+        title: `${formatNetworkData(accountBalance)} POKT`,
+        subtitle: "Balance",
+      },
+      {
+        title: status,
+        subtitle: "Stake Status",
+        children:
+          status === STAKE_STATUS.Unstaking ? (
+            <p className="unstaking-time">{`Unstaking time: ${unstakingTime}`}</p>
+          ) : undefined,
+      },
+      {
+        title: jailStatus,
+        subtitle: "Jailed",
+        children: jailActionItem,
+      },
+      {title: formatNumbers(formatNetworkData(stakedTokens)), subtitle: "Validator Power"},
     ];
 
-    const contactInfo = [{title: contactEmail, subtitle: "Email"}];
+    const contactInfo = [
+      {title: "Service URL", subtitle: serviceURL || ""},
+      {title: "Contact email", subtitle: contactEmail},
+    ];
+
+    const renderValidation = (handleFunc) => (
+      <ValidateKeys address={address} handleAfterValidate={handleFunc}>
+        <h1>Confirm private key</h1>
+        <p>
+          Import to the dashboard a pocket account previously created as a node
+          in the network. If your account is not a node go to create.
+        </p>
+      </ValidateKeys>
+    );
+
+    if (ctaButtonPressed && stake) {
+      return renderValidation(this.stakeNode);
+    }
+
+    if (ctaButtonPressed && unstake) {
+      return renderValidation(this.unstakeNode);
+    }
+
+    if (ctaButtonPressed && unjail) {
+      return renderValidation(this.unjailNode);
+    }
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
+    }
+
+    if (!exists) {
+      const message = (
+        <h3>
+          This Node does not exist.{" "}
+          <Link to={_getDashboardPath(DASHBOARD_PATHS.nodes)}>
+            Go to Node List
+          </Link>
+        </h3>
+      );
+
+      return <AppAlert variant="danger" title={message}/>;
     }
 
     if (deleted) {
       return (
         <DeletedOverlay
-          text="You node was succesfully removed"
-          buttonText="Go to nodes list"
+          text={
+            <p>
+              Your node
+              <br/>
+              was successfully removed
+            </p>
+          }
+          buttonText="Go to Node List"
           buttonLink={_getDashboardPath(DASHBOARD_PATHS.nodes)}
         />
       );
     }
 
     return (
-      <div id="app-detail">
+      <div className="detail">
         <Row>
           <Col>
+            {message && (
+              <AppAlert
+                variant="danger"
+                title={message}
+                onClose={() => this.setState({message: ""})}
+                dismissible
+              />
+            )}
             <div className="head">
-              {/* eslint-disable-next-line jsx-a11y/alt-text */}
-              <img src={icon} />
+              <img src={icon} alt="node-icon"/>
               <div className="info">
-                <h1 className="d-flex align-items-baseline">{name}</h1>
+                <h1 className="name d-flex align-items-center">{name}</h1>
+                <h3 className="owner">{operator}</h3>
                 <p className="description">{description}</p>
               </div>
             </div>
           </Col>
         </Row>
-        <h2 className="mt-4">General Information</h2>
-        <Row className="mt-2 stats">
-          {generalInfo.map((card, idx) => (
-            <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle} />
-            </Col>
-          ))}
-          <Col>
-            <InfoCard title={jailed === 1 ? "YES" : "NO"} subtitle={"Jailed"}>
-              {jailed ? (
-                <Button
-                  variant="link"
-                  onClick={this.unjailNode}
-                  className="link pt-0 pb-0"
-                >
-                  Take out of jail
-                </Button>
-              ) : (
-                <br />
-              )}
-            </InfoCard>
+        <Row>
+          <Col sm="11" md="11" lg="11" className="general-header page-title">
+            <h1>General Information</h1>
+          </Col>
+          <Col sm="1" md="1" lg="1">
+            {status !== STAKE_STATUS.Unstaking &&
+            <Button
+              className="float-right cta"
+              onClick={() => {
+                this.setState({ctaButtonPressed: true});
+
+                isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
+              }}
+              variant="primary">
+              <span>{isStaked ? "Unstake" : "Stake"}</span>
+            </Button>
+            }
           </Col>
         </Row>
-        <Row className="contact-info stats">
-          {contactInfo.map((card, idx) => (
+        <Row className="stats">
+          {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard
-                className="pl-4"
-                title={card.title}
-                subtitle={card.subtitle}
-              >
-                <span />
+              <InfoCard title={card.title} subtitle={card.subtitle}>
+                {card.children || <br/>}
               </InfoCard>
             </Col>
           ))}
         </Row>
-        <Row className="mt-3">
-          <Col lg="12" md="12">
-            <div className="info-section">
-              <h3>Address</h3>
-              <Alert variant="dark">{address}</Alert>
-            </div>
-            <div className="info-section">
-              <h3>Public Key</h3>
-              <Alert variant="dark">{publicKey}</Alert>
-            </div>
-          </Col>
-        </Row>
         <Row>
-          <Col>
-            <h3>Networks</h3>
-            <BootstrapTable
-              classes="app-table table-striped"
-              keyField="hash"
-              data={chains}
-              columns={TABLE_COLUMNS.NETWORK_CHAINS}
-              bordered={false}
-            />
+          <Col className={chains.length === 0 ? "mb-1" : ""}>
+            <Segment scroll={false} label="Networks">
+              <AppTable
+                scroll
+                toggle={chains.length > 0}
+                keyField="hash"
+                data={chains}
+                columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                bordered={false}
+              />
+            </Segment>
           </Col>
         </Row>
-        <Row className="mt-3 mb-4">
-          <Col className="action-buttons">
-            <div className="main-options">
-              <Button
-                onClick={isStaked ? this.unstakeNode : this.stakeNode}
-                variant="dark"
-                className="pr-4 pl-4"
-              >
-                {isStaked ? "Unstake" : "Stake"}
-              </Button>
-              <Button variant="secondary" className="ml-3 pr-4 pl-4">
-                New Purchase
-              </Button>
+        <Row className="item-data">
+          <Col sm="6" md="6" lg="6">
+            <div className="page-title">
+              <h2>Address</h2>
+              <Alert variant="light">{address}</Alert>
             </div>
-            <Button
-              onClick={() => this.setState({deleteModal: true})}
-              variant="link"
-              className="link mt-3"
-            >
-              Delete Node
-            </Button>
+          </Col>
+          <Col sm="6" md="6" lg="6">
+            <div className="page-title">
+              <h2>Public Key</h2>
+              <Alert variant="light">{publicKey}</Alert>
+            </div>
+          </Col>
+        </Row>
+        <Row className="contact-info">
+          {contactInfo.map((card, idx) => (
+            <Col key={idx} sm="6" md="6" lg="6">
+              <InfoCard
+                className={"contact"}
+                title={card.title}
+                subtitle={card.subtitle}
+              >
+                <span/>
+              </InfoCard>
+            </Col>
+          ))}
+        </Row>
+        <Row className="action-buttons">
+          <Col sm="3" md="3" lg="3">
+            <span className="option">
+              <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
+              <p>
+                <Link
+                  to={() => {
+                    const url = _getDashboardPath(DASHBOARD_PATHS.nodeEdit);
+
+                    return url.replace(":address", address);
+                  }}
+                >
+                  Edit
+                </Link>{" "}
+                to change your node description.
+              </p>
+            </span>
+          </Col>
+          <Col sm="3" md="3" lg="3">
+            <span className="option">
+              <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
+              <p>
+                <span
+                  className="link"
+                  onClick={() => this.setState({deleteModal: true})}
+                >
+                  Remove
+                </span>{" "}
+                this Node from the Dashboard.
+              </p>
+            </span>
           </Col>
         </Row>
         <Modal
-          className="app-modal"
           show={deleteModal}
           onHide={() => this.setState({deleteModal: false})}
           animation={false}
           centered
+          dialogClassName="app-modal"
         >
-          <Modal.Header closeButton>
-            <Modal.Title>
-              Are you sure you want to delete this Node?
-            </Modal.Title>
-          </Modal.Header>
+          <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
-            This action is irreversible, if you delete it you will never be able
-            to access it again
+            <h4> Are you sure you want to remove this Node?</h4>
+            Your Node will be removed from the Pocket Dashboard. However, you
+            will be able access it through the command line interface (CLI) or
+            import it back into Pocket Dashboard with the private key assigned
           </Modal.Body>
           <Modal.Footer>
             <Button
-              variant="light"
-              className="pr-4 pl-4"
-              onClick={this.deleteNode}
-            >
-              Delete
-            </Button>
-            <Button
-              variant="dark"
-              className="pr-4 pl-4"
+              className="dark-button"
               onClick={() => this.setState({deleteModal: false})}
             >
-              Cancel
+              <span>Cancel</span>
+            </Button>
+            <Button onClick={this.deleteNode}>
+              <span>Remove</span>
             </Button>
           </Modal.Footer>
         </Modal>

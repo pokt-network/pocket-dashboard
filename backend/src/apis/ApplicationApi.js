@@ -3,7 +3,8 @@ import ApplicationService from "../services/ApplicationService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
-import ApplicationCheckoutService from "../services/ApplicationCheckoutService";
+import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
+import {CoinDenom} from "@pokt-network/pocket-js";
 
 const router = express.Router();
 
@@ -17,7 +18,7 @@ const paymentService = new PaymentService();
 router.post("", async (request, response) => {
   try {
     /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}}} */
-    let data = request.body;
+    const data = request.body;
 
     const applicationID = await applicationService.createApplication(data.application);
 
@@ -302,7 +303,7 @@ router.post("/custom/stake", async (request, response) => {
           const paymentEmailData = {
             amountPaid: paymentHistory.amount,
             maxRelayPerDayAmount: item.maxRelays,
-            poktStaked: poktToStake.toString()
+            poktStaked: applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
           };
 
           await EmailService
@@ -310,18 +311,11 @@ router.post("/custom/stake", async (request, response) => {
             .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
 
           response.send(true);
-        } else {
-          // noinspection ExceptionCaughtLocallyJS
-          throw new Error("Error has occurred trying to stake application.");
         }
-      } else {
-        // noinspection ExceptionCaughtLocallyJS
-        throw new Error("The payment made, is not a valid application payment.");
       }
-    } else {
-      // noinspection ExceptionCaughtLocallyJS
-      throw new Error("The payment id used was not succeed.");
     }
+    // noinspection ExceptionCaughtLocallyJS
+    throw new Error("Error has occurred trying to stake application.");
   } catch (e) {
     const error = {
       message: e.toString()

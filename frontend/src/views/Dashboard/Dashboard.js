@@ -4,16 +4,11 @@ import {Alert, Col, Dropdown, Row} from "react-bootstrap";
 import "./Dashboard.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
-import {
-  APPLICATIONS_LIMIT,
-  /*NODES_LIMIT,*/ STYLING,
-  TABLE_COLUMNS,
-} from "../../_constants";
+import {APPLICATIONS_LIMIT, STYLING, TABLE_COLUMNS} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
 import {mapStatusToField} from "../../_helpers";
-// import NodeService from "../../core/services/PocketNodeService";
 import Segment from "../../core/components/Segment/Segment";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -34,7 +29,7 @@ class Dashboard extends Component {
     super(props, context);
 
     this.state = {
-      alert: true,
+      welcomeAlert: true,
       loading: true,
       chains: [],
       userApps: [],
@@ -50,14 +45,18 @@ class Dashboard extends Component {
     );
     // const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
     const chains = await NetworkService.getAvailableNetworkChains();
-    const alert = UserService.getShowWelcomeMessage();
+    const welcomeAlert = UserService.getShowWelcomeMessage();
 
-    this.setState({alert, userApps, chains, loading: false});
+    if (welcomeAlert) {
+      UserService.showWelcomeMessage(false);
+    }
+
+    this.setState({welcomeAlert, userApps, chains, loading: false});
   }
 
   render() {
     const {
-      alert,
+      welcomeAlert,
       chains,
       loading,
       userApps: allUserApps,
@@ -73,12 +72,11 @@ class Dashboard extends Component {
 
     return (
       <div id="dashboard">
-        {alert && (
+        {welcomeAlert && (
           <Alert
             variant="primary"
             onClose={() => {
-              UserService.showWelcomeMessage(true);
-              this.setState({alert: false});
+              this.setState({welcomeAlert: false});
             }}
             dismissible
           >
@@ -128,39 +126,38 @@ class Dashboard extends Component {
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
-            {/*//TODO: Uncomment when node release.*/}
-            {/*<Dropdown className="cta">*/}
-            {/*  <Dropdown.Toggle className="pl-4 pr-4" variant="primary" id="dropdown-basic">*/}
-            {/*    <span>*/}
-            {/*      Nodes*/}
-            {/*      <FontAwesomeIcon*/}
-            {/*        className="icon"*/}
-            {/*        icon={faAngleDown}*/}
-            {/*        color={STYLING.primaryColor}*/}
-            {/*      />*/}
-            {/*    </span>*/}
-            {/*  </Dropdown.Toggle>*/}
+            <Dropdown className="cta">
+              <Dropdown.Toggle className="pl-4 pr-4" variant="primary" id="dropdown-basic">
+                <span>
+                  Nodes
+                  <FontAwesomeIcon
+                    className="icon"
+                    icon={faAngleDown}
+                    color={STYLING.primaryColor}
+                  />
+                </span>
+              </Dropdown.Toggle>
 
-            {/*  <Dropdown.Menu>*/}
-            {/*    <Dropdown.Item*/}
-            {/*      onClick={() =>*/}
-            {/*        // eslint-disable-next-line react/prop-types*/}
-            {/*        this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.createNodeForm))*/}
-            {/*      }*/}
-            {/*    >*/}
-            {/*      Create*/}
-            {/*    </Dropdown.Item>*/}
+              <Dropdown.Menu>
+                <Dropdown.Item
+                  onClick={() =>
+                    // eslint-disable-next-line react/prop-types
+                    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.createNodeForm))
+                  }
+                >
+                  Create
+                </Dropdown.Item>
 
-            {/*    <Dropdown.Item*/}
-            {/*      onClick={() =>*/}
-            {/*        // eslint-disable-next-line react/prop-types*/}
-            {/*        this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.importNode))*/}
-            {/*      }*/}
-            {/*    >*/}
-            {/*      Import*/}
-            {/*    </Dropdown.Item>*/}
-            {/*  </Dropdown.Menu>*/}
-            {/*</Dropdown>*/}
+                <Dropdown.Item
+                  onClick={() =>
+                    // eslint-disable-next-line react/prop-types
+                    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.importNode))
+                  }
+                >
+                  Import
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
           </Col>
         </Row>
         <Row className="stats mb-4" noGutters>

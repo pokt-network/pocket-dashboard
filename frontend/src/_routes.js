@@ -12,7 +12,7 @@ import CreateAppForm from "./views/Apps/CreateAppForm/CreateAppForm";
 import TierSelection from "./views/Apps/TierSelection/TierSelection";
 import FreeTier from "./views/FreeTier/FreeTier";
 import ApplicationChainList from "./views/Apps/ChainList/ApplicationChainList";
-import Import from "./views/Apps/Import/ImportApp";
+import Import from "./views/Apps/Import/Import";
 import AppDetail from "./views/Apps/AppDetail/AppDetail";
 import SelectRelays from "./views/Apps/SelectRelays/SelectRelays";
 import NodesMain from "./views/Nodes/NodesMain/NodesMain";
@@ -26,13 +26,14 @@ import NodeChainList from "./views/Nodes/NodeChainList/NodeChainList";
 import EditApp from "./views/Apps/EditApp/EditApp";
 import NodeDetail from "./views/Nodes/NodeDetail/NodeDetail";
 import EditNode from "./views/Nodes/EditNode/EditNode";
-import ImportNode from "./views/Nodes/ImportNode/ImportNode";
 import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
 import OrderSummary from "./views/Payment/OrderSummary/OrderSummary";
 import ResetPassword from "./views/Auth/ResetPassword/ResetPassword";
 import AppPassphrase from "./views/Apps/AppPassphrase/AppPassphrase";
 import TermsOfService from "./views/Support/TermsOfService";
 import PrivacyPolicy from "./views/Support/PrivacyPolicy";
+import SelectValidatorPower from "./views/Nodes/SelectValidatorPower/SelectValidatorPower";
+import NodePassphrase from "./views/Nodes/NodePassphrase/Nodepassphrase";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -61,7 +62,9 @@ export const DASHBOARD_PATHS = {
   nodeEdit: "/nodes/edit/:address",
   profile: "/profile",
   createNodeForm: "/nodes/new",
-  nodeChainList: "/nodes/chains",
+  nodePassphrase: "/nodes/new/passphrase",
+  nodeChainList: "/nodes/new/chains",
+  selectValidatorPower: "/nodes/new/validator-power",
   importNode: "/nodes/import",
   orderSummary: "/payment/summary",
   invoice: "/payment/invoice",
@@ -184,10 +187,22 @@ export const dashboardRoutes = [
     component: AppPassphrase,
   },
   {
+    path: DASHBOARD_PATHS.nodePassphrase,
+    exact: true,
+    name: "Create Node Passhprase",
+    component: NodePassphrase,
+  },
+  {
     path: DASHBOARD_PATHS.nodeChainList,
     exact: true,
     name: "Nodes Chain List",
     component: NodeChainList,
+  },
+  {
+    path: DASHBOARD_PATHS.selectValidatorPower,
+    exact: true,
+    name: "Nodes Select Validator Power",
+    component: SelectValidatorPower,
   },
   {
     path: DASHBOARD_PATHS.nodes,
@@ -206,7 +221,7 @@ export const dashboardRoutes = [
     exact: true,
 
     name: "Node Detail",
-    component: ImportNode,
+    component: Import,
   },
   {
     path: DASHBOARD_PATHS.nodeEdit,

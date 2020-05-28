@@ -95,6 +95,10 @@ export const Configurations = {
         max: process.env.CHECKOUT_MAX_RELAYS_PER_DAY,
         base_relay_per_pokt: process.env.CHECKOUT_BASE_RELAY_PER_POKT
       },
+      validator_power: {
+        min: process.env.CHECKOUT_MIN_VALIDATOR_POWER,
+        max: process.env.CHECKOUT_MAX_VALIDATOR_POWER
+      },
       stability: process.env.CHECKOUT_STABILITY,
       sessions_per_day: process.env.CHECKOUT_SESSIONS_PER_DAY,
       p_rate: process.env.CHECKOUT_P_RATE

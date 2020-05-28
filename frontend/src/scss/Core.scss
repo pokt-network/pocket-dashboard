@@ -547,7 +547,7 @@ button {
 }
 
 .empty-overlay {
-  height: 35vh;
+  height: 45vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -570,6 +570,10 @@ button {
   }
 }
 
+.modal {
+  background-color: rgba(6, 32, 46, 0.6);
+}
+
 .modal-dialog {
   .modal-content {
     background-color: $dark-blue;
@@ -577,7 +581,8 @@ button {
     box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   }
 
-  .modal-title {
+  .modal-title,
+  .modal-content h4 {
     text-transform: uppercase;
     font-family: $secondary-font-family;
     color: $primary-color;
@@ -767,6 +772,22 @@ input[type="radio"] {
   color: $black;
   border: 1px solid $primary-color;
   border-radius: 50%;
+  appearance: none;
+  outline: 0;
+  cursor: pointer;
+
+  &:checked {
+
+    ~label {
+      margin-top: 0px;
+      margin-left: 3px;
+      height: 25%;
+      position: absolute;
+      background-color: $primary-color;
+      width: 60%;
+      border-radius: 50%;
+    }
+  }
 }
 
 #general {

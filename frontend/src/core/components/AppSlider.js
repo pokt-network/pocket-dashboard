@@ -3,12 +3,17 @@ import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import Tooltip from "rc-tooltip";
 import {STYLING} from "../../_constants";
+import {formatNumbers} from "../../_helpers";
 
 class AppSlider extends Component {
   constructor(props) {
     super(props);
+
+    // eslint-disable-next-line react/prop-types
+    const {defaultValue} = this.props;
+
     this.state = {
-      value: 0,
+      value: defaultValue || 0,
     };
   }
 
@@ -26,6 +31,9 @@ class AppSlider extends Component {
   render() {
     const {value} = this.state;
 
+    // eslint-disable-next-line react/prop-types
+    const {type} = this.props;
+
     const Handle = Slider.Handle;
 
     const handle = (props) => {
@@ -35,7 +43,7 @@ class AppSlider extends Component {
       return (
         <Tooltip
           prefixCls="rc-slider-tooltip"
-          overlay={`${value} Relays per day`}
+          overlay={`${formatNumbers(value)} ${type}`}
           visible={true}
           placement="top"
           key={index}

@@ -17,6 +17,7 @@ class Chains extends Component {
       chosenChains: [],
       data: {
         searchChainQuery: "",
+        serviceURL: "",
       },
     };
   }

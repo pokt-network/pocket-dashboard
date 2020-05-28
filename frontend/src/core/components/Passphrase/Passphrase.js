@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import "./AppPassphrase.scss";
+import "./Passphrase.scss";
 import {Col, Form, Row, Button} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
 import AppTable from "../../../core/components/AppTable";
@@ -7,24 +7,17 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
-import {
-  createAndDownloadJSONFile,
-  scrollToId,
-  validateYup,
-} from "../../../_helpers";
-import PocketApplicationService from "../../../core/services/PocketApplicationService";
-import ApplicationService from "../../../core/services/PocketApplicationService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import {createAndDownloadJSONFile, validateYup} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import LoadingButton from "../../../core/components/LoadingButton";
 
-class AppPassphrase extends Component {
+class Passphrase extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.changeInputType = this.changeInputType.bind(this);
     this.handlePassphrase = this.handlePassphrase.bind(this);
-    this.createApplicationAccount = this.createApplicationAccount.bind(this);
+    this.createAccount = this.createAccount.bind(this);
     this.downloadKeyFile = this.downloadKeyFile.bind(this);
 
     this.iconUrl = {
@@ -43,6 +36,8 @@ class AppPassphrase extends Component {
     });
 
     this.state = {
+      type: "",
+      fileName: "",
       created: false,
       fileDownloaded: false,
       inputType: "password",
@@ -90,52 +85,20 @@ class AppPassphrase extends Component {
     }
   }
 
-  async createApplicationAccount() {
-    this.setState({loading: true});
-    const applicationInfo = PocketApplicationService.getApplicationInfo();
-    const {passPhrase} = this.state;
-
-    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(
-      DASHBOARD_PATHS.appDetail
-    )}`;
-
-    const {success, data} = await ApplicationService.createApplicationAccount(
-      applicationInfo.id, passPhrase, applicationBaseLink
-    );
-
-    if (success) {
-      const {privateApplicationData} = data;
-      const {address, privateKey} = privateApplicationData;
-
-      PocketApplicationService.removeAppInfoFromCache();
-      PocketApplicationService.saveAppInfoInCache({
-        applicationID: applicationInfo.id,
-        passphrase: passPhrase,
-        address,
-        privateKey,
-      });
-
-      this.setState({
-        created: true,
-        address,
-        privateKey,
-      });
-    } else {
-      this.setState({error: {show: true, message: data.message}});
-      scrollToId("alert");
-    }
-    this.setState({loading: false});
-  }
+  /**
+   * Handles account creation and next steps
+   * @abstract
+   */
+  async createAccount() {}
 
   downloadKeyFile() {
-    const {privateKey, passPhrase} = this.state;
+    const {privateKey, passPhrase, fileName} = this.state;
     const data = {private_key: privateKey, passphrase: passPhrase};
 
-    createAndDownloadJSONFile("MyPocketApplication", data);
+    createAndDownloadJSONFile(fileName, data);
 
     this.setState({
       fileDownloaded: true,
-      redirectPath: _getDashboardPath(DASHBOARD_PATHS.applicationChainsList),
     });
   }
 
@@ -151,6 +114,7 @@ class AppPassphrase extends Component {
       redirectPath,
       error,
       loading,
+      type,
     } = this.state;
 
     const generalInfo = [
@@ -161,7 +125,7 @@ class AppPassphrase extends Component {
     ];
 
     return (
-      <div id="app-passphrase">
+      <div id="passphrase">
         <Row>
           <Col className="page-title">
             {error.show && (
@@ -172,7 +136,7 @@ class AppPassphrase extends Component {
                 onClose={() => this.setState({error: {show: false}})}
               />
             )}
-            <h1>Create App</h1>
+            <h1>Create {type}</h1>
           </Col>
         </Row>
         <Row>
@@ -231,10 +195,10 @@ class AppPassphrase extends Component {
                           className: `pl-4 pr-4 pt-2 pb-2 ${
                             created ? "download-key-file-button" : null
                           }`,
-                          variant: !created  ? "primary" : "dark",
+                          variant: !created ? "primary" : "dark",
                           type: "submit",
                           onClick: !created
-                            ? () => this.createApplicationAccount()
+                            ? () => this.createAccount()
                             : () => this.downloadKeyFile(),
                         }}
                       >
@@ -303,7 +267,7 @@ class AppPassphrase extends Component {
           ))}
         </Row>
         <br />
-        <Row className="mb-5 app-networks">
+        <Row className="mb-5 networks">
           <Col>
             <Segment label="Networks">
               <AppTable
@@ -334,4 +298,4 @@ class AppPassphrase extends Component {
   }
 }
 
-export default AppPassphrase;
+export default Passphrase;

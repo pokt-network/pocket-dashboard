@@ -17,6 +17,15 @@
     }
   }
 
+  p.info:first-of-type {
+    margin-bottom: 0;
+    line-height: 1;
+  }
+
+  p.info {
+    margin-bottom: 20px;
+  }
+
   .create-form-right-side {
     padding: 35px 150px 0 72px;
 
@@ -37,6 +46,7 @@
       font-weight: bold;
     }
 
+
     ul {
       padding-inline-start: 15px;
       margin-bottom: 0;
@@ -55,6 +65,7 @@
         height: 18px;
       }
 
+      p,
       span,
       a {
         font-family: $primary-font-family;
