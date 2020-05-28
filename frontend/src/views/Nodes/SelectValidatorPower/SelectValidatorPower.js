@@ -8,7 +8,6 @@ import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import PocketPaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
-import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import {faCaretUp} from "@fortawesome/free-solid-svg-icons";
 import AppAlert from "../../../core/components/AppAlert";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
@@ -33,7 +32,7 @@ class SelectValidatorPower extends Purchase {
   componentDidMount() {
     const {
       address: accountAddress,
-    } = PocketApplicationService.getApplicationInfo();
+    } = NodeService.getNodeInfo();
 
     PaymentService.getAvailableCurrencies().then((currencies) => {
       PocketCheckoutService.getValidatorPower().then((validatorPower) => {
