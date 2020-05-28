@@ -59,10 +59,7 @@ class CreateAppForm extends CreateForm {
       success,
       data: importData,
     } = await ApplicationService.createApplicationAccount(
-      applicationId,
-      passphrase,
-      applicationBaseLink,
-      privateKey
+      applicationId, passphrase, applicationBaseLink, privateKey
     );
 
     if (success) {
