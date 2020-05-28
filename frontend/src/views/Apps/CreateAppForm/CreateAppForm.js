@@ -232,7 +232,7 @@ class CreateAppForm extends CreateForm {
                   <Form.Group>
                     <Form.Label>Website</Form.Label>
                     <Form.Control
-                      placeholder="www.example.com"
+                      placeholder="https://www.example.com"
                       name="url"
                       value={values.url}
                       onChange={handleChange}
@@ -278,7 +278,7 @@ class CreateAppForm extends CreateForm {
                 <ul>
                   <li>
                     <strong>Purchasers</strong> are not buying POKT as an
-                    investment with the expectation of profit or appreciation
+                    investment with the expectation of profit or appreciation.
                   </li>
                   <li>
                     <strong>Purchasers</strong> are buying POKT to use it.

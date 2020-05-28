@@ -303,7 +303,7 @@ input {
 }
 
 .form-group {
-  margin-bottom: 0.8rem;
+  margin-bottom: 0;
 }
 
 .form-control {
@@ -311,6 +311,11 @@ input {
   height: 32px;
   line-height: 32px;
   border-radius: 21px;
+  margin-bottom: 0.8rem;
+
+  &.is-invalid {
+    margin-bottom: 0;
+  }
 
   &:focus {
     box-shadow: none;
@@ -658,15 +663,23 @@ textarea.form-control::placeholder {
 
 .form-control.is-invalid {
   border-color: $border-blue;
+  background-image: url(/assets/red_alert.svg);
+  background-size: 16px 16px;
+
+  &:focus {
+    border-color: $border-blue;
+    box-shadow: none;
+  }
 }
 
 .invalid-feedback,
 .error {
   margin-left: 10px;
   padding-right: 10px;
-  color: #fc635f;
-  font-size: 16px;
+  color: #ff0000;
+  font-size: 14px;
   font-weight: bold !important;
+  line-height: normal;
 }
 
 .invalid-feedback {
