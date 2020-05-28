@@ -1,19 +1,14 @@
 import React, {Component} from "react";
 import {Alert, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
+import {POKT_UNSTAKING_DAYS, STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {
-  formatNetworkData,
-  formatNumbers,
-  getStakeStatus,
-} from "../../../_helpers";
+import {formatDaysCountdown, formatNetworkData, formatNumbers, getStakeStatus,} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
-import moment from "moment";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
 import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
@@ -48,15 +43,10 @@ class NodeDetail extends Component {
     this.deleteNode = this.deleteNode.bind(this);
     this.unstakeNode = this.unstakeNode.bind(this);
     this.stakeNode = this.stakeNode.bind(this);
-    this.fetchData = this.fetchData.bind(this);
     this.unjailNode = this.unjailNode.bind(this);
   }
 
   async componentDidMount() {
-    this.fetchData();
-  }
-
-  async fetchData() {
     // eslint-disable-next-line react/prop-types
     const {address} = this.props.match.params;
 
@@ -82,6 +72,7 @@ class NodeDetail extends Component {
     });
   }
 
+
   async deleteNode() {
     const {address} = this.state.pocketNode.publicPocketAccount;
 
@@ -93,6 +84,8 @@ class NodeDetail extends Component {
     const success = await NodeService.deleteNodeFromDashboard(
       address, userEmail, nodesLink
     );
+
+    NodeService.removeNodeInfoFromCache();
 
     if (success) {
       this.setState({deleted: true});
@@ -109,9 +102,7 @@ class NodeDetail extends Component {
     );
 
     if (success) {
-      // "Reload page" for updated networkData
-      this.setState({loading: true, unstaking: false});
-      this.fetchData();
+      window.location.reload();
     } else {
       this.setState({unstaking: false, message: data});
     }
@@ -127,9 +118,7 @@ class NodeDetail extends Component {
     );
 
     if (success) {
-      // "Reload page" for updated networkData
-      this.setState({loading: true, unjail: false});
-      this.fetchData();
+      window.location.reload();
     } else {
       this.setState({unstaking: false, message: data});
     }
@@ -154,12 +143,12 @@ class NodeDetail extends Component {
       publicPocketAccount,
     } = this.state.pocketNode;
     const {
-      staked_tokens: stakedTokens,
-      status: bondStatus,
-      unstakingCompletionTime,
-      serviceURL,
+      tokens: stakedTokens,
+      status: stakeStatus,
+      unstaking_time: unstakingCompletionTime,
+      service_url: serviceURL,
     } = this.state.networkData;
-    const status = getStakeStatus(bondStatus);
+    const status = getStakeStatus(parseInt(stakeStatus));
     const isStaked =
       status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
@@ -184,6 +173,10 @@ class NodeDetail extends Component {
       ctaButtonPressed,
       accountBalance,
     } = this.state;
+
+    const unstakingTime = status === STAKE_STATUS.Unstaking
+      ? formatDaysCountdown(unstakingCompletionTime, POKT_UNSTAKING_DAYS)
+      : undefined;
 
     let jailStatus;
     let jailActionItem;
@@ -226,9 +219,7 @@ class NodeDetail extends Component {
         subtitle: "Stake Status",
         children:
           status === STAKE_STATUS.Unstaking ? (
-            <p className="unstaking-time">{`Unstaking time: ${moment
-              .duration({seconds: unstakingCompletionTime})
-              .humanize()}`}</p>
+            <p className="unstaking-time">{`Unstaking time: ${unstakingTime}`}</p>
           ) : undefined,
       },
       {
@@ -236,8 +227,7 @@ class NodeDetail extends Component {
         subtitle: "Jailed",
         children: jailActionItem,
       },
-      // TODO: Get validator power
-      {title: formatNumbers(10000), subtitle: "Validator Power"},
+      {title: formatNumbers(formatNetworkData(stakedTokens)), subtitle: "Validator Power"},
     ];
 
     const contactInfo = [
@@ -268,7 +258,7 @@ class NodeDetail extends Component {
     }
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     if (!exists) {
@@ -281,7 +271,7 @@ class NodeDetail extends Component {
         </h3>
       );
 
-      return <AppAlert variant="danger" title={message} />;
+      return <AppAlert variant="danger" title={message}/>;
     }
 
     if (deleted) {
@@ -290,7 +280,7 @@ class NodeDetail extends Component {
           text={
             <p>
               Your node
-              <br />
+              <br/>
               was successfully removed
             </p>
           }
@@ -313,7 +303,7 @@ class NodeDetail extends Component {
               />
             )}
             <div className="head">
-              <img src={icon} alt="node-icon" />
+              <img src={icon} alt="node-icon"/>
               <div className="info">
                 <h1 className="name d-flex align-items-center">{name}</h1>
                 <h3 className="owner">{operator}</h3>
@@ -347,7 +337,7 @@ class NodeDetail extends Component {
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
               <InfoCard title={card.title} subtitle={card.subtitle}>
-                {card.children || <br />}
+                {card.children || <br/>}
               </InfoCard>
             </Col>
           ))}
@@ -388,7 +378,7 @@ class NodeDetail extends Component {
                 title={card.title}
                 subtitle={card.subtitle}
               >
-                <span />
+                <span/>
               </InfoCard>
             </Col>
           ))}
@@ -396,7 +386,7 @@ class NodeDetail extends Component {
         <Row className="action-buttons">
           <Col sm="3" md="3" lg="3">
             <span className="option">
-              <img src={"/assets/edit.svg"} alt="edit-action-icon" />
+              <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
               <p>
                 <Link
                   to={() => {
@@ -413,7 +403,7 @@ class NodeDetail extends Component {
           </Col>
           <Col sm="3" md="3" lg="3">
             <span className="option">
-              <img src={"/assets/trash.svg"} alt="trash-action-icon" />
+              <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
               <p>
                 <span
                   className="link"

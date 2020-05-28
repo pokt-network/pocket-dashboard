@@ -4,6 +4,7 @@ import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
 import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
+import {CoinDenom} from "@pokt-network/pocket-js";
 
 const router = express.Router();
 
@@ -302,7 +303,7 @@ router.post("/custom/stake", async (request, response) => {
           const paymentEmailData = {
             amountPaid: paymentHistory.amount,
             maxRelayPerDayAmount: item.maxRelays,
-            poktStaked: poktToStake.toString()
+            poktStaked: applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
           };
 
           await EmailService

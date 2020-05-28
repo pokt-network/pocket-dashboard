@@ -1,11 +1,6 @@
 import React from "react";
 import numeral from "numeral";
-import {
-  BOND_STATUS,
-  DEFAULT_POKT_DENOMINATION_BASE,
-  STAKE_STATUS,
-  VALIDATION_MESSAGES,
-} from "./_constants";
+import {BOND_STATUS, DEFAULT_POKT_DENOMINATION_BASE, STAKE_STATUS, VALIDATION_MESSAGES,} from "./_constants";
 import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
@@ -58,12 +53,12 @@ export const isActiveExactUrl = (match, location) => {
   return match.url === location.pathname;
 };
 
-export const mapStatusToField = (app) => {
+export const mapStatusToField = (item) => {
   return {
-    ...app,
+    ...item,
     networkData: {
-      ...app.networkData,
-      status: getStakeStatus(app.networkData.status),
+      ...item.networkData,
+      status: getStakeStatus(_.isNumber(item.networkData.status) ? item.networkData.status : parseInt(item.networkData.status)),
     },
   };
 };

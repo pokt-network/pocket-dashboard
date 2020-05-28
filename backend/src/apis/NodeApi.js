@@ -4,6 +4,7 @@ import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
 import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
+import {CoinDenom} from "@pokt-network/pocket-js";
 
 const router = express.Router();
 
@@ -223,6 +224,7 @@ router.post("/custom/stake", async (request, response) => {
 
     /** @type {{node: {privateKey: string, passphrase: string, serviceURL: string}, networkChains: string[], payment:{id: string}, nodeLink: string}} */
     const data = request.body;
+
     const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
     if (paymentHistory.isSuccessPayment(true)) {
@@ -243,7 +245,7 @@ router.post("/custom/stake", async (request, response) => {
           const paymentEmailData = {
             amountPaid: paymentHistory.amount,
             validatorPowerAmount: item.validatorPower,
-            poktStaked: poktToStake.toString()
+            poktStaked: nodeCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
           };
 
           await EmailService

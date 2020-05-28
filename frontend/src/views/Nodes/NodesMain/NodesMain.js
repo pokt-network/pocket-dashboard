@@ -6,27 +6,19 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {
-  NODES_LIMIT,
-  BOND_STATUS_STR,
-  STYLING,
-  TABLE_COLUMNS,
-} from "../../../_constants";
+import {BOND_STATUS_STR, NODES_LIMIT, STYLING, TABLE_COLUMNS,} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {
-  formatNetworkData,
-  formatNumbers,
-  getStakeStatus,
-  mapStatusToField,
-} from "../../../_helpers";
+import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField,} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 import InfiniteScroll from "react-infinite-scroller";
 import ClipLoader from "react-spinners/ClipLoader";
 import NodeService from "../../../core/services/PocketNodeService";
+import _ from "lodash";
+
 
 class NodesMain extends Main {
   constructor(props, context) {
@@ -243,7 +235,7 @@ class NodesMain extends Main {
                     {hasNodes ? (
                       filteredItems.map((node, idx) => {
                         const {name, icon} = node.pocketNode;
-                        const {stakedTokens, status} = node.networkData;
+                        const {tokens: stakedTokens, status} = node.networkData;
 
                         return (
                           <Link
@@ -273,7 +265,7 @@ class NodesMain extends Main {
                               subtitle={`Staked POKT: ${formatNetworkData(
                                 stakedTokens
                               )} POKT`}
-                              status={getStakeStatus(status)}
+                              status={getStakeStatus(_.isNumber(status) ? status : parseInt(status))}
                               iconURL={icon}
                             />
                           </Link>

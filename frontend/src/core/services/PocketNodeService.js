@@ -51,15 +51,15 @@ class PocketNodeService extends PocketBaseService {
    * @param {string} [serviceURL] The service URL.
    */
   saveNodeInfoInCache({
-    nodeID,
-    address,
-    privateKey,
-    passphrase,
-    chains,
-    data,
-    imported,
-    serviceURL,
-  }) {
+                        nodeID,
+                        address,
+                        privateKey,
+                        passphrase,
+                        chains,
+                        data,
+                        imported,
+                        serviceURL,
+                      }) {
     if (nodeID) {
       this.ls.set("node_id", {data: nodeID});
     }

@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {STAKE_STATUS, TABLE_COLUMNS, POKT_UNSTAKING_DAYS} from "../../../_constants";
+import {POKT_UNSTAKING_DAYS, STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
 import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
@@ -120,8 +120,7 @@ class AppDetail extends Component {
       : await ApplicationService.unstakeApplication(application, link);
 
     if (success) {
-      // "Reload page" for updated networkData
-      this.setState({loading: true, unstake: false, ctaButtonPressed: false});
+      window.location.reload();
     } else {
       this.setState({unstake: false, ctaButtonPressed: false, message: data});
     }
@@ -152,11 +151,11 @@ class AppDetail extends Component {
     const {
       max_relays: maxRelays,
       staked_tokens: stakedTokens,
-      status: bondStatus,
+      status: stakeStatus,
       unstaking_time: unstakingCompletionTime,
     } = this.state.networkData;
 
-    const status = getStakeStatus(bondStatus);
+    const status = getStakeStatus(parseInt(stakeStatus));
     const isStaked =
       status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 

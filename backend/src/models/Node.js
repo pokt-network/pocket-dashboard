@@ -115,7 +115,7 @@ export class ExtendedPocketNode {
    * @param {PublicPocketAccount} publicPocketAccount Public pocket account.
    * @param {NodeParams} nodeParameters Node parameter from network.
    *
-   * @returns {{address:string, publicKey:string, jailed:boolean, status:string, chains:string[], stakedTokens: string, serviceURL: URL, unstakingCompletionTime?: string}} Node.
+   * @returns {{address:string, publicKey:string, jailed:boolean, status:string, chains:string[], tokens: string, service_url: string, unstaking_time?: string}} Node.
    * @static
    */
   static createNetworkNode(publicPocketAccount, nodeParameters) {
@@ -125,11 +125,11 @@ export class ExtendedPocketNode {
       address,
       publicKey,
       jailed: false,
-      status: "Unstaked",
-      serviceURL: null,
+      status: "0",
+      service_url: "",
       chains: [],
-      stakedTokens: "0",
-      unstakingCompletionTime: nodeParameters.unstakingTime.toString()
+      tokens: "0",
+      unstaking_time: nodeParameters.unstakingTime.toString()
     };
   }
 }
