@@ -41,8 +41,7 @@ class ForgotPassword extends Component {
       );
 
       if (isValidated) {
-        console.log(isValidated + " " + email);
-        console.log(); // eslint-disable-next-line react/prop-types
+        // eslint-disable-next-line react/prop-types
         this.props.history.push({
           pathname: ROUTE_PATHS.answer_security_questions,
           state: { email },
