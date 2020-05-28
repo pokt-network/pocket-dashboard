@@ -328,6 +328,10 @@ label.form-label {
   font-weight: 300;
   color: $form-label-font-color;
   margin-bottom: 10px;
+
+  .has-error {
+    color: #ff0000;
+  }
 }
 
 .badge,

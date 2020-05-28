@@ -1,4 +1,5 @@
 import React from "react";
+import cls from "classnames";
 import {Link, Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
@@ -59,7 +60,10 @@ class CreateAppForm extends CreateForm {
       success,
       data: importData,
     } = await ApplicationService.createApplicationAccount(
-      applicationId, passphrase, applicationBaseLink, privateKey
+      applicationId,
+      passphrase,
+      applicationBaseLink,
+      privateKey
     );
 
     if (success) {
@@ -188,7 +192,12 @@ class CreateAppForm extends CreateForm {
               {({handleSubmit, handleChange, values, errors}) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
-                    <Form.Label>Application Name*</Form.Label>
+                    <Form.Label>
+                      Application Name
+                      <span className={cls({"has-error": !!errors.name})}>
+                        *
+                      </span>
+                    </Form.Label>
                     <Form.Control
                       name="name"
                       placeholder="maximum of 20 characters"
@@ -202,7 +211,10 @@ class CreateAppForm extends CreateForm {
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>
-                      Application Developer or Company name*
+                      Application Developer or Company name
+                      <span className={cls({"has-error": !!errors.owner})}>
+                        *
+                      </span>
                     </Form.Label>
                     <Form.Control
                       name="owner"
@@ -216,7 +228,14 @@ class CreateAppForm extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Contact Email*</Form.Label>
+                    <Form.Label>
+                      Contact Email
+                      <span
+                        className={cls({"has-error": !!errors.contactEmail})}
+                      >
+                        *
+                      </span>
+                    </Form.Label>
                     <Form.Control
                       placeholder="hello@example.com"
                       name="contactEmail"
@@ -243,7 +262,9 @@ class CreateAppForm extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Write an optional description of your app here</Form.Label>
+                    <Form.Label>
+                      Write an optional description of your app here
+                    </Form.Label>
                     <Form.Control
                       placeholder="maximum of 150 characters"
                       as="textarea"
