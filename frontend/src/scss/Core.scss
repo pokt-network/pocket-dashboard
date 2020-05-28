@@ -698,11 +698,12 @@ input[type="checkbox"] // input[type="radio"]
   outline: 0;
   cursor: pointer;
   transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
+  padding-bottom: 1px;
 
   &::before {
     content: "";
-    height: 70%;
-    width: 45%;
+    height: 65%;
+    width: 40%;
     border-style: solid;
     border-color: $white;
     border-width: 0 2px 2px 0;
