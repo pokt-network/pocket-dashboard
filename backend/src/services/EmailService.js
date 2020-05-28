@@ -91,7 +91,7 @@ export default class EmailService {
    */
   async sendPasswordChangedEmail(userName) {
     const data = {
-      USER_NAME: userName,
+      USER_NAME: userName
     };
 
     await this.__sendEmail(Configurations.email.template_ids.PasswordChanged, data);
