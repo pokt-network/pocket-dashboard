@@ -134,6 +134,7 @@ class CreateAppForm extends CreateForm {
       redirectParams,
       agreeTerms,
       error,
+      imgError,
     } = this.state;
 
     if (created) {
@@ -289,8 +290,13 @@ class CreateAppForm extends CreateForm {
           <Col sm="8" className="create-form-right-side">
             <div>
               <ImageFileUpload
-                handleDrop={(img) => this.handleDrop(img.preview)}
+                handleDrop={(img, error) => {
+                  const imgResult = img === null ? undefined : img;
+
+                  this.handleDrop(imgResult ?? undefined, error);
+                }}
               />
+              {imgError && <p className="error mt-2">{imgError}</p>}
 
               <div className="legal-info">
                 <ul>

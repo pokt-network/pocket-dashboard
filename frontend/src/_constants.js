@@ -21,6 +21,8 @@ export const ITEM_TYPES = {
   NODE: "node",
 };
 
+export const MAX_FILE_IMG_SIZE = 1000000; // 1MB
+
 export const POKT_UNSTAKING_DAYS = 21;
 
 export const DEFAULT_POKT_DENOMINATION_BASE = 6;
