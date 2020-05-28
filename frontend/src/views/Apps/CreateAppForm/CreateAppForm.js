@@ -1,4 +1,5 @@
 import React from "react";
+import cls from "classnames";
 import {Link, Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
@@ -160,13 +161,20 @@ class CreateAppForm extends CreateForm {
             )}
             <h1>App Information</h1>
             <p className="info">
-              Fill in these quick questions to identity your app on the
-              dashboard. Fields marked with * are required to continue.
+              Fill in these few quick questions to identity your app on the
+              Dashboard. Fields mark with <b>* </b>are required to continue.
+              <br />
+              If you have an existing account in Pocket Network with an assigned
+              Private Key and you want to register it as an app, please proceed
+              to{" "}
+              <Link to={_getDashboardPath(DASHBOARD_PATHS.importApp)}>
+                Import.
+              </Link>
             </p>
           </Col>
         </Row>
         <Row>
-          <Col sm="5" md="5" lg="5" className="create-form-left-side">
+          <Col sm="4" className="create-form-left-side">
             <Formik
               validationSchema={appFormSchema}
               onSubmit={async (data) => {
@@ -181,7 +189,12 @@ class CreateAppForm extends CreateForm {
               {({handleSubmit, handleChange, values, errors}) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
-                    <Form.Label>Application Name*</Form.Label>
+                    <Form.Label>
+                      Application Name
+                      <span className={cls({"has-error": !!errors.name})}>
+                        *
+                      </span>
+                    </Form.Label>
                     <Form.Control
                       name="name"
                       placeholder="maximum of 20 characters"
@@ -195,7 +208,10 @@ class CreateAppForm extends CreateForm {
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>
-                      Application Developer or Company name*
+                      Application Developer or Company name
+                      <span className={cls({"has-error": !!errors.owner})}>
+                        *
+                      </span>
                     </Form.Label>
                     <Form.Control
                       name="owner"
@@ -209,7 +225,14 @@ class CreateAppForm extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Contact Email*</Form.Label>
+                    <Form.Label>
+                      Contact Email
+                      <span
+                        className={cls({"has-error": !!errors.contactEmail})}
+                      >
+                        *
+                      </span>
+                    </Form.Label>
                     <Form.Control
                       placeholder="hello@example.com"
                       name="contactEmail"
@@ -225,7 +248,7 @@ class CreateAppForm extends CreateForm {
                   <Form.Group>
                     <Form.Label>Website</Form.Label>
                     <Form.Control
-                      placeholder="www.example.com"
+                      placeholder="https://www.example.com"
                       name="url"
                       value={values.url}
                       onChange={handleChange}
@@ -236,7 +259,9 @@ class CreateAppForm extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Description</Form.Label>
+                    <Form.Label>
+                      Write an optional description of your app here
+                    </Form.Label>
                     <Form.Control
                       placeholder="maximum of 150 characters"
                       as="textarea"
@@ -251,7 +276,6 @@ class CreateAppForm extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Button
-                    className="pl-5 pr-5"
                     disabled={!agreeTerms}
                     variant="primary"
                     type="submit"
@@ -262,7 +286,7 @@ class CreateAppForm extends CreateForm {
               )}
             </Formik>
           </Col>
-          <Col sm="7" md="7" lg="7" className="create-form-right-side">
+          <Col sm="8" className="create-form-right-side">
             <div>
               <ImageFileUpload
                 handleDrop={(img) => this.handleDrop(img.preview)}
@@ -272,7 +296,7 @@ class CreateAppForm extends CreateForm {
                 <ul>
                   <li>
                     <strong>Purchasers</strong> are not buying POKT as an
-                    investment with the expectation of profit or appreciation
+                    investment with the expectation of profit or appreciation.
                   </li>
                   <li>
                     <strong>Purchasers</strong> are buying POKT to use it.
@@ -297,11 +321,15 @@ class CreateAppForm extends CreateForm {
                     className="terms-checkbox"
                     type="checkbox"
                     label={
-                      <p>
+                      <span>
                         {/* eslint-disable-next-line react/no-unescaped-entities */}
-                        I agree to these Pocket's{" "} <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>Terms
-                        and Conditions.</Link>
-                      </p>
+                        I agree to these Pocket's{" "}
+                        <Link
+                          to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}
+                        >
+                          Terms and Conditions.
+                        </Link>
+                      </span>
                     }
                   />
                 </div>
