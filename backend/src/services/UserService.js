@@ -264,6 +264,27 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * Get user security questions.
+   *
+   * @param {string} userEmail Email of user.
+   *
+   * @returns {Promise<AnsweredSecurityQuestion[]>} User security questions.
+   */
+  async getUserSecurityQuestions(userEmail) {
+    const filter = {
+      email: userEmail,
+      securityQuestions: {$ne: null}
+    };
+    const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    if (!userDB) {
+      throw Error("Invalid user.");
+    }
+
+    return AnsweredSecurityQuestion.createAnsweredSecurityQuestions(userDB.securityQuestions);
+  }
+
+  /**
    * Generate token encapsulating the user email.
    *
    * @param {string} userEmail User email to encapsulate.
