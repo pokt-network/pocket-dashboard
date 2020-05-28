@@ -285,6 +285,39 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * Change user password.
+   *
+   * @param {string} userEmail Email of user.
+   * @param {string} password1 New password.
+   * @param {string} password2 Password confirmation.
+   *
+   * @returns {Promise<boolean>} If password was changed or not.
+   * @throws {Error} if passwords validation fails or if user does not exists.
+   */
+  async changePassword(userEmail, password1, password2) {
+    const filter = {
+      email: userEmail,
+      provider: "email"
+    };
+    const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    if (!userDB) {
+      throw Error("Invalid user.");
+    }
+
+    if (EmailUser.validatePasswords(password1, password2)) {
+
+      // Update the user password.
+      userDB.password = await EmailUser.encryptPassword(password1);
+
+      /** @type {{result: {n:number, ok: number}}} */
+      const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);
+
+      return result.result.ok === 1;
+    }
+  }
+
+  /**
    * Generate token encapsulating the user email.
    *
    * @param {string} userEmail User email to encapsulate.
