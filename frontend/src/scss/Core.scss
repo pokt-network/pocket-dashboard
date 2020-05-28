@@ -1,5 +1,5 @@
-@import "node_modules/bootstrap/scss/bootstrap";
 @import "Variables/All";
+@import "node_modules/bootstrap/scss/bootstrap";
 
 @mixin bordered-layout {
   border: 2px solid $primary-color;
@@ -92,9 +92,19 @@ body {
 }
 
 .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 400;
   border-radius: $default-border-radius;
   font-family: "Lato", sans-serif;
+  padding: 0 !important;
+
+  span {
+    display: flex;
+    align-items: center;
+    line-height: 30px;
+  }
 }
 
 .btn.dropdown-toggle-split {
@@ -104,6 +114,7 @@ body {
 form {
   textarea {
     resize: none;
+    max-height: 120px;
   }
 }
 
@@ -123,20 +134,6 @@ form {
 .input-group-append {
   button {
     min-width: auto;
-  }
-}
-
-.cta-buttons {
-  button {
-    display: flex;
-    justify-content: center;
-    padding: 0 !important;
-
-    span {
-      display: flex;
-      align-items: center;
-      line-height: 30px;
-    }
   }
 }
 
@@ -180,9 +177,13 @@ form {
 
 .btn-primary.disabled,
 .btn-primary:disabled {
-  color: $dark-gray;
+  color: $light-gray;
   background-color: $white-smoke;
   border-color: $white-smoke;
+
+  &:hover {
+    cursor: unset;
+  }
 }
 
 .btn-dark {
@@ -301,10 +302,19 @@ input {
   }
 }
 
+.form-group {
+  margin-bottom: 0.8rem;
+}
+
 .form-control {
   border: 1px solid $border-blue;
   height: 32px;
+  line-height: 32px;
   border-radius: 21px;
+
+  &:focus {
+    box-shadow: none;
+  }
 }
 
 label.form-label {
@@ -312,6 +322,7 @@ label.form-label {
   font-size: 14px;
   font-weight: 300;
   color: $form-label-font-color;
+  margin-bottom: 10px;
 }
 
 .badge,
@@ -588,7 +599,7 @@ textarea.form-control {
 
 input.form-control::placeholder,
 textarea.form-control::placeholder {
-  color: #474747;
+  color: $light-gray;
   font-weight: 300;
   font-size: 14px;
 }
@@ -668,9 +679,8 @@ textarea.form-control::placeholder {
 }
 
 .form-check-label {
-  margin-top: 5px;
   margin-left: 5px;
-  position: absolute;
+  line-height: 27px;
 }
 
 input[type="checkbox"] // input[type="radio"]
