@@ -45,15 +45,8 @@
 
   .app-tables {
     .search-panel {
-      margin-top: 20px;
-      margin-bottom: -10px;
-
       button {
         width: 30px;
-
-        img {
-          left: -12px;
-        }
       }
     }
 
@@ -76,6 +69,7 @@
         }
 
         .body {
+          padding: 20px;
           overflow-x: hidden;
         }
       }
