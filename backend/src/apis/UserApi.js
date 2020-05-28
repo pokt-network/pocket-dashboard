@@ -159,6 +159,23 @@ router.post("/auth/logout", async (request, response) => {
 });
 
 /**
+ * Check if user exists.
+ */
+router.post("/auth/user-exists", async (request, response) => {
+  try {
+    /** @type {{email:string}} */
+    const data = request.body;
+
+    const exists = await userService.userExists(data.email);
+
+    response.send(exists);
+  } catch (e) {
+    response.send(false);
+  }
+
+});
+
+/**
  * Validate captcha token
  */
 router.post("/verify-captcha", async (request, response) => {
@@ -166,10 +183,10 @@ router.post("/verify-captcha", async (request, response) => {
     /** @type {{token:string}} */
     const {token} = request.body;
     const result = await userService.verifyCaptcha(token);
-    
+
     response.send(result.data);
   } catch (e) {
-    response.status(400).send(false); 
+    response.status(400).send(false);
   }
 });
 
