@@ -92,9 +92,19 @@ body {
 }
 
 .btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 400;
   border-radius: $default-border-radius;
   font-family: "Lato", sans-serif;
+  padding: 0 !important;
+
+  span {
+    display: flex;
+    align-items: center;
+    line-height: 30px;
+  }
 }
 
 .btn.dropdown-toggle-split {
@@ -123,20 +133,6 @@ form {
 .input-group-append {
   button {
     min-width: auto;
-  }
-}
-
-.cta-buttons {
-  button {
-    display: flex;
-    justify-content: center;
-    padding: 0 !important;
-
-    span {
-      display: flex;
-      align-items: center;
-      line-height: 30px;
-    }
   }
 }
 
