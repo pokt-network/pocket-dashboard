@@ -661,6 +661,10 @@ textarea.form-control::placeholder {
   margin-left: 25px !important;
 }
 
+a:hover {
+  text-decoration: none;
+}
+
 .form-control.is-invalid {
   border-color: $border-blue;
   background-image: url(/assets/red_alert.svg);
