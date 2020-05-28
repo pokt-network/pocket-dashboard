@@ -13,7 +13,7 @@ export default class AuthSidebar extends Component {
           alt=""
           className="white"
         />
-        <div id="auth-sidebar" style={{paddingLeft: 60, paddingTop: 30}}>
+        <div id="auth-sidebar">
           <Row>
             <h1>
               POCKET <br />
