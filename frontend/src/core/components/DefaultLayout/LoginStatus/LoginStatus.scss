@@ -16,8 +16,12 @@
     border-width: 1px;
 
     span {
+      max-width: 100px;
       @include font-style($user-login-font);
       color: map_get($user-login-font, color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       line-height: 30px;
 
       text-transform: uppercase;
