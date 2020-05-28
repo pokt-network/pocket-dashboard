@@ -4,7 +4,7 @@ import {Alert, Col, Dropdown, Row} from "react-bootstrap";
 import "./Dashboard.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
-import {APPLICATIONS_LIMIT, STYLING, TABLE_COLUMNS,} from "../../_constants";
+import {APPLICATIONS_LIMIT, STYLING, TABLE_COLUMNS} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";

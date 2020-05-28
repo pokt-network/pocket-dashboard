@@ -1,6 +1,6 @@
 import React from "react";
 import numeral from "numeral";
-import {BOND_STATUS, DEFAULT_POKT_DENOMINATION_BASE, STAKE_STATUS, VALIDATION_MESSAGES,} from "./_constants";
+import {BOND_STATUS, DEFAULT_POKT_DENOMINATION_BASE, STAKE_STATUS, VALIDATION_MESSAGES} from "./_constants";
 import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
