@@ -97,12 +97,12 @@ class NodeDetail extends Component {
     const detail = url.replace(":address", accountAddress);
     const nodeLink = `${window.location.origin}${detail}`;
 
-    const {success, data} = NodeService.unstakeNode(
+    const {success, data} = await NodeService.unstakeNode(
       {privateKey, passphrase, accountAddress}, nodeLink
     );
 
     if (success) {
-      window.location.reload();
+      window.location.reload(false);
     } else {
       this.setState({unstaking: false, message: data});
     }
@@ -118,7 +118,7 @@ class NodeDetail extends Component {
     );
 
     if (success) {
-      window.location.reload();
+      window.location.reload(false);
     } else {
       this.setState({unstaking: false, message: data});
     }
@@ -317,20 +317,18 @@ class NodeDetail extends Component {
             <h1>General Information</h1>
           </Col>
           <Col sm="1" md="1" lg="1">
+            {status !== STAKE_STATUS.Unstaking &&
             <Button
               className="float-right cta"
-              disabled={isStaked && jailed}
               onClick={() => {
                 this.setState({ctaButtonPressed: true});
 
-                isStaked
-                  ? this.setState({unstake: true})
-                  : this.setState({stake: true});
+                isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
               }}
-              variant="primary"
-            >
+              variant="primary">
               <span>{isStaked ? "Unstake" : "Stake"}</span>
             </Button>
+            }
           </Col>
         </Row>
         <Row className="stats">

@@ -120,7 +120,7 @@ class AppDetail extends Component {
       : await ApplicationService.unstakeApplication(application, link);
 
     if (success) {
-      window.location.reload();
+      window.location.reload(false);
     } else {
       this.setState({unstake: false, ctaButtonPressed: false, message: data});
     }
