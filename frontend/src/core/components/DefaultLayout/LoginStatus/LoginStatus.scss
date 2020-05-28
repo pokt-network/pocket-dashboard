@@ -18,6 +18,7 @@
     span {
       @include font-style($user-login-font);
       color: map_get($user-login-font, color);
+      line-height: 30px;
 
       text-transform: uppercase;
       margin-right: 8px;
