@@ -33,6 +33,7 @@ import ResetPassword from "./views/Auth/ResetPassword/ResetPassword";
 import AppPassphrase from "./views/Apps/AppPassphrase/AppPassphrase";
 import TermsOfService from "./views/Support/TermsOfService";
 import PrivacyPolicy from "./views/Support/PrivacyPolicy";
+import AnswerSecurityQuestions from "./views/Auth/AnswerSecurityQuestions/AnswerSecurityQuestions";
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -41,7 +42,8 @@ export const ROUTE_PATHS = {
   forgot_password: "/forgot-password",
   security_questions: "/security-questions",
   verify_email: "/verify-email",
-  reset_password: "/reset-password"
+  reset_password: "/reset-password",
+  answer_security_questions: "/answer-security-questions",
 };
 
 export const DASHBOARD_PATHS = {
@@ -66,7 +68,7 @@ export const DASHBOARD_PATHS = {
   orderSummary: "/payment/summary",
   invoice: "/payment/invoice",
   termsOfService: "/support/terms-of-service",
-  privacyPolicy: "/support/privacy-policy"
+  privacyPolicy: "/support/privacy-policy",
 };
 
 export const PROFILE_PATHS = {
@@ -85,7 +87,7 @@ export const _getDashboardPath = (path) => {
  * @type {Array<{path: string, exact: boolean, name: string, component: *}>}
  */
 const pageRoutes = [
-  {path: ROUTE_PATHS.login, exact: true, name: "Login", component: Login},
+  { path: ROUTE_PATHS.login, exact: true, name: "Login", component: Login },
   {
     path: ROUTE_PATHS.forgot_password,
     exact: true,
@@ -104,7 +106,13 @@ const pageRoutes = [
     name: "Security Questions",
     component: SecurityQuestions,
   },
-  {path: ROUTE_PATHS.signup, exact: true, name: "Sign Up", component: SignUp},
+  {
+    path: ROUTE_PATHS.answer_security_questions,
+    exact: true,
+    name: "Answer Security Questions",
+    component: AnswerSecurityQuestions,
+  },
+  { path: ROUTE_PATHS.signup, exact: true, name: "Sign Up", component: SignUp },
   {
     path: ROUTE_PATHS.verify_email,
     exact: true,

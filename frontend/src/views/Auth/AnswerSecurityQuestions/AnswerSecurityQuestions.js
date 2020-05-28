@@ -1,12 +1,11 @@
 import React, { Component } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-import "./ForgotPassword.scss";
+import "./AnswerSecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
-import PocketUserService from "../../../core/services/PocketUserService";
-import { ROUTE_PATHS } from "../../../_routes";
+import UserService from "../../../core/services/PocketUserService";
 
-class ForgotPassword extends Component {
+class AnswerSecurityQuestions extends Component {
   constructor(props, context) {
     super(props, context);
 
@@ -27,44 +26,15 @@ class ForgotPassword extends Component {
     this.setState({ data });
   }
 
-  async handleSubmit(e) {
+  handleSubmit(e) {
     e.preventDefault();
 
-    const { email } = this.state.data;
-
-    const userExists = await PocketUserService.userExists(email, "email");
-
-    if (userExists) {
-      const isValidated = await PocketUserService.isUserValidated(
-        email,
-        "email"
-      );
-
-      if (isValidated) {
-        console.log(isValidated + " " + email);
-        console.log(); // eslint-disable-next-line react/prop-types
-        this.props.history.push({
-          pathname: ROUTE_PATHS.answer_security_questions,
-          state: { email },
-        });
-      } else {
-        // eslint-disable-next-line react/prop-types
-        this.props.history.push({
-          pathname: ROUTE_PATHS.verify_email,
-          state: {
-            email,
-          },
-        });
-      }
-    } else {
-      // TODO: Show error to user
-      console.log("user does not exists");
-    }
+    // TODO: call backend method to reset password.
   }
 
   render() {
     return (
-      <Container fluid id={"forgot-password-page"}>
+      <Container fluid id={"answer-security-questions-page"}>
         <Navbar />
         <Row className="mt-1">
           <Col
@@ -73,13 +43,15 @@ class ForgotPassword extends Component {
             lg={{ span: 4, offset: 3 }}
           >
             <PocketBox iconUrl={"/assets/circle.png"}>
-              <h1 className="forgotPassword">Forgot your password?</h1>
-              <p className="passwordLabel">
-                Write your email to reset your password.
-              </p>
+              <h1 className="forgotPassword">
+                Answer this question before continuing.
+              </h1>
+              <p className="passwordLabel"></p>
               <Form id={"main-form"} onSubmit={this.handleSubmit}>
                 <Form.Group className="mb-4">
-                  <Form.Label id="email-label">Email Address</Form.Label>
+                  <Form.Label id="email-label">
+                    What was the name of your first pet?
+                  </Form.Label>
                   <Form.Control
                     onChange={this.handleChange}
                     name="email"
@@ -93,7 +65,7 @@ class ForgotPassword extends Component {
                   variant="primary"
                   size={"md"}
                 >
-                  <span className="resetButtonText">Reset Password</span>
+                  <span className="resetButtonText">Continue</span>
                 </Button>
               </Form>
             </PocketBox>
@@ -104,4 +76,4 @@ class ForgotPassword extends Component {
   }
 }
 
-export default ForgotPassword;
+export default AnswerSecurityQuestions;
