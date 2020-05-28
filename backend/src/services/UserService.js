@@ -75,12 +75,18 @@ export default class UserService extends BaseService {
    * Check if user exists on DB.
    *
    * @param {string} userEmail User email to check if exists.
+   * @param {string} [authProvider] User auth provider type.
    *
    * @returns {Promise<boolean>} If user exists or not.
    * @async
    */
-  async userExists(userEmail) {
-    const filter = {email: userEmail};
+  async userExists(userEmail, authProvider = undefined) {
+    let filter = {email: userEmail};
+
+    if (authProvider) {
+      filter["provider"] = authProvider;
+    }
+
     const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     return dbUser !== undefined;

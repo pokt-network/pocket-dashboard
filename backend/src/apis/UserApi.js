@@ -163,10 +163,10 @@ router.post("/auth/logout", async (request, response) => {
  */
 router.post("/auth/user-exists", async (request, response) => {
   try {
-    /** @type {{email:string}} */
+    /** @type {{email:string, authProvider: string}} */
     const data = request.body;
 
-    const exists = await userService.userExists(data.email);
+    const exists = await userService.userExists(data.email, data.authProvider);
 
     response.send(exists);
   } catch (e) {

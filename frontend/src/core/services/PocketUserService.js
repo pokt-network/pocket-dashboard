@@ -1,6 +1,11 @@
 import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
 
+export const AUTH_PROVIDERS = {
+  email: "email",
+  github: "github",
+  google: "google",
+};
 
 class PocketUserService extends PocketBaseService {
 
@@ -271,12 +276,14 @@ class PocketUserService extends PocketBaseService {
    * Check if user exists or not.
    *
    * @param {string} userEmail User email.
+   * @param {string} authProvider Auth provider (could be email, github, google).
    *
    * @return {Promise<*>} If exists returns true, otherwise false.
    */
-  userExists(userEmail) {
+  userExists(userEmail, authProvider) {
     const data = {
       email: userEmail,
+      authProvider
     };
 
     return axios
