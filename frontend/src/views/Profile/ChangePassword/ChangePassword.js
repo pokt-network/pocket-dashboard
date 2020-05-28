@@ -35,41 +35,43 @@ class ChangePassword extends Component {
 
     return (
       <Row id="general">
-        <Col lg={{span: 7, offset: 2}} className="body title-page">
-          <h1>Change your Password</h1>
-          <Form onSubmit={this.handleSubmit}>
-            <Form.Group>
-              <Form.Label>Old password</Form.Label>
-              <Form.Control
-                name="oldPassword"
-                type="password"
-                value={oldPassword}
-                onChange={this.handleChange}
-              />
-            </Form.Group>
-            <br />
-            <Form.Group>
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                name="password"
-                value={password}
-                onChange={this.handleChange}
-              />
-            </Form.Group>
-            <br />
-            <Form.Group>
-              <Form.Label>Password Confirm</Form.Label>
-              <Form.Control
-                name="passwordConfirm"
-                value={passwordConfirm}
-                onChange={this.handleChange}
-              />
-            </Form.Group>
-            <br />
-            <Button type="submit" variant="primary" size={"lg"}>
-              save
-            </Button>
-          </Form>
+        <Col lg={{span: 10, offset: 1}} className="title-page">
+          <div className="body">
+            <h1>Change your Password</h1>
+            <Form onSubmit={this.handleSubmit}>
+              <Form.Group>
+                <Form.Label>Old password</Form.Label>
+                <Form.Control
+                  name="oldPassword"
+                  type="password"
+                  value={oldPassword}
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+              <br />
+              <Form.Group>
+                <Form.Label>Password</Form.Label>
+                <Form.Control
+                  name="password"
+                  value={password}
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+              <br />
+              <Form.Group>
+                <Form.Label>Password Confirm</Form.Label>
+                <Form.Control
+                  name="passwordConfirm"
+                  value={passwordConfirm}
+                  onChange={this.handleChange}
+                />
+              </Form.Group>
+              <br />
+              <Button type="submit" variant="primary">
+                save
+              </Button>
+            </Form>
+          </div>
         </Col>
       </Row>
     );

@@ -724,9 +724,13 @@ input[type="radio"] {
 }
 
 #general {
-  box-shadow: $default-box-shadow;
 
   .body {
+    box-shadow: $default-box-shadow;
+    padding-left: 46px;
+    padding-top: 30px;
+    padding-right: 45px;
+
     h1 {
       text-transform: uppercase;
       font-family: $secondary-font-family;
@@ -738,6 +742,10 @@ input[type="radio"] {
     }
 
     padding-bottom: 80px;
+
+    .form-control {
+      max-width: 400px;
+    }
   }
 }
 

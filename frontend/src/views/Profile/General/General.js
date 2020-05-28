@@ -45,40 +45,41 @@ class General extends Component {
     return (
       <>
         <Row id="general">
-          <Col lg={{span: 7, offset: 2}} className="body title-page">
-            <h1>General Information</h1>
-            <Form onSubmit={(e) => e.preventDefault()}>
-              <Form.Group>
-                <Form.Label>Username</Form.Label>
-                <Form.Control
-                  name="username"
-                  value={username}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <br />
-              <Form.Group>
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  value={email}
-                  onChange={this.handleChange}
-                />
-              </Form.Group>
-              <br />
-              <Button
-                className=""
-                type="submit"
-                variant="primary"
-                size={"md"}
-                onClick={() => {
-                  this.setState({passwordModal: true});
-                }}
-              >
-                Save
-              </Button>
-            </Form>
+          <Col lg={{span: 10, offset: 1}} className="title-page">
+            <div className="body">
+              <h1>General Information</h1>
+              <Form onSubmit={(e) => e.preventDefault()}>
+                <Form.Group>
+                  <Form.Label>Username</Form.Label>
+                  <Form.Control
+                    name="username"
+                    value={username}
+                    onChange={this.handleChange}
+                  />
+                </Form.Group>
+                <br />
+                <Form.Group>
+                  <Form.Label>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={this.handleChange}
+                  />
+                </Form.Group>
+                <br />
+                <Button
+                  className=""
+                  type="submit"
+                  variant="primary"
+                  onClick={() => {
+                    this.setState({passwordModal: true});
+                  }}
+                >
+                  Save
+                </Button>
+              </Form>
+            </div>
           </Col>
         </Row>
         <Modal
@@ -103,12 +104,7 @@ class General extends Component {
             </Form.Group>
           </Modal.Body>
           <Modal.Footer>
-            <Button
-              block
-              variant="dark"
-              className="pr-4 pl-4"
-              onClick={this.handleSubmit}
-            >
+            <Button block variant="dark" onClick={this.handleSubmit}>
               Continue
             </Button>
           </Modal.Footer>

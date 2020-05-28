@@ -6,6 +6,7 @@ import PaymentService from "../../../core/services/PocketPaymentService";
 import UserService from "../../../core/services/PocketUserService";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
 import NewCardForm from "../../../core/components/Payment/Stripe/NewCardForm";
+import Loader from "../../../core/components/Loader";
 
 class PaymentMethods extends Component {
   constructor(props, context) {
@@ -16,14 +17,17 @@ class PaymentMethods extends Component {
     this.state = {
       paymentMethods: [],
       newCard: false,
+      loading: false,
     };
   }
 
   async componentDidMount() {
+    this.setState({loading: true});
+
     const user = UserService.getUserInfo().email;
     const paymentMethods = await PaymentService.getPaymentMethods(user);
 
-    this.setState({paymentMethods});
+    this.setState({paymentMethods, loading: false});
   }
 
   saveNewCard(e, cardData, stripe) {
@@ -74,12 +78,11 @@ class PaymentMethods extends Component {
   }
 
   render() {
-    const {paymentMethods: allPaymentMethods, newCard} = this.state;
+    const {paymentMethods: allPaymentMethods, newCard, loading} = this.state;
     const paymentMethods = allPaymentMethods.map((method) => {
       return {
         id: method.id,
         cardData: {
-          // TODO: Retrieve card type data from backend
           type: method.brand,
           digits: `**** **** **** ${method.lastDigits}`,
         },
@@ -87,40 +90,49 @@ class PaymentMethods extends Component {
       };
     });
 
+    if (loading) {
+      return <Loader />;
+    }
+
     return (
       <Row id="general" className="payment-methods">
-        <Col lg={{span: 9, offset: 2}} className="body title-page">
-          <h1> Payment methods</h1>
-          <div id="cards">
-            {paymentMethods.map((card, idx) => {
-              const {cardData, holder} = card;
+        <Col lg={{span: 10, offset: 1}} className="title-page">
+          <div className="body">
+            <h1> Payment methods</h1>
+            <div id="cards">
+              {paymentMethods.map((card, idx) => {
+                const {cardData, holder} = card;
 
-              return (
-                <CardDisplay
-                  key={idx}
-                  cardData={cardData}
-                  holder={holder}
-                  onDelete={() => {
-                    this.deleteCard(card.id);
-                  }}
-                />
-              );
-            })}
-          </div>
-          <br />
-          {!newCard && (
-            <p
-              onClick={() => this.setState({newCard: true})}
-              className="new-card"
-            >
-              Add a new card
-            </p>
-          )}
-          {newCard && (
-            <div id="card-form">
-              <NewCardForm formTitle="" formActionHandler={this.saveNewCard} />
+                return (
+                  <CardDisplay
+                    key={idx}
+                    cardData={cardData}
+                    holder={holder}
+                    onDelete={() => {
+                      this.deleteCard(card.id);
+                    }}
+                  />
+                );
+              })}
             </div>
-          )}
+            <br />
+            {!newCard && (
+              <p
+                onClick={() => this.setState({newCard: true})}
+                className="new-card"
+              >
+                Add a new card
+              </p>
+            )}
+            {newCard && (
+              <div id="card-form">
+                <NewCardForm
+                  formTitle=""
+                  formActionHandler={this.saveNewCard}
+                />
+              </div>
+            )}
+          </div>
         </Col>
       </Row>
     );
