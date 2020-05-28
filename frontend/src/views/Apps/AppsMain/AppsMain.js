@@ -1,4 +1,5 @@
 import React from "react";
+import cls from "classnames";
 import {Link} from "react-router-dom";
 import AppTable from "../../../core/components/AppTable";
 import "./AppsMain.scss";
@@ -47,7 +48,8 @@ class AppsMain extends Main {
     const userEmail = UserService.getUserInfo().email;
 
     ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
+      userEmail,
+      APPLICATIONS_LIMIT
     ).then((userItems) => {
       ApplicationService.getStakedApplicationSummary().then(
         ({totalApplications, averageRelays, averageStaked}) => {
@@ -74,7 +76,9 @@ class AppsMain extends Main {
     this.setState({allItemsTableLoading: true});
 
     const registeredItems = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
+      APPLICATIONS_LIMIT,
+      0,
+      BOND_STATUS_STR[option]
     );
 
     this.setState({registeredItems, allItemsTableLoading: false});
@@ -86,7 +90,10 @@ class AppsMain extends Main {
     const userEmail = UserService.getUserInfo().email;
 
     const userItems = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
+      userEmail,
+      APPLICATIONS_LIMIT,
+      0,
+      BOND_STATUS_STR[option]
     );
 
     this.setState({
@@ -100,7 +107,9 @@ class AppsMain extends Main {
     const {userItems} = this.state;
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1
+      userEmail,
+      APPLICATIONS_LIMIT,
+      offset * APPLICATIONS_LIMIT + 1
     );
 
     const allUserItems = [...userItems, ...newUserItems];
@@ -116,7 +125,8 @@ class AppsMain extends Main {
     const {registeredItems} = this.state;
 
     const newRegisteredItems = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1
+      APPLICATIONS_LIMIT,
+      offset * APPLICATIONS_LIMIT + 1
     );
 
     const allRegisteredItems = [...registeredItems, ...newRegisteredItems];
@@ -176,7 +186,10 @@ class AppsMain extends Main {
           <Col sm="8" className="page-title">
             <h1>General Apps Information</h1>
           </Col>
-          <Col sm="4" className="d-flex align-items-center justify-content-end cta-buttons">
+          <Col
+            sm="4"
+            className="d-flex align-items-center justify-content-end cta-buttons"
+          >
             <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
               <Button className="ml-4 mr-3 create-app-button">
                 <span>Create New App</span>
@@ -200,33 +213,31 @@ class AppsMain extends Main {
           <Col sm="6" className="my-apps-segment">
             <Segment bordered scroll={false} label="My Apps">
               <Row
-                className={`search-panel ${
-                  !hasApps ? "search-panel-without-apps" : null
-                }`}
+                className={cls("search-panel", {
+                  "search-panel-without-apps": !hasApps,
+                })}
               >
-                <Col>
-                  <InputGroup className="search-input mb-3">
-                    <FormControl
-                      placeholder="Search an App"
-                      name="searchQuery"
-                      onChange={this.handleChange}
-                      onKeyPress={({key}) => {
-                        if (key === "Enter") {
-                          this.handleSearch("pocketApplication.name");
-                        }
-                      }}
-                    />
-                    <InputGroup.Append>
-                      <Button
-                        type="submit"
-                        onClick={this.handleChainSearch}
-                        variant="outline-primary"
-                      >
-                        <img src={"/assets/search.svg"} alt="search-icon" />
-                      </Button>
-                    </InputGroup.Append>
-                  </InputGroup>
-                </Col>
+                <InputGroup className="search-input">
+                  <FormControl
+                    placeholder="Search an App"
+                    name="searchQuery"
+                    onChange={this.handleChange}
+                    onKeyPress={({key}) => {
+                      if (key === "Enter") {
+                        this.handleSearch("pocketApplication.name");
+                      }
+                    }}
+                  />
+                  <InputGroup.Append>
+                    <Button
+                      type="submit"
+                      onClick={this.handleChainSearch}
+                      variant="outline-primary"
+                    >
+                      <img src={"/assets/search.svg"} alt="search-icon" />
+                    </Button>
+                  </InputGroup.Append>
+                </InputGroup>
               </Row>
               <div className="scrollable main-list">
                 <InfiniteScroll

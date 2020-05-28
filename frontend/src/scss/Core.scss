@@ -309,6 +309,7 @@ input {
 .form-control {
   border: 1px solid $border-blue;
   height: 32px;
+  font-size: 0.875rem;
   line-height: 32px;
   border-radius: 21px;
   margin-bottom: 0.8rem;
@@ -411,6 +412,14 @@ button {
       &:first-child {
         padding-left: 0;
       }
+
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+
+    th[class^="col-"]:last-child {
+      padding-left: 22px;
     }
 
     th:focus {
@@ -628,10 +637,11 @@ textarea.form-control::placeholder {
     border-left-color: transparent;
 
     img {
-      position: relative;
-      top: -4px;
       width: 25px;
       height: 16px;
+      position: absolute;
+      top: 6px;
+      right: 8px;
     }
   }
 
