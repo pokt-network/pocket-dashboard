@@ -164,7 +164,7 @@ router.post("/auth/is-validated", async (request, response) => {
 });
 
 /**
- * Reset password.
+ * Change user password.
  */
 router.put("/auth/change-password", async (request, response) => {
   try {
