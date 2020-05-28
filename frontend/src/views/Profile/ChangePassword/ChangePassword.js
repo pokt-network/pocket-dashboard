@@ -36,7 +36,7 @@ class ChangePassword extends Component {
     return (
       <Row id="general">
         <Col lg={{span: 10, offset: 1}} className="title-page">
-          <div className="body">
+          <div className="wrapper">
             <h1>Change your Password</h1>
             <Form onSubmit={this.handleSubmit}>
               <Form.Group>

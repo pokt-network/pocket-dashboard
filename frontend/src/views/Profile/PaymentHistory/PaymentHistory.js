@@ -5,7 +5,7 @@ import "./PaymentHistory.scss";
 import AppDatePicker from "../../../core/components/AppDatePicker/AppDatePicker";
 import BootstrapTable from "react-bootstrap-table-next";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSearch, faDownload} from "@fortawesome/free-solid-svg-icons";
+import {faSearch} from "@fortawesome/free-solid-svg-icons";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import {PAYMENT_HISTORY_LIMIT} from "../../../_constants";
@@ -47,7 +47,7 @@ class PaymentHistory extends Component {
   renderExport(cell, row) {
     return (
       <span className="export" onClick={() => this.handleExport(row)}>
-        <FontAwesomeIcon icon={faDownload} />
+        <img src="/assets/download_invoice.svg" alt="" />
       </span>
     );
   }
@@ -131,7 +131,7 @@ class PaymentHistory extends Component {
     return (
       <Row id="general" className="payment-history">
         <Col lg={{span: 10, offset: 1}} className="title-page">
-          <div className="body">
+          <div className="wrapper">
             <h1>Payment history</h1>
             <div className="filters mt-4">
               <span className="filter">

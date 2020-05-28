@@ -14,6 +14,7 @@ class PaymentMethods extends Component {
     super(props, context);
 
     this.deleteCard = this.deleteCard.bind(this);
+    this.saveNewCard = this.saveNewCard.bind(this);
 
     this.state = {
       alert: {show: false, text: "", variant: ""},
@@ -121,14 +122,14 @@ class PaymentMethods extends Component {
       <Row id="general" className="payment-methods">
         <Col lg={{span: 10, offset: 1}} className="title-page">
           {alert.show && (
-            <AppAlert
-              variant={alert.variant}
-              title={alert.text}
-              dismissible
-              onClose={() => this.setState({alert: {show: false}})}
-            />
-          )}
-          <div className="body">
+              <AppAlert
+                variant={alert.variant}
+                title={alert.text}
+                dismissible
+                onClose={() => this.setState({alert: {show: false}})}
+              />
+            )}  
+          <div className="wrapper">
             <h1> Payment methods</h1>
             <div id="cards">
               {paymentMethods.map((card, idx) => {

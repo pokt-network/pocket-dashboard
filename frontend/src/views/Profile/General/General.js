@@ -47,7 +47,7 @@ class General extends Component {
       <>
         <Row id="general">
           <Col lg={{span: 10, offset: 1}} className="title-page">
-            <div className="body">
+            <div className="wrapper">
               <h1>General Information</h1>
               <Form onSubmit={(e) => e.preventDefault()}>
                 <Form.Group>
