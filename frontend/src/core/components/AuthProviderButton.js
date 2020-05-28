@@ -36,7 +36,8 @@ export class AuthProviderButton extends Component {
         onClick={this.onButtonClick}
       >
         {icon ? <FontAwesomeIcon icon={icon} /> : null} {type} with{" "}
-        {authProvider.name}
+        {authProvider.name.slice(0, 1).toUpperCase() +
+          authProvider.name.slice(1, authProvider.name.length)}
       </Button>
     );
   }
