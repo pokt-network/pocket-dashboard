@@ -3,6 +3,8 @@ import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import "./ForgotPassword.scss";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
+import PocketUserService from "../../../core/services/PocketUserService";
+import {ROUTE_PATHS} from "../../../_routes";
 
 class ForgotPassword extends Component {
   constructor(props, context) {
@@ -28,7 +30,32 @@ class ForgotPassword extends Component {
   handleSubmit(e) {
     e.preventDefault();
 
-    // TODO: call backend method to reset password.
+    const {email} = this.state.data;
+
+    const userExists = PocketUserService.userExists(email, "email");
+
+    if (userExists) {
+    const isValidated = PocketUserService.isUserValidated(email, "email");
+
+      if (isValidated) {
+        // eslint-disable-next-line react/prop-types
+        this.props.history.push({
+          pathname: "ROUTE_PATHS.answer_security_questions",
+          state: {email}});
+      } else {
+      // eslint-disable-next-line react/prop-types
+      this.props.history.push({
+        pathname: ROUTE_PATHS.verify_email,
+        state: {
+          email,
+        },
+      });
+      }
+    } else {
+      // TODO: Show error to user
+      console.log("user does not exists");
+    }
+
   }
 
   render() {
