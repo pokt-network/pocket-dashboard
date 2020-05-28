@@ -93,6 +93,30 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * Check if user is validated on DB.
+   *
+   * @param {string} userEmail User email to check if is validated.
+   * @param {string} [authProvider] User auth provider type.
+   *
+   * @returns {Promise<boolean>} If user is validated or not.
+   * @async
+   */
+  async isUserValidated(userEmail, authProvider = undefined) {
+    let filter = {
+      email: userEmail,
+      securityQuestions: {$ne: null}
+    };
+
+    if (authProvider) {
+      filter["provider"] = authProvider;
+    }
+
+    const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    return dbUser !== undefined;
+  }
+
+  /**
    * Get User from DB.
    *
    * @param {string} email User email.
@@ -237,6 +261,27 @@ export default class UserService extends BaseService {
     const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, filter, data);
 
     return result.result.ok === 1;
+  }
+
+  /**
+   * Get user security questions.
+   *
+   * @param {string} userEmail Email of user.
+   *
+   * @returns {Promise<AnsweredSecurityQuestion[]>} User security questions.
+   */
+  async getUserSecurityQuestions(userEmail) {
+    const filter = {
+      email: userEmail,
+      securityQuestions: {$ne: null}
+    };
+    const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    if (!userDB) {
+      throw Error("Invalid user.");
+    }
+
+    return AnsweredSecurityQuestion.createAnsweredSecurityQuestions(userDB.securityQuestions);
   }
 
   /**

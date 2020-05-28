@@ -287,7 +287,26 @@ class PocketUserService extends PocketBaseService {
     };
 
     return axios
-      .post(this._getURL("auth/user-exists"), data)
+      .post(this._getURL("exists"), data)
+      .then(response => response.data);
+  }
+
+  /**
+   * Check if user is validated or not.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} authProvider Auth provider (could be email, github, google).
+   *
+   * @return {Promise<*>} If validated returns true, otherwise false.
+   */
+  isUserValidated(userEmail, authProvider) {
+    const data = {
+      email: userEmail,
+      authProvider
+    };
+
+    return axios
+      .post(this._getURL("auth/is-validated"), data)
       .then(response => response.data);
   }
 

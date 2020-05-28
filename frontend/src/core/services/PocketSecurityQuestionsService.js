@@ -43,6 +43,28 @@ class PocketSecurityQuestionsService extends PocketBaseService {
       });
   }
 
+  /**
+   * Get user random security question.
+   *
+   * @param {string} email Email of user.
+   *
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   */
+  async getUserRandomSecurityQuestion(email) {
+    const data = {
+      email
+    };
+
+    return axios.post(this._getURL("user/random"), data)
+      .then(response => {
+        if (response.status === 200) {
+          return {success: response.data};
+        }
+        return {success: false};
+      }).catch(err => {
+        return {success: false, data: err.response};
+      });
+  }
 }
 
 export default new PocketSecurityQuestionsService();
