@@ -1,1 +1,30 @@
+@import "../../../scss/Variables/Fonts";
+@import "../../../scss/Variables/Colors";
 
+.center {
+  padding: 0rem 1rem !important;
+}
+
+.inputControl {
+  width: 400px !important;
+  height: 34px;
+  border-radius: 25px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.inputButton {
+  width: 400px !important;
+  height: 32px;
+}
+
+.providerButton {
+  width: 195px !important;
+  height: 32px !important;
+  border-radius: 31px;
+  background-color: $dark-gray;
+}
+
+.containerDiv {
+  width: 400px !important;
+}
