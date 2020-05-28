@@ -63,7 +63,7 @@ export const DASHBOARD_PATHS = {
   profile: "/profile",
   createNodeForm: "/nodes/new",
   nodePassphrase: "/nodes/new/passphrase",
-  nodeChainList: "/nodes/chains",
+  nodeChainList: "/nodes/new/chains",
   selectValidatorPower: "/nodes/new/validator-power",
   importNode: "/nodes/import",
   orderSummary: "/payment/summary",

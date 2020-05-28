@@ -514,7 +514,7 @@ button {
 }
 
 .empty-overlay {
-  height: 35vh;
+  height: 45vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -726,6 +726,22 @@ input[type="radio"] {
   color: $black;
   border: 1px solid $primary-color;
   border-radius: 50%;
+  appearance: none;
+  outline: 0;
+  cursor: pointer;
+
+  &:checked {
+
+    ~label {
+      margin-top: 0px;
+      margin-left: 3px;
+      height: 25%;
+      position: absolute;
+      background-color: $primary-color;
+      width: 60%;
+      border-radius: 50%;
+    }
+  }
 }
 
 #general {

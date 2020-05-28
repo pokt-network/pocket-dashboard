@@ -18,7 +18,7 @@ class AppOrderSummary extends Component {
     } = this.props;
 
     return (
-      <div className="summary">
+      <div className="summary pb-1">
         {items.map((it, idx) => (
           <div className="item" key={idx}>
             <p>{it.label}</p>

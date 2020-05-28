@@ -1,7 +1,6 @@
 @import "../../../scss/Core.scss";
 
 .choose-chains {
-
   .page-title {
     h2 {
       font-family: $secondary-font-family;
@@ -45,6 +44,13 @@
       padding-bottom: 0;
 
       .app-table {
+        thead {
+          margin-left: 0;
+        }
+
+        tbody {
+          padding-left: 0;
+        }
 
         .selection-cell-header {
           padding: 0;
@@ -53,8 +59,8 @@
 
           input[type="checkbox"] {
             position: absolute;
-            top: 68px;
-            left: 52px;
+            top: 30px;
+            left: 53px;
           }
         }
 
