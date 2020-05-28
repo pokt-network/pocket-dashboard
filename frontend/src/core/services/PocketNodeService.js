@@ -272,7 +272,7 @@ class PocketNodeService extends PocketBaseService {
     };
 
     return axios
-      .post(this._getURL("stake"), data)
+      .post(this._getURL("custom/stake"), data)
       .then((response) => {
         return {success: true, data: response.data};
       })
@@ -293,7 +293,7 @@ class PocketNodeService extends PocketBaseService {
     const data = {node, nodeLink};
 
     return axios
-      .post(this._getURL("unstake"), data)
+      .post(this._getURL("custom/unstake"), data)
       .then((response) => {
         return {success: true, data: response.data};
       })

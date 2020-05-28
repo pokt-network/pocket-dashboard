@@ -169,15 +169,15 @@ class OrderSummary extends Component {
         application, chains, result.paymentIntent.id, applicationLink
       ).then(() => {});
     } else {
-      // TODO: Test implementation
       // Stake Node
       const {
         privateKey,
         passphrase,
         chains,
         address,
+        serviceURL
       } = NodeService.getNodeInfo();
-      const node = {privateKey, passphrase};
+      const node = {privateKey, passphrase, serviceURL};
 
       const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
       const detail = url.replace(":address", address);

@@ -3,12 +3,7 @@ import "./SelectValidatorPower.scss";
 import {Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {
-  ITEM_TYPES,
-  STYLING,
-  PURCHASE_ITEM_NAME,
-  DEFAULT_VALIDATOR_POWER,
-} from "../../../_constants";
+import {ITEM_TYPES, PURCHASE_ITEM_NAME, STYLING} from "../../../_constants";
 import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import PocketPaymentService from "../../../core/services/PocketPaymentService";
@@ -26,7 +21,7 @@ import NodeService from "../../../core/services/PocketNodeService";
 
 class SelectValidatorPower extends Purchase {
   // TODO: On a later release, find a way to simplify the code and reduce
-  // duplication.
+  //  duplication.
   constructor(props, context) {
     super(props, context);
 
@@ -42,10 +37,9 @@ class SelectValidatorPower extends Purchase {
 
     PaymentService.getAvailableCurrencies().then((currencies) => {
       PocketCheckoutService.getValidatorPower().then((validatorPower) => {
-        const min = parseInt(validatorPower.min);
+        const minPowerValidator = parseInt(validatorPower.min);
 
-        // TODO: Get data based on Validation Power
-        PocketCheckoutService.getNodeMoneyToSpent(DEFAULT_VALIDATOR_POWER).then(
+        PocketCheckoutService.getNodeMoneyToSpent(minPowerValidator).then(
           ({cost}) => {
             PocketAccountService.getBalance(accountAddress).then(
               ({balance}) => {
@@ -56,10 +50,10 @@ class SelectValidatorPower extends Purchase {
                 this.setState({
                   currentAccountBalance: currentAccountBalance,
                   originalAccountBalance: currentAccountBalance,
-                  min: min,
+                  min: minPowerValidator,
                   max: parseInt(validatorPower.max),
                   loading: false,
-                  selected: DEFAULT_VALIDATOR_POWER,
+                  selected: minPowerValidator,
                   subTotal,
                   total,
                   type: ITEM_TYPES.NODE,
@@ -239,7 +233,7 @@ class SelectValidatorPower extends Purchase {
             <div className="calc">
               <div className="slider-wrapper">
                 <AppSlider
-                  defaultValue={DEFAULT_VALIDATOR_POWER}
+                  defaultValue={min}
                   onChange={this.onSliderChange}
                   type={PURCHASE_ITEM_NAME.NODES}
                   marks={{

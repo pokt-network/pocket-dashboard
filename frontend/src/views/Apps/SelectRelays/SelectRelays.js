@@ -3,7 +3,7 @@ import "./SelectRelays.scss";
 import {Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {ITEM_TYPES, STYLING, PURCHASE_ITEM_NAME, DEFAULT_RELAYS} from "../../../_constants";
+import {ITEM_TYPES, PURCHASE_ITEM_NAME, STYLING} from "../../../_constants";
 import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import PocketPaymentService from "../../../core/services/PocketPaymentService";
@@ -50,7 +50,7 @@ class SelectRelays extends Component {
           .then(relaysPerDay => {
             const minRelays = parseInt(relaysPerDay.min);
 
-            PocketCheckoutService.getApplicationMoneyToSpent(DEFAULT_RELAYS)
+            PocketCheckoutService.getApplicationMoneyToSpent(minRelays)
               .then(({cost}) => {
 
                 PocketAccountService.getBalance(accountAddress)
@@ -65,7 +65,7 @@ class SelectRelays extends Component {
                       minRelays: minRelays,
                       maxRelays: parseInt(relaysPerDay.max),
                       loading: false,
-                      relaysSelected: DEFAULT_RELAYS,
+                      relaysSelected: minRelays,
                       subTotal,
                       total
                     });
@@ -265,7 +265,7 @@ class SelectRelays extends Component {
             <div className="relays-calc">
               <div className="slider-wrapper">
                 <AppSlider
-                  defaultValue={DEFAULT_RELAYS}
+                  defaultValue={minRelays}
                   onChange={this.onSliderChange}
                   type={PURCHASE_ITEM_NAME.APPS}
                   marks={{

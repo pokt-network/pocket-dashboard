@@ -4,7 +4,7 @@ import "./Checkout.scss";
 import {Button, Col, Row} from "react-bootstrap";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
 import Invoice from "../../../core/components/Payment/Invoice";
-import {formatCurrency, capitalize} from "../../../_helpers";
+import {capitalize, formatCurrency} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import moment from "moment";
 import {ITEM_TYPES} from "../../../_constants";
@@ -55,14 +55,14 @@ class Checkout extends Component {
       createdDate: date,
     } = await PaymentService.getPaymentDetail(paymentId);
 
-    const {type: cardType, digits} = paymentMethod.cardData;
+    const {brand, lastDigits} = paymentMethod;
     const userName = PocketUserService.getUserInfo().name;
 
     const invoice = {
       id: id.replace("pi_", "").toLowerCase(),
       date: moment(date).format("DD MM YYYY"),
       owner: userName,
-      card: `${capitalize(cardType)} ${digits}`,
+      card: `${capitalize(brand)} ${lastDigits}`,
     };
 
     this.setState({

@@ -218,7 +218,7 @@ router.post("/user/all", async (request, response) => {
 /**
  * Stake a node.
  */
-router.post("/stake", async (request, response) => {
+router.post("/custom/stake", async (request, response) => {
   try {
 
     /** @type {{node: {privateKey: string, passphrase: string, serviceURL: string}, networkChains: string[], payment:{id: string}, nodeLink: string}} */
@@ -268,7 +268,7 @@ router.post("/stake", async (request, response) => {
 /**
  * Unstake a node.
  */
-router.post("/unstake", async (request, response) => {
+router.post("/custom/unstake", async (request, response) => {
   try {
 
     /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */

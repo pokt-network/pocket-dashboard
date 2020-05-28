@@ -143,7 +143,7 @@ export class ExtendedPocketApplication {
       chains: [],
       stakedTokens: "0",
       maxRelays: applicationParameters.baseRelaysPerPokt.toString(),
-      unstakingCompletionTime: applicationParameters.unstakingTime
+      unstakingCompletionTime: applicationParameters.unstakingTime.toString()
     };
   }
 }
