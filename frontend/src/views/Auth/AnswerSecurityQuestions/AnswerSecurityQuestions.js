@@ -77,7 +77,7 @@ class AnswerSecurityQuestions extends Component {
             md={{ span: 8, offset: 2 }}
             lg={{ span: 4, offset: 3 }}
           >
-            <PocketBox iconUrl={"/assets/rectangle.png"}>
+            <PocketBox iconUrl={"/assets/squared.png"}>
               <h1 className="forgotPassword">
                 Answer this question before continuing.
               </h1>
