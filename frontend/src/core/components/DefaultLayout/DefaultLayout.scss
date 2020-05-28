@@ -1,7 +1,7 @@
 @import "../../../scss/Variables/DefaultLayout";
 
 .default-layout {
-  max-height: 90vh;
+  max-height: calc(100vh - 80px);
   overflow-x: hidden;
   padding: 0 42px 0 $default-layout-item-padding-left !important;
 
