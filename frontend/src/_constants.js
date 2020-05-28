@@ -124,7 +124,7 @@ export const TABLE_COLUMNS = {
 };
 
 export const VALIDATION_MESSAGES = {
-  REQUIRED: "This field is required.",
+  REQUIRED: "This field is required",
   MAX: (max) =>
     max ? `Exceeded character limit of ${max}` : "Exceeded character limit",
   MIN: (min) =>

@@ -1,5 +1,5 @@
-@import "node_modules/bootstrap/scss/bootstrap";
 @import "Variables/All";
+@import "node_modules/bootstrap/scss/bootstrap";
 
 @mixin bordered-layout {
   border: 2px solid $primary-color;
@@ -114,6 +114,7 @@ body {
 form {
   textarea {
     resize: none;
+    max-height: 120px;
   }
 }
 
@@ -176,9 +177,13 @@ form {
 
 .btn-primary.disabled,
 .btn-primary:disabled {
-  color: $dark-gray;
+  color: $light-gray;
   background-color: $white-smoke;
   border-color: $white-smoke;
+
+  &:hover {
+    cursor: unset;
+  }
 }
 
 .btn-dark {
@@ -297,10 +302,24 @@ input {
   }
 }
 
+.form-group {
+  margin-bottom: 0;
+}
+
 .form-control {
   border: 1px solid $border-blue;
   height: 32px;
+  line-height: 32px;
   border-radius: 21px;
+  margin-bottom: 0.8rem;
+
+  &.is-invalid {
+    margin-bottom: 0;
+  }
+
+  &:focus {
+    box-shadow: none;
+  }
 }
 
 label.form-label {
@@ -308,6 +327,11 @@ label.form-label {
   font-size: 14px;
   font-weight: 300;
   color: $form-label-font-color;
+  margin-bottom: 10px;
+
+  .has-error {
+    color: #ff0000;
+  }
 }
 
 .badge,
@@ -589,7 +613,7 @@ textarea.form-control {
 
 input.form-control::placeholder,
 textarea.form-control::placeholder {
-  color: #474747;
+  color: $light-gray;
   font-weight: 300;
   font-size: 14px;
 }
@@ -646,17 +670,29 @@ textarea.form-control::placeholder {
   margin-left: 25px !important;
 }
 
+a:hover {
+  text-decoration: none;
+}
+
 .form-control.is-invalid {
   border-color: $border-blue;
+  background-image: url(/assets/red_alert.svg);
+  background-size: 16px 16px;
+
+  &:focus {
+    border-color: $border-blue;
+    box-shadow: none;
+  }
 }
 
 .invalid-feedback,
 .error {
   margin-left: 10px;
   padding-right: 10px;
-  color: #fc635f;
-  font-size: 16px;
+  color: #ff0000;
+  font-size: 14px;
   font-weight: bold !important;
+  line-height: normal;
 }
 
 .invalid-feedback {
@@ -669,9 +705,8 @@ textarea.form-control::placeholder {
 }
 
 .form-check-label {
-  margin-top: 5px;
   margin-left: 5px;
-  position: absolute;
+  line-height: 27px;
 }
 
 input[type="checkbox"] // input[type="radio"]
@@ -689,11 +724,12 @@ input[type="checkbox"] // input[type="radio"]
   outline: 0;
   cursor: pointer;
   transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
+  padding-bottom: 1px;
 
   &::before {
     content: "";
-    height: 70%;
-    width: 45%;
+    height: 65%;
+    width: 40%;
     border-style: solid;
     border-color: $white;
     border-width: 0 2px 2px 0;

@@ -21,6 +21,7 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
+    "classnames": "^2.2.6",
     "formik": "^2.1.4",
     "identicon.js": "^2.3.3",
     "lodash": "^4.17.15",
