@@ -73,7 +73,8 @@ class Login extends Component {
     }
 
     const {success, data} = await UserService.login(
-      values.email, values.password);
+      values.email, values.password
+    );
 
     if (!success) {
       const {message: err} = data.response.data;
@@ -111,7 +112,7 @@ class Login extends Component {
             </div>
             <Row>
               <Col lg={{span: 5, offset: 3}}>
-                <div className={"main"}>
+                <div className={"main"} style={{marginTop: -40}}>
                   <h2>Login</h2>
                   <Formik
                     validate={this.validate}
@@ -137,6 +138,7 @@ class Login extends Component {
                             value={values.email}
                             onChange={handleChange}
                             isInvalid={!!errors.email}
+                            className="inputControl"
                           />
                           <Form.Control.Feedback type="invalid">
                             {errors.email}
@@ -151,40 +153,47 @@ class Login extends Component {
                             value={values.password}
                             onChange={handleChange}
                             isInvalid={!!errors.password}
+                            className="inputControl"
                           />
                           <Form.Control.Feedback type="invalid">
                             {errors.password}
                           </Form.Control.Feedback>
-                        </Form.Group>
-                        <p>
                           <Link to={forgot_password}>
                             Forgot your password?
                           </Link>
-                        </p>
+                        </Form.Group>
 
-                        <Button type="submit" size="md" variant="primary" block>
+                        <Button
+                          type="submit"
+                          size="md"
+                          variant="primary"
+                          block
+                          className="center inputButton"
+                        >
                           Sign in
                         </Button>
-                        <div className="divider mt-4 mb-3">Or</div>
-                        <div id={"provider-buttons"}>
-                          <AuthProviderButton
-                            block={true}
-                            className="brand pl-5 pr-5 mr-3"
-                            icon={faGoogle}
-                            type={AuthProviderType.login}
-                            authProvider={UserService.getAuthProvider(
-                              this.state.authProviders, "google"
-                            )}
-                          />
-                          <AuthProviderButton
-                            block={true}
-                            className="brand pl-4 pr-4"
-                            icon={faGithub}
-                            type={AuthProviderType.login}
-                            authProvider={UserService.getAuthProvider(
-                              this.state.authProviders, "github"
-                            )}
-                          />
+                        <div className="containerDiv">
+                          <div className="divider mt-4 mb-3">Or</div>
+                          <div id={"provider-buttons"}>
+                            <AuthProviderButton
+                              block={true}
+                              className="brand pl-4 pr-4 mr-3 center"
+                              icon={faGoogle}
+                              type={AuthProviderType.login}
+                              authProvider={UserService.getAuthProvider(
+                                this.state.authProviders, "google"
+                              )}
+                            />
+                            <AuthProviderButton
+                              block={true}
+                              className="brand pl-4 pr-4 center"
+                              icon={faGithub}
+                              type={AuthProviderType.login}
+                              authProvider={UserService.getAuthProvider(
+                                this.state.authProviders, "github"
+                              )}
+                            />
+                          </div>
                         </div>
                       </Form>
                     )}
