@@ -123,8 +123,7 @@ class NodeDetail extends Component {
     const nodeLink = `${window.location.origin}${detail}`;
 
     const {success, data} = NodeService.unjailNode(
-      {privateKey, passphrase, accountAddress},
-      nodeLink
+      {privateKey, passphrase, accountAddress}, nodeLink
     );
 
     if (success) {
