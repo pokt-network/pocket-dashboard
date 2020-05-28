@@ -196,8 +196,6 @@ class NodeDetail extends Component {
 
     if (jailed) {
       jailStatus = JAIL_STATUS_STR.JAILED;
-    } else if (!jailed) {
-      jailStatus = JAIL_STATUS_STR.UNJAILED;
       jailActionItem = (
         <p
           onClick={() => this.setState({ctaButtonPressed: true, unjail: true})}
@@ -206,6 +204,8 @@ class NodeDetail extends Component {
           Take out of jail
         </p>
       );
+    } else if (!jailed) {
+      jailStatus = JAIL_STATUS_STR.UNJAILED;
     } else {
       jailStatus = JAIL_STATUS_STR.UNJAILING;
       // TODO: Set unjailing time format
