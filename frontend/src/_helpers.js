@@ -159,7 +159,7 @@ export const tableShow = (table, handleClick) => {
   return tableFormatted;
 };
 
-export const formatHoursAndMinutes = (time, daysFromTime) => {
+export const formatDaysCountdown = (time, daysFromTime) => {
   const now = moment(new Date());
   const eventTime = moment(time).add(daysFromTime, "days");
   const duration = moment.duration(eventTime.diff(now));
@@ -170,4 +170,4 @@ export const formatHoursAndMinutes = (time, daysFromTime) => {
   return `${days}:${hours}:${minutes}`;
 };
 
-export const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1); 
+export const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);

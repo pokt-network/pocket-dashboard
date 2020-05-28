@@ -96,14 +96,17 @@
   }
 
   .unjail {
+    color: $primary-color;
     cursor: pointer;
-    text-decoration: underline;
+    font-weight: bold !important;
+    font-size: 10px !important;
   }
 
   .unjail:hover {
-    color: darken($color: #888888, $amount: 10%);
+    color: darken($color: $primary-color, $amount: 10%);
   }
 
+  .unjailing,
   .unjail,
   .unstaking-time {
     margin-top: 5px;

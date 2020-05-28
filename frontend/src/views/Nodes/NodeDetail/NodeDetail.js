@@ -123,13 +123,14 @@ class NodeDetail extends Component {
     const nodeLink = `${window.location.origin}${detail}`;
 
     const {success, data} = NodeService.unjailNode(
-      {privateKey, passphrase, accountAddress}, nodeLink
+      {privateKey, passphrase, accountAddress},
+      nodeLink
     );
 
     if (success) {
       // "Reload page" for updated networkData
-    this.setState({loading: true, unjail: false});
-    this.fetchData();
+      this.setState({loading: true, unjail: false});
+      this.fetchData();
     } else {
       this.setState({unstaking: false, message: data});
     }
@@ -185,6 +186,33 @@ class NodeDetail extends Component {
       accountBalance,
     } = this.state;
 
+    let jailStatus;
+    let jailActionItem;
+
+    const JAIL_STATUS_STR = {
+      JAILED: "YES",
+      UNJAILED: "NO",
+      UNJAILING: "Processing",
+    };
+
+    if (jailed) {
+      jailStatus = JAIL_STATUS_STR.JAILED;
+    } else if (!jailed) {
+      jailStatus = JAIL_STATUS_STR.UNJAILED;
+      jailActionItem = (
+        <p
+          onClick={() => this.setState({ctaButtonPressed: true, unjail: true})}
+          className="unjail"
+        >
+          Take out of jail
+        </p>
+      );
+    } else {
+      jailStatus = JAIL_STATUS_STR.UNJAILING;
+      // TODO: Set unjailing time format
+      jailActionItem = <p className="unjailing">Remaining: {"5:00"} ming</p>;
+    }
+
     const generalInfo = [
       {
         title: `${formatNetworkData(stakedTokens)} POKT`,
@@ -205,18 +233,9 @@ class NodeDetail extends Component {
           ) : undefined,
       },
       {
-        title: jailed ? "YES" : "NO",
+        title: jailStatus,
         subtitle: "Jailed",
-        children: jailed ? (
-          <p
-            onClick={() =>
-              this.setState({ctaButtonPressed: true, unjail: true})
-            }
-            className="unjail"
-          >
-            Take out of jail
-          </p>
-        ) : undefined,
+        children: jailActionItem,
       },
       // TODO: Get validator power
       {title: formatNumbers(10000), subtitle: "Validator Power"},

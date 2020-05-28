@@ -7,7 +7,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatHoursAndMinutes, formatNetworkData, getStakeStatus} from "../../../_helpers";
+import {formatDaysCountdown, formatNetworkData, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -183,7 +183,7 @@ class AppDetail extends Component {
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
-      ? formatHoursAndMinutes(unstakingCompletionTime, POKT_UNSTAKING_DAYS)
+      ? formatDaysCountdown(unstakingCompletionTime, POKT_UNSTAKING_DAYS)
       : undefined;
 
     const generalInfo = [
