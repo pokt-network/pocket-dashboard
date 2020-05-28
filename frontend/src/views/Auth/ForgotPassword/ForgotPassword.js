@@ -36,11 +36,15 @@ class ForgotPassword extends Component {
       <Container fluid id={"forgot-password-page"}>
         <Navbar />
         <Row className="mt-1">
-          <Col id={"main"} md={{span: 8, offset: 2}} lg={{span: 4, offset: 3}}>
+          <Col
+            id={"main"}
+            md={{span: 8, offset: 2}}
+            lg={{span: 4, offset: 3}}
+          >
             <PocketBox iconUrl={"/assets/circle.png"}>
-              <h1 className="title">Forgot your password?</h1>
-              <p className="text">
-                Write your email and we will send you a validation message
+              <h1 className="forgotPassword">Forgot your password?</h1>
+              <p className="passwordLabel">
+                Write your email to reset your password.
               </p>
               <Form id={"main-form"} onSubmit={this.handleSubmit}>
                 <Form.Group className="mb-4">
@@ -49,15 +53,16 @@ class ForgotPassword extends Component {
                     onChange={this.handleChange}
                     name="email"
                     type="email"
+                    className="emailInput"
                   />
                 </Form.Group>
                 <Button
-                  className="pt-2 pb-2 pl-5 pr-5"
+                  className="resetButton"
                   type="submit"
                   variant="primary"
                   size={"md"}
                 >
-                  Reset password
+                  <span className="resetButtonText">Reset Password</span>
                 </Button>
               </Form>
             </PocketBox>
