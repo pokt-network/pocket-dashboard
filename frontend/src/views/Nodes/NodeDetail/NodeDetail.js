@@ -329,6 +329,7 @@ class NodeDetail extends Component {
           <Col sm="1" md="1" lg="1">
             <Button
               className="float-right cta"
+              disabled={isStaked && jailed}
               onClick={() => {
                 this.setState({ctaButtonPressed: true});
 

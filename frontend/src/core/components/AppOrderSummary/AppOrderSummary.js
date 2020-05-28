@@ -40,7 +40,7 @@ class AppOrderSummary extends Component {
           buttonProps={{
             onClick: formActionHandler,
             variant: "primary",
-            className: "mb-3",
+            className: "mb-5",
           }}
         >
           <span>{actionButtonName}</span>
