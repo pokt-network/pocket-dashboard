@@ -6,6 +6,24 @@ const router = express.Router();
 
 const userService = new UserService();
 
+
+/**
+ * Check if user exists.
+ */
+router.post("/exists", async (request, response) => {
+  try {
+    /** @type {{email:string, authProvider: string}} */
+    const data = request.body;
+
+    const exists = await userService.userExists(data.email, data.authProvider);
+
+    response.send(exists);
+  } catch (e) {
+    response.send(false);
+  }
+
+});
+
 /**
  * Provides Auth provider urls to show consent.
  */
@@ -85,7 +103,7 @@ router.post("/auth/signup", async (request, response) => {
 /**
  * User sign up using email.
  */
-router.post("/auth/resend_signup_email", async (request, response) => {
+router.post("/auth/resend-signup-email", async (request, response) => {
   try {
     /** @type {{email:string, postValidationBaseLink:string}} */
     const data = request.body;
@@ -112,9 +130,69 @@ router.post("/auth/resend_signup_email", async (request, response) => {
 });
 
 /**
+ * User logout.
+ */
+router.post("/auth/logout", async (request, response) => {
+  try {
+    /** @type {{email:string}} */
+    const data = request.body;
+
+    const result = await userService.logout(data.email);
+
+    response.send(result);
+  } catch (e) {
+    response.send(false);
+  }
+
+});
+
+/**
+ * Check if user is validated.
+ */
+router.post("/auth/is-validated", async (request, response) => {
+  try {
+    /** @type {{email:string, authProvider: string}} */
+    const data = request.body;
+
+    const validated = await userService.isUserValidated(data.email, data.authProvider);
+
+    response.send(validated);
+  } catch (e) {
+    response.send(false);
+  }
+
+});
+
+/**
+ * Change user password.
+ */
+router.put("/auth/change-password", async (request, response) => {
+  try {
+    /** @type {{email:string, password1: string, password2: string}} */
+    const data = request.body;
+
+    const passwordChanged = await userService.changePassword(data.email, data.password1, data.password2);
+
+    if (passwordChanged) {
+      await EmailService
+        .to(data.email)
+        .sendPasswordChangedEmail(data.email);
+    }
+
+    response.send(passwordChanged);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
  * Validate token.
  */
-router.post("/validate_token", async (request, response) => {
+router.post("/validate-token", async (request, response) => {
   try {
     /** @type {{token:string}} */
     const data = request.body;
@@ -141,23 +219,6 @@ router.post("/validate_token", async (request, response) => {
     };
 
     response.status(400).send(error);
-  }
-
-});
-
-/**
- * User logout.
- */
-router.post("/auth/logout", async (request, response) => {
-  try {
-    /** @type {{email:string}} */
-    const data = request.body;
-
-    const result = await userService.logout(data.email);
-
-    response.send(result);
-  } catch (e) {
-    response.send(false);
   }
 
 });

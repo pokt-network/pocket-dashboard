@@ -140,7 +140,22 @@ export class EmailUser extends PocketUser {
       throw Error(`Passwords must have ${PASSWORD_MIN_LENGTH} characters at least.`);
     }
 
-    if (userData.password1 !== userData.password2) {
+    EmailUser.validatePasswords(userData.password1, userData.password2);
+
+    return true;
+  }
+
+  /**
+   * Validate passwords.
+   *
+   * @param {string} password1 Password to validate against password2.
+   * @param {string} password2 Password to validate against password1.
+   *
+   * @returns {boolean} If passwords match or not.
+   * @throws {Error} If validation fails.
+   */
+  static validatePasswords(password1, password2) {
+    if (password1 !== password2) {
       throw Error("Passwords does not match.");
     }
 

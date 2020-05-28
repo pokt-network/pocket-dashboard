@@ -1,6 +1,11 @@
 import PocketBaseService from "./PocketBaseService";
 import axios from "axios";
 
+export const AUTH_PROVIDERS = {
+  email: "email",
+  github: "github",
+  google: "google",
+};
 
 class PocketUserService extends PocketBaseService {
 
@@ -82,7 +87,7 @@ class PocketUserService extends PocketBaseService {
    * @return {Promise<*>}
    */
   validateToken(token) {
-    return axios.post(this._getURL("validate_token"), {token})
+    return axios.post(this._getURL("validate-token"), {token})
       .then(response => response.data)
       .catch(err => {
         return {
@@ -241,12 +246,13 @@ class PocketUserService extends PocketBaseService {
       postValidationBaseLink: securityQuestionPageLink
     };
 
-    return axios.post(this._getURL("auth/resend_signup_email"), data)
+    return axios.post(this._getURL("auth/resend-signup-email"), data)
       .then(response => {
         return {
           success: response.data
         };
-      }).catch(err => {
+      })
+      .catch(err => {
         return {
           success: false,
           data: err
@@ -268,15 +274,86 @@ class PocketUserService extends PocketBaseService {
   }
 
   /**
+   * Check if user exists or not.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} authProvider Auth provider (could be email, github, google).
+   *
+   * @return {Promise<*>} If exists returns true, otherwise false.
+   */
+  userExists(userEmail, authProvider) {
+    const data = {
+      email: userEmail,
+      authProvider
+    };
+
+    return axios
+      .post(this._getURL("exists"), data)
+      .then(response => response.data);
+  }
+
+  /**
+   * Check if user is validated or not.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} authProvider Auth provider (could be email, github, google).
+   *
+   * @return {Promise<*>} If validated returns true, otherwise false.
+   */
+  isUserValidated(userEmail, authProvider) {
+    const data = {
+      email: userEmail,
+      authProvider
+    };
+
+    return axios
+      .post(this._getURL("auth/is-validated"), data)
+      .then(response => response.data);
+  }
+
+  /**
+   * Change user password.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} password1 New password.
+   * @param {string} password2 Password confirmation.
+   *
+   * @return {Promise<*>} If password was changed returns true, otherwise false.
+   */
+  changePassword(userEmail, password1, password2) {
+    const data = {
+      email: userEmail,
+      password1,
+      password2
+    };
+
+    return axios
+      .put(this._getURL("auth/change-password"), data)
+      .then(response => {
+        return {
+          success: response.data
+        };
+      })
+      .catch(err => {
+        return {
+          success: false,
+          data: err
+        };
+      });
+  }
+
+  /**
    * Validate reCAPTCHA token.
    *
    * @param {string} token recaptcha generated token.
-   * @return {Promise<{object}>}
+   *
+   * @return {Promise<*>}
    * @async
    */
   verifyCaptcha(token) {
 
-    return axios.post(this._getURL("verify-captcha"), {token})
+    return axios
+      .post(this._getURL("verify-captcha"), {token})
       .then(response => response.data);
   }
 
