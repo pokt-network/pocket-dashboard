@@ -18,6 +18,7 @@ class CreateForm extends Component {
         contactEmail: "",
         description: "",
       },
+      imgError: "",
       icon: "",
       created: false,
       error: {
@@ -27,7 +28,12 @@ class CreateForm extends Component {
     };
   }
 
-  async handleDrop(img) {
+  async handleDrop(img, error) {
+    if (error) {
+      this.setState({icon:"", imgError: error});
+      return;
+    }
+
     // Fetch image blob data and converts it to base64
     const blob = await fetch(img).then((r) => r.blob());
 
@@ -38,7 +44,7 @@ class CreateForm extends Component {
     reader.onloadend = () => {
       const base64data = reader.result;
 
-      this.setState({icon: base64data});
+      this.setState({icon: base64data, imgError: ""});
     };
   }
 
