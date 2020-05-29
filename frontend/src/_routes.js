@@ -35,6 +35,8 @@ import PrivacyPolicy from "./views/Support/PrivacyPolicy";
 import AnswerSecurityQuestions from "./views/Auth/AnswerSecurityQuestions/AnswerSecurityQuestions";
 import SelectValidatorPower from "./views/Nodes/SelectValidatorPower/SelectValidatorPower";
 import NodePassphrase from "./views/Nodes/NodePassphrase/Nodepassphrase";
+import VerifyChangedEmail from "./views/Auth/VerifyChangedEmail/VerifyChangedEmail";
+
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -45,6 +47,7 @@ export const ROUTE_PATHS = {
   verify_email: "/verify-email",
   reset_password: "/reset-password",
   answer_security_questions: "/answer-security-questions",
+  verify_changed_email: "/email-changed"
 };
 
 export const DASHBOARD_PATHS = {
@@ -132,6 +135,12 @@ const pageRoutes = [
     exact: true,
     name: "Verify Email",
     component: VerifyEMail,
+  },
+  {
+    path: ROUTE_PATHS.verify_changed_email,
+    exact: true,
+    name: "Verify Changed Email",
+    component: VerifyChangedEmail,
   },
   {
     path: ROUTE_PATHS.home,
