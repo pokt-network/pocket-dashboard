@@ -193,11 +193,11 @@ export default class PaymentService extends BaseService {
     let dateFilter = {};
 
     if (fromDate) {
-      dateFilter["$gte"] = new Date(Date.parse(fromDate)).toISOString();
+      dateFilter["$gte"] = new Date(Date.parse(fromDate));
     }
 
     if (toDate) {
-      dateFilter["$lte"] = new Date(Date.parse(toDate)).toISOString();
+      dateFilter["$lte"] = new Date(Date.parse(toDate));
     }
 
     if (fromDate || toDate) {
