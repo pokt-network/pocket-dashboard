@@ -1,18 +1,93 @@
-#verify-email-page {
+@import "../../../scss/Variables/Fonts.scss";
+@import "../../../scss/Variables/Colors.scss";
 
+#verify-email-page {
   h1 {
-    font-size: 2.5em;
+    width: 573px;
+    height: 41px;
+    font-family: $secondary-font-family;
+    font-size: 30px;
+    font-weight: 800;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
     text-transform: uppercase;
   }
 
   h2 {
-    font-size: 1.7em;
     margin-bottom: 0;
   }
 
-  p {
-    font-size: 1.1em;
+  .email-address {
+    width: 197px;
+    height: 24px;
+    font-family: $secondary-font-family;
+    font-size: 18px;
+    font-weight: 800;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: $border-blue;
+  }
+
+  .email-not {
+    width: 225px;
+    height: 17px;
+    font-family: $primary-font-family;
+    font-size: 14px;
     font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: $border-blue;
+  }
+
+  .p-style-lg {
+    width: 573px;
+    height: 34px;
+    font-family: $primary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: $dark-gray;
+  }
+  .button {
+    width: 93px;
+    height: 32px;
+    border-radius: 25px;
+    background-color: $border-blue;
+  }
+
+  .button-label {
+    width: 39px;
+    height: 15px;
+    font-family: $primary-font-family;
+    font-size: 12px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: $white-smoke;
+  }
+
+  .p-style-md {
+    width: 179px;
+    height: 17px;
+    font-family: $primary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #494949;
   }
 
   #main {
