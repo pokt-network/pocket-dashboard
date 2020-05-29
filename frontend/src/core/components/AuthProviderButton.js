@@ -35,7 +35,7 @@ export class AuthProviderButton extends Component {
         block={block}
         onClick={this.onButtonClick}
       >
-        {icon ? <FontAwesomeIcon icon={icon} /> : null} {type} with{" "}
+        {icon ? <img alt="" src={`/assets/${authProvider.name}.svg`} /> : null} {type} with{" "}
         {authProvider.name.slice(0, 1).toUpperCase() +
           authProvider.name.slice(1, authProvider.name.length)}
       </Button>

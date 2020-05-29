@@ -124,7 +124,7 @@ class SignUp extends Component {
       <Container fluid id="signup" className={"auth-page"}>
         <Row>
           <AuthSidebar />
-          <Col className={"content"}>
+          <Col className={"content auth-scroll"}>
             <div className="change">
               <p>
                 Do you have an account? <Link to={login}>Login</Link>
@@ -132,7 +132,7 @@ class SignUp extends Component {
             </div>
 
             <Row>
-              <Col lg={{span: 5, offset: 3}}>
+              <Col lg={{span: 5, offset: 3}} className="mb-5">
                 <div className={"main"}>
                   <h2>Create Account</h2>
                   <p className="error">{backendErrors}</p>

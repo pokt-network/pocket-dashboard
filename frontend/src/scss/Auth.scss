@@ -82,10 +82,20 @@
         }
 
         button {
+          img {
+            height: 20px;
+            margin-right: 10px;
+          }
+
           font-size: 14px;
           border-radius: 31px;
         }
       }
     }
+  }
+
+  .auth-scroll {
+    height: 100vh;
+    overflow: auto;
   }
 }
