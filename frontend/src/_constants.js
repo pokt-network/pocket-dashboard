@@ -37,6 +37,9 @@ export const NODES_LIMIT = 10;
 
 export const PAYMENT_HISTORY_LIMIT = 10;
 
+// eslint-disable-next-line no-useless-escape
+export const PASSPHRASE_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@\?<>\{\}"\-=\\|+\[\];:,.'`#\$/()_%\^&\*])(?=.{15,})/;
+
 export const STYLING = {
   primaryColor: "#27a9e0",
   lightGray: "#afafaf",
