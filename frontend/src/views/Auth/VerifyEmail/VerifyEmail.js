@@ -18,6 +18,12 @@ class VerifyEmail extends Component {
       email: "",
       unauthorized: false,
       resentEmail: false,
+
+      alert: {
+        show: false,
+        variant: "",
+        message: "",
+      },
     };
 
     this.resendEmail = this.resendEmail.bind(this);
@@ -42,8 +48,13 @@ class VerifyEmail extends Component {
     UserService.resendSignUpEmail(
       this.state.email, securityQuestionLinkPage
     ).then((result) => {
-      // TODO: show resend message
-      this.setState({resendEmail: true});
+      this.setState({
+        resentEmail: true,
+        alert: {
+          show: true,
+          variant: "danger",
+        },
+      });
     });
   }
 
@@ -64,7 +75,7 @@ class VerifyEmail extends Component {
         {!unauthorized ? (
           <>
             <Row className="mt-5 mb-3">
-              <Col lg={{span: 8, offset: 2}}>
+              <Col lg={{span: 8, offset: 4}}>
                 <AppSteps
                   icons={icons}
                   steps={[
@@ -84,6 +95,7 @@ class VerifyEmail extends Component {
               >
                 {resentEmail && (
                   <AppAlert
+                    variant={alert.variant}
                     dismissible
                     onClose={() => {
                       this.setState({resentEmail: false});
