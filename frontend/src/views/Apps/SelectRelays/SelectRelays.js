@@ -231,7 +231,7 @@ class SelectRelays extends Component {
     // At the moment the only available currency is USD.
     const currency = currencies[0];
     const subTotalFixed = numeral(subTotal).format("$0,0.000");
-    const totalFixed = formatNumbers(total);
+    const totalFixed = numeral(total-currentAccountBalance).format("$0,0.000");
 
     if (loading) {
       return <Loader />;
