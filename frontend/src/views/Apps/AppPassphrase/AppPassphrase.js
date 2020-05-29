@@ -8,7 +8,7 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
-import isEmpty from 'lodash/isEmpty';
+import isEmpty from "lodash/isEmpty";
 import {
   createAndDownloadJSONFile,
   scrollToId,
@@ -41,8 +41,7 @@ class AppPassphrase extends Component {
         .required(VALIDATION_MESSAGES.REQUIRED)
         .matches(
           // eslint-disable-next-line no-useless-escape
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{15,})/,
-          "The passphrase does not meet the requirements"
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{15,})/, "The passphrase does not meet the requirements"
         ),
     });
 
@@ -107,8 +106,7 @@ class AppPassphrase extends Component {
         {
           passPhrase: values.passPhrase,
           validPassphrase: true,
-        },
-        () => {
+        }, () => {
           this.createApplicationAccount();
         }
       );
@@ -127,9 +125,7 @@ class AppPassphrase extends Component {
     )}`;
 
     const {success, data} = await ApplicationService.createApplicationAccount(
-      applicationInfo.id,
-      passPhrase,
-      applicationBaseLink
+      applicationInfo.id, passPhrase, applicationBaseLink
     );
 
     if (success) {
