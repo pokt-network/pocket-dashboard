@@ -32,15 +32,18 @@
     margin-top: 5px;
   }
 
-
   &.scroll .body {
     overflow-x: auto;
     max-height: 60vh;
     padding-bottom: 5px;
   }
 
-  &.bordered .body {
-    box-shadow: $default-box-shadow;
-    border-radius: $panel-radius;
+  &.bordered {
+    overflow: hidden;
+
+    .body {
+      box-shadow: $default-box-shadow;
+      border-radius: $panel-radius;
+    }
   }
 }

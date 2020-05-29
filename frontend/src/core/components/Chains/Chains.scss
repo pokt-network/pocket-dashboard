@@ -2,6 +2,8 @@
 
 .choose-chains {
   .page-title {
+    margin-top: 15px;
+
     h2 {
       font-family: $secondary-font-family;
       color: $title-secondary-color;
@@ -9,34 +11,23 @@
       font-weight: bold;
       line-height: 1.73;
       letter-spacing: -0.6px;
-
       margin-bottom: 60px;
-      padding-left: 22px;
     }
 
     p {
       font-size: 16px;
       font-weight: 300;
-    }
-
-    button {
-      margin-right: 50px;
+      line-height: normal;
     }
   }
 
   .app-segment {
-    margin-top: -40px;
-
     .search-panel {
-      margin-left: -34px;
-      width: 650px;
+      max-width: 395px;
+      margin-left: 22px;
 
       button {
         width: 30px;
-
-        img {
-          left: -12px;
-        }
       }
     }
 

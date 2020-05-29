@@ -58,7 +58,6 @@ class ApplicationChainList extends Chains {
                 onClick={this.handleChains}
                 variant="primary"
                 size={"md"}
-                className="pl-4 pr-4"
               >
                 <span>Continue</span>
               </Button>
@@ -67,31 +66,29 @@ class ApplicationChainList extends Chains {
         </Row>
         <Row>
           <Col>
-            <Segment scroll={false}>
+            <Segment bordered scroll={false} label="">
               <Row className="search-panel">
-                <Col>
-                  <InputGroup className="search-input ml-5 mb-3">
-                    <FormControl
-                      placeholder="Search a chain"
-                      name="searchChainQuery"
-                      onChange={this.handleChange}
-                      onKeyPress={({key}) => {
-                        if (key === "Enter") {
-                          this.handleChainSearch();
-                        }
-                      }}
-                    />
-                    <InputGroup.Append>
-                      <Button
-                        type="submit"
-                        onClick={this.handleChainSearch}
-                        variant="outline-primary"
-                      >
-                        <img src="/assets/search.svg" alt="search-icon" />
-                      </Button>
-                    </InputGroup.Append>
-                  </InputGroup>
-                </Col>
+                <InputGroup className="search-input">
+                  <FormControl
+                    placeholder="Search a chain"
+                    name="searchChainQuery"
+                    onChange={this.handleChange}
+                    onKeyPress={({key}) => {
+                      if (key === "Enter") {
+                        this.handleChainSearch();
+                      }
+                    }}
+                  />
+                  <InputGroup.Append>
+                    <Button
+                      type="submit"
+                      onClick={this.handleChainSearch}
+                      variant="outline-primary"
+                    >
+                      <img src="/assets/search.svg" alt="search-icon" />
+                    </Button>
+                  </InputGroup.Append>
+                </InputGroup>
               </Row>
               <AppTable
                 scroll

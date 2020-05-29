@@ -50,7 +50,8 @@ class AppsMain extends Main {
     const userEmail = UserService.getUserInfo().email;
 
     ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
+      userEmail,
+      APPLICATIONS_LIMIT
     ).then((userItems) => {
       ApplicationService.getStakedApplicationSummary().then(
         ({totalApplications, averageRelays, averageStaked}) => {
@@ -77,7 +78,9 @@ class AppsMain extends Main {
     this.setState({allItemsTableLoading: true});
 
     const registeredItems = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
+      APPLICATIONS_LIMIT,
+      0,
+      BOND_STATUS_STR[option]
     );
 
     this.setState({registeredItems, allItemsTableLoading: false});
@@ -89,7 +92,10 @@ class AppsMain extends Main {
     const userEmail = UserService.getUserInfo().email;
 
     const userItems = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
+      userEmail,
+      APPLICATIONS_LIMIT,
+      0,
+      BOND_STATUS_STR[option]
     );
 
     this.setState({
@@ -103,7 +109,9 @@ class AppsMain extends Main {
     const {userItems} = this.state;
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1
+      userEmail,
+      APPLICATIONS_LIMIT,
+      offset * APPLICATIONS_LIMIT + 1
     );
 
     const allUserItems = [...userItems, ...newUserItems];
@@ -119,7 +127,8 @@ class AppsMain extends Main {
     const {registeredItems} = this.state;
 
     const newRegisteredItems = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1
+      APPLICATIONS_LIMIT,
+      offset * APPLICATIONS_LIMIT + 1
     );
 
     const allRegisteredItems = [...registeredItems, ...newRegisteredItems];
@@ -206,34 +215,32 @@ class AppsMain extends Main {
         </Row>
         <Row className="mb-4 app-tables">
           <Col sm="6" className="my-items-segment">
-            <Segment bordered scroll={false} label="My Apps">
-              <Row
-                className={cls("search-panel", {
-                  "search-panel-without-apps": !hasApps,
-                })}
-              >
-                <InputGroup className="search-input">
-                  <FormControl
-                    placeholder="Search an App"
-                    name="searchQuery"
-                    onChange={this.handleChange}
-                    onKeyPress={({key}) => {
-                      if (key === "Enter") {
-                        this.handleSearch("pocketApplication.name");
-                      }
-                    }}
-                  />
-                  <InputGroup.Append>
-                    <Button
-                      type="submit"
-                      onClick={this.handleChainSearch}
-                      variant="outline-primary"
-                    >
-                      <img src={"/assets/search.svg"} alt="search-icon" />
-                    </Button>
-                  </InputGroup.Append>
-                </InputGroup>
-              </Row>
+            <Segment bordered empty={!hasApps} scroll={false} label="My Apps">
+              {hasApps && (
+                <Row className="search-panel">
+                  <InputGroup className="search-input">
+                    <FormControl
+                      placeholder="Search an App"
+                      name="searchQuery"
+                      onChange={this.handleChange}
+                      onKeyPress={({key}) => {
+                        if (key === "Enter") {
+                          this.handleSearch("pocketApplication.name");
+                        }
+                      }}
+                    />
+                    <InputGroup.Append>
+                      <Button
+                        type="submit"
+                        onClick={this.handleChainSearch}
+                        variant="outline-primary"
+                      >
+                        <img src={"/assets/search.svg"} alt="search-icon" />
+                      </Button>
+                    </InputGroup.Append>
+                  </InputGroup>
+                </Row>
+              )}
               <div
                 className={cls("scrollable main-list", {
                   "has-scroll": myAppsHasScroll,
