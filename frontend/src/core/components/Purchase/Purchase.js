@@ -63,10 +63,6 @@ class Purchase extends Component {
   }
 
   async goToSummary() {}
-
-  render() {
-    return <h1>Hello</h1>;
-  }
 }
 
 export default Purchase;
