@@ -17,6 +17,7 @@ class ForgotPassword extends Component {
       data: {
         email: "",
       },
+      error: "",
     };
   }
 
@@ -56,12 +57,12 @@ class ForgotPassword extends Component {
         });
       }
     } else {
-      // TODO: Show error to user
-      console.log("user does not exists");
+      this.setState({ error: "Email is not registered" });
     }
   }
 
   render() {
+    const { error } = this.state;
     return (
       <Container fluid id={"forgot-password-page"}>
         <Navbar />
@@ -83,8 +84,14 @@ class ForgotPassword extends Component {
                     onChange={this.handleChange}
                     name="email"
                     type="email"
-                    className="emailInput"
+                    className={error ? "is-invalid emailInput" : "emailInput"}
                   />
+                  <Form.Control.Feedback
+                    className="feedback invalid-acount"
+                    type="invalid"
+                  >
+                    {error ? error : ""}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Button
                   className="resetButton"
