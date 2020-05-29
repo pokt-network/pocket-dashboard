@@ -132,8 +132,7 @@ class CreateNodeForm extends CreateForm {
             <p className="info">
               Fill in these quick questions to identity your node on the
               dashboard. Fields marked with * are required to continue.
-            </p>
-            <p className="info">
+              <br />
               If you have an existing account in Pocket Network with an assigned
               Private Key and you want to register it as a node, please proceed
               to{" "}
