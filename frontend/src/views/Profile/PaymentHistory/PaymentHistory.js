@@ -11,6 +11,7 @@ import PaymentService from "../../../core/services/PocketPaymentService";
 import {PAYMENT_HISTORY_LIMIT} from "../../../_constants";
 import {formatCurrency} from "../../../_helpers";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import moment from "moment";
 
 class PaymentHistory extends Component {
   constructor(props, context) {
@@ -20,10 +21,11 @@ class PaymentHistory extends Component {
     this.renderExport = this.renderExport.bind(this);
     this.handleExport = this.handleExport.bind(this);
     this.onTablePagination = this.onTablePagination.bind(this);
+    this.paginateAfterDateChange = this.paginateAfterDateChange.bind(this);
 
     this.state = {
-      startDate: new Date(),
-      endDate: new Date(),
+      fromDate: "",
+      toDate: "",
       history: [],
       offset: 0,
       page: 1,
@@ -54,16 +56,30 @@ class PaymentHistory extends Component {
   }
 
   handleDateChange(date, name) {
-    this.setState({[name]: date});
+    this.setState(
+      {
+        [name]: moment(date).format("YYYY-MM-DD"),
+        offset: 0,
+        page: 1,
+      }, this.paginateAfterDateChange
+    );
+  }
+
+  paginateAfterDateChange() {
+    this.onTablePagination(undefined, {
+      page: 1,
+      sizePerPage: PAYMENT_HISTORY_LIMIT,
+    });
   }
 
   async onTablePagination(_, {page, sizePerPage}) {
+    const {fromDate, toDate} = this.state;
+
     const userEmail = UserService.getUserInfo().email;
     const offset = (page - 1) * sizePerPage + 1;
 
-    // FIXME: The firm of this method has been changed.
     const history = await PaymentService.getPaymentHistory(
-      userEmail, PAYMENT_HISTORY_LIMIT, offset
+      userEmail, PAYMENT_HISTORY_LIMIT, offset, fromDate, toDate
     );
 
     this.setState({page, history, offset});
@@ -138,13 +154,13 @@ class PaymentHistory extends Component {
             <div className="filters mt-4">
               <span className="filter">
                 <AppDatePicker
-                  onChange={(date) => this.handleDateChange(date, "startDate")}
+                  onChange={(date) => this.handleDateChange(date, "fromDate")}
                 />
               </span>
               <p className="label-text">To</p>
               <span className="filter">
                 <AppDatePicker
-                  onChange={(date) => this.handleDateChange(date, "endDate")}
+                  onChange={(date) => this.handleDateChange(date, "toDate")}
                 />
               </span>
               <span className="filter search">

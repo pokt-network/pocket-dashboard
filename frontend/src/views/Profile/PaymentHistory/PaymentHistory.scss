@@ -30,10 +30,16 @@
   .export {
     cursor: pointer;
     color: $primary-color;
-  }
 
-  .export:active {
-    color: $primary-color-darker;
+    img {
+      height: 25px;
+    }
+
+    &:hover {
+      img {
+        filter: contrast(10%);
+      }
+    }
   }
 
   .app-table {
