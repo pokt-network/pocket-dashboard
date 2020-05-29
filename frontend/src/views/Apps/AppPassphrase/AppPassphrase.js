@@ -226,7 +226,7 @@ class AppPassphrase extends Component {
                         loading={loading}
                         buttonProps={{
                           disabled: !validPassphrase,
-                          className: `pl-4 pr-4 pt-2 pb-2 ${
+                          className: `${
                             created ? "download-key-file-button" : null
                           }`,
                           variant: !created  ? "primary" : "dark",
