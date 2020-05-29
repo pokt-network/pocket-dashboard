@@ -1,6 +1,6 @@
-@import "../../../scss/Core.scss";
+@import "../Core.scss";
 
-.app-detail {
+.detail {
 
   .head {
     display: flex;
@@ -95,6 +95,19 @@
     margin-left: -30px;
   }
 
+  .unjail {
+    color: $primary-color;
+    cursor: pointer;
+    font-weight: bold !important;
+    font-size: 10px !important;
+  }
+
+  .unjail:hover {
+    color: darken($color: $primary-color, $amount: 10%);
+  }
+
+  .unjailing,
+  .unjail,
   .unstaking-time {
     margin-top: 5px;
     font-size: 0.75em;
@@ -112,7 +125,7 @@
     }
   }
 
-  .app-data {
+  .item-data {
     margin-top: 32px;
     margin-left: -35px;
 
@@ -286,12 +299,22 @@
 }
 
 .modal-dialog {
+  &.app-modal {
+    max-width: 680px;
+  }
+
   .modal-content {
-    // padding: 40px 0 !important;
+    button.close {
+      padding-bottom: 40px;
+      padding-right: 0;
+    }
+
+    padding: 10px 0px 20px 40px !important;
+    background-color: $form-label-font-color !important;
 
     .modal-body {
+      padding-right: 60px;
       opacity: 1;
-
       font-family: $primary-font-family;
       font-size: 18px;
       font-weight: 300;

@@ -1,6 +1,22 @@
 import {BaseCheckoutService} from "./BaseCheckoutService";
+import {Configurations} from "../../_configuration";
 
 export default class ApplicationCheckoutService extends BaseCheckoutService {
+
+  /**
+   * Get instance of Application Checkout Service.
+   *
+   * @param {object} [options] Options used by service.
+   * @param {number} [poktMarketPrice] POKT market price.
+   *
+   * @returns {ApplicationCheckoutService} An instance.
+   */
+  static getInstance(options = undefined, poktMarketPrice = undefined) {
+    const serviceOptions = options ?? Configurations.pocket_network.checkout;
+    const servicePoktMarketPrice = poktMarketPrice ?? Configurations.pocket_network.pokt_market_price;
+
+    return new ApplicationCheckoutService(serviceOptions, servicePoktMarketPrice);
+  }
 
   /**
    *  Get relays per day data.
@@ -35,7 +51,7 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
     } = this.options;
 
     if (relaysPerDay < minRelaysPerDay && relaysPerDay > maxRelaysPerDay) {
-      throw new Error("Relays per day out of allowed range.");
+      throw new Error("Relays per day is out of allowed range.");
     }
     return (((((relaysPerDay / sessionsInADay) - stability) / pRate)) / baseRelayPerPOKT) * this.poktMarketPrice;
   }

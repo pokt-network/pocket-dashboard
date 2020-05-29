@@ -20,6 +20,7 @@
   }
 
   .rc-slider-tooltip-inner {
+    text-transform: capitalize;
     background-color: $form-label-font-color;
     font-family: $primary-font-family;
     font-size: 14px;
@@ -36,7 +37,7 @@
   }
 }
 
-#select-relays {
+#purchase {
 
   h1 {
     text-transform: uppercase;
@@ -81,17 +82,17 @@
     }
   }
 
-  h4.alert-relays {
+  h4.alert-max {
     text-transform: uppercase;
     font-weight: 800;
   }
 
-  p.alert-relays {
+  p.alert-max {
     font-weight: 400 !important;
     font-size: 18px !important;
   }
 
-  .relays-calc {
+  .calc {
     display: flex;
 
     .slider-wrapper {
@@ -116,10 +117,13 @@
 
         &:last-of-type {
           margin-top: 10px;
-          transform: translateX(-58%) !important;
-          width: 100%;
-
+          transform: translateX(-52%) !important;
         }
+      }
+
+      .rc-slider-mark-text:last-of-type {
+        margin-left: -42px;
+        width: 100%;
       }
 
       .rc-slider-dot {

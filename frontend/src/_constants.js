@@ -22,6 +22,10 @@ export const ITEM_TYPES = {
 };
 
 export const MAX_FILE_IMG_SIZE = 1000000; // 1MB
+export const PURCHASE_ITEM_NAME = {
+  APPS: "Relays per day",
+  NODES: "Validator power",
+};
 
 export const POKT_UNSTAKING_DAYS = 21;
 
@@ -119,12 +123,6 @@ export const TABLE_COLUMNS = {
     },
   ],
 };
-
-export const FILTER_OPTIONS = [
-  {text: "Staked", dataField: "staked"},
-  {text: "Unstaking", dataField: "unstaking"},
-  {text: "Unstaked", dataField: "unstaked"},
-];
 
 export const VALIDATION_MESSAGES = {
   REQUIRED: "This field is required",

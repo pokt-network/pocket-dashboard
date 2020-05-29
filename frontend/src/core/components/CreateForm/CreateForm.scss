@@ -17,6 +17,10 @@
     }
   }
 
+  p.info {
+    margin-bottom: 20px;
+  }
+
   .create-form-right-side {
     padding: 35px 150px 0 72px;
 
@@ -40,6 +44,7 @@
     ul {
       padding-inline-start: 15px;
       margin-bottom: 0;
+
     }
 
     ul > li {
@@ -55,6 +60,7 @@
         height: 18px;
       }
 
+      p,
       span,
       a {
         font-family: $primary-font-family;

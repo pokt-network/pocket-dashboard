@@ -1,6 +1,6 @@
-@import "../../../scss/Core";
+@import "../Core";
 
-.app-main {
+.main {
   .page-title {
     h1 {
       color: $title-secondary-color;
@@ -10,8 +10,13 @@
   .stats {
     margin-top: 2.5rem;
 
+    .p-badge {
+      height: 100px;
+    }
+
     .info-card-column {
       padding: 0 9px;
+
       &:first-child {
         padding-left: 0;
       }
@@ -35,6 +40,14 @@
     .import-app-button {
       width: 115px;
     }
+
+    .create-node-button {
+      width: 145px;
+    }
+
+    .import-node-button {
+      width: 120px;
+    }
   }
 
   .app-table {
@@ -50,11 +63,11 @@
       }
     }
 
-    .search-panel-without-apps {
+    .search-panel-without-items {
       display: none;
     }
 
-    .my-apps-segment {
+    .my-items-segment {
       padding: 0 9px;
 
       &:first-child {
@@ -64,7 +77,7 @@
       .app-segment {
         .head {
           h2 {
-            margin-left: 28px;
+            margin-left: 20px;
           }
         }
 
