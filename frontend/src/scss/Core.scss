@@ -396,7 +396,7 @@ button {
     text-transform: uppercase;
     color: black;
     height: 50px;
-    margin-left: 22px;
+    margin: 0 22px;
 
     th {
       margin-top: -10px;
@@ -428,7 +428,7 @@ button {
   }
 
   tbody {
-    padding: 0 14px 0 22px;
+    padding: 0 22px 0 22px;
 
     tr {
       color: gray;
@@ -459,11 +459,10 @@ button {
     }
 
     thead {
-      width: calc(100% - 38px);
+      width: calc(100% - 42px);
     }
 
     tbody {
-      width: calc(100% - 8px);
       display: block;
       height: auto;
       max-height: 62vh;
