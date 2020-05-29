@@ -44,6 +44,7 @@ class AppTable extends Component {
           classes={cls("app-table", classes, {
             scroll: scroll,
             "has-scroll": hasScroll,
+            "has-checkbox": this.props.selectRow,
             empty: empty,
             hide: !show,
           })}

@@ -1,5 +1,4 @@
 import React from "react";
-import cls from "classnames";
 import {Link} from "react-router-dom";
 import AppTable from "../../../core/components/AppTable";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
