@@ -152,7 +152,7 @@ router.post("/history", async (request, response) => {
     const data = request.body;
 
     const paymentHistory = await paymentService
-      .getPaymentHistory(data.user, limit, data.fromDate, data.toDate, offset);
+      .getPaymentHistory(data.user, limit, offset, data.fromDate, data.toDate);
 
     response.send(paymentHistory);
   } catch (e) {

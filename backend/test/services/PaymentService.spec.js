@@ -149,10 +149,11 @@ describe("PaymentService", () => {
 
       const user = "tester@testing.com";
       const limit = 10;
+      const offset = 0;
       const fromDate = "2020-05-08";
       const toDate = "2020-05-08";
 
-      const paymentHistory = await paymentService.getPaymentHistory(user, limit, fromDate, toDate);
+      const paymentHistory = await paymentService.getPaymentHistory(user, limit, offset, fromDate, toDate);
 
       paymentHistory.should.be.an("array");
       paymentHistory.length.should.be.equal(1);
