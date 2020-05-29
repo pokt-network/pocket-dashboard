@@ -1,8 +1,7 @@
 @import "../../../scss/Core.scss";
 
 .p-card {
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 16px;
   padding: 27px 20px;
   border: 1px solid rgba(0, 0, 0, .125);
   border-radius: 7px;
@@ -37,13 +36,10 @@
           font-size: 18px;
           font-weight: 800;
           font-family: $secondary-font-family;
-          margin-bottom: 1px;
           text-transform: uppercase;
         }
 
         p:last-of-type {
-          color: #c0c7ce;
-          margin-top: -5px;
           font-family: $primary-font-family;
           font-weight: 300;
           font-size: 14px;

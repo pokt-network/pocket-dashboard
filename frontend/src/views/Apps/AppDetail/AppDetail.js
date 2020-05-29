@@ -1,20 +1,20 @@
 import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {STAKE_STATUS, TABLE_COLUMNS, POKT_UNSTAKING_DAYS} from "../../../_constants";
+import {POKT_UNSTAKING_DAYS, STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
 import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatHoursAndMinutes, formatNetworkData, getStakeStatus} from "../../../_helpers";
+import {formatDaysCountdown, formatNetworkData, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
 import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
 import Segment from "../../../core/components/Segment/Segment";
-import "./AppDetail.scss";
+import "../../../scss/Views/Detail.scss";
 import PocketAccountService from "../../../core/services/PocketAccountService";
 
 class AppDetail extends Component {
@@ -110,7 +110,7 @@ class AppDetail extends Component {
   async unstakeApplication({privateKey, passphrase, address}) {
     const {freeTier} = this.state.pocketApplication;
 
-    const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
+    const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
     const detail = url.replace(":address", address);
     const link = `${window.location.origin}${detail}`;
     const application = {privateKey, passphrase, accountAddress: address};
@@ -120,8 +120,7 @@ class AppDetail extends Component {
       : await ApplicationService.unstakeApplication(application, link);
 
     if (success) {
-      // "Reload page" for updated networkData
-      this.setState({loading: true, unstake: false, ctaButtonPressed: false});
+      window.location.reload(false);
     } else {
       this.setState({unstake: false, ctaButtonPressed: false, message: data});
     }
@@ -152,11 +151,11 @@ class AppDetail extends Component {
     const {
       max_relays: maxRelays,
       staked_tokens: stakedTokens,
-      status: bondStatus,
+      status: stakeStatus,
       unstaking_time: unstakingCompletionTime,
     } = this.state.networkData;
 
-    const status = getStakeStatus(bondStatus);
+    const status = getStakeStatus(parseInt(stakeStatus));
     const isStaked =
       status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
@@ -183,7 +182,7 @@ class AppDetail extends Component {
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
-      ? formatHoursAndMinutes(unstakingCompletionTime, POKT_UNSTAKING_DAYS)
+      ? formatDaysCountdown(unstakingCompletionTime, POKT_UNSTAKING_DAYS)
       : undefined;
 
     const generalInfo = [
@@ -263,7 +262,7 @@ class AppDetail extends Component {
     }
 
     return (
-      <div className="app-detail">
+      <div className="detail">
         <Row>
           <Col>
             {message && (
@@ -319,7 +318,7 @@ class AppDetail extends Component {
           ))}
         </Row>
         <Row>
-          <Col>
+          <Col className={chains.length === 0 ? "mb-1" : ""}>
             <Segment scroll={false} label="Networks">
               <AppTable
                 scroll
@@ -332,7 +331,7 @@ class AppDetail extends Component {
             </Segment>
           </Col>
         </Row>
-        <Row className="app-data">
+        <Row className="item-data">
           <Col sm="6" md="6" lg="6">
             <div className="page-title">
               <h2>Address</h2>
@@ -420,11 +419,13 @@ class AppDetail extends Component {
           show={deleteModal}
           onHide={() => this.setState({deleteModal: false})}
           animation={false}
-          centered>
+          centered
+          dialogClassName="app-modal"
+          >
           <Modal.Header closeButton>
-            <Modal.Title>Are you sure you want to remove this App?</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+            <h4>Are you sure you want to remove this App?</h4>
             Your application will be removed from the Pocket Dashboard.
             However, you will be able access it through the command line interface (CLI) or import it
             back into Pocket Dashboard with the private key assigned to it.

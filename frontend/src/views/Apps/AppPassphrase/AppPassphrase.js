@@ -1,17 +1,20 @@
 import React, {Component} from "react";
 import "./AppPassphrase.scss";
-import {Col, Form, Row} from "react-bootstrap";
+import {Col, Form, Row, Button} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
 import AppTable from "../../../core/components/AppTable";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
-import {createAndDownloadJSONFile, scrollToId, validateYup} from "../../../_helpers";
+import {
+  createAndDownloadJSONFile,
+  scrollToId,
+  validateYup,
+} from "../../../_helpers";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import {Redirect} from "react-router-dom";
 import Segment from "../../../core/components/Segment/Segment";
 import LoadingButton from "../../../core/components/LoadingButton";
 
@@ -146,21 +149,9 @@ class AppPassphrase extends Component {
       privateKey,
       address,
       redirectPath,
-      redirectParams,
       error,
       loading,
     } = this.state;
-
-    if (fileDownloaded) {
-      return (
-        <Redirect
-          to={{
-            pathname: redirectPath,
-            state: redirectParams,
-          }}
-        />
-      );
-    }
 
     const generalInfo = [
       {title: "0 POKT", subtitle: "Staked tokens"},
@@ -240,7 +231,7 @@ class AppPassphrase extends Component {
                           className: `pl-4 pr-4 pt-2 pb-2 ${
                             created ? "download-key-file-button" : null
                           }`,
-                          variant: "primary",
+                          variant: !created  ? "primary" : "dark",
                           type: "submit",
                           onClick: !created
                             ? () => this.createApplicationAccount()
@@ -323,6 +314,19 @@ class AppPassphrase extends Component {
                 bordered={false}
               />
             </Segment>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <Button
+              disabled={!fileDownloaded}
+              onClick={() =>
+                // eslint-disable-next-line react/prop-types
+                this.props.history.replace(redirectPath)
+              }
+            >
+              <span>Continue</span>
+            </Button>
           </Col>
         </Row>
       </div>

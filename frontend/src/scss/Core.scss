@@ -1,5 +1,5 @@
-@import "node_modules/bootstrap/scss/bootstrap";
 @import "Variables/All";
+@import "node_modules/bootstrap/scss/bootstrap";
 
 @mixin bordered-layout {
   border: 2px solid $primary-color;
@@ -114,6 +114,8 @@ body {
 form {
   textarea {
     resize: none;
+    max-height: 120px;
+    border-radius: $panel-radius;
   }
 }
 
@@ -176,9 +178,13 @@ form {
 
 .btn-primary.disabled,
 .btn-primary:disabled {
-  color: $dark-gray;
+  color: $light-gray;
   background-color: $white-smoke;
   border-color: $white-smoke;
+
+  &:hover {
+    cursor: unset;
+  }
 }
 
 .btn-dark {
@@ -297,10 +303,25 @@ input {
   }
 }
 
+.form-group {
+  margin-bottom: 0;
+}
+
 .form-control {
   border: 1px solid $border-blue;
   height: 32px;
+  font-size: 0.875rem;
+  line-height: 32px;
   border-radius: 21px;
+  margin-bottom: 0.8rem;
+
+  &.is-invalid {
+    margin-bottom: 0;
+  }
+
+  &:focus {
+    box-shadow: none;
+  }
 }
 
 label.form-label {
@@ -308,6 +329,15 @@ label.form-label {
   font-size: 14px;
   font-weight: 300;
   color: $form-label-font-color;
+  margin-bottom: 10px;
+
+  .has-error {
+    color: #ff0000;
+  }
+}
+
+textarea.form-control {
+  border-radius: $panel-radius;
 }
 
 .badge,
@@ -387,6 +417,14 @@ button {
       &:first-child {
         padding-left: 0;
       }
+
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+
+    th[class^="col-"]:last-child {
+      padding-left: 22px;
     }
 
     th:focus {
@@ -426,8 +464,7 @@ button {
     }
 
     thead {
-      // 50px comes from -8px from the scroll, 22px from the wireframes and 22px from margin-left and 6px extra from padding-right 6px from tbody
-      width: calc(100% - 50px);
+      width: calc(100% - 38px);
     }
 
     tbody {
@@ -514,7 +551,7 @@ button {
 }
 
 .empty-overlay {
-  height: 35vh;
+  height: 45vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -537,6 +574,10 @@ button {
   }
 }
 
+.modal {
+  background-color: rgba(6, 32, 46, 0.6);
+}
+
 .modal-dialog {
   .modal-content {
     background-color: $dark-blue;
@@ -544,7 +585,8 @@ button {
     box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
   }
 
-  .modal-title {
+  .modal-title,
+  .modal-content h4 {
     text-transform: uppercase;
     font-family: $secondary-font-family;
     color: $primary-color;
@@ -592,7 +634,7 @@ textarea.form-control {
 
 input.form-control::placeholder,
 textarea.form-control::placeholder {
-  color: #474747;
+  color: $light-gray;
   font-weight: 300;
   font-size: 14px;
 }
@@ -613,10 +655,11 @@ textarea.form-control::placeholder {
     border-left-color: transparent;
 
     img {
-      position: relative;
-      top: -4px;
       width: 25px;
       height: 16px;
+      position: absolute;
+      top: 6px;
+      right: 8px;
     }
   }
 
@@ -650,17 +693,29 @@ textarea.form-control::placeholder {
   margin-left: 25px !important;
 }
 
+a:hover {
+  text-decoration: none;
+}
+
 .form-control.is-invalid {
   border-color: $border-blue;
+  background-image: url(/assets/red_alert.svg);
+  background-size: 16px 16px;
+
+  &:focus {
+    border-color: $border-blue;
+    box-shadow: none;
+  }
 }
 
 .invalid-feedback,
 .error {
   margin-left: 10px;
   padding-right: 10px;
-  color: #fc635f;
-  font-size: 16px;
+  color: #ff0000;
+  font-size: 14px;
   font-weight: bold !important;
+  line-height: normal;
 }
 
 .invalid-feedback {
@@ -673,9 +728,8 @@ textarea.form-control::placeholder {
 }
 
 .form-check-label {
-  margin-top: 5px;
   margin-left: 5px;
-  position: absolute;
+  line-height: 27px;
 }
 
 input[type="checkbox"] // input[type="radio"]
@@ -693,11 +747,12 @@ input[type="checkbox"] // input[type="radio"]
   outline: 0;
   cursor: pointer;
   transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
+  padding-bottom: 1px;
 
   &::before {
     content: "";
-    height: 70%;
-    width: 45%;
+    height: 65%;
+    width: 40%;
     border-style: solid;
     border-color: $white;
     border-width: 0 2px 2px 0;
@@ -730,6 +785,22 @@ input[type="radio"] {
   color: $black;
   border: 1px solid $primary-color;
   border-radius: 50%;
+  appearance: none;
+  outline: 0;
+  cursor: pointer;
+
+  &:checked {
+
+    ~label {
+      margin-top: 0px;
+      margin-left: 3px;
+      height: 25%;
+      position: absolute;
+      background-color: $primary-color;
+      width: 60%;
+      border-radius: 50%;
+    }
+  }
 }
 
 #general {

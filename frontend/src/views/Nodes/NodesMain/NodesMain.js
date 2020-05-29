@@ -1,31 +1,31 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import BootstrapTable from "react-bootstrap-table-next";
-import "./NodesMain.scss";
+import AppTable from "../../../core/components/AppTable";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
+import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import AppDropdown from "../../../core/components/AppDropdown/AppDropdown";
-import {BOND_STATUS_STR, FILTER_OPTIONS, NODES_LIMIT, TABLE_COLUMNS} from "../../../_constants";
+import {BOND_STATUS_STR, NODES_LIMIT, STYLING, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import InfoCards from "../../../core/components/InfoCards";
-import {formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
-import NodeService from "../../../core/services/PocketNodeService";
+import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
+import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
-import Segment from "../../../core/components/Segment/Segment";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSearch} from "@fortawesome/free-solid-svg-icons";
+import InfiniteScroll from "react-infinite-scroller";
+import ClipLoader from "react-spinners/ClipLoader";
+import NodeService from "../../../core/services/PocketNodeService";
+import _ from "lodash";
+
 
 class NodesMain extends Main {
   constructor(props, context) {
     super(props, context);
 
-    this.handleUserItemsFilter = this.handleUserItemsFilter.bind(this);
-    this.handleAllItemsFilter = this.handleAllItemsFilter.bind(this);
+    this.loadMoreUserNodes = this.loadMoreUserNodes.bind(this);
+    this.loadMoreRegisteredNodes = this.loadMoreRegisteredNodes.bind(this);
 
     this.state = {
       ...this.state,
@@ -39,7 +39,8 @@ class NodesMain extends Main {
     const userEmail = UserService.getUserInfo().email;
 
     const userItems = await NodeService.getAllUserNodes(
-      userEmail, NODES_LIMIT, 0, BOND_STATUS_STR[option]);
+      userEmail, NODES_LIMIT, 0, BOND_STATUS_STR[option]
+    );
 
     this.setState({
       userItems,
@@ -61,25 +62,55 @@ class NodesMain extends Main {
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
 
-    const userItems = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
+    NodeService.getAllUserNodes(userEmail, NODES_LIMIT).then((userItems) => {
+      // TODO: Get node summary data
+      ApplicationService.getStakedApplicationSummary().then(
+        ({totalApplications, averageRelays, averageStaked}) => {
+          NodeService.getAllNodes(NODES_LIMIT).then((registeredItems) => {
+            this.setState({
+              userItems,
+              filteredItems: userItems,
+              total: totalApplications,
+              averageRelays,
+              averageStaked,
+              registeredItems,
+              loading: false,
+              hasNodes: userItems.length > 0,
+            });
+          });
+        }
+      );
+    });
+  }
 
-    const {
-      totalApplications,
-      averageRelays,
-      averageStaked,
-    } = await ApplicationService.getStakedApplicationSummary();
+  async loadMoreUserNodes(offset) {
+    const {userItems} = this.state;
+    const userEmail = UserService.getUserInfo().email;
+    const newUserItems = await NodeService.getAllUserNodes(
+      userEmail, NODES_LIMIT, offset * NODES_LIMIT + 1
+    );
 
-    const registeredItems = await NodeService.getAllNodes(NODES_LIMIT);
+    const allUserItems = [...userItems, ...newUserItems];
 
     this.setState({
-      userItems,
+      hasMoreUserItems: newUserItems.length !== 0,
+      userItems: allUserItems,
       filteredItems: userItems,
-      total: totalApplications,
-      averageRelays,
-      averageStaked,
-      registeredItems,
-      loading: false,
-      hasNodes: userItems.length > 0,
+    });
+  }
+
+  async loadMoreRegisteredNodes(offset) {
+    const {registeredItems} = this.state;
+
+    const newRegisteredItems = await NodeService.getAllNodes(
+      NODES_LIMIT, offset * NODES_LIMIT + 1
+    );
+
+    const allRegisteredItems = [...registeredItems, ...newRegisteredItems];
+
+    this.setState({
+      hasMoreRegisteredItems: newRegisteredItems.length !== 0,
+      registeredItems: allRegisteredItems,
     });
   }
 
@@ -94,32 +125,31 @@ class NodesMain extends Main {
       allItemsTableLoading,
       userItemsTableLoading,
       hasNodes,
+      hasMoreUserItems,
+      hasMoreRegisteredItems,
     } = this.state;
 
     const registeredItems = allRegisteredItems.map(mapStatusToField);
 
     const cards = [
-      {title: formatNumbers(total), subtitle: "Total of node"},
-      {title: formatNumbers(averageStaked), subtitle: "Average staked"},
+      {title: formatNumbers(total), subtitle: "Total of Nodes"},
       {
-        title: formatNumbers(averageRelays),
-        subtitle: "Average relays per node",
+        title: formatNetworkData(averageStaked, false),
+        subtitle: "Average Staked Token Per Node",
       },
-      {title: formatNumbers(23867), subtitle: "Max Staked"},
-      {title: formatNumbers(10345), subtitle: "Min staked"},
+      {
+        title: formatNetworkData(averageRelays, false),
+        subtitle: "Avr Validator Power Per Node",
+      },
     ];
 
-    const userNodesDropdown = (
-      <AppDropdown
-        onSelect={(status) => this.handleUserItemsFilter(status.dataField)}
-        options={FILTER_OPTIONS}
-      />
-    );
-
-    const allNodesDropdown = (
-      <AppDropdown
-        onSelect={(status) => this.handleAllItemsFilter(status.dataField)}
-        options={FILTER_OPTIONS}
+    const loader = (
+      <ClipLoader
+        key={0}
+        size={30}
+        css={"display: block; margin: 0 auto;"}
+        color={STYLING.lightGray}
+        loading={true}
       />
     );
 
@@ -128,29 +158,32 @@ class NodesMain extends Main {
     }
 
     return (
-      <div>
+      <div className="main">
         <Row>
-          <Col sm="8" md="8" lg="8">
-            <h2 className="ml-1">General Nodes Information</h2>
+          <Col sm="8" md="8" lg="8" className="page-title">
+            <h1 className="ml-1">General Nodes Information</h1>
           </Col>
           <Col
             sm="4"
             md="4"
             lg="4"
-            className="d-flex justify-content-end"
+            className="d-flex justify-content-end cta-buttons"
           >
             <Link to={_getDashboardPath(DASHBOARD_PATHS.createNodeForm)}>
               <Button
                 variant="dark"
-                size={"md"}
-                className="ml-4 pl-4 pr-4 mr-3"
+                className="ml-4 pl-4 pr-4 mr-3 create-node-button"
               >
-                Create new node
+                <span>Create New Node</span>
               </Button>
             </Link>
             <Link to={_getDashboardPath(DASHBOARD_PATHS.importNode)}>
-              <Button variant="secondary" size={"md"} className="pl-4 pr-4">
-                Import node
+              <Button
+                variant="primary"
+                size={"md"}
+                className="pl-4 pr-4 import-node-button"
+              >
+                <span>Import Node</span>
               </Button>
             </Link>
           </Col>
@@ -158,74 +191,142 @@ class NodesMain extends Main {
         <Row className="stats mb-4">
           <InfoCards cards={cards} />
         </Row>
-        <Row className="mb-4">
-          <Col sm="6" md="6" lg="6">
-            <Segment
-              label="MY NODES"
-              sideItem={hasNodes ? userNodesDropdown : undefined}
-            >
-              <InputGroup className="search-input mb-3">
-                <FormControl
-                  placeholder="Search app"
-                  name="searchQuery"
-                  onChange={this.handleChange}
-                  onKeyPress={({key}) => {
-                    if (key === "Enter") {
-                      this.handleSearch();
-                    }
-                  }}
-                />
-                <InputGroup.Append>
-                  <Button
-                    type="submit"
-                    onClick={this.handleSearch}
-                    variant="outline-primary"
-                  >
-                    <FontAwesomeIcon icon={faSearch} />
-                  </Button>
-                </InputGroup.Append>
-              </InputGroup>
-              <div className="main-list">
-                <LoadingOverlay active={userItemsTableLoading} spinner>
-                  {filteredItems.map((app, idx) => {
-                    const {name, icon} = app.pocketNode;
-                    const {stakedTokens, status} = app.networkData;
+        <Row className="mb-4 app-tables">
+          <Col sm="6" md="6" lg="6" className="my-items-segment">
+            <Segment bordered scroll={false} label="My Nodes">
+              <Row
+                className={`search-panel ${
+                  !hasNodes ? "search-panel-without-items" : null
+                }`}
+              >
+                <Col>
+                  <InputGroup className="search-input mb-3">
+                    <FormControl
+                      placeholder="Search a Node"
+                      name="searchQuery"
+                      onChange={this.handleChange}
+                      onKeyPress={({key}) => {
+                        if (key === "Enter") {
+                          this.handleSearch("pocketNode.name");
+                        }
+                      }}
+                    />
+                    <InputGroup.Append>
+                      <Button
+                        type="submit"
+                        onClick={this.handleChainSearch}
+                        variant="outline-primary"
+                      >
+                        <img src={"/assets/search.svg"} alt="search-icon" />
+                      </Button>
+                    </InputGroup.Append>
+                  </InputGroup>
+                </Col>
+              </Row>
+              <div className="scrollable main-list">
+                <InfiniteScroll
+                  pageStart={0}
+                  loadMore={this.loadMoreUserNodes}
+                  useWindow={false}
+                  hasMore={hasMoreUserItems}
+                  loader={loader}
+                >
+                  <LoadingOverlay active={userItemsTableLoading} spinner>
+                    {hasNodes ? (
+                      filteredItems.map((node, idx) => {
+                        const {name, icon} = node.pocketNode;
+                        const {tokens: stakedTokens, status} = node.networkData;
 
-                    // TODO: Add network information
-                    return (
-                      <PocketElementCard
-                        key={idx}
-                        title={name}
-                        subtitle={`Staked POKT: ${stakedTokens} POKT`}
-                        status={getStakeStatus(status)}
-                        iconURL={icon}
-                      />
-                    );
-                  })}
-                </LoadingOverlay>
+                        return (
+                          <Link
+                            key={idx}
+                            to={() => {
+                              const address = node.networkData.address;
+
+                              const nodeID = node.pocketNode.id;
+
+                              if (!address) {
+                                NodeService.saveNodeInfoInCache({
+                                  nodeID,
+                                });
+                                return _getDashboardPath(
+                                  DASHBOARD_PATHS.nodePassphrase
+                                );
+                              }
+                              const url = _getDashboardPath(
+                                DASHBOARD_PATHS.nodeDetail
+                              );
+
+                              return url.replace(":address", address);
+                            }}
+                          >
+                            <PocketElementCard
+                              title={name}
+                              subtitle={`Staked POKT: ${formatNetworkData(
+                                stakedTokens
+                              )} POKT`}
+                              status={getStakeStatus(_.isNumber(status) ? status : parseInt(status))}
+                              iconURL={icon}
+                            />
+                          </Link>
+                        );
+                      })
+                    ) : (
+                      <div className="empty-overlay">
+                        <img
+                          src={"/assets/empty-box.svg"}
+                          alt="apps-empty-box"
+                        />
+                        <p>
+                          You have not created <br /> or imported any node yet
+                        </p>
+                      </div>
+                    )}
+                  </LoadingOverlay>
+                </InfiniteScroll>
               </div>
             </Segment>
           </Col>
-          <Col sm="6" md="6" lg="6">
-            <Segment label="REGISTERED NODES" sideItem={allNodesDropdown}>
-              <BootstrapTable
-                classes="app-table table-striped"
-                keyField="pocketNode.publicPocketAccount.address"
-                data={registeredItems}
-                columns={TABLE_COLUMNS.NODES}
-                bordered={false}
-                loading={allItemsTableLoading}
-                noDataIndication={"No nodes found"}
-                overlay={overlayFactory({
-                  spinner: true,
-                  styles: {
-                    overlay: (base) => ({
-                      ...base,
-                      background: "rgba(0, 0, 0, 0.2)",
-                    }),
-                  },
-                })}
-              />
+
+          <Col
+            sm="6"
+            md="6"
+            lg="6"
+            className={`${
+              registeredItems.length === 0 ? "segment-table-empty" : ""
+            }`}
+          >
+            <Segment scroll={false} label="REGISTERED NODES">
+              <InfiniteScroll
+                pageStart={0}
+                loadMore={this.loadMoreRegisteredNodes}
+                useWindow={false}
+                hasMore={hasMoreRegisteredItems}
+                loader={loader}
+              >
+                <AppTable
+                  scroll
+                  classes={`flex-body ${
+                    hasMoreRegisteredItems ? "loading" : ""
+                  } `}
+                  headerClasses="d-flex"
+                  toggle={registeredItems.length > 0}
+                  keyField="pocketNode.id"
+                  data={registeredItems}
+                  columns={TABLE_COLUMNS.NODES}
+                  bordered={false}
+                  loading={allItemsTableLoading}
+                  overlay={overlayFactory({
+                    spinner: true,
+                    styles: {
+                      overlay: (base) => ({
+                        ...base,
+                        background: "rgba(0, 0, 0, 0.2)",
+                      }),
+                    },
+                  })}
+                />
+              </InfiniteScroll>
             </Segment>
           </Col>
         </Row>

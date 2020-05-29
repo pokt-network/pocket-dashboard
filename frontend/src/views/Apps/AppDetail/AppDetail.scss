@@ -59,7 +59,8 @@
       margin-bottom: -13px;
     }
 
-    h1, h3 {
+    h1,
+    h3 {
       text-transform: uppercase;
     }
 
@@ -204,7 +205,8 @@
 
   }
 
-  .free-tier-contact-info h3, .contact-info h2 {
+  .free-tier-contact-info h3,
+  .contact-info h2 {
     text-transform: uppercase;
     font-family: $secondary-font-family;
     font-size: 18px;
@@ -216,7 +218,8 @@
     color: $secondary-color;
   }
 
-  .free-tier-contact-info span, .contact-info p {
+  .free-tier-contact-info span,
+  .contact-info p {
     font-family: $primary-font-family;
 
     font-size: 18px;
@@ -263,7 +266,8 @@
         margin-right: 7px;
       }
 
-      a, p {
+      a,
+      p {
         display: inline;
         font-family: $primary-font-family;
         font-size: 14px;
@@ -272,7 +276,8 @@
         color: $secondary-color;
       }
 
-      a, .link {
+      a,
+      .link {
         color: $primary-color;
         cursor: pointer;
       }
@@ -282,7 +287,7 @@
 
 .modal-dialog {
   .modal-content {
-    padding: 40px 0 !important;
+    // padding: 40px 0 !important;
 
     .modal-body {
       opacity: 1;

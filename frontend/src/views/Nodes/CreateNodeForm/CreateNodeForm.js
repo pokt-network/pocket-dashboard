@@ -1,21 +1,21 @@
 import React from "react";
-import {Redirect} from "react-router-dom";
+import {Redirect, Link} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
-import {BOND_STATUS_STR} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {generateIcon, nodeFormSchema} from "../../../_helpers";
+import {generateIcon, nodeFormSchema, scrollToId} from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
 import NodeService from "../../../core/services/PocketNodeService";
 import {Formik} from "formik";
+import AppAlert from "../../../core/components/AppAlert";
+import {STAKE_STATUS} from "../../../_constants";
 
 class CreateNodeForm extends CreateForm {
   constructor(props, context) {
     super(props, context);
 
     this.handleCreate = this.handleCreate.bind(this);
-    this.createNode = this.createNode.bind(this);
     this.state = {
       ...this.state,
       data: {
@@ -25,55 +25,58 @@ class CreateNodeForm extends CreateForm {
       },
       nodeData: {},
       agreeTerms: false,
+      imported: false,
     };
   }
 
-  async createNode(nodeData) {
+  componentDidMount() {
     let imported;
-    let stakeStatus;
-    let address;
-    let privateKey;
 
-    if (this.props.location.state !== undefined) {
-      stakeStatus = this.props.location.state.stakeStatus;
-      address = this.props.location.state.address;
-      privateKey = this.props.location.state.privateKey;
+    if (this.props.location.state) {
       imported = this.props.location.state.imported;
-    } else {
-      imported = false;
+      this.setState({imported});
     }
+  }
 
-    const {success, data} = imported
-      ? await NodeService.createNode(nodeData, privateKey)
-      : await NodeService.createNode(nodeData);
-    const unstakedNode =
-      !imported ||
-      (imported &&
-        (stakeStatus === BOND_STATUS_STR.unbonded ||
-          stakeStatus === BOND_STATUS_STR.unbonding));
+  async handleCreateImported(nodeID) {
+    const {address, privateKey, passphrase} = NodeService.getNodeInfo();
+    const data = this.state.data;
 
-    if (unstakedNode) {
-      this.setState({
-        redirectPath: _getDashboardPath(DASHBOARD_PATHS.nodeChainList),
-      });
+    const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
+    const nodeDetail = url.replace(":address", address);
+
+    const nodeBaseLink = `${window.location.origin}${nodeDetail}`;
+
+    const {success, data: importData} = await NodeService.createNodeAccount(
+      nodeID, passphrase, nodeBaseLink, privateKey
+    );
+
+    if (success) {
+      const {status} = importData.networkData;
+
+      if (status === STAKE_STATUS.Staked) {
+        this.props.history.push(nodeDetail);
+      } else {
+        NodeService.saveNodeInfoInCache({
+          data: data,
+        });
+        this.props.history.replace(
+          _getDashboardPath(DASHBOARD_PATHS.nodeChainList)
+        );
+      }
     } else {
-      const url = _getDashboardPath(DASHBOARD_PATHS.nodeChainList);
-
-      const detail = url.replace(":address", address);
-
-      this.setState({
-        redirectPath: detail,
-      });
+      this.setState({error: {show: true, message: data}});
+      scrollToId("alert");
     }
-    return {success, data};
   }
 
   async handleCreate() {
     const {name, contactEmail, description, operator} = this.state.data;
+    const {imported} = this.state;
     const icon = this.state.icon ? this.state.icon : generateIcon();
     const user = UserService.getUserInfo().email;
 
-    const {success, data} = await this.createNode({
+    const {success, data} = await NodeService.createNode({
       name,
       operator,
       contactEmail,
@@ -83,25 +86,31 @@ class CreateNodeForm extends CreateForm {
     });
 
     if (success) {
-      const {privateNodeData} = data;
-      const {address, privateKey} = privateNodeData;
+      if (imported) {
+        this.handleCreateImported(data);
+        return;
+      } else {
+        NodeService.saveNodeInfoInCache({nodeID: data, data: {name}});
+      }
 
-      NodeService.saveNodeInfoInCache({address, privateKey});
-      this.setState({created: true});
+      this.setState({
+        created: true,
+        redirectPath: _getDashboardPath(DASHBOARD_PATHS.nodePassphrase),
+      });
     } else {
-      // TODO: Show proper error message on front-end.
-      console.log(data.message);
+      this.setState({error: {show: true, message: data.message}});
+      scrollToId("alert");
     }
   }
 
   render() {
-    const {created, agreeTerms} = this.state;
+    const {created, agreeTerms, error, redirectPath, imgError} = this.state;
 
     if (created) {
       return (
         <Redirect
           to={{
-            pathname: _getDashboardPath(DASHBOARD_PATHS.nodeChainList),
+            pathname: redirectPath,
           }}
         />
       );
@@ -110,23 +119,39 @@ class CreateNodeForm extends CreateForm {
     return (
       <div className="create-form">
         <Row>
-          <Col sm="3" md="3" lg="3">
+          <Col className="page-title">
+            {error.show && (
+              <AppAlert
+                variant="danger"
+                title={error.message}
+                dismissible
+                onClose={() => this.setState({error: {show: false}})}
+              />
+            )}
             <h1>Node Information</h1>
-            <p>The fields with (*) are required to continue</p>
+            <p className="info">
+              Fill in these quick questions to identity your node on the
+              dashboard. Fields marked with * are required to continue.
+              <br />
+              If you have an existing account in Pocket Network with an assigned
+              Private Key and you want to register it as a node, please proceed
+              to{" "}
+              <Link
+                className="font-weight-light"
+                to={_getDashboardPath(DASHBOARD_PATHS.importNode)}
+              >
+                Import.
+              </Link>
+            </p>
           </Col>
         </Row>
         <Row>
-          <Col sm="3" md="3" lg="3">
-            <ImageFileUpload
-              handleDrop={(img) => this.handleDrop(img.preview)}
-            />
-          </Col>
-          <Col sm="9" md="9" lg="9">
+          <Col sm="5" md="5" lg="5" className="create-form-left-side">
             <Formik
               validationSchema={nodeFormSchema}
-              onSubmit={(data) => {
+              onSubmit={async (data) => {
                 this.setState({data});
-                this.handleCreate();
+                await this.handleCreate();
               }}
               initialValues={this.state.data}
               values={this.state.data}
@@ -136,9 +161,10 @@ class CreateNodeForm extends CreateForm {
               {({handleSubmit, handleChange, values, errors}) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
-                    <Form.Label>Name*</Form.Label>
+                    <Form.Label>Node Name*</Form.Label>
                     <Form.Control
                       name="name"
+                      placeholder="maximum of 20 characters"
                       value={values.name}
                       onChange={handleChange}
                       isInvalid={!!errors.name}
@@ -148,9 +174,10 @@ class CreateNodeForm extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Node operator*</Form.Label>
+                    <Form.Label>Node operator or Company name*</Form.Label>
                     <Form.Control
                       name="operator"
+                      placeholder="maximum of 20 characters"
                       value={values.operator}
                       onChange={handleChange}
                       isInvalid={!!errors.operator}
@@ -160,10 +187,11 @@ class CreateNodeForm extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Contact email*</Form.Label>
+                    <Form.Label>Contact Email*</Form.Label>
                     <Form.Control
                       name="contactEmail"
                       type="email"
+                      placeholder="hello@example.com"
                       value={values.contactEmail}
                       onChange={handleChange}
                       isInvalid={!!errors.contactEmail}
@@ -178,6 +206,7 @@ class CreateNodeForm extends CreateForm {
                       as="textarea"
                       rows="6"
                       name="description"
+                      placeholder="maximum of 150 characters"
                       value={values.description}
                       onChange={handleChange}
                       isInvalid={!!errors.description}
@@ -187,47 +216,73 @@ class CreateNodeForm extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
 
-                  <div className="legal-info">
-                    <p>
-                      - Purchasers are not buying POKT as an investment with the
-                      expectation of profit or appreciation - Purcharsers are
-                      buying POKT to use it.
-                    </p>
-                    <p>
-                      - To ensure purchasers are bona fide and not investors,
-                      the Company has set a purchase maximun per user and
-                      requires users must hold POKT for 4 weeks and use (bond
-                      and stake) it before transferring to another wallet or
-                      selling.
-                    </p>
-                    <p>
-                      - Purchasers are acquiring POKT for their own account and
-                      use, and not with an intention to re-sell or distribute
-                      POKT to others.
-                    </p>
-                  </div>
-
-                  <div className="submit mt-2 mb-4 d-flex justify-content-between">
-                    <Form.Check
-                      custom
-                      checked={agreeTerms}
-                      onChange={() => this.setState({agreeTerms: !agreeTerms})}
-                      id="terms-checkbox"
-                      type="checkbox"
-                      label="I agree with these terms and conditions."
-                    />
-                    <Button
-                      disabled={!agreeTerms}
-                      variant="dark"
-                      size="lg"
-                      type="submit"
-                    >
-                      Continue
-                    </Button>
-                  </div>
+                  <Button
+                    className="pl-5 pr-5"
+                    disabled={!agreeTerms}
+                    variant="primary"
+                    type="submit"
+                  >
+                    <span>Continue</span>
+                  </Button>
                 </Form>
               )}
             </Formik>
+          </Col>
+          <Col sm="7" md="7" lg="7" className="create-form-right-side">
+            <div>
+            <ImageFileUpload
+                handleDrop={(img, error) => {
+                  const imgResult = img === null ? undefined : img;
+
+                  this.handleDrop(imgResult ?? undefined, error);
+                }}
+              />
+              {imgError && <p className="error mt-2 ml-3">{imgError}</p>}
+
+
+              <div className="legal-info">
+                <ul>
+                  <li>
+                    <strong>Purchasers</strong> are not buying POKT as an
+                    investment with the expectation of profit or appreciation
+                  </li>
+                  <li>
+                    <strong>Purchasers</strong> are buying POKT to use it.
+                  </li>
+                  <li>
+                    To ensure <strong>purchasers</strong> are bona fide and not
+                    investors, the Company has set a purchase maximum per user
+                    and requires users must hold POKT for 4 weeks and use (bond
+                    and stake) it before transferring to another wallet or
+                    selling.
+                  </li>
+                  <li>
+                    <strong>Purchasers</strong> are acquiring POKT for their own
+                    account and use, and not with an intention to re-sell or
+                    distribute POKT to others.
+                  </li>
+                </ul>
+                <div className="legal-info-check">
+                  <Form.Check
+                    checked={agreeTerms}
+                    onChange={() => this.setState({agreeTerms: !agreeTerms})}
+                    className="terms-checkbox"
+                    type="checkbox"
+                    label={
+                      <p>
+                        {/* eslint-disable-next-line react/no-unescaped-entities */}
+                        I agree to these Pocket's{" "}
+                        <Link
+                          to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}
+                        >
+                          Terms and Conditions.
+                        </Link>
+                      </p>
+                    }
+                  />
+                </div>
+              </div>
+            </div>
           </Col>
         </Row>
       </div>

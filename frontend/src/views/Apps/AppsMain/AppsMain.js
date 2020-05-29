@@ -1,32 +1,23 @@
 import React from "react";
+import cls from "classnames";
 import {Link} from "react-router-dom";
 import AppTable from "../../../core/components/AppTable";
-import "./AppsMain.scss";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {
-  APPLICATIONS_LIMIT,
-  BOND_STATUS_STR,
-  STYLING,
-  TABLE_COLUMNS,
-} from "../../../_constants";
+import {APPLICATIONS_LIMIT, BOND_STATUS_STR, STYLING, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {
-  formatNetworkData,
-  formatNumbers,
-  getStakeStatus,
-  mapStatusToField,
-} from "../../../_helpers";
+import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 import InfiniteScroll from "react-infinite-scroller";
 import ClipLoader from "react-spinners/ClipLoader";
+import _ from "lodash";
 
 class AppsMain extends Main {
   constructor(props, context) {
@@ -171,12 +162,15 @@ class AppsMain extends Main {
     }
 
     return (
-      <div className="app-main">
+      <div className="main">
         <Row>
           <Col sm="8" className="page-title">
             <h1>General Apps Information</h1>
           </Col>
-          <Col sm="4" className="d-flex align-items-center justify-content-end cta-buttons">
+          <Col
+            sm="4"
+            className="d-flex align-items-center justify-content-end cta-buttons"
+          >
             <Link to={_getDashboardPath(DASHBOARD_PATHS.createAppInfo)}>
               <Button className="ml-4 mr-3 create-app-button">
                 <span>Create New App</span>
@@ -197,36 +191,34 @@ class AppsMain extends Main {
           <InfoCards cards={cards} />
         </Row>
         <Row className="mb-4 app-tables">
-          <Col sm="6" className="my-apps-segment">
+          <Col sm="6" className="my-items-segment">
             <Segment bordered scroll={false} label="My Apps">
               <Row
-                className={`search-panel ${
-                  !hasApps ? "search-panel-without-apps" : null
-                }`}
+                className={cls("search-panel", {
+                  "search-panel-without-apps": !hasApps,
+                })}
               >
-                <Col>
-                  <InputGroup className="search-input mb-3">
-                    <FormControl
-                      placeholder="Search an App"
-                      name="searchQuery"
-                      onChange={this.handleChange}
-                      onKeyPress={({key}) => {
-                        if (key === "Enter") {
-                          this.handleSearch("pocketApplication.name");
-                        }
-                      }}
-                    />
-                    <InputGroup.Append>
-                      <Button
-                        type="submit"
-                        onClick={this.handleChainSearch}
-                        variant="outline-primary"
-                      >
-                        <img src={"/assets/search.svg"} alt="search-icon" />
-                      </Button>
-                    </InputGroup.Append>
-                  </InputGroup>
-                </Col>
+                <InputGroup className="search-input">
+                  <FormControl
+                    placeholder="Search an App"
+                    name="searchQuery"
+                    onChange={this.handleChange}
+                    onKeyPress={({key}) => {
+                      if (key === "Enter") {
+                        this.handleSearch("pocketApplication.name");
+                      }
+                    }}
+                  />
+                  <InputGroup.Append>
+                    <Button
+                      type="submit"
+                      onClick={this.handleChainSearch}
+                      variant="outline-primary"
+                    >
+                      <img src={"/assets/search.svg"} alt="search-icon" />
+                    </Button>
+                  </InputGroup.Append>
+                </InputGroup>
               </Row>
               <div className="scrollable main-list">
                 <InfiniteScroll
@@ -240,7 +232,7 @@ class AppsMain extends Main {
                     {hasApps ? (
                       filteredItems.map((app, idx) => {
                         const {name, icon} = app.pocketApplication;
-                        const {stakedTokens, status} = app.networkData;
+                        const {staked_tokens: stakedTokens, status} = app.networkData;
 
                         return (
                           <Link
@@ -269,7 +261,7 @@ class AppsMain extends Main {
                               subtitle={`Staked POKT: ${formatNetworkData(
                                 stakedTokens
                               )} POKT`}
-                              status={getStakeStatus(status)}
+                              status={getStakeStatus(_.isNumber(status) ? status : parseInt(status))}
                               iconURL={icon}
                             />
                           </Link>

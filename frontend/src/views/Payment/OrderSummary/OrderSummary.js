@@ -18,6 +18,8 @@ import {Link} from "react-router-dom";
 import {formatCurrency, scrollToId} from "../../../_helpers";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import LoadingButton from "../../../core/components/LoadingButton";
+import {ITEM_TYPES} from "../../../_constants";
+import NodeService from "../../../core/services/PocketNodeService";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -70,7 +72,7 @@ class OrderSummary extends Component {
       quantity,
       cost,
       total,
-      currentAccountBalance
+      currentAccountBalance,
     } = this.props.location.state;
 
     const user = UserService.getUserInfo().email;
@@ -105,7 +107,7 @@ class OrderSummary extends Component {
       quantity,
       cost,
       total,
-      currentAccountBalance
+      currentAccountBalance,
     } = this.state;
 
     return this.props.history.replace({
@@ -119,16 +121,17 @@ class OrderSummary extends Component {
           {value: cost.number, text: cost.description, format: true},
         ],
         total,
-        currentAccountBalance
+        currentAccountBalance,
       },
     });
   }
 
   async makePurchaseWithSavedCard(e, stripe) {
     e.preventDefault();
+
     this.setState({purchasing: true});
 
-    const {paymentIntent, selectedPaymentMethod} = this.state;
+    const {paymentIntent, selectedPaymentMethod, type} = this.state;
 
     const result = await StripePaymentService
       .confirmPaymentWithSavedCard(stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails);
@@ -146,24 +149,46 @@ class OrderSummary extends Component {
       return;
     }
 
-    // Stake application
-    const {
-      privateKey,
-      passphrase,
-      chains,
-      address,
-    } = ApplicationService.getApplicationInfo();
-    const application = {privateKey, passphrase};
+    if (type === ITEM_TYPES.APPLICATION) {
+      // Stake application
+      const {
+        privateKey,
+        passphrase,
+        chains,
+        address,
+      } = ApplicationService.getApplicationInfo();
+      const application = {privateKey, passphrase};
 
-    const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
-    const detail = url.replace(":address", address);
-    const applicationLink = `${window.location.origin}${detail}`;
+      const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
+      const detail = url.replace(":address", address);
+      const applicationLink = `${window.location.origin}${detail}`;
 
-    this.setState({loading: true});
+      this.setState({loading: true});
 
-    ApplicationService.stakeApplication(application, chains, result.paymentIntent.id, applicationLink)
-      .then(() => {
-      });
+      ApplicationService.stakeApplication(
+        application, chains, result.paymentIntent.id, applicationLink
+      ).then(() => {});
+    } else {
+      // Stake Node
+      const {
+        privateKey,
+        passphrase,
+        chains,
+        address,
+        serviceURL
+      } = NodeService.getNodeInfo();
+      const node = {privateKey, passphrase, serviceURL};
+
+      const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
+      const detail = url.replace(":address", address);
+      const nodeLink = `${window.location.origin}${detail}`;
+
+      this.setState({loading: true});
+
+      NodeService.stakeNode(
+        node, chains, result.paymentIntent.id, nodeLink
+      ).then(() => {});
+    }
 
     this.goToInvoice();
   }
@@ -207,10 +232,8 @@ class OrderSummary extends Component {
           }
 
           this.setState({alert, paymentMethods, selectedPaymentMethod});
-
         }
       });
-
   }
 
   render() {

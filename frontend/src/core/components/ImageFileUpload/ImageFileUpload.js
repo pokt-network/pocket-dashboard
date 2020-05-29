@@ -2,12 +2,14 @@ import React, {useEffect, useState} from "react";
 import {useDropzone} from "react-dropzone";
 import "./ImageFileUpload.scss";
 import {PropTypes} from "prop-types";
+import {MAX_FILE_IMG_SIZE} from "../../../_constants";
 
 function ImageFileUpload(props) {
   const [files, setFiles] = useState([]);
   const {getRootProps, getInputProps} = useDropzone({
     accept: "image/*",
-    onDrop: (acceptedFiles) => {
+    maxSize: MAX_FILE_IMG_SIZE,
+    onDrop: (acceptedFiles, notAcceptedFiles) => {
       setFiles(
         acceptedFiles.map((file) =>
           Object.assign(file, {
@@ -15,7 +17,13 @@ function ImageFileUpload(props) {
           })
         )
       );
-      props.handleDrop(acceptedFiles[0]);
+      if (acceptedFiles[0]) {
+        props.handleDrop(acceptedFiles[0]);
+      } else {
+        if (notAcceptedFiles[0].size > MAX_FILE_IMG_SIZE) {
+          props.handleDrop(null, "Please upload a file smaller than 1MB");
+        }
+      }
     },
     multiple: false,
   });
