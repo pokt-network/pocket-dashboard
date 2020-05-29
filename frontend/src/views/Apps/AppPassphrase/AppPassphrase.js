@@ -142,6 +142,7 @@ class AppPassphrase extends Component {
         created: true,
         address,
         privateKey,
+        redirectPath: _getDashboardPath(DASHBOARD_PATHS.applicationChainsList),
       });
     } else {
       this.setState({error: {show: true, message: data.message}});
@@ -159,7 +160,6 @@ class AppPassphrase extends Component {
 
     this.setState({
       fileDownloaded: true,
-      redirectPath: _getDashboardPath(DASHBOARD_PATHS.applicationChainsList),
     });
   }
 
