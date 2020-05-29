@@ -194,6 +194,10 @@ form {
 .btn-dark {
   background-color: $secondary-color;
   border-color: $secondary-color;
+
+  &:hover {
+    background-color: $secondary-color;
+  }
 }
 
 .btn-dark:not(:disabled):not(.disabled):active:focus {
