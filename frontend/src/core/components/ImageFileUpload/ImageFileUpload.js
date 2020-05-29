@@ -21,7 +21,7 @@ function ImageFileUpload(props) {
         props.handleDrop(acceptedFiles[0]);
       } else {
         if (notAcceptedFiles[0].size > MAX_FILE_IMG_SIZE) {
-          props.handleDrop(null, "Please upload a file smaller than 100kb");
+          props.handleDrop(null, "Please upload a file smaller than 1MB");
         }
       }
     },
