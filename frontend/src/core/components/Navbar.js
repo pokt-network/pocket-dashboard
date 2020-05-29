@@ -8,6 +8,7 @@ class Navbar extends Component {
       width: "255px",
       margin: "28px",
     };
+
     return (
       <Row>
         <Col id={"navbar"}>

@@ -40,8 +40,7 @@ class VerifyEmail extends Component {
     const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
     UserService.resendSignUpEmail(
-      this.state.email,
-      securityQuestionLinkPage
+      this.state.email, securityQuestionLinkPage
     ).then((result) => {
       // TODO: show resend message
       this.setState({resendEmail: true});
