@@ -25,6 +25,7 @@ class AnswerSecurityQuestions extends Component {
     };
   }
   async componentDidMount() {
+    // eslint-disable-next-line react/prop-types
     const {email} = this.props.location.state;
 
     if (email !== undefined) {
@@ -52,10 +53,12 @@ class AnswerSecurityQuestions extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    // eslint-disable-next-line react/prop-types
     const email = this.props.location.state.email;
     const userInput = this.state.data.answer.toLocaleLowerCase();
 
     if (userInput === this.state.answer) {
+      // eslint-disable-next-line react/prop-types
       this.props.history.push({
         pathname: ROUTE_PATHS.reset_password,
         state: {email},

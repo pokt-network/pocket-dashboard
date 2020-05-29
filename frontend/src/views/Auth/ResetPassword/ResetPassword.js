@@ -24,6 +24,7 @@ class ResetPassword extends Component {
 
   handleSubmit() {
     // TODO: Integrate to backend
+    // eslint-disable-next-line react/prop-types
     const {email} = this.props.location.state;
     const {password1} = this.state.data;
     const {password2} = this.state.data;
