@@ -182,12 +182,28 @@ export default class PaymentService extends BaseService {
    *
    * @param {string} user User that belongs payments.
    * @param {number} limit Limit of query.
+   * @param {string} [fromDate] From created date.
+   * @param {string} [toDate] To created date.
    * @param {number} [offset] Offset of query.
    *
    * @returns {Promise<PaymentHistory[]>} List of Payment history.
    */
-  async getPaymentHistory(user, limit, offset = 0) {
-    const filter = {user};
+  async getPaymentHistory(user, limit, fromDate = "", toDate = "", offset = 0) {
+    let filter = {user};
+    let dateFilter = {};
+
+    if (fromDate) {
+      dateFilter["$gte"] = new Date(Date.parse(fromDate)).toISOString();
+    }
+
+    if (toDate) {
+      dateFilter["$lte"] = new Date(Date.parse(toDate)).toISOString();
+    }
+
+    if (fromDate || toDate) {
+      filter["createdDate"] = dateFilter;
+    }
+
 
     return (await this.persistenceService.getEntities(PAYMENT_HISTORY_COLLECTION_NAME, filter, limit, offset))
       .map(PaymentHistory.createPaymentHistory);
