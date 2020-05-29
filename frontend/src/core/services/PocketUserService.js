@@ -312,6 +312,25 @@ class PocketUserService extends PocketBaseService {
   }
 
   /**
+   * Check if user password is valid or not.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} password Password to verify.
+   *
+   * @return {Promise<*>} If is valid returns true, otherwise false.
+   */
+  verifyPassword(userEmail, password) {
+    const data = {
+      email: userEmail,
+      password
+    };
+
+    return axios
+      .post(this._getURL("auth/verify-password"), data)
+      .then(response => response.data);
+  }
+
+  /**
    * Change user password.
    *
    * @param {string} userEmail User email.
@@ -329,6 +348,66 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .put(this._getURL("auth/change-password"), data)
+      .then(response => {
+        return {
+          success: response.data
+        };
+      })
+      .catch(err => {
+        return {
+          success: false,
+          data: err
+        };
+      });
+  }
+
+  /**
+   * Change user name.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} username New user name.
+   *
+   * @return {Promise<*>} If username was changed returns true, otherwise false.
+   */
+  changeUsername(userEmail, username) {
+    const data = {
+      email: userEmail,
+      username
+    };
+
+    return axios
+      .put(this._getURL("auth/change-username"), data)
+      .then(response => {
+        return {
+          success: response.data
+        };
+      })
+      .catch(err => {
+        return {
+          success: false,
+          data: err
+        };
+      });
+  }
+
+  /**
+   * Change user email.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} newEmail New user email.
+   * @param {string} securityQuestionPageLink Link to security question page.
+   *
+   * @return {Promise<*>} If email was changed returns true, otherwise false.
+   */
+  changeEmail(userEmail, newEmail, securityQuestionPageLink) {
+    const data = {
+      email: userEmail,
+      postValidationBaseLink: securityQuestionPageLink,
+      newEmail
+    };
+
+    return axios
+      .put(this._getURL("auth/change-email"), data)
       .then(response => {
         return {
           success: response.data
