@@ -23,7 +23,9 @@ class AppSteps extends Component {
 
 AppSteps.propTypes = {
   current: PropTypes.number,
-  steps: PropTypes.arrayOf(PropTypes.string),
+  steps: PropTypes.arrayOf(
+    PropTypes.oneOfType([PropTypes.string, PropTypes.node])
+  ),
   icons: PropTypes.arrayOf(PropTypes.node),
 };
 

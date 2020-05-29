@@ -16,7 +16,7 @@ const LabelToggle = React.forwardRef(({children, onClick}, ref) => (
       onClick(e);
     }}
   >
-    <p id="label">{children}</p>
+    <span id="label">{children}</span>
     <FontAwesomeIcon
       className="icon"
       icon={faAngleDown}

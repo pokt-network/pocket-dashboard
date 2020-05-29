@@ -1,12 +1,12 @@
 @import "../../../scss/Core.scss";
 
 .app-segment {
+  margin-top: 40px;
+
   .head {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 25px;
-    padding-bottom: 5px;
 
     .title {
       font-family: $default-segment-font;
@@ -15,8 +15,12 @@
       line-height: 2.11;
       letter-spacing: -0.49px;
       color: $secondary-color;
-      margin-left: 45px;
+      margin-left: 21px;
       text-transform: uppercase;
+    }
+
+    h2 {
+      margin-bottom: 0;
     }
 
     .app-dropdown {
@@ -25,9 +29,7 @@
   }
 
   .body {
-    padding: 5px 10px 0 30px;
-    border-radius: $table-radius;
-    margin-bottom: 10px;
+    margin-top: 5px;
   }
 
 
@@ -39,5 +41,6 @@
 
   &.bordered .body {
     box-shadow: $default-box-shadow;
+    border-radius: $panel-radius;
   }
 }

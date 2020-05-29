@@ -2,10 +2,15 @@
 
 
 .modal-dialog {
+  &.tier-modal {
+    max-width: 70%;
+  }
+
   .modal-content {
     padding: 30px 20px !important;
 
     .modal-body {
+
       p,
       a {
         opacity: 1;
@@ -120,7 +125,8 @@
           top: 1px;
         }
 
-        p, a {
+        p,
+        a {
           font-family: $primary-font-family;
           font-size: 14px;
           font-weight: 300;
@@ -149,14 +155,15 @@
     .custom-tier {
       background-color: $dark-blue;
 
-      .tier-title > .subtitle, ul > li {
+      .tier-title>.subtitle,
+      ul>li {
         color: white;
       }
 
       button:not(.cta) {
         position: relative;
-        left: -132px;
-        top: 82px;
+        left: 0;
+        top: 67px;
         background-color: $primary-color;
         border-color: $primary-color;
       }

@@ -44,13 +44,21 @@ class LoginStatus extends Component {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          {/* TODO: Uncomment when second release */}
+          {/* TODO: Uncomment when third release */}
           {/*<Dropdown.Item onClick={() => this.goToProfile()}>*/}
-          {/*  <img src={"/assets/user_icon_circle.svg"} className="icon" alt="user-profile-icon"/>*/}
+          {/*  <img*/}
+          {/*    src={"/assets/user_icon_circle.svg"}*/}
+          {/*    className="icon"*/}
+          {/*    alt="user-profile-icon"*/}
+          {/*  />*/}
           {/*  User Profile*/}
           {/*</Dropdown.Item>*/}
           <Dropdown.Item onClick={() => this.logout()}>
-            <img src={"/assets/log-out.svg"} className="icon" alt="logout-profile-icon"/>
+            <img
+              src={"/assets/log-out.svg"}
+              className="icon"
+              alt="logout-profile-icon"
+            />
             Logout
           </Dropdown.Item>
         </Dropdown.Menu>

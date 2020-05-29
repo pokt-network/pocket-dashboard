@@ -35,12 +35,12 @@ export default {
       url: "/dashboard/apps",
       icon: "menu/apps.svg",
     },
+    {
+      name: "Nodes",
+      url: "/dashboard/nodes",
+      icon: "menu/nodes.svg",
+    },
     // TODO: Uncomment when second release
-    // {
-    //   name: "Nodes",
-    //   url: "/dashboard/nodes",
-    //   icon: "menu/nodes.svg",
-    // },
     // {
     //   name: "Support",
     //   url: "/dashboard/Documentation",

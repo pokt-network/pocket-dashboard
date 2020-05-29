@@ -1,4 +1,4 @@
-import {Node, NodeParams, StakingStatus} from "@pokt-network/pocket-js";
+import {Node, NodeParams} from "@pokt-network/pocket-js";
 import {PublicPocketAccount} from "./Account";
 import {EMAIL_REGEX} from "./Regex";
 
@@ -15,8 +15,8 @@ export class PocketNode {
   constructor(name, contactEmail, user, operator, description, icon) {
     Object.assign(this, {name, contactEmail, user, operator, description, icon});
 
-    /** @type {PublicPocketAccount} */
-    this.publicPocketAccount = null;
+    this.id = "";
+    this.publicPocketAccount = new PublicPocketAccount("", "");
   }
 
   /**
@@ -70,6 +70,7 @@ export class PocketNode {
    * @param {string} [nodeData.description] Description.
    * @param {string} [nodeData.icon] Icon.
    * @param {PublicPocketAccount} [nodeData.publicPocketAccount] Public account data.
+   * @param {string} [nodeData._id] Node ID.
    *
    * @returns {PocketNode} New Pocket node.
    * @static
@@ -78,7 +79,8 @@ export class PocketNode {
     const {name, contactEmail, user, operator, description, icon, publicPocketAccount} = nodeData;
     const pocketNode = new PocketNode(name, contactEmail, user, operator, description, icon);
 
-    pocketNode.publicPocketAccount = publicPocketAccount;
+    pocketNode.id = nodeData._id ?? "";
+    pocketNode.publicPocketAccount = publicPocketAccount ?? new PublicPocketAccount("", "");
 
     return pocketNode;
   }
@@ -113,7 +115,7 @@ export class ExtendedPocketNode {
    * @param {PublicPocketAccount} publicPocketAccount Public pocket account.
    * @param {NodeParams} nodeParameters Node parameter from network.
    *
-   * @returns {{address:string, publicKey:string, jailed:boolean, status:StakingStatus, chains:string[], stakedTokens: string, unstakingCompletionTime?: string}} Node.
+   * @returns {{address:string, publicKey:string, jailed:boolean, status:string, chains:string[], tokens: string, service_url: string, unstaking_time?: string}} Node.
    * @static
    */
   static createNetworkNode(publicPocketAccount, nodeParameters) {
@@ -123,10 +125,11 @@ export class ExtendedPocketNode {
       address,
       publicKey,
       jailed: false,
-      status: StakingStatus.Unstaked,
+      status: "0",
+      service_url: "",
       chains: [],
-      stakedTokens: "0",
-      unstakingCompletionTime: nodeParameters.unstakingTime
+      tokens: "0",
+      unstaking_time: nodeParameters.unstakingTime.toString()
     };
   }
 }

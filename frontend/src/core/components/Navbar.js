@@ -7,7 +7,7 @@ class Navbar extends Component {
     return (
       <Row>
         <Col id={"navbar"}>
-          <img src={"/assets/logo-dashboard.svg"} alt="logo" id={"main-logo"} />
+          <img src={"/assets/logo-dashboard-color.svg"} alt="logo" id={"main-logo"} />
         </Col>
       </Row>
     );

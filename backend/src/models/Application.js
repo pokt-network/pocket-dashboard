@@ -129,7 +129,7 @@ export class ExtendedPocketApplication {
    * @param {PublicPocketAccount} publicPocketAccount Public pocket account.
    * @param {ApplicationParams} applicationParameters Application parameter from network.
    *
-   * @returns {{address:string, publicKey:string, jailed:boolean, status: string, chains:string[], stakedTokens: string, maxRelays: string, unstakingCompletionTime?: string}} Application.
+   * @returns {{address:string, publicKey:string, jailed:boolean, status: string, chains:string[], staked_tokens: string, max_relays: string, unstaking_time?: string}} Application.
    * @static
    */
   static createNetworkApplication(publicPocketAccount, applicationParameters) {
@@ -139,11 +139,11 @@ export class ExtendedPocketApplication {
       address,
       publicKey,
       jailed: false,
-      status: "Unstaked",
+      status: "0",
       chains: [],
-      stakedTokens: "0",
-      maxRelays: applicationParameters.baseRelaysPerPokt.toString(),
-      unstakingCompletionTime: applicationParameters.unstakingTime
+      staked_tokens: "0",
+      max_relays: applicationParameters.baseRelaysPerPokt.toString(),
+      unstaking_time: applicationParameters.unstakingTime.toString()
     };
   }
 }

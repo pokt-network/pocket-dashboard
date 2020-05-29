@@ -3,36 +3,59 @@ import NodeService from "../services/NodeService";
 import {getOptionalQueryOption, getQueryOption} from "./_helpers";
 import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
-import CheckoutService from "../services/CheckoutService";
+import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
+import {CoinDenom} from "@pokt-network/pocket-js";
 
 const router = express.Router();
 
 const nodeService = new NodeService();
 const paymentService = new PaymentService();
-const checkoutService = CheckoutService.getInstance();
+const nodeCheckoutService = NodeCheckoutService.getInstance();
 
 /**
  * Create new node.
  */
 router.post("", async (request, response) => {
   try {
-    /** @type {{node: {name:string, contactEmail:string, user:string, owner:string, description:string, icon:string}, privateKey?:string, nodeBaseLink:string}} */
+    /** @type {{node: {name:string, contactEmail:string, user:string, owner:string, description:string, icon:string}}} */
+    const data = request.body;
+
+    const nodeID = await nodeService.createNode(data.node);
+
+    response.send(nodeID);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Create new node account.
+ */
+router.post("/account", async (request, response) => {
+  try {
+    /** @type {{nodeID: string, passphrase: string, nodeBaseLink:string, privateKey?:string}} */
     let data = request.body;
 
     if (!("privateKey" in data)) {
       data["privateKey"] = "";
     }
 
-    const node = await nodeService.createNode(data.node, data.privateKey);
+    const nodeData = await nodeService.createNodeAccount(data.nodeID, data.passphrase, data.privateKey);
     const emailAction = data.privateKey ? "imported" : "created";
     const nodeEmailData = {
-      name: data.node.name,
-      link: `${data.nodeBaseLink}/${node.privateNodeData.address}`
+      name: nodeData.node.name,
+      link: `${data.nodeBaseLink}/${nodeData.privateNodeData.address}`
     };
 
-    await EmailService.to(data.node.contactEmail).sendCreateOrImportNodeEmail(emailAction, data.node.user, nodeEmailData);
+    await EmailService
+      .to(nodeData.node.contactEmail)
+      .sendCreateOrImportNodeEmail(emailAction, nodeData.node.contactEmail, nodeEmailData);
 
-    response.send(node);
+    response.send(nodeData);
   } catch (e) {
     const error = {
       message: e.toString()
@@ -47,7 +70,7 @@ router.post("", async (request, response) => {
  */
 router.put("/:nodeAccountAddress", async (request, response) => {
   try {
-    /** @type {{name:string, contactEmail:string, user:string, operator:string, description:string, icon:string}} */
+    /** @type {{name:string, operator:string, contactEmail:string, user:string, description:string, icon:string}} */
     let data = request.body;
 
     /** @type {{nodeAccountAddress: string}} */
@@ -103,7 +126,9 @@ router.post("/:nodeAccountAddress", async (request, response) => {
         nodesLink: bodyData.nodesLink
       };
 
-      await EmailService.to(bodyData.user).sendNodeDeletedEmail(bodyData.user, nodeEmailData);
+      await EmailService
+        .to(node.contactEmail)
+        .sendNodeDeletedEmail(node.contactEmail, nodeEmailData);
     }
 
     response.send(node !== undefined);
@@ -194,20 +219,22 @@ router.post("/user/all", async (request, response) => {
 /**
  * Stake a node.
  */
-router.post("/stake", async (request, response) => {
+router.post("/custom/stake", async (request, response) => {
   try {
 
-    /** @type {{node: {privateKey: string, passPhrase: string, networkChains: string[], serviceURL: string}, payment:{id: string}, nodeLink: string}} */
+    /** @type {{node: {privateKey: string, passphrase: string, serviceURL: string}, networkChains: string[], payment:{id: string}, nodeLink: string}} */
     const data = request.body;
+
     const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
     if (paymentHistory.isSuccessPayment(true)) {
 
       if (paymentHistory.isNodePaymentItem(true)) {
         const item = paymentHistory.getItem();
-        const poktToStake = checkoutService.getPoktToStake(paymentHistory.amount);
+        const amountToSpent = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
+        const poktToStake = nodeCheckoutService.getPoktToStake(amountToSpent);
 
-        const node = await nodeService.stakeNode(data.node, poktToStake.toString());
+        const node = await nodeService.stakeNode(data.node, data.networkChains, poktToStake.toString());
 
         if (node) {
           const nodeEmailData = {
@@ -218,17 +245,19 @@ router.post("/stake", async (request, response) => {
           const paymentEmailData = {
             amountPaid: paymentHistory.amount,
             validatorPowerAmount: item.validatorPower,
-            poktStaked: poktToStake.toString()
+            poktStaked: nodeCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
           };
 
-          await EmailService.to(node.user).sendStakeNodeEmail(node.user, nodeEmailData, paymentEmailData);
+          await EmailService
+            .to(node.contactEmail)
+            .sendStakeNodeEmail(node.contactEmail, nodeEmailData, paymentEmailData);
 
           response.send(true);
-        } else {
-          response.send(false);
         }
       }
     }
+    // noinspection ExceptionCaughtLocallyJS
+    throw new Error("Error has occurred trying to stake node.");
   } catch (e) {
     const error = {
       message: e.toString()
@@ -241,10 +270,10 @@ router.post("/stake", async (request, response) => {
 /**
  * Unstake a node.
  */
-router.post("/unstake", async (request, response) => {
+router.post("/custom/unstake", async (request, response) => {
   try {
 
-    /** @type {{node:{privateKey:string, passPhrase:string, accountAddress: string}, nodeLink: string}} */
+    /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */
     const data = request.body;
 
     const node = await nodeService.unstakeNode(data.node);
@@ -255,7 +284,9 @@ router.post("/unstake", async (request, response) => {
         link: data.nodeLink
       };
 
-      await EmailService.to(node.user).sendUnstakeNodeEmail(node.user, nodeEmailData);
+      await EmailService
+        .to(node.contactEmail)
+        .sendUnstakeNodeEmail(node.contactEmail, nodeEmailData);
 
       response.send(true);
     } else {
@@ -276,7 +307,7 @@ router.post("/unstake", async (request, response) => {
 router.post("/unjail", async (request, response) => {
   try {
 
-    /** @type {{node:{privateKey:string, passPhrase:string, accountAddress: string}, nodeLink: string}} */
+    /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */
     const data = request.body;
 
     const node = await nodeService.unJailNode(data.node);
@@ -287,7 +318,9 @@ router.post("/unjail", async (request, response) => {
         link: data.nodeLink
       };
 
-      await EmailService.to(node.user).sendNodeUnJailedEmail(node.user, nodeEmailData);
+      await EmailService
+        .to(node.contactEmail)
+        .sendNodeUnJailedEmail(node.contactEmail, nodeEmailData);
 
       response.send(true);
     } else {

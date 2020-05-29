@@ -1,24 +1,16 @@
 @import "../../scss/Core";
 
 #dashboard {
-
-
   .cta-buttons {
-    * {
-      margin-left: 10px;
-    }
-
     .dropdown.cta {
       button {
         width: 80px;
         height: 33px;
 
         span {
-          position: relative;
-          top: -3px;
-          left: -14px;
           font-family: $primary-font-family;
           font-size: 13px;
+          line-height: 31px;
 
           svg {
             color: white;
@@ -32,10 +24,13 @@
         display: none;
       }
 
-
       .dropdown-item:hover {
         background-color: transparent;
       }
+    }
+
+    .dropdown.cta:first-child {
+      margin-right: 38px;
     }
   }
 
@@ -44,18 +39,35 @@
     display: flex;
     flex-direction: row;
 
-    * {
-      margin-left: 6px;
-      margin-right: 6px;
+    .stat-column {
+      min-width: 168px;
+      padding: 0 6px;
+
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:last-child {
+        padding-right: 0;
+      }
     }
   }
 
   .network-status-tables {
-    margin-top: 50px;
-    margin-right: -10px;
-
     .network-status-table {
-      padding-left: 0;
+      padding: 0;
+    }
+
+    .network-status-tables-row {
+      .network-status-table {
+        &:nth-child(odd) {
+          padding-right: 7px;
+        }
+
+        &:nth-child(even) {
+          padding-left: 7px;
+        }
+      }
     }
   }
 }
