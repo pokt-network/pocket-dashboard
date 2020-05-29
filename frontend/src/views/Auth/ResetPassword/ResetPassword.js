@@ -1,10 +1,12 @@
-import React, {Component} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
-import {Formik} from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
-import {VALIDATION_MESSAGES} from "../../../_constants";
+import { VALIDATION_MESSAGES } from "../../../_constants";
+import PocketUserService from "../../../core/services/PocketUserService";
+import "./ResetPassword.scss";
 
 class ResetPassword extends Component {
   constructor(props, context) {
@@ -22,6 +24,15 @@ class ResetPassword extends Component {
 
   handleSubmit() {
     // TODO: Integrate to backend
+    const { email } = this.props.location.state;
+    const { password1 } = this.state.data;
+    const { password2 } = this.state.data;
+
+    console.log("email: " + email + " p1: " + password1 + " p2: " + password2);
+
+    if (password1 === password2) {
+      PocketUserService.changePassword(email, password1, password2);
+    }
   }
 
   render() {
@@ -40,13 +51,17 @@ class ResetPassword extends Component {
       <Container fluid id={"forgot-password-page"}>
         <Navbar />
         <Row className="mt-1">
-          <Col id={"main"} md={{span: 8, offset: 2}} lg={{span: 4, offset: 3}}>
+          <Col
+            id={"main"}
+            md={{ span: 8, offset: 2 }}
+            lg={{ span: 4, offset: 3 }}
+          >
             <PocketBox iconUrl={"/assets/triangle.png"}>
-              <h1 className="title">Reset password</h1>
+              <h1 className="title-password">Reset password</h1>
               <Formik
                 validationSchema={schema}
                 onSubmit={(data) => {
-                  this.setState({data});
+                  this.setState({ data });
                   this.handleSubmit();
                 }}
                 initialValues={this.state.data}
@@ -54,7 +69,7 @@ class ResetPassword extends Component {
                 validateOnChange={false}
                 validateOnBlur={false}
               >
-                {({handleSubmit, handleChange, values, errors}) => (
+                {({ handleSubmit, handleChange, values, errors }) => (
                   <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
                     <Form.Group>
                       <Form.Label>Password</Form.Label>
@@ -65,6 +80,7 @@ class ResetPassword extends Component {
                         value={values.password1}
                         onChange={handleChange}
                         isInvalid={!!errors.password1}
+                        className="passwordInput"
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.password1}
@@ -79,18 +95,19 @@ class ResetPassword extends Component {
                         value={values.password2}
                         onChange={handleChange}
                         isInvalid={!!errors.password2}
+                        className="passwordInput"
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.password2}
                       </Form.Control.Feedback>
                     </Form.Group>
                     <Button
-                      className="pl-5 pr-5"
+                      className="resetButton"
                       type="submit"
                       size="md"
                       variant="primary"
                     >
-                      Change password
+                      <span className="resetButtonText">Change Password</span>
                     </Button>
                   </Form>
                 )}
