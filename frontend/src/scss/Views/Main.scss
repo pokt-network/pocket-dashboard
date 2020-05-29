@@ -82,8 +82,21 @@
         }
 
         .body {
-          padding: 20px;
+          max-height: 435px;
+          padding: 22px 0;
           overflow-x: hidden;
+
+          .search-panel {
+            padding: 0 22px;
+          }
+
+          .main-list {
+            padding: 16px 22px 0 22px;
+
+            &.has-scroll {
+              padding-right: 8px;
+            }
+          }
         }
       }
     }

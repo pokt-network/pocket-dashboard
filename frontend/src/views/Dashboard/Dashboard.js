@@ -127,7 +127,11 @@ class Dashboard extends Component {
               </Dropdown.Menu>
             </Dropdown>
             <Dropdown className="cta">
-              <Dropdown.Toggle className="pl-4 pr-4" variant="primary" id="dropdown-basic">
+              <Dropdown.Toggle
+                className="pl-4 pr-4"
+                variant="primary"
+                id="dropdown-basic"
+              >
                 <span>
                   Nodes
                   <FontAwesomeIcon
@@ -142,7 +146,9 @@ class Dashboard extends Component {
                 <Dropdown.Item
                   onClick={() =>
                     // eslint-disable-next-line react/prop-types
-                    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.createNodeForm))
+                    this.props.history.push(
+                      _getDashboardPath(DASHBOARD_PATHS.createNodeForm)
+                    )
                   }
                 >
                   Create
@@ -151,7 +157,9 @@ class Dashboard extends Component {
                 <Dropdown.Item
                   onClick={() =>
                     // eslint-disable-next-line react/prop-types
-                    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.importNode))
+                    this.props.history.push(
+                      _getDashboardPath(DASHBOARD_PATHS.importNode)
+                    )
                   }
                 >
                   Import
