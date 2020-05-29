@@ -148,10 +148,11 @@ router.post("/history", async (request, response) => {
     const offsetData = getOptionalQueryOption(request, "offset");
     const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    /** @type {{user:string}} */
+    /** @type {{user:string, fromDate: string, toDate: string}} */
     const data = request.body;
 
-    const paymentHistory = await paymentService.getPaymentHistory(data.user, limit, offset);
+    const paymentHistory = await paymentService
+      .getPaymentHistory(data.user, limit, offset, data.fromDate, data.toDate);
 
     response.send(paymentHistory);
   } catch (e) {

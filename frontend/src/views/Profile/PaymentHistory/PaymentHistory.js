@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Col, Button, Row, FormControl, InputGroup} from "react-bootstrap";
+import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import "./PaymentHistory.scss";
 import AppDatePicker from "../../../core/components/AppDatePicker/AppDatePicker";
@@ -32,6 +32,7 @@ class PaymentHistory extends Component {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
+    // FIXME: The firm of this method has been changed.
     const history = await PaymentService.getPaymentHistory(
       userEmail, PAYMENT_HISTORY_LIMIT
     );
@@ -60,6 +61,7 @@ class PaymentHistory extends Component {
     const userEmail = UserService.getUserInfo().email;
     const offset = (page - 1) * sizePerPage + 1;
 
+    // FIXME: The firm of this method has been changed.
     const history = await PaymentService.getPaymentHistory(
       userEmail, PAYMENT_HISTORY_LIMIT, offset
     );
