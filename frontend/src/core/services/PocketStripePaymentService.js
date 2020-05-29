@@ -103,7 +103,8 @@ class PocketStripePaymentService extends PocketBaseService {
       payment_method: {
         card,
         billing_details: billingDetails
-      }
+      },
+      setup_future_usage: "on_session"
     };
 
     return stripe.confirmCardPayment(paymentIntentSecretID, cardPaymentData)
@@ -139,6 +140,7 @@ class PocketStripePaymentService extends PocketBaseService {
 
     const cardPaymentData = {
       payment_method: paymentMethodID,
+      setup_future_usage: "on_session"
     };
 
     return stripe.confirmCardPayment(paymentIntentSecretID, cardPaymentData).then(result => {

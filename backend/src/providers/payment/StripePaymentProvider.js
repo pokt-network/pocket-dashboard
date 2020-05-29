@@ -26,7 +26,8 @@ class StripePaymentProvider extends BasePaymentProvider {
         name: item.name,
         type: item.type,
         pokt: item.pokt
-      }
+      },
+      setup_future_usage: "on_session"
     };
 
     if (description) {
