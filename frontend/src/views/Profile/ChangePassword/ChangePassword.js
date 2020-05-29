@@ -5,7 +5,7 @@ import {Formik} from "formik";
 import {validateYup, passwordChangeSchema} from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
 import AppAlert from "../../../core/components/AppAlert";
-import SecurityQuestionModal from '../../../core/components/SecurityQuestionModal';
+import SecurityQuestionModal from "../../../core/components/SecurityQuestionModal";
 
 class ChangePassword extends Component {
   constructor(props, context) {
@@ -161,15 +161,14 @@ class ChangePassword extends Component {
               )}
             </Formik>
             {securityQuestion && (
-          <SecurityQuestionModal
-            show={securityQuestion}
-            onClose={() => {
-              this.setState({securityQuestion: false});
-            }}
-            // TODO: Implement change password
-            onAfterValidation={this.handleChangePassword}
-          />
-        )}
+              <SecurityQuestionModal
+                show={securityQuestion}
+                onClose={() => {
+                  this.setState({securityQuestion: false});
+                }}
+                onAfterValidation={this.handleChangePassword}
+              />
+            )}
           </div>
         </Col>
       </Row>

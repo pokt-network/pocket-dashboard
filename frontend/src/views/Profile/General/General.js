@@ -8,6 +8,7 @@ import {VALIDATION_MESSAGES} from "../../../_constants";
 import UserService from "../../../core/services/PocketUserService";
 import {ROUTE_PATHS} from "../../../_routes";
 import AppAlert from "../../../core/components/AppAlert";
+import SecurityQuestionModal from "../../../core/components/SecurityQuestionModal";
 
 class General extends Component {
   constructor(props, context) {
@@ -121,7 +122,7 @@ class General extends Component {
   }
 
   render() {
-    const {alert} = this.state;
+    const {alert, securityQuestion} = this.state;
 
     const schema = yup.object().shape({
       username: yup.string().required(VALIDATION_MESSAGES.REQUIRED),
@@ -149,8 +150,12 @@ class General extends Component {
                 enableReinitialize
                 validationSchema={schema}
                 onSubmit={(data) => {
+                  const {currentEmail} = this.state;
+
                   this.setState({data});
-                  this.handleChangeUsernameEmail();
+                  currentEmail === data.email
+                    ? this.handleChangeUsernameEmail()
+                    : this.setState({securityQuestion: true});
                 }}
                 initialValues={this.state.data}
                 values={this.state.data}
@@ -192,6 +197,15 @@ class General extends Component {
                   </Form>
                 )}
               </Formik>
+              {securityQuestion && (
+                <SecurityQuestionModal
+                  show={securityQuestion}
+                  onClose={() => {
+                    this.setState({securityQuestion: false});
+                  }}
+                  onAfterValidation={this.handleChangeUsernameEmail}
+                />
+              )}
             </div>
           </Col>
         </Row>
