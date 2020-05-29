@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import cls from "classnames";
 import "./AppPassphrase.scss";
 import {Col, Form, Row, Button} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
@@ -7,6 +8,7 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
+import isEmpty from "lodash/isEmpty";
 import {
   createAndDownloadJSONFile,
   scrollToId,
@@ -22,7 +24,8 @@ class AppPassphrase extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.changeInputType = this.changeInputType.bind(this);
+    this.changePassphraseInputType = this.changePassphraseInputType.bind(this);
+    this.changePrivateKeyInputType = this.changePrivateKeyInputType.bind(this);
     this.handlePassphrase = this.handlePassphrase.bind(this);
     this.createApplicationAccount = this.createApplicationAccount.bind(this);
     this.downloadKeyFile = this.downloadKeyFile.bind(this);
@@ -38,16 +41,18 @@ class AppPassphrase extends Component {
         .required(VALIDATION_MESSAGES.REQUIRED)
         .matches(
           // eslint-disable-next-line no-useless-escape
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{15,})/, "The password does not meet the requirements"
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{15,})/, "The passphrase does not meet the requirements"
         ),
     });
 
     this.state = {
       created: false,
       fileDownloaded: false,
-      inputType: "password",
+      inputPassphraseType: "password",
+      inputPrivateKeyType: "password",
       validPassphrase: false,
-      showPassphraseIconURL: this.iconUrl.open,
+      showPassphraseIconURL: this.iconUrl.close,
+      showPrivateKeyIconURL: this.iconUrl.close,
       privateKey: "",
       address: "",
       chains: [],
@@ -61,18 +66,34 @@ class AppPassphrase extends Component {
     };
   }
 
-  changeInputType() {
-    const {inputType} = this.state;
+  changePassphraseInputType() {
+    const {inputPassphraseType} = this.state;
 
-    if (inputType === "text") {
+    if (inputPassphraseType === "text") {
       this.setState({
-        inputType: "password",
-        showPassphraseIconURL: this.iconUrl.open,
+        inputPassphraseType: "password",
+        showPassphraseIconURL: this.iconUrl.close,
       });
     } else {
       this.setState({
-        inputType: "text",
-        showPassphraseIconURL: this.iconUrl.close,
+        inputPassphraseType: "text",
+        showPassphraseIconURL: this.iconUrl.open,
+      });
+    }
+  }
+
+  changePrivateKeyInputType() {
+    const {inputPrivateKeyType} = this.state;
+
+    if (inputPrivateKeyType === "text") {
+      this.setState({
+        inputPrivateKeyType: "password",
+        showPrivateKeyIconURL: this.iconUrl.close,
+      });
+    } else {
+      this.setState({
+        inputPrivateKeyType: "text",
+        showPrivateKeyIconURL: this.iconUrl.open,
       });
     }
   }
@@ -81,10 +102,14 @@ class AppPassphrase extends Component {
     const valid = await validateYup(values, this.schema);
 
     if (valid === undefined) {
-      this.setState({
-        passPhrase: values.passPhrase,
-        validPassphrase: true,
-      });
+      this.setState(
+        {
+          passPhrase: values.passPhrase,
+          validPassphrase: true,
+        }, () => {
+          this.createApplicationAccount();
+        }
+      );
     } else {
       this.setState({validPassphrase: false});
     }
@@ -124,6 +149,7 @@ class AppPassphrase extends Component {
       this.setState({error: {show: true, message: data.message}});
       scrollToId("alert");
     }
+
     this.setState({loading: false});
   }
 
@@ -142,10 +168,11 @@ class AppPassphrase extends Component {
   render() {
     const {
       created,
-      fileDownloaded,
-      inputType,
-      showPassphraseIconURL,
       validPassphrase,
+      inputPassphraseType,
+      inputPrivateKeyType,
+      showPassphraseIconURL,
+      showPrivateKeyIconURL,
       privateKey,
       address,
       redirectPath,
@@ -179,8 +206,8 @@ class AppPassphrase extends Component {
           <Col className="page-title">
             <h2>Protect your private key with a passphrase</h2>
             <p>
-              Write down a passphrase to protect your key file. This should have
-              minimum 15 alphanumeric symbols, one capital letter, one
+              Write down a Passphrase to protect your key file. This should
+              have: minimum 15 alphanumeric symbols, one capital letter, one
               lowercase, one special character and one number.
             </p>
             <Formik
@@ -190,7 +217,7 @@ class AppPassphrase extends Component {
               }}
               initialValues={this.state.data}
               values={this.state.data}
-              validateOnChange={true}
+              validateOnChange={false}
               validateOnBlur={false}
               validate={this.handlePassphrase}
             >
@@ -200,13 +227,18 @@ class AppPassphrase extends Component {
                   onSubmit={handleSubmit}
                   className="create-passphrase-form"
                 >
-                  <Form.Row>
-                    <Col className="show-passphrase">
+                  <Row className="inputs-row">
+                    <Col className="show-passphrase" sm="6">
                       <Form.Group>
                         <Form.Control
+                          className={cls({
+                            "text-hidden":
+                              inputPassphraseType === "password" &&
+                              isEmpty(values.passPhrase),
+                          })}
                           placeholder="*****************"
                           value={values.passPhrase}
-                          type={inputType}
+                          type={inputPassphraseType}
                           name="passPhrase"
                           onChange={(data) => {
                             handleChange(data);
@@ -218,24 +250,20 @@ class AppPassphrase extends Component {
                         </Form.Control.Feedback>
                       </Form.Group>
                       <img
-                        onClick={this.changeInputType}
+                        className="toggle-icon"
+                        onClick={this.changePassphraseInputType}
                         src={showPassphraseIconURL}
                         alt=""
                       />
                     </Col>
-                    <Col>
+                    <Col sm="6">
                       <LoadingButton
                         loading={loading}
                         buttonProps={{
-                          disabled: !validPassphrase,
-                          className: `pl-4 pr-4 pt-2 pb-2 ${
-                            created ? "download-key-file-button" : null
-                          }`,
-                          variant: !created  ? "primary" : "dark",
+                          className: cls({"download-key-file-button": created}),
+                          variant: !created ? "primary" : "dark",
                           type: "submit",
-                          onClick: !created
-                            ? () => this.createApplicationAccount()
-                            : () => this.downloadKeyFile(),
+                          onClick: created ? this.downloadKeyFile : undefined,
                         }}
                       >
                         <span>
@@ -246,22 +274,34 @@ class AppPassphrase extends Component {
                               className="download-key-file-icon"
                             />
                           ) : null}
-                          {created ? "Download key file" : "Create"}
+                          {created ? "Download Key File" : "Create"}
                         </span>
                       </LoadingButton>
                     </Col>
-                  </Form.Row>
+                  </Row>
                 </Form>
               )}
             </Formik>
           </Col>
         </Row>
-        <Row className="mt-4">
-          <Col sm="6" md="6" lg="6">
+        <Row className="inputs-row-read-only">
+          <Col className="read-only-with-icon-column" sm="6">
             <h3>Private key</h3>
-            <Form.Control readOnly value={privateKey} />
+            <Row>
+              <Form.Control
+                type={inputPrivateKeyType}
+                readOnly
+                value={privateKey}
+              />
+              <img
+                className="toggle-icon"
+                onClick={this.changePrivateKeyInputType}
+                src={showPrivateKeyIconURL}
+                alt=""
+              />
+            </Row>
           </Col>
-          <Col sm="6" md="6" lg="6">
+          <Col sm="6">
             <h3>Address</h3>
             <Form.Control readOnly value={address} />
           </Col>
@@ -276,7 +316,7 @@ class AppPassphrase extends Component {
                   <h4 className="text-uppercase">
                     Don&#39;t forget to save your passphrase!{" "}
                   </h4>
-                  <p className="ml-1">
+                  <p className="ml-2">
                     Make a backup, store it and save preferably offline.
                   </p>
                 </>
@@ -294,7 +334,6 @@ class AppPassphrase extends Component {
             <h1>General information</h1>
           </Col>
         </Row>
-        <br />
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
@@ -302,7 +341,6 @@ class AppPassphrase extends Component {
             </Col>
           ))}
         </Row>
-        <br />
         <Row className="mb-5 app-networks">
           <Col>
             <Segment label="Networks">
@@ -319,7 +357,7 @@ class AppPassphrase extends Component {
         <Row>
           <Col>
             <Button
-              disabled={!fileDownloaded}
+              disabled={!validPassphrase}
               onClick={() =>
                 // eslint-disable-next-line react/prop-types
                 this.props.history.replace(redirectPath)

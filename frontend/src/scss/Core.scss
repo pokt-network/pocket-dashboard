@@ -105,6 +105,10 @@ body {
     align-items: center;
     line-height: 30px;
   }
+
+  &:focus {
+    box-shadow: none;
+  }
 }
 
 .btn.dropdown-toggle-split {
@@ -190,6 +194,14 @@ form {
 .btn-dark {
   background-color: $secondary-color;
   border-color: $secondary-color;
+
+  &:hover {
+    background-color: $secondary-color;
+  }
+}
+
+.btn-dark:not(:disabled):not(.disabled):active:focus {
+  box-shadow: none;
 }
 
 input {
@@ -239,7 +251,6 @@ input {
   .head {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
   }
 
   .icon {
@@ -303,6 +314,11 @@ input {
   }
 }
 
+.form-row {
+  margin-right: 0;
+  margin-left: 0;
+}
+
 .form-group {
   margin-bottom: 0;
 }
@@ -311,6 +327,8 @@ input {
   border: 1px solid $border-blue;
   height: 32px;
   font-size: 0.875rem;
+  font-weight: 300;
+  color: $dark-gray;
   line-height: 32px;
   border-radius: 21px;
   margin-bottom: 0.8rem;
@@ -401,7 +419,7 @@ button {
     text-transform: uppercase;
     color: black;
     height: 50px;
-    margin-left: 22px;
+    margin: 0 22px;
 
     th {
       margin-top: -10px;
@@ -433,7 +451,7 @@ button {
   }
 
   tbody {
-    padding: 0 14px 0 22px;
+    padding: 0 22px 0 22px;
 
     tr {
       color: gray;
@@ -453,6 +471,10 @@ button {
         padding-left: 0;
       }
     }
+
+    td[class^="col-"]:last-child {
+      padding-left: 22px;
+    }
   }
 
   &.scroll {
@@ -464,16 +486,28 @@ button {
     }
 
     thead {
-      width: calc(100% - 38px);
+      width: calc(100% - 42px);
     }
 
     tbody {
-      width: calc(100% - 8px);
+      width: calc(100% - 16px);
       display: block;
       height: auto;
-      max-height: 62vh;
+      max-height: calc(325px - 52px);
       overflow: auto;
-      padding-right: 6px;
+      padding-right: 4px;
+
+      td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  &.has-scroll {
+    tbody {
+      width: 100%;
     }
   }
 
@@ -619,9 +653,17 @@ button {
   max-height: 60vh;
 }
 
+input.form-control {
+  padding: 0 12px;
+}
+
 input.form-control,
 textarea.form-control {
   font-family: "Lato", sans-serif;
+}
+
+input[type="password"]::placeholder {
+  line-height: 32px;
 }
 
 input.form-control::placeholder,
@@ -629,6 +671,7 @@ textarea.form-control::placeholder {
   color: $light-gray;
   font-weight: 300;
   font-size: 14px;
+  line-height: 32px;
 }
 
 .search-input.input-group {
