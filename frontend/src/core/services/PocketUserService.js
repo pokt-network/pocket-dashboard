@@ -350,13 +350,14 @@ class PocketUserService extends PocketBaseService {
       .put(this._getURL("auth/change-password"), data)
       .then(response => {
         return {
-          success: response.data
+          success: true,
+          data: response.data
         };
       })
       .catch(err => {
         return {
           success: false,
-          data: err
+          data: err.response.data
         };
       });
   }
@@ -379,13 +380,14 @@ class PocketUserService extends PocketBaseService {
       .put(this._getURL("auth/change-username"), data)
       .then(response => {
         return {
-          success: response.data
+          success: true,
+          data: response.data
         };
       })
       .catch(err => {
         return {
           success: false,
-          data: err
+          data: err.response.data
         };
       });
   }
@@ -410,13 +412,14 @@ class PocketUserService extends PocketBaseService {
       .put(this._getURL("auth/change-email"), data)
       .then(response => {
         return {
-          success: response.data
+          success: true,
+          data: response.data
         };
       })
       .catch(err => {
         return {
           success: false,
-          data: err
+          data: err.response.data
         };
       });
   }
