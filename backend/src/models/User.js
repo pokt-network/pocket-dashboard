@@ -127,18 +127,9 @@ export class EmailUser extends PocketUser {
    */
   static validate(userData) {
 
-    if (!EMAIL_REGEX.test(userData.email)) {
-      throw Error("Email address is not valid.");
-    }
+    EmailUser.validateEmail(userData.email);
 
-    // Validate if username has white spaces.
-    if (/\s/.test(userData.username)) {
-      throw Error("Username is not valid.");
-    }
-
-    if (userData.password1.length < PASSWORD_MIN_LENGTH || userData.password2.length < PASSWORD_MIN_LENGTH) {
-      throw Error(`Passwords must have ${PASSWORD_MIN_LENGTH} characters at least.`);
-    }
+    EmailUser.validateUsername(userData.username);
 
     EmailUser.validatePasswords(userData.password1, userData.password2);
 
@@ -155,6 +146,11 @@ export class EmailUser extends PocketUser {
    * @throws {Error} If validation fails.
    */
   static validatePasswords(password1, password2) {
+
+    if (password1.length < PASSWORD_MIN_LENGTH || password2.length < PASSWORD_MIN_LENGTH) {
+      throw Error(`Passwords must have ${PASSWORD_MIN_LENGTH} characters at least.`);
+    }
+
     if (password1 !== password2) {
       throw Error("Passwords does not match.");
     }
@@ -162,6 +158,37 @@ export class EmailUser extends PocketUser {
     return true;
   }
 
+  /**
+   * Validate user name.
+   *
+   * @param {string} username User name.
+   *
+   * @returns {boolean} If is valid
+   * @throws {Error} if validation fails.
+   */
+  static validateUsername(username) {
+    if (username === "") {
+      throw Error("Username is not valid.");
+    }
+
+    return true;
+  }
+
+  /**
+   * Validate email.
+   *
+   * @param {string} email User email.
+   *
+   * @returns {boolean} If is valid
+   * @throws {Error} if validation fails.
+   */
+  static validateEmail(email) {
+    if (!EMAIL_REGEX.test(email)) {
+      throw Error("Email address is not valid.");
+    }
+
+    return true;
+  }
 
   /**
    * Factory method to create an Email user with encrypted password.
@@ -192,7 +219,6 @@ export class EmailUser extends PocketUser {
   static async encryptPassword(password) {
     return await bcrypt.hash(password, SALT_ROUNDS);
   }
-
 
   /**
    * Compare passwords.
