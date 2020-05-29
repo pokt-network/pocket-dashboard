@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import React, {Component} from "react";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
-import { Formik } from "formik";
+import {Formik} from "formik";
 import * as yup from "yup";
-import { VALIDATION_MESSAGES } from "../../../_constants";
+import {VALIDATION_MESSAGES} from "../../../_constants";
 import PocketUserService from "../../../core/services/PocketUserService";
 import "./ResetPassword.scss";
 
@@ -24,9 +24,9 @@ class ResetPassword extends Component {
 
   handleSubmit() {
     // TODO: Integrate to backend
-    const { email } = this.props.location.state;
-    const { password1 } = this.state.data;
-    const { password2 } = this.state.data;
+    const {email} = this.props.location.state;
+    const {password1} = this.state.data;
+    const {password2} = this.state.data;
 
     if (password1 === password2) {
       PocketUserService.changePassword(email, password1, password2);
@@ -51,15 +51,15 @@ class ResetPassword extends Component {
         <Row className="mt-1">
           <Col
             id={"main"}
-            md={{ span: 8, offset: 2 }}
-            lg={{ span: 4, offset: 3 }}
+            md={{span: 8, offset: 2}}
+            lg={{span: 4, offset: 3}}
           >
             <PocketBox iconUrl={"/assets/triangle.png"}>
               <h1 className="title-password">Reset password</h1>
               <Formik
                 validationSchema={schema}
                 onSubmit={(data) => {
-                  this.setState({ data });
+                  this.setState({data});
                   this.handleSubmit();
                 }}
                 initialValues={this.state.data}
@@ -67,7 +67,7 @@ class ResetPassword extends Component {
                 validateOnChange={false}
                 validateOnBlur={false}
               >
-                {({ handleSubmit, handleChange, values, errors }) => (
+                {({handleSubmit, handleChange, values, errors}) => (
                   <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
                     <Form.Group>
                       <Form.Label>Password</Form.Label>
