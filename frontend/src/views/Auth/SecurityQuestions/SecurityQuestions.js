@@ -189,8 +189,8 @@ class SecurityQuestions extends Component {
         <Navbar />
         {!alertOverlay.show ? (
           <>
-            <Row className="mb-4">
-              <Col md={{span: 7, offset: 2}} className="mb-5">
+            <Row className="mb-3">
+              <Col lg={{span: 8, offset: 2}} className="mb-5">
                 <AppSteps
                   icons={icons}
                   steps={[
@@ -202,7 +202,7 @@ class SecurityQuestions extends Component {
                 />
               </Col>
             </Row>
-            <Row className="mt-5 margin">
+            <Row className="mt-5">
               <Col
                 id="main"
                 md={{span: 6, offset: 2}}
