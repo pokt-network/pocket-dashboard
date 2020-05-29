@@ -191,7 +191,7 @@ class Import extends Component {
                         htmlFor="upload-key"
                         className="upload-key btn btn-primary"
                       >
-                        <span>Upload key file</span>
+                        <span className="pl-4 pr-4">Upload key file</span>
                       </label>
                       <input
                         style={{display: "none"}}

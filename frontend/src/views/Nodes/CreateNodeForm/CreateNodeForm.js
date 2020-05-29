@@ -104,7 +104,7 @@ class CreateNodeForm extends CreateForm {
   }
 
   render() {
-    const {created, agreeTerms, error, redirectPath} = this.state;
+    const {created, agreeTerms, error, redirectPath, imgError} = this.state;
 
     if (created) {
       return (
@@ -230,9 +230,15 @@ class CreateNodeForm extends CreateForm {
           </Col>
           <Col sm="7" md="7" lg="7" className="create-form-right-side">
             <div>
-              <ImageFileUpload
-                handleDrop={(img) => this.handleDrop(img.preview)}
+            <ImageFileUpload
+                handleDrop={(img, error) => {
+                  const imgResult = img === null ? undefined : img;
+
+                  this.handleDrop(imgResult ?? undefined, error);
+                }}
               />
+              {imgError && <p className="error mt-2 ml-3">{imgError}</p>}
+
 
               <div className="legal-info">
                 <ul>

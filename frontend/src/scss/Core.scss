@@ -115,6 +115,7 @@ form {
   textarea {
     resize: none;
     max-height: 120px;
+    border-radius: $panel-radius;
   }
 }
 
@@ -333,6 +334,10 @@ label.form-label {
   .has-error {
     color: #ff0000;
   }
+}
+
+textarea.form-control {
+  border-radius: $panel-radius;
 }
 
 .badge,
