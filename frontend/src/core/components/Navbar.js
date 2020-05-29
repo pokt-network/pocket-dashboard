@@ -4,10 +4,19 @@ import PropTypes from "prop-types";
 
 class Navbar extends Component {
   render() {
+    const divStyle = {
+      width: "255px",
+      margin: "28px",
+    };
     return (
       <Row>
         <Col id={"navbar"}>
-          <img src={"/assets/logo-dashboard-color.svg"} alt="logo" id={"main-logo"} />
+          <img
+            src={"/assets/logo-dashboard-color.svg"}
+            alt="logo"
+            id={"main-logo"}
+            style={divStyle}
+          />
         </Col>
       </Row>
     );
