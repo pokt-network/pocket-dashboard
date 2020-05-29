@@ -293,7 +293,7 @@ class CreateAppForm extends CreateForm {
                   this.handleDrop(imgResult ?? undefined, error);
                 }}
               />
-              {imgError && <p className="error mt-2">{imgError}</p>}
+              {imgError && <p className="error mt-2 ml-3">{imgError}</p>}
 
               <div className="legal-info">
                 <ul>
