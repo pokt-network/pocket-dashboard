@@ -12,7 +12,7 @@ class InfoCards extends Component {
       <>
         {/*eslint-disable-next-line react/prop-types*/}
         {cards.map((card, idx) => (
-          <Col key={idx}>
+          <Col className="info-card-column" key={idx}>
             <InfoCard title={card.title} subtitle={card.subtitle}>
               {card.children}
             </InfoCard>

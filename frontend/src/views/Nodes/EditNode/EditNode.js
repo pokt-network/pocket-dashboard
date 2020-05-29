@@ -1,12 +1,13 @@
 import React from "react";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {Alert, Button, Col, Form, Row} from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import Loader from "../../../core/components/Loader";
 import NodeService from "../../../core/services/PocketNodeService";
 import UserService from "../../../core/services/PocketUserService";
 import {Formik} from "formik";
 import {nodeFormSchema} from "../../../_helpers";
+import AppAlert from "../../../core/components/AppAlert";
 
 class EditNode extends CreateForm {
   constructor(props, context) {
@@ -47,19 +48,18 @@ class EditNode extends CreateForm {
       description,
       icon,
       user,
-      operator
+      operator,
     });
 
     if (success) {
       this.setState({success: true});
     } else {
-      // TODO: Show frontend message
-      console.log(data);
+      this.setState({error: {show: true, message: data}});
     }
   }
 
   render() {
-    const {loading, icon, success} = this.state;
+    const {loading, icon, success, error} = this.state;
 
     if (loading) {
       return <Loader />;
@@ -67,28 +67,32 @@ class EditNode extends CreateForm {
 
     return (
       <div className="create-form">
-        {success && (
-          <Alert
-            variant="success"
-            onClose={() => this.setState({sucess: false})}
-            dismissible
-          >
-            Your changes were successfully saved.
-          </Alert>
-        )}
         <Row>
-          <Col sm="3" md="3" lg="3">
-            <h1>Edit your Node</h1>
+          <Col sm="12" md="12" lg="12">
+            {success && (
+              <AppAlert
+                onClose={() => this.setState({success: false})}
+                dismissible
+                title="Your app changes were successfully saved"
+              />
+            )}
+            {error.show && (
+              <AppAlert
+                variant="danger"
+                title={error.message}
+                dismissible
+                onClose={() => this.setState({error: false})}
+              />
+            )}
+            <h1 className="text-uppercase">App Information</h1>
+            <p className="info">
+              Fill in these quick questions to identity your app on the
+              dashboard. Fields marked with * are required to continue.
+            </p>
           </Col>
         </Row>
-        <Row>
-          <Col sm="3" md="3" lg="3">
-            <ImageFileUpload
-              defaultImg={icon}
-              handleDrop={(img) => this.handleDrop(img.preview)}
-            />
-          </Col>
-          <Col sm="9" md="9" lg="9">
+        <Row className="mt-3">
+          <Col sm="5" md="5" lg="5">
             <Formik
               validationSchema={nodeFormSchema}
               onSubmit={(data) => {
@@ -103,9 +107,10 @@ class EditNode extends CreateForm {
               {({handleSubmit, handleChange, values, errors}) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
-                    <Form.Label>Name</Form.Label>
+                    <Form.Label>Node Name*</Form.Label>
                     <Form.Control
                       name="name"
+                      placeholder="maximum of 20 characters"
                       value={values.name}
                       onChange={handleChange}
                       isInvalid={!!errors.name}
@@ -115,9 +120,10 @@ class EditNode extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Node operator</Form.Label>
+                    <Form.Label>Node operator or Company name*</Form.Label>
                     <Form.Control
                       name="operator"
+                      placeholder="maximum of 20 characters"
                       value={values.operator}
                       onChange={handleChange}
                       isInvalid={!!errors.operator}
@@ -127,10 +133,11 @@ class EditNode extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <Form.Group>
-                    <Form.Label>Contact email</Form.Label>
+                    <Form.Label>Contact Email*</Form.Label>
                     <Form.Control
                       name="contactEmail"
                       type="email"
+                      placeholder="hello@example.com"
                       value={values.contactEmail}
                       onChange={handleChange}
                       isInvalid={!!errors.contactEmail}
@@ -145,6 +152,7 @@ class EditNode extends CreateForm {
                       as="textarea"
                       rows="6"
                       name="description"
+                      placeholder="maximum of 150 characters"
                       value={values.description}
                       onChange={handleChange}
                       isInvalid={!!errors.description}
@@ -154,14 +162,20 @@ class EditNode extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
 
-                  <div className="submit float-right mt-2">
-                    <Button variant="dark" size="lg" type="submit">
-                      Save
-                    </Button>
-                  </div>
+                  <Button className="" variant="primary" type="submit">
+                    <span>Continue</span>
+                  </Button>
                 </Form>
               )}
             </Formik>
+          </Col>
+          <Col sm="7" md="7" lg="7">
+            <div className="ml-5 mt-4">
+              <ImageFileUpload
+                defaultImg={icon}
+                handleDrop={(img) => this.handleDrop(img.preview)}
+              />
+            </div>
           </Col>
         </Row>
       </div>

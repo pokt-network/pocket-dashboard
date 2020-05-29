@@ -186,7 +186,7 @@ export class PaymentHistory {
   }
 
   /**
-   * @returns {{account: string, name: string, type: string, validatorPower?: string, maxRelay?: string}} Payment item.
+   * @returns {{account: string, name: string, type: string, validatorPower?: string, maxRelays?: string}} Payment item.
    */
   getItem() {
     return this.item;
@@ -200,12 +200,9 @@ export class PaymentHistory {
    */
   isNodePaymentItem(throwError = false) {
     /** @type {string} */
-    const type = this.item.type;
-
-    /** @type {string} */
     const validatorPower = this.item.validatorPower;
 
-    const isNode = type.toLowerCase() === "node" && validatorPower !== undefined;
+    const isNode = validatorPower !== undefined;
 
     if (throwError && !isNode) {
       throw Error("The payment item is not a node");

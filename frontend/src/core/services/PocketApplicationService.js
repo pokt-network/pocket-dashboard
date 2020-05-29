@@ -47,7 +47,7 @@ export class PocketApplicationService extends PocketBaseService {
       passphrase: this.ls.get("app_passphrase").data,
       chains: this.ls.get("app_chains").data,
       data: this.ls.get("app_data").data,
-      imported: this.ls.get("app_imported").data,
+      imported: this.ls.get("app_imported").data
     };
   }
 
@@ -60,7 +60,7 @@ export class PocketApplicationService extends PocketBaseService {
    * @param {string} [passphrase] Pocket application private key.
    * @param {Array<string>} [chains] Pocket application chosen chains.
    * @param {object} [data] Pocket application dashboard data.
-   * @param {boolean} [imported] wether the application is imported.
+   * @param {boolean} [imported] If the application is imported.
    */
   saveAppInfoInCache({
                        applicationID,
@@ -69,7 +69,7 @@ export class PocketApplicationService extends PocketBaseService {
                        passphrase,
                        chains,
                        data,
-                       imported,
+                       imported
                      }) {
     if (applicationID) {
       this.ls.set("app_id", {data: applicationID});
@@ -204,7 +204,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Create application account.
    *
-   * @param {object} applicationID Application ID.
+   * @param {string} applicationID Application ID.
    * @param {string} passphrase Passphrase.
    * @param {string} applicationBaseLink Application base link.
    * @param {string} privateKey? Private Key(is imported).
@@ -384,7 +384,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a custom tier application.
    *
-   * @param {{privateKey:string, passphrase: string, accountAddress: string}} application Application private Key.
+   * @param {{privateKey:string, passphrase: string, accountAddress: string}} application Application data.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}

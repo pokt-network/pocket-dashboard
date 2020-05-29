@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {Button} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import UserService from "../services/PocketUserService";
 
 export const AuthProviderType = {
   login: "Login",
@@ -18,6 +19,8 @@ export class AuthProviderButton extends Component {
   onButtonClick(e) {
     const {consent_url} = this.props.authProvider;
 
+    UserService.showWelcomeMessage(true);
+
     window.open(consent_url, "_parent");
   }
 
@@ -33,7 +36,8 @@ export class AuthProviderButton extends Component {
         onClick={this.onButtonClick}
       >
         {icon ? <FontAwesomeIcon icon={icon} /> : null} {type} with{" "}
-        {authProvider.name}
+        {authProvider.name.slice(0, 1).toUpperCase() +
+          authProvider.name.slice(1, authProvider.name.length)}
       </Button>
     );
   }

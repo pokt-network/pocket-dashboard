@@ -21,6 +21,12 @@ export const ITEM_TYPES = {
   NODE: "node",
 };
 
+export const MAX_FILE_IMG_SIZE = 1000000; // 1MB
+export const PURCHASE_ITEM_NAME = {
+  APPS: "Relays per day",
+  NODES: "Validator power",
+};
+
 export const POKT_UNSTAKING_DAYS = 21;
 
 export const DEFAULT_POKT_DENOMINATION_BASE = 6;
@@ -30,6 +36,9 @@ export const APPLICATIONS_LIMIT = 10;
 export const NODES_LIMIT = 10;
 
 export const PAYMENT_HISTORY_LIMIT = 10;
+
+// eslint-disable-next-line no-useless-escape
+export const PASSPHRASE_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@\?<>\{\}"\-=\\|+\[\];:,.'`#\$/()_%\^&\*])(?=.{15,})/;
 
 export const STYLING = {
   primaryColor: "#27a9e0",
@@ -118,14 +127,8 @@ export const TABLE_COLUMNS = {
   ],
 };
 
-export const FILTER_OPTIONS = [
-  {text: "Staked", dataField: "staked"},
-  {text: "Unstaking", dataField: "unstaking"},
-  {text: "Unstaked", dataField: "unstaked"},
-];
-
 export const VALIDATION_MESSAGES = {
-  REQUIRED: "This field is required.",
+  REQUIRED: "This field is required",
   MAX: (max) =>
     max ? `Exceeded character limit of ${max}` : "Exceeded character limit",
   MIN: (min) =>

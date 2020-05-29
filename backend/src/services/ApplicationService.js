@@ -443,7 +443,6 @@ export default class ApplicationService extends BaseService {
    */
   async stakeApplication(application, networkChains, uPoktAmount) {
     const accountService = new AccountService();
-
     const applicationAccount = await accountService
       .importAccountToNetwork(this.pocketService, application.privateKey, application.passphrase);
 
@@ -503,8 +502,8 @@ export default class ApplicationService extends BaseService {
       return false;
     }
     const accountService = new AccountService();
-
-    const applicationAccount = await accountService.importAccountToNetwork(this.pocketService, applicationData.privateKey, applicationData.passphrase);
+    const applicationAccount = await accountService
+      .importAccountToNetwork(this.pocketService, applicationData.privateKey, applicationData.passphrase);
 
     // Unstake application
     const unstakedTransaction = await this.pocketService.unstakeApplication(applicationAccount, applicationData.passphrase);
@@ -554,7 +553,7 @@ export default class ApplicationService extends BaseService {
    * @param {string} passphrase Application account passphrase.
    * @param {string} [privateKey] Application private key if is imported.
    *
-   * @returns {Promise<{application: PocketApplication,privateApplicationData: PrivatePocketAccount, networkData:Application}>} An application information.
+   * @returns {Promise<{application: PocketApplication, privateApplicationData: PrivatePocketAccount, networkData:Application}>} An application information.
    * @throws {Error} If application does not exists.
    * @async
    */
@@ -590,7 +589,7 @@ export default class ApplicationService extends BaseService {
    * @param {string} applicationAccountAddress Application account address.
    * @param {string} user Owner email of application.
    *
-   * @returns {Promise<*>} The deleted application.
+   * @returns {Promise<PocketApplication>} The deleted application.
    * @async
    */
   async deleteApplication(applicationAccountAddress, user) {
@@ -599,11 +598,11 @@ export default class ApplicationService extends BaseService {
       user
     };
 
-    const application = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
     await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
 
-    return application;
+    return PocketApplication.createPocketApplication(applicationDB);
   }
 
   /**

@@ -9,9 +9,8 @@
   box-shadow: $default-box-shadow;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  padding-left: 25px;
-  padding-right: 25px;
+  justify-content: center;
+  align-items: center;
 
   h2 {
     font-family: $primary-font-family;

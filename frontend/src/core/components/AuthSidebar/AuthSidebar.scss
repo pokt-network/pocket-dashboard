@@ -1,19 +1,42 @@
+@import "../../../scss/Variables/Fonts";
+
 #auth-sidebar {
   margin-top: 35%;
+  padding-top: 30px;
+  padding-left: 60px;
 
   h1 {
-    color: #ffffff;
+    width: 254px;
+    height: 90px;
+    font-family: $secondary-font-family;
+    font-size: 30px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
     line-height: 1;
-    margin-bottom: 25px;
-    font-weight: 700;
+    letter-spacing: normal;
+    color: #ffffff;
   }
 
   p {
     font-size: 14px;
     letter-spacing: -0.38px;
+    color: #ffffff;
+    font-family: $primary-font-family;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.43;
+    text-align: justify;
   }
 
   .row:last-of-type {
     padding-bottom: 350px;
+  }
+
+  .white {
+    width: 101px;
+    height: 41px;
+    object-fit: contain;
   }
 }

@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import cls from "classnames";
 import BootstrapTable from "react-bootstrap-table-next";
 import {PropTypes} from "prop-types";
 import {tableShow} from "../../_helpers";
@@ -14,7 +15,20 @@ class AppTable extends Component {
 
   render() {
     const {show} = this.state;
-    const {scroll, data, columns, toggle, classes, ...restProps} = this.props;
+    const {
+      height,
+      scroll,
+      data,
+      columns,
+      toggle,
+      classes,
+      ...restProps
+    } = this.props;
+    const hasScroll = data.length * 46 > height;
+    const empty = data.length === 0;
+    const style = {
+      height: `${this.props.height}px`,
+    };
 
     let columnsToggle;
 
@@ -25,26 +39,33 @@ class AppTable extends Component {
     }
 
     return (
-      <BootstrapTable
-        classes={`app-table ${data.length === 0 ? "empty" : ""} ${classes} ${
-          scroll ? "scroll" : ""
-        } ${show ? "" : "hide"}`}
-        keyField="pocketNode.publicPocketAccount.address"
-        data={data}
-        columns={toggle ? columnsToggle : columns}
-        {...restProps}
-      />
+      <div style={!empty ? style : undefined}>
+        <BootstrapTable
+          classes={cls("app-table", classes, {
+            scroll: scroll,
+            "has-scroll": hasScroll,
+            empty: empty,
+            hide: !show,
+          })}
+          keyField="pocketNode.publicPocketAccount.address"
+          data={data}
+          columns={toggle ? columnsToggle : columns}
+          {...restProps}
+        />
+      </div>
     );
   }
 }
 
 AppTable.defaultProps = {
+  height: 325,
   scroll: false,
   toggle: false,
   classes: "",
 };
 
 AppTable.propTypes = {
+  height: PropTypes.number,
   scroll: PropTypes.bool,
   toggle: PropTypes.bool,
   classes: PropTypes.string,
