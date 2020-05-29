@@ -468,11 +468,24 @@ button {
     }
 
     tbody {
+      width: calc(100% - 16px);
       display: block;
       height: auto;
-      max-height: 62vh;
+      max-height: calc(325px - 52px);
       overflow: auto;
-      padding-right: 6px;
+      padding-right: 4px;
+
+      td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+  }
+
+  &.has-scroll {
+    tbody {
+      width: 100%;
     }
   }
 

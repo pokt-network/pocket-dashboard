@@ -82,6 +82,7 @@
         }
 
         .body {
+          max-height: 435px;
           padding: 22px 0;
           overflow-x: hidden;
 
@@ -90,7 +91,11 @@
           }
 
           .main-list {
-            padding: 0 22px 0 22px;
+            padding: 16px 22px 0 22px;
+
+            &.has-scroll {
+              padding-right: 8px;
+            }
           }
         }
       }
