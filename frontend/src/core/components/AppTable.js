@@ -25,6 +25,10 @@ class AppTable extends Component {
       ...restProps
     } = this.props;
     const hasScroll = data.length * 46 > height;
+    const empty = data.length === 0;
+    const style = {
+      height: `${this.props.height}px`,
+    };
 
     let columnsToggle;
 
@@ -35,12 +39,12 @@ class AppTable extends Component {
     }
 
     return (
-      <div style={{height: `${this.props.height}px`}}>
+      <div style={!empty ? style : undefined}>
         <BootstrapTable
           classes={cls("app-table", classes, {
             scroll: scroll,
             "has-scroll": hasScroll,
-            empty: data.length === 0,
+            empty: empty,
             hide: !show,
           })}
           keyField="pocketNode.publicPocketAccount.address"

@@ -105,6 +105,10 @@ body {
     align-items: center;
     line-height: 30px;
   }
+
+  &:focus {
+    box-shadow: none;
+  }
 }
 
 .btn.dropdown-toggle-split {
@@ -192,6 +196,10 @@ form {
   border-color: $secondary-color;
 }
 
+.btn-dark:not(:disabled):not(.disabled):active:focus {
+  box-shadow: none;
+}
+
 input {
   border-radius: $default-border-radius;
 }
@@ -239,7 +247,6 @@ input {
   .head {
     display: flex;
     align-items: center;
-    margin-bottom: 5px;
   }
 
   .icon {
@@ -303,6 +310,11 @@ input {
   }
 }
 
+.form-row {
+  margin-right: 0;
+  margin-left: 0;
+}
+
 .form-group {
   margin-bottom: 0;
 }
@@ -311,6 +323,8 @@ input {
   border: 1px solid $border-blue;
   height: 32px;
   font-size: 0.875rem;
+  font-weight: 300;
+  color: $dark-gray;
   line-height: 32px;
   border-radius: 21px;
   margin-bottom: 0.8rem;
@@ -452,6 +466,10 @@ button {
       &:first-child {
         padding-left: 0;
       }
+    }
+
+    td[class^="col-"]:last-child {
+      padding-left: 22px;
     }
   }
 
@@ -631,9 +649,17 @@ button {
   max-height: 60vh;
 }
 
+input.form-control {
+  padding: 0 12px;
+}
+
 input.form-control,
 textarea.form-control {
   font-family: "Lato", sans-serif;
+}
+
+input[type="password"]::placeholder {
+  line-height: 32px;
 }
 
 input.form-control::placeholder,
@@ -641,6 +667,7 @@ textarea.form-control::placeholder {
   color: $light-gray;
   font-weight: 300;
   font-size: 14px;
+  line-height: 32px;
 }
 
 .search-input.input-group {

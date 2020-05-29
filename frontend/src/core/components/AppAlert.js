@@ -27,7 +27,7 @@ class AppAlert extends Component {
           )}
           {this.renderTitle(title)}
         </span>
-        <div style={{marginLeft: iconPaths[variant] ? 60 : 0}} className="body">
+        <div style={{marginLeft: iconPaths[variant] ? 48 : 0}} className="body">
           {children}
         </div>
       </Alert>
