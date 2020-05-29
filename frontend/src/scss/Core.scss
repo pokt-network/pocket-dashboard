@@ -459,8 +459,7 @@ button {
     }
 
     thead {
-      // 50px comes from -8px from the scroll, 22px from the wireframes and 22px from margin-left and 6px extra from padding-right 6px from tbody
-      width: calc(100% - 50px);
+      width: calc(100% - 38px);
     }
 
     tbody {

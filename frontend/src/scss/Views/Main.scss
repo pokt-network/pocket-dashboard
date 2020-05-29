@@ -1,7 +1,6 @@
 @import "../Core";
 
 .main {
-
   .page-title {
     h1 {
       color: $title-secondary-color;
@@ -9,20 +8,33 @@
   }
 
   .stats {
-    margin-left: -25px;
+    margin-top: 2.5rem;
 
     .p-badge {
       height: 100px;
     }
 
+    .info-card-column {
+      padding: 0 9px;
+
+      &:first-child {
+        padding-left: 0;
+      }
+    }
   }
 
   .cta-buttons {
-    margin-left: -20px;
-    margin-bottom: 20px;
-
     .create-app-button {
+      background-color: $dark-gray;
+      border-color: $dark-gray;
       width: 140px;
+
+      &.btn-primary {
+        &:active {
+          background-color: $dark-gray;
+          border-color: $dark-gray;
+        }
+      }
     }
 
     .import-app-button {
@@ -44,21 +56,10 @@
     }
   }
 
-
   .app-tables {
-    margin-left: -25px;
-    margin-top: -30px;
-
     .search-panel {
-      margin-top: 20px;
-      margin-bottom: -10px;
-
       button {
         width: 30px;
-
-        img {
-          left: -12px;
-        }
       }
     }
 
@@ -66,21 +67,22 @@
       display: none;
     }
 
-    .app-segment {
-      .head {
-        margin-bottom: -10px;
-      }
-    }
-
     .my-items-segment {
+      padding: 0 9px;
+
+      &:first-child {
+        padding-left: 0;
+      }
+
       .app-segment {
         .head {
           h2 {
-            margin-left: 28px;
+            margin-left: 20px;
           }
         }
 
         .body {
+          padding: 20px;
           overflow-x: hidden;
         }
       }
