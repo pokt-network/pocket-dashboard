@@ -6,9 +6,9 @@
   #main {
     #email-label {
       width: 399px;
-      height: 17px;
+      height: 19px;
       font-family: $primary-font-family;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 300;
       font-stretch: normal;
       font-style: normal;
@@ -21,10 +21,12 @@
   #main.offset-lg-3 {
     margin-left: 30%;
   }
-
+  .feedback {
+    width: 399px;
+  }
   .forgotPassword {
-    width: 478px;
-    height: 38px;
+    width: 399px;
+    height: 102px;
     font-family: $secondary-font-family;
     font-size: 30px;
     font-weight: 800;

@@ -21,6 +21,7 @@ class AnswerSecurityQuestions extends Component {
       question: "",
       answer: "",
       userInput: "",
+      error: "",
     };
   }
   async componentDidMount() {
@@ -61,12 +62,12 @@ class AnswerSecurityQuestions extends Component {
       });
     } else {
       console.log("wrong answer");
-      // TODO display error message
+      this.setState({ error: "Incorrect answer" });
     }
   }
 
   render() {
-    const { question } = this.state;
+    const { question, error } = this.state;
 
     return (
       <Container fluid id={"answer-security-questions-page"}>
@@ -81,7 +82,7 @@ class AnswerSecurityQuestions extends Component {
               <h1 className="forgotPassword">
                 Answer this question before continuing.
               </h1>
-              <p className="passwordLabel"></p>
+
               <Form id={"main-form"} onSubmit={this.handleSubmit}>
                 <Form.Group className="mb-4">
                   <Form.Label id="email-label">{question}</Form.Label>
@@ -89,8 +90,14 @@ class AnswerSecurityQuestions extends Component {
                     onChange={this.handleChange}
                     name="answer"
                     type="input"
-                    className="emailInput"
-                  />
+                    className={error ? "is-invalid emailInput" : "emailInput"}
+                  />{" "}
+                  <Form.Control.Feedback
+                    className="feedback invalid-acount "
+                    type="invalid"
+                  >
+                    {error ? error : ""}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Button
                   className="resetButton"
