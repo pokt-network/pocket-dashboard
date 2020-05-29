@@ -28,8 +28,6 @@ class ResetPassword extends Component {
     const { password1 } = this.state.data;
     const { password2 } = this.state.data;
 
-    console.log("email: " + email + " p1: " + password1 + " p2: " + password2);
-
     if (password1 === password2) {
       PocketUserService.changePassword(email, password1, password2);
     }

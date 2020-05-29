@@ -1,10 +1,10 @@
-import React, { Component } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import React, {Component} from "react";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import "./ForgotPassword.scss";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
 import PocketUserService from "../../../core/services/PocketUserService";
-import { ROUTE_PATHS } from "../../../_routes";
+import {ROUTE_PATHS} from "../../../_routes";
 
 class ForgotPassword extends Component {
   constructor(props, context) {
@@ -21,31 +21,30 @@ class ForgotPassword extends Component {
     };
   }
 
-  handleChange({ currentTarget: input }) {
-    const data = { ...this.state.data };
+  handleChange({currentTarget: input}) {
+    const data = {...this.state.data};
 
     data[input.name] = input.value;
-    this.setState({ data });
+    this.setState({data});
   }
 
   async handleSubmit(e) {
     e.preventDefault();
 
-    const { email } = this.state.data;
+    const {email} = this.state.data;
 
     const userExists = await PocketUserService.userExists(email, "email");
 
     if (userExists) {
       const isValidated = await PocketUserService.isUserValidated(
-        email,
-        "email"
+        email, "email"
       );
 
       if (isValidated) {
         // eslint-disable-next-line react/prop-types
         this.props.history.push({
           pathname: ROUTE_PATHS.answer_security_questions,
-          state: { email },
+          state: {email},
         });
       } else {
         // eslint-disable-next-line react/prop-types
@@ -57,20 +56,21 @@ class ForgotPassword extends Component {
         });
       }
     } else {
-      this.setState({ error: "Email is not registered" });
+      this.setState({error: "Email is not registered"});
     }
   }
 
   render() {
-    const { error } = this.state;
+    const {error} = this.state;
+
     return (
       <Container fluid id={"forgot-password-page"}>
         <Navbar />
         <Row className="mt-1">
           <Col
             id={"main"}
-            md={{ span: 8, offset: 2 }}
-            lg={{ span: 4, offset: 3 }}
+            md={{span: 8, offset: 2}}
+            lg={{span: 4, offset: 3}}
           >
             <PocketBox iconUrl={"/assets/circle.png"}>
               <h1 className="forgotPassword">Forgot your password?</h1>

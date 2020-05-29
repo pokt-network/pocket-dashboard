@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import PropTypes from "prop-types";
 import "./VerifyEmail.scss";
-import { Button, Col, Container, Row } from "react-bootstrap";
+import {Button, Col, Container, Row} from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
-import { ROUTE_PATHS } from "../../../_routes";
-import { Link } from "react-router-dom";
+import {ROUTE_PATHS} from "../../../_routes";
+import {Link} from "react-router-dom";
 import UserService from "../../../core/services/PocketUserService";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import AppAlert from "../../../core/components/AppAlert";
@@ -26,30 +26,29 @@ class VerifyEmail extends Component {
   componentDidMount() {
     // eslint-disable-next-line react/prop-types
     if (this.props.location.state === undefined) {
-      this.setState({ unauthorized: true });
+      this.setState({unauthorized: true});
       return;
     }
     // eslint-disable-next-line react/prop-types
-    const { email } = this.props.location.state;
+    const {email} = this.props.location.state;
 
-    this.setState({ email });
+    this.setState({email});
   }
 
   resendEmail(e) {
-    this.setState({ resendEmail: false });
+    this.setState({resendEmail: false});
     const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
     UserService.resendSignUpEmail(
-      this.state.email,
-      securityQuestionLinkPage
+      this.state.email, securityQuestionLinkPage
     ).then((result) => {
       // TODO: show resend message
-      this.setState({ resendEmail: true });
+      this.setState({resendEmail: true});
     });
   }
 
   render() {
-    const { email, unauthorized, resentEmail } = this.state;
+    const {email, unauthorized, resentEmail} = this.state;
 
     /* eslint-disable jsx-a11y/alt-text */
     const icons = [
@@ -65,7 +64,7 @@ class VerifyEmail extends Component {
         {!unauthorized ? (
           <>
             <Row className="mt-5 mb-3">
-              <Col lg={{ span: 8, offset: 2 }}>
+              <Col lg={{span: 8, offset: 2}}>
                 <AppSteps
                   icons={icons}
                   steps={[
@@ -80,14 +79,14 @@ class VerifyEmail extends Component {
             <Row className="content">
               <Col
                 id="main"
-                md={{ span: 8, offset: 2 }}
-                lg={{ span: 5, offset: 4 }}
+                md={{span: 8, offset: 2}}
+                lg={{span: 5, offset: 4}}
               >
                 {resentEmail && (
                   <AppAlert
                     dismissible
                     onClose={() => {
-                      this.setState({ resentEmail: false });
+                      this.setState({resentEmail: false});
                     }}
                     title={<h4>An Email has been resent to your address</h4>}
                   />

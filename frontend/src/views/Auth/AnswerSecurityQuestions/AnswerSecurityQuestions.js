@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import { Button, Col, Container, Form, Row } from "react-bootstrap";
+import React, {Component} from "react";
+import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import "./AnswerSecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
 //import UserService from "../../../core/services/PocketUserService";
 import SecurityQuestionService from "../../../core/services/PocketSecurityQuestionsService";
-import { ROUTE_PATHS } from "../../../_routes";
+import {ROUTE_PATHS} from "../../../_routes";
 
 class AnswerSecurityQuestions extends Component {
   constructor(props, context) {
@@ -25,7 +25,7 @@ class AnswerSecurityQuestions extends Component {
     };
   }
   async componentDidMount() {
-    const { email } = this.props.location.state;
+    const {email} = this.props.location.state;
 
     if (email !== undefined) {
       const questions = await SecurityQuestionService.getUserRandomSecurityQuestion(
@@ -43,11 +43,11 @@ class AnswerSecurityQuestions extends Component {
     // eslint-disable-next-line react/prop-types
   }
 
-  handleChange({ currentTarget: input }) {
-    const data = { ...this.state.data };
+  handleChange({currentTarget: input}) {
+    const data = {...this.state.data};
 
     data[input.name] = input.value;
-    this.setState({ data });
+    this.setState({data});
   }
 
   handleSubmit(e) {
@@ -58,16 +58,15 @@ class AnswerSecurityQuestions extends Component {
     if (userInput === this.state.answer) {
       this.props.history.push({
         pathname: ROUTE_PATHS.reset_password,
-        state: { email },
+        state: {email},
       });
     } else {
-      console.log("wrong answer");
-      this.setState({ error: "Incorrect answer" });
+      this.setState({error: "Incorrect answer"});
     }
   }
 
   render() {
-    const { question, error } = this.state;
+    const {question, error} = this.state;
 
     return (
       <Container fluid id={"answer-security-questions-page"}>
@@ -75,8 +74,8 @@ class AnswerSecurityQuestions extends Component {
         <Row className="mt-1">
           <Col
             id={"main"}
-            md={{ span: 8, offset: 2 }}
-            lg={{ span: 4, offset: 3 }}
+            md={{span: 8, offset: 2}}
+            lg={{span: 4, offset: 3}}
           >
             <PocketBox iconUrl={"/assets/squared.png"}>
               <h1 className="forgotPassword">
