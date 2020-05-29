@@ -71,7 +71,10 @@ class SecurityQuestions extends Component {
     });
 
     SecurityQuestionsService.getSecurityQuestions().then((questions) => {
-      const securityQuestions = ["Select Question", ...questions];
+      const securityQuestions = [
+        "Choose one of the security questions",
+        ...questions,
+      ];
 
       this.setState({securityQuestions});
     });

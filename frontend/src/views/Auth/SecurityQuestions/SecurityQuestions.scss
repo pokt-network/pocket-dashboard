@@ -88,4 +88,34 @@ body {
   .margin {
     height: 669px;
   }
+  option {
+    width: 338px;
+    height: 15px;
+    font-family: $primary-font-family;
+    font-size: 12px !important;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #282828;
+  }
+
+  .form-control {
+    border: 1px solid $border-blue;
+    height: 15px;
+    font-size: 12px !important;
+    line-height: 20px !important;
+    border-radius: 21px;
+    margin-bottom: 0.8rem;
+    font-family: $primary-font-family;
+
+    &.is-invalid {
+      margin-bottom: 0;
+    }
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
 }
