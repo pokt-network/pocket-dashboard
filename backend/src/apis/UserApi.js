@@ -164,6 +164,26 @@ router.post("/auth/is-validated", async (request, response) => {
 });
 
 /**
+ * Verify user password.
+ */
+router.post("/auth/verify-password", async (request, response) => {
+  try {
+    /** @type {{email:string, password: string}} */
+    const data = request.body;
+
+    const passwordVerified = await userService.verifyPassword(data.email, data.password);
+
+    response.send(passwordVerified);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
  * Change user password.
  */
 router.put("/auth/change-password", async (request, response) => {
@@ -180,6 +200,54 @@ router.put("/auth/change-password", async (request, response) => {
     }
 
     response.send(passwordChanged);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Change user name.
+ */
+router.put("/auth/change-username", async (request, response) => {
+  try {
+    /** @type {{email:string, username: string}} */
+    const data = request.body;
+
+    const changed = await userService.changeUsername(data.email, data.username);
+
+    response.send(changed);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
+/**
+ * Change user email.
+ */
+router.put("/auth/change-email", async (request, response) => {
+  try {
+    /** @type {{email:string, newEmail: string, postValidationBaseLink:string}} */
+    const data = request.body;
+
+    const emailChanged = await userService.changeEmail(data.email, data.newEmail);
+
+    if (emailChanged) {
+      const postValidationLink = `${data.postValidationBaseLink}?d=${await userService.generateToken(data.newEmail)}`;
+
+      await EmailService
+        .to(data.newEmail)
+        .sendEmailChangedEmail(data.newEmail, postValidationLink);
+    }
+
+    response.send(emailChanged);
   } catch (e) {
     const error = {
       message: e.toString()
