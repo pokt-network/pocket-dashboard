@@ -217,8 +217,8 @@ class SecurityQuestions extends Component {
                   />
                 )}
                 <h1 className="text-uppercase">
-                  PLEASE ANSWER THREE SECURITY QUESTIONS BEFORE CREATE A NEW
-                  ACCOUNT
+                  Please answer theree security questions before creating a new
+                  account
                 </h1>
                 <Form onSubmit={this.sendQuestions}>
                   <Form.Group>
@@ -281,7 +281,7 @@ class SecurityQuestions extends Component {
                     />
                   </Form.Group>
                   <Button
-                    className="continue-button"
+                    className="mb-5 continue-button"
                     type="submit"
                     variant="primary"
                     size={"md"}
