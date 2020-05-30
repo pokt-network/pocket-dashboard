@@ -46,7 +46,8 @@ class VerifyEmail extends Component {
     const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
     UserService.resendSignUpEmail(
-      this.state.email, securityQuestionLinkPage
+      this.state.email,
+      securityQuestionLinkPage
     ).then((result) => {
       this.setState({
         resentEmail: true,
@@ -75,7 +76,7 @@ class VerifyEmail extends Component {
         {!unauthorized ? (
           <>
             <Row className="mt-5 mb-3">
-              <Col lg={{span: 8, offset: 4}}>
+              <Col lg={{span: 8, offset: 2}}>
                 <AppSteps
                   icons={icons}
                   steps={[
