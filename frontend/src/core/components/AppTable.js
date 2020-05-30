@@ -28,6 +28,7 @@ class AppTable extends Component {
     const empty = data.length === 0;
     const style = {
       height: `${this.props.height}px`,
+      display: "contents",
     };
 
     let columnsToggle;
