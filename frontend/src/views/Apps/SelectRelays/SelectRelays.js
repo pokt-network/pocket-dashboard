@@ -239,8 +239,8 @@ class SelectRelays extends Component {
 
     return (
       <div id="purchase">
-        <Row className="mt-4 mb-3">
-          <Col lg="11" md="11" sm="11" className="title-page">
+        <Row>
+          <Col className="title-page">
             {error.show && (
               <AppAlert
                 variant="danger"
@@ -258,8 +258,8 @@ class SelectRelays extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm="8" className="title-page">
-            <h2 className="mb-5">
+          <Col sm="8" className="relays-column">
+            <h2>
               Slide to Select how much relays per day you want to buy
             </h2>
             <div className="calc">
@@ -300,8 +300,8 @@ class SelectRelays extends Component {
               </p>
             </AppAlert>
           </Col>
-          <Col sm="4" className="pr-5 title-page">
-            <h2 className="mb-4">Order Summary</h2>
+          <Col sm="4" className="pr-5 order-summary-column">
+            <h2>Order Summary</h2>
             <AppOrderSummary
               items={[
                 {label: "App", quantity: 1},

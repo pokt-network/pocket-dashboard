@@ -45,6 +45,7 @@
     color: $form-label-font-color;
     font-size: 30px;
     font-weight: 800;
+    margin-bottom: 0;
   }
 
   h2 {
@@ -55,15 +56,21 @@
     font-weight: bold;
     line-height: 2.11;
     letter-spacing: -0.49px;
+    margin-bottom: 0;
   }
 
   .subtitle {
     font-family: $primary-font-family;
     color: $dark-gray;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 300;
     letter-spacing: normal;
+    line-height: normal;
     margin-bottom: 0;
+  }
+
+  .relays-column, .order-summary-column {
+    margin-top: 35px;
   }
 
   .price-card {
@@ -102,7 +109,7 @@
       align-items: center;
       flex-grow: 2;
       padding: 60px 40px;
-      border-radius: 5px;
+      border-radius: $panel-radius;
       box-shadow: $default-box-shadow;
 
       .rc-slider-mark-text {
