@@ -14,6 +14,7 @@ import {Formik} from "formik";
 import * as yup from "yup";
 import {VALIDATION_MESSAGES} from "../../../_constants";
 import {validateYup} from "../../../_helpers";
+import cls from "classnames";
 
 class Login extends Component {
   constructor(props, context) {
@@ -153,7 +154,9 @@ class Login extends Component {
                             value={values.password}
                             onChange={handleChange}
                             isInvalid={!!errors.password}
-                            className="inputControl"
+                            className={`inputControl ${cls({
+                              "text-hidden": values.password.length === 0,
+                            })}`}
                           />
                           <Form.Control.Feedback type="invalid">
                             {errors.password}

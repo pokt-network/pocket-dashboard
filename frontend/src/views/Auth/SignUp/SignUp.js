@@ -20,6 +20,7 @@ import {faGithub, faGoogle} from "@fortawesome/free-brands-svg-icons";
 import {validateYup} from "../../../_helpers";
 import ReCAPTCHA from "react-google-recaptcha";
 import {Configurations} from "../../../_configuration";
+import cls from "classnames";
 
 class SignUp extends Component {
   constructor(props, context) {
@@ -186,6 +187,9 @@ class SignUp extends Component {
                             value={values.password1}
                             onChange={handleChange}
                             isInvalid={!!errors.password1}
+                            className={cls({
+                              "text-hidden": values.password1.length === 0,
+                            })}
                           />
                           <Form.Control.Feedback type="invalid">
                             {errors.password1}
@@ -200,6 +204,9 @@ class SignUp extends Component {
                             value={values.password2}
                             onChange={handleChange}
                             isInvalid={!!errors.password2}
+                            className={cls({
+                              "text-hidden": values.password2.length === 0,
+                            })}
                           />
                           <Form.Control.Feedback type="invalid">
                             {errors.password2}
@@ -221,7 +228,7 @@ class SignUp extends Component {
                           id="terms-checkbox"
                           type="checkbox"
                           label={
-                            <span className="text">
+                            <span className="agreement-label">
                               I agree to Pocket Dashboard{" "}
                               <Link
                                 to={_getDashboardPath(
@@ -238,6 +245,7 @@ class SignUp extends Component {
                         <Button
                           disabled={!(agreeTerms && validCaptcha)}
                           type="submit"
+                          className="sign-up-btn"
                           size="md"
                           variant="primary"
                           block

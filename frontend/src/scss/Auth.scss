@@ -10,8 +10,9 @@
     height: 100vh;
   }
 
-  .form-group.password {
-    margin-bottom: 0.5em;
+  .form-control,
+  .invalid-feedback {
+    min-width: 400px;
   }
 
   #sidebar {
@@ -64,7 +65,7 @@
 
       #main-form {
         .form-group {
-          margin-bottom: 30px;
+          margin-bottom: 20px;
         }
       }
 
