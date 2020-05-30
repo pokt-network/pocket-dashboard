@@ -237,10 +237,10 @@ class NodeDetail extends Component {
 
     const renderValidation = (handleFunc) => (
       <ValidateKeys address={address} handleAfterValidate={handleFunc}>
-        <h1>Confirm private key</h1>
-        <p>
-          Import to the dashboard a pocket account previously created as a node
-          in the network. If your account is not a node go to create.
+        <h1>Verify private key</h1>
+        <p className="validate-text">
+          Please import your account credentials before sending the Transaction.
+          Be aware that this Transaction has a 0,1 POKT fee cost.
         </p>
       </ValidateKeys>
     );

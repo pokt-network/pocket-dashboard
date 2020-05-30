@@ -171,7 +171,7 @@ form {
 .btn-primary:focus,
 .btn-outline-primary:active,
 .btn-primary:active,
-.show > .btn-primary.dropdown-toggle,
+.show>.btn-primary.dropdown-toggle,
 .btn-primary:not(:disabled):not(.disabled):active {
   background-color: $primary-color-darker;
   border-color: $primary-color-darker;
@@ -210,7 +210,7 @@ input {
 }
 
 .alert {
-  min-height: 60px;
+  min-height: 40px;
   font-family: $secondary-font-family;
   box-shadow: $default-box-shadow;
   background-color: #07212f;
@@ -333,10 +333,6 @@ input {
   line-height: 32px;
   border-radius: 21px;
   margin-bottom: 0.8rem;
-
-  &.is-invalid {
-    margin-bottom: 0;
-  }
 
   &:focus {
     box-shadow: none;
@@ -483,6 +479,7 @@ button {
   }
 
   &.scroll {
+
     thead,
     tbody tr {
       display: table;
@@ -795,7 +792,8 @@ a:hover {
 }
 
 input[type="checkbox"] // input[type="radio"]
-{
+
+  {
   position: relative;
   width: 1.4em;
   height: 1.4em;
@@ -831,7 +829,7 @@ input[type="checkbox"] // input[type="radio"]
       opacity: 1;
     }
 
-    ~ label::before {
+    ~label::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
   }
@@ -852,7 +850,7 @@ input[type="radio"] {
   cursor: pointer;
 
   &:checked {
-    ~ label {
+    ~label {
       margin-top: 0px;
       margin-left: 3px;
       height: 25%;
@@ -884,7 +882,8 @@ input[type="radio"] {
 
     padding-bottom: 80px;
 
-    .form-control, .invalid-feedback {
+    .form-control,
+    .invalid-feedback {
       max-width: 400px;
     }
   }
@@ -906,7 +905,7 @@ input[type="radio"] {
     font-weight: 300;
     color: #282828;
 
-    ~ label {
+    ~label {
       margin-top: 0px;
       margin-left: 3px;
       height: 25%;
