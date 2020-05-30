@@ -151,8 +151,7 @@ class SecurityQuestions extends Component {
     const {
       success,
     } = await SecurityQuestionsService.saveSecurityQuestionAnswers(
-      user.email,
-      questions
+      user.email, questions
     );
 
     if (!success) {
