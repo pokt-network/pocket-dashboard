@@ -27,6 +27,8 @@ export const PURCHASE_ITEM_NAME = {
   NODES: "Validator power",
 };
 
+export const DEFAULT_ERROR_MESSAGE = 'An unexpected error occurred, please try again later.';
+
 export const POKT_UNSTAKING_DAYS = 21;
 
 export const DEFAULT_POKT_DENOMINATION_BASE = 6;

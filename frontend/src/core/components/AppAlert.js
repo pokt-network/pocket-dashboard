@@ -1,14 +1,18 @@
 import React, {Component} from "react";
+import isEmpty from "lodash/isEmpty";
+import isString from "lodash/isString";
 import {PropTypes} from "prop-types";
 import {Alert} from "react-bootstrap";
+import {DEFAULT_ERROR_MESSAGE} from "../../_constants";
+
+const VARIANT_DANGER = "danger";
 
 class AppAlert extends Component {
   renderTitle(title) {
-    if (typeof title === "string") {
-      return <h4>{title}</h4>;
-    } else {
-      return title;
-    }
+    if (isString(title) && type !== VARIANT_DANGER) return <h4>{title}</h4>;
+    if (title && !isEmpty(title) && type === VARIANT_DANGER)
+      return <h4>{DEFAULT_ERROR_MESSAGE}</h4>;
+    else return title;
   }
 
   render() {

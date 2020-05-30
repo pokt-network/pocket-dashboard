@@ -154,11 +154,7 @@ class AppPassphrase extends Component {
         redirectPath: _getDashboardPath(DASHBOARD_PATHS.applicationChainsList),
       });
     } else {
-      const message =
-        data && data.indexOf("401") >= 0
-          ? "An unexpected error occurred, please try again later"
-          : data.message;
-      this.setState({error: {show: true, message: message}});
+      this.setState({error: {show: true, message: data.message}});
       scrollToId("alert");
     }
 
