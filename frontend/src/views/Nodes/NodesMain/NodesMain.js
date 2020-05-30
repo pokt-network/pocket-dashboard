@@ -6,7 +6,7 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {BOND_STATUS_STR, NODES_LIMIT, STYLING, TABLE_COLUMNS} from "../../../_constants";
+import {NODES_LIMIT, STYLING, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
@@ -30,32 +30,6 @@ class NodesMain extends Main {
       ...this.state,
       hasNodes: false,
     };
-  }
-
-  async handleUserItemsFilter(option) {
-    this.setState({userItemsTableLoading: true});
-
-    const userEmail = UserService.getUserInfo().email;
-
-    const userItems = await NodeService.getAllUserNodes(
-      userEmail, NODES_LIMIT, 0, BOND_STATUS_STR[option]
-    );
-
-    this.setState({
-      userItems,
-      filteredItems: userItems,
-      userItemsTableLoading: false,
-    });
-  }
-
-  async handleAllItemsFilter(option) {
-    this.setState({allItemsTableLoading: true});
-
-    const registeredItems = await NodeService.getAllNodes(
-      NODES_LIMIT, 0, BOND_STATUS_STR[option]
-    );
-
-    this.setState({allItemsTableLoading: false, registeredItems});
   }
 
   async componentDidMount() {
