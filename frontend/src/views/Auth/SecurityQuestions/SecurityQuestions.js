@@ -58,7 +58,6 @@ class SecurityQuestions extends Component {
       if (result.success) {
         this.setState({user: result.data});
       } else {
-        // TODO: Show proper message on front end to user.
         this.setState({
           alertOverlay: {
             show: true,
