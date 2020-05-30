@@ -311,7 +311,7 @@ class SelectRelays extends Component {
                   quantity: `${subTotalFixed} ${currency.toUpperCase()}`,
                 },
               ]}
-              balance={`-${currentAccountBalance} USD`}
+              balance={`${currentAccountBalance} USD`}
               balanceOnChange={this.onCurrentBalanceChange}
               total={totalFixed}
               loading={loading}

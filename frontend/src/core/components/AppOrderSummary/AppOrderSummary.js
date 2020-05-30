@@ -27,7 +27,7 @@ class AppOrderSummary extends Component {
         ))}
         <div className="item">
           <p>Current balance</p>
-          <Form.Control value={balance} onChange={balanceOnChange} />
+          <Form.Control value={balance} onChange={balanceOnChange} readOnly />
         </div>
         <hr />
         <div className="item total">
