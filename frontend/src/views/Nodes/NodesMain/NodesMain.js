@@ -6,21 +6,11 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {
-  BOND_STATUS_STR,
-  NODES_LIMIT,
-  STYLING,
-  TABLE_COLUMNS,
-} from "../../../_constants";
+import {BOND_STATUS_STR, NODES_LIMIT, STYLING, TABLE_COLUMNS,} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {
-  formatNetworkData,
-  formatNumbers,
-  getStakeStatus,
-  mapStatusToField,
-} from "../../../_helpers";
+import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField,} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
@@ -144,7 +134,7 @@ class NodesMain extends Main {
       {title: formatNumbers(total), subtitle: "Total of Nodes"},
       {
         title: formatNetworkData(averageStaked, false),
-        subtitle: "Average Staked Token Per Node",
+        subtitle: "Avr Staked Token Per Node",
       },
       {
         title: formatNetworkData(averageRelays, false),
