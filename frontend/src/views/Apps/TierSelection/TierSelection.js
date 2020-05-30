@@ -23,18 +23,23 @@ class TierSelection extends Component {
   }
 
   async createFreeTierItem() {
-    const {privateKey, passphrase, chains, address} = ApplicationService.getApplicationInfo();
+    const {
+      privateKey,
+      passphrase,
+      chains,
+      address,
+    } = ApplicationService.getApplicationInfo();
     const application = {privateKey, passphrase};
 
     this.setState({creatingFreeTier: true});
 
-
-    const data = await ApplicationService.stakeFreeTierApplication(application, chains);
-
+    const data = await ApplicationService.stakeFreeTierApplication(
+      application,
+      chains
+    );
 
     // TODO: Notify of errors on the frontend
     if (data !== false) {
-
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
       const path = url.replace(":address", address);
 
@@ -51,10 +56,16 @@ class TierSelection extends Component {
   }
 
   render() {
-    const {freeTierModal, customTierModal, agreeTerms, creatingFreeTier, errorMessage} = this.state;
+    const {
+      freeTierModal,
+      customTierModal,
+      agreeTerms,
+      creatingFreeTier,
+      errorMessage,
+    } = this.state;
 
     if (creatingFreeTier) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     return (
@@ -75,86 +86,80 @@ class TierSelection extends Component {
           <Col className="page-title">
             <h1>Choose what is more convenient for your app</h1>
             <p className="info">
-              Don&#39;t overpay for the infrastructure your app needs, stake and
-              scale as your user base grows or you can start connecting to any
-              blockchain with our free tier.
+              Don&#39;t overpay for the infrastructure your app needs, stake,
+              and scale as your user base grows or you can start connecting to
+              any blockchain with our free tier.
             </p>
           </Col>
         </Row>
-        <Row className="tiers">
-          <Col sm="6" md="6" lg="6">
-            <div className="tier">
+        <Row className="tiers justify-content-center">
+          <div className="tier">
+            <div className="tier-title">
+              <h2>Free</h2>
+              <h2 className="subtitle">tier</h2>
+            </div>
+            <ul>
+              <li>Limited to 1 Million relays per day</li>
+              <li>Access to AAT, but not ownership</li>
+              <li>Stake POKT is managed by Pocket Network Inc.</li>
+              <li>Unstake balance unavailable for transfers</li>
+            </ul>
+            {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
+            <Button
+              onClick={() => this.setState({freeTierModal: true})}
+              variant="link"
+              className="cta"
+            >
+              How it works
+            </Button>
+            <Form.Check
+              checked={agreeTerms}
+              onChange={() => this.setState({agreeTerms: !agreeTerms})}
+              className="terms-checkbox"
+              type="checkbox"
+              label={
+                <p>
+                  I agree to pocket Dashboard{" "}
+                  <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>
+                    Terms and Conditions.
+                  </Link>
+                </p>
+              }
+            />
+            <Button
+              onClick={() => this.createFreeTierItem()}
+              disabled={!agreeTerms}
+            >
+              <span>Get Free Tier</span>
+            </Button>
+          </div>
+          <div className="tier custom-tier">
+            <div>
               <div className="tier-title">
-                <h2>Free</h2>
+                <h2>Custom</h2>
                 <h2 className="subtitle">tier</h2>
               </div>
               <ul>
-                <li>Limited to 1 Million relays per day</li>
-                <li>Access to AAT, but not ownership</li>
-                <li>Stake POKT is managed by Pocket Network Inc.</li>
-                <li>Unstake balance unavailable for transfers</li>
+                <li>Custom Relays per day</li>
+                <li>ATT ownership</li>
+                <li>Unstake balance available for transfers</li>
+                <li>Staked POKT is own by the user</li>
               </ul>
               {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
               <Button
-                onClick={() => this.setState({freeTierModal: true})}
+                onClick={() => this.setState({customTierModal: true})}
                 variant="link"
                 className="cta"
               >
                 How it works
               </Button>
-              <Form.Check
-                checked={agreeTerms}
-                onChange={() => this.setState({agreeTerms: !agreeTerms})}
-                className="terms-checkbox"
-                type="checkbox"
-                label={
-                  <p>
-                    I agree to pocket Dashboard{" "}
-                    <Link
-                      to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}
-                    >
-                      Terms and Conditions.
-                    </Link>
-                  </p>
-                }
-              />
-              <Button
-                onClick={() => this.createFreeTierItem()}
-                disabled={!agreeTerms}
-              >
-                <span>Get Free Tier</span>
-              </Button>
-            </div>
-          </Col>
-          <Col sm="6" md="6" lg="6">
-            <div className="tier custom-tier">
-              <div>
-                <div className="tier-title">
-                  <h2>Custom</h2>
-                  <h2 className="subtitle">tier</h2>
-                </div>
-                <ul>
-                  <li>Custom Relays per day</li>
-                  <li>ATT ownership</li>
-                  <li>Unstake balance available for transfers</li>
-                  <li>Staked POKT is own by the user</li>
-                </ul>
-                {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-                <Button
-                  onClick={() => this.setState({customTierModal: true})}
-                  variant="link"
-                  className="cta"
-                >
-                  How it works
+              <Link to={_getDashboardPath(DASHBOARD_PATHS.selectRelays)}>
+                <Button>
+                  <span>Get Custom Tier</span>
                 </Button>
-                <Link to={_getDashboardPath(DASHBOARD_PATHS.selectRelays)}>
-                  <Button>
-                    <span>Get Custom Tier</span>
-                  </Button>
-                </Link>
-              </div>
+              </Link>
             </div>
-          </Col>
+          </div>
         </Row>
         <Modal
           show={customTierModal}
@@ -163,8 +168,7 @@ class TierSelection extends Component {
           centered
           dialogClassName="tier-modal"
         >
-          <Modal.Header closeButton>
-          </Modal.Header>
+          <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
             <h4>How the custom tier works?</h4>
             <p>
@@ -219,8 +223,7 @@ class TierSelection extends Component {
           centered
           dialogClassName="tier-modal"
         >
-          <Modal.Header closeButton>
-          </Modal.Header>
+          <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
             <h4>How the free tier works?</h4>
             <p>
