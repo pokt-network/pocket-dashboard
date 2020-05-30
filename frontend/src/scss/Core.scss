@@ -506,14 +506,18 @@ button {
   }
 
   &.has-scroll {
+    thead {
+      width: calc(100% - 50px);
+    }
+
     tbody {
-      width: 100%;
+      width: calc(100% - 8px);
     }
   }
 
   &.has-checkbox {
     thead {
-      width: calc(100% - 20px);
+      width: calc(100% - 28px);
     }
   }
 
@@ -830,8 +834,7 @@ input[type="radio"] {
   cursor: pointer;
 
   &:checked {
-
-    ~label {
+    ~ label {
       margin-top: 0px;
       margin-left: 3px;
       height: 25%;
