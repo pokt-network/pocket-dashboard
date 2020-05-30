@@ -167,7 +167,8 @@ class OrderSummary extends Component {
 
       ApplicationService.stakeApplication(
         application, chains, result.paymentIntent.id, applicationLink
-      ).then(() => {});
+      ).then(() => {
+      });
     } else {
       // Stake Node
       const {
@@ -187,7 +188,8 @@ class OrderSummary extends Component {
 
       NodeService.stakeNode(
         node, chains, result.paymentIntent.id, nodeLink
-      ).then(() => {});
+      ).then(() => {
+      });
     }
 
     this.goToInvoice();
@@ -202,6 +204,15 @@ class OrderSummary extends Component {
 
     StripePaymentService.createPaymentMethod(stripe, cardData.card, billingDetails)
       .then(async (result) => {
+        // Adding a card on checkout doesn't ask you for billing info.
+        if (!billingDetails.address) {
+          billingDetails.address = {
+            country: " ",
+            line1: " ",
+            postal_code: " ",
+          };
+        }
+
         if (result.errors) {
           this.setState({
             alert: {
@@ -214,6 +225,19 @@ class OrderSummary extends Component {
         }
 
         if (result.paymentMethod) {
+          const {success, data} = await StripePaymentService.savePaymentMethod(result.paymentMethod, billingDetails);
+
+          if (!success) {
+            this.setState({
+              alert: {
+                show: true,
+                variant: "warning",
+                message: data.message,
+              },
+            });
+            return;
+          }
+
           const user = UserService.getUserInfo().email;
           const paymentMethods = await PaymentService.getPaymentMethods(user);
 
@@ -260,10 +284,8 @@ class OrderSummary extends Component {
     const paymentMethods = allPaymentMethods.map((method) => {
       return {
         id: method.id,
-        cardData: {
-          type: method.brand,
-          digits: `**** **** **** ${method.lastDigits}`,
-        },
+        brand: method.brand,
+        lastDigits: method.lastDigits,
         holder: method.billingDetails.name,
       };
     });
@@ -294,7 +316,7 @@ class OrderSummary extends Component {
             <h2 className="sub">Confirm your payment method</h2>
             <Form className="cards">
               {paymentMethods.map((card, idx) => {
-                const {cardData, holder} = card;
+                const {brand, lastDigits, holder} = card;
 
                 return (
                   <div key={idx} className="payment-method">
@@ -309,7 +331,7 @@ class OrderSummary extends Component {
                       id={`payment-method-${idx}`}
                     />
                     <CardDisplay
-                      cardData={cardData}
+                      cardData={{type: brand, digits: `**** **** **** ${lastDigits}`}}
                       holder={holder}
                       onDelete={this.deleteCard}
                     />

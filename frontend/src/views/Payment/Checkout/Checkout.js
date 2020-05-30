@@ -55,14 +55,14 @@ class Checkout extends Component {
       createdDate: date,
     } = await PaymentService.getPaymentDetail(paymentId);
 
-    const {type: brand, digits} = paymentMethod.cardData;
+    const {brand, lastDigits} = paymentMethod;
     const userName = PocketUserService.getUserInfo().name;
 
     const invoice = {
       id: id.replace("pi_", "").toLowerCase(),
       date: moment(date).format("DD MM YYYY"),
       owner: userName,
-      card: `${capitalize(brand)} ${digits}`,
+      card: `${capitalize(brand)} ${lastDigits}`,
     };
 
     this.setState({

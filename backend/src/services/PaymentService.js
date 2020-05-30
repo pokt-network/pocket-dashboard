@@ -86,13 +86,21 @@ export default class PaymentService extends BaseService {
   /**
    * Check if payment method exists on DB.
    *
-   * @param {PaymentMethod} paymentMethod Payment method to check if exists.
+   * @param {PaymentMethod} paymentMethodData Payment method to check if exists.
    *
    * @returns {Promise<boolean>} If payment method exists or not.
    * @async
    */
-  async paymentMethodExists(paymentMethod) {
-    const filter = {id: paymentMethod.id, user: paymentMethod.user};
+  async paymentMethodExists(paymentMethodData) {
+    const filter = {
+      "paymentMethod.card.brand": paymentMethodData.paymentMethod.card.brand,
+      "paymentMethod.card.country": paymentMethodData.paymentMethod.card.country,
+      "paymentMethod.card.lastDigits": paymentMethodData.paymentMethod.card.lastDigits,
+      "paymentMethod.card.expirationMonth": paymentMethodData.paymentMethod.card.expirationMonth,
+      "paymentMethod.card.expirationYear": paymentMethodData.paymentMethod.card.expirationYear,
+      "user": paymentMethodData.user
+    };
+
     const dbPaymentMethod = await this.persistenceService.getEntityByFilter(PAYMENT_METHOD_COLLECTION_NAME, filter);
 
     return dbPaymentMethod !== undefined;
@@ -117,8 +125,8 @@ export default class PaymentService extends BaseService {
    * Save a payment method to DB.
    *
    * @param {object} paymentMethodData Payment method data.
-   * @param {string} paymentMethodData.id ID.
    * @param {string} paymentMethodData.user User.
+   * @param {{id: string, card:*}} paymentMethodData.paymentMethod Card data.
    * @param {BillingDetails} paymentMethodData.billingDetails Billing details.
    *
    * @returns {Promise<boolean>} If was saved or not.
@@ -283,7 +291,7 @@ export default class PaymentService extends BaseService {
     const dbPaymentMethods = await this.persistenceService.getEntities(PAYMENT_METHOD_COLLECTION_NAME, {user});
 
     if (dbPaymentMethods) {
-      const paymentMethodIds = dbPaymentMethods.map(_ => _.id);
+      const paymentMethodIds = dbPaymentMethods.map(_ => _.paymentMethod.id);
       const paymentMethods = await this._paymentProvider.retrieveCardPaymentMethods(paymentMethodIds);
 
       return Promise.all(paymentMethods);
