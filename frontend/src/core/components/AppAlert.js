@@ -8,11 +8,17 @@ import {DEFAULT_ERROR_MESSAGE} from "../../_constants";
 const VARIANT_DANGER = "danger";
 
 class AppAlert extends Component {
-  renderTitle(title) {
-    if (isString(title) && type !== VARIANT_DANGER) return <h4>{title}</h4>;
-    if (title && !isEmpty(title) && type === VARIANT_DANGER)
+  renderTitle() {
+    const {title, variant} = this.props;
+
+    if (isString(title) && variant !== VARIANT_DANGER) {
+      return <h4>{title}</h4>;
+    }
+    if (title && !isEmpty(title) && variant === VARIANT_DANGER) {
       return <h4>{DEFAULT_ERROR_MESSAGE}</h4>;
-    else return title;
+    } else {
+      return title;
+    }
   }
 
   render() {
@@ -29,7 +35,7 @@ class AppAlert extends Component {
           {iconPaths[variant] && (
             <img src={iconPaths[variant]} className="icon" alt="" />
           )}
-          {this.renderTitle(title)}
+          {this.renderTitle()}
         </span>
         <div style={{marginLeft: iconPaths[variant] ? 48 : 0}} className="body">
           {children}

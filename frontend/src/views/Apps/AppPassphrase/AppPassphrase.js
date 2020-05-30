@@ -44,8 +44,7 @@ class AppPassphrase extends Component {
         .string()
         .required(VALIDATION_MESSAGES.REQUIRED)
         .matches(
-          PASSPHRASE_REGEX,
-          "The passphrase does not meet the requirements"
+          PASSPHRASE_REGEX, "The passphrase does not meet the requirements"
         ),
     });
 
@@ -110,8 +109,7 @@ class AppPassphrase extends Component {
         {
           passPhrase: values.passPhrase,
           validPassphrase: true,
-        },
-        () => {
+        }, () => {
           this.createApplicationAccount();
         }
       );
@@ -130,9 +128,7 @@ class AppPassphrase extends Component {
     )}`;
 
     const {success, data} = await ApplicationService.createApplicationAccount(
-      applicationInfo.id,
-      passPhrase,
-      applicationBaseLink
+      applicationInfo.id, passPhrase, applicationBaseLink
     );
 
     if (success) {
