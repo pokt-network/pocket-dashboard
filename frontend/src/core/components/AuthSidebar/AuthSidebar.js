@@ -6,7 +6,7 @@ import "./AuthSidebar.scss";
 export default class AuthSidebar extends Component {
   render() {
     return (
-      <Sidebar xs={5} sm={5} lg={3}>
+      <Sidebar sm={3}>
         <img
           src="/assets/logo-dashboard-white.svg"
           id="logo-white"

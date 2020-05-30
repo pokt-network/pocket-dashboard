@@ -18,6 +18,12 @@ class VerifyEmail extends Component {
       email: "",
       unauthorized: false,
       resentEmail: false,
+
+      alert: {
+        show: false,
+        variant: "",
+        message: "",
+      },
     };
 
     this.resendEmail = this.resendEmail.bind(this);
@@ -42,8 +48,13 @@ class VerifyEmail extends Component {
     UserService.resendSignUpEmail(
       this.state.email, securityQuestionLinkPage
     ).then((result) => {
-      // TODO: show resend message
-      this.setState({resendEmail: true});
+      this.setState({
+        resentEmail: true,
+        alert: {
+          show: true,
+          variant: "danger",
+        },
+      });
     });
   }
 
@@ -64,7 +75,7 @@ class VerifyEmail extends Component {
         {!unauthorized ? (
           <>
             <Row className="mt-5 mb-3">
-              <Col lg={{span: 8, offset: 2}}>
+              <Col lg={{span: 8, offset: 4}}>
                 <AppSteps
                   icons={icons}
                   steps={[
@@ -84,6 +95,7 @@ class VerifyEmail extends Component {
               >
                 {resentEmail && (
                   <AppAlert
+                    variant={alert.variant}
                     dismissible
                     onClose={() => {
                       this.setState({resentEmail: false});
@@ -94,28 +106,27 @@ class VerifyEmail extends Component {
                 <h1>
                   We sent an email to this address <br />
                 </h1>
-                <h2 className="mt-4">{email}</h2>
+                <h2 className="email-address mt-4">{email}</h2>
                 <p>
                   <Link
                     className="font-weight-light"
                     to={ROUTE_PATHS.forgot_password}
-                  >
-                    This is not my email.
+                   This is not my email.
                   </Link>
                 </p>
 
-                <p>
-                  Check your junk folder, just to be sure to mark it as no spam
-                  to avoid any problems with notifications from dashboard
+                <p className="p-style-lg">
+                  Check your junk folder, be sure to mark it as not spam to
+                  avoid any problems with notifications from dashboard.
                 </p>
-                <p>Did you not receive it?</p>
+                <p className="p-style-md">Did you not receive it?</p>
                 <Button
-                  className="font-weight-light pt-2 pb-2 pl-5 pr-5"
+                  className="button"
                   variant="primary"
                   size={"md"}
                   onClick={this.resendEmail}
                 >
-                  Resend
+                  <span className="button-label">Resend</span>
                 </Button>
               </Col>
             </Row>

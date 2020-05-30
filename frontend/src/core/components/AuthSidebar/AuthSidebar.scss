@@ -6,14 +6,9 @@
   padding-left: 60px;
 
   h1 {
-    width: 254px;
-    height: 90px;
     font-family: $secondary-font-family;
     font-size: 30px;
     font-weight: bold;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 1;
     letter-spacing: normal;
     color: #ffffff;
   }
@@ -24,19 +19,8 @@
     color: #ffffff;
     font-family: $primary-font-family;
     font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
     line-height: 1.43;
     text-align: justify;
   }
 
-  .row:last-of-type {
-    padding-bottom: 350px;
-  }
-
-  .white {
-    width: 101px;
-    height: 41px;
-    object-fit: contain;
-  }
 }

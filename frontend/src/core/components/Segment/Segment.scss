@@ -39,8 +39,10 @@
     padding-bottom: 5px;
   }
 
-  &.bordered .body {
-    box-shadow: $default-box-shadow;
-    border-radius: $panel-radius;
+  &.bordered {
+    .body {
+      box-shadow: $default-box-shadow;
+      border-radius: $panel-radius;
+    }
   }
 }

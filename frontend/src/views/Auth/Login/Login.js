@@ -14,6 +14,7 @@ import {Formik} from "formik";
 import * as yup from "yup";
 import {VALIDATION_MESSAGES} from "../../../_constants";
 import {validateYup} from "../../../_helpers";
+import cls from "classnames";
 
 class Login extends Component {
   constructor(props, context) {
@@ -110,96 +111,94 @@ class Login extends Component {
                 <Link to={signup}>Create an account</Link>
               </p>
             </div>
-            <Row>
-              <Col lg={{span: 5, offset: 3}}>
-                <div className={"main"} style={{marginTop: -40}}>
-                  <h2>Login</h2>
-                  <Formik
-                    validate={this.validate}
-                    // validationSchema={this.schema}
-                    onSubmit={() => {
-                      UserService.saveUserInCache(this.state.user, true);
-                      UserService.showWelcomeMessage(true);
-                      this.setState({loggedIn: true});
-                    }}
-                    initialValues={this.state.data}
-                    values={this.state.data}
-                    validateOnChange={false}
-                    validateOnBlur={false}
-                  >
-                    {({handleSubmit, handleChange, values, errors}) => (
-                      <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
-                        <Form.Group>
-                          <Form.Label>Email</Form.Label>
+            <Row className="justify-content-center">
+              <div className={"main"}>
+                <h2>Login</h2>
+                <Formik
+                  validate={this.validate}
+                  // validationSchema={this.schema}
+                  onSubmit={() => {
+                    UserService.saveUserInCache(this.state.user, true);
+                    UserService.showWelcomeMessage(true);
+                    this.setState({loggedIn: true});
+                  }}
+                  initialValues={this.state.data}
+                  values={this.state.data}
+                  validateOnChange={false}
+                  validateOnBlur={false}
+                >
+                  {({handleSubmit, handleChange, values, errors}) => (
+                    <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
+                      <Form.Group>
+                        <Form.Label>Email</Form.Label>
 
-                          <Form.Control
-                            name="email"
-                            placeholder="example@email.com"
-                            value={values.email}
-                            onChange={handleChange}
-                            isInvalid={!!errors.email}
-                            className="inputControl"
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.email}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group className="password">
-                          <Form.Label>Password</Form.Label>
-                          <Form.Control
-                            type="password"
-                            name="password"
-                            placeholder="**************"
-                            value={values.password}
-                            onChange={handleChange}
-                            isInvalid={!!errors.password}
-                            className="inputControl"
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.password}
-                          </Form.Control.Feedback>
-                          <Link to={forgot_password}>
-                            Forgot your password?
-                          </Link>
-                        </Form.Group>
+                        <Form.Control
+                          name="email"
+                          placeholder="example@email.com"
+                          value={values.email}
+                          onChange={handleChange}
+                          isInvalid={!!errors.email}
+                          className="inputControl"
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.email}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                      <Form.Group className="password">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                          type="password"
+                          name="password"
+                          placeholder="**************"
+                          value={values.password}
+                          onChange={handleChange}
+                          isInvalid={!!errors.password}
+                          className={`inputControl ${cls({
+                            "text-hidden": values.password.length === 0,
+                          })}`}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.password}
+                        </Form.Control.Feedback>
+                        <Link to={forgot_password}>Forgot your password?</Link>
+                      </Form.Group>
 
-                        <Button
-                          type="submit"
-                          size="md"
-                          variant="primary"
-                          block
-                          className="center inputButton"
-                        >
-                          Sign in
-                        </Button>
-                        <div className="containerDiv">
-                          <div className="divider mt-4 mb-3">Or</div>
-                          <div id={"provider-buttons"}>
-                            <AuthProviderButton
-                              block={true}
-                              className="brand pl-4 pr-4 mr-3 center"
-                              icon={faGoogle}
-                              type={AuthProviderType.login}
-                              authProvider={UserService.getAuthProvider(
-                                this.state.authProviders, "google"
-                              )}
-                            />
-                            <AuthProviderButton
-                              block={true}
-                              className="brand pl-4 pr-4 center"
-                              icon={faGithub}
-                              type={AuthProviderType.login}
-                              authProvider={UserService.getAuthProvider(
-                                this.state.authProviders, "github"
-                              )}
-                            />
-                          </div>
+                      <Button
+                        type="submit"
+                        size="md"
+                        variant="primary"
+                        block
+                        className="center inputButton"
+                      >
+                        Sign in
+                      </Button>
+                      <div className="containerDiv">
+                        <div className="divider mt-3 mb-3">Or</div>
+                        <div id={"provider-buttons"}>
+                          <AuthProviderButton
+                            block={true}
+                            className="brand pl-4 pr-4 mr-3 center"
+                            icon={faGoogle}
+                            type={AuthProviderType.login}
+                            authProvider={UserService.getAuthProvider(
+                              this.state.authProviders, "google"
+                            )}
+                          />
+                          <AuthProviderButton
+                            block={true}
+                            className="brand pl-4 pr-4 center"
+                            icon={faGithub}
+                            type={AuthProviderType.login}
+                            authProvider={UserService.getAuthProvider(
+                              this.state.authProviders, "github"
+                            )}
+                          />
                         </div>
-                      </Form>
-                    )}
-                  </Formik>
-                </div>
-              </Col>
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
+              </div>
             </Row>
           </Col>
         </Row>

@@ -98,6 +98,7 @@ body {
   font-weight: 400;
   border-radius: $default-border-radius;
   font-family: "Lato", sans-serif;
+  line-height: 30px;
   padding: 0 !important;
 
   span {
@@ -410,7 +411,7 @@ button {
   border-radius: $table-radius;
 
   input[type="checkbox"] {
-    margin-left: -32px;
+    margin-left: -24px;
     width: 18px;
     height: 18px;
   }
@@ -506,8 +507,18 @@ button {
   }
 
   &.has-scroll {
+    thead {
+      width: calc(100% - 50px);
+    }
+
     tbody {
-      width: 100%;
+      width: calc(100% - 8px);
+    }
+  }
+
+  &.has-checkbox {
+    thead {
+      width: calc(100% - 28px);
     }
   }
 
@@ -585,7 +596,7 @@ button {
 }
 
 .empty-overlay {
-  height: 45vh;
+  height: 42vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -706,6 +717,10 @@ textarea.form-control::placeholder {
   }
 }
 
+.text-hidden {
+  font-size: 20px;
+}
+
 .divider {
   display: flex;
   flex-direction: row;
@@ -715,7 +730,7 @@ textarea.form-control::placeholder {
 .divider:after {
   content: "";
   flex: 1 1;
-  border-bottom: 2px solid $border-blue;
+  border-bottom: 1px solid $border-blue;
   margin: auto;
 }
 
@@ -824,8 +839,7 @@ input[type="radio"] {
   cursor: pointer;
 
   &:checked {
-
-    ~label {
+    ~ label {
       margin-top: 0px;
       margin-left: 3px;
       height: 25%;

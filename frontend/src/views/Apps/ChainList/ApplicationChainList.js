@@ -51,14 +51,13 @@ class ApplicationChainList extends Chains {
         </Row>
         <Row>
           <Col className="page-title">
-            <div className="mb-4 d-flex justify-content-between">
+            <div className="d-flex justify-content-between">
               <h2>Supported blockchains</h2>
               <Button
                 disabled={chosenChains.length <= 0}
                 onClick={this.handleChains}
                 variant="primary"
                 size={"md"}
-                className="pl-4 pr-4"
               >
                 <span>Continue</span>
               </Button>
@@ -66,44 +65,41 @@ class ApplicationChainList extends Chains {
           </Col>
         </Row>
         <Row>
-          <Col>
-            <Segment scroll={false}>
-              <Row className="search-panel">
-                <Col>
-                  <InputGroup className="search-input ml-5 mb-3">
-                    <FormControl
-                      placeholder="Search a chain"
-                      name="searchChainQuery"
-                      onChange={this.handleChange}
-                      onKeyPress={({key}) => {
-                        if (key === "Enter") {
-                          this.handleChainSearch();
-                        }
-                      }}
-                    />
-                    <InputGroup.Append>
-                      <Button
-                        type="submit"
-                        onClick={this.handleChainSearch}
-                        variant="outline-primary"
-                      >
-                        <img src="/assets/search.svg" alt="search-icon" />
-                      </Button>
-                    </InputGroup.Append>
-                  </InputGroup>
-                </Col>
-              </Row>
-              <AppTable
-                scroll
-                toggle={chains.length > 0}
-                keyField="hash"
-                data={chains}
-                columns={TABLE_COLUMNS.NETWORK_CHAINS}
-                selectRow={tableSelectOptions}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
+          <Segment bordered scroll={false} label="">
+            <Row className="search-panel">
+              <InputGroup className="search-input">
+                <FormControl
+                  placeholder="Search a chain"
+                  name="searchChainQuery"
+                  onChange={this.handleChange}
+                  onKeyPress={({key}) => {
+                    if (key === "Enter") {
+                      this.handleChainSearch();
+                    }
+                  }}
+                />
+                <InputGroup.Append>
+                  <Button
+                    type="submit"
+                    onClick={this.handleChainSearch}
+                    variant="outline-primary"
+                  >
+                    <img src="/assets/search.svg" alt="search-icon" />
+                  </Button>
+                </InputGroup.Append>
+              </InputGroup>
+            </Row>
+            <AppTable
+              scroll
+              toggle={chains.length > 0}
+              keyField="hash"
+              data={chains}
+              height={454}
+              columns={TABLE_COLUMNS.NETWORK_CHAINS}
+              selectRow={tableSelectOptions}
+              bordered={false}
+            />
+          </Segment>
         </Row>
       </div>
     );

@@ -3,6 +3,17 @@
     min-width: 140px;
   }
 
+  .eye-icon {
+    height: 25px;
+    margin-top: 3px;
+    margin-left: 10px;
+    margin-right: 10px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
   .address {
     margin-left: 50px;
     margin-left: 20px;

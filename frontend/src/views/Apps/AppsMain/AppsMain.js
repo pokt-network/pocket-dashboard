@@ -206,34 +206,32 @@ class AppsMain extends Main {
         </Row>
         <Row className="mb-4 app-tables">
           <Col sm="6" className="my-items-segment">
-            <Segment bordered scroll={false} label="My Apps">
-              <Row
-                className={cls("search-panel", {
-                  "search-panel-without-apps": !hasApps,
-                })}
-              >
-                <InputGroup className="search-input">
-                  <FormControl
-                    placeholder="Search an App"
-                    name="searchQuery"
-                    onChange={this.handleChange}
-                    onKeyPress={({key}) => {
-                      if (key === "Enter") {
-                        this.handleSearch("pocketApplication.name");
-                      }
-                    }}
-                  />
-                  <InputGroup.Append>
-                    <Button
-                      type="submit"
-                      onClick={this.handleChainSearch}
-                      variant="outline-primary"
-                    >
-                      <img src={"/assets/search.svg"} alt="search-icon" />
-                    </Button>
-                  </InputGroup.Append>
-                </InputGroup>
-              </Row>
+            <Segment bordered empty={!hasApps} scroll={false} label="My Apps">
+              {hasApps && (
+                <Row className="search-panel">
+                  <InputGroup className="search-input">
+                    <FormControl
+                      placeholder="Search an App"
+                      name="searchQuery"
+                      onChange={this.handleChange}
+                      onKeyPress={({key}) => {
+                        if (key === "Enter") {
+                          this.handleSearch("pocketApplication.name");
+                        }
+                      }}
+                    />
+                    <InputGroup.Append>
+                      <Button
+                        type="submit"
+                        onClick={this.handleChainSearch}
+                        variant="outline-primary"
+                      >
+                        <img src={"/assets/search.svg"} alt="search-icon" />
+                      </Button>
+                    </InputGroup.Append>
+                  </InputGroup>
+                </Row>
+              )}
               <div
                 className={cls("scrollable main-list", {
                   "has-scroll": myAppsHasScroll,

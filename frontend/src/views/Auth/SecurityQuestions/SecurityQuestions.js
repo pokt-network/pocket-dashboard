@@ -71,7 +71,10 @@ class SecurityQuestions extends Component {
     });
 
     SecurityQuestionsService.getSecurityQuestions().then((questions) => {
-      const securityQuestions = ["Select Question", ...questions];
+      const securityQuestions = [
+        "Choose one of the security questions",
+        ...questions,
+      ];
 
       this.setState({securityQuestions});
     });
@@ -187,7 +190,7 @@ class SecurityQuestions extends Component {
         {!alertOverlay.show ? (
           <>
             <Row className="mb-3">
-              <Col lg={{span: 8, offset: 2}}>
+              <Col lg={{span: 8, offset: 2}} className="mb-5">
                 <AppSteps
                   icons={icons}
                   steps={[
@@ -214,70 +217,76 @@ class SecurityQuestions extends Component {
                   />
                 )}
                 <h1 className="text-uppercase">
-                  Please answer the security questions befere creating a new
+                  Please answer theree security questions before creating a new
                   account
                 </h1>
                 <Form onSubmit={this.sendQuestions}>
                   <Form.Group>
-                    <Form.Label>Question 1</Form.Label>
+                    <Form.Label></Form.Label>
                     <Form.Control
                       as="select"
                       onChange={(e) => this.handleSelect(e, 0)}
+                      className="select"
                     >
                       {securityQuestions.map((question) => (
                         <option key={question}>{question}</option>
                       ))}
                     </Form.Control>
-                    <Form.Label>Answer</Form.Label>
+                    <Form.Label>Answer 1</Form.Label>
                     <Form.Control
                       name="answer1"
                       value={answer1}
                       onChange={this.handleChange}
+                      className="select"
                     />
                   </Form.Group>
-                  <hr />
+
                   <Form.Group>
-                    <Form.Label>Question 2</Form.Label>
+                    <Form.Label></Form.Label>
                     <Form.Control
                       as="select"
                       onChange={(e) => this.handleSelect(e, 1)}
+                      className="select"
                     >
                       {securityQuestions.map((question) => (
                         <option key={question}>{question}</option>
                       ))}
                     </Form.Control>
-                    <Form.Label>Answer</Form.Label>
+                    <Form.Label>Answer 2</Form.Label>
                     <Form.Control
                       name="answer2"
                       value={answer2}
                       onChange={this.handleChange}
+                      className="select"
                     />
                   </Form.Group>
-                  <hr />
+
                   <Form.Group>
-                    <Form.Label>Question 3</Form.Label>
+                    <Form.Label></Form.Label>
                     <Form.Control
                       as="select"
                       onChange={(e) => this.handleSelect(e, 2)}
+                      className="select"
                     >
                       {securityQuestions.map((question) => (
                         <option key={question}>{question}</option>
                       ))}
                     </Form.Control>
-                    <Form.Label>Answer</Form.Label>
+                    <Form.Label className="answer">Answer 3</Form.Label>
                     <Form.Control
                       name="answer3"
                       value={answer3}
                       onChange={this.handleChange}
+                      className="select"
                     />
                   </Form.Group>
                   <Button
-                    className="font-weight-light mb-5 pt-2 pb-2 pl-5 pr-5"
+                    className="mb-5 continue-button"
                     type="submit"
                     variant="primary"
                     size={"md"}
                   >
-                    Continue
+                    <span className="continue-button-text">Continue</span>
                   </Button>
                 </Form>
               </Col>
