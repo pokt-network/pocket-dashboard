@@ -145,7 +145,7 @@ class ValidateKeys extends Component {
                         htmlFor="upload-key"
                         className="upload-key btn btn-primary"
                       >
-                        <span>Upload key file</span>
+                        <span className="pr-4 pl-4">Upload key file</span>
                       </label>
                       <input
                         style={{display: "none"}}
@@ -176,6 +176,7 @@ class ValidateKeys extends Component {
                           name="privateKey"
                         />
                         <img
+                          className="eye-icon"
                           onClick={this.changeInputType}
                           src={showPassphraseIconURL}
                           alt=""
@@ -213,6 +214,7 @@ class ValidateKeys extends Component {
                           {error.show ? error.message : ""}
                         </Form.Control.Feedback>
                         <img
+                          className="eye-icon"
                           onClick={this.changeInputType}
                           src={showPassphraseIconURL}
                           alt=""
