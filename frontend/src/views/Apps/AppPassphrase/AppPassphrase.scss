@@ -30,6 +30,10 @@
     color: $form-label-font-color;
   }
 
+  [class*="col"] {
+    padding-left: 0;
+  }
+
   div.alert.alert-warning {
     margin-bottom: 2rem;
     padding-left: 20px;
@@ -47,12 +51,6 @@
       font-weight: bold;
       letter-spacing: -0.38px;
       color: white;
-    }
-  }
-
-  .row {
-    div {
-      padding-left: 0;
     }
   }
 
