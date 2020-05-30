@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import "./SelectRelays.scss";
+import "../../../core/components/Purchase/Purchase.scss";
 import {Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
@@ -238,8 +238,8 @@ class SelectRelays extends Component {
     }
 
     return (
-      <div id="select-relays">
-        <Row className="mt-4 mb-4">
+      <div id="purchase">
+        <Row className="mt-4 mb-3">
           <Col lg="11" md="11" sm="11" className="title-page">
             {error.show && (
               <AppAlert
@@ -258,18 +258,18 @@ class SelectRelays extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm="7" className="title-page">
+          <Col sm="8" className="title-page">
             <h2 className="mb-5">
               Slide to Select how much relays per day you want to buy
             </h2>
-            <div className="relays-calc">
+            <div className="calc">
               <div className="slider-wrapper">
                 <AppSlider
                   defaultValue={minRelays}
                   onChange={this.onSliderChange}
                   type={PURCHASE_ITEM_NAME.APPS}
                   marks={{
-                    [minRelays]: `${minRelays} RPD`,
+                    [minRelays]: `${formatNumbers(minRelays)} RPD`,
                     [maxRelays / 2]: {
                       label: (
                         <span>
@@ -277,7 +277,7 @@ class SelectRelays extends Component {
                             style={{color: STYLING.primaryColor}}
                             icon={faCaretUp}
                           />
-                          <p style={{fontSize: "0.9em"}}>AVG STAKE</p>
+                          <p style={{fontSize: "0.9em"}}>AVRG STAKE</p>
                         </span>
                       ),
                     },
@@ -289,18 +289,18 @@ class SelectRelays extends Component {
               </div>
             </div>
             <AppAlert
-              className="pt-4 pb-4"
+              className="max-alert"
               variant="primary"
-              title={<h4 className="alert-relays">*More relays?</h4>}
+              title={<h4 className="alert-max">*More relays?</h4>}
             >
-              <p className="alert-relays">
+              <p className="alert-max">
                 If your app requires more than {formatNumbers(maxRelays)} Relays
                 Per Day please <a href="/todo">Contact us</a> directly to find a
                 solution specially designed for your app.
               </p>
             </AppAlert>
           </Col>
-          <Col sm="5" className="pr-5 title-page">
+          <Col sm="4" className="pr-5 title-page">
             <h2 className="mb-4">Order Summary</h2>
             <AppOrderSummary
               items={[
@@ -311,7 +311,7 @@ class SelectRelays extends Component {
                   quantity: `${subTotalFixed} ${currency.toUpperCase()}`,
                 },
               ]}
-              balance={currentAccountBalance}
+              balance={`-${currentAccountBalance} USD`}
               balanceOnChange={this.onCurrentBalanceChange}
               total={totalFixed}
               loading={loading}

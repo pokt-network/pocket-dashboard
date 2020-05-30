@@ -25,8 +25,8 @@
     font-family: $primary-font-family;
     font-size: 14px;
     height: 32px;
-    padding-left: 35px;
-    padding-right: 35px;
+    padding-left: 20px;
+    padding-right: 20px;
     padding-top: 10px;
     padding-bottom: 10px;
     margin-top: -35px;
@@ -107,8 +107,12 @@
 
       .rc-slider-mark-text {
         font-size: 1.5em;
-        font-weight: 300;
         font-family: "Lato";
+
+        &,
+        p {
+          font-weight: 300;
+        }
 
         &:first-of-type {
           margin-top: 10px;
@@ -146,6 +150,14 @@
 
     .p-badge p {
       font-weight: bold;
+    }
+  }
+
+  .max-alert {
+    padding: 5px 15px 20px 35px;
+
+    head {
+      margin-bottom: -10px;
     }
   }
 }

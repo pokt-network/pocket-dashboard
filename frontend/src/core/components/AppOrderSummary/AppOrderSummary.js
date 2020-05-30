@@ -27,7 +27,7 @@ class AppOrderSummary extends Component {
         ))}
         <div className="item">
           <p>Current balance</p>
-          <Form.Control value={balance} onChange={balanceOnChange}/>
+          <Form.Control value={balance} onChange={balanceOnChange} />
         </div>
         <hr />
         <div className="item total">
@@ -39,7 +39,7 @@ class AppOrderSummary extends Component {
           buttonProps={{
             onClick: formActionHandler,
             variant: "primary",
-            className: "mb-5",
+            className: "action",
           }}
         >
           <span>{actionButtonName}</span>
@@ -50,7 +50,7 @@ class AppOrderSummary extends Component {
 }
 
 AppOrderSummary.defaultProps = {
-  actionButtonName: "Checkout",
+  actionButtonName: "Check Out",
 };
 
 AppOrderSummary.propTypes = {

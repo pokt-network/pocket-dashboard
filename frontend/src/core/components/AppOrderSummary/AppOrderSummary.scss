@@ -15,7 +15,7 @@
     p {
       color: $light-gray;
       font-weight: 800;
-      font-size: 1.5em;
+      font-size: 18px;
     }
 
     .form-control {
@@ -46,5 +46,9 @@
     border: none;
     height: 2px;
     background-color: $light-gray;
+  }
+
+  .action {
+    margin-bottom: 35px;
   }
 }
