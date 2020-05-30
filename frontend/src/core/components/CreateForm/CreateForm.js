@@ -30,22 +30,29 @@ class CreateForm extends Component {
 
   async handleDrop(img, error) {
     if (error) {
-      this.setState({icon:"", imgError: error});
+      this.setState({icon: "", imgError: error});
       return;
     }
 
-    // Fetch image blob data and converts it to base64
-    const blob = await fetch(img).then((r) => r.blob());
+    const toDataUrl = (url, callback) => {
+      var xhr = new XMLHttpRequest();
 
-    const reader = new FileReader();
+      xhr.onload = function () {
+        var reader = new FileReader();
 
-    reader.readAsDataURL(blob);
-
-    reader.onloadend = () => {
-      const base64data = reader.result;
-
-      this.setState({icon: base64data, imgError: ""});
+        reader.onloadend = function () {
+          callback(reader.result);
+        };
+        reader.readAsDataURL(xhr.response);
+      };
+      xhr.open("GET", url);
+      xhr.responseType = "blob";
+      xhr.send();
     };
+
+    toDataUrl(img.preview, (base64data) => {
+      this.setState({icon: base64data, imgError: ""});
+    });
   }
 
   handleChange({currentTarget: input}) {
