@@ -71,6 +71,7 @@ export default class UserService extends BaseService {
     await this.persistenceService.updateEntity(USER_COLLECTION_NAME, {email: user.email}, userToUpdate);
   }
 
+
   /**
    * Get user from DB.
    *
@@ -148,6 +149,39 @@ export default class UserService extends BaseService {
     const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     return PocketUser.createPocketUserFromDB(dbUser);
+  }
+
+  /**
+   * Get customer ID from user.
+   *
+   * @param {string} userEmail User email.
+   *
+   * @returns {Promise<string>} The customer ID of user.
+   */
+  async getUserCustomerID(userEmail) {
+    const user = await this.getUser(userEmail);
+
+    return user.customerID;
+  }
+
+  /**
+   * Save customer ID
+   *
+   * @param {string} userEmail User email.
+   * @param {string} userCustomerID Customer ID.
+   *
+   * @returns {Promise<boolean>} If was saved or not.
+   */
+  async saveCustomerID(userEmail, userCustomerID) {
+    const filter = {email: userEmail};
+    const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    dbUser.customerID = userCustomerID;
+
+    /** @type {{result: {n:number, ok: number}}} */
+    const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, dbUser._id, dbUser);
+
+    return result.result.ok === 1;
   }
 
   /**

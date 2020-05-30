@@ -9,23 +9,6 @@ class PocketStripePaymentService extends PocketBaseService {
   }
 
   /**
-   * Save payment method for use later.
-   *
-   * @param {string} paymentMethodID Payment method ID to save.
-   * @param {object} billingDetails Billing details used on this payment method.
-   *
-   * @returns {Promise<*>}
-   * @private
-   */
-  __savePaymentMethod(paymentMethodID, billingDetails) {
-    const user = PocketUserService.getUserInfo().email;
-    const data = {id: paymentMethodID, user, billingDetails};
-
-    return axios.post(this._getURL("payment_method"), data)
-      .then(response => response.data).catch(err => err.response);
-  }
-
-  /**
    * Mark payment as success on history.
    *
    * @param {string} paymentID Payment intent ID used.
@@ -41,6 +24,44 @@ class PocketStripePaymentService extends PocketBaseService {
 
     return axios.put(this._getURL("history"), data)
       .then(response => response.data);
+  }
+
+  /**
+   * Save payment method for use later.
+   *
+   * @param {{id: string, card:{object}}} paymentMethodData Payment method to save.
+   * @param {string} paymentMethodData.card.brand Payment method card brand.
+   * @param {string} paymentMethodData.card.country Payment method card country.
+   * @param {number} paymentMethodData.card.exp_month Payment method card expiration month.
+   * @param {number} paymentMethodData.card.exp_year Payment method card expiration year.
+   * @param {string} paymentMethodData.card.last4 Payment method card last four digits.
+   * @param {object} billingDetails Billing details used on this payment method.
+   *
+   * @returns {Promise<*>}
+   */
+  savePaymentMethod(paymentMethodData, billingDetails) {
+    const user = PocketUserService.getUserInfo().email;
+
+    const paymentMethod = {
+      id: paymentMethodData.id,
+      card: {
+        brand: paymentMethodData.card.brand,
+        country: paymentMethodData.card.country,
+        expirationMonth: paymentMethodData.card.exp_month,
+        expirationYear: paymentMethodData.card.exp_year,
+        lastDigits: paymentMethodData.card.last4
+      }
+    };
+
+    const data = {paymentMethod, user, billingDetails};
+
+    return axios.post(this._getURL("payment_method"), data)
+      .then(response => {
+        return {success: true, data: response.data};
+      })
+      .catch(err => {
+        return {success: false, data: err.response.data};
+      });
   }
 
   /**
@@ -64,22 +85,7 @@ class PocketStripePaymentService extends PocketBaseService {
       billing_details: billingDetails
     };
 
-    return stripe.createPaymentMethod(cardData).then(async (result) => {
-      if (result.paymentMethod) {
-        // Adding a card on checkout doesn't ask you for billing info.
-        if (!billingDetails.address) {
-          billingDetails.address = {
-            country: " ",
-            line1: " ",
-            postal_code: " ",
-          };
-        }
-
-        await this.__savePaymentMethod(result.paymentMethod.id, billingDetails);
-      }
-
-      return result;
-    });
+    return stripe.createPaymentMethod(cardData);
   }
 
   /**
@@ -103,7 +109,8 @@ class PocketStripePaymentService extends PocketBaseService {
       payment_method: {
         card,
         billing_details: billingDetails
-      }
+      },
+      setup_future_usage: "on_session"
     };
 
     return stripe.confirmCardPayment(paymentIntentSecretID, cardPaymentData)
@@ -139,6 +146,7 @@ class PocketStripePaymentService extends PocketBaseService {
 
     const cardPaymentData = {
       payment_method: paymentMethodID,
+      setup_future_usage: "on_session"
     };
 
     return stripe.confirmCardPayment(paymentIntentSecretID, cardPaymentData).then(result => {

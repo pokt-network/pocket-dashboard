@@ -78,19 +78,19 @@ export class BillingDetails {
 export class PaymentMethod {
 
   /**
-   * @param {string} id ID.
+   * @param {{id: string, card:*}} paymentMethod Card data.
    * @param {string} user User.
    * @param {BillingDetails} billingDetails Billing details.
    */
-  constructor(id, user, billingDetails) {
-    Object.assign(this, {id, user, billingDetails});
+  constructor(paymentMethod, user, billingDetails) {
+    Object.assign(this, {paymentMethod, user, billingDetails});
   }
 
   /**
    * Validate billing details.
    *
    * @param {object} paymentMethodData Payment method data.
-   * @param {string} paymentMethodData.id ID.
+   * @param {{id: string, card:*}} paymentMethodData.paymentMethod Card data.
    * @param {string} paymentMethodData.user User.
    * @param {BillingDetails} paymentMethodData.billingDetails Billing details.
    *
@@ -99,7 +99,7 @@ export class PaymentMethod {
    * @static
    */
   static validate(paymentMethodData) {
-    if (!paymentMethodData.id) {
+    if (!paymentMethodData.paymentMethod.id) {
       throw Error("ID is required");
     }
 
@@ -121,7 +121,7 @@ export class PaymentMethod {
    * Convenient Factory method to create a payment method.
    *
    * @param {object} paymentMethodData Payment method data.
-   * @param {string} paymentMethodData.id ID.
+   * @param {{id: string, card:*}} paymentMethodData.paymentMethod Card data.
    * @param {string} paymentMethodData.user User.
    * @param {BillingDetails} paymentMethodData.billingDetails Billing details.
    *
@@ -129,9 +129,9 @@ export class PaymentMethod {
    * @static
    */
   static createPaymentMethod(paymentMethodData) {
-    const {id, user, billingDetails} = paymentMethodData;
+    const {paymentMethod, user, billingDetails} = paymentMethodData;
 
-    return new PaymentMethod(id, user, billingDetails);
+    return new PaymentMethod(paymentMethod, user, billingDetails);
   }
 }
 
