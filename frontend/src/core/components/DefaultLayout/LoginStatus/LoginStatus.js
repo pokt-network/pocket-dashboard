@@ -44,7 +44,6 @@ class LoginStatus extends Component {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          {/* TODO: Uncomment when third release */}
           <Dropdown.Item onClick={() => this.goToProfile()}>
             <img
               src={"/assets/user_icon_circle.svg"}
