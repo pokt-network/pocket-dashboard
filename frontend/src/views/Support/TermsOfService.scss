@@ -6,28 +6,40 @@
     padding-right: 10em;
   }
 
-  .go-back {
+  .go {
     display: flex;
     align-items: center;
     cursor: pointer;
 
-    .icon,
     .text {
       color: $light-gray;
-    }
-
-    .text {
-      margin-left: 5px;
+      margin-left: 8px;
       font-family: $primary-font-family;
       font-size: 16px;
-      font-weight: 300;
+      font-weight: 400;
+    }
+
+    .icon {
+      height: 18px;
+    }
+
+    &.top {
+      .text {
+        margin-left: 5px;
+      }
+
+      .icon {
+        height: 12px;
+      }
     }
 
     &:hover {
-
-      .icon,
-      text {
+      .text {
         color: darken($color: $light-gray, $amount: 20%);
+      }
+
+      .icon {
+        filter: contrast(10%);
       }
     }
   }

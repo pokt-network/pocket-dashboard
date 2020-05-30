@@ -3,8 +3,7 @@ import "../Support/TermsOfService.scss";
 import {withRouter} from "react-router-dom";
 import {Container, Row} from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";
-import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {scrollToId} from "../../_helpers";
 
 class TermsOfService extends Component {
   state = {};
@@ -15,9 +14,8 @@ class TermsOfService extends Component {
 
         <div className="wrapper">
           {/* eslint-disable-next-line react/prop-types */}
-          <span className="go-back" onClick={this.props.history.goBack}>
-            {/* TODO: Change icon */}
-            <FontAwesomeIcon className="icon" size="2x " icon={faChevronLeft} />
+          <span className="go" onClick={this.props.history.goBack}>
+            <img src="/assets/arrow-left.svg" alt="" className="icon" />
             <span className="text">Go back</span>
           </span>
           <br />
@@ -864,6 +862,14 @@ class TermsOfService extends Component {
               </p>
             </div>
           </Row>
+          <br />
+          <span
+            className="go top mb-5"
+            onClick={() => scrollToId("privacy-policy")}
+          >
+            <img src="/assets/arrow-up.svg" alt="" className="icon" />
+            <span className="text">Go to Top</span>
+          </span>
         </div>
       </Container>
     );
