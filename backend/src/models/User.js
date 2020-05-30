@@ -14,15 +14,17 @@ export class PocketUser {
    * @param {string} [password] Password.
    * @param {string} [lastLogin] Last login.
    * @param {Array<AnsweredSecurityQuestion>} [securityQuestions] Answered security question of user.
+   * @param {string} [customerID] Customer ID.
    */
-  constructor(provider, email, username, password, lastLogin, securityQuestions) {
+  constructor(provider, email, username, password, lastLogin, securityQuestions, customerID) {
     Object.assign(this, {
       provider: provider.toLowerCase(),
       email,
       username,
       password,
       lastLogin,
-      securityQuestions
+      securityQuestions,
+      customerID
     });
   }
 
@@ -41,25 +43,24 @@ export class PocketUser {
     return new PocketUser(user.provider, user.email, user.username, user.password, lastLoginUTC);
   }
 
-  /* eslint-disable jsdoc/require-param-description */
+
   /**
    * Factory type to create an user object from db.
    *
    * @param {object} user User from db.
-   * @param {string} user.provider
-   * @param {string} user.email
-   * @param {string} user.username
-   * @param {string} user.password
-   * @param {string} user.lastLogin
-   * @param {Array<AnsweredSecurityQuestion>} user.securityQuestions
+   * @param {string} user.provider Provider.
+   * @param {string} user.email Email.
+   * @param {string} user.username User name.
+   * @param {string} user.password Password.
+   * @param {string} user.lastLogin Last login.
+   * @param {Array<AnsweredSecurityQuestion>} user.securityQuestions Security questions.
+   * @param {string} user.customerID Customer ID.
    *
    * @returns {PocketUser} A new Pocket user.
    * @static
    */
-
-  /* eslint-enable jsdoc/require-param-description */
   static createPocketUserFromDB(user) {
-    return new PocketUser(user.provider, user.email, user.username, user.password, user.lastLogin, user.securityQuestions);
+    return new PocketUser(user.provider, user.email, user.username, user.password, user.lastLogin, user.securityQuestions, user.customerID);
   }
 
   /**

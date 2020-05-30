@@ -2,6 +2,7 @@ import BaseService from "./BaseService";
 import {get_default_payment_provider} from "../providers/payment/Index";
 import {CardPaymentMethod, Payment, PaymentCurrencies, PaymentResult} from "../providers/payment/BasePaymentProvider";
 import {BillingDetails, PaymentHistory, PaymentMethod} from "../models/Payment";
+import UserService from "./UserService";
 
 const PAYMENT_METHOD_COLLECTION_NAME = "PaymentMethods";
 const PAYMENT_HISTORY_COLLECTION_NAME = "PaymentHistory";
@@ -12,11 +13,13 @@ export default class PaymentService extends BaseService {
     super();
 
     this._paymentProvider = get_default_payment_provider();
+    this.userService = new UserService();
   }
 
   /**
    * Create an payment intent using the payment provider.
    *
+   * @param {string} userCustomerID User customer ID.
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
    * @param {*} item Item to pay.
@@ -27,15 +30,16 @@ export default class PaymentService extends BaseService {
    * @private
    * @async
    */
-  async __createPocketPaymentIntent(type, currency, item, amount, to) {
-    const description = `Acquiring POKT for ${to}`;
+  async __createPocketPaymentIntent(userCustomerID, type, currency, item, amount, to) {
+    const description = `Acquiring ${to.toLowerCase() === "application" ? "Max Relays Per Day" : "Validator Power"} for ${to}`;
 
-    return this._paymentProvider.createPaymentIntent(type, currency, item, amount, description);
+    return this._paymentProvider.createPaymentIntent(userCustomerID, type, currency, item, amount, description);
   }
 
   /**
    * Create an payment intent for item.
    *
+   * @param {string} userEmail User of payment intent.
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
    * @param {*} item Item to pay.
@@ -46,9 +50,19 @@ export default class PaymentService extends BaseService {
    * @throws Error if validation fails.
    * @async
    */
-  async __createPocketPaymentForItem(type, currency, item, amount, itemType) {
+  async __createPocketPaymentForItem(userEmail, type, currency, item, amount, itemType) {
     if (!Payment.validate({type, currency, item, amount})) {
       return false;
+    }
+
+    // Getting user customer from user, a customer is required by stripe.
+    let userCustomerID = await this.userService.getUserCustomerID(userEmail);
+
+    if (!userCustomerID) {
+      const userCustomer = await this._paymentProvider.createCustomer(userEmail);
+
+      userCustomerID = userCustomer.id;
+      await this.userService.saveCustomerID(userEmail, userCustomerID);
     }
 
     const amountFixed = Math.round(amount);
@@ -57,7 +71,7 @@ export default class PaymentService extends BaseService {
       type: itemType
     };
 
-    return this.__createPocketPaymentIntent(type, currency, paymentItem, amountFixed, itemType);
+    return this.__createPocketPaymentIntent(userCustomerID, type, currency, paymentItem, amountFixed, itemType);
   }
 
   /**
@@ -146,35 +160,41 @@ export default class PaymentService extends BaseService {
   }
 
   /**
-   * Create an payment intent for application.
+   * Create a payment intent for application.
    *
-   * @param {string} type Type of payment.
-   * @param {string} currency Three-letter ISO currency code, in lowercase.
-   * @param {*} item Item to pay.
-   * @param {number} amount Amount intended to be collected by this payment.
+   * @param {*} paymentIntentData Payment intent data.
+   * @param {string} paymentIntentData.type Type of payment.
+   * @param {string} paymentIntentData.currency Three-letter ISO currency code, in lowercase.
+   * @param {*} paymentIntentData.item Item to pay.
+   * @param {number} paymentIntentData.amount Amount intended to be collected by this payment.
    *
    * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
    * @throws Error if validation fails.
    * @async
    */
-  async createPocketPaymentIntentForApps(type, currency, item, amount) {
-    return this.__createPocketPaymentForItem(type, currency, item, amount, "Application");
+  async createPocketPaymentIntentForApps(paymentIntentData) {
+    const {user, type, currency, item, amount} = paymentIntentData;
+
+    return this.__createPocketPaymentForItem(user, type, currency, item, amount, "Application");
   }
 
   /**
    * Create an payment intent for node.
    *
-   * @param {string} type Type of payment.
-   * @param {string} currency Three-letter ISO currency code, in lowercase.
-   * @param {*} item Item to pay.
-   * @param {number} amount Amount intended to be collected by this payment.
+   * @param {*} paymentIntentData Payment intent data.
+   * @param {string} paymentIntentData.type Type of payment.
+   * @param {string} paymentIntentData.currency Three-letter ISO currency code, in lowercase.
+   * @param {*} paymentIntentData.item Item to pay.
+   * @param {number} paymentIntentData.amount Amount intended to be collected by this payment.
    *
    * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
    * @throws Error if validation fails.
    * @async
    */
-  async createPocketPaymentIntentForNodes(type, currency, item, amount) {
-    return this.__createPocketPaymentForItem(type, currency, item, amount, "Node");
+  async createPocketPaymentIntentForNodes(paymentIntentData) {
+    const {user, type, currency, item, amount} = paymentIntentData;
+
+    return this.__createPocketPaymentForItem(user, type, currency, item, amount, "Node");
   }
 
   /**
