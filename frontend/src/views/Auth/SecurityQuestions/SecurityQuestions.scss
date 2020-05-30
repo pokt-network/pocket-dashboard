@@ -70,14 +70,21 @@ body {
     color: #282828;
   }
 
+  input.select.from-control {
+    margin-bottom: 15px;
+  }
+
   .form-control {
+    color: $secondary-color;
+    font-weight: 400;
     border: 1px solid $border-blue;
     height: 15px;
     font-size: 12px !important;
     line-height: 20px !important;
     border-radius: 21px;
-    margin-bottom: 0.8rem;
+    margin-bottom: 20px;
     font-family: $primary-font-family;
+    background-color: transparent;
 
     &.is-invalid {
       margin-bottom: 0;
@@ -86,5 +93,14 @@ body {
     &:focus {
       box-shadow: none;
     }
+  }
+
+  .select-wrapper .text {
+    position: absolute;
+    z-index: -1;
+    margin-top: 8px;
+    right: 50px;
+    color: $secondary-color;
+    font-size: 12px;
   }
 }

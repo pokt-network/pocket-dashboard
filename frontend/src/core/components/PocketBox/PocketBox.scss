@@ -11,7 +11,6 @@
   }
 
   .head {
-    margin-left: -20px;
     background: url("/assets/rectangle.png");
     background-size: cover;
     display: block;
@@ -21,7 +20,7 @@
   }
 
   #img {
-    left: 200px;
+    left: 220px;
     width: 42%;
     position: relative;
     top: 6px;
@@ -36,6 +35,6 @@
     top: -110px;
     padding: 100px 60px 50px 60px;
     position: relative;
-    left: 30px;
+    left: 50px;
   }
 }

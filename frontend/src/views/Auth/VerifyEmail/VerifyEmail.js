@@ -65,7 +65,7 @@ class VerifyEmail extends Component {
     const icons = [
       <img key={0} src="/assets/user.svg" className="step-icon" />,
       <img key={1} src="/assets/mail.svg" className="step-icon" />,
-      <img key={2} src="/assets/key.svg" className="step-icon" />,
+      <img key={2} src="/assets/profile/key.svg" className="step-icon" />,
     ];
     /* eslint-enable jsx-a11y/alt-text */
 
