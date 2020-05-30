@@ -88,11 +88,7 @@ class SignUp extends Component {
     const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
     const {success, data} = await PocketUserService.signUp(
-      username,
-      email,
-      password1,
-      password2,
-      securityQuestionLinkPage
+      username, email, password1, password2, securityQuestionLinkPage
     );
 
     if (!success) {
@@ -262,8 +258,7 @@ class SignUp extends Component {
                           icon={faGoogle}
                           type={AuthProviderType.signup}
                           authProvider={PocketUserService.getAuthProvider(
-                            this.state.authProviders,
-                            "google"
+                            this.state.authProviders, "google"
                           )}
                         />
                         <AuthProviderButton
@@ -272,8 +267,7 @@ class SignUp extends Component {
                           icon={faGithub}
                           type={AuthProviderType.signup}
                           authProvider={PocketUserService.getAuthProvider(
-                            this.state.authProviders,
-                            "github"
+                            this.state.authProviders, "github"
                           )}
                         />
                       </div>

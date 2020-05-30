@@ -74,8 +74,7 @@ class Login extends Component {
     }
 
     const {success, data} = await UserService.login(
-      values.email,
-      values.password
+      values.email, values.password
     );
 
     if (!success) {
@@ -182,8 +181,7 @@ class Login extends Component {
                             icon={faGoogle}
                             type={AuthProviderType.login}
                             authProvider={UserService.getAuthProvider(
-                              this.state.authProviders,
-                              "google"
+                              this.state.authProviders, "google"
                             )}
                           />
                           <AuthProviderButton
@@ -192,8 +190,7 @@ class Login extends Component {
                             icon={faGithub}
                             type={AuthProviderType.login}
                             authProvider={UserService.getAuthProvider(
-                              this.state.authProviders,
-                              "github"
+                              this.state.authProviders, "github"
                             )}
                           />
                         </div>
