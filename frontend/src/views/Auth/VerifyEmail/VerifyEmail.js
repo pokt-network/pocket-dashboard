@@ -111,7 +111,8 @@ class VerifyEmail extends Component {
                   <Link
                     className="font-weight-light"
                     to={ROUTE_PATHS.forgot_password}
-                   This is not my email.
+                  >
+                    This is not my email.
                   </Link>
                 </p>
 
