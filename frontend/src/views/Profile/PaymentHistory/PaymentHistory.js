@@ -1,16 +1,17 @@
 import React, {Component} from "react";
-import {Col, Button, Row, FormControl, InputGroup} from "react-bootstrap";
+import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import "./PaymentHistory.scss";
 import AppDatePicker from "../../../core/components/AppDatePicker/AppDatePicker";
 import BootstrapTable from "react-bootstrap-table-next";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSearch, faDownload} from "@fortawesome/free-solid-svg-icons";
+import {faSearch} from "@fortawesome/free-solid-svg-icons";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import {PAYMENT_HISTORY_LIMIT} from "../../../_constants";
 import {formatCurrency} from "../../../_helpers";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import moment from "moment";
 
 class PaymentHistory extends Component {
   constructor(props, context) {
@@ -20,10 +21,11 @@ class PaymentHistory extends Component {
     this.renderExport = this.renderExport.bind(this);
     this.handleExport = this.handleExport.bind(this);
     this.onTablePagination = this.onTablePagination.bind(this);
+    this.paginateAfterDateChange = this.paginateAfterDateChange.bind(this);
 
     this.state = {
-      startDate: new Date(),
-      endDate: new Date(),
+      fromDate: "",
+      toDate: "",
       history: [],
       offset: 0,
       page: 1,
@@ -32,6 +34,7 @@ class PaymentHistory extends Component {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
+    // FIXME: The firm of this method has been changed.
     const history = await PaymentService.getPaymentHistory(
       userEmail, PAYMENT_HISTORY_LIMIT
     );
@@ -47,21 +50,36 @@ class PaymentHistory extends Component {
   renderExport(cell, row) {
     return (
       <span className="export" onClick={() => this.handleExport(row)}>
-        <FontAwesomeIcon icon={faDownload} />
+        <img src="/assets/download_invoice.svg" alt="" />
       </span>
     );
   }
 
   handleDateChange(date, name) {
-    this.setState({[name]: date});
+    this.setState(
+      {
+        [name]: moment(date).format("YYYY-MM-DD"),
+        offset: 0,
+        page: 1,
+      }, this.paginateAfterDateChange
+    );
+  }
+
+  paginateAfterDateChange() {
+    this.onTablePagination(undefined, {
+      page: 1,
+      sizePerPage: PAYMENT_HISTORY_LIMIT,
+    });
   }
 
   async onTablePagination(_, {page, sizePerPage}) {
+    const {fromDate, toDate} = this.state;
+
     const userEmail = UserService.getUserInfo().email;
     const offset = (page - 1) * sizePerPage + 1;
 
     const history = await PaymentService.getPaymentHistory(
-      userEmail, PAYMENT_HISTORY_LIMIT, offset
+      userEmail, PAYMENT_HISTORY_LIMIT, offset, fromDate, toDate
     );
 
     this.setState({page, history, offset});
@@ -131,54 +149,56 @@ class PaymentHistory extends Component {
     return (
       <Row id="general" className="payment-history">
         <Col lg={{span: 10, offset: 1}} className="title-page">
-          <h1>Payment history</h1>
-          <div className="filters mt-4">
-            <span className="filter">
-              <AppDatePicker
-                onChange={(date) => this.handleDateChange(date, "startDate")}
-              />
-            </span>
-            <p className="label-text">To</p>
-            <span className="filter">
-              <AppDatePicker
-                onChange={(date) => this.handleDateChange(date, "endDate")}
-              />
-            </span>
-            <span className="filter search">
-              <InputGroup className="search-input mb-3">
-                <FormControl
-                  placeholder="Search invoice"
-                  name="searchQflex-wrapuery"
-                  onChange={this.handleChange}
-                  onKeyPress={({key}) => {
-                    if (key === "Enter") {
-                      this.handleSearch();
-                    }
-                  }}
+          <div className="wrapper">
+            <h1>Payment history</h1>
+            <div className="filters mt-4">
+              <span className="filter">
+                <AppDatePicker
+                  onChange={(date) => this.handleDateChange(date, "fromDate")}
                 />
-                <InputGroup.Append>
-                  <Button
-                    type="submit"
-                    onClick={this.handleSearch}
-                    variant="outline-primary"
-                  >
-                    <FontAwesomeIcon icon={faSearch} />
-                  </Button>
-                </InputGroup.Append>
-              </InputGroup>
-            </span>
-          </div>
-          <div className="payments mt-3">
-            <BootstrapTable
-              remote
-              classes="app-table"
-              keyField="paymentID"
-              data={history}
-              bordered={false}
-              columns={columns}
-              pagination={paginationFactory(PaginationOptions)}
-              onTableChange={this.onTablePagination}
-            />
+              </span>
+              <p className="label-text">To</p>
+              <span className="filter">
+                <AppDatePicker
+                  onChange={(date) => this.handleDateChange(date, "toDate")}
+                />
+              </span>
+              <span className="filter search">
+                <InputGroup className="search-input mb-3">
+                  <FormControl
+                    placeholder="Search invoice"
+                    name="searchQuery"
+                    onChange={this.handleChange}
+                    onKeyPress={({key}) => {
+                      if (key === "Enter") {
+                        this.handleSearch();
+                      }
+                    }}
+                  />
+                  <InputGroup.Append>
+                    <Button
+                      type="submit"
+                      onClick={this.handleSearch}
+                      variant="outline-primary"
+                    >
+                      <FontAwesomeIcon icon={faSearch} />
+                    </Button>
+                  </InputGroup.Append>
+                </InputGroup>
+              </span>
+            </div>
+            <div className="payments mt-3">
+              <BootstrapTable
+                remote
+                classes="app-table"
+                keyField="paymentID"
+                data={history}
+                bordered={false}
+                columns={columns}
+                pagination={paginationFactory(PaginationOptions)}
+                onTableChange={this.onTablePagination}
+              />
+            </div>
           </div>
         </Col>
       </Row>

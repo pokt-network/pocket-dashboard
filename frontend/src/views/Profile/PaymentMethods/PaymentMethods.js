@@ -6,24 +6,31 @@ import PaymentService from "../../../core/services/PocketPaymentService";
 import UserService from "../../../core/services/PocketUserService";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
 import NewCardForm from "../../../core/components/Payment/Stripe/NewCardForm";
+import Loader from "../../../core/components/Loader";
+import AppAlert from "../../../core/components/AppAlert";
 
 class PaymentMethods extends Component {
   constructor(props, context) {
     super(props, context);
 
     this.deleteCard = this.deleteCard.bind(this);
+    this.saveNewCard = this.saveNewCard.bind(this);
 
     this.state = {
+      alert: {show: false, text: "", variant: ""},
       paymentMethods: [],
       newCard: false,
+      loading: false,
     };
   }
 
   async componentDidMount() {
+    this.setState({loading: true});
+
     const user = UserService.getUserInfo().email;
     const paymentMethods = await PaymentService.getPaymentMethods(user);
 
-    this.setState({paymentMethods});
+    this.setState({paymentMethods, loading: false});
   }
 
   saveNewCard(e, cardData, stripe) {
@@ -45,14 +52,24 @@ class PaymentMethods extends Component {
       stripe, cardData.card, billingDetails
     ).then((result) => {
       if (result.errors) {
-        // TODO: Show message to frontend
-        console.log(result.errors);
+        this.setState({
+          alert: {
+            show: true,
+            variant: "danger",
+            text: result.errors,
+          },
+        });
         return;
       }
 
       if (result.paymentMethod) {
-        // TODO: Show message to frontend
-        console.log(true);
+        this.setState({
+          alert: {
+            show: true,
+            variant: "primary",
+            text: "Your payment method was successfully added.",
+          },
+        });
       }
     });
   }
@@ -69,17 +86,27 @@ class PaymentMethods extends Component {
     if (success) {
       this.setState({paymentMethods});
     } else {
-      // TODO: Show message on frontend.
+      this.setState({
+        alert: {
+          show: true,
+          variant: "danger",
+          text: "There was an error deleting you payment method.",
+        },
+      });
     }
   }
 
   render() {
-    const {paymentMethods: allPaymentMethods, newCard} = this.state;
+    const {
+      alert,
+      paymentMethods: allPaymentMethods,
+      newCard,
+      loading,
+    } = this.state;
     const paymentMethods = allPaymentMethods.map((method) => {
       return {
         id: method.id,
         cardData: {
-          // TODO: Retrieve card type data from backend
           type: method.brand,
           digits: `**** **** **** ${method.lastDigits}`,
         },
@@ -87,40 +114,57 @@ class PaymentMethods extends Component {
       };
     });
 
+    if (loading) {
+      return <Loader />;
+    }
+
     return (
       <Row id="general" className="payment-methods">
-        <Col lg={{span: 9, offset: 2}} className="body title-page">
-          <h1> Payment methods</h1>
-          <div id="cards">
-            {paymentMethods.map((card, idx) => {
-              const {cardData, holder} = card;
+        <Col lg={{span: 10, offset: 1}} className="title-page">
+          {alert.show && (
+              <AppAlert
+                variant={alert.variant}
+                title={alert.text}
+                dismissible
+                onClose={() => this.setState({alert: {show: false}})}
+              />
+            )}  
+          <div className="wrapper">
+            <h1> Payment methods</h1>
+            <div id="cards">
+              {paymentMethods.map((card, idx) => {
+                const {cardData, holder} = card;
 
-              return (
-                <CardDisplay
-                  key={idx}
-                  cardData={cardData}
-                  holder={holder}
-                  onDelete={() => {
-                    this.deleteCard(card.id);
-                  }}
-                />
-              );
-            })}
-          </div>
-          <br />
-          {!newCard && (
-            <p
-              onClick={() => this.setState({newCard: true})}
-              className="new-card"
-            >
-              Add a new card
-            </p>
-          )}
-          {newCard && (
-            <div id="card-form">
-              <NewCardForm formTitle="" formActionHandler={this.saveNewCard} />
+                return (
+                  <CardDisplay
+                    key={idx}
+                    cardData={cardData}
+                    holder={holder}
+                    onDelete={() => {
+                      this.deleteCard(card.id);
+                    }}
+                  />
+                );
+              })}
             </div>
-          )}
+            <br />
+            {!newCard && (
+              <p
+                onClick={() => this.setState({newCard: true})}
+                className="new-card"
+              >
+                Add a new card
+              </p>
+            )}
+            {newCard && (
+              <div id="card-form">
+                <NewCardForm
+                  formTitle=""
+                  formActionHandler={this.saveNewCard}
+                />
+              </div>
+            )}
+          </div>
         </Col>
       </Row>
     );

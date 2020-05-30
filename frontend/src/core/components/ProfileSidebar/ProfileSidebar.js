@@ -7,7 +7,7 @@ import {isActiveExactUrl} from "../../../_helpers";
 class ProfileSidebar extends Component {
   render() {
     return (
-      <ul id="profile-sidebar" className="sidebar-menu">
+      <ul id="profile-sidebar">
         {profile.items.map((route, idx) => (
           <React.Fragment key={idx}>
             <MenuItem
