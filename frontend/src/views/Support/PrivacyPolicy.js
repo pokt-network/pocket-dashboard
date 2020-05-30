@@ -9,8 +9,9 @@ class PrivacyPolicy extends Component {
     return (
       <Container fluid id="privacy-policy">
         <Row>
-          <div className="address">
-            <p>POCKET NETWORK, INC. PRIVACY POLICY</p>
+          <div className="address offset-lg-4">
+            <p className="">POCKET NETWORK, INC. </p>
+            <p>PRIVACY POLICY</p>
             <h3>Last Updated: MAY 18, 2020</h3>
           </div>
         </Row>
@@ -168,7 +169,7 @@ class PrivacyPolicy extends Component {
           </div>
         </Row>
         <Row>
-          <div>
+          <div className="information">
             <span>INFORMATION CHOICES AND CHANGES</span>
             <p>
               Our marketing emails tell you how to “opt-out.” If you opt out, we
@@ -185,21 +186,24 @@ class PrivacyPolicy extends Component {
           </div>
         </Row>
         <Row>
-          <div>
+          <div className="information">
             <span>CONTACT INFORMATION</span>
             <p>
               We welcome your comments or questions about this privacy policy.
-              You may also contact us at our address: Pocket Network, Inc. 801 E
-              Whiting St Tampa, Florida 33602
+              You may also contact us at our address:
+              <p>Pocket Network, Inc.</p> <p>801 E Whiting St</p>
+              <p>Tampa, Florida 33602</p>
             </p>
           </div>
         </Row>
         <Row>
-          <span>CHANGES TO THIS PRIVACY POLICY</span>
-          <p>
-            We may change this privacy policy. If we make any changes, we will
-            change the Last Updated date above.
-          </p>
+          <div className="information">
+            <span>CHANGES TO THIS PRIVACY POLICY</span>
+            <p>
+              We may change this privacy policy. If we make any changes, we will
+              change the Last Updated date above.
+            </p>
+          </div>
         </Row>
       </Container>
     );
