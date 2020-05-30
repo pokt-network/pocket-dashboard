@@ -387,8 +387,9 @@ class AppDetail extends Component {
             ))}
           </Row>}
         <Row className="action-buttons">
-          <Col sm="3" md="3" lg="3">
-            <span className="option">
+          {/* TODO: Uncomment of fourth release */}
+          {/*<Col sm="3" md="3" lg="3">
+             <span className="option">
                 <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
                 <p>
                   <Link
@@ -401,8 +402,8 @@ class AppDetail extends Component {
                   </Link>{" "}
                   to change your app description.
                 </p>
-              </span>
-          </Col>
+              </span> 
+          </Col>*/}
           <Col sm="3" md="3" lg="3">
             <span className="option">
                 <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
