@@ -15,7 +15,7 @@ class StripePaymentProvider extends BasePaymentProvider {
     this.createPaymentIntent = this.createPaymentIntent.bind(this);
   }
 
-  async createPaymentIntent(type, currency, item, amount, description = "") {
+  async createPaymentIntent(userCustomerID, type, currency, item, amount, description = "") {
 
     let paymentData = {
       amount: amount * AMOUNT_CONVERT_NUMBER,
@@ -26,7 +26,9 @@ class StripePaymentProvider extends BasePaymentProvider {
         name: item.name,
         type: item.type,
         pokt: item.pokt
-      }
+      },
+      setup_future_usage: "on_session",
+      customer: userCustomerID
     };
 
     if (description) {
@@ -58,6 +60,27 @@ class StripePaymentProvider extends BasePaymentProvider {
     const cardPaymentMethods = await paymentMethodIDs.map(this.retrieveCardPaymentMethod);
 
     return Promise.all(cardPaymentMethods);
+  }
+
+  async createCustomer(user) {
+    return await this._stripeAPIClient.customers.create({email: user});
+  }
+
+  async getCustomerCardPaymentMethods(customerID) {
+    /** @type {{data:*[]}} */
+    const request = await this._stripeAPIClient.paymentMethods.list({customer: customerID, type: "card"});
+
+    if (!request.data) {
+      return [];
+    }
+
+    return request.data.map(paymentMethodData => {
+
+      const {id, card, billing_details} = paymentMethodData;
+      const {brand, last4, exp_month, exp_year} = card;
+
+      return new CardPaymentMethod(id, brand, last4, exp_month, exp_year, billing_details);
+    });
   }
 }
 

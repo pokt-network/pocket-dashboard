@@ -471,6 +471,10 @@ button {
       &:first-child {
         padding-left: 0;
       }
+
+      input[type="checkbox"] {
+        top: 2px;
+      }
     }
 
     td[class^="col-"]:last-child {
@@ -659,6 +663,14 @@ button {
   }
 }
 
+.security-question-modal {
+  .form-label {
+    color: white;
+    font-size: 18px;
+    margin-top: 10px;
+  }
+}
+
 .scrollable {
   overflow-x: auto;
   max-height: 60vh;
@@ -697,6 +709,7 @@ textarea.form-control::placeholder {
 
   button {
     color: $primary-color;
+    width: 50px;
     border-left-color: transparent;
 
     img {
@@ -852,15 +865,28 @@ input[type="radio"] {
 }
 
 #general {
-  box-shadow: $default-box-shadow;
 
-  .body {
-    padding-bottom: 100px;
-  }
+  .wrapper {
+    box-shadow: $default-box-shadow;
+    padding-left: 46px;
+    padding-top: 30px;
+    padding-right: 45px;
 
-  h1 {
-    color: $dark-gray;
-    margin-bottom: 85px;
+    h1 {
+      text-transform: uppercase;
+      font-family: $secondary-font-family;
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.27;
+      color: $dark-gray;
+      margin-bottom: 80px;
+    }
+
+    padding-bottom: 80px;
+
+    .form-control, .invalid-feedback {
+      max-width: 400px;
+    }
   }
 }
 

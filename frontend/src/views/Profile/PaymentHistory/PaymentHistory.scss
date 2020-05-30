@@ -30,9 +30,28 @@
   .export {
     cursor: pointer;
     color: $primary-color;
+
+    img {
+      height: 25px;
+    }
+
+    &:hover {
+      img {
+        filter: contrast(10%);
+      }
+    }
   }
 
-  .export:active {
-    color: $primary-color-darker;
+  .app-table {
+    box-shadow: none;
+  }
+
+  .react-bootstrap-table-pagination {
+    button {
+      width: 40px;
+      margin-top: 20px;
+      display: inline;
+      margin-left: 5px;
+    }
   }
 }

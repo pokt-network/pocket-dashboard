@@ -58,7 +58,6 @@ class SecurityQuestions extends Component {
       if (result.success) {
         this.setState({user: result.data});
       } else {
-        // TODO: Show proper message on front end to user.
         this.setState({
           alertOverlay: {
             show: true,
@@ -180,7 +179,7 @@ class SecurityQuestions extends Component {
       /* eslint-disable jsx-a11y/alt-text */
       <img key={0} src="/assets/user.svg" className="step-icon" />,
       <img key={1} src="/assets/mail.svg" className="step-icon" />,
-      <img key={2} src="/assets/key.svg" className="step-icon" />,
+      <img key={2} src="/assets/profile/key.svg" className="step-icon" />,
       /* eslint-enable jsx-a11y/alt-text */
     ];
 

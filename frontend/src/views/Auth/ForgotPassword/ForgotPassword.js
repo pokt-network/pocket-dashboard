@@ -3,6 +3,8 @@ import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import "./ForgotPassword.scss";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
+import PocketUserService from "../../../core/services/PocketUserService";
+import {ROUTE_PATHS} from "../../../_routes";
 
 class ForgotPassword extends Component {
   constructor(props, context) {
@@ -15,6 +17,7 @@ class ForgotPassword extends Component {
       data: {
         email: "",
       },
+      error: "",
     };
   }
 
@@ -25,22 +28,54 @@ class ForgotPassword extends Component {
     this.setState({data});
   }
 
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
 
-    // TODO: call backend method to reset password.
+    const {email} = this.state.data;
+
+    const userExists = await PocketUserService.userExists(email, "email");
+
+    if (userExists) {
+      const isValidated = await PocketUserService.isUserValidated(
+        email, "email"
+      );
+
+      if (isValidated) {
+        // eslint-disable-next-line react/prop-types
+        this.props.history.push({
+          pathname: ROUTE_PATHS.answer_security_questions,
+          state: {email},
+        });
+      } else {
+        // eslint-disable-next-line react/prop-types
+        this.props.history.push({
+          pathname: ROUTE_PATHS.verify_email,
+          state: {
+            email,
+          },
+        });
+      }
+    } else {
+      this.setState({error: "Email is not registered"});
+    }
   }
 
   render() {
+    const {error} = this.state;
+
     return (
       <Container fluid id={"forgot-password-page"}>
         <Navbar />
         <Row className="mt-1">
-          <Col id={"main"} md={{span: 8, offset: 2}} lg={{span: 4, offset: 3}}>
+          <Col
+            id={"main"}
+            md={{span: 8, offset: 2}}
+            lg={{span: 4, offset: 3}}
+          >
             <PocketBox iconUrl={"/assets/circle.png"}>
-              <h1 className="title">Forgot your password?</h1>
-              <p className="text">
-                Write your email and we will send you a validation message
+              <h1 className="forgotPassword">Forgot your password?</h1>
+              <p className="passwordLabel">
+                Write your email to reset your password.
               </p>
               <Form id={"main-form"} onSubmit={this.handleSubmit}>
                 <Form.Group className="mb-4">
@@ -49,15 +84,22 @@ class ForgotPassword extends Component {
                     onChange={this.handleChange}
                     name="email"
                     type="email"
+                    className={error ? "is-invalid emailInput" : "emailInput"}
                   />
+                  <Form.Control.Feedback
+                    className="feedback invalid-acount"
+                    type="invalid"
+                  >
+                    {error ? error : ""}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Button
-                  className="pt-2 pb-2 pl-5 pr-5"
+                  className="resetButton"
                   type="submit"
                   variant="primary"
                   size={"md"}
                 >
-                  Reset password
+                  <span className="resetButtonText">Reset Password</span>
                 </Button>
               </Form>
             </PocketBox>

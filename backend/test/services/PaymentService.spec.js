@@ -88,7 +88,7 @@ describe("PaymentService", () => {
     it("Save a payment history without error", async () => {
 
       const user = "tester@testing.com";
-      const createdDate = "Now";
+      const createdDate = "2020-05-08T00:00:00.000Z";
       const paymentID = "paymentMethodTestID";
       const currency = "usd";
       const amount = 1000;
@@ -112,7 +112,7 @@ describe("PaymentService", () => {
 
       const paymentHistoryData = {
         user: "tester@testing.com",
-        createdDate: "Now",
+        createdDate: "2020-05-08T00:00:00.000Z",
         paymentID: "paymentMethodTestID",
         currency: "usd",
         amount: 1000,
@@ -141,6 +141,22 @@ describe("PaymentService", () => {
 
       paymentHistory.should.be.an("array");
       paymentHistory.length.should.be.greaterThan(0);
+    });
+  });
+
+  describe("getPaymentHistory with fromDate toDate", () => {
+    it("Expect a record of a payment", async () => {
+
+      const user = "tester@testing.com";
+      const limit = 10;
+      const offset = 0;
+      const fromDate = "2020-05-08";
+      const toDate = "2020-05-08";
+
+      const paymentHistory = await paymentService.getPaymentHistory(user, limit, offset, fromDate, toDate);
+
+      paymentHistory.should.be.an("array");
+      paymentHistory.length.should.be.equal(1);
     });
   });
 
