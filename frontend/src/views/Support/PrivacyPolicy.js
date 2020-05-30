@@ -26,32 +26,43 @@ class PrivacyPolicy extends Component {
           <br />
         </Row>
         <Row>
-          <div>
+          <div className="collect">
             <span>WHAT WE COLLECT</span>
             <p>We get information about you in a range of ways.</p>
           </div>
         </Row>
         <Row>
-          <div>
-            Information You Give Us.​ We collect your‎ name, postal address,
-            email address, phone number, fax number, username, password as well
-            as other information you directly give us on our Site. Information
-            We Get From Others.​ We may get information about you from other
-            sources. We may add this to information we get from this Site.
-            Information Automatically Collected. We automatically log
-            information about you and your computer. For example, when visiting
-            our Site, we log your computer operating system type, browser type,
-            browser language, the website you visited before browsing to our
-            Site, pages you viewed, how long you spent on a page, access times
-            and information about your use of and actions on our Site. Cookies.​
-            We may log information using "cookies." Cookies are small data files
-            stored on your hard drive by a website. We may use both session
-            Cookies (which expire once you close your web browser) and
-            persistent Cookies (which stay on your computer until you delete
-            them) to provide you with a more personal and interactive experience
-            on our Site. This type of information is collected to make the Site
-            more useful to you and to tailor the experience with us to meet your
-            special interests and needs.
+          <div className="information">
+            <p>
+              <b>Information You Give Us.</b>​ We collect your‎ name, postal
+              address, email address, phone number, fax number, username,
+              password as well as other information you directly give us on our
+              Site.
+            </p>
+            <p>
+              <b>Information We Get From Others.</b>​ We may get information
+              about you from other sources. We may add this to information we
+              get from this Site.
+            </p>
+            <p>
+              <b>Information Automatically Collected.</b> We automatically log
+              information about you and your computer. For example, when
+              visiting our Site, we log your computer operating system type,
+              browser type, browser language, the website you visited before
+              browsing to our Site, pages you viewed, how long you spent on a
+              page, access times and information about your use of and actions
+              on our Site.
+            </p>
+            <p>
+              <b>Cookies.</b>​ We may log information using "cookies." Cookies
+              are small data files stored on your hard drive by a website. We
+              may use both session Cookies (which expire once you close your web
+              browser) and persistent Cookies (which stay on your computer until
+              you delete them) to provide you with a more personal and
+              interactive experience on our Site. This type of information is
+              collected to make the Site more useful to you and to tailor the
+              experience with us to meet your special interests and needs.
+            </p>
           </div>
         </Row>
         <Row>
@@ -103,15 +114,14 @@ class PrivacyPolicy extends Component {
           </div>
         </Row>
         <Row>
-          <div>
+          <div className="information">
             <span>SHARING OF PERSONAL INFORMATION</span>
-            <p></p>
           </div>
         </Row>
         <Row>
-          <div>
-            We may share personal information as follows:
+          <div className="information">
             <ul>
+              <p>We may share personal information as follows:</p>
               <li>
                 We may share personal information with your consent. For
                 example, you may let us share personal information with others
@@ -135,9 +145,11 @@ class PrivacyPolicy extends Component {
                   We may share information to respond to lawful requests and
                   legal processes.
                 </li>
-                We may share information to protect the rights and property of
-                Pocket Network, Inc., our agents, customers, and others. This
-                includes enforcing our agreements, policies, and terms of use.
+                <li>
+                  We may share information to protect the rights and property of
+                  Pocket Network, Inc., our agents, customers, and others. This
+                  includes enforcing our agreements, policies, and terms of use.
+                </li>
                 <li>
                   We may share information in an emergency. This includes
                   protecting the safety of our employees and agents, our
@@ -148,8 +160,10 @@ class PrivacyPolicy extends Component {
                 We may share information with those who need it to do work for
                 us.
               </li>
-              We may also share aggregated and/or anonymized data with others
-              for their own uses.
+              <p>
+                We may also share aggregated and/or anonymized data with others
+                for their own uses.
+              </p>
             </ul>
           </div>
         </Row>

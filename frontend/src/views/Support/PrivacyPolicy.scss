@@ -33,4 +33,44 @@
     text-align: justify;
     color: #000000;
   }
+
+  span {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: $dark-gray;
+  }
+
+  p {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.71;
+    letter-spacing: -0.38px;
+    text-align: center;
+    color: $dark-gray;
+  }
+
+  .information p {
+    text-align: justify !important;
+  }
+
+  li {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.36;
+    letter-spacing: normal;
+    text-align: justify;
+    color: $dark-gray;
+  }
 }
