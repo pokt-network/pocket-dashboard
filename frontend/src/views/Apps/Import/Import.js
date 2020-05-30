@@ -222,6 +222,7 @@ class Import extends Component {
                           name="privateKey"
                         />
                         <img
+                          className="eye-icon"
                           onClick={this.changeInputType}
                           src={showPassphraseIconURL}
                           alt=""
@@ -258,6 +259,7 @@ class Import extends Component {
                           {error.show ? error.message : ""}
                         </Form.Control.Feedback>
                         <img
+                          className="eye-icon"
                           onClick={this.changeInputType}
                           src={showPassphraseIconURL}
                           alt=""

@@ -375,6 +375,7 @@ class NodeDetail extends Component {
                 className={"contact"}
                 title={card.title}
                 subtitle={card.subtitle}
+                flexAlign="left"
               >
                 <span/>
               </InfoCard>

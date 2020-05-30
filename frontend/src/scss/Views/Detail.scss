@@ -131,6 +131,9 @@
 
     div.alert.alert-light {
       box-shadow: none;
+      min-height: 40px;
+      padding: 13px 18px 9px 18px;
+      margin-left: 15px;
 
       font-family: $primary-font-family;
       font-size: 13px;
