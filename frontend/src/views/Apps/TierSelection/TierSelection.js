@@ -99,7 +99,7 @@ class TierSelection extends Component {
               <h2 className="subtitle">tier</h2>
             </div>
             <ul>
-              <li>Limited to 1 Million relays per day</li>
+              <li>Limited to 1 Million Relays per Day</li>
               <li>Access to AAT, but not ownership</li>
               <li>Stake POKT is managed by Pocket Network Inc.</li>
               <li>Unstake balance unavailable for transfers</li>
@@ -119,7 +119,7 @@ class TierSelection extends Component {
               type="checkbox"
               label={
                 <p>
-                  I agree to pocket Dashboard{" "}
+                  I agree to Pocket Dashboard{" "}
                   <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>
                     Terms and Conditions.
                   </Link>
@@ -140,8 +140,8 @@ class TierSelection extends Component {
                 <h2 className="subtitle">tier</h2>
               </div>
               <ul>
-                <li>Custom Relays per day</li>
-                <li>ATT ownership</li>
+                <li>Custom Relays per Day</li>
+                <li>AAT ownership</li>
                 <li>Unstake balance available for transfers</li>
                 <li>Staked POKT is own by the user</li>
               </ul>
