@@ -10,8 +10,12 @@ class PrivacyPolicy extends Component {
       <Container fluid id="privacy-policy">
         <Row>
           <div className="address offset-lg-4">
-            <p className="">POCKET NETWORK, INC. </p>
-            <p>PRIVACY POLICY</p>
+            <p className="">
+              POCKET NETWORK,
+              <br />
+              INC. PRIVACY POLICY
+            </p>
+
             <h3>Last Updated: MAY 18, 2020</h3>
           </div>
         </Row>
