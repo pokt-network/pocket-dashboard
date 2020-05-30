@@ -48,10 +48,7 @@ class NodesMain extends Main {
     const userEmail = UserService.getUserInfo().email;
 
     const userItems = await NodeService.getAllUserNodes(
-      userEmail,
-      NODES_LIMIT,
-      0,
-      BOND_STATUS_STR[option]
+      userEmail, NODES_LIMIT, 0, BOND_STATUS_STR[option]
     );
 
     this.setState({
@@ -65,9 +62,7 @@ class NodesMain extends Main {
     this.setState({allItemsTableLoading: true});
 
     const registeredItems = await NodeService.getAllNodes(
-      NODES_LIMIT,
-      0,
-      BOND_STATUS_STR[option]
+      NODES_LIMIT, 0, BOND_STATUS_STR[option]
     );
 
     this.setState({allItemsTableLoading: false, registeredItems});
@@ -101,9 +96,7 @@ class NodesMain extends Main {
     const {userItems} = this.state;
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await NodeService.getAllUserNodes(
-      userEmail,
-      NODES_LIMIT,
-      offset * NODES_LIMIT + 1
+      userEmail, NODES_LIMIT, offset * NODES_LIMIT + 1
     );
 
     const allUserItems = [...userItems, ...newUserItems];
@@ -119,8 +112,7 @@ class NodesMain extends Main {
     const {registeredItems} = this.state;
 
     const newRegisteredItems = await NodeService.getAllNodes(
-      NODES_LIMIT,
-      offset * NODES_LIMIT + 1
+      NODES_LIMIT, offset * NODES_LIMIT + 1
     );
 
     const allRegisteredItems = [...registeredItems, ...newRegisteredItems];

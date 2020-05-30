@@ -63,6 +63,7 @@ AppTable.defaultProps = {
   scroll: false,
   toggle: false,
   classes: "",
+  selectRow: undefined,
 };
 
 AppTable.propTypes = {
@@ -72,6 +73,7 @@ AppTable.propTypes = {
   classes: PropTypes.string,
   data: PropTypes.array,
   columns: PropTypes.array,
+  selectRow: PropTypes.object,
 };
 
 export default AppTable;
