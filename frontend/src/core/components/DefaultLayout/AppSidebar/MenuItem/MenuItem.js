@@ -8,11 +8,14 @@ class MenuItem extends Component {
     const iconImageSource = `/assets/${icon}`;
 
     return (
-      <NavLink to={url} {...restProps}>
+      <NavLink className="menu-item" to={url} {...restProps}>
         <li>
-          <img src={iconImageSource} alt="side-bar-menu-item-icon"/>
+          <img
+            src={iconImageSource}
+            alt="sidebar menu item icon"
+            className="icon"
+          />
           <span>{label}</span>
-
         </li>
       </NavLink>
     );

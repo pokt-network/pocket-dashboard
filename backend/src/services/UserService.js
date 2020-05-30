@@ -72,15 +72,64 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * Get user from DB.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} [provider] Filter by provider.
+   *
+   * @returns {Promise<*>} User data.
+   * @private
+   * @async
+   */
+  async __getUser(userEmail, provider = "email") {
+    const filter = {
+      email: userEmail,
+      provider
+    };
+
+    return await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+  }
+
+  /**
    * Check if user exists on DB.
    *
    * @param {string} userEmail User email to check if exists.
+   * @param {string} [authProvider] User auth provider type.
    *
    * @returns {Promise<boolean>} If user exists or not.
    * @async
    */
-  async userExists(userEmail) {
-    const filter = {email: userEmail};
+  async userExists(userEmail, authProvider = undefined) {
+    let filter = {email: userEmail};
+
+    if (authProvider) {
+      filter["provider"] = authProvider;
+    }
+
+    const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    return dbUser !== undefined;
+  }
+
+  /**
+   * Check if user is validated on DB.
+   *
+   * @param {string} userEmail User email to check if is validated.
+   * @param {string} [authProvider] User auth provider type.
+   *
+   * @returns {Promise<boolean>} If user is validated or not.
+   * @async
+   */
+  async isUserValidated(userEmail, authProvider = undefined) {
+    let filter = {
+      email: userEmail,
+      securityQuestions: {$ne: null}
+    };
+
+    if (authProvider) {
+      filter["provider"] = authProvider;
+    }
+
     const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     return dbUser !== undefined;
@@ -217,6 +266,8 @@ export default class UserService extends BaseService {
    * @param {Array<{question: string, answer:string}>} questions Questions to add or update.
    *
    * @returns {Promise<boolean>} If user record was updated or not.
+   * @throws {Error} If user is invalid.
+   * @async
    */
   async addOrUpdateUserSecurityQuestions(userEmail, questions) {
     const filter = {email: userEmail};
@@ -231,6 +282,135 @@ export default class UserService extends BaseService {
     const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, filter, data);
 
     return result.result.ok === 1;
+  }
+
+  /**
+   * Get user security questions.
+   *
+   * @param {string} userEmail Email of user.
+   *
+   * @returns {Promise<AnsweredSecurityQuestion[]>} User security questions.
+   * @throws {Error} If user is invalid.
+   * @async
+   */
+  async getUserSecurityQuestions(userEmail) {
+    const filter = {
+      email: userEmail,
+      securityQuestions: {$ne: null}
+    };
+    const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    if (!userDB) {
+      throw Error("Invalid user.");
+    }
+
+    return AnsweredSecurityQuestion.createAnsweredSecurityQuestions(userDB.securityQuestions);
+  }
+
+  /**
+   * Verify user password.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} password Password to verify.
+   *
+   * @returns {Promise<boolean>} If password was verify or not.
+   * @throws {Error} If user is invalid.
+   * @async
+   */
+  async verifyPassword(userEmail, password) {
+    const userDB = await this.__getUser(userEmail);
+
+    if (!userDB) {
+      throw Error("Invalid user.");
+    }
+
+    return EmailUser.validatePassword(password, userDB.password);
+  }
+
+  /**
+   * Change user password.
+   *
+   * @param {string} userEmail Email of user.
+   * @param {string} password1 New password.
+   * @param {string} password2 Password confirmation.
+   *
+   * @returns {Promise<boolean>} If password was changed or not.
+   * @throws {Error} If passwords validation fails or if user does not exists.
+   * @async
+   */
+  async changePassword(userEmail, password1, password2) {
+    const userDB = await this.__getUser(userEmail);
+
+    if (!userDB) {
+      throw Error("Invalid user.");
+    }
+
+    if (EmailUser.validatePasswords(password1, password2)) {
+
+      // Update the user password.
+      userDB.password = await EmailUser.encryptPassword(password1);
+
+      /** @type {{result: {n:number, ok: number}}} */
+      const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);
+
+      return result.result.ok === 1;
+    }
+  }
+
+  /**
+   * Change user name.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} username New user name.
+   *
+   * @returns {Promise<boolean>} If was changed or not.
+   * @throws {Error} If validation fails or user does not exists.
+   * @async
+   */
+  async changeUsername(userEmail, username) {
+    if (EmailUser.validateUsername(username)) {
+      const userDB = await this.__getUser(userEmail);
+
+      if (!userDB) {
+        throw Error("Invalid user.");
+      }
+
+      // Update the username.
+      userDB.username = username;
+
+      /** @type {{result: {n:number, ok: number}}} */
+      const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);
+
+      return result.result.ok === 1;
+    }
+  }
+
+  /**
+   * Change user email.
+   *
+   * @param {string} userEmail Current user email.
+   * @param {string} newEmail New user email.
+   *
+   * @returns {Promise<boolean>} If was changed or not.
+   * @throws {Error} If validation fails or user does not exists.
+   * @async
+   */
+  async changeEmail(userEmail, newEmail) {
+    if (EmailUser.validateEmail(newEmail)) {
+      const userDB = await this.__getUser(userEmail);
+
+      if (!userDB) {
+        throw Error("Invalid user.");
+      }
+
+      // Update the user email.
+      userDB.email = newEmail;
+
+      /** @type {{result: {n:number, ok: number}}} */
+      const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);
+
+      return result.result.ok === 1;
+    }
   }
 
   /**
