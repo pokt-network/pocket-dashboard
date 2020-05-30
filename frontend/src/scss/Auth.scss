@@ -16,6 +16,7 @@
   }
 
   #sidebar {
+    min-width: 435px;
     background-image: url("/assets/auth-sidebar.png");
     height: 100vh;
     background-size: cover;
@@ -64,12 +65,20 @@
       }
 
       #main-form {
+        max-width: 405px;
+
+        .divider {
+          font-size: 14px;
+          line-height: normal;
+        }
+
         .form-group {
           margin-bottom: 20px;
         }
       }
 
       #provider-buttons {
+        min-width: 192px;
         display: flex;
         justify-content: space-between;
 
