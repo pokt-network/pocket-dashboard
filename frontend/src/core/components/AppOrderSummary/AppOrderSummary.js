@@ -18,21 +18,21 @@ class AppOrderSummary extends Component {
     } = this.props;
 
     return (
-      <div className="summary pb-1">
+      <div className="summary">
         {items.map((it, idx) => (
           <div className="item" key={idx}>
-            <p>{it.label}</p>
-            <p>{it.quantity}</p>
+            <span>{it.label}</span>
+            <span>{it.quantity}</span>
           </div>
         ))}
-        <div className="item">
-          <p>Current balance</p>
-          <Form.Control value={balance} onChange={balanceOnChange} readOnly />
+        <div className="item current-balance">
+          <span>Current balance</span>
+          <Form.Control value={balance} onChange={balanceOnChange} />
         </div>
         <hr />
         <div className="item total">
-          <p>Total cost</p>
-          <p>{total} USD</p>
+          <span>Total cost</span>
+          <span>{total} USD</span>
         </div>
         <LoadingButton
           loading={loading}

@@ -1,18 +1,20 @@
 @import "../../../scss//Core.scss";
 
 .summary {
-  padding-left: 30px;
-  padding-right: 30px;
+  padding: 40px 30px;
   box-shadow: $default-box-shadow;
+  border-radius: $panel-radius;
 
   .item {
-    text-transform: capitalize;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 10px;
 
-    p {
+    &:not(.current-balance) {
+      margin-bottom: 20px;
+    }
+
+    span {
       color: $light-gray;
       font-weight: 800;
       font-size: 18px;
@@ -22,33 +24,28 @@
       width: 40%;
       text-align: right;
       background-color: transparent;
+      margin-bottom: 0;
     }
-
   }
 
   .item.total {
-    margin-top: 10px;
-
-    p {
+    span {
       text-transform: uppercase;
     }
 
-    p:first-of-type {
+    span:first-of-type {
       color: $dark-gray;
     }
 
-    p:last-of-type {
+    span:last-of-type {
       color: $primary-color;
     }
   }
 
   hr {
     border: none;
-    height: 2px;
+    height: 1px;
+    margin: 20px 0 28px 0;
     background-color: $light-gray;
-  }
-
-  .action {
-    margin-bottom: 35px;
   }
 }

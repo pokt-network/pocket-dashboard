@@ -60,16 +60,16 @@ class AppSlider extends Component {
         tipFormatter={(value) => `${value}%`}
         value={value}
         onChange={this.onSliderChange}
-        railStyle={{backgroundColor: STYLING.whiteSmoke, height: 11}}
-        trackStyle={{backgroundColor: STYLING.primaryColor, height: 11}}
+        railStyle={{backgroundColor: STYLING.whiteSmoke, height: 10}}
+        trackStyle={{backgroundColor: STYLING.primaryColor, height: 10}}
         handleStyle={{
-          borderColor: "#ffffff",
+          borderColor: "#fbfdff",
           height: 28,
           width: 28,
           marginTop: -9,
           backgroundColor: STYLING.primaryColor,
           boxShadow:
-            "rgba(0, 0, 0, 0.3) 0px 12px 66px, rgba(0, 0, 0, 0.22) 0px 0px 13px",
+            "rgba(0, 0, 0, 0.3) 0px 12px 66px, 0 2px 8px 2px rgba(6, 32, 46, 0.36)",
         }}
       />
     );

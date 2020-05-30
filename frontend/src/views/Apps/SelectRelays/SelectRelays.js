@@ -258,11 +258,10 @@ class SelectRelays extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm="8" className="relays-column">
+          <Col sm="7" className="relays-column">
             <h2>
               Slide to Select how much relays per day you want to buy
             </h2>
-            <div className="calc">
               <div className="slider-wrapper">
                 <AppSlider
                   defaultValue={minRelays}
@@ -272,13 +271,13 @@ class SelectRelays extends Component {
                     [minRelays]: `${formatNumbers(minRelays)} RPD`,
                     [maxRelays / 2]: {
                       label: (
-                        <span>
+                        <div className="average-stake-wrapper">
                           <FontAwesomeIcon
                             style={{color: STYLING.primaryColor}}
                             icon={faCaretUp}
                           />
-                          <p style={{fontSize: "0.9em"}}>AVRG STAKE</p>
-                        </span>
+                          <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
+                        </div>
                       ),
                     },
                     [maxRelays]: `*${formatNumbers(maxRelays)} RPD`,
@@ -287,7 +286,6 @@ class SelectRelays extends Component {
                   max={maxRelays}
                 />
               </div>
-            </div>
             <AppAlert
               className="max-alert"
               variant="primary"
@@ -295,19 +293,19 @@ class SelectRelays extends Component {
             >
               <p className="alert-max">
                 If your app requires more than {formatNumbers(maxRelays)} Relays
-                Per Day please <a href="/todo">Contact us</a> directly to find a
+                per Day please <a href="/todo">contact us</a> directly to find a
                 solution specially designed for your app.
               </p>
             </AppAlert>
           </Col>
-          <Col sm="4" className="pr-5 order-summary-column">
+          <Col sm="5" className="order-summary-column">
             <h2>Order Summary</h2>
             <AppOrderSummary
               items={[
                 {label: "App", quantity: 1},
                 {label: PURCHASE_ITEM_NAME.APPS, quantity: relaysSelected},
                 {
-                  label: `${PURCHASE_ITEM_NAME.APPS} cost`,
+                  label: `${PURCHASE_ITEM_NAME.APPS} Cost`,
                   quantity: `${subTotalFixed} ${currency.toUpperCase()}`,
                 },
               ]}
@@ -318,9 +316,6 @@ class SelectRelays extends Component {
               formActionHandler={this.goToSummary}
             />
           </Col>
-        </Row>
-        <Row>
-          <Col></Col>
         </Row>
       </div>
     );
