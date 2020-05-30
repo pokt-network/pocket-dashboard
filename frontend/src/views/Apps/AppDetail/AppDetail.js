@@ -378,7 +378,9 @@ class AppDetail extends Component {
                 <InfoCard
                   className={"contact"}
                   title={card.title}
-                  subtitle={card.subtitle}>
+                  subtitle={card.subtitle}
+                  flexAlign="flex-start"
+                  >
                   <span/>
                 </InfoCard>
               </Col>
