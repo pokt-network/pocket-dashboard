@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import "../Support/PrivacyPolicy.scss";
 
-import {Button, Col, Container, Row} from "react-bootstrap";
+import {Container, Row} from "react-bootstrap";
 
 class PrivacyPolicy extends Component {
   state = {};
@@ -192,12 +192,12 @@ class PrivacyPolicy extends Component {
         <Row>
           <div className="information">
             <span>CONTACT INFORMATION</span>
-            <p>
+            <div>
               We welcome your comments or questions about this privacy policy.
               You may also contact us at our address:
               <p>Pocket Network, Inc.</p> <p>801 E Whiting St</p>
               <p>Tampa, Florida 33602</p>
-            </p>
+            </div>
           </div>
         </Row>
         <Row>

@@ -1,8 +1,37 @@
 @import "../../scss/Core.scss";
-@import "../../scss/Variables/Colors.scss";
-@import "../../scss/Variables/Fonts.scss";
 
 #privacy-policy {
+  .wrapper {
+    padding-left: 10em;
+    padding-right: 10em;
+  }
+
+  .go-back {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .icon,
+    .text {
+      color: $light-gray;
+    }
+
+    .text {
+      margin-left: 5px;
+      font-family: $primary-font-family;
+      font-size: 16px;
+      font-weight: 300;
+    }
+
+    &:hover {
+
+      .icon,
+      text {
+        color: darken($color: $light-gray, $amount: 20%);
+      }
+    }
+  }
+
   .address p {
     font-family: $secondary-font-family;
     font-size: 30px;
@@ -23,6 +52,7 @@
     text-align: center;
     color: $dark-gray;
   }
+
   .policy {
     font-family: $primary-font-family;
     font-size: 14px;
