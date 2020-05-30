@@ -3,6 +3,7 @@
 .choose-chains {
   .page-title {
     margin-top: 15px;
+    padding-right: 0;
 
     h2 {
       font-family: $secondary-font-family;
@@ -41,6 +42,8 @@
       padding-bottom: 0;
 
       .app-table {
+        box-shadow: none;
+
         thead {
           margin-left: 0;
         }

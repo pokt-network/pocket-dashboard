@@ -32,6 +32,7 @@
     margin-top: 5px;
   }
 
+
   &.scroll .body {
     overflow-x: auto;
     max-height: 60vh;
@@ -39,7 +40,7 @@
   }
 
   &.bordered {
-    overflow: hidden;
+    // overflow: hidden;
 
     .body {
       box-shadow: $default-box-shadow;
