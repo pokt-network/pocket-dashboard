@@ -85,7 +85,9 @@
     margin-top: 24px;
 
     .tier {
+      min-width: 355px;
       width: 400px;
+      max-width: 400px;
       height: 448px;
       border-radius: 12px;
       box-shadow: $default-box-shadow;
@@ -194,6 +196,17 @@
         top: 67px;
         background-color: $primary-color;
         border-color: $primary-color;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .tier {
+        margin-right: 0;
+        margin-bottom: 14px;
+      }
+
+      .custom-tier {
+        margin-left: 0;
       }
     }
   }
