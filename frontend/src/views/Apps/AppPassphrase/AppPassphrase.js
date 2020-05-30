@@ -5,7 +5,11 @@ import {Col, Form, Row, Button} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
 import AppTable from "../../../core/components/AppTable";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {TABLE_COLUMNS, VALIDATION_MESSAGES, PASSPHRASE_REGEX} from "../../../_constants";
+import {
+  TABLE_COLUMNS,
+  VALIDATION_MESSAGES,
+  PASSPHRASE_REGEX,
+} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
 import isEmpty from "lodash/isEmpty";
@@ -39,7 +43,8 @@ class AppPassphrase extends Component {
       passPhrase: yup
         .string()
         .required(VALIDATION_MESSAGES.REQUIRED)
-        .matches(PASSPHRASE_REGEX, "The passphrase does not meet the requirements"
+        .matches(
+          PASSPHRASE_REGEX, "The passphrase does not meet the requirements"
         ),
     });
 
@@ -49,8 +54,8 @@ class AppPassphrase extends Component {
       inputPassphraseType: "password",
       inputPrivateKeyType: "password",
       validPassphrase: false,
-      showPassphraseIconURL: this.iconUrl.close,
-      showPrivateKeyIconURL: this.iconUrl.close,
+      showPassphraseIconURL: this.iconUrl.open,
+      showPrivateKeyIconURL: this.iconUrl.open,
       privateKey: "",
       address: "",
       chains: [],
@@ -70,12 +75,12 @@ class AppPassphrase extends Component {
     if (inputPassphraseType === "text") {
       this.setState({
         inputPassphraseType: "password",
-        showPassphraseIconURL: this.iconUrl.close,
+        showPassphraseIconURL: this.iconUrl.open,
       });
     } else {
       this.setState({
         inputPassphraseType: "text",
-        showPassphraseIconURL: this.iconUrl.open,
+        showPassphraseIconURL: this.iconUrl.close,
       });
     }
   }
@@ -86,12 +91,12 @@ class AppPassphrase extends Component {
     if (inputPrivateKeyType === "text") {
       this.setState({
         inputPrivateKeyType: "password",
-        showPrivateKeyIconURL: this.iconUrl.close,
+        showPrivateKeyIconURL: this.iconUrl.open,
       });
     } else {
       this.setState({
         inputPrivateKeyType: "text",
-        showPrivateKeyIconURL: this.iconUrl.open,
+        showPrivateKeyIconURL: this.iconUrl.close,
       });
     }
   }
@@ -258,7 +263,6 @@ class AppPassphrase extends Component {
                       <LoadingButton
                         loading={loading}
                         buttonProps={{
-
                           className: cls({"download-key-file-button": created}),
                           variant: !created ? "primary" : "dark",
                           type: "submit",

@@ -410,12 +410,6 @@ button {
   box-shadow: $default-box-shadow;
   border-radius: $table-radius;
 
-  input[type="checkbox"] {
-    margin-left: -24px;
-    width: 18px;
-    height: 18px;
-  }
-
   thead {
     text-transform: uppercase;
     color: black;
@@ -471,6 +465,10 @@ button {
       &:first-child {
         padding-left: 0;
       }
+
+      input[type="checkbox"] {
+        top: 2px;
+      }
     }
 
     td[class^="col-"]:last-child {
@@ -519,6 +517,40 @@ button {
   &.has-checkbox {
     thead {
       width: calc(100% - 28px);
+    }
+
+    input[type="checkbox"] {
+      margin-left: -24px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .selection-cell-header {
+      padding: 0;
+      width: 36px;
+      border-bottom-color: transparent;
+
+      input[type="checkbox"] {
+        bottom: 14px;
+        left: 37px;
+
+        &:before {
+          height: 72%;
+        }
+      }
+    }
+
+    .selection-cell {
+      padding-left: 37px;
+      padding-right: 0px;
+      padding-top: 10px;
+      width: 1px;
+      border-bottom-color: transparent;
+    }
+
+    tbody tr td:nth-of-type(2),
+    th:nth-of-type(2) {
+      padding-left: 0px;
     }
   }
 
@@ -793,8 +825,8 @@ a:hover {
 input[type="checkbox"] // input[type="radio"]
 {
   position: relative;
-  width: 1.4em;
-  height: 1.4em;
+  width: 16px;
+  height: 16px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -806,11 +838,12 @@ input[type="checkbox"] // input[type="radio"]
   cursor: pointer;
   transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
   padding-bottom: 1px;
+  bottom: 1px;
 
   &::before {
     content: "";
-    height: 65%;
-    width: 40%;
+    height: 70%;
+    width: 35%;
     border-style: solid;
     border-color: $white;
     border-width: 0 2px 2px 0;

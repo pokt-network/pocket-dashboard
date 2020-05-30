@@ -75,7 +75,7 @@ class VerifyEmail extends Component {
         {!unauthorized ? (
           <>
             <Row className="mt-5 mb-3">
-              <Col lg={{span: 8, offset: 4}}>
+              <Col lg={{span: 8, offset: 2}}>
                 <AppSteps
                   icons={icons}
                   steps={[
