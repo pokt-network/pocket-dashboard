@@ -98,6 +98,7 @@ body {
   font-weight: 400;
   border-radius: $default-border-radius;
   font-family: "Lato", sans-serif;
+  line-height: 30px;
   padding: 0 !important;
 
   span {
@@ -706,6 +707,10 @@ textarea.form-control::placeholder {
   }
 }
 
+.text-hidden {
+  font-size: 20px;
+}
+
 .divider {
   display: flex;
   flex-direction: row;
@@ -715,7 +720,7 @@ textarea.form-control::placeholder {
 .divider:after {
   content: "";
   flex: 1 1;
-  border-bottom: 2px solid $border-blue;
+  border-bottom: 1px solid $border-blue;
   margin: auto;
 }
 

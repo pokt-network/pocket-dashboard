@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
 import {Button} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import UserService from "../services/PocketUserService";
 
 export const AuthProviderType = {
@@ -35,7 +34,7 @@ export class AuthProviderButton extends Component {
         block={block}
         onClick={this.onButtonClick}
       >
-        {icon ? <FontAwesomeIcon icon={icon} /> : null} {type} with{" "}
+        {icon ? <img alt="" src={`/assets/${authProvider.name}.svg`} /> : null} {type} with{" "}
         {authProvider.name.slice(0, 1).toUpperCase() +
           authProvider.name.slice(1, authProvider.name.length)}
       </Button>
