@@ -27,6 +27,8 @@ export const PURCHASE_ITEM_NAME = {
   NODES: "Validator power",
 };
 
+export const DEFAULT_ERROR_MESSAGE = "An unexpected error occurred, please try again later.";
+
 export const POKT_UNSTAKING_DAYS = 21;
 
 export const DEFAULT_POKT_DENOMINATION_BASE = 6;
@@ -39,6 +41,8 @@ export const PAYMENT_HISTORY_LIMIT = 10;
 
 // eslint-disable-next-line no-useless-escape
 export const PASSPHRASE_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@\?<>\{\}"\-=\\|+\[\];:,.'`#\$/()_%\^&\*])(?=.{15,})/;
+// eslint-disable-next-line no-useless-escape
+export const URL_HTTPS_REGEX = /^(https:\/\/)[a-z0-9]+([\-\.][a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm;
 
 export const STYLING = {
   primaryColor: "#27a9e0",
