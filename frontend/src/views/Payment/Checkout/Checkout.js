@@ -160,7 +160,7 @@ class Checkout extends Component {
                 "Purchase",
                 <>
                   Encode and sign
-                  <br /> stake transaction
+                  <br/> stake transaction
                 </>,
                 "throughput available",
               ]}

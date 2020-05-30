@@ -3,22 +3,22 @@ export const profile = {
     {
       name: "General Information",
       url: "/dashboard/profile",
-      icon: "user_icon",
+      icon: "profile/user_icon.svg",
     },
     {
       name: "Change your password",
       url: "/dashboard/profile/password-change",
-      icon: "key",
+      icon: "profile/key.svg",
     },
     {
-      name: "Payment method",
+      name: "Payment methods",
       url: "/dashboard/profile/payments",
-      icon: "payment_methods",
+      icon: "profile/payment_methods.svg",
     },
     {
       name: "Payment History",
       url: "/dashboard/profile/payment-history",
-      icon: "payment_history",
+      icon: "profile/payment_history.svg",
     },
   ],
 };

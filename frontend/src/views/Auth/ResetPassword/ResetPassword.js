@@ -5,6 +5,8 @@ import PocketBox from "../../../core/components/PocketBox/PocketBox";
 import {Formik} from "formik";
 import * as yup from "yup";
 import {VALIDATION_MESSAGES} from "../../../_constants";
+import PocketUserService from "../../../core/services/PocketUserService";
+import "./ResetPassword.scss";
 
 class ResetPassword extends Component {
   constructor(props, context) {
@@ -22,6 +24,14 @@ class ResetPassword extends Component {
 
   handleSubmit() {
     // TODO: Integrate to backend
+    // eslint-disable-next-line react/prop-types
+    const {email} = this.props.location.state;
+    const {password1} = this.state.data;
+    const {password2} = this.state.data;
+
+    if (password1 === password2) {
+      PocketUserService.changePassword(email, password1, password2);
+    }
   }
 
   render() {
@@ -40,9 +50,13 @@ class ResetPassword extends Component {
       <Container fluid id={"forgot-password-page"}>
         <Navbar />
         <Row className="mt-1">
-          <Col id={"main"} md={{span: 8, offset: 2}} lg={{span: 4, offset: 3}}>
+          <Col
+            id={"main"}
+            md={{span: 8, offset: 2}}
+            lg={{span: 4, offset: 3}}
+          >
             <PocketBox iconUrl={"/assets/triangle.png"}>
-              <h1 className="title">Reset password</h1>
+              <h1 className="title-password">Reset password</h1>
               <Formik
                 validationSchema={schema}
                 onSubmit={(data) => {
@@ -65,6 +79,7 @@ class ResetPassword extends Component {
                         value={values.password1}
                         onChange={handleChange}
                         isInvalid={!!errors.password1}
+                        className="passwordInput"
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.password1}
@@ -79,18 +94,19 @@ class ResetPassword extends Component {
                         value={values.password2}
                         onChange={handleChange}
                         isInvalid={!!errors.password2}
+                        className="passwordInput"
                       />
                       <Form.Control.Feedback type="invalid">
                         {errors.password2}
                       </Form.Control.Feedback>
                     </Form.Group>
                     <Button
-                      className="pl-5 pr-5"
+                      className="resetButton"
                       type="submit"
                       size="md"
                       variant="primary"
                     >
-                      Change password
+                      <span className="resetButtonText">Change Password</span>
                     </Button>
                   </Form>
                 )}

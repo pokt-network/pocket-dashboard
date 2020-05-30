@@ -29,7 +29,7 @@ class AppDatePicker extends Component {
     const {onChange, ...props} = this.props;
 
     const DateButton = ({value, onClick}) => (
-      <button className="wrapper" onClick={onClick}>
+      <button className="wrapper-btn" onClick={onClick}>
         <span>{value}</span>
         <FontAwesomeIcon icon={faCalendarAlt} className="icon" />
       </button>

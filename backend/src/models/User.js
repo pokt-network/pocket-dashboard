@@ -14,15 +14,17 @@ export class PocketUser {
    * @param {string} [password] Password.
    * @param {string} [lastLogin] Last login.
    * @param {Array<AnsweredSecurityQuestion>} [securityQuestions] Answered security question of user.
+   * @param {string} [customerID] Customer ID.
    */
-  constructor(provider, email, username, password, lastLogin, securityQuestions) {
+  constructor(provider, email, username, password, lastLogin, securityQuestions, customerID) {
     Object.assign(this, {
       provider: provider.toLowerCase(),
       email,
       username,
       password,
       lastLogin,
-      securityQuestions
+      securityQuestions,
+      customerID
     });
   }
 
@@ -41,25 +43,24 @@ export class PocketUser {
     return new PocketUser(user.provider, user.email, user.username, user.password, lastLoginUTC);
   }
 
-  /* eslint-disable jsdoc/require-param-description */
+
   /**
    * Factory type to create an user object from db.
    *
    * @param {object} user User from db.
-   * @param {string} user.provider
-   * @param {string} user.email
-   * @param {string} user.username
-   * @param {string} user.password
-   * @param {string} user.lastLogin
-   * @param {Array<AnsweredSecurityQuestion>} user.securityQuestions
+   * @param {string} user.provider Provider.
+   * @param {string} user.email Email.
+   * @param {string} user.username User name.
+   * @param {string} user.password Password.
+   * @param {string} user.lastLogin Last login.
+   * @param {Array<AnsweredSecurityQuestion>} user.securityQuestions Security questions.
+   * @param {string} user.customerID Customer ID.
    *
    * @returns {PocketUser} A new Pocket user.
    * @static
    */
-
-  /* eslint-enable jsdoc/require-param-description */
   static createPocketUserFromDB(user) {
-    return new PocketUser(user.provider, user.email, user.username, user.password, user.lastLogin, user.securityQuestions);
+    return new PocketUser(user.provider, user.email, user.username, user.password, user.lastLogin, user.securityQuestions, user.customerID);
   }
 
   /**
@@ -127,26 +128,68 @@ export class EmailUser extends PocketUser {
    */
   static validate(userData) {
 
-    if (!EMAIL_REGEX.test(userData.email)) {
-      throw Error("Email address is not valid.");
-    }
+    EmailUser.validateEmail(userData.email);
 
-    // Validate if username has white spaces.
-    if (/\s/.test(userData.username)) {
-      throw Error("Username is not valid.");
-    }
+    EmailUser.validateUsername(userData.username);
 
-    if (userData.password1.length < PASSWORD_MIN_LENGTH || userData.password2.length < PASSWORD_MIN_LENGTH) {
+    EmailUser.validatePasswords(userData.password1, userData.password2);
+
+    return true;
+  }
+
+  /**
+   * Validate passwords.
+   *
+   * @param {string} password1 Password to validate against password2.
+   * @param {string} password2 Password to validate against password1.
+   *
+   * @returns {boolean} If passwords match or not.
+   * @throws {Error} If validation fails.
+   */
+  static validatePasswords(password1, password2) {
+
+    if (password1.length < PASSWORD_MIN_LENGTH || password2.length < PASSWORD_MIN_LENGTH) {
       throw Error(`Passwords must have ${PASSWORD_MIN_LENGTH} characters at least.`);
     }
 
-    if (userData.password1 !== userData.password2) {
+    if (password1 !== password2) {
       throw Error("Passwords does not match.");
     }
 
     return true;
   }
 
+  /**
+   * Validate user name.
+   *
+   * @param {string} username User name.
+   *
+   * @returns {boolean} If is valid
+   * @throws {Error} if validation fails.
+   */
+  static validateUsername(username) {
+    if (username === "") {
+      throw Error("Username is not valid.");
+    }
+
+    return true;
+  }
+
+  /**
+   * Validate email.
+   *
+   * @param {string} email User email.
+   *
+   * @returns {boolean} If is valid
+   * @throws {Error} if validation fails.
+   */
+  static validateEmail(email) {
+    if (!EMAIL_REGEX.test(email)) {
+      throw Error("Email address is not valid.");
+    }
+
+    return true;
+  }
 
   /**
    * Factory method to create an Email user with encrypted password.
@@ -177,7 +220,6 @@ export class EmailUser extends PocketUser {
   static async encryptPassword(password) {
     return await bcrypt.hash(password, SALT_ROUNDS);
   }
-
 
   /**
    * Compare passwords.

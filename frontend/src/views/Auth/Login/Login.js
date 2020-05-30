@@ -113,7 +113,7 @@ class Login extends Component {
             </div>
             <Row className="justify-content-center">
               <div className={"main"}>
-                <h2>Login</h2>
+                <h2>Log in</h2>
                 <Formik
                   validate={this.validate}
                   // validationSchema={this.schema}

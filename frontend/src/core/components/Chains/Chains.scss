@@ -52,30 +52,6 @@
           padding-left: 0;
           max-height: calc(454px - 52px);
         }
-
-        .selection-cell-header {
-          padding: 0;
-          width: 36px;
-          border-bottom-color: transparent;
-
-          input[type="checkbox"] {
-            bottom: 14px;
-            left: 38px;
-          }
-        }
-
-        .selection-cell {
-          padding-left: 37px;
-          padding-right: 0px;
-          padding-top: 10px;
-          width: 1px;
-          border-bottom-color: transparent;
-        }
-
-        tbody tr td:nth-of-type(2),
-        th:nth-of-type(2) {
-          padding-left: 0px;
-        }
       }
     }
   }

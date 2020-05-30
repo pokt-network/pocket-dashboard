@@ -1,6 +1,6 @@
 import React from "react";
-import {Button, Col, FormControl, InputGroup, Row, Form} from "react-bootstrap";
-import {TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
+import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
+import {TABLE_COLUMNS, URL_HTTPS_REGEX, VALIDATION_MESSAGES} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
 import Segment from "../../../core/components/Segment/Segment";
@@ -15,13 +15,11 @@ class NodeChainList extends Chains {
 
     this.handleChains = this.handleChains.bind(this);
 
-    const {serviceURL} = NodeService.getNodeInfo();
-
     this.state = {
       ...this.state,
       data: {
         ...this.state.data,
-        serviceURL: serviceURL || "",
+        serviceURL: "",
       },
     };
   }
@@ -57,7 +55,7 @@ class NodeChainList extends Chains {
     const schema = yup.object().shape({
       serviceURL: yup
         .string()
-        .url(VALIDATION_MESSAGES.URL)
+        .matches(URL_HTTPS_REGEX, VALIDATION_MESSAGES.URL)
         .required(VALIDATION_MESSAGES.REQUIRED),
     });
 
@@ -103,7 +101,7 @@ class NodeChainList extends Chains {
                         onClick={this.handleChainSearch}
                         variant="outline-primary"
                       >
-                        <img src="/assets/search.svg" alt="search-icon" />
+                        <img src="/assets/search.svg" alt="search-icon"/>
                       </Button>
                     </InputGroup.Append>
                   </InputGroup>
