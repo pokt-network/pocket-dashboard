@@ -88,7 +88,11 @@ class SignUp extends Component {
     const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
     const {success, data} = await PocketUserService.signUp(
-      username, email, password1, password2, securityQuestionLinkPage
+      username,
+      email,
+      password1,
+      password2,
+      securityQuestionLinkPage
     );
 
     if (!success) {
@@ -131,153 +135,152 @@ class SignUp extends Component {
                 Do you have an account? <Link to={login}>Login</Link>
               </p>
             </div>
+            <Row className="justify-content-center">
+              <div className={"main"}>
+                <h2>Create Account</h2>
+                <p className="error">{backendErrors}</p>
+                <Formik
+                  validate={this.validate}
+                  onSubmit={(data) => {
+                    this.setState({data});
+                    this.handleSignUp();
+                  }}
+                  initialValues={this.state.data}
+                  values={this.state.data}
+                  validateOnChange={false}
+                  validateOnBlur={false}
+                >
+                  {({handleSubmit, handleChange, values, errors}) => (
+                    <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
+                      <Form.Group>
+                        <Form.Label>Email</Form.Label>
 
-            <Row>
-              <Col lg={{span: 5, offset: 3}} className="mb-5">
-                <div className={"main"}>
-                  <h2>Create Account</h2>
-                  <p className="error">{backendErrors}</p>
-                  <Formik
-                    validate={this.validate}
-                    onSubmit={(data) => {
-                      this.setState({data});
-                      this.handleSignUp();
-                    }}
-                    initialValues={this.state.data}
-                    values={this.state.data}
-                    validateOnChange={false}
-                    validateOnBlur={false}
-                  >
-                    {({handleSubmit, handleChange, values, errors}) => (
-                      <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
-                        <Form.Group>
-                          <Form.Label>Email</Form.Label>
-
-                          <Form.Control
-                            name="email"
-                            placeholder="example@email.com"
-                            value={values.email}
-                            onChange={handleChange}
-                            isInvalid={!!errors.email}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.email}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group>
-                          <Form.Label>Username</Form.Label>
-
-                          <Form.Control
-                            name="username"
-                            placeholder="username"
-                            value={values.username}
-                            onChange={handleChange}
-                            isInvalid={!!errors.username}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.username}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group>
-                          <Form.Label>Password</Form.Label>
-                          <Form.Control
-                            type="password"
-                            name="password1"
-                            placeholder="**************"
-                            value={values.password1}
-                            onChange={handleChange}
-                            isInvalid={!!errors.password1}
-                            className={cls({
-                              "text-hidden": values.password1.length === 0,
-                            })}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.password1}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <Form.Group>
-                          <Form.Label>Confirm Password</Form.Label>
-                          <Form.Control
-                            type="password"
-                            name="password2"
-                            placeholder="**************"
-                            value={values.password2}
-                            onChange={handleChange}
-                            isInvalid={!!errors.password2}
-                            className={cls({
-                              "text-hidden": values.password2.length === 0,
-                            })}
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            {errors.password2}
-                          </Form.Control.Feedback>
-                        </Form.Group>
-                        <br />
-                        <div className="d-flex justify-content-center">
-                          <ReCAPTCHA
-                            sitekey={Configurations.recaptcha.client}
-                            onChange={this.validateCaptcha}
-                          />
-                        </div>
-                        <br />
-                        <Form.Check
-                          checked={agreeTerms}
-                          onChange={() =>
-                            this.setState({agreeTerms: !agreeTerms})
-                          }
-                          id="terms-checkbox"
-                          type="checkbox"
-                          label={
-                            <span className="agreement-label">
-                              I agree to Pocket Dashboard{" "}
-                              <Link
-                                to={_getDashboardPath(
-                                  DASHBOARD_PATHS.privacyPolicy
-                                )}
-                              >
-                                Privacy Policy.
-                              </Link>
-                            </span>
-                          }
+                        <Form.Control
+                          name="email"
+                          placeholder="example@email.com"
+                          value={values.email}
+                          onChange={handleChange}
+                          isInvalid={!!errors.email}
                         />
-                        <br />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.email}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label>Username</Form.Label>
 
-                        <Button
-                          disabled={!(agreeTerms && validCaptcha)}
-                          type="submit"
-                          className="sign-up-btn"
-                          size="md"
-                          variant="primary"
-                          block
-                        >
-                          Sign up
-                        </Button>
-                        <div className="divider mt-4 mb-3">Or</div>
-                        <div id={"provider-buttons"}>
-                          <AuthProviderButton
-                            block={true}
-                            className="brand pl-4 pr-4 mr-3"
-                            icon={faGoogle}
-                            type={AuthProviderType.signup}
-                            authProvider={PocketUserService.getAuthProvider(
-                              this.state.authProviders, "google"
-                            )}
-                          />
-                          <AuthProviderButton
-                            block={true}
-                            className="brand pl-4 pr-4"
-                            icon={faGithub}
-                            type={AuthProviderType.signup}
-                            authProvider={PocketUserService.getAuthProvider(
-                              this.state.authProviders, "github"
-                            )}
-                          />
-                        </div>
-                      </Form>
-                    )}
-                  </Formik>
-                </div>
-              </Col>
+                        <Form.Control
+                          name="username"
+                          placeholder="username"
+                          value={values.username}
+                          onChange={handleChange}
+                          isInvalid={!!errors.username}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.username}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control
+                          type="password"
+                          name="password1"
+                          placeholder="**************"
+                          value={values.password1}
+                          onChange={handleChange}
+                          isInvalid={!!errors.password1}
+                          className={cls({
+                            "text-hidden": values.password1.length === 0,
+                          })}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.password1}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                      <Form.Group>
+                        <Form.Label>Confirm Password</Form.Label>
+                        <Form.Control
+                          type="password"
+                          name="password2"
+                          placeholder="**************"
+                          value={values.password2}
+                          onChange={handleChange}
+                          isInvalid={!!errors.password2}
+                          className={cls({
+                            "text-hidden": values.password2.length === 0,
+                          })}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.password2}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+                      <br />
+                      <div className="d-flex justify-content-center">
+                        <ReCAPTCHA
+                          sitekey={Configurations.recaptcha.client}
+                          onChange={this.validateCaptcha}
+                        />
+                      </div>
+                      <br />
+                      <Form.Check
+                        checked={agreeTerms}
+                        onChange={() =>
+                          this.setState({agreeTerms: !agreeTerms})
+                        }
+                        id="terms-checkbox"
+                        type="checkbox"
+                        label={
+                          <span className="agreement-label">
+                            I agree to Pocket Dashboard{" "}
+                            <Link
+                              to={_getDashboardPath(
+                                DASHBOARD_PATHS.privacyPolicy
+                              )}
+                            >
+                              Privacy Policy.
+                            </Link>
+                          </span>
+                        }
+                      />
+                      <br />
+
+                      <Button
+                        disabled={!(agreeTerms && validCaptcha)}
+                        type="submit"
+                        className="sign-up-btn"
+                        size="md"
+                        variant="primary"
+                        block
+                      >
+                        Sign up
+                      </Button>
+                      <div className="divider mt-4 mb-3">Or</div>
+                      <div id={"provider-buttons"}>
+                        <AuthProviderButton
+                          block={true}
+                          className="brand pl-4 pr-4 mr-3"
+                          icon={faGoogle}
+                          type={AuthProviderType.signup}
+                          authProvider={PocketUserService.getAuthProvider(
+                            this.state.authProviders,
+                            "google"
+                          )}
+                        />
+                        <AuthProviderButton
+                          block={true}
+                          className="brand pl-4 pr-4"
+                          icon={faGithub}
+                          type={AuthProviderType.signup}
+                          authProvider={PocketUserService.getAuthProvider(
+                            this.state.authProviders,
+                            "github"
+                          )}
+                        />
+                      </div>
+                    </Form>
+                  )}
+                </Formik>
+              </div>
             </Row>
           </Col>
         </Row>
