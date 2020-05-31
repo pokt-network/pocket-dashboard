@@ -14,6 +14,7 @@ import {
   Transaction
 } from "@pokt-network/pocket-js";
 import {Configurations} from "../_configuration";
+import bigInt from "big-integer";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
@@ -185,9 +186,11 @@ export default class PocketService {
 
     const transactionSender = await this.__pocket.withImportedAccount(fromAccount.addressHex, passphrase);
 
+    const uPoktAmountWithFee = bigInt(uPoktAmount).add(bigInt(transaction_fee));
+
     const transactionResponse = await transactionSender
-      .send(fromAccount.addressHex, toAccount.addressHex, uPoktAmount)
-      .submit(chain_id, transaction_fee, CoinDenom.Upokt, "transfer POKT");
+      .send(fromAccount.addressHex, toAccount.addressHex, uPoktAmountWithFee.toString())
+      .submit(chain_id, transaction_fee);
 
     if (transactionResponse instanceof Error) {
       throw transactionResponse;
@@ -352,7 +355,7 @@ export default class PocketService {
     const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.addressHex, passPhrase);
 
     const transactionResponse = await transactionSender.appStake(publicKey, networkChains, uPoktAmount)
-      .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake an app");
+      .submit(chain_id, transaction_fee);
 
     if (transactionResponse instanceof Error) {
       throw transactionResponse;

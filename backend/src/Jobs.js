@@ -25,6 +25,25 @@ STAKE_QUEUE.process(async (job, done) => {
 
     if (transaction.hash === pocketTransaction.hash) {
       await TRANSACTION_SERVICE.markTransactionSuccess(pocketTransaction);
+
+      done("OK");
+    }
+  } catch (e) {
+    done(new Error(e.message));
+  }
+});
+
+UNSTAKE_QUEUE.process(async (job, done) => {
+  const {
+    data: pocketTransaction
+  } = job;
+
+  try {
+    const transaction = await POCKET_SERVICE.getTransaction(pocketTransaction.hash);
+
+    if (transaction.hash === pocketTransaction.hash) {
+      await TRANSACTION_SERVICE.markTransactionSuccess(pocketTransaction);
+
       done("OK");
     }
   } catch (e) {
@@ -42,11 +61,7 @@ TRANSFER_QUEUE.process(async (job, done) => {
     hash: transactionHash,
     postAction: {
       type: postActionType,
-      data: {
-        account,
-        pokt,
-        chains
-      }
+      data: stakeData
     }
   } = pocketTransaction;
 
@@ -54,6 +69,8 @@ TRANSFER_QUEUE.process(async (job, done) => {
     const transaction = await POCKET_SERVICE.getTransaction(transactionHash);
 
     if (transaction.hash === transactionHash) {
+      const {account, pokt, chains} = stakeData;
+
       const applicationAccount = await ACCOUNT_SERVICE
         .importAccountToNetwork(POCKET_SERVICE, account.privateKey, account.passphrase);
 
@@ -65,9 +82,19 @@ TRANSFER_QUEUE.process(async (job, done) => {
           await TRANSACTION_SERVICE.addStakeTransaction(stakeTransaction.hash);
           break;
         }
+        case POST_ACTION_TYPE.stakeNode: {
+          const serviceURL = new URL(stakeData.serviceURL);
+
+          const stakeTransaction = await POCKET_SERVICE
+            .stakeNode(applicationAccount, account.passphrase, pokt, chains, serviceURL);
+
+          await TRANSACTION_SERVICE.addStakeTransaction(stakeTransaction.hash);
+          break;
+        }
       }
 
       await TRANSACTION_SERVICE.markTransactionSuccess(pocketTransaction);
+
       done("OK");
     }
   } catch (e) {

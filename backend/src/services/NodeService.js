@@ -4,6 +4,7 @@ import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import {ExtendedPocketNode, PocketNode} from "../models/Node";
 import AccountService from "./AccountService";
 import BasePocketService from "./BasePocketService";
+import {TransactionPostAction} from "../models/Transaction";
 
 const NODE_COLLECTION_NAME = "Nodes";
 
@@ -339,13 +340,14 @@ export default class NodeService extends BasePocketService {
 
     // FIXME: Now we use free tier for account to transfer the amount to stake the app on custom tier,
     const {account: freeTierAccount, passphrase: freeTierPassphrase} = await this.pocketService.getFreeTierAccount();
-    const serviceURL = new URL(node.serviceURL);
 
-    await this.pocketService
+    const transferTransaction = await this.pocketService
       .transferPoktBetweenAccounts(freeTierAccount, freeTierPassphrase, nodeAccount, uPoktAmount);
 
-    await this.pocketService
-      .stakeNode(nodeAccount, node.passphrase, uPoktAmount, networkChains, serviceURL);
+    const postAction = TransactionPostAction
+      .createStakeNodePostAction(node.privateKey, node.passphrase, uPoktAmount, networkChains, node.serviceURL);
+
+    await this.transactionService.addTransferTransaction(transferTransaction.hash, postAction);
 
     return PocketNode.createPocketNode(nodeDB);
   }
@@ -373,8 +375,10 @@ export default class NodeService extends BasePocketService {
     const nodeAccount = await accountService
       .importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passphrase);
 
-    await this.pocketService
+    const unstakeTransaction = await this.pocketService
       .unstakeNode(nodeAccount, nodeData.passphrase);
+
+    await this.transactionService.addUnstakeTransaction(unstakeTransaction.hash);
 
     return PocketNode.createPocketNode(nodeDB);
   }
@@ -402,8 +406,10 @@ export default class NodeService extends BasePocketService {
     const nodeAccount = await accountService
       .importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passphrase);
 
-    await this.pocketService
+    const unstakeTransaction = await this.pocketService
       .unJailNode(nodeAccount, nodeData.passphrase);
+
+    await this.transactionService.addUnstakeTransaction(unstakeTransaction.hash);
 
     return PocketNode.createPocketNode(nodeDB);
   }

@@ -42,11 +42,7 @@ export default class TransactionService extends BaseService {
       hash: transaction.hash
     };
 
-    /** @type {{result: {n:number, ok: number}}} */
-    const updateResult = await this.persistenceService
-      .updateEntity(PENDING_TRANSACTION_COLLECTION_NAME, filter, transaction);
-
-    return updateResult.result.ok === 1;
+    await this.persistenceService.deleteEntities(PENDING_TRANSACTION_COLLECTION_NAME, filter);
   }
 
   async addTransferTransaction(transactionHash, postAction = {}) {
@@ -86,9 +82,6 @@ export default class TransactionService extends BaseService {
   }
 
   async markTransactionSuccess(transaction) {
-    transaction.completed = true;
-    transaction.postAction = {};
-
-    return await this.__updateTransaction(transaction);
+    await this.__updateTransaction(transaction);
   }
 }

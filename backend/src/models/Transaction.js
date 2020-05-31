@@ -17,11 +17,25 @@ export class TransactionPostAction {
         privateKey,
         passphrase
       },
-      pokt: pokt,
-      chains: chains
+      pokt,
+      chains
     };
 
     return new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, data);
+  }
+
+  static createStakeNodePostAction(privateKey, passphrase, pokt, chains, serviceURL) {
+    const data = {
+      account: {
+        privateKey,
+        passphrase
+      },
+      pokt,
+      chains,
+      serviceURL
+    };
+
+    return new TransactionPostAction(POST_ACTION_TYPE.stakeNode, data);
   }
 }
 
