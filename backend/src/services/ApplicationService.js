@@ -367,9 +367,9 @@ export default class ApplicationService extends BasePocketService {
       .transferPoktBetweenAccounts(freeTierAccount, freeTierPassphrase, applicationAccount, stakeAmount);
 
     const postAction = TransactionPostAction
-      .createStakeApplicationPostAction(applicationAccount, stakeAmount, networkChains);
+      .createStakeApplicationPostAction(application.privateKey, application.passphrase, stakeAmount, networkChains);
 
-    await this.transactionService.addTransaction(transferTransaction.hash, postAction);
+    await this.transactionService.addTransferTransaction(transferTransaction.hash, postAction);
 
     await this.__markApplicationAsFreeTier(clientApplication, true);
 
@@ -447,9 +447,9 @@ export default class ApplicationService extends BasePocketService {
       .transferPoktBetweenAccounts(freeTierAccount, freeTierPassphrase, applicationAccount, uPoktAmount);
 
     const postAction = TransactionPostAction
-      .createStakeApplicationPostAction(applicationAccount, uPoktAmount, networkChains);
+      .createStakeApplicationPostAction(application.privateKey, application.passphrase, uPoktAmount, networkChains);
 
-    await this.transactionService.addTransaction(transferTransaction.hash, postAction);
+    await this.transactionService.addTransferTransaction(transferTransaction.hash, postAction);
 
     return PocketApplication.createPocketApplication(applicationDB);
   }
@@ -479,7 +479,7 @@ export default class ApplicationService extends BasePocketService {
     const unstakeTransaction = await this.pocketService
       .unstakeApplication(applicationAccount, applicationData.passphrase);
 
-    await this.transactionService.addTransaction(unstakeTransaction.hash);
+    await this.transactionService.addUnstakeTransaction(unstakeTransaction.hash);
 
     return PocketApplication.createPocketApplication(applicationDB);
   }

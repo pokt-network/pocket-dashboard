@@ -10,7 +10,8 @@ import {
   Pocket,
   PocketAAT,
   RawTxResponse,
-  StakingStatus
+  StakingStatus,
+  Transaction
 } from "@pokt-network/pocket-js";
 import {Configurations} from "../_configuration";
 
@@ -193,6 +194,24 @@ export default class PocketService {
     }
 
     return transactionResponse;
+  }
+
+  /**
+   * Get Transaction data;
+   *
+   * @param {string} transactionHash Transaction hash.
+   *
+   * @returns {Transaction} Transaction data.
+   * @async
+   */
+  async getTransaction(transactionHash) {
+    const transactionResponse = await this.__pocket.rpc().query.getTX(transactionHash);
+
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse.transaction;
   }
 
   /**

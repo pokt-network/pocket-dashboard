@@ -1,11 +1,24 @@
 import BaseService from "./BaseService";
 import {PocketTransaction} from "../models/Transaction";
+import JobService from "bull";
+import {Configurations} from "../_configuration";
 
 const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";
 
+const TRANSFER_QUEUE = new JobService("TRANSFER_QUEUE");
+const STAKE_QUEUE = new JobService("STAKE_QUEUE");
+const UNSTAKE_QUEUE = new JobService("UNSTAKE_QUEUE");
+
+const {
+  jobs: {
+    delayed_time: DELAYED_TIME,
+    ATTEMPTS
+  }
+} = Configurations.pocket_network;
+
+const JOB_CONFIGURATION = {delay: DELAYED_TIME, attempts: ATTEMPTS, backoff: DELAYED_TIME};
 
 export default class TransactionService extends BaseService {
-
 
   /**
    * @param {PocketTransaction} transaction transaction.
@@ -20,9 +33,39 @@ export default class TransactionService extends BaseService {
     return saveResult.result.ok === 1;
   }
 
-  async addTransaction(transactionHash, postAction = {}) {
+  async addTransferTransaction(transactionHash, postAction = {}) {
     const pocketTransaction = new PocketTransaction(new Date(), transactionHash, postAction);
 
-    return this.__addTransaction(pocketTransaction);
+    const saved = await this.__addTransaction(pocketTransaction);
+
+    if (saved && postAction) {
+      TRANSFER_QUEUE.add(pocketTransaction, JOB_CONFIGURATION);
+    }
+
+    return saved;
+  }
+
+  async addStakeTransaction(transactionHash) {
+    const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
+
+    const saved = await this.__addTransaction(pocketTransaction);
+
+    if (saved) {
+      STAKE_QUEUE.add(pocketTransaction, JOB_CONFIGURATION);
+    }
+
+    return saved;
+  }
+
+  async addUnstakeTransaction(transactionHash) {
+    const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
+
+    const saved = await this.__addTransaction(pocketTransaction);
+
+    if (saved) {
+      UNSTAKE_QUEUE.add(pocketTransaction, JOB_CONFIGURATION);
+    }
+
+    return saved;
   }
 }

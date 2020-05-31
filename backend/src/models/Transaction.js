@@ -1,21 +1,28 @@
+export const POST_ACTION_TYPE = {
+  stakeApplication: "STAKE_APPLICATION",
+  stakeNode: "STAKE_NODE",
+  unstakeApplication: "UNSTAKE_APPLICATION",
+  unstakeNode: "UNSTAKE_NODE"
+};
+
 export class TransactionPostAction {
 
   constructor(type, data) {
     Object.assign(this, {type, data});
   }
 
-  static createStakeApplicationPostAction(account, pokt, chains) {
+  static createStakeApplicationPostAction(privateKey, passphrase, pokt, chains) {
     const data = {
       account: {
-        address: account.addressHex,
-        publicKey: account.publicKey.toString("hex")
+        privateKey,
+        passphrase
       },
       pokt: pokt,
       chains: chains
     };
 
-    return new TransactionPostAction("STAKE_APPLICATION", data);
-  };
+    return new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, data);
+  }
 }
 
 export class PocketTransaction {

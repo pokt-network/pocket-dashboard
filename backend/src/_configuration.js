@@ -80,6 +80,10 @@ export const Configurations = {
     }
   },
   pocket_network: {
+    jobs: {
+      delayed_time: process.env.POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME,
+      attempts: process.env.POCKET_NETWORK_SERVICE_WORKER_ATEMPTS
+    },
     aat_version: "0.0.1",
     default_rpc_port: 8081,
     transaction_fee: "100000",
