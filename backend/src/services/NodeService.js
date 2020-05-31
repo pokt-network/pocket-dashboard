@@ -406,10 +406,10 @@ export default class NodeService extends BasePocketService {
     const nodeAccount = await accountService
       .importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passphrase);
 
-    const unstakeTransaction = await this.pocketService
+    const unjailTransaction = await this.pocketService
       .unJailNode(nodeAccount, nodeData.passphrase);
 
-    await this.transactionService.addUnstakeTransaction(unstakeTransaction.hash);
+    await this.transactionService.addUnJailTransaction(unjailTransaction.hash);
 
     return PocketNode.createPocketNode(nodeDB);
   }

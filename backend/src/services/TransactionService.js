@@ -8,6 +8,7 @@ const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";
 const TRANSFER_QUEUE = new JobService("TRANSFER_QUEUE");
 const STAKE_QUEUE = new JobService("STAKE_QUEUE");
 const UNSTAKE_QUEUE = new JobService("UNSTAKE_QUEUE");
+const UNJAIL_QUEUE = new JobService("UNJAIL_QUEUE");
 
 const {
   jobs: {
@@ -83,5 +84,17 @@ export default class TransactionService extends BaseService {
 
   async markTransactionSuccess(transaction) {
     await this.__updateTransaction(transaction);
+  }
+
+  async addUnJailTransaction(transactionHash) {
+    const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
+
+    const saved = await this.__addTransaction(pocketTransaction);
+
+    if (saved) {
+      UNJAIL_QUEUE.add(pocketTransaction, JOB_CONFIGURATION);
+    }
+
+    return saved;
   }
 }

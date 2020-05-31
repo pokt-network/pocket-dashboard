@@ -13,7 +13,25 @@ const POCKET_SERVICE = new PocketService(POCKET_DATA.nodes, POCKET_DATA.rpcProvi
 const TRANSFER_QUEUE = new JobService("TRANSFER_QUEUE");
 const STAKE_QUEUE = new JobService("STAKE_QUEUE");
 const UNSTAKE_QUEUE = new JobService("UNSTAKE_QUEUE");
+const UNJAIL_QUEUE = new JobService("UNJAIL_QUEUE");
 
+UNJAIL_QUEUE.process(async (job, done) => {
+  const {
+    data: pocketTransaction
+  } = job;
+
+  try {
+    const transaction = await POCKET_SERVICE.getTransaction(pocketTransaction.hash);
+
+    if (transaction.hash === pocketTransaction.hash) {
+      await TRANSACTION_SERVICE.markTransactionSuccess(pocketTransaction);
+
+      done("OK");
+    }
+  } catch (e) {
+    done(new Error(e.message));
+  }
+});
 
 STAKE_QUEUE.process(async (job, done) => {
   const {
