@@ -1,13 +1,13 @@
-import BaseService from "./BaseService";
 import UserService from "./UserService";
 import {Node, StakingStatus} from "@pokt-network/pocket-js";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import {ExtendedPocketNode, PocketNode} from "../models/Node";
 import AccountService from "./AccountService";
+import BasePocketService from "./BasePocketService";
 
 const NODE_COLLECTION_NAME = "Nodes";
 
-export default class NodeService extends BaseService {
+export default class NodeService extends BasePocketService {
 
   constructor() {
     super();
@@ -338,31 +338,16 @@ export default class NodeService extends BaseService {
     }
 
     // FIXME: Now we use free tier for account to transfer the amount to stake the app on custom tier,
-    //  we dont know from where get these.
     const {account: freeTierAccount, passphrase: freeTierPassphrase} = await this.pocketService.getFreeTierAccount();
+    const serviceURL = new URL(node.serviceURL);
 
-    if (!await this.pocketService.hasBalance(freeTierAccount)) {
-      throw Error("Account does not have sufficient balance.");
-    }
-
-    const transferTransaction = await this.pocketService
+    await this.pocketService
       .transferPoktBetweenAccounts(freeTierAccount, freeTierPassphrase, nodeAccount, uPoktAmount);
 
-    if (this.pocketService.isTransactionSuccess(transferTransaction)) {
+    await this.pocketService
+      .stakeNode(nodeAccount, node.passphrase, uPoktAmount, networkChains, serviceURL);
 
-      // Wait until account has balance.
-      await this._waitUntilHasBalance(nodeAccount);
-
-      // Stake node
-      const serviceURL = new URL(node.serviceURL);
-      const stakeTransaction = await this.pocketService
-        .stakeNode(nodeAccount, node.passphrase, uPoktAmount, networkChains, serviceURL);
-
-      if (this.pocketService.isTransactionSuccess(stakeTransaction)) {
-        return PocketNode.createPocketNode(nodeDB);
-      }
-    }
-    return false;
+    return PocketNode.createPocketNode(nodeDB);
   }
 
   /**
@@ -388,13 +373,10 @@ export default class NodeService extends BaseService {
     const nodeAccount = await accountService
       .importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passphrase);
 
-    // Unstake node
-    const unstakedTransaction = await this.pocketService.unstakeNode(nodeAccount, nodeData.passphrase);
+    await this.pocketService
+      .unstakeNode(nodeAccount, nodeData.passphrase);
 
-    if (this.pocketService.isTransactionSuccess(unstakedTransaction)) {
-      return PocketNode.createPocketNode(nodeDB);
-    }
-    return false;
+    return PocketNode.createPocketNode(nodeDB);
   }
 
   /**
@@ -420,13 +402,10 @@ export default class NodeService extends BaseService {
     const nodeAccount = await accountService
       .importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passphrase);
 
-    // UnJail node
-    const unJailTransaction = await this.pocketService.unJailNode(nodeAccount, nodeData.passphrase);
+    await this.pocketService
+      .unJailNode(nodeAccount, nodeData.passphrase);
 
-    if (this.pocketService.isTransactionSuccess(unJailTransaction)) {
-      return PocketNode.createPocketNode(nodeDB);
-    }
-    return false;
+    return PocketNode.createPocketNode(nodeDB);
   }
 
   /**
