@@ -33,6 +33,22 @@ export default class TransactionService extends BaseService {
     return saveResult.result.ok === 1;
   }
 
+  /**
+   * @param {PocketTransaction} transaction transaction.
+   * @private
+   */
+  async __updateTransaction(transaction) {
+    const filter = {
+      hash: transaction.hash
+    };
+
+    /** @type {{result: {n:number, ok: number}}} */
+    const updateResult = await this.persistenceService
+      .updateEntity(PENDING_TRANSACTION_COLLECTION_NAME, filter, transaction);
+
+    return updateResult.result.ok === 1;
+  }
+
   async addTransferTransaction(transactionHash, postAction = {}) {
     const pocketTransaction = new PocketTransaction(new Date(), transactionHash, postAction);
 
@@ -67,5 +83,12 @@ export default class TransactionService extends BaseService {
     }
 
     return saved;
+  }
+
+  async markTransactionSuccess(transaction) {
+    transaction.completed = true;
+    transaction.postAction = {};
+
+    return await this.__updateTransaction(transaction);
   }
 }

@@ -14,26 +14,18 @@ const TRANSFER_QUEUE = new JobService("TRANSFER_QUEUE");
 const STAKE_QUEUE = new JobService("STAKE_QUEUE");
 const UNSTAKE_QUEUE = new JobService("UNSTAKE_QUEUE");
 
-TRANSFER_QUEUE.on("completed", (job, result) => {
-  console.log(`Job completed with result ${result}`);
-});
-
 
 STAKE_QUEUE.process(async (job, done) => {
   const {
-    data: {
-      hash: transactionHash
-    }
+    data: pocketTransaction
   } = job;
 
   try {
-    const transaction = await POCKET_SERVICE.getTransaction(transactionHash);
+    const transaction = await POCKET_SERVICE.getTransaction(pocketTransaction.hash);
 
-    if (transaction.hash === transactionHash) {
-      console.log("stake");
-      console.log("transaction");
-      console.log(transaction);
-      done(transactionHash);
+    if (transaction.hash === pocketTransaction.hash) {
+      await TRANSACTION_SERVICE.markTransactionSuccess(pocketTransaction);
+      done("OK");
     }
   } catch (e) {
     done(new Error(e.message));
@@ -43,18 +35,20 @@ STAKE_QUEUE.process(async (job, done) => {
 
 TRANSFER_QUEUE.process(async (job, done) => {
   const {
-    data: {
-      hash: transactionHash,
-      postAction: {
-        type: postActionType,
-        data: {
-          account,
-          pokt,
-          chains
-        }
+    data: pocketTransaction
+  } = job;
+
+  const {
+    hash: transactionHash,
+    postAction: {
+      type: postActionType,
+      data: {
+        account,
+        pokt,
+        chains
       }
     }
-  } = job;
+  } = pocketTransaction;
 
   try {
     const transaction = await POCKET_SERVICE.getTransaction(transactionHash);
@@ -72,7 +66,9 @@ TRANSFER_QUEUE.process(async (job, done) => {
           break;
         }
       }
-      done(transactionHash);
+
+      await TRANSACTION_SERVICE.markTransactionSuccess(pocketTransaction);
+      done("OK");
     }
   } catch (e) {
     done(new Error(e.message));

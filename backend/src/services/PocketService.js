@@ -187,7 +187,7 @@ export default class PocketService {
 
     const transactionResponse = await transactionSender
       .send(fromAccount.addressHex, toAccount.addressHex, uPoktAmount)
-      .submit(chain_id, transaction_fee);
+      .submit(chain_id, transaction_fee, CoinDenom.Upokt, "transfer POKT");
 
     if (transactionResponse instanceof Error) {
       throw transactionResponse;
@@ -352,7 +352,7 @@ export default class PocketService {
     const transactionSender = await this.__pocket.withImportedAccount(applicationAccount.addressHex, passPhrase);
 
     const transactionResponse = await transactionSender.appStake(publicKey, networkChains, uPoktAmount)
-      .submit(chain_id, transaction_fee);
+      .submit(chain_id, transaction_fee, CoinDenom.Upokt, "Stake an app");
 
     if (transactionResponse instanceof Error) {
       throw transactionResponse;
