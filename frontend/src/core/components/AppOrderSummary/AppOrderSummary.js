@@ -68,6 +68,7 @@ class AppOrderSummary extends Component {
           <span className="currency-wrapper">
             <span className="currency">{currency}</span>
             <Form.Control
+              disabled={maxBalance === 0}
               type="number"
               min={0}
               max={maxBalance}
