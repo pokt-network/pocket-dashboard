@@ -303,7 +303,7 @@ class SelectRelays extends Component {
             <AppOrderSummary
               items={[
                 {label: "App", quantity: 1},
-                {label: PURCHASE_ITEM_NAME.APPS, quantity: relaysSelected},
+                {label: PURCHASE_ITEM_NAME.APPS, quantity: formatNumbers(relaysSelected)},
                 {
                   label: `${PURCHASE_ITEM_NAME.APPS} Cost`,
                   quantity: `${subTotalFixed} ${currency.toUpperCase()}`,

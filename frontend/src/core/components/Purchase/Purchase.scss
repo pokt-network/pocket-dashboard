@@ -9,11 +9,11 @@
     content: "";
     background-image: url(/assets/caret_down.svg);
     background-repeat: no-repeat;
-    background-size: 30px 34px;
+    background-size: 15px 30px;
     display: inline-block;
-    width: 41px;
-    height: 41px;
-    margin-left: -16px;
+    width: 15px;
+    height: 30px;
+    margin-left: -6px;
     margin-top: -22px;
     position: absolute;
   }
@@ -104,9 +104,13 @@
     display: flex;
     align-items: center;
     flex-grow: 2;
-    padding: 0 30px;
+    padding: 0 40px;
     border-radius: $panel-radius;
     box-shadow: $default-box-shadow;
+
+    .slider-container {
+      width: 100%;
+    }
 
     .rc-slider-rail {
       border-radius: $panel-radius;
