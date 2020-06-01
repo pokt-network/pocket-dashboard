@@ -59,14 +59,15 @@ class PrivacyPolicy extends Component {
               on our Site.
             </p>
             <p>
-              <b>Cookies.</b>​ We may log information using "cookies." Cookies
-              are small data files stored on your hard drive by a website. We
-              may use both session Cookies (which expire once you close your web
-              browser) and persistent Cookies (which stay on your computer until
-              you delete them) to provide you with a more personal and
-              interactive experience on our Site. This type of information is
-              collected to make the Site more useful to you and to tailor the
-              experience with us to meet your special interests and needs.
+              <b>Cookies.</b>​ We may log information using &quot;cookies.&quot;
+              Cookies are small data files stored on your hard drive by a
+              website. We may use both session Cookies (which expire once you
+              close your web browser) and persistent Cookies (which stay on your
+              computer until you delete them) to provide you with a more
+              personal and interactive experience on our Site. This type of
+              information is collected to make the Site more useful to you and
+              to tailor the experience with us to meet your special interests
+              and needs.
             </p>
           </div>
         </Row>
