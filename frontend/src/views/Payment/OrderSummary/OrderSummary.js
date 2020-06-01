@@ -97,6 +97,14 @@ class OrderSummary extends Component {
           currentAccountBalance
         });
       });
+
+
+    const appBreadcrumbs = ["Apps", "Create App", "Checkout", "Payment"];
+    const nodeBreadcrumbs = ["Nodes", "Create Node", "Checkout", "Payment"];
+    
+    type === ITEM_TYPES.APPLICATION ? 
+      this.props.onBreadCrumbChange(appBreadcrumbs) : 
+      this.props.onBreadCrumbChange(nodeBreadcrumbs);
   }
 
   goToInvoice() {

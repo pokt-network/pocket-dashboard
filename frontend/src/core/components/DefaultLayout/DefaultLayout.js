@@ -7,9 +7,7 @@ import Breadcrumbs from "./BreadCrumb/Breadcrumb";
 import {
   dashboardRoutes,
   ROUTE_PATHS,
-  DASHBOARD_PATHS,
   BREADCRUMBS,
-  _getDashboardPath,
 } from "../../../_routes";
 import UserService from "../../services/PocketUserService";
 import "./DefaultLayout.scss";
@@ -27,24 +25,29 @@ class DefaultLayout extends Component {
     };
   }
 
-  onBreadCrumbChange() {}
+  onBreadCrumbChange(breadcrumbs) {
+    this.setState({breadcrumbs});
+  }
 
   render() {
     // eslint-disable-next-line react/prop-types
     const {path} = this.props.match;
-    let breadcrumbs = [];
+    let {breadcrumbs} = this.state;
+    let breadcrumbsShow = breadcrumbs;
 
     // eslint-disable-next-line react/prop-types
     const route_path = this.props.history.location.pathname.replace(
-      ROUTE_PATHS.home,
-      ""
-    );
+      ROUTE_PATHS.home, "");
+
+    const breadcrumbsMapFn = (br, idx, arr) => {
+      return {label: br, active: idx === arr.length - 1};
+    };
 
     if (route_path in BREADCRUMBS) {
-      breadcrumbs = BREADCRUMBS[route_path].map((br, idx) => {
-        return {label: br, active: idx === BREADCRUMBS[route_path].length - 1};
-      });
+      breadcrumbsShow = BREADCRUMBS[route_path];
     }
+
+    breadcrumbsShow = breadcrumbsShow.map(breadcrumbsMapFn);
 
     if (!UserService.isLoggedIn()) {
       return <Redirect to={ROUTE_PATHS.login} />;
@@ -60,7 +63,7 @@ class DefaultLayout extends Component {
           <Col className="default-layout">
             <div className="default-layout-wrapper">
               <Row>
-                <Breadcrumbs links={breadcrumbs} />
+                <Breadcrumbs links={breadcrumbsShow} />
               </Row>
               {dashboardRoutes.map((route, idx) => {
                 return (
@@ -69,8 +72,12 @@ class DefaultLayout extends Component {
                     path={`${path}${route.path}`}
                     exact={route.exact}
                     name={route.name}
-                    component={route.component}
-                    onBreadCrumbChange={this.handleBreadCroumb}
+                    render={(props) => (
+                      <route.component
+                        {...props}
+                        onBreadCrumbChange={this.onBreadCrumbChange}
+                      />
+                    )}
                   />
                 );
               })}
