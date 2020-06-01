@@ -1,7 +1,7 @@
 import JobService from "bull";
 import TransactionService from "./services/TransactionService";
 import PocketService, {get_default_pocket_network} from "./services/PocketService";
-import {POST_ACTION_TYPE} from "./models/Transaction";
+import {PocketTransaction, POST_ACTION_TYPE} from "./models/Transaction";
 import AccountService from "./services/AccountService";
 
 const POCKET_DATA = get_default_pocket_network();
@@ -17,6 +17,7 @@ const UNJAIL_QUEUE = new JobService("UNJAIL_QUEUE");
 
 UNJAIL_QUEUE.process(async (job, done) => {
   const {
+    /** @type {PocketTransaction} */
     data: pocketTransaction
   } = job;
 
@@ -35,6 +36,7 @@ UNJAIL_QUEUE.process(async (job, done) => {
 
 STAKE_QUEUE.process(async (job, done) => {
   const {
+    /** @type {PocketTransaction} */
     data: pocketTransaction
   } = job;
 
@@ -53,6 +55,7 @@ STAKE_QUEUE.process(async (job, done) => {
 
 UNSTAKE_QUEUE.process(async (job, done) => {
   const {
+    /** @type {PocketTransaction} */
     data: pocketTransaction
   } = job;
 
@@ -72,6 +75,7 @@ UNSTAKE_QUEUE.process(async (job, done) => {
 
 POST_TRANSFER_QUEUE.process(async (job, done) => {
   const {
+    /** @type {PocketTransaction} */
     data: pocketTransaction
   } = job;
 

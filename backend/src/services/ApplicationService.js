@@ -6,6 +6,7 @@ import {Configurations} from "../_configuration";
 import AccountService from "./AccountService";
 import BasePocketService from "./BasePocketService";
 import {TransactionPostAction} from "../models/Transaction";
+import bigInt from "big-integer";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -143,16 +144,8 @@ export default class ApplicationService extends BasePocketService {
     return this.pocketService.getApplicationAuthenticationToken(clientPublicKey, applicationAccount, applicationPassphrase);
   }
 
-  /**
-   * Get average of array.
-   *
-   * @param {number[]} data Array data.
-   *
-   * @returns {number} The average of array.
-   * @private
-   */
   __getAverage(data) {
-    return data.reduce((a, b) => a + b, 0) / data.length;
+    return data.reduce((a, b) => a.add(b), bigInt.zero).divide(bigInt(data.length));
   }
 
   /**

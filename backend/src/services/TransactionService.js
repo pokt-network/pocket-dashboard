@@ -1,5 +1,6 @@
 import BaseService from "./BaseService";
-import {PocketTransaction} from "../models/Transaction";
+import {PocketTransaction, TransactionPostAction} from "../models/Transaction";
+
 import JobService from "bull";
 import {Configurations} from "../_configuration";
 
@@ -22,31 +23,39 @@ const JOB_CONFIGURATION = {delay: DELAYED_TIME, attempts: ATTEMPTS, backoff: DEL
 export default class TransactionService extends BaseService {
 
   /**
-   * @param {PocketTransaction} transaction transaction.
+   * @param {PocketTransaction} pocketTransaction Transaction.
    * @private
    */
-  async __addTransaction(transaction) {
+  async __addTransaction(pocketTransaction) {
 
     /** @type {{result: {n:number, ok: number}}} */
     const saveResult = await this.persistenceService
-      .saveEntity(PENDING_TRANSACTION_COLLECTION_NAME, transaction);
+      .saveEntity(PENDING_TRANSACTION_COLLECTION_NAME, pocketTransaction);
 
     return saveResult.result.ok === 1;
   }
 
   /**
-   * @param {PocketTransaction} transaction transaction.
+   * @param {PocketTransaction} pocketTransaction transaction.
    * @private
    */
-  async __updateTransaction(transaction) {
+  async __updateTransaction(pocketTransaction) {
     const filter = {
-      hash: transaction.hash
+      hash: pocketTransaction.hash
     };
 
     await this.persistenceService.deleteEntities(PENDING_TRANSACTION_COLLECTION_NAME, filter);
   }
 
-  async addTransferTransaction(transactionHash, postAction = {}) {
+  /**
+   * Add transfer transaction.
+   *
+   * @param {string} transactionHash Transaction hash.
+   * @param {TransactionPostAction} postAction Post action.
+   *
+   * @returns {Promise<boolean>} If was added or not.
+   */
+  async addTransferTransaction(transactionHash, postAction = undefined) {
     const pocketTransaction = new PocketTransaction(new Date(), transactionHash, postAction);
 
     const saved = await this.__addTransaction(pocketTransaction);
@@ -58,6 +67,13 @@ export default class TransactionService extends BaseService {
     return saved;
   }
 
+  /**
+   * Add stake transaction.
+   *
+   * @param {string} transactionHash Transaction hash.
+   *
+   * @returns {Promise<boolean>} if was added or not.
+   */
   async addStakeTransaction(transactionHash) {
     const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
 
@@ -70,6 +86,13 @@ export default class TransactionService extends BaseService {
     return saved;
   }
 
+  /**
+   * Add unstake transaction.
+   *
+   * @param {string} transactionHash Transaction hash.
+   *
+   * @returns {Promise<boolean>} if was added or not.
+   */
   async addUnstakeTransaction(transactionHash) {
     const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
 
@@ -82,10 +105,13 @@ export default class TransactionService extends BaseService {
     return saved;
   }
 
-  async markTransactionSuccess(transaction) {
-    await this.__updateTransaction(transaction);
-  }
-
+  /**
+   * Add un jail transaction.
+   *
+   * @param {string} transactionHash Transaction hash.
+   *
+   * @returns {Promise<boolean>} if was added or not.
+   */
   async addUnJailTransaction(transactionHash) {
     const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
 
@@ -96,5 +122,14 @@ export default class TransactionService extends BaseService {
     }
 
     return saved;
+  }
+
+  /**
+   * Mark transaction as success.
+   *
+   * @param {PocketTransaction} transaction transaction.
+   */
+  async markTransactionSuccess(transaction) {
+    await this.__updateTransaction(transaction);
   }
 }
