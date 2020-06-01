@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Container, Form, Row} from "react-bootstrap";
 import "./ForgotPassword.scss";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
@@ -67,11 +67,7 @@ class ForgotPassword extends Component {
       <Container fluid id={"forgot-password-page"}>
         <Navbar />
         <Row className="mt-1">
-          <Col
-            id={"main"}
-            md={{span: 8, offset: 2}}
-            lg={{span: 4, offset: 3}}
-          >
+          <div style={{margin: "0 auto"}}>
             <PocketBox iconUrl={"/assets/circle.png"}>
               <h1 className="forgotPassword">Forgot your password?</h1>
               <p className="passwordLabel">
@@ -103,7 +99,7 @@ class ForgotPassword extends Component {
                 </Button>
               </Form>
             </PocketBox>
-          </Col>
+          </div>
         </Row>
       </Container>
     );

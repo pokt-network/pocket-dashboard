@@ -35,10 +35,15 @@ export default class EmailService {
   async __sendEmail(templateID, templateData) {
     const fromEmail = Configurations.email.from_email;
 
-    /** @type {{statusCode: number}[]} */
-    const emailResponse = await this.emailProvider.sendEmailWithTemplate(templateID, this.__toEmail, fromEmail, templateData);
+    try {
+      /** @type {{statusCode: number}[]} */
+      const emailResponse = await this.emailProvider.sendEmailWithTemplate(templateID, this.__toEmail, fromEmail, templateData);
 
-    return emailResponse[0].statusCode === 202;
+      return emailResponse[0].statusCode === 202;
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
   }
 
   /**

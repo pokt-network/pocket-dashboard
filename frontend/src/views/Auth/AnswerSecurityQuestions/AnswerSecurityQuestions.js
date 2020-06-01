@@ -95,7 +95,7 @@ class AnswerSecurityQuestions extends Component {
                     className={error ? "is-invalid emailInput" : "emailInput"}
                   />{" "}
                   <Form.Control.Feedback
-                    className="feedback invalid-acount "
+                    className="feedback"
                     type="invalid"
                   >
                     {error ? error : ""}
