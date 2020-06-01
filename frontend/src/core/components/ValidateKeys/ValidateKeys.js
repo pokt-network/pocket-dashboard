@@ -118,16 +118,22 @@ class ValidateKeys extends Component {
 
     const {passphrase, privateKey} = this.state.data;
 
-    const {children, handleAfterValidate, address} = this.props;
+    const {
+      children,
+      handleAfterValidate,
+      address,
+      actionButtonName,
+      className,
+    } = this.props;
 
     return (
       <div id="app-passphrase" className="import">
         {children && (
           <Row>
-            <Col className="page-title">{children}</Col>
+            <Col className={`page-title ${className}`}>{children}</Col>
           </Row>
         )}
-        <Row>
+        <Row className="validate-keys">
           <Col className="page-title">
             <Form className="create-passphrase-form ">
               <Form.Row>
@@ -145,7 +151,7 @@ class ValidateKeys extends Component {
                         htmlFor="upload-key"
                         className="upload-key btn btn-primary"
                       >
-                        <span>Upload key file</span>
+                        <span className="pr-4 pl-4">Upload key file</span>
                       </label>
                       <input
                         style={{display: "none"}}
@@ -176,6 +182,7 @@ class ValidateKeys extends Component {
                           name="privateKey"
                         />
                         <img
+                          className="eye-icon"
                           onClick={this.changeInputType}
                           src={showPassphraseIconURL}
                           alt=""
@@ -189,7 +196,7 @@ class ValidateKeys extends Component {
                             this.setState({hasPrivateKey: true});
                           }}
                         >
-                          <span>Import</span>
+                          <span>continue </span>
                         </Button>
                       </Form.Group>
                     </>
@@ -207,12 +214,13 @@ class ValidateKeys extends Component {
                           className={error.show ? "is-invalid" : ""}
                         />
                         <Form.Control.Feedback
-                          className="invalid-acount"
+                          className="invalid-account"
                           type="invalid"
                         >
                           {error.show ? error.message : ""}
                         </Form.Control.Feedback>
                         <img
+                          className="eye-icon"
                           onClick={this.changeInputType}
                           src={showPassphraseIconURL}
                           alt=""
@@ -233,7 +241,9 @@ class ValidateKeys extends Component {
                                 }
                           }
                         >
-                          <span>{!validated ? "Validate" : "Continue"}</span>
+                          <span>
+                            {!validated ? actionButtonName : "Continue"}
+                          </span>
                         </Button>
                       </Form.Group>
                     </>
@@ -248,6 +258,11 @@ class ValidateKeys extends Component {
   }
 }
 
+ValidateKeys.defaultProps = {
+  actionButtonName: "Verify",
+  className: "",
+};
+
 ValidateKeys.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
@@ -255,6 +270,8 @@ ValidateKeys.propTypes = {
   ]),
   address: PropTypes.string,
   handleAfterValidate: PropTypes.func,
+  actionButtonName: PropTypes.string,
+  className: PropTypes.string,
 };
 
 export default ValidateKeys;

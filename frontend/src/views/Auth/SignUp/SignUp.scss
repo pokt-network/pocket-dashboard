@@ -1,4 +1,5 @@
 @import "../../../scss/Auth";
+@import "../../../scss/Core";
 
 #signup {
   .change {
@@ -6,10 +7,24 @@
   }
 
   .form-group input {
-    width: 400px;
     height: 34px;
-    border-radius: 25px;
-    border-style: solid;
-    border-width: 1px;
+    border-radius: $default-border-radius;
+  }
+
+  #terms-checkbox {
+    height: 1.2em;
+    width: 1.2em;
+    border-color: $primary-color;
+  }
+
+  .agreement-label {
+    font-size: 14px;
+    font-family: $primary-font-family;
+    font-weight: 300;
+    color: $dark-gray;
+  }
+
+  .sign-up-btn {
+    font-size: 12px;
   }
 }

@@ -98,6 +98,7 @@ body {
   font-weight: 400;
   border-radius: $default-border-radius;
   font-family: "Lato", sans-serif;
+  line-height: 30px;
   padding: 0 !important;
 
   span {
@@ -170,7 +171,7 @@ form {
 .btn-primary:focus,
 .btn-outline-primary:active,
 .btn-primary:active,
-.show > .btn-primary.dropdown-toggle,
+.show>.btn-primary.dropdown-toggle,
 .btn-primary:not(:disabled):not(.disabled):active {
   background-color: $primary-color-darker;
   border-color: $primary-color-darker;
@@ -209,7 +210,7 @@ input {
 }
 
 .alert {
-  min-height: 60px;
+  min-height: 40px;
   font-family: $secondary-font-family;
   box-shadow: $default-box-shadow;
   background-color: #07212f;
@@ -333,10 +334,6 @@ input {
   border-radius: 21px;
   margin-bottom: 0.8rem;
 
-  &.is-invalid {
-    margin-bottom: 0;
-  }
-
   &:focus {
     box-shadow: none;
   }
@@ -409,12 +406,6 @@ button {
   box-shadow: $default-box-shadow;
   border-radius: $table-radius;
 
-  input[type="checkbox"] {
-    margin-left: -32px;
-    width: 18px;
-    height: 18px;
-  }
-
   thead {
     text-transform: uppercase;
     color: black;
@@ -470,6 +461,10 @@ button {
       &:first-child {
         padding-left: 0;
       }
+
+      input[type="checkbox"] {
+        top: 2px;
+      }
     }
 
     td[class^="col-"]:last-child {
@@ -478,6 +473,7 @@ button {
   }
 
   &.scroll {
+
     thead,
     tbody tr {
       display: table;
@@ -506,8 +502,52 @@ button {
   }
 
   &.has-scroll {
+    thead {
+      width: calc(100% - 50px);
+    }
+
     tbody {
-      width: 100%;
+      width: calc(100% - 8px);
+    }
+  }
+
+  &.has-checkbox {
+    thead {
+      width: calc(100% - 28px);
+    }
+
+    input[type="checkbox"] {
+      margin-left: -24px;
+      width: 18px;
+      height: 18px;
+    }
+
+    .selection-cell-header {
+      padding: 0;
+      width: 36px;
+      border-bottom-color: transparent;
+
+      input[type="checkbox"] {
+        bottom: 14px;
+        left: 37px;
+
+        &:before {
+          height: 72%;
+        }
+      }
+    }
+
+    .selection-cell {
+      padding-left: 37px;
+      padding-right: 0px;
+      padding-top: 10px;
+      width: 1px;
+      border-bottom-color: transparent;
+    }
+
+    tbody tr td:nth-of-type(2),
+    th:nth-of-type(2) {
+      padding-left: 0px;
     }
   }
 
@@ -585,7 +625,7 @@ button {
 }
 
 .empty-overlay {
-  height: 45vh;
+  height: 42vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -648,6 +688,14 @@ button {
   }
 }
 
+.security-question-modal {
+  .form-label {
+    color: white;
+    font-size: 18px;
+    margin-top: 10px;
+  }
+}
+
 .scrollable {
   overflow-x: auto;
   max-height: 60vh;
@@ -686,6 +734,7 @@ textarea.form-control::placeholder {
 
   button {
     color: $primary-color;
+    width: 50px;
     border-left-color: transparent;
 
     img {
@@ -706,6 +755,10 @@ textarea.form-control::placeholder {
   }
 }
 
+.text-hidden {
+  font-size: 20px;
+}
+
 .divider {
   display: flex;
   flex-direction: row;
@@ -715,7 +768,7 @@ textarea.form-control::placeholder {
 .divider:after {
   content: "";
   flex: 1 1;
-  border-bottom: 2px solid $border-blue;
+  border-bottom: 1px solid $border-blue;
   margin: auto;
 }
 
@@ -767,10 +820,11 @@ a:hover {
 }
 
 input[type="checkbox"] // input[type="radio"]
-{
+
+  {
   position: relative;
-  width: 1.4em;
-  height: 1.4em;
+  width: 16px;
+  height: 16px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -782,11 +836,12 @@ input[type="checkbox"] // input[type="radio"]
   cursor: pointer;
   transition: background 175ms cubic-bezier(0.1, 0.1, 0.25, 1);
   padding-bottom: 1px;
+  bottom: 1px;
 
   &::before {
     content: "";
-    height: 65%;
-    width: 40%;
+    height: 70%;
+    width: 35%;
     border-style: solid;
     border-color: $white;
     border-width: 0 2px 2px 0;
@@ -803,7 +858,7 @@ input[type="checkbox"] // input[type="radio"]
       opacity: 1;
     }
 
-    ~ label::before {
+    ~label::before {
       clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
     }
   }
@@ -824,7 +879,6 @@ input[type="radio"] {
   cursor: pointer;
 
   &:checked {
-
     ~label {
       margin-top: 0px;
       margin-left: 3px;
@@ -838,15 +892,29 @@ input[type="radio"] {
 }
 
 #general {
-  box-shadow: $default-box-shadow;
 
-  .body {
-    padding-bottom: 100px;
-  }
+  .wrapper {
+    box-shadow: $default-box-shadow;
+    padding-left: 46px;
+    padding-top: 30px;
+    padding-right: 45px;
 
-  h1 {
-    color: $dark-gray;
-    margin-bottom: 85px;
+    h1 {
+      text-transform: uppercase;
+      font-family: $secondary-font-family;
+      font-size: 30px;
+      font-weight: 800;
+      line-height: 1.27;
+      color: $dark-gray;
+      margin-bottom: 80px;
+    }
+
+    padding-bottom: 80px;
+
+    .form-control,
+    .invalid-feedback {
+      max-width: 400px;
+    }
   }
 }
 
@@ -866,7 +934,7 @@ input[type="radio"] {
     font-weight: 300;
     color: #282828;
 
-    ~ label {
+    ~label {
       margin-top: 0px;
       margin-left: 3px;
       height: 25%;

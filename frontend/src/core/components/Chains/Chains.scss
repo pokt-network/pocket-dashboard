@@ -2,6 +2,9 @@
 
 .choose-chains {
   .page-title {
+    margin-top: 15px;
+    padding-right: 0;
+
     h2 {
       font-family: $secondary-font-family;
       color: $title-secondary-color;
@@ -9,34 +12,28 @@
       font-weight: bold;
       line-height: 1.73;
       letter-spacing: -0.6px;
-
-      margin-bottom: 60px;
-      padding-left: 22px;
     }
 
     p {
       font-size: 16px;
       font-weight: 300;
-    }
-
-    button {
-      margin-right: 50px;
+      line-height: normal;
     }
   }
 
   .app-segment {
-    margin-top: -40px;
+    margin-top: 10px;
 
     .search-panel {
-      margin-left: -34px;
-      width: 650px;
+      max-width: 395px;
+      margin-left: 36px;
+
+      .search-input {
+        margin-top: 15px;
+      }
 
       button {
         width: 30px;
-
-        img {
-          left: -12px;
-        }
       }
     }
 
@@ -45,37 +42,15 @@
       padding-bottom: 0;
 
       .app-table {
+        box-shadow: none;
+
         thead {
           margin-left: 0;
         }
 
         tbody {
           padding-left: 0;
-        }
-
-        .selection-cell-header {
-          padding: 0;
-          width: 36px;
-          border-bottom-color: transparent;
-
-          input[type="checkbox"] {
-            position: absolute;
-            top: 30px;
-            left: 53px;
-          }
-        }
-
-        .selection-cell {
-          padding-left: 37px;
-          padding-right: 0px;
-          padding-top: 10px;
-          width: 1px;
-          border-bottom-color: transparent;
-        }
-
-        tbody tr td:nth-of-type(2),
-        th:nth-of-type(2) {
-          padding-left: 0px;
+          max-height: calc(454px - 52px);
         }
       }
     }

@@ -81,9 +81,25 @@
           }
         }
 
+        &.is-empty {
+          .body {
+            padding: 0;
+
+            .main-list {
+              height: auto !important;
+              padding: 0;
+            }
+          }
+        }
+
+        &:not(.is-empty) {
+          .body {
+            padding: 22px 0;
+          }
+        }
+
         .body {
           max-height: 435px;
-          padding: 22px 0;
           overflow-x: hidden;
 
           .search-panel {

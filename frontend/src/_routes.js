@@ -32,8 +32,13 @@ import ResetPassword from "./views/Auth/ResetPassword/ResetPassword";
 import AppPassphrase from "./views/Apps/AppPassphrase/AppPassphrase";
 import TermsOfService from "./views/Support/TermsOfService";
 import PrivacyPolicy from "./views/Support/PrivacyPolicy";
+import AnswerSecurityQuestions from "./views/Auth/AnswerSecurityQuestions/AnswerSecurityQuestions";
 import SelectValidatorPower from "./views/Nodes/SelectValidatorPower/SelectValidatorPower";
 import NodePassphrase from "./views/Nodes/NodePassphrase/Nodepassphrase";
+import VerifyChangedEmail from "./views/Auth/VerifyChangedEmail/VerifyChangedEmail";
+// If you are going to import this view, at least add it to the project.
+// import GeneralSettings from "./views/Apps/GeneralSettings/GeneralSettings";
+
 
 export const ROUTE_PATHS = {
   signup: "/signup",
@@ -56,6 +61,7 @@ export const DASHBOARD_PATHS = {
   createAppInfo: "/apps/new",
   appPassphrase: "/apps/new/passphrase",
   applicationChainsList: "/apps/new/chains",
+  generalSettings: "/apps/generalsettings",
   tierSelection: "/apps/new/tiers",
   selectRelays: "/apps/new/relays",
   freeTier: "/apps/free-tier",
@@ -107,6 +113,12 @@ const pageRoutes = [
     name: "Security Questions",
     component: SecurityQuestions,
   },
+  {
+    path: ROUTE_PATHS.answer_security_questions,
+    exact: true,
+    name: "Answer Security Questions",
+    component: AnswerSecurityQuestions,
+  },
   {path: ROUTE_PATHS.signup, exact: true, name: "Sign Up", component: SignUp},
   {
     path: ROUTE_PATHS.verify_email,
@@ -125,6 +137,12 @@ const pageRoutes = [
     exact: true,
     name: "Terms of Service",
     component: TermsOfService,
+  },
+  {
+    path: ROUTE_PATHS.verify_changed_email,
+    exact: true,
+    name: "Verify Changed Email",
+    component: VerifyChangedEmail,
   },
   {
     path: ROUTE_PATHS.home,
@@ -259,6 +277,12 @@ export const dashboardRoutes = [
     name: "Application Chain list",
     component: ApplicationChainList,
   },
+  // {
+  //   path: DASHBOARD_PATHS.generalSettings,
+  //   exact: true,
+  //   name: "General Settings",
+  //   component: GeneralSettings,
+  // },
   {
     path: DASHBOARD_PATHS.tierSelection,
     exact: true,

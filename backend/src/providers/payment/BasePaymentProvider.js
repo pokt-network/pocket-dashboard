@@ -96,6 +96,7 @@ export default class BasePaymentProvider {
   /**
    * Create an intent of payment.
    *
+   * @param {string} userCustomerID User customer ID.
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
    * @param {*} item Item to pay.
@@ -106,7 +107,7 @@ export default class BasePaymentProvider {
    * @async
    * @abstract
    */
-  async createPaymentIntent(type, currency, item, amount, description = "") {
+  async createPaymentIntent(userCustomerID, type, currency, item, amount, description = "") {
   }
 
   /**
@@ -131,5 +132,29 @@ export default class BasePaymentProvider {
    * @abstract
    */
   async retrieveCardPaymentMethods(paymentMethodIDs) {
+  }
+
+  /**
+   * Create a payment customer.
+   *
+   * @param {string} user User data.
+   *
+   * @returns {Promise<*>} Customer data.
+   * @async
+   * @abstract
+   */
+  async createCustomer(user) {
+  }
+
+  /**
+   * Retrieve a list of customer card payment methods.
+   *
+   * @param {string} customerID Customer ID.
+   *
+   * @returns {Promise<CardPaymentMethod[]>} List of card payment method.
+   * @async
+   * @abstract
+   */
+  async getCustomerCardPaymentMethods(customerID) {
   }
 }

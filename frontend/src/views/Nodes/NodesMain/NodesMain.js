@@ -6,7 +6,7 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {BOND_STATUS_STR, NODES_LIMIT, STYLING, TABLE_COLUMNS} from "../../../_constants";
+import {NODES_LIMIT, STYLING, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
@@ -19,7 +19,6 @@ import ClipLoader from "react-spinners/ClipLoader";
 import NodeService from "../../../core/services/PocketNodeService";
 import _ from "lodash";
 
-
 class NodesMain extends Main {
   constructor(props, context) {
     super(props, context);
@@ -31,32 +30,6 @@ class NodesMain extends Main {
       ...this.state,
       hasNodes: false,
     };
-  }
-
-  async handleUserItemsFilter(option) {
-    this.setState({userItemsTableLoading: true});
-
-    const userEmail = UserService.getUserInfo().email;
-
-    const userItems = await NodeService.getAllUserNodes(
-      userEmail, NODES_LIMIT, 0, BOND_STATUS_STR[option]
-    );
-
-    this.setState({
-      userItems,
-      filteredItems: userItems,
-      userItemsTableLoading: false,
-    });
-  }
-
-  async handleAllItemsFilter(option) {
-    this.setState({allItemsTableLoading: true});
-
-    const registeredItems = await NodeService.getAllNodes(
-      NODES_LIMIT, 0, BOND_STATUS_STR[option]
-    );
-
-    this.setState({allItemsTableLoading: false, registeredItems});
   }
 
   async componentDidMount() {
@@ -135,7 +108,7 @@ class NodesMain extends Main {
       {title: formatNumbers(total), subtitle: "Total of Nodes"},
       {
         title: formatNetworkData(averageStaked, false),
-        subtitle: "Average Staked Token Per Node",
+        subtitle: "Avr Staked Token Per Node",
       },
       {
         title: formatNetworkData(averageRelays, false),
@@ -193,36 +166,34 @@ class NodesMain extends Main {
         </Row>
         <Row className="mb-4 app-tables">
           <Col sm="6" md="6" lg="6" className="my-items-segment">
-            <Segment bordered scroll={false} label="My Nodes">
-              <Row
-                className={`search-panel ${
-                  !hasNodes ? "search-panel-without-items" : null
-                }`}
-              >
-                <Col>
-                  <InputGroup className="search-input mb-3">
-                    <FormControl
-                      placeholder="Search a Node"
-                      name="searchQuery"
-                      onChange={this.handleChange}
-                      onKeyPress={({key}) => {
-                        if (key === "Enter") {
-                          this.handleSearch("pocketNode.name");
-                        }
-                      }}
-                    />
-                    <InputGroup.Append>
-                      <Button
-                        type="submit"
-                        onClick={this.handleChainSearch}
-                        variant="outline-primary"
-                      >
-                        <img src={"/assets/search.svg"} alt="search-icon" />
-                      </Button>
-                    </InputGroup.Append>
-                  </InputGroup>
-                </Col>
-              </Row>
+            <Segment bordered empty={!hasNodes} scroll={false} label="My Nodes">
+              {hasNodes && (
+                <Row className="search-panel">
+                  <Col>
+                    <InputGroup className="search-input mb-3">
+                      <FormControl
+                        placeholder="Search a Node"
+                        name="searchQuery"
+                        onChange={this.handleChange}
+                        onKeyPress={({key}) => {
+                          if (key === "Enter") {
+                            this.handleSearch("pocketNode.name");
+                          }
+                        }}
+                      />
+                      <InputGroup.Append>
+                        <Button
+                          type="submit"
+                          onClick={this.handleChainSearch}
+                          variant="outline-primary"
+                        >
+                          <img src={"/assets/search.svg"} alt="search-icon" />
+                        </Button>
+                      </InputGroup.Append>
+                    </InputGroup>
+                  </Col>
+                </Row>
+              )}
               <div className="scrollable main-list">
                 <InfiniteScroll
                   pageStart={0}
@@ -265,7 +236,9 @@ class NodesMain extends Main {
                               subtitle={`Staked POKT: ${formatNetworkData(
                                 stakedTokens
                               )} POKT`}
-                              status={getStakeStatus(_.isNumber(status) ? status : parseInt(status))}
+                              status={getStakeStatus(
+                                _.isNumber(status) ? status : parseInt(status)
+                              )}
                               iconURL={icon}
                             />
                           </Link>

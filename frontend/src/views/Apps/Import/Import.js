@@ -222,6 +222,7 @@ class Import extends Component {
                           name="privateKey"
                         />
                         <img
+                          className="eye-icon"
                           onClick={this.changeInputType}
                           src={showPassphraseIconURL}
                           alt=""
@@ -234,7 +235,7 @@ class Import extends Component {
                             this.setState({hasPrivateKey: true});
                           }}
                         >
-                          <span>Import</span>
+                          <span>Continue</span>
                         </Button>
                       </Form.Group>
                     </>
@@ -252,12 +253,13 @@ class Import extends Component {
                           className={error.show ? "is-invalid" : ""}
                         />
                         <Form.Control.Feedback
-                          className="invalid-acount"
+                          className="invalid-account"
                           type="invalid"
                         >
                           {error.show ? error.message : ""}
                         </Form.Control.Feedback>
                         <img
+                          className="eye-icon"
                           onClick={this.changeInputType}
                           src={showPassphraseIconURL}
                           alt=""
@@ -281,7 +283,7 @@ class Import extends Component {
                                 }
                           }
                         >
-                          <span>{!imported ? "Create" : "Continue"}</span>
+                          <span>{!imported ? "Import" : "Continue"}</span>
                         </Button>
                       </Form.Group>
                     </>

@@ -13,9 +13,9 @@ const NotificationToggle = React.forwardRef(({children, onClick}, ref) => (
     onClick={(e) => {
       e.preventDefault();
       onClick(e);
-    }}>
-
-    <img src="/assets/bell-notification.svg" alt="bell-notification"/>
+    }}
+  >
+    <img src="/assets/bell-notification.svg" alt="bell-notification" />
     <span className="badge badge-secondary">{children}</span>
   </div>
 ));
@@ -37,10 +37,10 @@ class NotificationIcon extends Component {
 
         <Dropdown.Menu className="notifications">
           <Notification time="1 hour ago">
-            <p>Your app APP_NAME is in the unbonding process</p>
+            <p>Your app APP_NAME is in the staking process</p>
           </Notification>
           <Notification time="1 hour ago">
-            <p>Your app APP_NAME is in the unbonding process</p>
+            <p>Your app APP_NAME is in the staking process</p>
           </Notification>
         </Dropdown.Menu>
       </Dropdown>

@@ -131,6 +131,9 @@
 
     div.alert.alert-light {
       box-shadow: none;
+      min-height: 40px;
+      padding: 13px 18px 9px 18px;
+      margin-left: 15px;
 
       font-family: $primary-font-family;
       font-size: 13px;
@@ -339,5 +342,20 @@
       background-color: $dark-blue;
       border: solid 1px #25a9e0;
     }
+  }
+}
+
+
+p.validate-text {
+  font-family: $primary-font-family;
+  font-size: 16px !important;
+  font-weight: 300 !important;
+  margin-bottom: 0;
+}
+
+
+.validate-keys {
+  h2 {
+    margin-top: 25px !important;
   }
 }

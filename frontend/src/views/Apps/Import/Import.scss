@@ -3,15 +3,27 @@
     min-width: 140px;
   }
 
+  .eye-icon {
+    height: 25px;
+    margin-top: 3px;
+    margin-left: 10px;
+    margin-right: 10px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
   .address {
     margin-left: 50px;
     margin-left: 20px;
     font-size: 1.2em;
   }
 
-  .invalid-acount {
-    padding-right: 155px !important;
-    padding-top: 30px;
+  .invalid-account {
+    position: absolute;
+    top: 105px;
+    right: 130px;
   }
 
   .upload-key {

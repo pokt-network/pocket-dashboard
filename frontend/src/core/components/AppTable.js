@@ -28,6 +28,7 @@ class AppTable extends Component {
     const empty = data.length === 0;
     const style = {
       height: `${this.props.height}px`,
+      display: "contents",
     };
 
     let columnsToggle;
@@ -44,6 +45,7 @@ class AppTable extends Component {
           classes={cls("app-table", classes, {
             scroll: scroll,
             "has-scroll": hasScroll,
+            "has-checkbox": this.props.selectRow,
             empty: empty,
             hide: !show,
           })}
@@ -62,6 +64,7 @@ AppTable.defaultProps = {
   scroll: false,
   toggle: false,
   classes: "",
+  selectRow: undefined,
 };
 
 AppTable.propTypes = {
@@ -71,6 +74,7 @@ AppTable.propTypes = {
   classes: PropTypes.string,
   data: PropTypes.array,
   columns: PropTypes.array,
+  selectRow: PropTypes.object,
 };
 
 export default AppTable;

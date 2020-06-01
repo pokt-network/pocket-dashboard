@@ -9,9 +9,8 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import UserService from "../../../core/services/PocketUserService";
 import {
   APPLICATIONS_LIMIT,
-  BOND_STATUS_STR,
   STYLING,
-  TABLE_COLUMNS,
+  TABLE_COLUMNS
 } from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
@@ -35,8 +34,6 @@ class AppsMain extends Main {
   constructor(props, context) {
     super(props, context);
 
-    this.handleAllItemsFilter = this.handleAllItemsFilter.bind(this);
-    this.handleUserItemsFilter = this.handleUserItemsFilter.bind(this);
     this.loadMoreUserApps = this.loadMoreUserApps.bind(this);
     this.loadMoreRegisteredApps = this.loadMoreRegisteredApps.bind(this);
 
@@ -70,32 +67,6 @@ class AppsMain extends Main {
           );
         }
       );
-    });
-  }
-
-  async handleAllItemsFilter(option) {
-    this.setState({allItemsTableLoading: true});
-
-    const registeredItems = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
-    );
-
-    this.setState({registeredItems, allItemsTableLoading: false});
-  }
-
-  async handleUserItemsFilter(option) {
-    this.setState({userItemsTableLoading: true});
-
-    const userEmail = UserService.getUserInfo().email;
-
-    const userItems = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT, 0, BOND_STATUS_STR[option]
-    );
-
-    this.setState({
-      userItems,
-      filteredItems: userItems,
-      userItemsTableLoading: false,
     });
   }
 
@@ -206,34 +177,32 @@ class AppsMain extends Main {
         </Row>
         <Row className="mb-4 app-tables">
           <Col sm="6" className="my-items-segment">
-            <Segment bordered scroll={false} label="My Apps">
-              <Row
-                className={cls("search-panel", {
-                  "search-panel-without-apps": !hasApps,
-                })}
-              >
-                <InputGroup className="search-input">
-                  <FormControl
-                    placeholder="Search an App"
-                    name="searchQuery"
-                    onChange={this.handleChange}
-                    onKeyPress={({key}) => {
-                      if (key === "Enter") {
-                        this.handleSearch("pocketApplication.name");
-                      }
-                    }}
-                  />
-                  <InputGroup.Append>
-                    <Button
-                      type="submit"
-                      onClick={this.handleChainSearch}
-                      variant="outline-primary"
-                    >
-                      <img src={"/assets/search.svg"} alt="search-icon" />
-                    </Button>
-                  </InputGroup.Append>
-                </InputGroup>
-              </Row>
+            <Segment bordered empty={!hasApps} scroll={false} label="My Apps">
+              {hasApps && (
+                <Row className="search-panel">
+                  <InputGroup className="search-input">
+                    <FormControl
+                      placeholder="Search an App"
+                      name="searchQuery"
+                      onChange={this.handleChange}
+                      onKeyPress={({key}) => {
+                        if (key === "Enter") {
+                          this.handleSearch("pocketApplication.name");
+                        }
+                      }}
+                    />
+                    <InputGroup.Append>
+                      <Button
+                        type="submit"
+                        onClick={this.handleChainSearch}
+                        variant="outline-primary"
+                      >
+                        <img src={"/assets/search.svg"} alt="search-icon" />
+                      </Button>
+                    </InputGroup.Append>
+                  </InputGroup>
+                </Row>
+              )}
               <div
                 className={cls("scrollable main-list", {
                   "has-scroll": myAppsHasScroll,

@@ -1,0 +1,80 @@
+@import "../../../scss/Core.scss";
+@import "../../../scss/Variables/Fonts.scss";
+@import "../../../scss/Variables/Colors.scss";
+
+#answer-security-questions-page {
+  #main {
+    #email-label {
+      width: 399px;
+      height: 19px;
+      font-family: $primary-font-family;
+      font-size: 16px;
+      font-weight: 300;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: normal;
+      color: $form-label-font-color;
+    }
+  }
+
+  #main.offset-lg-3 {
+    margin-left: 30%;
+  }
+  .feedback {
+    width: 399px;
+  }
+  .forgotPassword {
+    width: 399px;
+    height: 102px;
+    font-family: $secondary-font-family;
+    font-size: 30px;
+    font-weight: 800;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1.27;
+    letter-spacing: -0.82px;
+    color: $dark-gray;
+    text-transform: uppercase;
+  }
+  .passwordLabel {
+    width: 507px;
+    height: 19px;
+    font-family: $primary-font-family;
+    font-size: 16px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: $dark-gray;
+  }
+
+  .emailInput {
+    width: 399px;
+    height: 32px;
+    border-radius: 21px;
+    border-style: solid;
+    border-width: 1px;
+  }
+
+  .resetButton {
+    width: 137px;
+    height: 32px;
+    border-radius: 25px;
+    background-color: $primary-color;
+  }
+  .resetButtonText {
+    width: 116px;
+    height: 15px;
+    font-family: $primary-font-family;
+    font-size: 12px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #ffffff;
+  }
+}

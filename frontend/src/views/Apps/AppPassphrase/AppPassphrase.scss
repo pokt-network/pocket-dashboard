@@ -30,6 +30,10 @@
     color: $form-label-font-color;
   }
 
+  [class*="col"] {
+    padding-left: 0;
+  }
+
   div.alert.alert-warning {
     margin-bottom: 2rem;
     padding-left: 20px;
@@ -50,12 +54,6 @@
     }
   }
 
-  .row {
-    div {
-      padding-left: 0;
-    }
-  }
-
   input:read-only {
     background-color: white;
   }
@@ -64,6 +62,8 @@
     margin-top: 20px;
 
     .read-only-with-icon-column {
+      padding-right: 5px;
+
       input {
         width: 94%;
       }
@@ -90,10 +90,6 @@
           font-size: 20px;
         }
       }
-    }
-
-    .btn {
-      width: 91px;
     }
 
     button.download-key-file-button {

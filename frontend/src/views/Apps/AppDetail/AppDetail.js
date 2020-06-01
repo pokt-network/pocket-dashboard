@@ -214,10 +214,10 @@ class AppDetail extends Component {
 
     const renderValidation = (handleFunc) => (
       <ValidateKeys address={address} handleAfterValidate={handleFunc}>
-        <h1>Confirm private key</h1>
-        <p>
-          Import to the dashboard a pocket account previously created as an app
-          in the network. If your account is not an app go to create.
+        <h1>Verify private key</h1>
+        <p className="validate-text">
+          Please import your account credentials before sending the Transaction.
+          Be aware that this Transaction has a 0,1 POKT fee cost.
         </p>
       </ValidateKeys>
     );
@@ -378,15 +378,18 @@ class AppDetail extends Component {
                 <InfoCard
                   className={"contact"}
                   title={card.title}
-                  subtitle={card.subtitle}>
+                  subtitle={card.subtitle}
+                  flexAlign="flex-start"
+                  >
                   <span/>
                 </InfoCard>
               </Col>
             ))}
           </Row>}
         <Row className="action-buttons">
-          <Col sm="3" md="3" lg="3">
-            <span className="option">
+          {/* TODO: Uncomment of fourth release */}
+          {/*<Col sm="3" md="3" lg="3">
+             <span className="option">
                 <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
                 <p>
                   <Link
@@ -399,8 +402,8 @@ class AppDetail extends Component {
                   </Link>{" "}
                   to change your app description.
                 </p>
-              </span>
-          </Col>
+              </span> 
+          </Col>*/}
           <Col sm="3" md="3" lg="3">
             <span className="option">
                 <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
