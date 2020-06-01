@@ -5,16 +5,54 @@ import LoadingButton from "../LoadingButton";
 import {Form} from "react-bootstrap";
 
 class AppOrderSummary extends Component {
-  state = {};
+  constructor(props, context) {
+    super(props, context);
+
+    this.handleChange = this.handleChange.bind(this);
+
+    this.state = {
+      maxBalance: 0,
+      data: {
+        balanceInput: 0,
+      },
+    };
+  }
+
+  handleChange({currentTarget: input}) {
+    // let value = input.value;
+
+    const {maxBalance} = this.state;
+    const data = {...this.state.data};
+
+    // if (input.value.length === 0)
+
+    data[input.name] = input.value;
+    if (input.value >= 0 && input.value <= maxBalance) {
+      this.setState({data});
+    } else if (input.value.length === 0) {
+      data[input.name] = 0;
+      this.setState({data});
+    }
+  }
+
+  componentDidMount() {
+    const {balance} = this.props;
+
+    this.setState({maxBalance: balance, data: {balanceInput: balance}});
+  }
+
   render() {
+    const {balanceInput} = this.state.data;
+    const {maxBalance} = this.state;
+
     const {
       formActionHandler,
       actionButtonName,
       items,
-      balance,
       balanceOnChange,
       loading,
       total,
+      currency,
     } = this.props;
 
     return (
@@ -27,7 +65,20 @@ class AppOrderSummary extends Component {
         ))}
         <div className="item current-balance">
           <span>Current balance</span>
-          <Form.Control value={balance} onChange={balanceOnChange} />
+          <span className="currency-wrapper">
+            <span className="currency">{currency}</span>
+            <Form.Control
+              type="number"
+              min={0}
+              max={maxBalance}
+              name="balanceInput"
+              value={balanceInput}
+              onChange={(e) => {
+                this.handleChange(e);
+                balanceOnChange(e);
+              }}
+            />
+          </span>
         </div>
         <hr />
         <div className="item total">
@@ -66,6 +117,7 @@ AppOrderSummary.propTypes = {
   balance: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   balanceOnChange: PropTypes.func,
   loading: PropTypes.bool,
+  currency: PropTypes.string,
 };
 
 export default AppOrderSummary;

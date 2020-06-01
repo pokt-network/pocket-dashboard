@@ -208,7 +208,7 @@ class SelectRelays extends Component {
       });
     } catch (e) {
       this.setState({
-        error: {show: true, message: e.toString()},
+        error: {show: true, message: <h4>{e.toString()}</h4>},
         loading: false,
       });
       scrollToId("alert");
@@ -231,7 +231,7 @@ class SelectRelays extends Component {
     // At the moment the only available currency is USD.
     const currency = currencies[0];
     const subTotalFixed = numeral(subTotal).format("$0,0.000");
-    const totalFixed = numeral(total-currentAccountBalance).format("$0,0.000");
+    const totalFixed = numeral(total).format("$0,0.000");
 
     if (loading) {
       return <Loader />;
@@ -309,11 +309,13 @@ class SelectRelays extends Component {
                   quantity: `${subTotalFixed} ${currency.toUpperCase()}`,
                 },
               ]}
-              balance={`${currentAccountBalance} USD`}
+              balance={currentAccountBalance}
               balanceOnChange={this.onCurrentBalanceChange}
               total={totalFixed}
               loading={loading}
               formActionHandler={this.goToSummary}
+              // At the moment, we're only using  USD
+              currency={currencies[0]}
             />
           </Col>
         </Row>
