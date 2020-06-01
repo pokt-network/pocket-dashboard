@@ -39,14 +39,15 @@ import VerifyChangedEmail from "./views/Auth/VerifyChangedEmail/VerifyChangedEma
 // If you are going to import this view, at least add it to the project.
 // import GeneralSettings from "./views/Apps/GeneralSettings/GeneralSettings";
 
-
 export const ROUTE_PATHS = {
   signup: "/signup",
   login: "/login",
   home: "/dashboard",
   forgot_password: "/forgot-password",
   security_questions: "/security-questions",
+  answer_security_questions: "/answer-security-questions",
   verify_email: "/verify-email",
+  verify_changed_email: "/verify-email-changed",
   reset_password: "/reset-password",
   termsOfService: "/support/terms-of-service",
   privacyPolicy: "/support/privacy-policy",
