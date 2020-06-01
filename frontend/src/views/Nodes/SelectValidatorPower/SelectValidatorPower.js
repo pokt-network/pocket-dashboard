@@ -174,7 +174,7 @@ class SelectValidatorPower extends Purchase {
       });
     } catch (e) {
       this.setState({
-        error: {show: true, message: e.toString()},
+        error: {show: true, message: <h4>{e.toString()}</h4>},
         loading: false,
       });
       scrollToId("alert");
@@ -198,7 +198,7 @@ class SelectValidatorPower extends Purchase {
     // At the moment the only available currency is USD.
     const currency = currencies[0];
     const subTotalFixed = numeral(subTotal).format("$0,0.000");
-    const totalFixed = numeral(total-currentAccountBalance).format("$0,0.000");
+    const totalFixed = numeral(total).format("$0,0.000");
 
     if (loading) {
       return <Loader />;
@@ -206,8 +206,8 @@ class SelectValidatorPower extends Purchase {
 
     return (
       <div id="purchase">
-        <Row className="mt-4 mb-4">
-          <Col lg="11" md="11" sm="11" className="title-page">
+        <Row>
+          <Col className="title-page">
             {error.show && (
               <AppAlert
                 variant="danger"
@@ -225,8 +225,8 @@ class SelectValidatorPower extends Purchase {
           </Col>
         </Row>
         <Row>
-          <Col sm="7" className="title-page">
-            <h2 className="mb-5">
+          <Col sm="7" className="relays-column">
+            <h2>
               Slide to Select how much {purchaseType} your node will require
             </h2>
             <div className="calc">
@@ -236,7 +236,7 @@ class SelectValidatorPower extends Purchase {
                   onChange={this.onSliderChange}
                   type={PURCHASE_ITEM_NAME.NODES}
                   marks={{
-                    [min]: `${min} VP`,
+                    [min]: `${formatNumbers(min)} VP`,
                     [max / 2]: {
                       label: (
                         <span>
@@ -244,11 +244,11 @@ class SelectValidatorPower extends Purchase {
                             style={{color: STYLING.primaryColor}}
                             icon={faCaretUp}
                           />
-                          <p style={{fontSize: "0.9em"}}>AVG STAKE</p>
+                          <p style={{fontSize: "0.9em"}}>AVRG STAKE</p>
                         </span>
                       ),
                     },
-                    [max]: `*${formatNumbers(max)} RPD`,
+                    [max]: `*${formatNumbers(max)} VP`,
                   }}
                   min={min}
                   max={max}
@@ -256,7 +256,7 @@ class SelectValidatorPower extends Purchase {
               </div>
             </div>
             <AppAlert
-              className="pt-4 pb-4"
+              className="max-alert"
               variant="primary"
               title={<h4 className="alert-max">*More Validator Power?</h4>}
             >
@@ -267,8 +267,8 @@ class SelectValidatorPower extends Purchase {
               </p>
             </AppAlert>
           </Col>
-          <Col sm="5" className="pr-5 title-page">
-            <h2 className="mb-4">Order Summary</h2>
+          <Col sm="5" className="order-summary-column">
+            <h2>Order Summary</h2>
             <AppOrderSummary
               items={[
                 {label: "Node", quantity: 1},
@@ -283,6 +283,8 @@ class SelectValidatorPower extends Purchase {
               total={totalFixed}
               loading={loading}
               formActionHandler={this.goToSummary}
+              // At the moment, we're only using  USD
+              currency={currencies[0]}
             />
           </Col>
         </Row>

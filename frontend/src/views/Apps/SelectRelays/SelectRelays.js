@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import "./SelectRelays.scss";
+import "../../../core/components/Purchase/Purchase.scss";
 import {Col, Row} from "react-bootstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
@@ -208,7 +208,7 @@ class SelectRelays extends Component {
       });
     } catch (e) {
       this.setState({
-        error: {show: true, message: e.toString()},
+        error: {show: true, message: <h4>{e.toString()}</h4>},
         loading: false,
       });
       scrollToId("alert");
@@ -231,16 +231,16 @@ class SelectRelays extends Component {
     // At the moment the only available currency is USD.
     const currency = currencies[0];
     const subTotalFixed = numeral(subTotal).format("$0,0.000");
-    const totalFixed = numeral(total-currentAccountBalance).format("$0,0.000");
+    const totalFixed = numeral(total).format("$0,0.000");
 
     if (loading) {
       return <Loader />;
     }
 
     return (
-      <div id="select-relays">
-        <Row className="mt-4 mb-4">
-          <Col lg="11" md="11" sm="11" className="title-page">
+      <div id="purchase">
+        <Row>
+          <Col className="title-page">
             {error.show && (
               <AppAlert
                 variant="danger"
@@ -258,27 +258,26 @@ class SelectRelays extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm="7" className="title-page">
-            <h2 className="mb-5">
+          <Col sm="7" className="relays-column">
+            <h2>
               Slide to Select how much relays per day you want to buy
             </h2>
-            <div className="relays-calc">
               <div className="slider-wrapper">
                 <AppSlider
                   defaultValue={minRelays}
                   onChange={this.onSliderChange}
                   type={PURCHASE_ITEM_NAME.APPS}
                   marks={{
-                    [minRelays]: `${minRelays} RPD`,
+                    [minRelays]: `${formatNumbers(minRelays)} RPD`,
                     [maxRelays / 2]: {
                       label: (
-                        <span>
+                        <div className="average-stake-wrapper">
                           <FontAwesomeIcon
                             style={{color: STYLING.primaryColor}}
                             icon={faCaretUp}
                           />
-                          <p style={{fontSize: "0.9em"}}>AVG STAKE</p>
-                        </span>
+                          <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
+                        </div>
                       ),
                     },
                     [maxRelays]: `*${formatNumbers(maxRelays)} RPD`,
@@ -287,27 +286,26 @@ class SelectRelays extends Component {
                   max={maxRelays}
                 />
               </div>
-            </div>
             <AppAlert
-              className="pt-4 pb-4"
+              className="max-alert"
               variant="primary"
-              title={<h4 className="alert-relays">*More relays?</h4>}
+              title={<h4 className="alert-max">*More relays?</h4>}
             >
-              <p className="alert-relays">
+              <p className="alert-max">
                 If your app requires more than {formatNumbers(maxRelays)} Relays
-                Per Day please <a href="/todo">Contact us</a> directly to find a
+                per Day please <a href="/todo">contact us</a> directly to find a
                 solution specially designed for your app.
               </p>
             </AppAlert>
           </Col>
-          <Col sm="5" className="pr-5 title-page">
-            <h2 className="mb-4">Order Summary</h2>
+          <Col sm="5" className="order-summary-column">
+            <h2>Order Summary</h2>
             <AppOrderSummary
               items={[
                 {label: "App", quantity: 1},
-                {label: PURCHASE_ITEM_NAME.APPS, quantity: relaysSelected},
+                {label: PURCHASE_ITEM_NAME.APPS, quantity: formatNumbers(relaysSelected)},
                 {
-                  label: `${PURCHASE_ITEM_NAME.APPS} cost`,
+                  label: `${PURCHASE_ITEM_NAME.APPS} Cost`,
                   quantity: `${subTotalFixed} ${currency.toUpperCase()}`,
                 },
               ]}
@@ -316,11 +314,10 @@ class SelectRelays extends Component {
               total={totalFixed}
               loading={loading}
               formActionHandler={this.goToSummary}
+              // At the moment, we're only using  USD
+              currency={currencies[0]}
             />
           </Col>
-        </Row>
-        <Row>
-          <Col></Col>
         </Row>
       </div>
     );

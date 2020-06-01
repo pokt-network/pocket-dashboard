@@ -23,7 +23,7 @@ export const ITEM_TYPES = {
 
 export const MAX_FILE_IMG_SIZE = 1000000; // 1MB
 export const PURCHASE_ITEM_NAME = {
-  APPS: "Relays per day",
+  APPS: "Relays per Day",
   NODES: "Validator power",
 };
 

@@ -1,50 +1,84 @@
 @import "../../../scss//Core.scss";
 
 .summary {
-  padding-left: 30px;
-  padding-right: 30px;
+  padding: 40px 30px;
   box-shadow: $default-box-shadow;
+  border-radius: $panel-radius;
 
   .item {
-    text-transform: capitalize;
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 10px;
 
-    p {
+    &:not(.current-balance) {
+      margin-bottom: 20px;
+    }
+
+    span {
       color: $light-gray;
       font-weight: 800;
-      font-size: 1.5em;
+      font-size: 18px;
+    }
+
+    span.currency-wrapper {
+      display: contents;
+
+      .currency {
+        position: absolute;
+        right: 45px;
+        margin-top: 6px;
+        text-transform: uppercase;
+        font-weight: 300;
+        font-size: 14px;
+        color: $dark-gray;
+        font-family: $primary-font-family;
+      }
+
+      input {
+        padding-right: 45px;
+
+      }
     }
 
     .form-control {
       width: 40%;
       text-align: right;
       background-color: transparent;
+      margin-bottom: 0;
     }
 
+    // Remove arrows from number input field
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
   }
 
   .item.total {
-    margin-top: 10px;
-
-    p {
+    span {
       text-transform: uppercase;
     }
 
-    p:first-of-type {
+    span:first-of-type {
       color: $dark-gray;
     }
 
-    p:last-of-type {
+    span:last-of-type {
       color: $primary-color;
     }
   }
 
   hr {
     border: none;
-    height: 2px;
+    height: 1px;
+    margin: 20px 0 28px 0;
     background-color: $light-gray;
   }
 }

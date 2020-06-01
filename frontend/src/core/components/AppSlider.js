@@ -18,21 +18,16 @@ class AppSlider extends Component {
   }
 
   onSliderChange = (value) => {
-    // eslint-disable-next-line react/prop-types
-    const {onChange: doHandleChange} = this.props;
-
     this.setState({
       value,
     });
-
-    doHandleChange(value);
   };
 
   render() {
     const {value} = this.state;
 
     // eslint-disable-next-line react/prop-types
-    const {type} = this.props;
+    const {onChange} = this.props;
 
     const Handle = Slider.Handle;
 
@@ -43,10 +38,11 @@ class AppSlider extends Component {
       return (
         <Tooltip
           prefixCls="rc-slider-tooltip"
-          overlay={`${formatNumbers(value)} ${type}`}
+          overlay={`${formatNumbers(value)}`}
           visible={true}
           placement="top"
           key={index}
+          getTooltipContainer={() => document.getElementById("slider")}
         >
           <Handle value={value} {...restProps} />
         </Tooltip>
@@ -54,24 +50,27 @@ class AppSlider extends Component {
     };
 
     return (
-      <Slider
-        {...this.props}
-        handle={handle}
-        tipFormatter={(value) => `${value}%`}
-        value={value}
-        onChange={this.onSliderChange}
-        railStyle={{backgroundColor: STYLING.whiteSmoke, height: 11}}
-        trackStyle={{backgroundColor: STYLING.primaryColor, height: 11}}
-        handleStyle={{
-          borderColor: "#ffffff",
-          height: 28,
-          width: 28,
-          marginTop: -9,
-          backgroundColor: STYLING.primaryColor,
-          boxShadow:
-            "rgba(0, 0, 0, 0.3) 0px 12px 66px, rgba(0, 0, 0, 0.22) 0px 0px 13px",
-        }}
-      />
+      <div id="slider" className="slider-container">
+        <Slider
+          {...this.props}
+          handle={handle}
+          tipFormatter={(value) => `${value}%`}
+          value={value}
+          onChange={this.onSliderChange}
+          onAfterChange={() => onChange(value)}
+          railStyle={{backgroundColor: STYLING.whiteSmoke, height: 10}}
+          trackStyle={{backgroundColor: STYLING.primaryColor, height: 10}}
+          handleStyle={{
+            borderColor: "#fbfdff",
+            height: 28,
+            width: 28,
+            marginTop: -9,
+            backgroundColor: STYLING.primaryColor,
+            boxShadow:
+              "rgba(0, 0, 0, 0.3) 0px 12px 66px, 0 2px 8px 2px rgba(6, 32, 46, 0.36)",
+          }}
+        />
+      </div>
     );
   }
 }
