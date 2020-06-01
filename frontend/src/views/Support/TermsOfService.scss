@@ -65,7 +65,18 @@
     color: $dark-gray;
   }
 
-  .policy {
+  .secondary-font-family {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.36;
+    letter-spacing: normal;
+    text-align: justify;
+    color: #000000;
+  }
+  .primary-font-family {
     font-family: $primary-font-family;
     font-size: 14px;
     font-weight: 300;
@@ -76,7 +87,6 @@
     text-align: justify;
     color: #000000;
   }
-
   span {
     font-family: $secondary-font-family;
     font-size: 14px;
@@ -87,6 +97,20 @@
     letter-spacing: normal;
     text-align: center;
     color: $dark-gray;
+    line-height: 2.36;
+  }
+
+  .not-bold {
+    font-weight: 300 !important;
+    line-height: 2.36 !important;
+  }
+
+  .center {
+    text-align: center !important;
+  }
+
+  .justify {
+    text-align: justify !important;
   }
 
   p {
@@ -115,5 +139,9 @@
     letter-spacing: normal;
     text-align: justify;
     color: $dark-gray;
+  }
+
+  .no-bullet {
+    list-style-type: none;
   }
 }
