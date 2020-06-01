@@ -23,7 +23,7 @@ class Main extends Component {
       userItemsTableLoading: false,
       loading: true,
       hasMoreUserItems: true,
-      hasMoreRegisteredItems: true,
+      hasMoreRegisteredItems: false,
     };
   }
 

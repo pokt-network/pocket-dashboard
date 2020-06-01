@@ -39,7 +39,6 @@ import VerifyChangedEmail from "./views/Auth/VerifyChangedEmail/VerifyChangedEma
 // If you are going to import this view, at least add it to the project.
 // import GeneralSettings from "./views/Apps/GeneralSettings/GeneralSettings";
 
-
 export const ROUTE_PATHS = {
   signup: "/signup",
   login: "/login",
@@ -49,11 +48,11 @@ export const ROUTE_PATHS = {
   verify_email: "/verify-email",
   reset_password: "/reset-password",
   answer_security_questions: "/answer-security-questions",
-  verify_changed_email: "/email-changed"
+  verify_changed_email: "/email-changed",
 };
 
 export const DASHBOARD_PATHS = {
-  home: "/",
+  home: "",
   apps: "/apps",
   appDetail: "/apps/detail/:address",
   editApp: "/apps/edit/:address",
@@ -90,6 +89,46 @@ export const PROFILE_PATHS = {
 // Helper anonymous function to render routes within the dashboard router
 export const _getDashboardPath = (path) => {
   return `${ROUTE_PATHS.home}${path}`;
+};
+
+export const BREADCRUMBS = {
+  [DASHBOARD_PATHS.home]: ["Status"],
+
+  // Apps
+  [DASHBOARD_PATHS.apps]: ["Apps"],
+  [DASHBOARD_PATHS.appDetail]: ["Apps", "App Detail"],
+  [DASHBOARD_PATHS.createAppInfo]: ["Apps", "Create App", "App Information"],
+  [DASHBOARD_PATHS.editApp]: ["Apps", "Create App", "Edit"],
+  [DASHBOARD_PATHS.appPassphrase]: ["Apps", "Create App", "Create Passphrase"],
+  [DASHBOARD_PATHS.applicationChainsList]: [
+    "Apps",
+    "Create App",
+    "Choose Chains",
+  ],
+  [DASHBOARD_PATHS.tierSelection]: ["Apps", "Create App", "Choose tier"],
+  [DASHBOARD_PATHS.selectRelays]: ["Apps", "Create App", "Checkout"],
+
+  // Nodes
+  [DASHBOARD_PATHS.nodes]: ["Nodes"],
+  [DASHBOARD_PATHS.nodeDetail]: ["Apps", "Node Detail"],
+
+  // Profile paths
+  [DASHBOARD_PATHS.profile + PROFILE_PATHS.general]: [
+    "User Profile",
+    "General Information",
+  ],
+  [DASHBOARD_PATHS.profile + PROFILE_PATHS.changePassword]: [
+    "User Profile",
+    "Change your Password",
+  ],
+  [DASHBOARD_PATHS.profile + PROFILE_PATHS.paymentHistory]: [
+    "User Profile",
+    "Payment History",
+  ],
+  [DASHBOARD_PATHS.profile + PROFILE_PATHS.paymentMethods]: [
+    "User Profile",
+    "Payment Methods",
+  ],
 };
 
 /**
