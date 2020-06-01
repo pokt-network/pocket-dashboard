@@ -81,6 +81,7 @@ export const Configurations = {
   },
   pocket_network: {
     jobs: {
+      database_url: process.env.POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL,
       delayed_time: process.env.POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME,
       attempts: process.env.POCKET_NETWORK_SERVICE_WORKER_ATEMPTS
     },

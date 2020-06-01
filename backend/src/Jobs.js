@@ -1,8 +1,8 @@
-import JobService from "bull";
 import TransactionService from "./services/TransactionService";
 import PocketService, {get_default_pocket_network} from "./services/PocketService";
 import {PocketTransaction, POST_ACTION_TYPE} from "./models/Transaction";
 import AccountService from "./services/AccountService";
+import JobsProvider from "./providers/data/JobsProvider";
 
 const POCKET_DATA = get_default_pocket_network();
 
@@ -10,10 +10,10 @@ const TRANSACTION_SERVICE = new TransactionService();
 const ACCOUNT_SERVICE = new AccountService();
 const POCKET_SERVICE = new PocketService(POCKET_DATA.nodes, POCKET_DATA.rpcProvider);
 
-const POST_TRANSFER_QUEUE = new JobService("POST_TRANSFER_QUEUE");
-const STAKE_QUEUE = new JobService("STAKE_QUEUE");
-const UNSTAKE_QUEUE = new JobService("UNSTAKE_QUEUE");
-const UNJAIL_QUEUE = new JobService("UNJAIL_QUEUE");
+const POST_TRANSFER_QUEUE = JobsProvider.getPostTransferJobQueue();
+const STAKE_QUEUE = JobsProvider.getStakeJobQueue();
+const UNSTAKE_QUEUE = JobsProvider.getUnStakeJobQueue();
+const UNJAIL_QUEUE = JobsProvider.getUnJailJobQueue();
 
 UNJAIL_QUEUE.process(async (job, done) => {
   const {

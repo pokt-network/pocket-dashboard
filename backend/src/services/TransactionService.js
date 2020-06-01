@@ -1,24 +1,14 @@
 import BaseService from "./BaseService";
 import {PocketTransaction, TransactionPostAction} from "../models/Transaction";
-
-import JobService from "bull";
-import {Configurations} from "../_configuration";
+import JobsProvider from "../providers/data/JobsProvider";
 
 const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";
 
-const POST_TRANSFER_QUEUE = new JobService("POST_TRANSFER_QUEUE");
-const STAKE_QUEUE = new JobService("STAKE_QUEUE");
-const UNSTAKE_QUEUE = new JobService("UNSTAKE_QUEUE");
-const UNJAIL_QUEUE = new JobService("UNJAIL_QUEUE");
+const POST_TRANSFER_QUEUE = JobsProvider.getPostTransferJobQueue();
+const STAKE_QUEUE = JobsProvider.getStakeJobQueue();
+const UNSTAKE_QUEUE = JobsProvider.getUnStakeJobQueue();
+const UNJAIL_QUEUE = JobsProvider.getUnJailJobQueue();
 
-const {
-  jobs: {
-    delayed_time: DELAYED_TIME,
-    ATTEMPTS
-  }
-} = Configurations.pocket_network;
-
-const JOB_CONFIGURATION = {delay: DELAYED_TIME, attempts: ATTEMPTS, backoff: DELAYED_TIME};
 
 export default class TransactionService extends BaseService {
 
@@ -61,7 +51,7 @@ export default class TransactionService extends BaseService {
     const saved = await this.__addTransaction(pocketTransaction);
 
     if (saved && postAction) {
-      POST_TRANSFER_QUEUE.add(pocketTransaction, JOB_CONFIGURATION);
+      JobsProvider.addJob(POST_TRANSFER_QUEUE, pocketTransaction);
     }
 
     return saved;
@@ -80,7 +70,7 @@ export default class TransactionService extends BaseService {
     const saved = await this.__addTransaction(pocketTransaction);
 
     if (saved) {
-      STAKE_QUEUE.add(pocketTransaction, JOB_CONFIGURATION);
+      JobsProvider.addJob(STAKE_QUEUE, pocketTransaction);
     }
 
     return saved;
@@ -99,7 +89,7 @@ export default class TransactionService extends BaseService {
     const saved = await this.__addTransaction(pocketTransaction);
 
     if (saved) {
-      UNSTAKE_QUEUE.add(pocketTransaction, JOB_CONFIGURATION);
+      JobsProvider.addJob(UNSTAKE_QUEUE, pocketTransaction);
     }
 
     return saved;
@@ -118,7 +108,7 @@ export default class TransactionService extends BaseService {
     const saved = await this.__addTransaction(pocketTransaction);
 
     if (saved) {
-      UNJAIL_QUEUE.add(pocketTransaction, JOB_CONFIGURATION);
+      JobsProvider.addJob(UNJAIL_QUEUE, pocketTransaction);
     }
 
     return saved;
