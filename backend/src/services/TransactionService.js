@@ -5,7 +5,7 @@ import {Configurations} from "../_configuration";
 
 const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";
 
-const TRANSFER_QUEUE = new JobService("TRANSFER_QUEUE");
+const POST_TRANSFER_QUEUE = new JobService("POST_TRANSFER_QUEUE");
 const STAKE_QUEUE = new JobService("STAKE_QUEUE");
 const UNSTAKE_QUEUE = new JobService("UNSTAKE_QUEUE");
 const UNJAIL_QUEUE = new JobService("UNJAIL_QUEUE");
@@ -52,7 +52,7 @@ export default class TransactionService extends BaseService {
     const saved = await this.__addTransaction(pocketTransaction);
 
     if (saved && postAction) {
-      TRANSFER_QUEUE.add(pocketTransaction, JOB_CONFIGURATION);
+      POST_TRANSFER_QUEUE.add(pocketTransaction, JOB_CONFIGURATION);
     }
 
     return saved;

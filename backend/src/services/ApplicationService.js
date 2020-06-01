@@ -401,11 +401,15 @@ export default class ApplicationService extends BasePocketService {
     const {account: freeTierAccount} = this.pocketService.getFreeTierAccount();
     const {stake_amount: stakeAmount} = Configurations.pocket_network.free_tier;
 
-    await this.pocketService
+    const unstakeTransaction = await this.pocketService
       .unstakeApplication(applicationAccount, applicationData.passphrase);
 
-    await this.pocketService
+    await this.transactionService.addUnstakeTransaction(unstakeTransaction.hash);
+
+    const transferTransaction = await this.pocketService
       .transferPoktBetweenAccounts(applicationAccount, applicationData.passphrase, freeTierAccount, stakeAmount);
+
+    await this.transactionService.addTransferTransaction(transferTransaction.hash);
 
     const clientApplication = PocketApplication.createPocketApplication(applicationDB);
 
