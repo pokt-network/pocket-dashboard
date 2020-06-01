@@ -76,7 +76,10 @@ export default class JobsProvider {
       }
     } = Configurations.pocket_network;
 
-    const jobConfiguration = {delay: delayedTime, attempts: attempts, backoff: delayedTime};
+    const delayedTimeNumber = parseInt(delayedTime.toString());
+    const attemptsNumber = parseInt(attempts.toString());
+
+    const jobConfiguration = {delay: delayedTimeNumber, attempts: attemptsNumber, backoff: delayedTimeNumber};
 
     jobQueue.add(data, jobConfiguration);
   }
