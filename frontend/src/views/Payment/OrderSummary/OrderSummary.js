@@ -11,7 +11,7 @@ import Loader from "../../../core/components/Loader";
 import {ElementsConsumer} from "@stripe/react-stripe-js";
 import PaymentContainer from "../../../core/components/Payment/Stripe/PaymentContainer";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
-import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../_routes";
+import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCardNoAddressForm";
 import AppAlert from "../../../core/components/AppAlert";
