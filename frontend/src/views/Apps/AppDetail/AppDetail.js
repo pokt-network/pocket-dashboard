@@ -293,7 +293,6 @@ class AppDetail extends Component {
           <Col sm="8" md="8" lg="8" className="general-header page-title">
             <h1>General Information</h1>
           </Col>
-          <Col sm="1" md="1" lg="1">
           <Col sm="4" md="4" lg="4" className="d-flex justify-content-end cta-buttons">
             <Button className="ml-4 pl-4 pr-4 mr-3 pg-btn" variant="primary">
                 <span>Pocket Gateway</span>
