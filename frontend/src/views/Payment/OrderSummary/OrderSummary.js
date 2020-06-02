@@ -391,7 +391,6 @@ class OrderSummary extends Component {
           </Col>
           <Col md="4" className="review-order-column">
             <h2 className="sub">Review your order</h2>
-<<<<<<< HEAD
             <div className="review-order-container">
               <div className="order">
                 {cards.map((c, idx) => (
@@ -433,53 +432,6 @@ class OrderSummary extends Component {
                         this.makePurchaseWithSavedCard(e, stripe)
                       }
                       className=""
-=======
-            <div className="mt-5 order">
-              {cards.map((c, idx) => (
-                <div key={idx} className="item">
-                  <p>{c.subtitle}</p>
-                  <p>{c.title}</p>
-                </div>
-              ))}
-            </div>
-            <InfoCard
-              className="pt-4 mb-4 pr-4 text-center"
-              title={`${total} USD`}
-              subtitle={"Total cost"}
-            />
-            <Form.Check
-              checked={agreeTerms}
-              onChange={() => this.setState({agreeTerms: !agreeTerms})}
-              id="terms-checkbox"
-              type="checkbox"
-              className="mb-3"
-              label={
-                <p className="agree">
-                  I agree to Pocket Network&#39;s Purchase{" "}
-                  <Link to={ROUTE_PATHS.termsOfService}>
-                    <br/>
-                    Terms and Conditions.
-                  </Link>
-                </p>
-              }
-            />
-            <br/>
-            <PaymentContainer>
-              <ElementsConsumer>
-                {({_, stripe}) => (
-                  <Form
-                    onSubmit={(e) => this.makePurchaseWithSavedCard(e, stripe)}
-                    className=""
-                  >
-                    <LoadingButton
-                      loading={purchasing}
-                      buttonProps={{
-                        disabled: !agreeTerms,
-                        variant: "primary",
-                        className: "confirm pr-5 pl-5",
-                        type: "submit",
-                      }}
->>>>>>> master
                     >
                       <LoadingButton
                         loading={purchasing}
