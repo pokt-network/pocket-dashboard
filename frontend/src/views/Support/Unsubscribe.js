@@ -3,7 +3,6 @@ import "../Support/SupportPages.scss";
 import {withRouter} from "react-router-dom";
 import {Container, Row, Button} from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";
-import {scrollToId} from "../../_helpers";
 
 class Unsubscribe extends Component {
   state = {};
