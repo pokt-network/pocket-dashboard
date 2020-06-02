@@ -1,6 +1,28 @@
-import {Application, ApplicationParams} from "@pokt-network/pocket-js";
+import {Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
 import {PublicPocketAccount} from "./Account";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
+
+export class RegisteredPocketApplication {
+  /**
+   * @param {string} name Name.
+   * @param {string} address Address.
+   * @param {StakingStatus} status Status
+   */
+  constructor(name, address, status) {
+    Object.assign(this, {name, address, status});
+  }
+}
+
+export class UserPocketApplication {
+  /**
+   * @param {string} name Name.
+   * @param {string} stakedPOKT staked POKT.
+   * @param {StakingStatus} status Status
+   */
+  constructor(name, stakedPOKT, status) {
+    Object.assign(this, {name, stakedPOKT, status});
+  }
+}
 
 export class PocketApplication {
 
@@ -97,6 +119,40 @@ export class PocketApplication {
     pocketApplication.publicPocketAccount = publicPocketAccount ?? new PublicPocketAccount("", "");
 
     return pocketApplication;
+  }
+
+  /**
+   * Convenient Factory method to create a registered pocket application.
+   *
+   * @param {object} applicationData Application to create.
+   * @param {string} applicationData.address Address.
+   * @param {StakingStatus} applicationData.status Status.
+   * @param {string} [applicationData.name] Name.
+   *
+   * @returns {RegisteredPocketApplication} A new resumed pocket application.
+   * @static
+   */
+  static createRegisteredPocketApplication(applicationData) {
+    const appName = applicationData.name ?? "N/A";
+
+    return new RegisteredPocketApplication(appName, applicationData.address, applicationData.status);
+  }
+
+  /**
+   * Convenient Factory method to create an user pocket application.
+   *
+   * @param {object} applicationData Application to create.
+   * @param {string} applicationData.name Name.
+   * @param {string} applicationData.stakedPOKT Staked POKT.
+   * @param {StakingStatus} applicationData.status Status.
+   *
+   * @returns {UserPocketApplication} A new user pocket application.
+   * @static
+   */
+  static createUserPocketApplication(applicationData) {
+    const {name, stakedPOKT, status} = applicationData;
+
+    return new UserPocketApplication(name, stakedPOKT, status);
   }
 }
 

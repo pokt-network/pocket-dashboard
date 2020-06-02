@@ -304,20 +304,38 @@ export default class PocketService {
   /**
    * Get Applications data.
    *
-   * @param {StakingStatus} status Status of the apps to retrieve.
+   * @param {number} status Status of the apps to retrieve.
    *
    * @returns {Promise<Application[]>} The applications data.
    * @throws Error If Query fails.
    * @async
    */
   async getApplications(status) {
-    const applicationsResponse = await this.__pocket.rpc().query.getApps(status);
+    const applicationsResponse = await this.__pocket.rpc().query.getApps(status, 0);
 
     if (applicationsResponse instanceof Error) {
       throw applicationsResponse;
     }
 
     return applicationsResponse.applications;
+  }
+
+  /**
+   * Get All applications data.
+   *
+   * @param {string[]} [appAddresses] App addresses.
+   * @param {number} [status] App addresses.
+   *
+   * @returns {Promise<Application[]>} The applications data.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getAllApplications(appAddresses = undefined, status = undefined) {
+    const stakedApplications = await this.getApplications(StakingStatus.Staked);
+    const unstakingApplications = await this.getApplications(StakingStatus.Unstaking);
+
+    const allApps = stakedApplications
+      .concat(unstakingApplications);
   }
 
   /**

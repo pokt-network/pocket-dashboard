@@ -1,4 +1,9 @@
-import {ExtendedPocketApplication, PocketApplication, StakedApplicationSummary} from "../models/Application";
+import {
+  ExtendedPocketApplication,
+  PocketApplication,
+  RegisteredPocketApplication,
+  StakedApplicationSummary
+} from "../models/Application";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import {Account, Application, PocketAAT, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
@@ -105,6 +110,7 @@ export default class ApplicationService extends BasePocketService {
    * @param {PocketApplication[]} applications Applications to add pocket data.
    *
    * @returns {Promise<ExtendedPocketApplication[]>} Pocket applications with pocket data.
+   * @deprecated
    * @private
    * @async
    */
@@ -115,7 +121,7 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
-   * Mark application as Free tier.
+   * Mark application as free tier.
    *
    * @param {PocketApplication} application Pocket application to mark as free tier.
    * @param {boolean} freeTier If is free tier or not.
@@ -228,24 +234,15 @@ export default class ApplicationService extends BasePocketService {
    * @param {number} [offset] Offset of query.
    * @param {number} [stakingStatus] Staking status filter.
    *
-   * @returns {ExtendedPocketApplication[]} List of applications.
+   * @returns {RegisteredPocketApplication[]} List of applications.
    * @async
    */
   async getAllApplications(limit, offset = 0, stakingStatus = undefined) {
-    const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, {}, limit, offset))
-      .map(PocketApplication.createPocketApplication);
+    const networkApplications = await (stakingStatus ?
+      this.pocketService.getApplications(stakingStatus) :
+      this.pocketService.getApplications(StakingStatus.Staked));
 
-    if (applications) {
-      const extendedApplications = await this.__getExtendedPocketApplications(applications);
-
-      if (stakingStatus !== undefined) {
-        return extendedApplications.filter((application) => application.networkData.status === StakingStatus.getStatus(stakingStatus));
-      }
-
-      return extendedApplications;
-    }
-
-    return [];
+    return networkApplications.map(PocketApplication.createRegisteredPocketApplication);
   }
 
   /**
@@ -261,11 +258,22 @@ export default class ApplicationService extends BasePocketService {
    */
   async getUserApplications(userEmail, limit, offset = 0, stakingStatus = undefined) {
     const filter = {user: userEmail};
-    const applications = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
-      .map(PocketApplication.createPocketApplication);
 
-    if (applications) {
-      const extendedApplications = await this.__getExtendedPocketApplications(applications);
+    const dashboardApplicationData = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
+      .map(PocketApplication.createPocketApplication)
+      .map(app => {
+        return {
+          name: app.name,
+          address: app.publicPocketAccount.address,
+        };
+      });
+
+    const networkApplications = this.pocketService
+      .getAllApplications(dashboardApplicationData.map(app => app.address), stakingStatus);
+
+
+    if (dashboardApplications) {
+      const extendedApplications = await this.__getExtendedPocketApplications(dashboardApplications);
 
       if (stakingStatus !== undefined) {
         return extendedApplications.filter((application) => application.networkData.status === StakingStatus.getStatus(stakingStatus));

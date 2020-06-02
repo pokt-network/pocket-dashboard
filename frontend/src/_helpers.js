@@ -22,16 +22,6 @@ export const formatNetworkData = (
     : numeral(poktNumber).format("0,0.0");
 };
 
-export const copyToClipboard = (value) => {
-  const el = document.createElement("textarea");
-
-  el.value = value;
-  document.body.appendChild(el);
-  el.select();
-  document.execCommand("copy");
-  document.body.removeChild(el);
-};
-
 export const createAndDownloadJSONFile = (fileName, data) => {
   const element = document.createElement("a");
   const file = new File([JSON.stringify(data)], fileName, {
@@ -56,10 +46,7 @@ export const isActiveExactUrl = (match, location) => {
 export const mapStatusToField = (item) => {
   return {
     ...item,
-    networkData: {
-      ...item.networkData,
-      status: getStakeStatus(_.isNumber(item.networkData.status) ? item.networkData.status : parseInt(item.networkData.status)),
-    },
+    status: getStakeStatus(_.isNumber(item.status) ? item.status : parseInt(item.status)),
   };
 };
 
@@ -151,7 +138,7 @@ export const tableShow = (table, handleClick) => {
         <img
           onClick={handleClick}
           className="icon"
-          src="/assets/arrow.svg"
+          src={"/assets/arrow.svg"}
           alt=""
         />
       </span>
