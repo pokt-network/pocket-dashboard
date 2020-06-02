@@ -185,10 +185,10 @@ class PrivacyPolicy extends Component {
                   We may share information with those who need it to do work for
                   us.
                 </li>
-                <p>
+                <span className="not-bold justify align-ul-bottom">
                   We may also share aggregated and/or anonymized data with
                   others for their own uses.
-                </p>
+                </span>
               </ul>
             </div>
           </Row>

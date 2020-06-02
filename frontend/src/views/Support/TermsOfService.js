@@ -26,7 +26,7 @@ class TermsOfService extends Component {
             </div>
           </Row>
           <Row>
-            <div className="policy mt-5">
+            <div className="secondary-font-family mt-5">
               NOTICE: ​THE TERMS OF THIS AGREEMENT FORM A BINDING LEGAL CONTRACT
               BETWEEN YOU AND POCKET NETWORK, INC (THE “COMPANY”). CAREFULLY
               READ ALL OF THE TERMS OF THIS AGREEMENT BEFORE CLICKING THE “I
@@ -41,7 +41,7 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-5">
-              <span>SUMMARY</span>
+              <span className="secondary-font-family bold">SUMMARY</span>
               <p className="justify secondary-font-family">
                 Review this POKT Token Purchase Agreement following your
                 completion of certain questions on our online website platform
@@ -56,7 +56,7 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-5">
-              <span>PREAMBLE</span>
+              <span className="secondary-font-family bold">PREAMBLE</span>
               <p className="justify secondary-font-family">
                 This Token Purchase Agreement (this “Agreement”) contains the
                 terms and conditions that govern your purchase of the POKT
@@ -68,47 +68,57 @@ class TermsOfService extends Component {
                 a “Party” and collectively as the “Parties.”
               </p>
               <p className="justify secondary-font-family mt-1">
-                <span>WHEREAS​,</span>​ the Company created and minted the
-                Tokens, which are a native digital asset intended to interact
-                with and enable use of the Company’s blockchain application, the
-                Pocket Network (the “Network”);
+                <span className="secondary-font-family bold">WHEREAS​,</span>​
+                the Company created and minted the Tokens, which are a native
+                digital asset intended to interact with and enable use of the
+                Company’s blockchain application, the Pocket Network (the
+                “Network”);
               </p>
               <p className="justify secondary-font-family">
-                <span>WHEREAS​,</span>​ the Company is collaborating with Pocket
-                Network Foundation, an ownerless foundation company organized
-                under the laws of the Cayman Islands, to develop and manage the
-                Network;
+                <span className="secondary-font-family bold">WHEREAS​,</span>​
+                the Company is collaborating with Pocket Network Foundation, an
+                ownerless foundation company organized under the laws of the
+                Cayman Islands, to develop and manage the Network;
               </p>
               <p className="justify secondary-font-family">
-                <span>WHEREAS​,</span> Purchaser desires to participate in the
-                Network either as an application developer (“Developer”) or as a
-                Pocket node (“Node”);
+                <span className="secondary-font-family bold">WHEREAS​,</span>{" "}
+                Purchaser desires to participate in the Network either as an
+                application developer (“Developer”) or as a Pocket node
+                (“Node”);
               </p>
               <p className="justify secondary-font-family">
-                <span>WHEREAS​,</span> in order to participate in the Network as
-                a Developer or Node, Purchaser must acquire Tokens;
+                <span className="secondary-font-family bold">WHEREAS​,</span> in
+                order to participate in the Network as a Developer or Node,
+                Purchaser must acquire Tokens;
               </p>
               <p className="justify secondary-font-family">
-                <span>WHEREAS​,</span> the Company desires to issue and sell
-                Tokens to select Network Developers and Nodes subject to
-                purchase quantity maximums and use restrictions, requiring
-                Purchaser to use Tokens in a specified way; and
+                <span className="secondary-font-family bold">WHEREAS​,</span>{" "}
+                the Company desires to issue and sell Tokens to select Network
+                Developers and Nodes subject to purchase quantity maximums and
+                use restrictions, requiring Purchaser to use Tokens in a
+                specified way; and
               </p>
               <p className="justify secondary-font-family">
-                <span>WHEREAS​,</span> Purchaser desires to purchase from the
-                Company, and the Company desires to issue and sell to Purchaser,
-                Tokens in an amount and for the consideration set forth below.
+                <span className="secondary-font-family bold">WHEREAS​,</span>{" "}
+                Purchaser desires to purchase from the Company, and the Company
+                desires to issue and sell to Purchaser, Tokens in an amount and
+                for the consideration set forth below.
               </p>
               <p className="justify secondary-font-family">
-                <span>NOW, THEREFORE​,</span>​ for good and valuable
-                consideration, the receipt and sufficiency of which are hereby
-                acknowledged, the Parties hereby agree as follows:
+                <span className="secondary-font-family bold">
+                  NOW, THEREFORE​,
+                </span>
+                ​ for good and valuable consideration, the receipt and
+                sufficiency of which are hereby acknowledged, the Parties hereby
+                agree as follows:
               </p>
             </div>
           </Row>
           <Row>
             <div className="mt-5">
-              <span className="justify">1. Purchase of Tokens.</span>
+              <span className="secondary-font-family bold">
+                1. Purchase of Tokens.
+              </span>
               <ul>
                 <li className="no-bullet">
                   1.1. Subject to the Purchasing Site Terms of Use and the terms
@@ -186,7 +196,7 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-5">
-              <span>
+              <span className="secondary-font-family bold">
                 2. Termination or Rejection of Token Purchase Agreement.
               </span>
               <p className="justify secondary-font-family">
@@ -209,7 +219,9 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-4">
-              <span>3. Acceptance of Purchase.</span>{" "}
+              <span className="secondary-font-family bold">
+                3. Acceptance of Purchase.
+              </span>{" "}
               <span className="not-bold">
                 Upon the consummation of the purchase and sale of the Purchased
                 Tokens and the other transactions contemplated hereby (the
@@ -245,7 +257,9 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div div className="mt-5">
-              <span>4. Purchase Maximum​.</span>
+              <span className="secondary-font-family bold">
+                4. Purchase Maximum​.
+              </span>
               <span className="not-bold">
                 Purchaser shall be entitled to purchase a quantity of Tokens not
                 to exceed the equivalent of (i) USD $50,000 divided by the
@@ -259,7 +273,9 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div div className="mt-4">
-              <span>5. Use Restriction and Restricted Period​.</span>
+              <span className="secondary-font-family bold">
+                5. Use Restriction and Restricted Period​.
+              </span>
               <span className="not-bold">
                 {" "}
                 Purchaser acknowledges that the Tokens purchased herein shall be
@@ -306,7 +322,9 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-5">
-              <span>6. No Claim, Loan or Ownership Interest. </span>
+              <span className="secondary-font-family bold">
+                6. No Claim, Loan or Ownership Interest.{" "}
+              </span>
               <span className="not-bold">
                 Except as otherwise expressly set forth herein, the purchase of
                 Tokens: (i) does not provide Purchaser with rights of any form
@@ -321,7 +339,9 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-5">
-              <span>7. Intellectual Property. </span>{" "}
+              <span className="secondary-font-family bold">
+                7. Intellectual Property.{" "}
+              </span>{" "}
               <span className="not-bold">
                 Purchaser acknowledges and agrees that the Company retains all
                 right, title and interest in all of the Company’s intellectual
@@ -339,7 +359,9 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-5">
-              <span>8. Representations and Warranties of Purchaser. </span>{" "}
+              <span className="secondary-font-family bold">
+                8. Representations and Warranties of Purchaser.{" "}
+              </span>{" "}
               <span className="not-bold">
                 {" "}
                 In connection with the issuance and sale of the Tokens
@@ -552,7 +574,9 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-5">
-              <span>9. Representations and Warranties of the Company​. </span>
+              <span className="secondary-font-family bold">
+                9. Representations and Warranties of the Company​.{" "}
+              </span>
               <span className="not-bold">
                 In connection with the issuance and sale of the Tokens
                 hereunder, the Company hereby represents and warrants to
@@ -619,7 +643,9 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-5 mb-5">
-              <span>10. Termination. </span>
+              <span className="secondary-font-family bold">
+                10. Termination.{" "}
+              </span>
               <p>
                 <ul>
                   <li className="no-bullet">
@@ -659,7 +685,9 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-5 mb-5">
-              <span>11. Indemnification​. </span>
+              <span className="secondary-font-family bold">
+                11. Indemnification​.{" "}
+              </span>
               <span className="not-bold">
                 Purchaser hereby agrees to indemnify the Company, any of its
                 affiliates, and its and their respective owners, directors,
@@ -684,7 +712,9 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-5 mb-5">
-              <span>12. Limitation of Liability; No Warranties. </span>
+              <span className="secondary-font-family bold">
+                12. Limitation of Liability; No Warranties.{" "}
+              </span>
               <ul>
                 <li className="no-bullet">
                   12.1. Except as expressly provided by this agreement and
@@ -766,7 +796,9 @@ class TermsOfService extends Component {
           </Row>
           <Row>
             <div className="mt-5 mb-3">
-              <span>13. Miscellaneous.</span>
+              <span className="secondary-font-family bold">
+                13. Miscellaneous.
+              </span>
               <p>
                 <ul>
                   <li className="no-bullet">
