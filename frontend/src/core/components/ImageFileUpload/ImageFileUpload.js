@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useDropzone} from "react-dropzone";
 import "./ImageFileUpload.scss";
 import {PropTypes} from "prop-types";
-import {MAX_FILE_IMG_SIZE} from "../../../_constants";
+import {MAX_FILE_IMG_SIZE, IMG_ERROR_STR} from "../../../_constants";
 
 function ImageFileUpload(props) {
   const [files, setFiles] = useState([]);
@@ -21,7 +21,7 @@ function ImageFileUpload(props) {
         props.handleDrop(acceptedFiles[0]);
       } else {
         if (notAcceptedFiles[0].size > MAX_FILE_IMG_SIZE) {
-          props.handleDrop(null, "Please upload a file smaller than 1MB");
+          props.handleDrop(null, IMG_ERROR_STR);
         }
       }
     },
