@@ -44,7 +44,14 @@ class Checkout extends Component {
       return;
     }
 
-    const {type, paymentId, paymentMethod, details, total, currentAccountBalance} = this.props.location.state;
+    const {
+      type,
+      paymentId,
+      paymentMethod,
+      details,
+      total,
+      currentAccountBalance,
+    } = this.props.location.state;
     const address =
       type === ITEM_TYPES.APPLICATION
         ? ApplicationService.getApplicationInfo().address
@@ -62,7 +69,7 @@ class Checkout extends Component {
       id: id.replace("pi_", "").toLowerCase(),
       date: moment(date).format("DD MM YYYY"),
       owner: userName,
-      card: `${capitalize(brand)} ${lastDigits}`,
+      card: `${capitalize(brand)} **** **** **** ${lastDigits}`,
     };
 
     this.setState({
@@ -86,35 +93,35 @@ class Checkout extends Component {
       address,
       loading,
       unauthorized,
-      currentAccountBalance
+      currentAccountBalance,
     } = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
     const information = [
       {text: "Date", value: date},
-      {text: "Bill To", value: owner},
+      {text: "Bill to", value: owner},
       {text: "Invoice", value: id},
       {text: "Card Detail", value: card},
     ];
 
     const items = [
       ...details,
-      {text: "Current balance", value: currentAccountBalance, format: true}
+      {text: "Current balance", value: currentAccountBalance, format: true},
     ].map((it) => {
       if (!it.format) {
         return it;
       }
-      return {text: it.text, value: formatCurrency(it.value)};
+      return {text: it.text, value: `US${formatCurrency(it.value)}`};
     });
 
     const totalAmount = formatCurrency(total);
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     if (unauthorized) {
-      return <UnauthorizedAlert/>;
+      return <UnauthorizedAlert />;
     }
 
     const detailButton = (
@@ -128,15 +135,30 @@ class Checkout extends Component {
           return url.replace(":address", address);
         }}
       >
-        <Button variant="primary" className="mt-3 float-right pr-4 pl-4 cta">
-          <span>Go to {isApp ? "app" : "node"} detail</span>
+        <Button variant="primary" className="mt-1 float-right cta">
+          <span>Go to {isApp ? "App" : "Node"} details</span>
         </Button>
       </Link>
     );
     const icons = [
-      <img key={0} src={"/assets/cart.svg"} className="step-icon" alt="step-icon"/>,
-      <img key={1} src={"/assets/arrows.svg"} className="step-icon" alt="step-icon"/>,
-      <img key={2} src={"/assets/check.svg"} className="step-icon" alt="step-icon"/>,
+      <img
+        key={0}
+        src={"/assets/cart.svg"}
+        className="step-icon"
+        alt="step-icon"
+      />,
+      <img
+        key={1}
+        src={"/assets/arrows.svg"}
+        className="step-icon"
+        alt="step-icon"
+      />,
+      <img
+        key={2}
+        src={"/assets/check.svg"}
+        className="step-icon"
+        alt="step-icon"
+      />,
     ];
 
     if (unauthorized) {
@@ -148,26 +170,24 @@ class Checkout extends Component {
           <Col className="header">
             {detailButton}
             <h1>Enjoy your purchase</h1>
-            <p>Please wait a few minutes until the process is completed</p>
+            <p>Please wait a few minutes until the process is completed.</p>
           </Col>
         </Row>
-        <Row className="segment mb-3">
-          <Col className="title-page">
-            <AppSteps
-              icons={icons}
-              current={2}
-              steps={[
-                "Purchase",
-                <>
-                  Encode and sign
-                  <br/> stake transaction
-                </>,
-                "throughput available",
-              ]}
-            />
-          </Col>
+        <Row className="segment mb-4">
+          <AppSteps
+            icons={icons}
+            current={2}
+            steps={[
+              "Purchase",
+              <>
+                Encode and sign
+                <br /> stake transaction
+              </>,
+              "throughput available",
+            ]}
+          />
         </Row>
-        <div className="mt-4 ml-4 mb-4 title-page">
+        <div className="mb-4 title-page">
           <h2>Your invoice</h2>
         </div>
         <Row className="segment mb-2">
@@ -178,11 +198,15 @@ class Checkout extends Component {
             total={totalAmount}
           />
         </Row>
-        <p className="mt-4 ml-3 print">
+        <div className="mt-3 print">
           {/* TODO: Add print functionality */}
-          <img src={"/assets/printer.svg"} className="icon" alt="print-icon"/>{" "}
+          <img
+            src={"/assets/printer.svg"}
+            className="icon"
+            alt="print-icon"
+          />{" "}
           <span className="link">Print</span> your invoice
-        </p>
+        </div>
       </div>
     );
   }

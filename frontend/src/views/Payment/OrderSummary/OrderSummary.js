@@ -337,7 +337,8 @@ class OrderSummary extends Component {
               <Form className="cards">
                 {paymentMethods.map((card, idx) => {
                   const {brand, lastDigits, holder} = card;
-                  const isChecked = card.id === selectedPaymentMethod.id;
+                  debugger;
+                  const isChecked = selectedPaymentMethod ? card.id === selectedPaymentMethod.id : false;
 
                   return (
                     <div key={idx} className="payment-method">
@@ -442,7 +443,7 @@ class OrderSummary extends Component {
                           type: "submit",
                         }}
                       >
-                        <span>Confirm payment</span>
+                        <span>Confirm Payment</span>
                       </LoadingButton>
                     </Form>
                   )}
