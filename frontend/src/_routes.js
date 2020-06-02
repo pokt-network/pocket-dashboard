@@ -36,6 +36,7 @@ import AnswerSecurityQuestions from "./views/Auth/AnswerSecurityQuestions/Answer
 import SelectValidatorPower from "./views/Nodes/SelectValidatorPower/SelectValidatorPower";
 import NodePassphrase from "./views/Nodes/NodePassphrase/Nodepassphrase";
 import VerifyChangedEmail from "./views/Auth/VerifyChangedEmail/VerifyChangedEmail";
+import Unsubscribe from "./views/Support/Unsubscribe.js";
 // If you are going to import this view, at least add it to the project.
 // import GeneralSettings from "./views/Apps/GeneralSettings/GeneralSettings";
 
@@ -51,6 +52,7 @@ export const ROUTE_PATHS = {
   reset_password: "/reset-password",
   termsOfService: "/support/terms-of-service",
   privacyPolicy: "/support/privacy-policy",
+  unsubscribe: "/support/unsubscribe",
 };
 
 export const DASHBOARD_PATHS = {
@@ -132,6 +134,12 @@ const pageRoutes = [
     exact: true,
     name: "Privacy Policy",
     component: PrivacyPolicy,
+  },
+  {
+    path: ROUTE_PATHS.unsubscribe,
+    exact: true,
+    name: "Unsubscribe",
+    component: Unsubscribe,
   },
   {
     path: ROUTE_PATHS.termsOfService,
