@@ -149,29 +149,6 @@ describe("PocketService", () => {
   }).timeout(5000);
 
   if (APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT && APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE) {
-    describe("stakeApplication", () => {
-      it("Expected a transaction hash successfully", async () => {
-        const account = await pocketService
-          .importAccount(APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT, APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE);
-        const poktToStake = "10000000";
-        const networkChains = [
-          "0001"
-        ];
-
-        const transaction = await pocketService
-          .stakeApplication(account, APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE, poktToStake, networkChains);
-
-        // eslint-disable-next-line no-undef
-        should.exist(transaction);
-
-        transaction.should.be.an("object");
-        transaction.logs.should.be.an("array");
-
-        transaction.logs.should.not.to.be.empty;
-        transaction.logs[0].success.should.to.be.true;
-      });
-    });
-
     describe("unstakeApplication", () => {
       it("Expected a transaction hash successfully", async () => {
         const account = await pocketService

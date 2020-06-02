@@ -1,0 +1,77 @@
+@import "../../scss/Core.scss";
+@import "../../scss/Variables/Colors.scss";
+@import "../../scss/Variables/Fonts.scss";
+
+#privacy-policy {
+  .address p {
+    font-family: $secondary-font-family;
+    font-size: 30px;
+    font-weight: 800;
+    text-align: center;
+    color: $dark-gray;
+    line-height: 1.27 !important;
+  }
+
+  .address-updated {
+    font-family: $secondary-font-family;
+    font-size: 18px;
+    font-weight: normal !important;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.11;
+    letter-spacing: normal;
+    text-align: center;
+    color: $dark-gray;
+  }
+  .policy {
+    font-family: $primary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.36;
+    letter-spacing: normal;
+    text-align: justify;
+    color: #000000;
+  }
+
+  span {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: $dark-gray;
+  }
+
+  p {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.71;
+    letter-spacing: -0.38px;
+    text-align: center;
+    color: $dark-gray;
+  }
+
+  .information p {
+    text-align: justify !important;
+  }
+
+  li {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.36;
+    letter-spacing: normal;
+    text-align: justify;
+    color: $dark-gray;
+  }
+}

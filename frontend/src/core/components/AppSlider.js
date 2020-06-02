@@ -18,18 +18,16 @@ class AppSlider extends Component {
   }
 
   onSliderChange = (value) => {
-    // eslint-disable-next-line react/prop-types
-    const {onChange: doHandleChange} = this.props;
-
     this.setState({
       value,
     });
-
-    doHandleChange(value);
   };
 
   render() {
     const {value} = this.state;
+
+    // eslint-disable-next-line react/prop-types
+    const {onChange} = this.props;
 
     const Handle = Slider.Handle;
 
@@ -59,6 +57,7 @@ class AppSlider extends Component {
           tipFormatter={(value) => `${value}%`}
           value={value}
           onChange={this.onSliderChange}
+          onAfterChange={() => onChange(value)}
           railStyle={{backgroundColor: STYLING.whiteSmoke, height: 10}}
           trackStyle={{backgroundColor: STYLING.primaryColor, height: 10}}
           handleStyle={{

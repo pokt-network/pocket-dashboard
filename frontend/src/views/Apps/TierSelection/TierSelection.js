@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import "./TierSelection.scss";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
 import Loader from "../../../core/components/Loader";
 import AppAlert from "../../../core/components/AppAlert";
@@ -127,7 +127,7 @@ class TierSelection extends Component {
               label={
                 <span>
                   I agree to Pocket Dashboard{" "}
-                  <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>
+                  <Link to={ROUTE_PATHS.termsOfService}>
                     Terms and Conditions.
                   </Link>
                 </span>

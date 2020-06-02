@@ -1,34 +1,11 @@
-import BaseService from "./BaseService";
 import {PublicPocketAccount} from "../models/Account";
 import {Account, CoinDenom} from "@pokt-network/pocket-js";
-import bcrypt from "bcrypt";
 import PocketService, {POKT_DENOMINATIONS} from "./PocketService";
 import {Configurations} from "../_configuration";
+import BasePocketService from "./BasePocketService";
 
 
-export default class AccountService extends BaseService {
-
-  constructor() {
-    super();
-  }
-
-  /**
-   * Generate a random passphrase.
-   *
-   * @param {string} data Data.
-   *
-   * @returns {string} A passphrase.
-   * @async
-   * @deprecated
-   */
-  async generatePassphrase(data) {
-    const seed = 10;
-
-    const now = new Date();
-    const dataToGenerate = `${data} + ${now.toUTCString()}`;
-
-    return await bcrypt.hash(dataToGenerate, seed);
-  }
+export default class AccountService extends BasePocketService {
 
   /**
    * Create a pocket account in the network.

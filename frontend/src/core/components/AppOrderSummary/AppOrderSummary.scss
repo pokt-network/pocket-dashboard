@@ -20,11 +20,44 @@
       font-size: 18px;
     }
 
+    span.currency-wrapper {
+      display: contents;
+
+      .currency {
+        position: absolute;
+        right: 45px;
+        margin-top: 6px;
+        text-transform: uppercase;
+        font-weight: 300;
+        font-size: 14px;
+        color: $dark-gray;
+        font-family: $primary-font-family;
+      }
+
+      input {
+        padding-right: 45px;
+
+      }
+    }
+
     .form-control {
       width: 40%;
       text-align: right;
       background-color: transparent;
       margin-bottom: 0;
+    }
+
+    // Remove arrows from number input field
+    /* Chrome, Safari, Edge, Opera */
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+      -moz-appearance: textfield;
     }
   }
 

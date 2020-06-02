@@ -10,9 +10,11 @@ import {
   Pocket,
   PocketAAT,
   RawTxResponse,
-  StakingStatus
+  StakingStatus,
+  Transaction
 } from "@pokt-network/pocket-js";
 import {Configurations} from "../_configuration";
+import bigInt from "big-integer";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
@@ -184,8 +186,10 @@ export default class PocketService {
 
     const transactionSender = await this.__pocket.withImportedAccount(fromAccount.addressHex, passphrase);
 
+    const uPoktAmountWithFee = bigInt(uPoktAmount).add(bigInt(transaction_fee));
+
     const transactionResponse = await transactionSender
-      .send(fromAccount.addressHex, toAccount.addressHex, uPoktAmount)
+      .send(fromAccount.addressHex, toAccount.addressHex, uPoktAmountWithFee.toString())
       .submit(chain_id, transaction_fee);
 
     if (transactionResponse instanceof Error) {
@@ -196,18 +200,22 @@ export default class PocketService {
   }
 
   /**
-   * Check if account has sufficient balance.
+   * Get Transaction data;
    *
-   * @param {Account} account Account to query.
-   * @param {boolean} throwError If true throw the response error.
+   * @param {string} transactionHash Transaction hash.
    *
-   * @returns {Promise<boolean>} True if has sufficient balance, otherwise not.
+   * @returns {Transaction} Transaction data.
    * @async
    */
-  async hasBalance(account, throwError = true) {
-    return (await this.getBalance(account.addressHex, throwError)) !== "0";
-  }
+  async getTransaction(transactionHash) {
+    const transactionResponse = await this.__pocket.rpc().query.getTX(transactionHash);
 
+    if (transactionResponse instanceof Error) {
+      throw transactionResponse;
+    }
+
+    return transactionResponse.transaction;
+  }
 
   /**
    * Check if account has sufficient balance.
@@ -230,17 +238,6 @@ export default class PocketService {
     }
 
     return accountQueryResponse.balance.toString();
-  }
-
-  /**
-   * Check if transaction is success or not.
-   *
-   * @param {RawTxResponse} transaction Transaction to validate.
-   *
-   * @returns {boolean} If transaction is success or not.
-   */
-  isTransactionSuccess(transaction) {
-    return transaction.logs && transaction.logs[0].success;
   }
 
   /**
