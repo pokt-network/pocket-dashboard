@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, {Component} from "react";
 import {Col, Form, Row} from "react-bootstrap";
+import numeral from "numeral";
 import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDisplay";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
@@ -15,7 +16,7 @@ import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCar
 import AppAlert from "../../../core/components/AppAlert";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import {Link} from "react-router-dom";
-import {formatCurrency, scrollToId} from "../../../_helpers";
+import {formatCurrency, formatNumbers, scrollToId} from "../../../_helpers";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import LoadingButton from "../../../core/components/LoadingButton";
 import {ITEM_TYPES} from "../../../_constants";
@@ -77,26 +78,24 @@ class OrderSummary extends Component {
 
     const user = UserService.getUserInfo().email;
 
-    PaymentService.getPaymentMethods(user)
-      .then(paymentMethods => {
+    PaymentService.getPaymentMethods(user).then((paymentMethods) => {
+      const selectedPaymentMethod =
+        paymentMethods.find(
+          (pm) => PaymentService.getDefaultPaymentMethod() === pm.id
+        ) || paymentMethods[0];
 
-        const selectedPaymentMethod =
-          paymentMethods.find(
-            (pm) => PaymentService.getDefaultPaymentMethod() === pm.id
-          ) || paymentMethods[0];
-
-        this.setState({
-          loading: false,
-          selectedPaymentMethod,
-          paymentMethods,
-          type,
-          paymentIntent,
-          quantity,
-          cost,
-          total,
-          currentAccountBalance
-        });
+      this.setState({
+        loading: false,
+        selectedPaymentMethod,
+        paymentMethods,
+        type,
+        paymentIntent,
+        quantity,
+        cost,
+        total,
+        currentAccountBalance,
       });
+    });
   }
 
   goToInvoice() {
@@ -133,8 +132,12 @@ class OrderSummary extends Component {
 
     const {paymentIntent, selectedPaymentMethod, type} = this.state;
 
-    const result = await StripePaymentService
-      .confirmPaymentWithSavedCard(stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails);
+    const result = await StripePaymentService.confirmPaymentWithSavedCard(
+      stripe,
+      paymentIntent.paymentNumber,
+      selectedPaymentMethod.id,
+      selectedPaymentMethod.billingDetails
+    );
 
     if (result.error) {
       this.setState({
@@ -166,9 +169,11 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       ApplicationService.stakeApplication(
-        application, chains, result.paymentIntent.id, applicationLink
-      ).then(() => {
-      });
+        application,
+        chains,
+        result.paymentIntent.id,
+        applicationLink
+      ).then(() => {});
     } else {
       // Stake Node
       const {
@@ -176,7 +181,7 @@ class OrderSummary extends Component {
         passphrase,
         chains,
         address,
-        serviceURL
+        serviceURL,
       } = NodeService.getNodeInfo();
       const node = {privateKey, passphrase, serviceURL};
 
@@ -187,9 +192,11 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       NodeService.stakeNode(
-        node, chains, result.paymentIntent.id, nodeLink
-      ).then(() => {
-      });
+        node,
+        chains,
+        result.paymentIntent.id,
+        nodeLink
+      ).then(() => {});
     }
 
     this.goToInvoice();
@@ -202,62 +209,68 @@ class OrderSummary extends Component {
     const {cardHolderName: name} = cardData;
     const billingDetails = {name};
 
-    StripePaymentService.createPaymentMethod(stripe, cardData.card, billingDetails)
-      .then(async (result) => {
-        // Adding a card on checkout doesn't ask you for billing info.
-        if (!billingDetails.address) {
-          billingDetails.address = {
-            country: " ",
-            line1: " ",
-            postal_code: " ",
-          };
-        }
+    StripePaymentService.createPaymentMethod(
+      stripe,
+      cardData.card,
+      billingDetails
+    ).then(async (result) => {
+      // Adding a card on checkout doesn't ask you for billing info.
+      if (!billingDetails.address) {
+        billingDetails.address = {
+          country: " ",
+          line1: " ",
+          postal_code: " ",
+        };
+      }
 
-        if (result.errors) {
+      if (result.errors) {
+        this.setState({
+          alert: {
+            show: true,
+            variant: "warning",
+            message: "There was an error adding your card",
+          },
+        });
+        return;
+      }
+
+      if (result.paymentMethod) {
+        const {success, data} = await StripePaymentService.savePaymentMethod(
+          result.paymentMethod,
+          billingDetails
+        );
+
+        if (!success) {
           this.setState({
             alert: {
               show: true,
               variant: "warning",
-              message: "There was an error adding your card",
+              message: data.message,
             },
           });
           return;
         }
 
-        if (result.paymentMethod) {
-          const {success, data} = await StripePaymentService.savePaymentMethod(result.paymentMethod, billingDetails);
+        const user = UserService.getUserInfo().email;
+        const paymentMethods = await PaymentService.getPaymentMethods(user);
 
-          if (!success) {
-            this.setState({
-              alert: {
-                show: true,
-                variant: "warning",
-                message: data.message,
-              },
-            });
-            return;
-          }
+        const selectedPaymentMethod = paymentMethods.find(
+          (pm) => result.paymentMethod.id === pm.id
+        );
 
-          const user = UserService.getUserInfo().email;
-          const paymentMethods = await PaymentService.getPaymentMethods(user);
+        const alert = {
+          show: true,
+          variant: "primary",
+          message: "Your payment method was successfully added",
+        };
 
-          const selectedPaymentMethod = paymentMethods.find(
-            (pm) => result.paymentMethod.id === pm.id
-          );
-
-          const alert = {
-            show: true,
-            variant: "primary",
-            message: "Your payment method was successfully added",
-          };
-
-          if (setMethodDefault) {
-            PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
-          }
-
-          this.setState({alert, paymentMethods, selectedPaymentMethod});
+        if (setMethodDefault) {
+          PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
         }
-      });
+
+        this.setState({alert, paymentMethods, selectedPaymentMethod});
+      }
+    });
   }
 
   render() {
@@ -276,9 +289,15 @@ class OrderSummary extends Component {
     } = this.state;
 
     const cards = [
-      {title: quantity.number, subtitle: quantity.description},
-      {title: `${cost.number} USD`, subtitle: cost.description},
-      {title: `-${formatCurrency(currentAccountBalance)} USD`, subtitle: "Current balance"}
+      {title: formatNumbers(quantity.number), subtitle: quantity.description},
+      {
+        title: `${numeral(cost.number).format("$0,0.000")} USD`,
+        subtitle: cost.description,
+      },
+      {
+        title: `-${formatCurrency(currentAccountBalance)} USD`,
+        subtitle: "Current balance",
+      },
     ];
 
     const paymentMethods = allPaymentMethods.map((method) => {
@@ -291,11 +310,11 @@ class OrderSummary extends Component {
     });
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     if (unauthorized) {
-      return <UnauthorizedAlert/>;
+      return <UnauthorizedAlert />;
     }
 
     return (
@@ -308,102 +327,113 @@ class OrderSummary extends Component {
             variant={alert.variant}
           ></AppAlert>
         )}
-        <div className="title-page mb-4">
+        <div className="title-page mb-3">
           <h1>Order summary</h1>
         </div>
         <Row>
-          <Col lg="8" md="8" sm="8" className="title-page">
+          <Col md="8" className="payment-method-column">
             <h2 className="sub">Confirm your payment method</h2>
-            <Form className="cards">
-              {paymentMethods.map((card, idx) => {
-                const {brand, lastDigits, holder} = card;
+            <div className="cards-container">
+              <Form className="cards">
+                {paymentMethods.map((card, idx) => {
+                  const {brand, lastDigits, holder} = card;
 
-                return (
-                  <div key={idx} className="payment-method">
-                    <Form.Check
-                      inline
-                      label=""
-                      type="radio"
-                      checked={card.id === selectedPaymentMethod.id}
-                      onChange={() => {
-                        this.setState({selectedPaymentMethod: card});
-                      }}
-                      id={`payment-method-${idx}`}
-                    />
-                    <CardDisplay
-                      cardData={{type: brand, digits: `**** **** **** ${lastDigits}`}}
-                      holder={holder}
-                      onDelete={this.deleteCard}
-                    />
-                  </div>
-                );
-              })}
-            </Form>
-            <h5 className="mt-5 mb-4">Add a new card</h5>
+                  return (
+                    <div key={idx} className="payment-method">
+                      <Form.Check
+                        inline
+                        label=""
+                        type="radio"
+                        checked={card.id === selectedPaymentMethod.id}
+                        onChange={() => {
+                          this.setState({selectedPaymentMethod: card});
+                        }}
+                        id={`payment-method-${idx}`}
+                      />
+                      <CardDisplay
+                        cardData={{
+                          type: brand,
+                          digits: `**** **** **** ${lastDigits}`,
+                        }}
+                        holder={holder}
+                        onDelete={this.deleteCard}
+                      />
+                    </div>
+                  );
+                })}
+              </Form>
+              <h5 className="mt-5 mb-4">Add a new card</h5>
 
-            <h5 className="card-form-title">Enter your card information</h5>
-            <NewCardNoAddressForm
-              formActionHandler={this.saveNewCard}
-              actionButtonName="Add card"
-              setDefaultHandler={(setMethodDefault) =>
-                this.setState({setMethodDefault})
-              }
-            />
-          </Col>
-          <Col lg="4" md="4" sm="4" className="title-page pr-5">
-            <h2 className="sub">Review your order</h2>
-            <div className="mt-5 order">
-              {cards.map((c, idx) => (
-                <div key={idx} className="item">
-                  <p>{c.subtitle}</p>
-                  <p>{c.title}</p>
-                </div>
-              ))}
+              <h5 className="card-form-title">Enter your card information</h5>
+              <NewCardNoAddressForm
+                formActionHandler={this.saveNewCard}
+                actionButtonName="Add card"
+                setDefaultHandler={(setMethodDefault) =>
+                  this.setState({setMethodDefault})
+                }
+              />
             </div>
-            <InfoCard
-              className="pt-4 mb-4 pr-4 text-center"
-              title={`${total} USD`}
-              subtitle={"Total cost"}
-            />
-            <Form.Check
-              checked={agreeTerms}
-              onChange={() => this.setState({agreeTerms: !agreeTerms})}
-              id="terms-checkbox"
-              type="checkbox"
-              className="mb-3"
-              label={
-                <p className="agree">
-                  I agree to Pocket Network&#39;s Purchase{" "}
-                  <Link to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}>
-                    <br/>
-                    Terms and Conditions.
-                  </Link>
-                </p>
-              }
-            />
-            <br/>
-            <PaymentContainer>
-              <ElementsConsumer>
-                {({_, stripe}) => (
-                  <Form
-                    onSubmit={(e) => this.makePurchaseWithSavedCard(e, stripe)}
-                    className=""
-                  >
-                    <LoadingButton
-                      loading={purchasing}
-                      buttonProps={{
-                        disabled: !agreeTerms,
-                        variant: "primary",
-                        className: "confirm pr-5 pl-5",
-                        type: "submit",
-                      }}
+          </Col>
+          <Col md="4" className="review-order-column">
+            <h2 className="sub">Review your order</h2>
+            <div className="review-order-container">
+              <div className="order">
+                {cards.map((c, idx) => (
+                  <div key={idx} className="item">
+                    <span>{c.subtitle}</span>
+                    <span>{c.title}</span>
+                  </div>
+                ))}
+              </div>
+              <InfoCard
+                className="text-center"
+                title={`${numeral(total).format("$0,0.000")} USD`}
+                subtitle={"Total cost"}
+              />
+              <hr />
+              <Form.Check
+                checked={agreeTerms}
+                onChange={() => this.setState({agreeTerms: !agreeTerms})}
+                id="terms-checkbox"
+                className="agree-terms"
+                type="checkbox"
+                label={
+                  <span className="agree">
+                    I agree to Pocket Network&#39;s Purchase <br />
+                  </span>
+                }
+              />
+              <Link
+                className="terms-link"
+                to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}
+              >
+                Terms and conditions.
+              </Link>
+              <PaymentContainer>
+                <ElementsConsumer>
+                  {({_, stripe}) => (
+                    <Form
+                      onSubmit={(e) =>
+                        this.makePurchaseWithSavedCard(e, stripe)
+                      }
+                      className=""
                     >
-                      <span>Confirm payment</span>
-                    </LoadingButton>
-                  </Form>
-                )}
-              </ElementsConsumer>
-            </PaymentContainer>
+                      <LoadingButton
+                        loading={purchasing}
+                        buttonProps={{
+                          disabled: !agreeTerms,
+                          variant: "primary",
+                          className: "confirm",
+                          type: "submit",
+                        }}
+                      >
+                        <span>Confirm payment</span>
+                      </LoadingButton>
+                    </Form>
+                  )}
+                </ElementsConsumer>
+              </PaymentContainer>
+            </div>
           </Col>
         </Row>
       </div>
