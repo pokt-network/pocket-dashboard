@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import "../Support/TermsOfService.scss";
+import "../Support/SupportPages.scss";
 import {withRouter} from "react-router-dom";
 import {Container, Row} from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";
@@ -20,7 +20,7 @@ class PrivacyPolicy extends Component {
           </span>
           <br />
           <Row>
-            <div className="address offset-lg-4">
+            <div className="address center-header">
               <p className="">
                 POCKET NETWORK,
                 <br />
@@ -96,13 +96,11 @@ class PrivacyPolicy extends Component {
           <Row>
             <div className="mt-5">
               <p className="bold justify">USE OF PERSONAL INFORMATION</p>
-
+              <span className="not-bold align-ul">
+                We use your personal information as follows:
+              </span>
               <ul className="ml-lg-5">
-                <li className="no-bullet">
-                  <span className="not-bold ">
-                    We use your personal information as follows:
-                  </span>
-                </li>
+                <li className="no-bullet"></li>
                 <li>
                   We use your personal information to operate, maintain, and
                   improve our sites, products, and services.
@@ -144,7 +142,7 @@ class PrivacyPolicy extends Component {
           <Row>
             <div className="information mt-5">
               <p className="bold">SHARING OF PERSONAL INFORMATION</p>
-              <span className="not-bold justify ml-lg-5">
+              <span className="not-bold justify align-ul">
                 We may share personal information as follows:
               </span>
               <ul className="ml-lg-5">

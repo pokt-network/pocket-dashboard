@@ -1,0 +1,164 @@
+@import "../../scss/Core.scss";
+@import "../../scss/Variables/Colors.scss";
+@import "../../scss/Variables/Fonts.scss";
+
+#privacy-policy {
+  .wrapper {
+    padding-left: 10em;
+    padding-right: 10em;
+  }
+
+  .go {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .text {
+      color: $light-gray;
+      margin-left: 8px;
+      font-family: $primary-font-family;
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    .icon {
+      height: 18px;
+    }
+
+    &.top {
+      .text {
+        margin-left: 5px;
+      }
+
+      .icon {
+        height: 12px;
+      }
+    }
+
+    &:hover {
+      .text {
+        color: darken($color: $light-gray, $amount: 20%);
+      }
+
+      .icon {
+        filter: contrast(10%);
+      }
+    }
+  }
+
+  .address p {
+    font-family: $secondary-font-family;
+    font-size: 30px;
+    font-weight: 800;
+    text-align: center;
+    color: $dark-gray;
+    line-height: 1.27 !important;
+  }
+
+  .address-updated {
+    font-family: $secondary-font-family;
+    font-size: 18px;
+    font-weight: normal !important;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.11;
+    letter-spacing: normal;
+    text-align: center;
+    color: $dark-gray;
+  }
+
+  .secondary-font-family {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.36;
+    letter-spacing: normal;
+    text-align: justify;
+    color: #000000;
+  }
+  .primary-font-family {
+    font-family: $primary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.36;
+    letter-spacing: normal;
+    text-align: justify;
+    color: #000000;
+  }
+  span {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: $dark-gray;
+    line-height: 2.36;
+  }
+
+  .not-bold {
+    font-weight: 300 !important;
+    line-height: 2.36 !important;
+  }
+
+  .bold {
+    font-weight: bold !important;
+  }
+
+  .center {
+    text-align: center !important;
+  }
+
+  .justify {
+    text-align: justify !important;
+  }
+
+  p {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.71;
+    letter-spacing: -0.38px;
+    text-align: center;
+    color: $dark-gray;
+  }
+
+  .information p {
+    text-align: justify !important;
+  }
+
+  li {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.36;
+    letter-spacing: normal;
+    text-align: justify;
+    color: $dark-gray;
+  }
+
+  .no-bullet {
+    list-style-type: none;
+  }
+  .top-margin {
+    margin-top: 1.5em !important;
+  }
+
+  .align-ul {
+    margin-left: 65px !important;
+  }
+
+  .center-header {
+    margin-left: 40% !important;
+  }
+}

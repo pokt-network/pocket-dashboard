@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import "../Support/TermsOfService.scss";
+import "../Support/SupportPages.scss";
 import {withRouter} from "react-router-dom";
 import {Container, Row} from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";
