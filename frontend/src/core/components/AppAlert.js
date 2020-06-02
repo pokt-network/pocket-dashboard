@@ -17,7 +17,11 @@ class AppAlert extends Component {
     if (title && isEmpty(title) && variant === VARIANT_DANGER) {
       return <h4>{DEFAULT_ERROR_MESSAGE}</h4>;
     } else {
-      return title;
+      if (typeof title === "string") {
+        return <h4>{title}</h4>;
+      } else {
+        return title;
+      }
     }
   }
 
@@ -47,7 +51,7 @@ class AppAlert extends Component {
 
 AppAlert.defaultProps = {
   variant: "primary",
-  className: "",
+  className: "pt-2 pb-2",
 };
 
 AppAlert.propTypes = {
