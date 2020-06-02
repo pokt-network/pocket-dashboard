@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import "../Support/PrivacyPolicy.scss";
+import "../Support/TermsOfService.scss";
 import {withRouter} from "react-router-dom";
 import {Container, Row} from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";
@@ -25,13 +25,15 @@ class PrivacyPolicy extends Component {
                 POCKET NETWORK,
                 <br />
                 INC. PRIVACY POLICY
+                <br />
+                <span className="address-updated">
+                  LAST UPDATED: MAY 18, 2020
+                </span>
               </p>
-
-              <h3>Last Updated: MAY 18, 2020</h3>
             </div>
           </Row>
           <Row>
-            <div className="policy">
+            <div className="primary-font-family">
               This privacy policy (“<b>Policy</b>”) describes how Pocket
               Network, Inc. and its related companies (“<b>Company</b>”)
               collect, use and share personal information of consumer users of
@@ -43,56 +45,64 @@ class PrivacyPolicy extends Component {
             <br />
           </Row>
           <Row>
-            <div className="collect">
+            <div>
               <span>WHAT WE COLLECT</span>
-              <p>We get information about you in a range of ways.</p>
+              <br />
+              <span className="not-bold">
+                We get information about you in a range of ways.
+              </span>
             </div>
           </Row>
           <Row>
-            <div className="information">
+            <div className="information ml-4 top-margin">
               <p>
-                <b>Information You Give Us.</b>​ We collect your‎ name, postal
-                address, email address, phone number, fax number, username,
-                password as well as other information you directly give us on
-                our Site.
-              </p>
-              <p>
-                <b>Information We Get From Others.</b>​ We may get information
-                about you from other sources. We may add this to information we
-                get from this Site.
-              </p>
-              <p>
-                <b>Information Automatically Collected.</b> We automatically log
-                information about you and your computer. For example, when
-                visiting our Site, we log your computer operating system type,
-                browser type, browser language, the website you visited before
-                browsing to our Site, pages you viewed, how long you spent on a
-                page, access times and information about your use of and actions
-                on our Site.
-              </p>
-              <p>
-                <b>Cookies.</b>​ We may log information using
-                &quot;cookies.&quot; Cookies are small data files stored on your
-                hard drive by a website. We may use both session Cookies (which
-                expire once you close your web browser) and persistent Cookies
-                (which stay on your computer until you delete them) to provide
-                you with a more personal and interactive experience on our Site.
-                This type of information is collected to make the Site more
-                useful to you and to tailor the experience with us to meet your
-                special interests and needs.
+                <ul>
+                  <li className="no-bullet">
+                    <span>Information You Give Us.</span>​ We collect your‎
+                    name, postal address, email address, phone number, fax
+                    number, username, password as well as other information you
+                    directly give us on our Site.
+                  </li>
+                  <li className="no-bullet">
+                    <span>Information We Get From Others.</span>​ We may get
+                    information about you from other sources. We may add this to
+                    information we get from this Site.
+                  </li>
+                  <li className="no-bullet">
+                    <span>Information Automatically Collected.</span> We
+                    automatically log information about you and your computer.
+                    For example, when visiting our Site, we log your computer
+                    operating system type, browser type, browser language, the
+                    website you visited before browsing to our Site, pages you
+                    viewed, how long you spent on a page, access times and
+                    information about your use of and actions on our Site.
+                  </li>
+                  <li className="no-bullet">
+                    <span>Cookies.</span>​ We may log information using
+                    &quot;cookies.&quot; Cookies are small data files stored on
+                    your hard drive by a website. We may use both session
+                    Cookies (which expire once you close your web browser) and
+                    persistent Cookies (which stay on your computer until you
+                    delete them) to provide you with a more personal and
+                    interactive experience on our Site. This type of information
+                    is collected to make the Site more useful to you and to
+                    tailor the experience with us to meet your special interests
+                    and needs.
+                  </li>
+                </ul>
               </p>
             </div>
           </Row>
           <Row>
-            <div>
-              <span>USE OF PERSONAL INFORMATION</span>
-              <p></p>
-            </div>
-          </Row>
-          <Row>
-            <div>
-              We use your personal information as follows:
-              <ul>
+            <div className="mt-5">
+              <p className="bold justify">USE OF PERSONAL INFORMATION</p>
+
+              <ul className="ml-lg-5">
+                <li className="no-bullet">
+                  <span className="not-bold ">
+                    We use your personal information as follows:
+                  </span>
+                </li>
                 <li>
                   We use your personal information to operate, maintain, and
                   improve our sites, products, and services.
@@ -132,14 +142,12 @@ class PrivacyPolicy extends Component {
             </div>
           </Row>
           <Row>
-            <div className="information">
-              <span>SHARING OF PERSONAL INFORMATION</span>
-            </div>
-          </Row>
-          <Row>
-            <div className="information">
-              <ul>
-                <p>We may share personal information as follows:</p>
+            <div className="information mt-5">
+              <p className="bold">SHARING OF PERSONAL INFORMATION</p>
+              <span className="not-bold justify ml-lg-5">
+                We may share personal information as follows:
+              </span>
+              <ul className="ml-lg-5">
                 <li>
                   We may share personal information with your consent. For
                   example, you may let us share personal information with others
@@ -187,7 +195,7 @@ class PrivacyPolicy extends Component {
             </div>
           </Row>
           <Row>
-            <div className="information">
+            <div className="information mt-5">
               <span>INFORMATION CHOICES AND CHANGES</span>
               <p>
                 Our marketing emails tell you how to “opt-out.” If you opt out,
@@ -205,18 +213,24 @@ class PrivacyPolicy extends Component {
             </div>
           </Row>
           <Row>
-            <div className="information">
+            <div className="information mt-5">
               <span>CONTACT INFORMATION</span>
               <div>
-                We welcome your comments or questions about this privacy policy.
-                You may also contact us at our address:
-                <p>Pocket Network, Inc.</p> <p>801 E Whiting St</p>
-                <p>Tampa, Florida 33602</p>
+                <p className="not-bold justify">
+                  We welcome your comments or questions about this privacy
+                  policy. You may also contact us at our address:
+                  <br />
+                  Pocket Network, Inc.
+                  <br />
+                  801 E Whiting St
+                  <br />
+                  Tampa, Florida 33602
+                </p>
               </div>
             </div>
           </Row>
           <Row>
-            <div className="information">
+            <div className="information mt-5">
               <span>CHANGES TO THIS PRIVACY POLICY</span>
               <p>
                 We may change this privacy policy. If we make any changes, we
@@ -238,4 +252,4 @@ class PrivacyPolicy extends Component {
   }
 }
 
-export default withrouter(PrivacyPolicy);
+export default withRouter(PrivacyPolicy);
