@@ -1,8 +1,12 @@
 export const PaymentInputStyle = {
   base: {
     fontSmoothing: "antialiased",
-    fontSize: "16px",
-    color: "#495057",
-    fontWeight: 500
+    fontFamily: "Lato, sans-serif",
+    fontSize: "14px",
+    color: "#424242",
+    fontWeight: 300,
+    "::placeholder": {
+      color: "#afafaf",
+    },
   }
 };
