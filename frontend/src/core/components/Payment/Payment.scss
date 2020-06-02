@@ -1,14 +1,15 @@
+@import "../../../scss/Variables/Colors.scss";
+
 $payment-input-colors: (
   border: #ced4da
 );
 
 .payment-container {
   .payment-input {
-    height: 38px;
+    height: 32px;
     border: 1px solid map_get($payment-input-colors, border);
     border-radius: 0.25rem;
-
-    padding: 11px 15px 11px 11px;
+    padding: 8px 12px;
   }
 }
 

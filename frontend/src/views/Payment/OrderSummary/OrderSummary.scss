@@ -4,6 +4,10 @@
   .payment-method-column {
     padding-right: 9px;
     padding-left: 0;
+
+    .card-form-title {
+      margin-bottom: 10px;
+    }
   }
 
   .review-order-column {
@@ -59,7 +63,9 @@
   }
 
   .cards {
-    overflow-x: auto;
+    max-height: 375px;
+    overflow-y: auto;
+    margin-bottom: 25px;
   }
 
   .p-badge {
@@ -104,6 +110,7 @@
         color: $primary-color;
         font-size: 1.5rem;
         font-weight: 700;
+        text-align: right;
       }
     }
 
@@ -130,6 +137,14 @@
     }
   }
 
+  .new-card-btn {
+    background-color: transparent;
+    border-color: transparent;
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: $primary-color;
+  }
+
   .agree-terms {
     line-height: 0;
     padding-bottom: 0;
@@ -147,26 +162,54 @@
     margin-left: 22px;
   }
 
+  .payment-container {
+    [class*="col-md"] {
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:last-child {
+        padding-right: 0;
+      }
+    }
+  }
+
   .payment-method {
+    max-width: 70%;
     display: flex;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(90, 90, 90, 0.1);
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(6, 32, 46, 0.1);
+
+    .payment-radio-input {
+      width: 16px;
+      height: 16px;
+      margin-top: 2px;
+
+      input[type="radio"] {
+        width: 16px;
+        height: 16px;
+        margin-right: 0;
+      }
+
+      .form-check-label {
+        display: none;
+      }
+
+      &.checked {
+        .form-check-label {
+          display: block;
+          width: 75%;
+          height: 75%;
+          margin-left: 2px;
+        }
+      }
+    }
 
     .card-display {
       padding-top: 0;
       padding-bottom: 0;
       border-bottom: unset;
     }
-
-    .custom-radio {
-      align-self: center;
-      margin-bottom: 20px;
-    }
-  }
-
-  .payment-method:last-of-type {
-    border-bottom: unset;
   }
 
   .confirm {

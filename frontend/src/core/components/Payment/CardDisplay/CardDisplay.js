@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {PropTypes} from "prop-types";
-import {Button} from "react-bootstrap";
+import {Button, Row} from "react-bootstrap";
 import "./CardDisplay.scss";
 
 class CardDisplay extends Component {
@@ -13,8 +13,8 @@ class CardDisplay extends Component {
           <strong className="text-capitalize">
             {cardData.type} {cardData.digits}
           </strong>
-          <p className="name">{holder}</p>
         </div>
+        <span className="name">{holder}</span>
         {onDelete && (
           <Button
             className="font-weight-light"

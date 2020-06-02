@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, {Component} from "react";
-import {Col, Form, Row} from "react-bootstrap";
+import cls from "classnames";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import numeral from "numeral";
 import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDisplay";
 import UserService from "../../../core/services/PocketUserService";
@@ -56,8 +57,11 @@ class OrderSummary extends Component {
       },
       unauthorized: false,
       purchasing: false,
+      showForm: false,
     };
   }
+
+  componentDidUpdate(prevProps) {}
 
   componentDidMount() {
     this.setState({loading: true});
@@ -84,6 +88,8 @@ class OrderSummary extends Component {
           (pm) => PaymentService.getDefaultPaymentMethod() === pm.id
         ) || paymentMethods[0];
 
+      const hasPaymentMethods = paymentMethods.length > 0;
+
       this.setState({
         loading: false,
         selectedPaymentMethod,
@@ -94,6 +100,8 @@ class OrderSummary extends Component {
         cost,
         total,
         currentAccountBalance,
+        isFormVisible: !hasPaymentMethods,
+        isAddNewDisabled: !hasPaymentMethods,
       });
     });
   }
@@ -133,10 +141,7 @@ class OrderSummary extends Component {
     const {paymentIntent, selectedPaymentMethod, type} = this.state;
 
     const result = await StripePaymentService.confirmPaymentWithSavedCard(
-      stripe,
-      paymentIntent.paymentNumber,
-      selectedPaymentMethod.id,
-      selectedPaymentMethod.billingDetails
+      stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails
     );
 
     if (result.error) {
@@ -169,10 +174,7 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       ApplicationService.stakeApplication(
-        application,
-        chains,
-        result.paymentIntent.id,
-        applicationLink
+        application, chains, result.paymentIntent.id, applicationLink
       ).then(() => {});
     } else {
       // Stake Node
@@ -192,10 +194,7 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       NodeService.stakeNode(
-        node,
-        chains,
-        result.paymentIntent.id,
-        nodeLink
+        node, chains, result.paymentIntent.id, nodeLink
       ).then(() => {});
     }
 
@@ -210,9 +209,7 @@ class OrderSummary extends Component {
     const billingDetails = {name};
 
     StripePaymentService.createPaymentMethod(
-      stripe,
-      cardData.card,
-      billingDetails
+      stripe, cardData.card, billingDetails
     ).then(async (result) => {
       // Adding a card on checkout doesn't ask you for billing info.
       if (!billingDetails.address) {
@@ -236,8 +233,7 @@ class OrderSummary extends Component {
 
       if (result.paymentMethod) {
         const {success, data} = await StripePaymentService.savePaymentMethod(
-          result.paymentMethod,
-          billingDetails
+          result.paymentMethod, billingDetails
         );
 
         if (!success) {
@@ -268,7 +264,13 @@ class OrderSummary extends Component {
           PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
         }
 
-        this.setState({alert, paymentMethods, selectedPaymentMethod});
+        this.setState({
+          alert,
+          paymentMethods,
+          selectedPaymentMethod,
+          isFormVisible: false,
+          isAddNewDisabled: false,
+        });
       }
     });
   }
@@ -286,6 +288,8 @@ class OrderSummary extends Component {
       alert,
       unauthorized,
       purchasing,
+      isFormVisible,
+      isAddNewDisabled,
     } = this.state;
 
     const cards = [
@@ -325,7 +329,7 @@ class OrderSummary extends Component {
             onClose={() => this.setState({alert: {show: false}})}
             title={alert.message}
             variant={alert.variant}
-          ></AppAlert>
+          />
         )}
         <div className="title-page mb-3">
           <h1>Order summary</h1>
@@ -337,6 +341,7 @@ class OrderSummary extends Component {
               <Form className="cards">
                 {paymentMethods.map((card, idx) => {
                   const {brand, lastDigits, holder} = card;
+                  const isChecked = card.id === selectedPaymentMethod.id;
 
                   return (
                     <div key={idx} className="payment-method">
@@ -344,7 +349,8 @@ class OrderSummary extends Component {
                         inline
                         label=""
                         type="radio"
-                        checked={card.id === selectedPaymentMethod.id}
+                        className={cls("payment-radio-input", {checked: isChecked})}
+                        checked={isChecked}
                         onChange={() => {
                           this.setState({selectedPaymentMethod: card});
                         }}
@@ -362,16 +368,29 @@ class OrderSummary extends Component {
                   );
                 })}
               </Form>
-              <h5 className="mt-5 mb-4">Add a new card</h5>
+              <Button
+                className="new-card-btn mb-3"
+                onClick={() => this.setState({isFormVisible: !isFormVisible})}
+                disabled={isAddNewDisabled}
+              >
+                Add a New Card
+              </Button>
 
-              <h5 className="card-form-title">Enter your card information</h5>
-              <NewCardNoAddressForm
-                formActionHandler={this.saveNewCard}
-                actionButtonName="Add card"
-                setDefaultHandler={(setMethodDefault) =>
-                  this.setState({setMethodDefault})
-                }
-              />
+              {isFormVisible && (
+                <>
+                  <h5 className="card-form-title">
+                    Enter your Card Information
+                  </h5>
+
+                  <NewCardNoAddressForm
+                    formActionHandler={this.saveNewCard}
+                    actionButtonName="Add Card"
+                    setDefaultHandler={(setMethodDefault) =>
+                      this.setState({setMethodDefault})
+                    }
+                  />
+                </>
+              )}
             </div>
           </Col>
           <Col md="4" className="review-order-column">
