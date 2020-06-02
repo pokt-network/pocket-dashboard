@@ -52,7 +52,7 @@ export const ROUTE_PATHS = {
   reset_password: "/reset-password",
   termsOfService: "/support/terms-of-service",
   privacyPolicy: "/support/privacy-policy",
-  unsubscribe: "/support/unsubscribe.js",
+  unsubscribe: "/support/unsubscribe",
 };
 
 export const DASHBOARD_PATHS = {
@@ -136,7 +136,7 @@ const pageRoutes = [
     component: PrivacyPolicy,
   },
   {
-    path: ROUTE_PATHS.unsusbscribe,
+    path: ROUTE_PATHS.unsubscribe,
     exact: true,
     name: "Unsubscribe",
     component: Unsubscribe,

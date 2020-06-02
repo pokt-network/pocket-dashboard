@@ -2,7 +2,7 @@ import React from "react";
 import {Redirect, Link} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
 import {generateIcon, nodeFormSchema, scrollToId} from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
@@ -272,9 +272,7 @@ class CreateNodeForm extends CreateForm {
                       <p>
                         {/* eslint-disable-next-line react/no-unescaped-entities */}
                         I agree to these Pocket's{" "}
-                        <Link
-                          to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}
-                        >
+                        <Link to={ROUTE_PATHS.privacyPolicy}>
                           Terms and Conditions.
                         </Link>
                       </p>

@@ -9,8 +9,6 @@ import PocketUserService from "../../../core/services/PocketUserService";
 import "./SignUp.scss";
 import {
   ROUTE_PATHS,
-  _getDashboardPath,
-  DASHBOARD_PATHS,
 } from "../../../_routes";
 import AuthSidebar from "../../../core/components/AuthSidebar/AuthSidebar";
 import {Formik} from "formik";
@@ -233,7 +231,7 @@ class SignUp extends Component {
                           <span className="agreement-label">
                             I agree to Pocket Dashboard{" "}
                             <Link
-                              to={_getDashboardPath(ROUTE_PATHS.privacyPolicy)}
+                              to={ROUTE_PATHS.privacyPolicy}
                             >
                               Privacy Policy.
                             </Link>
