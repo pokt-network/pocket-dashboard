@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {PropTypes} from "prop-types";
-import {Button, Row} from "react-bootstrap";
+import {Button} from "react-bootstrap";
 import "./CardDisplay.scss";
 
 class CardDisplay extends Component {

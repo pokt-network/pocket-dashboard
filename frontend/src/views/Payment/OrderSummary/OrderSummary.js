@@ -198,6 +198,7 @@ class OrderSummary extends Component {
       ).then(() => {});
     }
 
+    PaymentService.setDefaultPaymentMethod(selectedPaymentMethod.id);
     this.goToInvoice();
   }
 
@@ -250,10 +251,6 @@ class OrderSummary extends Component {
         const user = UserService.getUserInfo().email;
         const paymentMethods = await PaymentService.getPaymentMethods(user);
 
-        const selectedPaymentMethod = paymentMethods.find(
-          (pm) => result.paymentMethod.id === pm.id
-        );
-
         const alert = {
           show: true,
           variant: "primary",
@@ -267,7 +264,6 @@ class OrderSummary extends Component {
         this.setState({
           alert,
           paymentMethods,
-          selectedPaymentMethod,
           isFormVisible: false,
           isAddNewDisabled: false,
         });
