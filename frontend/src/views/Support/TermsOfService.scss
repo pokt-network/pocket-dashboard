@@ -1,0 +1,119 @@
+@import "../../scss/Core.scss";
+
+#privacy-policy {
+  .wrapper {
+    padding-left: 10em;
+    padding-right: 10em;
+  }
+
+  .go {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .text {
+      color: $light-gray;
+      margin-left: 8px;
+      font-family: $primary-font-family;
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    .icon {
+      height: 18px;
+    }
+
+    &.top {
+      .text {
+        margin-left: 5px;
+      }
+
+      .icon {
+        height: 12px;
+      }
+    }
+
+    &:hover {
+      .text {
+        color: darken($color: $light-gray, $amount: 20%);
+      }
+
+      .icon {
+        filter: contrast(10%);
+      }
+    }
+  }
+
+  .address p {
+    font-family: $secondary-font-family;
+    font-size: 30px;
+    font-weight: 800;
+    text-align: center;
+    color: $dark-gray;
+    line-height: 1.27 !important;
+  }
+
+  .address h3 {
+    font-family: $secondary-font-family;
+    font-size: 18px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.11;
+    letter-spacing: normal;
+    text-align: center;
+    color: $dark-gray;
+  }
+
+  .policy {
+    font-family: $primary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.36;
+    letter-spacing: normal;
+    text-align: justify;
+    color: #000000;
+  }
+
+  span {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: $dark-gray;
+  }
+
+  p {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.71;
+    letter-spacing: -0.38px;
+    text-align: center;
+    color: $dark-gray;
+  }
+
+  .information p {
+    text-align: justify !important;
+  }
+
+  li {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: 300;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 2.36;
+    letter-spacing: normal;
+    text-align: justify;
+    color: $dark-gray;
+  }
+}

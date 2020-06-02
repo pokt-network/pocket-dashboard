@@ -14,7 +14,7 @@ class AppAlert extends Component {
     if (isString(title) && variant !== VARIANT_DANGER) {
       return <h4>{title}</h4>;
     }
-    if (title && !isEmpty(title) && variant === VARIANT_DANGER) {
+    if (title && isEmpty(title) && variant === VARIANT_DANGER) {
       return <h4>{DEFAULT_ERROR_MESSAGE}</h4>;
     } else {
       return title;

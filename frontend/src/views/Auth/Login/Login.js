@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
-import "./Login.scss";
 import {
   AuthProviderButton,
   AuthProviderType,
@@ -113,7 +112,7 @@ class Login extends Component {
             </div>
             <Row className="justify-content-center">
               <div className={"main"}>
-                <h2>Login</h2>
+                <h2>Log in</h2>
                 <Formik
                   validate={this.validate}
                   // validationSchema={this.schema}
@@ -138,7 +137,6 @@ class Login extends Component {
                           value={values.email}
                           onChange={handleChange}
                           isInvalid={!!errors.email}
-                          className="inputControl"
                         />
                         <Form.Control.Feedback type="invalid">
                           {errors.email}
@@ -153,7 +151,7 @@ class Login extends Component {
                           value={values.password}
                           onChange={handleChange}
                           isInvalid={!!errors.password}
-                          className={`inputControl ${cls({
+                          className={`${cls({
                             "text-hidden": values.password.length === 0,
                           })}`}
                         />
@@ -168,9 +166,8 @@ class Login extends Component {
                         size="md"
                         variant="primary"
                         block
-                        className="center inputButton"
                       >
-                        Sign in
+                        Log in
                       </Button>
                       <div className="containerDiv">
                         <div className="divider mt-3 mb-3">Or</div>

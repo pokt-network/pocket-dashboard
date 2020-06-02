@@ -46,10 +46,12 @@ export const ROUTE_PATHS = {
   home: "/dashboard",
   forgot_password: "/forgot-password",
   security_questions: "/security-questions",
-  verify_email: "/verify-email",
-  reset_password: "/reset-password",
   answer_security_questions: "/answer-security-questions",
-  verify_changed_email: "/email-changed",
+  verify_email: "/verify-email",
+  verify_changed_email: "/verify-email-changed",
+  reset_password: "/reset-password",
+  termsOfService: "/support/terms-of-service",
+  privacyPolicy: "/support/privacy-policy",
 };
 
 export const DASHBOARD_PATHS = {
@@ -76,8 +78,6 @@ export const DASHBOARD_PATHS = {
   importNode: "/nodes/import",
   orderSummary: "/payment/summary",
   invoice: "/payment/invoice",
-  termsOfService: "/support/terms-of-service",
-  privacyPolicy: "/support/privacy-policy",
 };
 
 export const PROFILE_PATHS = {
@@ -183,6 +183,18 @@ const pageRoutes = [
     exact: true,
     name: "Verify Email",
     component: VerifyEMail,
+  },
+  {
+    path: ROUTE_PATHS.privacyPolicy,
+    exact: true,
+    name: "Privacy Policy",
+    component: PrivacyPolicy,
+  },
+  {
+    path: ROUTE_PATHS.termsOfService,
+    exact: true,
+    name: "Terms of Service",
+    component: TermsOfService,
   },
   {
     path: ROUTE_PATHS.verify_changed_email,
@@ -358,18 +370,6 @@ export const dashboardRoutes = [
     exact: false,
     name: "User General",
     component: Profile,
-  },
-  {
-    path: DASHBOARD_PATHS.termsOfService,
-    exact: false,
-    name: "Terms of Service",
-    component: TermsOfService,
-  },
-  {
-    path: DASHBOARD_PATHS.privacyPolicy,
-    exact: false,
-    name: "Terms of Service",
-    component: PrivacyPolicy,
   },
 ];
 

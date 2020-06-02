@@ -11,7 +11,7 @@ export const profile = {
       icon: "profile/key.svg",
     },
     {
-      name: "Payment method",
+      name: "Payment methods",
       url: "/dashboard/profile/payments",
       icon: "profile/payment_methods.svg",
     },

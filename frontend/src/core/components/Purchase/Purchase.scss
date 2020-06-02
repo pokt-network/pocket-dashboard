@@ -1,7 +1,6 @@
 @import "../../../scss/Core.scss";
 
 .rc-slider-tooltip {
-
   .rc-slider-tooltip-arrow {
     border-top-color: transparent !important;
   }
@@ -10,34 +9,34 @@
     content: "";
     background-image: url(/assets/caret_down.svg);
     background-repeat: no-repeat;
-    background-size: 30px 34px;
+    background-size: 15px 30px;
     display: inline-block;
-    width: 41px;
-    height: 41px;
-    margin-left: -16px;
+    width: 15px;
+    height: 30px;
+    margin-left: -7px;
     margin-top: -22px;
     position: absolute;
   }
 
   .rc-slider-tooltip-inner {
-    text-transform: capitalize;
     background-color: $form-label-font-color;
     font-family: $primary-font-family;
     font-size: 14px;
+    font-weight: 400;
     height: 32px;
-    padding-left: 35px;
-    padding-right: 35px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    line-height: 30px;
+    padding: 0 20px;
     margin-top: -35px;
     border-radius: $default-border-radius;
     color: $primary-color;
     box-shadow: unset;
-    font-weight: 700;
   }
 }
 
 #purchase {
+  .title-page {
+    padding: 0;
+  }
 
   h1 {
     text-transform: uppercase;
@@ -45,6 +44,7 @@
     color: $form-label-font-color;
     font-size: 30px;
     font-weight: 800;
+    margin-bottom: 0;
   }
 
   h2 {
@@ -55,19 +55,35 @@
     font-weight: bold;
     line-height: 2.11;
     letter-spacing: -0.49px;
+    margin-bottom: 0;
   }
 
   .subtitle {
     font-family: $primary-font-family;
     color: $dark-gray;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 300;
     letter-spacing: normal;
+    line-height: normal;
     margin-bottom: 0;
   }
 
-  .price-card {
+  .relays-column,
+  .order-summary-column {
+    margin-top: 30px;
+  }
 
+  .relays-column {
+    padding-left: 0;
+    padding-right: 9px;
+  }
+
+  .order-summary-column {
+    padding-left: 9px;
+    padding-right: 0;
+  }
+
+  .price-card {
     margin: 0px 10px 10px 0px;
     text-align: center;
     background-color: #515151;
@@ -82,53 +98,53 @@
     }
   }
 
-  h4.alert-max {
-    text-transform: uppercase;
-    font-weight: 800;
-  }
-
-  p.alert-max {
-    font-weight: 400 !important;
-    font-size: 18px !important;
-  }
-
-  .calc {
+  .slider-wrapper {
+    height: 228px;
+    margin-bottom: 40px;
     display: flex;
+    align-items: center;
+    flex-grow: 2;
+    padding: 0 40px;
+    border-radius: $panel-radius;
+    box-shadow: $default-box-shadow;
 
-    .slider-wrapper {
-      height: 228px;
-      margin-bottom: 50px;
-      display: flex;
-      align-items: center;
-      flex-grow: 2;
-      padding: 60px 40px;
-      border-radius: 5px;
-      box-shadow: $default-box-shadow;
+    .slider-container {
+      width: 100%;
+    }
 
-      .rc-slider-mark-text {
-        font-size: 1.5em;
-        font-weight: 300;
-        font-family: "Lato";
+    .rc-slider-rail {
+      border-radius: $panel-radius;
+    }
 
-        &:first-of-type {
-          margin-top: 10px;
-          transform: translateX(0) !important;
-        }
+    .rc-slider-mark-text {
+      font-size: 0.875rem;
+      font-family: "Lato";
+      font-weight: 300;
 
-        &:last-of-type {
-          margin-top: 10px;
-          transform: translateX(-52%) !important;
-        }
+      .average-stake-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
       }
 
-      .rc-slider-mark-text:last-of-type {
-        margin-left: -42px;
-        width: 100%;
+      &:first-of-type {
+        margin-top: 10px;
+        transform: translateX(0) !important;
       }
 
-      .rc-slider-dot {
-        display: none;
+      &:last-of-type {
+        margin-top: 10px;
+        transform: translateX(-52%) !important;
       }
+    }
+
+    .rc-slider-mark-text:last-of-type {
+      margin-left: -42px;
+      width: 100%;
+    }
+
+    .rc-slider-dot {
+      display: none;
     }
 
     .p-badge {
@@ -146,6 +162,23 @@
 
     .p-badge p {
       font-weight: bold;
+    }
+  }
+
+  .max-alert {
+    padding: 25px 15px 20px 30px;
+
+    h4 {
+      font-weight: 800;
+      text-transform: uppercase;
+      line-height: normal;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 14px !important;
+      font-weight: 400 !important;
+      line-height: normal;
     }
   }
 }

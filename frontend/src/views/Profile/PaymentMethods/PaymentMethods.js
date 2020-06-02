@@ -25,7 +25,7 @@ class PaymentMethods extends Component {
   }
 
   async componentDidMount() {
-    this.setState({loading: true});
+    this.setState({loading: false});
 
     const user = UserService.getUserInfo().email;
     const paymentMethods = await PaymentService.getPaymentMethods(user);
@@ -33,7 +33,7 @@ class PaymentMethods extends Component {
     this.setState({paymentMethods, loading: false});
   }
 
-  saveNewCard(e, cardData, stripe) {
+  async saveNewCard(e, cardData, stripe) {
     e.preventDefault();
 
     const {
@@ -50,7 +50,7 @@ class PaymentMethods extends Component {
 
     StripePaymentService.createPaymentMethod(
       stripe, cardData.card, billingDetails
-    ).then((result) => {
+    ).then(async (result) => {
       if (result.errors) {
         this.setState({
           alert: {
@@ -63,13 +63,27 @@ class PaymentMethods extends Component {
       }
 
       if (result.paymentMethod) {
-        this.setState({
-          alert: {
-            show: true,
-            variant: "primary",
-            text: "Your payment method was successfully added.",
-          },
-        });
+        const {success, data} = await StripePaymentService.savePaymentMethod(
+          result.paymentMethod, billingDetails
+        );
+
+        if (success) {
+          this.setState({
+            alert: {
+              show: true,
+              variant: "primary",
+              text: "Your payment method was successfully added.",
+            },
+          });
+        } else {
+          this.setState({
+            alert: {
+              show: true,
+              variant: "danger",
+              text: data.message,
+            },
+          });
+        }
       }
     });
   }
@@ -122,13 +136,13 @@ class PaymentMethods extends Component {
       <Row id="general" className="payment-methods">
         <Col lg={{span: 10, offset: 1}} className="title-page">
           {alert.show && (
-              <AppAlert
-                variant={alert.variant}
-                title={alert.text}
-                dismissible
-                onClose={() => this.setState({alert: {show: false}})}
-              />
-            )}  
+            <AppAlert
+              variant={alert.variant}
+              title={alert.text}
+              dismissible
+              onClose={() => this.setState({alert: {show: false}})}
+            />
+          )}
           <div className="wrapper">
             <h1> Payment methods</h1>
             <div id="cards">

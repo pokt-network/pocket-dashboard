@@ -9,9 +9,8 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import UserService from "../../../core/services/PocketUserService";
 import {
   APPLICATIONS_LIMIT,
-  BOND_STATUS_STR,
   STYLING,
-  TABLE_COLUMNS,
+  TABLE_COLUMNS
 } from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
@@ -35,8 +34,6 @@ class AppsMain extends Main {
   constructor(props, context) {
     super(props, context);
 
-    this.handleAllItemsFilter = this.handleAllItemsFilter.bind(this);
-    this.handleUserItemsFilter = this.handleUserItemsFilter.bind(this);
     this.loadMoreUserApps = this.loadMoreUserApps.bind(this);
     this.loadMoreRegisteredApps = this.loadMoreRegisteredApps.bind(this);
 
@@ -71,37 +68,6 @@ class AppsMain extends Main {
           // .catch((err) => console.log(err.response));
         }
       );
-    });
-  }
-
-  async handleAllItemsFilter(option) {
-    this.setState({allItemsTableLoading: true});
-
-    const registeredItems = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT,
-      0,
-      BOND_STATUS_STR[option]
-    );
-
-    this.setState({registeredItems, allItemsTableLoading: false});
-  }
-
-  async handleUserItemsFilter(option) {
-    this.setState({userItemsTableLoading: true});
-
-    const userEmail = UserService.getUserInfo().email;
-
-    const userItems = await ApplicationService.getAllUserApplications(
-      userEmail,
-      APPLICATIONS_LIMIT,
-      0,
-      BOND_STATUS_STR[option]
-    );
-
-    this.setState({
-      userItems,
-      filteredItems: userItems,
-      userItemsTableLoading: false,
     });
   }
 

@@ -128,7 +128,7 @@ class SignUp extends Component {
           <Col className={"content auth-scroll"}>
             <div className="change">
               <p>
-                Do you have an account? <Link to={login}>Login</Link>
+                Do you have an account? <Link to={login}>Log In</Link>
               </p>
             </div>
             <Row className="justify-content-center">

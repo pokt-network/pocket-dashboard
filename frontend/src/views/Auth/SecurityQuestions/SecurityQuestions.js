@@ -221,56 +221,62 @@ class SecurityQuestions extends Component {
                 </h1>
                 <Form onSubmit={this.sendQuestions}>
                   <Form.Group>
-                    <Form.Label></Form.Label>
-                    <Form.Control
-                      as="select"
-                      onChange={(e) => this.handleSelect(e, 0)}
-                      className="select"
-                    >
-                      {securityQuestions.map((question) => (
-                        <option key={question}>{question}</option>
-                      ))}
-                    </Form.Control>
-                    <Form.Label>Answer 1</Form.Label>
-                    <Form.Control
-                      name="answer1"
-                      value={answer1}
-                      onChange={this.handleChange}
-                      className="select"
-                    />
+                    <span className="select-wrapper">
+                      <span className="text">Select question 1</span>
+                      <Form.Control
+                        as="select"
+                        onChange={(e) => this.handleSelect(e, 0)}
+                        className="select"
+                      >
+                        {securityQuestions.map((question) => (
+                          <option key={question}>{question}</option>
+                        ))}
+                      </Form.Control>
+                      <Form.Label>Answer 1</Form.Label>
+                      <Form.Control
+                        name="answer1"
+                        value={answer1}
+                        onChange={this.handleChange}
+                        className="select"
+                      />
+                    </span>
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label></Form.Label>
-                    <Form.Control
-                      as="select"
-                      onChange={(e) => this.handleSelect(e, 1)}
-                      className="select"
-                    >
-                      {securityQuestions.map((question) => (
-                        <option key={question}>{question}</option>
-                      ))}
-                    </Form.Control>
-                    <Form.Label>Answer 2</Form.Label>
-                    <Form.Control
-                      name="answer2"
-                      value={answer2}
-                      onChange={this.handleChange}
-                      className="select"
-                    />
+                    <span className="select-wrapper">
+                      <span className="text">Select question 2</span>
+                      <Form.Control
+                        as="select"
+                        onChange={(e) => this.handleSelect(e, 1)}
+                        className="select"
+                      >
+                        {securityQuestions.map((question) => (
+                          <option key={question}>{question}</option>
+                        ))}
+                      </Form.Control>
+                      <Form.Label>Answer 2</Form.Label>
+                      <Form.Control
+                        name="answer2"
+                        value={answer2}
+                        onChange={this.handleChange}
+                        className="select"
+                      />
+                    </span>
                   </Form.Group>
 
                   <Form.Group>
-                    <Form.Label></Form.Label>
-                    <Form.Control
-                      as="select"
-                      onChange={(e) => this.handleSelect(e, 2)}
-                      className="select"
-                    >
-                      {securityQuestions.map((question) => (
-                        <option key={question}>{question}</option>
-                      ))}
-                    </Form.Control>
+                    <span className="select-wrapper">
+                      <span className="text">Select question 3</span>
+                      <Form.Control
+                        as="select"
+                        onChange={(e) => this.handleSelect(e, 2)}
+                        className="select"
+                      >
+                        {securityQuestions.map((question) => (
+                          <option key={question}>{question}</option>
+                        ))}
+                      </Form.Control>
+                    </span>
                     <Form.Label className="answer">Answer 3</Form.Label>
                     <Form.Control
                       name="answer3"
@@ -280,7 +286,7 @@ class SecurityQuestions extends Component {
                     />
                   </Form.Group>
                   <Button
-                    className="mb-5 continue-button"
+                    className="mb-5 mt-4 continue-button"
                     type="submit"
                     variant="primary"
                     size={"md"}
