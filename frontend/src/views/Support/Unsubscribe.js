@@ -18,14 +18,14 @@ class Unsubscribe extends Component {
           <Row>
             <div className="address center-header unsubscribe">
               <p className="">
-                YOU'VE SUCCESSFULLY BEEN
+                YOU&apos;VE SUCCESSFULLY BEEN
                 <br />
                 UNSUBSCRIBED FROM POCKET
                 <br />
                 NETWORK MESSAGES
                 <br />
                 <span className="primary-font-family center unsubscribe color-dark-gray-1">
-                  Didn't mean to unsubscribe?
+                  Didn&apos;t mean to unsubscribe?
                 </span>
               </p>
               <Button className="btn-size " size="sm" variant="primary" block>
