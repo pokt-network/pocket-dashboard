@@ -164,4 +164,31 @@
   .center-header {
     margin: 0 auto;
   }
+
+  .unsubscribe {
+    color: $dark-gray !important;
+    line-height: normal !important;
+    margin-top: 15% !important;
+  }
+  .sign-up-btn {
+    font-family: $primary-font-family;
+    font-size: 12px;
+    font-weight: normal;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: $white-smoke;
+  }
+  .btn-size {
+    width: 130px;
+    height: 32px;
+    border-radius: 25px;
+    background-color: $border-blue;
+    margin-left: 35%;
+  }
+
+  .color-dark-gray-1 {
+    color: #494949 !important;
+  }
 }
