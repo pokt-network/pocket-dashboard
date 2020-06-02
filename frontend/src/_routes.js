@@ -98,13 +98,11 @@ export const BREADCRUMBS = () => {
 
     // Apps
     [DASHBOARD_PATHS.apps]: ["Apps"],
-    [DASHBOARD_PATHS.appDetail]: ["Apps", "App Detail"],
     [DASHBOARD_PATHS.createAppInfo]: [
       "Apps",
       UserService.getUserAction(),
       "App Information",
     ],
-    [DASHBOARD_PATHS.editApp]: ["Apps", "Create App", "Edit"],
     [DASHBOARD_PATHS.appPassphrase]: [
       "Apps",
       UserService.getUserAction(),

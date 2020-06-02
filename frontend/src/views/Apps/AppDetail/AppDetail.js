@@ -89,6 +89,9 @@ class AppDetail extends Component {
       accountBalance,
       loading: false,
     });
+
+    // eslint-disable-next-line react/prop-types
+    this.props.onBreadCrumbChange(["Apps", "App Detail"]);
   }
 
   async deleteApplication() {
