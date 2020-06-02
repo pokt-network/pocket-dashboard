@@ -9,7 +9,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
 import {formatDaysCountdown, formatNetworkData, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
-import PocketUserService from "../../../core/services/PocketUserService";
+import UserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
 import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
@@ -96,7 +96,7 @@ class AppDetail extends Component {
     const appsLink = `${window.location.origin}${_getDashboardPath(
       DASHBOARD_PATHS.apps
     )}`;
-    const userEmail = PocketUserService.getUserInfo().email;
+    const userEmail = UserService.getUserInfo().email;
 
     const success = await ApplicationService.deleteAppFromDashboard(
       address, userEmail, appsLink
@@ -104,6 +104,8 @@ class AppDetail extends Component {
 
     if (success) {
       this.setState({deleted: true});
+      // eslint-disable-next-line react/prop-types
+      this.props.onBreadCrumbChange(["Apps", "App Detail", "App Removed"]);
     }
   }
 
@@ -129,6 +131,8 @@ class AppDetail extends Component {
   async stakeApplication({privateKey, passphrase, address}) {
     ApplicationService.removeAppInfoFromCache();
     ApplicationService.saveAppInfoInCache({address, privateKey, passphrase});
+
+    UserService.saveUserAction("Stake App");
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(
@@ -212,14 +216,19 @@ class AppDetail extends Component {
 
     let aatStr = "";
 
-    const renderValidation = (handleFunc) => (
-      <ValidateKeys address={address} handleAfterValidate={handleFunc}>
+    const renderValidation = (handleFunc, breadcrumbs) => (
+      <>
+      {/* eslint-disable-next-line react/prop-types */}
+      <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
+      breadcrumbs={breadcrumbs}
+      address={address} handleAfterValidate={handleFunc}>
         <h1>Confirm private key</h1>
         <p>
           Import to the dashboard a pocket account previously created as an app
           in the network. If your account is not an app go to create.
         </p>
       </ValidateKeys>
+      </>
     );
 
     if (freeTier) {
@@ -227,11 +236,11 @@ class AppDetail extends Component {
     }
 
     if (ctaButtonPressed && stake) {
-      return renderValidation(this.stakeApplication);
+      return renderValidation(this.stakeApplication, ["Apps", "Stake App"]);
     }
 
     if (ctaButtonPressed && unstake) {
-      return renderValidation(this.unstakeApplication);
+      return renderValidation(this.unstakeApplication, ["Apps", "Unstake App"]);
     }
 
     if (loading) {

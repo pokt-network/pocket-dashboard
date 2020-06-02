@@ -4,13 +4,10 @@ import {Redirect, Route} from "react-router-dom";
 import AppSidebar from "./AppSidebar/AppSidebar";
 import AppNavbar from "./AppNavbar/AppNavbar";
 import Breadcrumbs from "./BreadCrumb/Breadcrumb";
-import {
-  dashboardRoutes,
-  ROUTE_PATHS,
-  BREADCRUMBS,
-} from "../../../_routes";
+import {dashboardRoutes, ROUTE_PATHS, BREADCRUMBS} from "../../../_routes";
 import UserService from "../../services/PocketUserService";
 import "./DefaultLayout.scss";
+import isArray from "lodash/isArray";
 
 class DefaultLayout extends Component {
   constructor(props, context) {
@@ -43,11 +40,15 @@ class DefaultLayout extends Component {
       return {label: br, active: idx === arr.length - 1};
     };
 
-    if (route_path in BREADCRUMBS) {
-      breadcrumbsShow = BREADCRUMBS[route_path];
+    if (route_path in BREADCRUMBS()) {
+      breadcrumbsShow = BREADCRUMBS()[route_path];
     }
-
-    breadcrumbsShow = breadcrumbsShow.map(breadcrumbsMapFn);
+    
+    if (isArray(breadcrumbsShow)) {
+      breadcrumbsShow = breadcrumbsShow.map(breadcrumbsMapFn);
+    } else {
+      breadcrumbsShow = [];
+    }
 
     if (!UserService.isLoggedIn()) {
       return <Redirect to={ROUTE_PATHS.login} />;

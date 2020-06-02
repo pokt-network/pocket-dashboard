@@ -36,6 +36,7 @@ import AnswerSecurityQuestions from "./views/Auth/AnswerSecurityQuestions/Answer
 import SelectValidatorPower from "./views/Nodes/SelectValidatorPower/SelectValidatorPower";
 import NodePassphrase from "./views/Nodes/NodePassphrase/Nodepassphrase";
 import VerifyChangedEmail from "./views/Auth/VerifyChangedEmail/VerifyChangedEmail";
+import UserService from "./core/services/PocketUserService";
 // If you are going to import this view, at least add it to the project.
 // import GeneralSettings from "./views/Apps/GeneralSettings/GeneralSettings";
 
@@ -91,44 +92,62 @@ export const _getDashboardPath = (path) => {
   return `${ROUTE_PATHS.home}${path}`;
 };
 
-export const BREADCRUMBS = {
-  [DASHBOARD_PATHS.home]: ["Status"],
+export const BREADCRUMBS = () => {
+  return {
+    [DASHBOARD_PATHS.home]: ["Status"],
 
-  // Apps
-  [DASHBOARD_PATHS.apps]: ["Apps"],
-  [DASHBOARD_PATHS.appDetail]: ["Apps", "App Detail"],
-  [DASHBOARD_PATHS.createAppInfo]: ["Apps", "Create App", "App Information"],
-  [DASHBOARD_PATHS.editApp]: ["Apps", "Create App", "Edit"],
-  [DASHBOARD_PATHS.appPassphrase]: ["Apps", "Create App", "Create Passphrase"],
-  [DASHBOARD_PATHS.applicationChainsList]: [
-    "Apps",
-    "Create App",
-    "Choose Chains",
-  ],
-  [DASHBOARD_PATHS.tierSelection]: ["Apps", "Create App", "Choose tier"],
-  [DASHBOARD_PATHS.selectRelays]: ["Apps", "Create App", "Checkout"],
+    // Apps
+    [DASHBOARD_PATHS.apps]: ["Apps"],
+    [DASHBOARD_PATHS.appDetail]: ["Apps", "App Detail"],
+    [DASHBOARD_PATHS.createAppInfo]: [
+      "Apps",
+      UserService.getUserAction(),
+      "App Information",
+    ],
+    [DASHBOARD_PATHS.editApp]: ["Apps", "Create App", "Edit"],
+    [DASHBOARD_PATHS.appPassphrase]: [
+      "Apps",
+      UserService.getUserAction(),
+      "Create Passphrase",
+    ],
+    [DASHBOARD_PATHS.applicationChainsList]: [
+      "Apps",
+      UserService.getUserAction(),
+      "Choose Chains",
+    ],
+    [DASHBOARD_PATHS.tierSelection]: [
+      "Apps",
+      UserService.getUserAction(),
+      "Choose tier",
+    ],
+    [DASHBOARD_PATHS.selectRelays]: [
+      "Apps",
+      UserService.getUserAction(),
+      "Checkout",
+    ],
 
-  // Nodes
-  [DASHBOARD_PATHS.nodes]: ["Nodes"],
-  [DASHBOARD_PATHS.nodeDetail]: ["Apps", "Node Detail"],
+    // Nodes
+    [DASHBOARD_PATHS.nodes]: ["Nodes"],
+    [DASHBOARD_PATHS.nodeDetail]: ["Apps", "Node Detail"],
 
-  // Profile paths
-  [DASHBOARD_PATHS.profile + PROFILE_PATHS.general]: [
-    "User Profile",
-    "General Information",
-  ],
-  [DASHBOARD_PATHS.profile + PROFILE_PATHS.changePassword]: [
-    "User Profile",
-    "Change your Password",
-  ],
-  [DASHBOARD_PATHS.profile + PROFILE_PATHS.paymentHistory]: [
-    "User Profile",
-    "Payment History",
-  ],
-  [DASHBOARD_PATHS.profile + PROFILE_PATHS.paymentMethods]: [
-    "User Profile",
-    "Payment Methods",
-  ],
+    // Profile paths
+    [DASHBOARD_PATHS.profile + PROFILE_PATHS.general]: [
+      "User Profile",
+      "General Information",
+    ],
+    [DASHBOARD_PATHS.profile + PROFILE_PATHS.changePassword]: [
+      "User Profile",
+      "Change your Password",
+    ],
+    [DASHBOARD_PATHS.profile + PROFILE_PATHS.paymentHistory]: [
+      "User Profile",
+      "Payment History",
+    ],
+    [DASHBOARD_PATHS.profile + PROFILE_PATHS.paymentMethods]: [
+      "User Profile",
+      "Payment Methods",
+    ],
+  };
 };
 
 /**
