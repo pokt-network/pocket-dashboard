@@ -89,6 +89,15 @@
       color: $secondary-color;
     }
   }
+  
+  .cta-buttons {
+
+    .pg-btn {
+      width: auto;
+      background-color: $dark-gray;
+      border-color: $dark-gray;
+    }
+  }
 
   .stats {
     margin-top: 25px;

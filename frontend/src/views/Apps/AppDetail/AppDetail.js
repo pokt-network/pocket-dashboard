@@ -290,13 +290,17 @@ class AppDetail extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm="11" md="11" lg="11" className="general-header page-title">
+          <Col sm="8" md="8" lg="8" className="general-header page-title">
             <h1>General Information</h1>
           </Col>
           <Col sm="1" md="1" lg="1">
+          <Col sm="4" md="4" lg="4" className="d-flex justify-content-end cta-buttons">
+            <Button className="ml-4 pl-4 pr-4 mr-3 pg-btn" variant="primary">
+                <span>Pocket Gateway</span>
+            </Button>
             {status !== STAKE_STATUS.Unstaking &&
               <Button
-                className="float-right cta"
+                className="pl-4 pr-4"
                 onClick={() => {
                   this.setState({ctaButtonPressed: true});
 
