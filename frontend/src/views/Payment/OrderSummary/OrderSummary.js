@@ -184,10 +184,7 @@ class OrderSummary extends Component {
 
       ApplicationService.stakeApplication(
         application, chains, result.paymentIntent.id, applicationLink
-      ).then((success, err) => {
-        console.log("hi", success);
-      }).catch((success, err) => {
-      });
+      ).then();
     } else {
       // Stake Node
       const {

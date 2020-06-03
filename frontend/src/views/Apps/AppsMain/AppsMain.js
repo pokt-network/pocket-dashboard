@@ -47,8 +47,7 @@ class AppsMain extends Main {
     const userEmail = UserService.getUserInfo().email;
 
     ApplicationService.getAllUserApplications(
-      userEmail,
-      APPLICATIONS_LIMIT
+      userEmail, APPLICATIONS_LIMIT
     ).then((userItems) => {
       ApplicationService.getStakedApplicationSummary().then(
         ({totalApplications, averageRelays, averageStaked}) => {
@@ -75,9 +74,7 @@ class AppsMain extends Main {
     const {userItems} = this.state;
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await ApplicationService.getAllUserApplications(
-      userEmail,
-      APPLICATIONS_LIMIT,
-      offset * APPLICATIONS_LIMIT + 1
+      userEmail, APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1
     );
 
     const allUserItems = [...userItems, ...newUserItems];
@@ -93,8 +90,7 @@ class AppsMain extends Main {
     const {registeredItems} = this.state;
 
     const newRegisteredItems = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT,
-      offset * APPLICATIONS_LIMIT + 1
+      APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1
     );
 
     const allRegisteredItems = [...registeredItems, ...newRegisteredItems];
