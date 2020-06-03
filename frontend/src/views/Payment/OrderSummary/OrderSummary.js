@@ -61,8 +61,6 @@ class OrderSummary extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {}
-
   componentDidMount() {
     this.setState({loading: true});
     // eslint-disable-next-line react/prop-types
@@ -337,7 +335,6 @@ class OrderSummary extends Component {
               <Form className="cards">
                 {paymentMethods.map((card, idx) => {
                   const {brand, lastDigits, holder} = card;
-                  debugger;
                   const isChecked = selectedPaymentMethod ? card.id === selectedPaymentMethod.id : false;
 
                   return (

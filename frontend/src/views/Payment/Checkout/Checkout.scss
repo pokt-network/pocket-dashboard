@@ -148,6 +148,9 @@
     }
 
     .link {
+      max-width: 35px;
+      background-color: transparent;
+      border-color: transparent;
       font-weight: 300;
       color: $primary-color;
       cursor: pointer;

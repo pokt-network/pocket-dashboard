@@ -20,6 +20,8 @@ class Checkout extends Component {
   constructor(props, context) {
     super(props, context);
 
+    this.handlePrintInvoice = this.handlePrintInvoice.bind(this);
+
     this.state = {
       loading: false,
       type: "",
@@ -82,6 +84,10 @@ class Checkout extends Component {
       currentAccountBalance,
       paymentMethod,
     });
+  }
+
+  handlePrintInvoice() {
+    console.log("STILL IN PROGRESS");
   }
 
   render() {
@@ -205,7 +211,7 @@ class Checkout extends Component {
             className="icon"
             alt="print-icon"
           />{" "}
-          <span className="link">Print</span> your invoice
+          <Button className="link" onClick={this.handlePrintInvoice}>Print</Button> your invoice
         </div>
       </div>
     );
