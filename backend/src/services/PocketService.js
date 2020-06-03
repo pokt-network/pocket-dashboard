@@ -4,7 +4,6 @@ import {
   ApplicationParams,
   CoinDenom,
   Configuration,
-  HttpRpcProvider,
   Node,
   NodeParams,
   Pocket,
@@ -34,7 +33,11 @@ export const POKT_DENOMINATIONS = {
  * @returns {URL[]} Dispatcher urls.
  */
 function getPocketDispatchers() {
-  return POCKET_NETWORK_CONFIGURATION.dispatchers.split(",").map(function(dispatcherURLStr) {
+  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers ? "" : POCKET_NETWORK_CONFIGURATION.dispatchers
+  if (dispatchersStr === "") {
+    return []
+  }
+  return dispatchersStr.split(",").map(function (dispatcherURLStr) {
     return new URL(dispatcherURLStr);
   });
 }
