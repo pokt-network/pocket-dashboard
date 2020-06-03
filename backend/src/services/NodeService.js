@@ -178,7 +178,7 @@ export default class NodeService extends BasePocketService {
    * @param {string} passphrase Application account passphrase.
    * @param {string} [privateKey] Application private key if is imported.
    *
-   * @returns {Promise<{node: PocketNode, privateNodeData: PrivatePocketAccount, networkData:Node}>} A node information.
+   * @returns {Promise<{node: PocketNode, privateNodeData: PrivatePocketAccount, networkData:Node, ppkData: object}>} A node information.
    * @throws {Error} If application does not exists.
    * @async
    */
@@ -203,8 +203,10 @@ export default class NodeService extends BasePocketService {
     const privateNodeData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passphrase);
     const networkData = ExtendedPocketNode.createNetworkNode(node.publicPocketAccount, nodeParameters);
 
+    const ppkData = await this.pocketService.createPPK(privateNodeData.privateKey, passphrase);
+
     // noinspection JSValidateTypes
-    return {node, privateNodeData, networkData};
+    return {node, privateNodeData, networkData, ppkData};
   }
 
   /**
