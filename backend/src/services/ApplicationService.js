@@ -2,7 +2,8 @@ import {
   ExtendedPocketApplication,
   PocketApplication,
   RegisteredPocketApplication,
-  StakedApplicationSummary
+  StakedApplicationSummary,
+  UserPocketApplication
 } from "../models/Application";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import {Account, Application, PocketAAT, StakingStatus} from "@pokt-network/pocket-js";
@@ -253,7 +254,7 @@ export default class ApplicationService extends BasePocketService {
    * @param {number} [offset] Offset of query.
    * @param {number} [stakingStatus] Staking status filter.
    *
-   * @returns {Promise<ExtendedPocketApplication[]>} List of applications.
+   * @returns {Promise<UserPocketApplication[]>} List of applications.
    * @async
    */
   async getUserApplications(userEmail, limit, offset = 0, stakingStatus = undefined) {
@@ -263,23 +264,26 @@ export default class ApplicationService extends BasePocketService {
       .map(PocketApplication.createPocketApplication)
       .map(app => {
         return {
+          id: app.id,
           name: app.name,
           address: app.publicPocketAccount.address,
         };
       });
 
-    const networkApplications = this.pocketService
-      .getAllApplications(dashboardApplicationData.map(app => app.address), stakingStatus);
+    console.log(dashboardApplicationData);
 
+    const networkApplications = await this.pocketService
+      .getAllApplications(dashboardApplicationData.map(app => app.address));
 
-    if (dashboardApplications) {
-      const extendedApplications = await this.__getExtendedPocketApplications(dashboardApplications);
+    if (dashboardApplicationData.length > 0) {
+      const userApplications = dashboardApplicationData
+        .map(app => PocketApplication.createUserPocketApplication(app, networkApplications));
 
-      if (stakingStatus !== undefined) {
-        return extendedApplications.filter((application) => application.networkData.status === StakingStatus.getStatus(stakingStatus));
+      if (stakingStatus === undefined) {
+        return userApplications;
       }
 
-      return extendedApplications;
+      return userApplications.filter(app => app.status === stakingStatus);
     }
 
     return [];

@@ -17,7 +17,7 @@ export class UserPocketApplication {
   /**
    * @param {string} name Name.
    * @param {string} stakedPOKT staked POKT.
-   * @param {StakingStatus} status Status
+   * @param {number} status Status
    */
   constructor(name, stakedPOKT, status) {
     Object.assign(this, {name, stakedPOKT, status});
@@ -143,16 +143,22 @@ export class PocketApplication {
    *
    * @param {object} applicationData Application to create.
    * @param {string} applicationData.name Name.
-   * @param {string} applicationData.stakedPOKT Staked POKT.
-   * @param {StakingStatus} applicationData.status Status.
+   * @param {string} applicationData.address Address.
+   * @param {Application[]} networkApplications Applications.
    *
    * @returns {UserPocketApplication} A new user pocket application.
    * @static
    */
-  static createUserPocketApplication(applicationData) {
-    const {name, stakedPOKT, status} = applicationData;
+  static createUserPocketApplication(applicationData, networkApplications) {
+    let networkApp = networkApplications.filter(app => app.address === applicationData.address);
 
-    return new UserPocketApplication(name, stakedPOKT, status);
+    if (networkApp.length > 0) {
+      networkApp = networkApp[0];
+
+      return new UserPocketApplication(applicationData.name, networkApp.stakedTokens.toString(), networkApp.status);
+    }
+
+    return new UserPocketApplication(applicationData.name, "0", 0);
   }
 }
 

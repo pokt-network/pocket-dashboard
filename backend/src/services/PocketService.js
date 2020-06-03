@@ -311,7 +311,9 @@ export default class PocketService {
    * @async
    */
   async getApplications(status) {
-    const applicationsResponse = await this.__pocket.rpc().query.getApps(status, 0);
+    const {chain_id: chainID} = POCKET_NETWORK_CONFIGURATION;
+
+    const applicationsResponse = await this.__pocket.rpc().query.getApps(status, 0n, chainID);
 
     if (applicationsResponse instanceof Error) {
       throw applicationsResponse;
@@ -323,19 +325,28 @@ export default class PocketService {
   /**
    * Get All applications data.
    *
-   * @param {string[]} [appAddresses] App addresses.
-   * @param {number} [status] App addresses.
+   * @param {string[]} [appAddresses] Application addresses.
    *
    * @returns {Promise<Application[]>} The applications data.
    * @throws Error If Query fails.
    * @async
    */
-  async getAllApplications(appAddresses = undefined, status = undefined) {
+  async getAllApplications(appAddresses = undefined) {
     const stakedApplications = await this.getApplications(StakingStatus.Staked);
     const unstakingApplications = await this.getApplications(StakingStatus.Unstaking);
 
     const allApps = stakedApplications
       .concat(unstakingApplications);
+
+    if (appAddresses === undefined) {
+      return allApps;
+    }
+
+    if (appAddresses.length > 0) {
+      return allApps.filter(app => appAddresses.includes(app.address));
+    }
+
+    return [];
   }
 
   /**
