@@ -15,6 +15,7 @@ import {Link} from "react-router-dom";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import Loader from "../../../core/components/Loader";
 import PocketUserService from "../../../core/services/PocketUserService";
+import AppAlert from "../../../core/components/AppAlert";
 
 class Checkout extends Component {
   constructor(props, context) {
@@ -172,6 +173,19 @@ class Checkout extends Component {
 
     return (
       <div id="nodes-checkout" className="mb-5">
+        <Row className="mb-4">
+          <Col>
+            <AppAlert
+              className="pb-3 pt-3"
+              title={"This transaction may take some time to be completed."}
+            >
+              <p>
+                On the next block generated your {isApp ? "app" : "node"} will
+                be staked, also we will notify you by email.
+              </p>
+            </AppAlert>
+          </Col>
+        </Row>
         <Row>
           <Col className="header">
             {detailButton}
