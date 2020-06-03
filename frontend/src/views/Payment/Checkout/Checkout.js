@@ -16,6 +16,7 @@ import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import Loader from "../../../core/components/Loader";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppAlert from "../../../core/components/AppAlert";
+import PrintableInvoice from "../PrintableInvoice/PrintableInvoice";
 
 class Checkout extends Component {
   constructor(props, context) {
@@ -88,7 +89,7 @@ class Checkout extends Component {
   }
 
   handlePrintInvoice() {
-    console.log("STILL IN PROGRESS");
+    window.print();
   }
 
   render() {
@@ -172,9 +173,9 @@ class Checkout extends Component {
     }
 
     return (
-      <div id="nodes-checkout" className="mb-5">
-        <Row className="mb-4">
-          <Col>
+      <>
+        <div id="nodes-checkout" className="mb-5">
+          <Row className="mb-4">
             <AppAlert
               className="pb-3 pt-3"
               title={"This transaction may take some time to be completed."}
@@ -184,50 +185,54 @@ class Checkout extends Component {
                 be staked, also we will notify you by email.
               </p>
             </AppAlert>
-          </Col>
-        </Row>
-        <Row>
-          <Col className="header">
-            {detailButton}
-            <h1>Enjoy your purchase</h1>
-            <p>Please wait a few minutes until the process is completed.</p>
-          </Col>
-        </Row>
-        <Row className="segment mb-4">
-          <AppSteps
-            icons={icons}
-            current={2}
-            steps={[
-              "Purchase",
-              <>
-                Encode and sign
-                <br /> stake transaction
-              </>,
-              "throughput available",
-            ]}
-          />
-        </Row>
-        <div className="mb-4 title-page">
-          <h2>Your invoice</h2>
+          </Row>
+          <Row>
+            <Col className="header">
+              {detailButton}
+              <h1>Enjoy your purchase</h1>
+              <p>Please wait a few minutes until the process is completed.</p>
+            </Col>
+          </Row>
+          <Row className="segment mb-4">
+            <AppSteps
+              icons={icons}
+              current={2}
+              steps={[
+                "Purchase",
+                <>
+                  Encode and sign
+                  <br /> stake transaction
+                </>,
+                "throughput available",
+              ]}
+            />
+          </Row>
+          <div className="mb-4 title-page">
+            <h2>Your invoice</h2>
+          </div>
+          <Row className="segment mb-2">
+            <Invoice
+              title={`Invoice ${id}`}
+              information={information}
+              items={items}
+              total={totalAmount}
+            />
+          </Row>
+          <div className="mt-3 print">
+            {/* TODO: Add print functionality */}
+            <img
+              src={"/assets/printer.svg"}
+              className="icon"
+              alt="print-icon"
+            />{" "}
+            <Button className="link" onClick={this.handlePrintInvoice}>
+              Print
+            </Button>{" "}
+            your invoice
+          </div>
         </div>
-        <Row className="segment mb-2">
-          <Invoice
-            title={`Invoice ${id}`}
-            information={information}
-            items={items}
-            total={totalAmount}
-          />
-        </Row>
-        <div className="mt-3 print">
-          {/* TODO: Add print functionality */}
-          <img
-            src={"/assets/printer.svg"}
-            className="icon"
-            alt="print-icon"
-          />{" "}
-          <Button className="link" onClick={this.handlePrintInvoice}>Print</Button> your invoice
-        </div>
-      </div>
+        <PrintableInvoice />
+      </>
     );
   }
 }

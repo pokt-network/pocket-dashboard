@@ -1,0 +1,12 @@
+.printable-invoice {
+  display: none;
+}
+
+@media print {
+  .printable-invoice {
+    display: block;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+@page { size: auto;  margin: 0mm; }

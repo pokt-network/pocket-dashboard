@@ -162,3 +162,21 @@
     }
   }
 }
+
+@media print {
+  #main-logo {
+    display: none;
+  }
+
+  .user-dropdown {
+    display: none;
+  }
+
+  #sidebar {
+    display: none;
+  }
+
+  #nodes-checkout {
+    display: none;
+  }
+}
