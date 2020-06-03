@@ -3,7 +3,7 @@ import UserService from "../../core/services/PocketUserService";
 import {Alert, Col, Dropdown, Row} from "react-bootstrap";
 import "./Dashboard.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
-// import InfoCard from "../../core/components/InfoCard/InfoCard";
+import InfoCard from "../../core/components/InfoCard/InfoCard";
 import {APPLICATIONS_LIMIT, STYLING, TABLE_COLUMNS} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
@@ -15,14 +15,14 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppTable from "../../core/components/AppTable";
 
 // TODO: Integrate this data with backend.
-// const CARDS = [
-//   {title: "US $0.00", subtitle: "POKT Price"},
-//   {title: "33,456", subtitle: "Total Staked Tokens"},
-//   {title: "23,345", subtitle: "Total of nodes"},
-//   {title: "21,479", subtitle: "Total Staked nodes"},
-//   {title: "38,353", subtitle: "Total of apps"},
-//   {title: "37,235", subtitle: "Total Staked apps"},
-// ];
+const CARDS = [
+  {title: "US $0.00", subtitle: "POKT Price"},
+  {title: "33,456", subtitle: "Total Staked Tokens"},
+  {title: "23,345", subtitle: "Total of nodes"},
+  {title: "21,479", subtitle: "Total Staked nodes"},
+  {title: "38,353", subtitle: "Total of apps"},
+  {title: "37,235", subtitle: "Total Staked apps"},
+];
 
 class Dashboard extends Component {
   constructor(props, context) {
@@ -168,15 +168,15 @@ class Dashboard extends Component {
             </Dropdown>
           </Col>
         </Row>
-        {/* <Row className="stats mb-4" noGutters>
+        <Row className="stats mb-4" noGutters>
           {CARDS.map((card, idx) => (
             <Col key={idx} className="stat-column" md={2}>
               <InfoCard title={card.title} subtitle={card.subtitle} />
             </Col>
           ))}
-        </Row> */}
+        </Row>
         <div className="network-status-tables">
-          {/* <Row className="network-status-tables-row">
+          <Row className="network-status-tables-row">
             <Col sm="6" className="network-status-table">
               <Segment scroll={false} label="Registered Nodes">
                 <AppTable
@@ -205,7 +205,7 @@ class Dashboard extends Component {
                 />
               </Segment>
             </Col>
-          </Row> */}
+          </Row>
           <Row>
             <Col
               sm="12"
@@ -224,7 +224,7 @@ class Dashboard extends Component {
                 />
               </Segment>
             </Col>
-            {/* <Col
+            <Col
               sm="12"
               className={`network-status-table ${
                 chains.length === 0 ? "segment-table-empty" : ""
@@ -240,7 +240,7 @@ class Dashboard extends Component {
                   bordered={false}
                 />
               </Segment>
-            </Col> */}
+            </Col>
           </Row>
         </div>
       </div>

@@ -82,10 +82,7 @@ class Import extends Component {
     reader.onload = (e) => {
       const {result} = e.target;
       const {data} = this.state;
-      const ppkData = JSON.parse(result.trim())
-      console.log(ppkData)
-
-      //const privateKey = result.trim();
+      const ppkData = JSON.parse(result.trim());
 
       this.setState({
         hasPrivateKey: true,
@@ -102,10 +99,7 @@ class Import extends Component {
     const {type} = this.state;
     const {privateKey, passphrase, ppkData} = this.state.data;
 
-    const {success, data} = await AccountService.importAccount(
-      ppkData,
-      passphrase
-    );
+    const {success, data} = await AccountService.importAccount(ppkData, passphrase);
 
     if (success) {
       if (type === ITEM_TYPES.APPLICATION) {

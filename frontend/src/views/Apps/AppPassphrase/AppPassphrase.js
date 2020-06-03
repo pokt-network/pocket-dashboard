@@ -160,7 +160,7 @@ class AppPassphrase extends Component {
   }
 
   async downloadKeyFile() {
-    const {ppkData, address} = this.state
+    const {ppkData, address} = this.state;
 
     createAndDownloadJSONFile(`MyPocketApplication-${address}`, ppkData);
 
