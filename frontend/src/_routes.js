@@ -95,40 +95,25 @@ export const _getDashboardPath = (path) => {
 };
 
 export const BREADCRUMBS = () => {
+  const action = UserService.getUserAction();
+
   return {
     [DASHBOARD_PATHS.home]: ["Status"],
 
     // Apps
     [DASHBOARD_PATHS.apps]: ["Apps"],
-    [DASHBOARD_PATHS.createAppInfo]: [
-      "Apps",
-      UserService.getUserAction(),
-      "App Information",
-    ],
-    [DASHBOARD_PATHS.appPassphrase]: [
-      "Apps",
-      UserService.getUserAction(),
-      "Create Passphrase",
-    ],
-    [DASHBOARD_PATHS.applicationChainsList]: [
-      "Apps",
-      UserService.getUserAction(),
-      "Choose Chains",
-    ],
-    [DASHBOARD_PATHS.tierSelection]: [
-      "Apps",
-      UserService.getUserAction(),
-      "Choose tier",
-    ],
-    [DASHBOARD_PATHS.selectRelays]: [
-      "Apps",
-      UserService.getUserAction(),
-      "Checkout",
-    ],
+    [DASHBOARD_PATHS.createAppInfo]: ["Apps", action, "App Information"],
+    [DASHBOARD_PATHS.appPassphrase]: ["Apps", action, "Create Passphrase"],
+    [DASHBOARD_PATHS.applicationChainsList]: ["Apps", action, "Choose Chains"],
+    [DASHBOARD_PATHS.tierSelection]: ["Apps", action, "Choose tier"],
+    [DASHBOARD_PATHS.selectRelays]: ["Apps", action, "Checkout"],
 
     // Nodes
     [DASHBOARD_PATHS.nodes]: ["Nodes"],
-    [DASHBOARD_PATHS.nodeDetail]: ["Apps", "Node Detail"],
+    [DASHBOARD_PATHS.createNodeForm]: ["Nodes", action, "Node Information"],
+    [DASHBOARD_PATHS.nodePassphrase]: ["Nodes", action, "Create Passphrase"],
+    [DASHBOARD_PATHS.nodeChainList]: ["Nodes", action, "Choose Chains"],
+    [DASHBOARD_PATHS.selectValidatorPower]: ["Nodes", action, "Checkout"],
 
     // Profile paths
     [DASHBOARD_PATHS.profile + PROFILE_PATHS.general]: [

@@ -14,7 +14,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import Loader from "../../../core/components/Loader";
-import PocketUserService from "../../../core/services/PocketUserService";
+import UserService from "../../../core/services/PocketUserService";
 import AppAlert from "../../../core/components/AppAlert";
 
 class Checkout extends Component {
@@ -64,7 +64,7 @@ class Checkout extends Component {
     } = await PaymentService.getPaymentDetail(paymentId);
 
     const {brand, lastDigits} = paymentMethod;
-    const userName = PocketUserService.getUserInfo().name;
+    const userName = UserService.getUserInfo().name;
 
     const invoice = {
       id: id.replace("pi_", "").toLowerCase(),
@@ -83,6 +83,14 @@ class Checkout extends Component {
       currentAccountBalance,
       paymentMethod,
     });
+
+    const action = UserService.getUserAction();
+    const appBreadcrumbs = ["Apps", action, "Checkout", "Invoice"];
+    const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Invoice"];
+    
+    type === ITEM_TYPES.APPLICATION ? 
+      this.props.onBreadCrumbChange(appBreadcrumbs) : 
+      this.props.onBreadCrumbChange(nodeBreadcrumbs);
   }
 
   render() {
