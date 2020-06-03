@@ -546,10 +546,10 @@ export default class ApplicationService extends BasePocketService {
     const privateApplicationData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passphrase);
     const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
 
-    const ppkData = await this.pocketService.createPPK(privateApplicationData.privateKey, passphrase)
+    const ppkData = await this.pocketService.createPPK(privateApplicationData.privateKey, passphrase);
 
     // noinspection JSValidateTypes
-    return { application, privateApplicationData, networkData, ppkData };
+    return {application, privateApplicationData, networkData, ppkData};
   }
 
   /**

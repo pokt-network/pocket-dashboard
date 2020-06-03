@@ -79,7 +79,7 @@ export default class AccountService extends BasePocketService {
     return PublicPocketAccount.createPublicPocketAccount(applicationAccount);
   }
 
-    /**
+  /**
    * Import account into network.
    *
    * @param {object} ppkData Account private key.

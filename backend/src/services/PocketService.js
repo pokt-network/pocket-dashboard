@@ -90,7 +90,7 @@ export default class PocketService {
 
       this.pocketRpcProvider = new PocketRpcProvider(pocket, dashboardAAT, POCKET_NETWORK_CONFIGURATION.chain_hash);
     }
-    return this.pocketRpcProvider
+    return this.pocketRpcProvider;
   }
 
   /**
@@ -137,7 +137,7 @@ export default class PocketService {
    * @returns {Promise<Account | Error>} A pocket account.
    */
   async importAccountFromPPK(ppkData, passphrase) {
-    return this.__pocket.keybase.importPPKFromJSON(passphrase, JSON.stringify(ppkData), passphrase)
+    return this.__pocket.keybase.importPPKFromJSON(passphrase, JSON.stringify(ppkData), passphrase);
   }
 
   /**
@@ -509,16 +509,16 @@ export default class PocketService {
   /**
    * Creates a new PPK Object: https://github.com/pokt-network/pocket-core/blob/staging/doc/portable-private-key-spec.md
    *
-   * @param {string} privateKey
-   * @param {string} passphrase
+   * @param {string} privateKey Private key of the account
+   * @param {string} passphrase Passphrase to encrypt the PPK with
    */
   async createPPK(privateKey, passphrase) {
-    const ppkData = await this.__pocket.keybase.exportPPK(privateKey, passphrase)
+    const ppkData = await this.__pocket.keybase.exportPPK(privateKey, passphrase);
 
     if (ppkData instanceof Error) {
-      throw ppkData
+      throw ppkData;
     }
 
-    return JSON.parse(ppkData)
+    return JSON.parse(ppkData);
   }
 }
