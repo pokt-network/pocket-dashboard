@@ -82,13 +82,15 @@ class Import extends Component {
     reader.onload = (e) => {
       const {result} = e.target;
       const {data} = this.state;
+      const ppkData = JSON.parse(result.trim())
+      console.log(ppkData)
 
-      const privateKey = result.trim();
+      //const privateKey = result.trim();
 
       this.setState({
         hasPrivateKey: true,
-        uploadedPrivateKey: privateKey,
-        data: {...data, privateKey: privateKey},
+        uploadedPrivateKey: "",
+        data: {...data, privateKey: "", ppkData: ppkData},
       });
     };
     reader.readAsText(e.target.files[0], "utf8");
@@ -98,10 +100,11 @@ class Import extends Component {
     e.preventDefault();
 
     const {type} = this.state;
-    const {privateKey, passphrase} = this.state.data;
+    const {privateKey, passphrase, ppkData} = this.state.data;
 
     const {success, data} = await AccountService.importAccount(
-      privateKey, passphrase
+      ppkData,
+      passphrase
     );
 
     if (success) {
