@@ -4,7 +4,7 @@ import {Col, Row} from "react-bootstrap";
 import MenuItem from "./MenuItem/MenuItem";
 import "./AppSidebar.scss";
 import navRoutes from "../../../../_nav";
-import {isActiveExactUrl} from "../../../../_helpers";
+import {isActiveUrl} from "../../../../_helpers";
 
 class AppSidebar extends Component {
   render() {
@@ -20,7 +20,9 @@ class AppSidebar extends Component {
                 label={route.name}
                 url={route.url}
                 icon={route.icon}
-                isActive={isActiveExactUrl}
+                isActive={(match, location) =>
+                  isActiveUrl(match, location, route.name)
+                }
               />
             ))}
           </ul>
