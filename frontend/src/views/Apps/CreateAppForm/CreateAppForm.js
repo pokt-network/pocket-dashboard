@@ -5,7 +5,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import PocketUserService from "../../../core/services/PocketUserService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
 import {appFormSchema, generateIcon, scrollToId} from "../../../_helpers";
 import {Formik} from "formik";
@@ -331,9 +331,7 @@ class CreateAppForm extends CreateForm {
                       <span>
                         {/* eslint-disable-next-line react/no-unescaped-entities */}
                         I agree to these Pocket's{" "}
-                        <Link
-                          to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}
-                        >
+                        <Link to={ROUTE_PATHS.termsOfService}>
                           Terms and Conditions.
                         </Link>
                       </span>

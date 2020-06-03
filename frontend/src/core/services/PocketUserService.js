@@ -1,5 +1,7 @@
 import PocketBaseService from "./PocketBaseService";
+import SecureLS from "secure-ls";
 import axios from "axios";
+import {Configurations} from "../../_configuration";
 
 export const AUTH_PROVIDERS = {
   email: "email",
@@ -11,6 +13,8 @@ class PocketUserService extends PocketBaseService {
 
   constructor() {
     super("api/users");
+
+    this.ls = new SecureLS(Configurations.secureLS);
   }
 
   /**
@@ -20,10 +24,10 @@ class PocketUserService extends PocketBaseService {
    * @param {boolean} loggedIn If user is logged in.
    */
   saveUserInCache(user, loggedIn) {
-    localStorage.setItem("is_logged_in", loggedIn.toString());
-    localStorage.setItem("user_name", user.username);
-    localStorage.setItem("user_email", user.email);
-    localStorage.setItem("user_provider", user.provider);
+    this.ls.set("is_logged_in", {data: loggedIn});
+    this.ls.set("user_name", {data: user.username});
+    this.ls.set("user_email", {data: user.email});
+    this.ls.set("user_provider", {data: user.provider});
   }
 
 
@@ -44,18 +48,18 @@ class PocketUserService extends PocketBaseService {
    * Remove user data from local storage.
    */
   removeUserFromCached() {
-    localStorage.removeItem("user_name");
-    localStorage.removeItem("user_email");
-    localStorage.removeItem("user_provider");
+    this.ls.remove("user_name");
+    this.ls.remove("user_email");
+    this.ls.remove("user_provider");
 
-    localStorage.removeItem("is_logged_in");
+    this.ls.remove("is_logged_in");
   }
 
   /**
    * @return {boolean}
    */
   isLoggedIn() {
-    return localStorage.hasOwnProperty("is_logged_in") && localStorage.getItem("is_logged_in") === "true";
+    return localStorage.hasOwnProperty("is_logged_in") && this.ls.get("is_logged_in").data === true;
   }
 
   /**
@@ -66,9 +70,9 @@ class PocketUserService extends PocketBaseService {
   getUserInfo() {
     if (this.isLoggedIn()) {
       return {
-        name: localStorage.getItem("user_name"),
-        email: localStorage.getItem("user_email"),
-        provider: localStorage.getItem("user_provider")
+        name: this.ls.get("user_name").data,
+        email: this.ls.get("user_email").data,
+        provider: this.ls.get("user_provider").data
       };
     } else {
       return {
