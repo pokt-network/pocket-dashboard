@@ -18,9 +18,7 @@ import AppTable from "../../core/components/AppTable";
 const CARDS = [
   {title: "US $0.60", subtitle: "POKT Price"},
   {title: "33,456", subtitle: "Total Staked Tokens"},
-  {title: "23,345", subtitle: "Total of nodes"},
   {title: "21,479", subtitle: "Total Staked nodes"},
-  {title: "38,353", subtitle: "Total of apps"},
   {title: "37,235", subtitle: "Total Staked apps"},
 ];
 
@@ -170,7 +168,7 @@ class Dashboard extends Component {
         </Row>
         <Row className="stats mb-4" noGutters>
           {CARDS.map((card, idx) => (
-            <Col key={idx} className="stat-column" md={2}>
+            <Col key={idx} className="stat-column" md={3}>
               <InfoCard title={card.title} subtitle={card.subtitle} />
             </Col>
           ))}
