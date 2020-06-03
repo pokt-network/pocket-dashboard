@@ -102,6 +102,7 @@ export const BREADCRUMBS = () => {
 
     // Apps
     [DASHBOARD_PATHS.apps]: ["Apps"],
+    [DASHBOARD_PATHS.importApp]: ["Apps", "Import App"],
     [DASHBOARD_PATHS.createAppInfo]: ["Apps", action, "App Information"],
     [DASHBOARD_PATHS.appPassphrase]: ["Apps", action, "Create Passphrase"],
     [DASHBOARD_PATHS.applicationChainsList]: ["Apps", action, "Choose Chains"],
@@ -110,6 +111,7 @@ export const BREADCRUMBS = () => {
 
     // Nodes
     [DASHBOARD_PATHS.nodes]: ["Nodes"],
+    [DASHBOARD_PATHS.importNode]: ["Nodes", "Import Node"],
     [DASHBOARD_PATHS.createNodeForm]: ["Nodes", action, "Node Information"],
     [DASHBOARD_PATHS.nodePassphrase]: ["Nodes", action, "Create Passphrase"],
     [DASHBOARD_PATHS.nodeChainList]: ["Nodes", action, "Choose Chains"],

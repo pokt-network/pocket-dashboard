@@ -9,6 +9,7 @@ import AccountService from "../../../core/services/PocketAccountService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import AppTable from "../../../core/components/AppTable";
 import NodeService from "../../../core/services/PocketNodeService";
+import UserService from "../../../core/services/PocketUserService";
 
 class Import extends Component {
   constructor(props, context) {
@@ -47,8 +48,10 @@ class Import extends Component {
 
     if (path === _getDashboardPath(DASHBOARD_PATHS.importApp)) {
       this.setState({type: ITEM_TYPES.APPLICATION});
+      UserService.saveUserAction("Import App");
     } else if (path === _getDashboardPath(DASHBOARD_PATHS.importNode)) {
       this.setState({type: ITEM_TYPES.NODE});
+      UserService.saveUserAction("Import Node");
     }
   }
 

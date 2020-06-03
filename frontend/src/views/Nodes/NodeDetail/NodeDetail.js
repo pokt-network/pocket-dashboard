@@ -92,6 +92,8 @@ class NodeDetail extends Component {
 
     if (success) {
       this.setState({deleted: true});
+      // eslint-disable-next-line react/prop-types
+      this.props.onBreadCrumbChange(["Nodes", "Node Detail", "Node Removed"]);
     }
   }
 
