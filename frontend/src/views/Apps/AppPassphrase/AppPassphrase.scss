@@ -107,6 +107,12 @@
 
   .stats {
     margin-top: 2rem;
+
+    .p-badge-body {
+      h2 {
+      text-transform: capitalize;
+      }
+    }
   }
 
   .app-networks {
