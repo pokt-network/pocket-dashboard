@@ -1,6 +1,32 @@
-import {Node, NodeParams} from "@pokt-network/pocket-js";
+import {Node, NodeParams, StakingStatus} from "@pokt-network/pocket-js";
 import {PublicPocketAccount} from "./Account";
 import {EMAIL_REGEX} from "./Regex";
+
+export class RegisteredPocketNode {
+  /**
+   * @param {string} name Name.
+   * @param {string} address Address.
+   * @param {StakingStatus} status Status
+   */
+  constructor(name, address, status) {
+    Object.assign(this, {name, address, status});
+  }
+}
+
+export class UserPocketNode {
+  /**
+   * @param {string} id ID.
+   * @param {string} name Name.
+   * @param {string} address Address.
+   * @param {string} icon Icon.
+   * @param {string} stakedPOKT staked POKT.
+   * @param {number} status Status.
+   */
+  constructor(id, name, address, icon, stakedPOKT, status) {
+    Object.assign(this, {id, name, address, icon, stakedPOKT, status});
+  }
+}
+
 
 export class PocketNode {
 
@@ -83,6 +109,49 @@ export class PocketNode {
     pocketNode.publicPocketAccount = publicPocketAccount ?? new PublicPocketAccount("", "");
 
     return pocketNode;
+  }
+
+  /**
+   * Convenient Factory method to create a registered pocket node.
+   *
+   * @param {object} nodeData Node to create.
+   * @param {string} nodeData.address Address.
+   * @param {StakingStatus} nodeData.status Status.
+   * @param {string} [nodeData.name] Name.
+   *
+   * @returns {RegisteredPocketNode} A new resumed pocket node.
+   * @static
+   */
+  static createRegisteredPocketNode(nodeData) {
+    const nodeName = nodeData.name ?? "N/A";
+
+    return new RegisteredPocketNode(nodeName, nodeData.address, nodeData.status);
+  }
+
+  /**
+   * Convenient Factory method to create an user pocket node.
+   *
+   * @param {object} nodeData Application to create.
+   * @param {string} nodeData.id ID.
+   * @param {string} nodeData.name Name.
+   * @param {string} nodeData.address Address.
+   * @param {string} nodeData.icon Icon.
+   * @param {Node[]} networkNodes Nodes.
+   *
+   * @returns {UserPocketNode} A new user pocket node.
+   * @static
+   */
+  static createUserPocketNode(nodeData, networkNodes) {
+    const {id, name, address, icon} = nodeData;
+    let networkNode = networkNodes.filter(app => app.address === nodeData.address);
+
+    if (networkNode.length > 0) {
+      networkNode = networkNode[0];
+
+      return new UserPocketNode(id, name, address, icon, networkNode.stakedTokens.toString(), networkNode.status);
+    }
+
+    return new UserPocketNode(id, name, address, icon, "0", 0);
   }
 }
 

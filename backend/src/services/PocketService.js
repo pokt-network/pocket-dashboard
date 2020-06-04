@@ -336,7 +336,7 @@ export default class PocketService {
    * @throws Error If Query fails.
    * @async
    */
-  async getAllApplications(appAddresses = undefined) {
+  async getAllApplications(appAddresses = []) {
     const stakedApplications = await this.getApplications(StakingStatus.Staked);
     const unstakingApplications = await this.getApplications(StakingStatus.Unstaking);
 
@@ -349,6 +349,53 @@ export default class PocketService {
 
     if (appAddresses.length > 0) {
       return allApps.filter(app => appAddresses.includes(app.address));
+    }
+
+    return [];
+  }
+
+  /**
+   * Get Nodes data.
+   *
+   * @param {number} status Status of the nodes to retrieve.
+   *
+   * @returns {Promise<Node[]>} The nodes data.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getNodes(status) {
+    const pocketRpcProvider = await this.getPocketRPCProvider();
+    const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status);
+
+    if (nodesResponse instanceof Error) {
+      throw nodesResponse;
+    }
+
+    return nodesResponse.nodes;
+  }
+
+  /**
+   * Get All nodes data.
+   *
+   * @param {string[]} [nodeAddresses] Node addresses.
+   *
+   * @returns {Promise<Node[]>} The nodes data.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getAllNodes(nodeAddresses = []) {
+    const stakedNodes = await this.getNodes(StakingStatus.Staked);
+    const unstakingNodes = await this.getNodes(StakingStatus.Unstaking);
+
+    const allNodes = stakedNodes
+      .concat(unstakingNodes);
+
+    if (nodeAddresses === undefined) {
+      return allNodes;
+    }
+
+    if (nodeAddresses.length > 0) {
+      return allNodes.filter(node => nodeAddresses.includes(node.address));
     }
 
     return [];

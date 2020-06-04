@@ -1,7 +1,7 @@
 import UserService from "./UserService";
 import {Node, StakingStatus} from "@pokt-network/pocket-js";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
-import {ExtendedPocketNode, PocketNode} from "../models/Node";
+import {ExtendedPocketNode, PocketNode, RegisteredPocketNode, UserPocketNode} from "../models/Node";
 import AccountService from "./AccountService";
 import BasePocketService from "./BasePocketService";
 import {TransactionPostAction} from "../models/Transaction";
@@ -100,21 +100,6 @@ export default class NodeService extends BasePocketService {
 
     return ExtendedPocketNode.createExtendedPocketNode(node, networkNode);
   }
-
-  /**
-   *
-   * @param {PocketNode[]} nodes Nodes to add pocket data.
-   *
-   * @returns {Promise<ExtendedPocketNode[]>} Pocket nodes with pocket data.
-   * @private
-   * @async
-   */
-  async __getExtendedPocketNodes(nodes) {
-    const extendedNodes = nodes.map(async (node) => this.__getExtendedPocketNode(node));
-
-    return Promise.all(extendedNodes);
-  }
-
 
   /**
    * Check if node exists on DB.
@@ -267,23 +252,15 @@ export default class NodeService extends BasePocketService {
    * @param {number} [offset] Offset of query.
    * @param {number} [stakingStatus] Staking status filter.
    *
-   * @returns {ExtendedPocketNode[]} List of nodes.
+   * @returns {RegisteredPocketNode[]} List of nodes.
    * @async
    */
   async getAllNodes(limit, offset = 0, stakingStatus = undefined) {
-    const nodes = (await this.persistenceService.getEntities(NODE_COLLECTION_NAME, {}, limit, offset))
-      .map(PocketNode.createPocketNode);
+    const networkApplications = await (stakingStatus ?
+      this.pocketService.getNodes(stakingStatus) :
+      this.pocketService.getNodes(StakingStatus.Staked));
 
-    if (nodes) {
-      const extendedNodes = await this.__getExtendedPocketNodes(nodes);
-
-      if (stakingStatus !== undefined) {
-        return extendedNodes.filter((node) => node.networkData.status === StakingStatus.getStatus(stakingStatus));
-      }
-      return extendedNodes;
-    }
-
-    return [];
+    return networkApplications.map(PocketNode.createRegisteredPocketNode);
   }
 
   /**
@@ -294,22 +271,39 @@ export default class NodeService extends BasePocketService {
    * @param {number} [offset] Offset of query.
    * @param {number} [stakingStatus] Staking status filter.
    *
-   * @returns {Promise<ExtendedPocketNode[]>} List of nodes.
+   * @returns {Promise<UserPocketNode[]>} List of nodes.
    * @async
    */
   async getUserNodes(userEmail, limit, offset = 0, stakingStatus = undefined) {
     const filter = {user: userEmail};
-    const nodes = (await this.persistenceService.getEntities(NODE_COLLECTION_NAME, filter, limit, offset))
-      .map(PocketNode.createPocketNode);
 
-    if (nodes) {
-      const extendedNodes = await this.__getExtendedPocketNodes(nodes);
+    const dashboardNodesData = (await this.persistenceService.getEntities(NODE_COLLECTION_NAME, filter, limit, offset))
+      .map(PocketNode.createPocketNode)
+      .map(node => {
+        return {
+          id: node.id,
+          name: node.name,
+          address: node.publicPocketAccount.address,
+          icon: node.icon
+        };
+      });
 
-      if (stakingStatus !== undefined) {
-        return extendedNodes.filter((node) => node.networkData.status === StakingStatus.getStatus(stakingStatus));
+    const dashboardNodeAddresses = dashboardNodesData
+      .map(node => node.address)
+      .filter(address => address.length > 0);
+
+    const networkNodes = await this.pocketService
+      .getAllNodes(dashboardNodeAddresses);
+
+    if (dashboardNodesData.length > 0) {
+      const userNodes = dashboardNodesData
+        .map(node => PocketNode.createUserPocketNode(node, networkNodes));
+
+      if (stakingStatus === undefined) {
+        return userNodes;
       }
 
-      return extendedNodes;
+      return userNodes.filter(node => node.status === stakingStatus);
     }
 
     return [];
