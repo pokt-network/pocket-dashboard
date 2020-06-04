@@ -318,7 +318,7 @@ export default class PocketService {
    */
   async getApplications(status) {
     const pocketRpcProvider = await this.getPocketRPCProvider();
-    const applicationsResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status);
+    const applicationsResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status, 0n);
 
     if (applicationsResponse instanceof Error) {
       throw applicationsResponse;
