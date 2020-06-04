@@ -34,6 +34,7 @@ export const POKT_DENOMINATIONS = {
  */
 function getPocketDispatchers() {
   const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers ? "" : POCKET_NETWORK_CONFIGURATION.dispatchers;
+  
   if (dispatchersStr === "") {
     return [];
   }
