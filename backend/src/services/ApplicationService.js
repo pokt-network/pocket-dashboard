@@ -107,21 +107,6 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
-   *
-   * @param {PocketApplication[]} applications Applications to add pocket data.
-   *
-   * @returns {Promise<ExtendedPocketApplication[]>} Pocket applications with pocket data.
-   * @deprecated
-   * @private
-   * @async
-   */
-  async __getExtendedPocketApplications(applications) {
-    const extendedApplications = applications.map(async (application) => this.__getExtendedPocketApplication(application));
-
-    return Promise.all(extendedApplications);
-  }
-
-  /**
    * Mark application as free tier.
    *
    * @param {PocketApplication} application Pocket application to mark as free tier.
