@@ -267,11 +267,16 @@ export default class ApplicationService extends BasePocketService {
           id: app.id,
           name: app.name,
           address: app.publicPocketAccount.address,
+          icon: app.icon
         };
       });
 
+    const dashboardApplicationAddresses = dashboardApplicationData
+      .map(app => app.address)
+      .filter(address => address.length > 0);
+
     const networkApplications = await this.pocketService
-      .getAllApplications(dashboardApplicationData.map(app => app.address));
+      .getAllApplications(dashboardApplicationAddresses);
 
     if (dashboardApplicationData.length > 0) {
       const userApplications = dashboardApplicationData

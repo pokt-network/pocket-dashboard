@@ -11,7 +11,7 @@ import {APPLICATIONS_LIMIT, STYLING, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField,} from "../../../_helpers";
+import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
@@ -217,19 +217,12 @@ class AppsMain extends Main {
                   <LoadingOverlay active={userItemsTableLoading} spinner>
                     {hasApps ? (
                       filteredItems.map((app, idx) => {
-                        const {name, icon} = app.pocketApplication;
-                        const {
-                          staked_tokens: stakedTokens,
-                          status,
-                        } = app.networkData;
+                        const {id: applicationID, name, address, stakedPOKT, status, icon} = app;
 
                         return (
                           <Link
                             key={idx}
                             to={() => {
-                              const address = app.networkData.address;
-                              const applicationID = app.pocketApplication.id;
-
                               if (!address) {
                                 ApplicationService.saveAppInfoInCache({
                                   applicationID,
@@ -248,7 +241,7 @@ class AppsMain extends Main {
                             <PocketElementCard
                               title={name}
                               subtitle={`Staked POKT: ${formatNetworkData(
-                                stakedTokens
+                                stakedPOKT
                               )} POKT`}
                               status={getStakeStatus(
                                 _.isNumber(status) ? status : parseInt(status)

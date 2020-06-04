@@ -8,11 +8,11 @@ import {
   NodeParams,
   Pocket,
   PocketAAT,
+  PocketRpcProvider,
+  publicKeyFromPrivate,
   RawTxResponse,
   StakingStatus,
-  Transaction,
-  PocketRpcProvider,
-  publicKeyFromPrivate
+  Transaction
 } from "@pokt-network/pocket-js";
 import {Configurations} from "../_configuration";
 import bigInt from "big-integer";
@@ -33,7 +33,7 @@ export const POKT_DENOMINATIONS = {
  * @returns {URL[]} Dispatcher urls.
  */
 function getPocketDispatchers() {
-  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers ? "" : POCKET_NETWORK_CONFIGURATION.dispatchers;
+  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers ?? "";
 
   if (dispatchersStr === "") {
     return [];
@@ -110,17 +110,6 @@ export default class PocketService {
   }
 
   /**
-   * Retrieve account from network.
-   *
-   * @param {string} addressHex Address of account to retrieve in hex.
-   *
-   * @returns {Promise<Account | Error>} A pocket account.
-   */
-  async getAccount(addressHex) {
-    return this.__pocket.keybase.getAccount(addressHex);
-  }
-
-  /**
    * Import an account to Pokt network using private key of the account.
    *
    * @param {string} privateKeyHex Private key of the account to import in hex.
@@ -142,18 +131,6 @@ export default class PocketService {
    */
   async importAccountFromPPK(ppkData, passphrase) {
     return this.__pocket.keybase.importPPKFromJSON(passphrase, JSON.stringify(ppkData), passphrase);
-  }
-
-  /**
-   * Export Private key of the account.
-   *
-   * @param {string} addressHex Address of account to export in hex.
-   * @param {string} passphrase Passphrase used to generate the account.
-   *
-   * @returns {Promise<Buffer | Error>} A buffer of private key.
-   */
-  async exportAccount(addressHex, passphrase) {
-    return this.__pocket.keybase.exportAccount(addressHex, passphrase);
   }
 
   /**
