@@ -9,15 +9,19 @@ export class PocketAccountService extends PocketBaseService {
   /**
    * Validate an account into the network.
    *
-   * @param {string} accountPrivateKey Account private key.
+   * @param {string} ppkData Account Portable Private Key data.
    * @param {string} passphrase Account passphrase.
    *
    * @returns {Promise<*>}
    */
-  importAccount(accountPrivateKey, passphrase) {
+  importAccount(ppkData, passphrase) {
+    // const data = {
+    //   accountPrivateKey,
+    //   passphrase,
+    // };
     const data = {
-      accountPrivateKey,
-      passphrase,
+      ppkData,
+      passphrase
     };
 
     return axios

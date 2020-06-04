@@ -15,13 +15,17 @@ export const ITEM_TYPES = {
   NODE: "node",
 };
 
-export const MAX_FILE_IMG_SIZE = 1000000; // 1MB
+export const MAX_FILE_IMG_SIZE = 100000; // 100KB
+
+export const IMG_ERROR_STR = "Please upload a file smaller than 100kb";
+
 export const PURCHASE_ITEM_NAME = {
   APPS: "Relays per Day",
   NODES: "Validator power",
 };
 
-export const DEFAULT_ERROR_MESSAGE = "An unexpected error occurred, please try again later.";
+export const DEFAULT_ERROR_MESSAGE =
+  "An unexpected error occurred, please try again later.";
 
 export const POKT_UNSTAKING_DAYS = 21;
 

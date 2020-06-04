@@ -44,7 +44,7 @@ class PaymentHistory extends Component {
 
   handleExport(data) {
     // TODO: Add export to downloadable file functionality
-    console.log(data);
+    // console.log(data);
   }
 
   renderExport(cell, row) {

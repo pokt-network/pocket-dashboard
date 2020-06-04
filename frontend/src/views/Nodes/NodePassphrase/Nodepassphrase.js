@@ -20,7 +20,7 @@ class NodePassphrase extends Passphrase {
     );
 
     if (success) {
-      const {privateNodeData} = data;
+      const {privateNodeData, ppkData} = data;
       const {address, privateKey} = privateNodeData;
 
       NodeService.removeNodeInfoFromCache();
@@ -34,6 +34,7 @@ class NodePassphrase extends Passphrase {
         created: true,
         address,
         privateKey,
+        ppkData
       });
     } else {
       this.setState({error: {show: true, message: data.message}});

@@ -15,6 +15,7 @@ import {Link} from "react-router-dom";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import Loader from "../../../core/components/Loader";
 import PocketUserService from "../../../core/services/PocketUserService";
+import AppAlert from "../../../core/components/AppAlert";
 
 class Checkout extends Component {
   constructor(props, context) {
@@ -44,7 +45,14 @@ class Checkout extends Component {
       return;
     }
 
-    const {type, paymentId, paymentMethod, details, total, currentAccountBalance} = this.props.location.state;
+    const {
+      type,
+      paymentId,
+      paymentMethod,
+      details,
+      total,
+      currentAccountBalance,
+    } = this.props.location.state;
     const address =
       type === ITEM_TYPES.APPLICATION
         ? ApplicationService.getApplicationInfo().address
@@ -86,7 +94,7 @@ class Checkout extends Component {
       address,
       loading,
       unauthorized,
-      currentAccountBalance
+      currentAccountBalance,
     } = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
@@ -99,7 +107,7 @@ class Checkout extends Component {
 
     const items = [
       ...details,
-      {text: "Current balance", value: currentAccountBalance, format: true}
+      {text: "Current balance", value: currentAccountBalance, format: true},
     ].map((it) => {
       if (!it.format) {
         return it;
@@ -110,11 +118,11 @@ class Checkout extends Component {
     const totalAmount = formatCurrency(total);
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     if (unauthorized) {
-      return <UnauthorizedAlert/>;
+      return <UnauthorizedAlert />;
     }
 
     const detailButton = (
@@ -134,9 +142,24 @@ class Checkout extends Component {
       </Link>
     );
     const icons = [
-      <img key={0} src={"/assets/cart.svg"} className="step-icon" alt="step-icon"/>,
-      <img key={1} src={"/assets/arrows.svg"} className="step-icon" alt="step-icon"/>,
-      <img key={2} src={"/assets/check.svg"} className="step-icon" alt="step-icon"/>,
+      <img
+        key={0}
+        src={"/assets/cart.svg"}
+        className="step-icon"
+        alt="step-icon"
+      />,
+      <img
+        key={1}
+        src={"/assets/arrows.svg"}
+        className="step-icon"
+        alt="step-icon"
+      />,
+      <img
+        key={2}
+        src={"/assets/check.svg"}
+        className="step-icon"
+        alt="step-icon"
+      />,
     ];
 
     if (unauthorized) {
@@ -144,6 +167,19 @@ class Checkout extends Component {
 
     return (
       <div id="nodes-checkout" className="mb-5">
+        <Row className="mb-4">
+          <Col>
+            <AppAlert
+              className="pb-3 pt-3"
+              title={"This transaction may take some time to be completed."}
+            >
+              <p>
+                On the next block generated your {isApp ? "app" : "node"} will
+                be staked, also we will notify you by email.
+              </p>
+            </AppAlert>
+          </Col>
+        </Row>
         <Row>
           <Col className="header">
             {detailButton}
@@ -160,7 +196,7 @@ class Checkout extends Component {
                 "Purchase",
                 <>
                   Encode and sign
-                  <br/> stake transaction
+                  <br /> stake transaction
                 </>,
                 "throughput available",
               ]}
@@ -180,7 +216,11 @@ class Checkout extends Component {
         </Row>
         <p className="mt-4 ml-3 print">
           {/* TODO: Add print functionality */}
-          <img src={"/assets/printer.svg"} className="icon" alt="print-icon"/>{" "}
+          <img
+            src={"/assets/printer.svg"}
+            className="icon"
+            alt="print-icon"
+          />{" "}
           <span className="link">Print</span> your invoice
         </p>
       </div>

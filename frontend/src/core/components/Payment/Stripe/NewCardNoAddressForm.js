@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import isEmpty from "lodash/isEmpty";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import PaymentContainer from "./PaymentContainer";
 import {
@@ -80,15 +81,16 @@ class NewCardNoAddressForm extends Component {
         <ElementsConsumer>
           {({elements, stripe}) => (
             <div>
-              <Row>
-                <h2>{formTitle}</h2>
-              </Row>
-
+              {!isEmpty(formTitle) && (
+                <Row>
+                  <h2>{formTitle}</h2>
+                </Row>
+              )}
               <Form onSubmit={(e) => this.handlePayMethod(e, elements, stripe)}>
                 <Row>
-                  <Col sm="4" md="4" lg="4">
+                  <Col md="4">
                     <Form.Group>
-                      <Form.Label>Name on card*</Form.Label>
+                      <Form.Label>Name on Card*</Form.Label>
                       <Form.Control
                         name="cardHolderName"
                         placeholder="Example name"
@@ -98,13 +100,13 @@ class NewCardNoAddressForm extends Component {
                       />
                     </Form.Group>
                   </Col>
-                  <Col sm="4" md="4" lg="4">
+                  <Col md="4">
                     <Form.Group>
-                      <Form.Label>Card number*</Form.Label>
+                      <Form.Label>Card Number*</Form.Label>
                       <CardNumberInput />
                     </Form.Group>
                   </Col>
-                  <Col sm="2" md="2" lg="2">
+                  <Col md="2">
                     <Form.Group>
                       <Form.Label className="text-nowrap">
                         Expiration Date*
@@ -112,7 +114,7 @@ class NewCardNoAddressForm extends Component {
                       <CardExpirationDateInput />
                     </Form.Group>
                   </Col>
-                  <Col sm="2" md="2" lg="2">
+                  <Col md="2">
                     <Form.Group>
                       <Form.Label>CVC/CVC2*</Form.Label>
                       <CardCVCNumberInput />
@@ -132,13 +134,13 @@ class NewCardNoAddressForm extends Component {
                       className="mb-3"
                       label={
                         <span className="font-weight-light">
-                          Set as default payment method
+                          Set as default payment method.
                         </span>
                       }
                     />
                   </div>
                 )}
-                <div className="submit ml-3 mt-2">
+                <div className="submit mt-2">
                   <Button variant="dark" size="sm" type="submit">
                     {actionButtonName}
                   </Button>

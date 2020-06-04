@@ -80,6 +80,26 @@ export default class AccountService extends BasePocketService {
   }
 
   /**
+   * Import account into network.
+   *
+   * @param {object} ppkData Account private key.
+   * @param {string} passphrase Passphrase of account.
+   *
+   * @returns {Promise<PublicPocketAccount>} a pocket account.
+   * @throws Error If account is invalid.
+   * @async
+   */
+  async importDashboardAccountToNetworkFromPPK(ppkData, passphrase) {
+    const applicationAccount = await this.pocketService.importAccountFromPPK(ppkData, passphrase);
+
+    if (applicationAccount instanceof Error) {
+      throw TypeError("Account is invalid");
+    }
+
+    return PublicPocketAccount.createPublicPocketAccount(applicationAccount);
+  }
+
+  /**
    * Get POKT balance of account
    *
    * @param {string} accountAddress Account address to get balance.

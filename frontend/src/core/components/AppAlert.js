@@ -47,7 +47,7 @@ class AppAlert extends Component {
 
 AppAlert.defaultProps = {
   variant: "primary",
-  className: "",
+  className: "pt-2 pb-2",
 };
 
 AppAlert.propTypes = {

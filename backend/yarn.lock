@@ -933,33 +933,34 @@
   dependencies:
     debug "^4.1.1"
 
-"@pokt-network/aat-js@0.1.0-rc":
-  version "0.1.0-rc"
-  resolved "https://registry.yarnpkg.com/@pokt-network/aat-js/-/aat-js-0.1.0-rc.tgz#7c11e65ae42ba390dcd7dece2accee7034cf808f"
-  integrity sha512-Xa3hJlnv9lnbv0MA3HQ6BMw/r2DS6OI9ALQ/ImzNosr+wwIkUKezGqAQRu0B7vfjE0PwqeTTaG1B4eelZ+bAGA==
+"@pokt-network/aat-js@0.1.1-rc":
+  version "0.1.1-rc"
+  resolved "https://registry.yarnpkg.com/@pokt-network/aat-js/-/aat-js-0.1.1-rc.tgz#db23cccb6e0127bb463c754b4c645ec4d300579d"
+  integrity sha512-3ZH92G7SVm2KoaJfz8AQzjXvJwSeFiCa5zYJkNCgJDuaKVb59Nd/g+nwvlCTy2GI0KallRS3iTAWOaNU6OQAsg==
   dependencies:
     "@types/libsodium-wrappers" "^0.7.7"
     js-sha3 "^0.8.0"
     libsodium-wrappers "^0.7.6"
 
-"@pokt-network/amino-js@0.7.4-alpha.1":
-  version "0.7.4-alpha.1"
-  resolved "https://registry.yarnpkg.com/@pokt-network/amino-js/-/amino-js-0.7.4-alpha.1.tgz#cc9df404b339279c4b1d84eeb62ba9ae24ba4216"
-  integrity sha512-kWFFBgPwgp8vwpf0Apjt0pAtwnov0/Z3Qj+LsTLttx9zwz3VzLC7jY5OYukCBPFsxTP9hKmQQBPJHSdugBSnZg==
+"@pokt-network/amino-js@0.7.5-alpha.1":
+  version "0.7.5-alpha.1"
+  resolved "https://registry.yarnpkg.com/@pokt-network/amino-js/-/amino-js-0.7.5-alpha.1.tgz#ce3aafd150afd91ed0114b9ded0d56a8cef1b364"
+  integrity sha512-fw/a/4RldtN11PaF2lcatFB7PrZd2MeYlPh/sCs97JaMkvhv56R79rei/UVgTiwWoPWKIWwdbAhLwhUKqGkeVg==
   dependencies:
     "@tendermint/belt" "0.2.1"
     "@tendermint/types" "0.1.1"
 
-"@pokt-network/pocket-js@^0.4.0-rc":
-  version "0.4.0-rc"
-  resolved "https://registry.yarnpkg.com/@pokt-network/pocket-js/-/pocket-js-0.4.0-rc.tgz#0607cbb61de8ca6685ac145c69052d58d4287831"
-  integrity sha512-2zYctlb7LWqJpQZTuERMA3okdGYsrcVSjk9Xo61HWaljZJdUSFjCewN8EjN+JzZz6JcXT/hYiZoUG7lNflBGqA==
+"@pokt-network/pocket-js@0.5.0-rc":
+  version "0.5.0-rc"
+  resolved "https://registry.yarnpkg.com/@pokt-network/pocket-js/-/pocket-js-0.5.0-rc.tgz#1c9b266cb7a0550baf0ff2ef0b75f4a7d1ddc3d7"
+  integrity sha512-Ym7bSrwBONQ9btL0r6J08ShAiA3LFP0fPRv+pPAMNJ9CDbG+fL63wGAV2lGUy7rdLUlW/hy+k04+xotaGpuz6w==
   dependencies:
-    "@pokt-network/aat-js" "0.1.0-rc"
-    "@pokt-network/amino-js" "0.7.4-alpha.1"
+    "@pokt-network/aat-js" "0.1.1-rc"
+    "@pokt-network/amino-js" "0.7.5-alpha.1"
     "@tendermint/belt" "^0.2.1"
     "@types/aes-js" "^3.1.0"
     "@types/libsodium-wrappers" "^0.7.7"
+    "@types/scrypt-js" "^2.0.4"
     aes-js "^3.1.2"
     axios "^0.18.1"
     browserify "^16.5.1"
@@ -970,6 +971,7 @@
     minifyify "^7.3.5"
     node-localstorage "^2.1.5"
     pbkdf2 "^3.0.17"
+    scrypt-js "^3.0.1"
     tsify "^4.0.1"
 
 "@sendgrid/client@^7.1.0":
@@ -1078,6 +1080,13 @@
   version "13.9.3"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-13.9.3.tgz#6356df2647de9eac569f9a52eda3480fa9e70b4d"
   integrity sha512-01s+ac4qerwd6RHD+mVbOEsraDHSgUaefQlEdBbUolnQFjKwCr7luvAlEwW1RFojh67u0z4OUTjPn9LEl4zIkA==
+
+"@types/scrypt-js@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@types/scrypt-js/-/scrypt-js-2.0.4.tgz#c75d17910357d79552a8aa102a8c907ebcd029d5"
+  integrity sha512-FCgSes9EwZrZEv3VmEKGSWeDgJSm6DJdR/QrBnZ1Y6Xhi9EAKmZqr6ocpPtZT/ZbJwaa/rpLyLq4uIy1Imzrhw==
+  dependencies:
+    "@types/node" "*"
 
 "@types/superagent@^3.8.3":
   version "3.8.7"
@@ -6786,6 +6795,11 @@ schema-utils@^2.6.1:
   dependencies:
     ajv "^6.10.2"
     ajv-keywords "^3.4.1"
+
+scrypt-js@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-3.0.1.tgz#d314a57c2aef69d1ad98a138a21fe9eafa9ee312"
+  integrity sha512-cdwTTnqPu0Hyvf5in5asVdZocVDTNRmR7XEcJuIzMjJeSHybHl7vpB66AzwTaIg6CLSbtjcxc8fqcySfnTkccA==
 
 semver@6.3.0, semver@^6.0.0, semver@^6.1.2, semver@^6.3.0:
   version "6.3.0"

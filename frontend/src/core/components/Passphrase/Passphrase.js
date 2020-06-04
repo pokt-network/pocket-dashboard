@@ -120,10 +120,9 @@ class Passphrase extends Component {
   async createAccount() {}
 
   downloadKeyFile() {
-    const {privateKey, passPhrase, fileName} = this.state;
-    const data = {private_key: privateKey, passphrase: passPhrase};
+    const {ppkData, address} = this.state;
 
-    createAndDownloadJSONFile(fileName, data);
+    createAndDownloadJSONFile(`MyPocketNode-${address}`, ppkData);
 
     this.setState({
       fileDownloaded: true,

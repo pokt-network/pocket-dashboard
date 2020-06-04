@@ -1,6 +1,10 @@
 import React from "react";
 import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
-import {TABLE_COLUMNS, URL_HTTPS_REGEX, VALIDATION_MESSAGES} from "../../../_constants";
+import {
+  TABLE_COLUMNS,
+  URL_HTTPS_REGEX,
+  VALIDATION_MESSAGES,
+} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
 import Segment from "../../../core/components/Segment/Segment";
@@ -22,6 +26,18 @@ class NodeChainList extends Chains {
         serviceURL: "",
       },
     };
+  }
+
+  async componentDidMount() {
+    super.componentDidMount();
+
+    const {address} = NodeService.getNodeInfo();
+
+    const {networkData} = await NodeService.getNode(address);
+
+    this.setState({
+      data: {serviceURL: networkData.service_url},
+    });
   }
 
   handleChains() {
@@ -101,7 +117,7 @@ class NodeChainList extends Chains {
                         onClick={this.handleChainSearch}
                         variant="outline-primary"
                       >
-                        <img src="/assets/search.svg" alt="search-icon"/>
+                        <img src="/assets/search.svg" alt="search-icon" />
                       </Button>
                     </InputGroup.Append>
                   </InputGroup>
@@ -122,6 +138,7 @@ class NodeChainList extends Chains {
         <Row className="mt-4">
           <Col>
             <Formik
+              enableReinitialize
               validationSchema={schema}
               onSubmit={async (data) => {
                 this.setState({data});
