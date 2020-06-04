@@ -42,6 +42,14 @@ class CreateAppForm extends CreateForm {
     }
   }
 
+  validateError(err) {
+    if (err === "Error: Application already exists") {
+      return "An application with that name already exists, please use a different name.";
+    }
+
+    return err;
+  }
+
   async handleCreateImported(applicationId) {
     const {
       address,
@@ -119,7 +127,7 @@ class CreateAppForm extends CreateForm {
         });
       }
     } else {
-      this.setState({error: {show: true, message: data}});
+      this.setState({error: {show: true, message: this.validateError(data)}});
       scrollToId("alert");
     }
   }
