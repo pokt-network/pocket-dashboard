@@ -136,10 +136,6 @@ export default class ApplicationService extends BasePocketService {
     return this.pocketService.getApplicationAuthenticationToken(clientPublicKey, applicationAccount, applicationPassphrase);
   }
 
-  __getAverage(data) {
-    return data.reduce((a, b) => a.add(b), bigInt.zero).divide(bigInt(data.length));
-  }
-
   /**
    * Check if application exists on DB.
    *
@@ -287,8 +283,8 @@ export default class ApplicationService extends BasePocketService {
     try {
       const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
 
-      const averageStaked = this.__getAverage(stakedApplications.map(app => parseInt(app.stakedTokens.toString())));
-      const averageRelays = this.__getAverage(stakedApplications.map(app => parseInt(app.maxRelays.toString())));
+      const averageStaked = this._getAverageNetworkData(stakedApplications.map(app => bigInt(app.stakedTokens.toString())));
+      const averageRelays = this._getAverageNetworkData(stakedApplications.map(app => bigInt(app.maxRelays.toString())));
 
       return new StakedApplicationSummary(stakedApplications.length.toString(), averageStaked.toString(), averageRelays.toString());
     } catch (e) {
