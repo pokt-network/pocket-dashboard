@@ -33,9 +33,9 @@ export const POKT_DENOMINATIONS = {
  * @returns {URL[]} Dispatcher urls.
  */
 function getPocketDispatchers() {
-  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers ? "" : POCKET_NETWORK_CONFIGURATION.dispatchers
+  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers ? "" : POCKET_NETWORK_CONFIGURATION.dispatchers;
   if (dispatchersStr === "") {
-    return []
+    return [];
   }
   return dispatchersStr.split(",").map(function (dispatcherURLStr) {
     return new URL(dispatcherURLStr);
