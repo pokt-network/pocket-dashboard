@@ -4,7 +4,7 @@ import {Application, Node, StakingStatus} from "@pokt-network/pocket-js";
 import {NetworkSummaryData} from "../models/Network";
 import bigInt from "big-integer";
 
-class NetworkService extends BasePocketService {
+export default class NetworkService extends BasePocketService {
 
   /**
    * Get the POKT price.
