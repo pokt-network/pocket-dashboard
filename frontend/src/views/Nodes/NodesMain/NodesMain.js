@@ -205,16 +205,12 @@ class NodesMain extends Main {
                   <LoadingOverlay active={userItemsTableLoading} spinner>
                     {hasNodes ? (
                       filteredItems.map((node, idx) => {
-                        const {name, icon} = node.pocketNode;
-                        const {tokens: stakedTokens, status} = node.networkData;
+                        const {id: nodeID, name, address, stakedPOKT, status, icon} = node;
 
                         return (
                           <Link
                             key={idx}
                             to={() => {
-                              const address = node.networkData.address;
-
-                              const nodeID = node.pocketNode.id;
 
                               if (!address) {
                                 NodeService.saveNodeInfoInCache({
@@ -234,7 +230,7 @@ class NodesMain extends Main {
                             <PocketElementCard
                               title={name}
                               subtitle={`Staked POKT: ${formatNetworkData(
-                                stakedTokens
+                                stakedPOKT
                               )} POKT`}
                               status={getStakeStatus(
                                 _.isNumber(status) ? status : parseInt(status)

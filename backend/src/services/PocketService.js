@@ -8,11 +8,11 @@ import {
   NodeParams,
   Pocket,
   PocketAAT,
+  PocketRpcProvider,
+  publicKeyFromPrivate,
   RawTxResponse,
   StakingStatus,
-  Transaction,
-  PocketRpcProvider,
-  publicKeyFromPrivate
+  Transaction
 } from "@pokt-network/pocket-js";
 import {Configurations} from "../_configuration";
 import bigInt from "big-integer";
@@ -33,8 +33,8 @@ export const POKT_DENOMINATIONS = {
  * @returns {URL[]} Dispatcher urls.
  */
 function getPocketDispatchers() {
-  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers ? "" : POCKET_NETWORK_CONFIGURATION.dispatchers;
-  
+  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers ?? "";
+
   if (dispatchersStr === "") {
     return [];
   }
@@ -110,17 +110,6 @@ export default class PocketService {
   }
 
   /**
-   * Retrieve account from network.
-   *
-   * @param {string} addressHex Address of account to retrieve in hex.
-   *
-   * @returns {Promise<Account | Error>} A pocket account.
-   */
-  async getAccount(addressHex) {
-    return this.__pocket.keybase.getAccount(addressHex);
-  }
-
-  /**
    * Import an account to Pokt network using private key of the account.
    *
    * @param {string} privateKeyHex Private key of the account to import in hex.
@@ -142,18 +131,6 @@ export default class PocketService {
    */
   async importAccountFromPPK(ppkData, passphrase) {
     return this.__pocket.keybase.importPPKFromJSON(passphrase, JSON.stringify(ppkData), passphrase);
-  }
-
-  /**
-   * Export Private key of the account.
-   *
-   * @param {string} addressHex Address of account to export in hex.
-   * @param {string} passphrase Passphrase used to generate the account.
-   *
-   * @returns {Promise<Buffer | Error>} A buffer of private key.
-   */
-  async exportAccount(addressHex, passphrase) {
-    return this.__pocket.keybase.exportAccount(addressHex, passphrase);
   }
 
   /**
@@ -333,7 +310,7 @@ export default class PocketService {
   /**
    * Get Applications data.
    *
-   * @param {StakingStatus} status Status of the apps to retrieve.
+   * @param {number} status Status of the apps to retrieve.
    *
    * @returns {Promise<Application[]>} The applications data.
    * @throws Error If Query fails.
@@ -341,13 +318,87 @@ export default class PocketService {
    */
   async getApplications(status) {
     const pocketRpcProvider = await this.getPocketRPCProvider();
-    const applicationsResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status);
+    const applicationsResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status, 0n);
 
     if (applicationsResponse instanceof Error) {
       throw applicationsResponse;
     }
 
     return applicationsResponse.applications;
+  }
+
+  /**
+   * Get All applications data.
+   *
+   * @param {string[]} [appAddresses] Application addresses.
+   *
+   * @returns {Promise<Application[]>} The applications data.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getAllApplications(appAddresses = []) {
+    const stakedApplications = await this.getApplications(StakingStatus.Staked);
+    const unstakingApplications = await this.getApplications(StakingStatus.Unstaking);
+
+    const allApps = stakedApplications
+      .concat(unstakingApplications);
+
+    if (appAddresses === undefined) {
+      return allApps;
+    }
+
+    if (appAddresses.length > 0) {
+      return allApps.filter(app => appAddresses.includes(app.address));
+    }
+
+    return [];
+  }
+
+  /**
+   * Get Nodes data.
+   *
+   * @param {number} status Status of the nodes to retrieve.
+   *
+   * @returns {Promise<Node[]>} The nodes data.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getNodes(status) {
+    const pocketRpcProvider = await this.getPocketRPCProvider();
+    const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status);
+
+    if (nodesResponse instanceof Error) {
+      throw nodesResponse;
+    }
+
+    return nodesResponse.nodes;
+  }
+
+  /**
+   * Get All nodes data.
+   *
+   * @param {string[]} [nodeAddresses] Node addresses.
+   *
+   * @returns {Promise<Node[]>} The nodes data.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getAllNodes(nodeAddresses = []) {
+    const stakedNodes = await this.getNodes(StakingStatus.Staked);
+    const unstakingNodes = await this.getNodes(StakingStatus.Unstaking);
+
+    const allNodes = stakedNodes
+      .concat(unstakingNodes);
+
+    if (nodeAddresses === undefined) {
+      return allNodes;
+    }
+
+    if (nodeAddresses.length > 0) {
+      return allNodes.filter(node => nodeAddresses.includes(node.address));
+    }
+
+    return [];
   }
 
   /**

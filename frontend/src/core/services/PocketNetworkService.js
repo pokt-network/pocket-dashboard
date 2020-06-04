@@ -45,6 +45,15 @@ class PocketNetworkService extends PocketBaseService {
       return response.data;
     });
   }
+
+  /**
+   * Get network summary.
+   *
+   * @returns {Promise|Promise<Array.<*>>}
+   */
+  getNetworkSummaryData() {
+    return axios.get(this._getURL("summary")).then(response => response.data);
+  }
 }
 
 export default new PocketNetworkService();

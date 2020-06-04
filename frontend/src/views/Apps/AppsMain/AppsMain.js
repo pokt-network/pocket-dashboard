@@ -7,20 +7,11 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {
-  APPLICATIONS_LIMIT,
-  STYLING,
-  TABLE_COLUMNS
-} from "../../../_constants";
+import {APPLICATIONS_LIMIT, STYLING, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {
-  formatNetworkData,
-  formatNumbers,
-  getStakeStatus,
-  mapStatusToField,
-} from "../../../_helpers";
+import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
@@ -46,28 +37,35 @@ class AppsMain extends Main {
   componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
 
-    ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
-    ).then((userItems) => {
-      ApplicationService.getStakedApplicationSummary().then(
+    ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT)
+      .then(userItems => {
+        this.setState({
+          userItems,
+          filteredItems: userItems,
+          hasApps: userItems.length > 0,
+        });
+      });
+
+    ApplicationService.getStakedApplicationSummary()
+      .then(
         ({totalApplications, averageRelays, averageStaked}) => {
-          ApplicationService.getAllApplications(APPLICATIONS_LIMIT).then(
-            (registeredItems) => {
-              this.setState({
-                userItems,
-                filteredItems: userItems,
-                total: totalApplications,
-                averageRelays,
-                averageStaked,
-                registeredItems,
-                loading: false,
-                hasApps: userItems.length > 0,
-              });
-            }
-          );
+          this.setState({
+            total: totalApplications,
+            averageRelays,
+            averageStaked,
+            loading: false,
+          });
         }
       );
-    });
+
+    ApplicationService.getAllApplications(APPLICATIONS_LIMIT)
+      .then(registeredItems => {
+          this.setState({
+            registeredItems,
+            loading: false,
+          });
+        }
+      );
   }
 
   async loadMoreUserApps(offset) {
@@ -143,7 +141,7 @@ class AppsMain extends Main {
     );
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     return (
@@ -173,7 +171,7 @@ class AppsMain extends Main {
           </Col>
         </Row>
         <Row className="stats">
-          <InfoCards cards={cards} />
+          <InfoCards cards={cards}/>
         </Row>
         <Row className="mb-4 app-tables">
           <Col sm="6" className="my-items-segment">
@@ -197,7 +195,7 @@ class AppsMain extends Main {
                         onClick={this.handleChainSearch}
                         variant="outline-primary"
                       >
-                        <img src={"/assets/search.svg"} alt="search-icon" />
+                        <img src={"/assets/search.svg"} alt="search-icon"/>
                       </Button>
                     </InputGroup.Append>
                   </InputGroup>
@@ -219,19 +217,12 @@ class AppsMain extends Main {
                   <LoadingOverlay active={userItemsTableLoading} spinner>
                     {hasApps ? (
                       filteredItems.map((app, idx) => {
-                        const {name, icon} = app.pocketApplication;
-                        const {
-                          staked_tokens: stakedTokens,
-                          status,
-                        } = app.networkData;
+                        const {id: applicationID, name, address, stakedPOKT, status, icon} = app;
 
                         return (
                           <Link
                             key={idx}
                             to={() => {
-                              const address = app.networkData.address;
-                              const applicationID = app.pocketApplication.id;
-
                               if (!address) {
                                 ApplicationService.saveAppInfoInCache({
                                   applicationID,
@@ -250,7 +241,7 @@ class AppsMain extends Main {
                             <PocketElementCard
                               title={name}
                               subtitle={`Staked POKT: ${formatNetworkData(
-                                stakedTokens
+                                stakedPOKT
                               )} POKT`}
                               status={getStakeStatus(
                                 _.isNumber(status) ? status : parseInt(status)
@@ -267,7 +258,7 @@ class AppsMain extends Main {
                           alt="apps-empty-box"
                         />
                         <p>
-                          You have not created <br /> or imported any app yet
+                          You have not created <br/> or imported any app yet
                         </p>
                       </div>
                     )}
@@ -297,7 +288,7 @@ class AppsMain extends Main {
                   } `}
                   headerClasses="d-flex"
                   toggle={registeredItems.length > 0}
-                  keyField="pocketApplication.id"
+                  keyField="address"
                   data={registeredItems}
                   columns={TABLE_COLUMNS.APPS}
                   bordered={false}
