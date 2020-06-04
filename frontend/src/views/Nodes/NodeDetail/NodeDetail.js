@@ -383,8 +383,7 @@ class NodeDetail extends Component {
           ))}
         </Row>
         <Row className="action-buttons">
-          {/* TODO: Uncomment of fourth release */}
-          {/* <Col sm="3" md="3" lg="3">
+          <Col sm="3" md="3" lg="3">
             <span className="option">
               <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
               <p>
@@ -400,7 +399,7 @@ class NodeDetail extends Component {
                 to change your node description.
               </p>
             </span>
-          </Col> */}
+          </Col>
           <Col sm="3" md="3" lg="3">
             <span className="option">
               <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
