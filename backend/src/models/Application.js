@@ -15,12 +15,14 @@ export class RegisteredPocketApplication {
 
 export class UserPocketApplication {
   /**
+   * @param {string} id ID.
    * @param {string} name Name.
+   * @param {string} address Address.
    * @param {string} stakedPOKT staked POKT.
-   * @param {number} status Status
+   * @param {number} status Status.
    */
-  constructor(name, stakedPOKT, status) {
-    Object.assign(this, {name, stakedPOKT, status});
+  constructor(id, name, address, stakedPOKT, status) {
+    Object.assign(this, {id, name, address, stakedPOKT, status});
   }
 }
 

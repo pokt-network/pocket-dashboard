@@ -270,8 +270,6 @@ export default class ApplicationService extends BasePocketService {
         };
       });
 
-    console.log(dashboardApplicationData);
-
     const networkApplications = await this.pocketService
       .getAllApplications(dashboardApplicationData.map(app => app.address));
 
