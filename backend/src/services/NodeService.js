@@ -1,10 +1,11 @@
 import UserService from "./UserService";
 import {Node, StakingStatus} from "@pokt-network/pocket-js";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
-import {ExtendedPocketNode, PocketNode, RegisteredPocketNode, UserPocketNode} from "../models/Node";
+import {ExtendedPocketNode, PocketNode, RegisteredPocketNode, StakedNodeSummary, UserPocketNode} from "../models/Node";
 import AccountService from "./AccountService";
 import BasePocketService from "./BasePocketService";
 import {TransactionPostAction} from "../models/Transaction";
+import bigInt from "big-integer";
 
 const NODE_COLLECTION_NAME = "Nodes";
 
@@ -261,6 +262,27 @@ export default class NodeService extends BasePocketService {
       this.pocketService.getNodes(StakingStatus.Staked));
 
     return networkApplications.map(PocketNode.createRegisteredPocketNode);
+  }
+
+  /**
+   * Get staked node summary from network.
+   *
+   * @returns {Promise<StakedNodeSummary>} Summary data of staked nodes.
+   * @async
+   */
+  async getStakedNodeSummary() {
+    try {
+      const stakedNodes = await this.pocketService.getNodes(StakingStatus.Staked);
+
+      const averageStaked = this._getAverageNetworkData(stakedNodes.map(node => bigInt(node.stakedTokens.toString())));
+
+      // 1 VP = 1 POKT, so, the validator power value is the same for staked token.
+      const averageValidatorPower = this._getAverageNetworkData(stakedNodes.map(node => bigInt(node.stakedTokens.toString())));
+
+      return new StakedNodeSummary(stakedNodes.length.toString(), averageStaked.toString(), averageValidatorPower.toString());
+    } catch (e) {
+      return new StakedNodeSummary("0", "0", "0");
+    }
   }
 
   /**

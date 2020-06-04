@@ -202,3 +202,15 @@ export class ExtendedPocketNode {
     };
   }
 }
+
+export class StakedNodeSummary {
+
+  /**
+   * @param {string} totalNodes Total of Nodes.
+   * @param {string} averageStaked Average of staked nodes.
+   * @param {string} averageValidatorPower Average of validator power.
+   */
+  constructor(totalNodes, averageStaked, averageValidatorPower) {
+    Object.assign(this, {totalNodes, averageStaked, averageValidatorPower});
+  }
+}
