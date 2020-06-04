@@ -520,7 +520,7 @@ export default class ApplicationService extends BasePocketService {
    * @param {string} passphrase Application account passphrase.
    * @param {string} [privateKey] Application private key if is imported.
    *
-   * @returns {Promise<{application: PocketApplication, privateApplicationData: PrivatePocketAccount, networkData:Application}>} An application information.
+   * @returns {Promise<{application: PocketApplication, privateApplicationData: PrivatePocketAccount, networkData:Application, ppkData: object}>} An application information.
    * @throws {Error} If application does not exists.
    * @async
    */
@@ -546,8 +546,10 @@ export default class ApplicationService extends BasePocketService {
     const privateApplicationData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passphrase);
     const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
 
+    const ppkData = await this.pocketService.createPPK(privateApplicationData.privateKey, passphrase);
+
     // noinspection JSValidateTypes
-    return {application, privateApplicationData, networkData};
+    return {application, privateApplicationData, networkData, ppkData};
   }
 
   /**

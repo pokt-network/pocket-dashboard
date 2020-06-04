@@ -10,9 +10,9 @@ const accountService = new AccountService();
  */
 router.post("/import", async (request, response) => {
   try {
-    /** @type {{accountPrivateKey:string, passphrase: string}} */
+    /** @type {{ppkData:object, passphrase: string}} */
     const data = request.body;
-    const account = await accountService.importDashboardAccountToNetwork(data.accountPrivateKey, data.passphrase);
+    const account = await accountService.importDashboardAccountToNetworkFromPPK(data.ppkData, data.passphrase);
 
     response.send(account);
   } catch (e) {
