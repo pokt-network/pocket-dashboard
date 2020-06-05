@@ -55,21 +55,6 @@
     margin-left: 25px;
   }
 
-  .app-steps {
-    width: 100%;
-
-    .rc-steps-item-title {
-      white-space: pre-wrap;
-      margin-top: 10px;
-    }
-
-    .rc-steps-item-custom:nth-of-type(2) {
-      .rc-steps-item-title {
-        white-space: pre;
-      }
-    }
-  }
-
   .invoice {
     padding-left: 0;
     padding-right: 0;
@@ -94,15 +79,6 @@
       font-size: 14px;
       font-weight: 300;
     }
-  }
-
-  .print {
-    .icon {
-      width: 27px;
-      height: 27px;
-    }
-
-    padding: 0;
   }
 
   .invoice {
@@ -132,51 +108,5 @@
       text-transform: uppercase;
       font-weight: bold;
     }
-  }
-
-  .print {
-    font-size: 16px;
-    font-family: $primary-font-family;
-    color: $dark-gray;
-    font-weight: 300;
-    letter-spacing: normal;
-    display: flex;
-    align-items: center;
-
-    img {
-      margin-right: 10px;
-    }
-
-    .link {
-      max-width: 35px;
-      background-color: transparent;
-      border-color: transparent;
-      font-weight: 300;
-      color: $primary-color;
-      cursor: pointer;
-      margin-right: 5px;
-    }
-
-    .link:hover {
-      color: $primary-color-darker;
-    }
-  }
-}
-
-@media print {
-  #main-logo {
-    display: none;
-  }
-
-  .user-dropdown {
-    display: none;
-  }
-
-  #sidebar {
-    display: none;
-  }
-
-  #nodes-checkout {
-    display: none;
   }
 }

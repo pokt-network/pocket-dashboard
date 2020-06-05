@@ -2,7 +2,7 @@
 import React, {Component} from "react";
 import "./Checkout.scss";
 import {Button, Col, Row} from "react-bootstrap";
-import AppSteps from "../../../core/components/AppSteps/AppSteps";
+import ReactToPrint from "react-to-print";
 import Invoice from "../../../core/components/Payment/Invoice";
 import {capitalize, formatCurrency} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
@@ -21,8 +21,6 @@ import PrintableInvoice from "../PrintableInvoice/PrintableInvoice";
 class Checkout extends Component {
   constructor(props, context) {
     super(props, context);
-
-    this.handlePrintInvoice = this.handlePrintInvoice.bind(this);
 
     this.state = {
       loading: false,
@@ -148,33 +146,13 @@ class Checkout extends Component {
         </Button>
       </Link>
     );
-    const icons = [
-      <img
-        key={0}
-        src={"/assets/cart.svg"}
-        className="step-icon"
-        alt="step-icon"
-      />,
-      <img
-        key={1}
-        src={"/assets/arrows.svg"}
-        className="step-icon"
-        alt="step-icon"
-      />,
-      <img
-        key={2}
-        src={"/assets/check.svg"}
-        className="step-icon"
-        alt="step-icon"
-      />,
-    ];
 
     if (unauthorized) {
     }
 
     return (
       <>
-        <div id="nodes-checkout" className="mb-5">
+        <div id="nodes-checkout">
           <Row className="mb-4">
             <AppAlert
               className="pb-3 pt-3"
@@ -193,20 +171,7 @@ class Checkout extends Component {
               <p>Please wait a few minutes until the process is completed.</p>
             </Col>
           </Row>
-          <Row className="segment mb-4">
-            <AppSteps
-              icons={icons}
-              current={2}
-              steps={[
-                "Purchase",
-                <>
-                  Encode and sign
-                  <br /> stake transaction
-                </>,
-                "throughput available",
-              ]}
-            />
-          </Row>
+
           <div className="mb-4 title-page">
             <h2>Your invoice</h2>
           </div>
@@ -218,20 +183,37 @@ class Checkout extends Component {
               total={totalAmount}
             />
           </Row>
-          <div className="mt-3 print">
-            {/* TODO: Add print functionality */}
-            <img
-              src={"/assets/printer.svg"}
-              className="icon"
-              alt="print-icon"
-            />{" "}
-            <Button className="link" onClick={this.handlePrintInvoice}>
-              Print
-            </Button>{" "}
-            your invoice
-          </div>
         </div>
-        <PrintableInvoice />
+        <ReactToPrint
+          trigger={() => (
+            <div className="print">
+              <img
+                src={"/assets/printer.svg"}
+                className="icon"
+                alt="print-icon"
+              />{" "}
+              <Button className="link">
+                Print
+              </Button>{" "}
+              your invoice
+            </div>
+          )}
+          content={() => this.componentRef}
+          bodyClass="printable-invoice"
+          copyStyles={true}
+        />
+        <PrintableInvoice
+          ref={(el) => (this.componentRef = el)}
+          invoiceItems={[
+            {text: "invoice", value: id},
+            {text: "bill to", value: owner},
+            {text: "date", value: date},
+            {text: "card detail", value: card},
+          ]}
+          purchaseDetails={items}
+          total={totalAmount}
+          cardHolderName={owner}
+        />
       </>
     );
   }

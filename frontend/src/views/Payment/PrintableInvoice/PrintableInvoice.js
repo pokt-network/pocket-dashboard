@@ -1,15 +1,61 @@
 import React from "react";
+import PropTypes from "prop-types";
 import "./PrintableInvoice.scss";
 import FirstPage from "./FirstPage";
+import SecondPage from "./SecondPage";
+import ThirdPage from "./ThirdPage";
+import FourthPage from "./FourthPage";
+import FifthPage from "./FifthPage";
+import SixthPage from "./SixthPage";
+import SeventhPage from "./SeventhPage";
+import EigthPage from "./EigthPage";
+import NinthPage from "./NinthPage";
 
 class PrintableInvoice extends React.Component {
   render() {
+    const {invoiceItems, purchaseDetails, total, cardHolderName} = this.props;
+
     return (
       <div className="printable-invoice">
-        <FirstPage />
+        <FirstPage
+          invoiceItems={invoiceItems}
+          purchaseDetails={purchaseDetails}
+          total={total}
+        />
+        <SecondPage />
+        <ThirdPage />
+        <FourthPage />
+        <FifthPage />
+        <SixthPage />
+        <SeventhPage />
+        <EigthPage />
+        <NinthPage cardHolderName={cardHolderName} />
       </div>
     );
   }
 }
+
+PrintableInvoice.defaultProps = {
+  invoiceItems: [],
+  purchaseDetails: [],
+  cardHolderName: "",
+};
+
+PrintableInvoice.propTypes = {
+  invoiceItems: PropTypes.arrayOf(
+    PropTypes.shape({
+      text: PropTypes.string,
+      value: PropTypes.string,
+    })
+  ),
+  purchaseDetails: PropTypes.arrayOf(
+    PropTypes.shape({
+      text: PropTypes.string,
+      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    })
+  ),
+  total: PropTypes.string,
+  cardHolderName: PropTypes.string,
+};
 
 export default PrintableInvoice;
