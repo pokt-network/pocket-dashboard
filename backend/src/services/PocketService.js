@@ -338,17 +338,13 @@ export default class PocketService {
    */
   async getAllApplications(appAddresses = []) {
     const stakedApplications = await this.getApplications(StakingStatus.Staked);
-    const unstakingApplications = await this.getApplications(StakingStatus.Unstaking);
-
-    const allApps = stakedApplications
-      .concat(unstakingApplications);
 
     if (appAddresses === undefined) {
-      return allApps;
+      return stakedApplications;
     }
 
     if (appAddresses.length > 0) {
-      return allApps.filter(app => appAddresses.includes(app.address));
+      return stakedApplications.filter(app => appAddresses.includes(app.address));
     }
 
     return [];
@@ -385,17 +381,13 @@ export default class PocketService {
    */
   async getAllNodes(nodeAddresses = []) {
     const stakedNodes = await this.getNodes(StakingStatus.Staked);
-    const unstakingNodes = await this.getNodes(StakingStatus.Unstaking);
-
-    const allNodes = stakedNodes
-      .concat(unstakingNodes);
 
     if (nodeAddresses === undefined) {
-      return allNodes;
+      return stakedNodes;
     }
 
     if (nodeAddresses.length > 0) {
-      return allNodes.filter(node => nodeAddresses.includes(node.address));
+      return stakedNodes.filter(node => nodeAddresses.includes(node.address));
     }
 
     return [];
