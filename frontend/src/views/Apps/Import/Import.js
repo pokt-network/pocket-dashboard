@@ -9,6 +9,7 @@ import AccountService from "../../../core/services/PocketAccountService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import AppTable from "../../../core/components/AppTable";
 import NodeService from "../../../core/services/PocketNodeService";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class Import extends Component {
   constructor(props, context) {
@@ -37,6 +38,7 @@ class Import extends Component {
       data: {
         passphrase: "",
         privateKey: "",
+        ppkData: "",
       },
       imported: false,
     };
@@ -87,7 +89,7 @@ class Import extends Component {
       this.setState({
         hasPrivateKey: true,
         uploadedPrivateKey: "",
-        data: {...data, privateKey: "", ppkData: ppkData},
+        data: {...data, privateKey: "", ppkData},
       });
     };
     reader.readAsText(e.target.files[0], "utf8");
@@ -98,27 +100,43 @@ class Import extends Component {
 
     const {type} = this.state;
     const {privateKey, passphrase, ppkData} = this.state.data;
+    let ppk;
 
-    const {success, data} = await AccountService.importAccount(ppkData, passphrase);
+    if (!ppkData) {
+      ppk = JSON.parse(
+        await PocketClientService.createPPKfromPrivateKey(
+          privateKey, passphrase
+        )
+      );
+    } else {
+      ppk = ppkData;
+    }
+
+    const {success, data} = await AccountService.importAccount(ppk, passphrase);
 
     if (success) {
+      await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
       if (type === ITEM_TYPES.APPLICATION) {
         ApplicationService.saveAppInfoInCache({
           imported: true,
-          privateKey,
           passphrase,
           address: data.address,
         });
       } else {
         NodeService.saveNodeInfoInCache({
-          privateKey,
           passphrase,
           address: data.address,
         });
       }
-      this.setState({imported: true, address: data.address});
+      this.setState({
+        error: {show: false},
+        imported: true,
+        address: data.address,
+      });
     } else {
-      this.setState({error: {show: true, message: data.message}});
+      this.setState({
+        error: {show: true, message: data.message.replace("TypeError: ", "")},
+      });
     }
   }
 

@@ -88,6 +88,14 @@ class PocketClientService {
   async deleteAccount(address, passphrase) {
     return await this._pocket.keybase.deleteAccount(address, passphrase);
   }
+
+  async saveAccount(ppk, passphrase) {
+    return await this._pocket.keybase.importPPKFromJSON(
+      passphrase,
+      ppk,
+      passphrase
+    );
+  }
 }
 
 export default new PocketClientService();
