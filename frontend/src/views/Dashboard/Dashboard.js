@@ -8,19 +8,11 @@ import {APPLICATIONS_LIMIT, STYLING, TABLE_COLUMNS} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
-import {mapStatusToField} from "../../_helpers";
+import {formatCurrency, formatNumbers, mapStatusToField} from "../../_helpers";
 import Segment from "../../core/components/Segment/Segment";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppTable from "../../core/components/AppTable";
-
-// TODO: Integrate this data with backend.
-const CARDS = [
-  {title: "US $0.00", subtitle: "POKT Price"},
-  {title: "33,456", subtitle: "Total Staked Tokens"},
-  {title: "21,479", subtitle: "Total Staked nodes"},
-  {title: "37,235", subtitle: "Total Staked apps"},
-];
 
 class Dashboard extends Component {
   constructor(props, context) {
@@ -32,14 +24,22 @@ class Dashboard extends Component {
       chains: [],
       userApps: [],
       userNodes: [],
+      summary: [],
     };
   }
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
 
+    const {
+      poktPrice,
+      totalStakedTokens,
+      totalStakedApps,
+      totalStakedNodes,
+    } = await NetworkService.getNetworkSummaryData();
     const userApps = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
+      userEmail,
+      APPLICATIONS_LIMIT
     );
     // const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
     const chains = await NetworkService.getAvailableNetworkChains();
@@ -49,7 +49,24 @@ class Dashboard extends Component {
       UserService.showWelcomeMessage(false);
     }
 
-    this.setState({welcomeAlert, userApps, chains, loading: false});
+    this.setState({
+      welcomeAlert,
+      userApps,
+      chains,
+      summary: [
+        {title: `US ${formatCurrency(poktPrice)}`, subtitle: "POKT Price"},
+        {
+          title: formatNumbers(totalStakedTokens),
+          subtitle: "Total Staked Tokens",
+        },
+        {
+          title: formatNumbers(totalStakedNodes),
+          subtitle: "Total Staked nodes",
+        },
+        {title: formatNumbers(totalStakedApps), subtitle: "Total Staked apps"},
+      ],
+      loading: false,
+    });
   }
 
   render() {
@@ -59,6 +76,7 @@ class Dashboard extends Component {
       loading,
       userApps: allUserApps,
       userNodes: allUserNodes,
+      summary,
     } = this.state;
 
     if (loading) {
@@ -167,7 +185,7 @@ class Dashboard extends Component {
           </Col>
         </Row>
         <Row className="stats mb-4" noGutters>
-          {CARDS.map((card, idx) => (
+          {summary.map((card, idx) => (
             <Col key={idx} className="stat-column" md={3}>
               <InfoCard title={card.title} subtitle={card.subtitle} />
             </Col>
