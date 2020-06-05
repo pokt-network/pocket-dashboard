@@ -280,7 +280,7 @@ class NodesMain extends Main {
                   } `}
                   headerClasses="d-flex"
                   toggle={registeredItems.length > 0}
-                  keyField="address"
+                  keyField="pocketNode.id"
                   data={registeredItems}
                   columns={TABLE_COLUMNS.NODES}
                   bordered={false}
