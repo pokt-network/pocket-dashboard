@@ -34,6 +34,7 @@ router.post("", async (request, response) => {
 
 /**
  * Create new application account.
+ * // FIXME: For imported apps, change private key for PPK.
  */
 router.post("/account", async (request, response) => {
   try {
@@ -235,6 +236,7 @@ router.post("/user/all", async (request, response) => {
 
 /**
  * Stake a free tier application.
+ * // FIXME: Make transaction on frontend
  */
 router.post("/freetier/stake", async (request, response) => {
   try {
@@ -256,6 +258,7 @@ router.post("/freetier/stake", async (request, response) => {
 
 /**
  * Unstake a free tier application.
+ * // FIXME: Make transaction on frontend
  */
 router.post("/freetier/unstake", async (request, response) => {
   try {
@@ -277,6 +280,7 @@ router.post("/freetier/unstake", async (request, response) => {
 
 /**
  * Stake an application.
+ * // FIXME: Make transaction on frontend
  */
 router.post("/custom/stake", async (request, response) => {
   try {
@@ -327,6 +331,7 @@ router.post("/custom/stake", async (request, response) => {
 
 /**
  * Unstake an application.
+ * // FIXME: Make transaction on frontend
  */
 router.post("/custom/unstake", async (request, response) => {
   try {

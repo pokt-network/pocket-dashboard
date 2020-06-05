@@ -116,18 +116,20 @@ export default class PocketService {
    * @param {string} passphrase Passphrase used to generate the account.
    *
    * @returns {Promise<Account | Error>} A pocket account.
+   * @deprecated using now PPK instead of private key
    */
   async importAccount(privateKeyHex, passphrase) {
     return this.__pocket.keybase.importAccount(Buffer.from(privateKeyHex, "hex"), passphrase);
   }
 
   /**
-   * Import an account to Pokt network using private key of the account.
+   * Import an account to Pokt network using ppk  of the account.
    *
-   * @param {object} ppkData Private key of the account to import in hex.
+   * @param {object} ppkData ppk of the account to import in raw string.
    * @param {string} passphrase Passphrase used to generate the account.
    *
    * @returns {Promise<Account | Error>} A pocket account.
+   * @deprecated moved to frontend
    */
   async importAccountFromPPK(ppkData, passphrase) {
     return this.__pocket.keybase.importPPKFromJSON(passphrase, JSON.stringify(ppkData), passphrase);
@@ -566,6 +568,8 @@ export default class PocketService {
    *
    * @param {string} privateKey Private key of the account
    * @param {string} passphrase Passphrase to encrypt the PPK with
+   * 
+   * @deprecated moved to frontend
    */
   async createPPK(privateKey, passphrase) {
     const ppkData = await this.__pocket.keybase.exportPPK(privateKey, passphrase);

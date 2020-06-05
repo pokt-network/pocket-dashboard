@@ -34,6 +34,7 @@ router.post("", async (request, response) => {
 
 /**
  * Create new node account.
+ * // FIXME: for imported nodes, change private key for PPK
  */
 router.post("/account", async (request, response) => {
   try {
@@ -236,6 +237,7 @@ router.post("/user/all", async (request, response) => {
 
 /**
  * Stake a node.
+ * // FIXME: Make transaction on frontend
  */
 router.post("/custom/stake", async (request, response) => {
   try {
@@ -287,6 +289,7 @@ router.post("/custom/stake", async (request, response) => {
 
 /**
  * Unstake a node.
+ * // FIXME: Make transaction on frontend
  */
 router.post("/custom/unstake", async (request, response) => {
   try {
@@ -321,6 +324,7 @@ router.post("/custom/unstake", async (request, response) => {
 
 /**
  * UnJail a node.
+ * // FIXME: Make transaction on frontend
  */
 router.post("/unjail", async (request, response) => {
   try {
