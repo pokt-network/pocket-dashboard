@@ -104,20 +104,20 @@ export const TABLE_COLUMNS = {
   ],
   NODES: [
     {
-      dataField: "pocketNode.name",
+      dataField: "name",
       text: "Name",
       headerClasses: "col-2",
       classes: "col-2",
     },
     {
-      dataField: "pocketNode.publicPocketAccount.address",
+      dataField: "address",
       text: "Address",
       headerClasses: "col-7",
       classes: "col-7",
     },
 
     {
-      dataField: "networkData.status",
+      dataField: "status",
       text: "Status",
       style: {
         color: STYLING.primaryColor,
