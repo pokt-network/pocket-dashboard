@@ -17,3 +17,5 @@ InfoItem.propTypes = {
   text: PropTypes.string,
   value: PropTypes.string,
 };
+
+export default InfoItem;
