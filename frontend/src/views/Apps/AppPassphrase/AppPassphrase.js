@@ -111,7 +111,9 @@ class AppPassphrase extends Component {
           passPhrase: values.passPhrase,
           validPassphrase: true,
         }, () => {
-          if (!created) this.createApplicationAccount();
+          if (!created) {
+this.createApplicationAccount();
+}
         }
       );
     } else {

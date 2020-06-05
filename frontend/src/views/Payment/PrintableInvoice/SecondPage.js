@@ -103,7 +103,7 @@ class SecondPage extends React.Component {
                 bound, hereby irrevocably agrees to purchase from the Company
                 [up to 1,666,667 OR 1,666,667] Tokens (the “
                 <u>Purchased Tokens</u>”) at a purchase price of US${poktPrice}{" "}
-                per token (the “<u>Purchase Price</u>"), payable by [ETH, USD,
+                per token (the &quot;<u>Purchase Price</u>&quot;), payable by [ETH, USD,
                 BTC] pursuant to the procedures set forth in this Agreement and
                 via the Purchasing Site. [Company: confirm that we can
                 auto-populate the number of tokens, purchase price per token,

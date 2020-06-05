@@ -16,33 +16,34 @@ class FourthPage extends React.Component {
         <ol className="ordered-list">
           <li>
             <p>
-              "<u>Use Restriction</u>" means the requirement that Purchaser use
-              all Tokens purchased, as appropriate to Purchaser’s intended
-              participation in the Network. If Purchaser is a Developer,
-              Purchaser’s Use Restriction requires staking Tokens, connecting
-              the Purchaser’s application to the Network and relaying data over
-              the Network using the Tokens. If Purchaser is a Node, Purchaser
-              must use Tokens by staking Tokens and operating a Network node.
+              &quot;<u>Use Restriction</u>&quot; means the requirement that
+              Purchaser use all Tokens purchased, as appropriate to Purchaser’s
+              intended participation in the Network. If Purchaser is a
+              Developer, Purchaser’s Use Restriction requires staking Tokens,
+              connecting the Purchaser’s application to the Network and relaying
+              data over the Network using the Tokens. If Purchaser is a Node,
+              Purchaser must use Tokens by staking Tokens and operating a
+              Network node.
             </p>
           </li>
           <ol className="ordered-list">
             In order to enforce the Use Restriction during the Restricted
             Period, upon purchase of the Tokens in accordance with Section 1.1,
             the Tokens shall be transferred to a digital asset wallet, to which
-            the Purchaser maintains the sole private key (the “
-            <u>Restricted Wallet</u>”). During the Restricted Period, the
+            the Purchaser maintains the sole private key (the &quot;
+            <u>Restricted Wallet</u>&quot;). During the Restricted Period, the
             Company shall place restrictions on the Restricted Wallet to prevent
-            Purchaser from transferring Tokens from the Restricted Wallet (the “
-            <u>Transfer Restrictions</u>”). Upon the expiration of the
-            Restricted Period, the Company shall remove the Transfer
+            Purchaser from transferring Tokens from the Restricted Wallet (the
+            &quot;<u>Transfer Restrictions</u>&quot;). Upon the expiration of
+            the Restricted Period, the Company shall remove the Transfer
             Restrictions from the Restricted Wallet.
           </ol>
           <li>
             <p>
-              "<u>Restricted Period</u>" the general prohibition on the
-              Purchaser’s ability to offer, sell, contract to sale, assign,
-              transfer, spend, exchange, grant any option to purchase, or
-              otherwise dispose of the Tokens for the period of one staking
+              &quot;<u>Restricted Period</u>&quot; the general prohibition on
+              the Purchaser&lsquo;s ability to offer, sell, contract to sale,
+              assign, transfer, spend, exchange, grant any option to purchase,
+              or otherwise dispose of the Tokens for the period of one staking
               period from the Effective Date.
             </p>
           </li>
@@ -69,7 +70,7 @@ class FourthPage extends React.Component {
                 <u>Intellectual Property.</u>{" "}
               </b>{" "}
               Purchaser acknowledges and agrees that the Company retains all
-              right, title and interest in all of the Company’s intellectual
+              right, title and interest in all of the Company&lsquo;s intellectual
               property contained in the Tokens, including, without limitation,
               inventions, ideas, concepts, code, discoveries, processes, marks,
               methods, software, compositions, formulae, techniques, information

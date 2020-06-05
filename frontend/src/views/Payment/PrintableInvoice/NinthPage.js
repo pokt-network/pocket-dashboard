@@ -7,6 +7,7 @@ const now = new Date();
 class NinthPage extends React.Component {
   render() {
     const {cardHolderName} = this.props;
+
     return (
       <div
         className="token-purchase-agreement"
@@ -19,7 +20,7 @@ class NinthPage extends React.Component {
           and not exclusive of any rights or remedies provided by law.
         </p>
         <p style={{paddingLeft: "60px", marginBottom: 0}}>
-          The Company hereby formally accepts Purchaser’s offer, as set forth in
+          The Company hereby formally accepts Purchaser&lsquo;s offer, as set forth in
           the Token Purchase Terms and Conditions by and
         </p>
         <p>
@@ -47,7 +48,7 @@ class NinthPage extends React.Component {
           >
             (Signature)
           </div>
-          <div className="mt-5">Name: Michael O'Rourke</div>
+          <div className="mt-5">Name: Michael O&quot;Rourke</div>
           <div>Title: President</div>
           <div className="mt-5">Address:</div>
           <div>

@@ -1,13 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Logo from "./Logo";
-
-const InfoItem = ({text, value}) => (
-  <div className="invoice-info">
-    <span>{text}</span>
-    <span>{value}</span>
-  </div>
-);
+import InfoItem from "./InfoItem";
 
 class FirstPage extends React.Component {
   render() {
