@@ -2,12 +2,13 @@ import React, {Component} from "react";
 import {Row, Col, Form, Button} from "react-bootstrap";
 import AccountService from "../../services/PocketAccountService";
 import {PropTypes} from "prop-types";
+import PocketClientService from "../../services/PocketClientService";
 
 class ValidateKeys extends Component {
   constructor(props, context) {
     super(props, context);
 
-    this.validateApp = this.validateApp.bind(this);
+    this.validateAccount = this.validateAccount.bind(this);
     this.changeInputType = this.changeInputType.bind(this);
     this.handleChange = this.handleChange.bind(this);
 
@@ -17,6 +18,7 @@ class ValidateKeys extends Component {
     };
 
     this.state = {
+      ppk: "",
       created: false,
       error: {show: false, message: ""},
       hasPrivateKey: false,
@@ -29,6 +31,7 @@ class ValidateKeys extends Component {
       data: {
         passphrase: "",
         privateKey: "",
+        ppkData: "",
       },
       redirectPath: "",
       redirectParams: {},
@@ -66,40 +69,51 @@ class ValidateKeys extends Component {
     reader.onload = (e) => {
       const {result} = e.target;
       const {data} = this.state;
-
-      const privateKey = result.trim();
+      const ppkData = JSON.parse(result.trim());
 
       this.setState({
         hasPrivateKey: true,
-        uploadedPrivateKey: privateKey,
-        data: {...data, privateKey: privateKey},
+        data: {...data, privateKey: "", ppkData},
       });
     };
 
     reader.readAsText(e.target.files[0], "utf8");
   };
 
-  async validateApp(e) {
+  async validateAccount(e) {
     e.preventDefault();
 
     const {address} = this.props;
+    const {privateKey, passphrase, ppkData} = this.state.data;
+    let ppk;
 
-    const {privateKey, passphrase} = this.state.data;
+    if (!ppkData) {
+      ppk = JSON.parse(
+        await PocketClientService.createPPKfromPrivateKey(
+          privateKey, passphrase
+        )
+      );
+    } else {
+      ppk = ppkData;
+    }
 
-    const {success, data} = await AccountService.importAccount(
-      privateKey, passphrase
-    );
+    const {success, data} = await AccountService.importAccount(ppk, passphrase);
 
     const validated = success && data.address === address;
 
     if (validated) {
-      this.setState({validated: true, address: data.address});
+      this.setState({
+        error: {show: false},
+        validated: true,
+        address: data.address,
+        ppk: ppk,
+      });
     } else {
       this.setState({
         error: {
           show: true,
           message: data.message
-            ? data.message
+            ? data.message.replace("TypeError: ", "")
             : "Invalid private key / passphrase",
         },
       });
@@ -114,6 +128,7 @@ class ValidateKeys extends Component {
       hasPrivateKey,
       error,
       validated,
+      ppk,
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
@@ -214,7 +229,7 @@ class ValidateKeys extends Component {
                           className={error.show ? "is-invalid" : ""}
                         />
                         <Form.Control.Feedback
-                          className="invalid-account"
+                          className="validate invalid-account"
                           type="invalid"
                         >
                           {error.show ? error.message : ""}
@@ -230,12 +245,12 @@ class ValidateKeys extends Component {
                           type="submit"
                           onClick={
                             !validated
-                              ? this.validateApp
+                              ? this.validateAccount
                               : (e) => {
                                   e.preventDefault();
                                   handleAfterValidate({
                                     address,
-                                    privateKey,
+                                    ppk,
                                     passphrase,
                                   });
                                 }

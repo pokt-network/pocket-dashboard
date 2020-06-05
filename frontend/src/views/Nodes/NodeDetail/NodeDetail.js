@@ -16,6 +16,7 @@ import Segment from "../../../core/components/Segment/Segment";
 import NodeService from "../../../core/services/PocketNodeService";
 import "../../../scss/Views/Detail.scss";
 import PocketAccountService from "../../../core/services/PocketAccountService";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class NodeDetail extends Component {
   constructor(props, context) {
@@ -93,6 +94,7 @@ class NodeDetail extends Component {
   }
 
   async unstakeNode({privateKey, passphrase, address: accountAddress}) {
+    // FIXME: Change transaction to frontend
     const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
     const detail = url.replace(":address", accountAddress);
     const nodeLink = `${window.location.origin}${detail}`;
@@ -109,6 +111,7 @@ class NodeDetail extends Component {
   }
 
   async unjailNode({privateKey, passphrase, address: accountAddress}) {
+    // FIXME: Change transaction to frontend
     const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
     const detail = url.replace(":address", accountAddress);
     const nodeLink = `${window.location.origin}${detail}`;
@@ -124,10 +127,11 @@ class NodeDetail extends Component {
     }
   }
 
-  async stakeNode({privateKey, passphrase, address}) {
+  async stakeNode({ppk, passphrase, address}) {
     NodeService.removeNodeInfoFromCache();
-    NodeService.saveNodeInfoInCache({address, privateKey, passphrase});
+    NodeService.saveNodeInfoInCache({address, passphrase});
 
+    await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
     // eslint-disable-next-line react/prop-types
     this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.nodeChainList));
   }

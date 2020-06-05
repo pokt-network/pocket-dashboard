@@ -16,6 +16,7 @@ import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
 import Segment from "../../../core/components/Segment/Segment";
 import "../../../scss/Views/Detail.scss";
 import PocketAccountService from "../../../core/services/PocketAccountService";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -108,6 +109,7 @@ class AppDetail extends Component {
   }
 
   async unstakeApplication({privateKey, passphrase, address}) {
+    // FIXME: Change transaction to frontend
     const {freeTier} = this.state.pocketApplication;
 
     const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
@@ -126,10 +128,11 @@ class AppDetail extends Component {
     }
   }
 
-  async stakeApplication({privateKey, passphrase, address}) {
+  async stakeApplication({ppk, passphrase, address}) {
     ApplicationService.removeAppInfoFromCache();
-    ApplicationService.saveAppInfoInCache({address, privateKey, passphrase});
-
+    ApplicationService.saveAppInfoInCache({address, passphrase});
+    
+    await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
     // eslint-disable-next-line react/prop-types
     this.props.history.push(
       _getDashboardPath(DASHBOARD_PATHS.applicationChainsList)
