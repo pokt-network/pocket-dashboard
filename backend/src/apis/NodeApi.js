@@ -160,6 +160,24 @@ router.get("/:nodeAccountAddress", async (request, response) => {
   }
 });
 
+/**
+ * Get staked summary data.
+ */
+router.get("/summary/staked", async (request, response) => {
+  try {
+
+    const summaryData = await nodeService.getStakedNodeSummary();
+
+    response.send(summaryData);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
 
 /**
  * Get all nodes.

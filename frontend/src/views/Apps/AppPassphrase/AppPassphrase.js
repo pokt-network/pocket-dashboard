@@ -66,6 +66,7 @@ class AppPassphrase extends Component {
       redirectPath: "",
       redirectParams: {},
       loading: false,
+      ppkData: {}
     };
   }
 
@@ -132,7 +133,7 @@ class AppPassphrase extends Component {
     );
 
     if (success) {
-      const {privateApplicationData} = data;
+      const {privateApplicationData, ppkData} = data;
       const {address, privateKey} = privateApplicationData;
 
       PocketApplicationService.removeAppInfoFromCache();
@@ -148,6 +149,7 @@ class AppPassphrase extends Component {
         address,
         privateKey,
         redirectPath: _getDashboardPath(DASHBOARD_PATHS.applicationChainsList),
+        ppkData: ppkData,
       });
     } else {
       this.setState({error: {show: true, message: data.message}});
@@ -157,11 +159,10 @@ class AppPassphrase extends Component {
     this.setState({loading: false});
   }
 
-  downloadKeyFile() {
-    const {privateKey, passPhrase} = this.state;
-    const data = {private_key: privateKey, passphrase: passPhrase};
+  async downloadKeyFile() {
+    const {ppkData, address} = this.state;
 
-    createAndDownloadJSONFile("MyPocketApplication", data);
+    createAndDownloadJSONFile(`MyPocketApplication-${address}`, ppkData);
 
     this.setState({
       fileDownloaded: true,

@@ -4,11 +4,12 @@ import {
   ApplicationParams,
   CoinDenom,
   Configuration,
-  HttpRpcProvider,
   Node,
   NodeParams,
   Pocket,
   PocketAAT,
+  PocketRpcProvider,
+  publicKeyFromPrivate,
   RawTxResponse,
   StakingStatus,
   Transaction
@@ -27,34 +28,19 @@ export const POKT_DENOMINATIONS = {
 };
 
 /**
- * Convert list of string nodes to URL nodes.
+ * Retrieve a list of URL's from the configuration for the dispatchers
  *
- * @param {[string]} nodes List of nodes of Pokt network.
- *
- * @returns {URL[]} Nodes urls.
+ * @returns {URL[]} Dispatcher urls.
  */
-function getNodeURLS(nodes) {
+function getPocketDispatchers() {
+  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers ?? "";
 
-  return nodes.map((node) => {
-    const nodeURL = node + ":" + POCKET_NETWORK_CONFIGURATION.default_rpc_port;
-
-    return new URL(nodeURL);
+  if (dispatchersStr === "") {
+    return [];
+  }
+  return dispatchersStr.split(",").map(function (dispatcherURLStr) {
+    return new URL(dispatcherURLStr);
   });
-}
-
-
-/**
- * Get RPC dispatcher provider using a Pokt network node.
- *
- * @param {string} node Node used to RPC dispatcher provider.
- *
- * @returns {HttpRpcProvider} The main rpc provider in the node.
- */
-function getRPCDispatcher(node) {
-
-  const nodeURL = node + ":" + POCKET_NETWORK_CONFIGURATION.default_rpc_port;
-
-  return new HttpRpcProvider(new URL(nodeURL));
 }
 
 /**
@@ -80,9 +66,36 @@ export default class PocketService {
      * @type {Pocket}
      * @private
      */
-    this.__pocket = new Pocket(getNodeURLS(nodes), getRPCDispatcher(rpcProvider), POCKET_CONFIGURATION);
+    this.__pocket = new Pocket(getPocketDispatchers(), undefined, POCKET_CONFIGURATION);
   }
 
+  /**
+   * Creates a new PocketRPCProvider that fetches Pocket blockchain data using Pocket Network nodes
+   *
+   * @returns {PocketRpcProvider} Pocket RPC Provider
+   */
+  async getPocketRPCProvider() {
+    if (!this.pocketRpcProvider) {
+      // Create the provider Pocket instance
+      const pocket = new Pocket(getPocketDispatchers());
+
+      // Create the AAT
+      const appPrivKey = POCKET_NETWORK_CONFIGURATION.dashboard_aat.app_priv_key;
+      const appPubKey = publicKeyFromPrivate(Buffer.from(appPrivKey, "hex")).toString("hex");
+      const clientPrivKey = POCKET_NETWORK_CONFIGURATION.dashboard_aat.client_priv_key;
+      const clientPubKey = publicKeyFromPrivate(Buffer.from(clientPrivKey, "hex")).toString("hex");
+
+      const dashboardAAT = await PocketAAT.from("0.0.1", clientPubKey, appPubKey, appPrivKey);
+
+      // Import and unlock client account
+      const clientAccount = await pocket.keybase.importAccount(Buffer.from(clientPrivKey, "hex"), POCKET_NETWORK_CONFIGURATION.dashboard_aat.client_priv_key_passphrase);
+
+      await pocket.keybase.unlockAccount(clientAccount.addressHex, POCKET_NETWORK_CONFIGURATION.dashboard_aat.client_priv_key_passphrase, 0);
+
+      this.pocketRpcProvider = new PocketRpcProvider(pocket, dashboardAAT, POCKET_NETWORK_CONFIGURATION.chain_hash);
+    }
+    return this.pocketRpcProvider;
+  }
 
   /**
    * Create account on Pokt network.
@@ -94,17 +107,6 @@ export default class PocketService {
    */
   async createAccount(passphrase) {
     return this.__pocket.keybase.createAccount(passphrase);
-  }
-
-  /**
-   * Retrieve account from network.
-   *
-   * @param {string} addressHex Address of account to retrieve in hex.
-   *
-   * @returns {Promise<Account | Error>} A pocket account.
-   */
-  async getAccount(addressHex) {
-    return this.__pocket.keybase.getAccount(addressHex);
   }
 
   /**
@@ -120,15 +122,15 @@ export default class PocketService {
   }
 
   /**
-   * Export Private key of the account.
+   * Import an account to Pokt network using private key of the account.
    *
-   * @param {string} addressHex Address of account to export in hex.
+   * @param {object} ppkData Private key of the account to import in hex.
    * @param {string} passphrase Passphrase used to generate the account.
    *
-   * @returns {Promise<Buffer | Error>} A buffer of private key.
+   * @returns {Promise<Account | Error>} A pocket account.
    */
-  async exportAccount(addressHex, passphrase) {
-    return this.__pocket.keybase.exportAccount(addressHex, passphrase);
+  async importAccountFromPPK(ppkData, passphrase) {
+    return this.__pocket.keybase.importPPKFromJSON(passphrase, JSON.stringify(ppkData), passphrase);
   }
 
   /**
@@ -208,7 +210,8 @@ export default class PocketService {
    * @async
    */
   async getTransaction(transactionHash) {
-    const transactionResponse = await this.__pocket.rpc().query.getTX(transactionHash);
+    const pocketRpcProvider = await this.getPocketRPCProvider();
+    const transactionResponse = await this.__pocket.rpc(pocketRpcProvider).query.getTX(transactionHash);
 
     if (transactionResponse instanceof Error) {
       throw transactionResponse;
@@ -227,7 +230,8 @@ export default class PocketService {
    * @async
    */
   async getBalance(accountAddress, throwError = true) {
-    const accountQueryResponse = await this.__pocket.rpc().query.getBalance(accountAddress);
+    const pocketRpcProvider = await this.getPocketRPCProvider();
+    const accountQueryResponse = await this.__pocket.rpc(pocketRpcProvider).query.getBalance(accountAddress);
 
     if (accountQueryResponse instanceof Error) {
       if (throwError) {
@@ -269,7 +273,8 @@ export default class PocketService {
    * @async
    */
   async getApplication(addressHex, throwError = true) {
-    const applicationResponse = await this.__pocket.rpc().query.getApp(addressHex);
+    const pocketRpcProvider = await this.getPocketRPCProvider();
+    const applicationResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApp(addressHex);
 
     if (applicationResponse instanceof Error) {
       if (throwError) {
@@ -292,7 +297,8 @@ export default class PocketService {
    * @async
    */
   async getNode(addressHex) {
-    const nodeResponse = await this.__pocket.rpc().query.getNode(addressHex);
+    const pocketRpcProvider = await this.getPocketRPCProvider();
+    const nodeResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNode(addressHex);
 
     if (nodeResponse instanceof Error) {
       throw nodeResponse;
@@ -304,20 +310,95 @@ export default class PocketService {
   /**
    * Get Applications data.
    *
-   * @param {StakingStatus} status Status of the apps to retrieve.
+   * @param {number} status Status of the apps to retrieve.
    *
    * @returns {Promise<Application[]>} The applications data.
    * @throws Error If Query fails.
    * @async
    */
   async getApplications(status) {
-    const applicationsResponse = await this.__pocket.rpc().query.getApps(status);
+    const pocketRpcProvider = await this.getPocketRPCProvider();
+    const applicationsResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status, 0n);
 
     if (applicationsResponse instanceof Error) {
       throw applicationsResponse;
     }
 
     return applicationsResponse.applications;
+  }
+
+  /**
+   * Get All applications data.
+   *
+   * @param {string[]} [appAddresses] Application addresses.
+   *
+   * @returns {Promise<Application[]>} The applications data.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getAllApplications(appAddresses = []) {
+    const stakedApplications = await this.getApplications(StakingStatus.Staked);
+    const unstakingApplications = await this.getApplications(StakingStatus.Unstaking);
+
+    const allApps = stakedApplications
+      .concat(unstakingApplications);
+
+    if (appAddresses === undefined) {
+      return allApps;
+    }
+
+    if (appAddresses.length > 0) {
+      return allApps.filter(app => appAddresses.includes(app.address));
+    }
+
+    return [];
+  }
+
+  /**
+   * Get Nodes data.
+   *
+   * @param {number} status Status of the nodes to retrieve.
+   *
+   * @returns {Promise<Node[]>} The nodes data.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getNodes(status) {
+    const pocketRpcProvider = await this.getPocketRPCProvider();
+    const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status);
+
+    if (nodesResponse instanceof Error) {
+      throw nodesResponse;
+    }
+
+    return nodesResponse.nodes;
+  }
+
+  /**
+   * Get All nodes data.
+   *
+   * @param {string[]} [nodeAddresses] Node addresses.
+   *
+   * @returns {Promise<Node[]>} The nodes data.
+   * @throws Error If Query fails.
+   * @async
+   */
+  async getAllNodes(nodeAddresses = []) {
+    const stakedNodes = await this.getNodes(StakingStatus.Staked);
+    const unstakingNodes = await this.getNodes(StakingStatus.Unstaking);
+
+    const allNodes = stakedNodes
+      .concat(unstakingNodes);
+
+    if (nodeAddresses === undefined) {
+      return allNodes;
+    }
+
+    if (nodeAddresses.length > 0) {
+      return allNodes.filter(node => nodeAddresses.includes(node.address));
+    }
+
+    return [];
   }
 
   /**
@@ -328,7 +409,8 @@ export default class PocketService {
    * @async
    */
   async getApplicationParameters() {
-    const applicationParametersResponse = await this.__pocket.rpc().query.getAppParams();
+    const pocketRpcProvider = await this.getPocketRPCProvider();
+    const applicationParametersResponse = await this.__pocket.rpc(pocketRpcProvider).query.getAppParams();
 
     if (applicationParametersResponse instanceof Error) {
       throw applicationParametersResponse;
@@ -469,12 +551,29 @@ export default class PocketService {
    * @async
    */
   async getNodeParameters() {
-    const nodeParametersResponse = await this.__pocket.rpc().query.getNodeParams();
+    const pocketRpcProvider = await this.getPocketRPCProvider();
+    const nodeParametersResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodeParams();
 
     if (nodeParametersResponse instanceof Error) {
       throw nodeParametersResponse;
     }
 
     return nodeParametersResponse.nodeParams;
+  }
+
+  /**
+   * Creates a new PPK Object: https://github.com/pokt-network/pocket-core/blob/staging/doc/portable-private-key-spec.md
+   *
+   * @param {string} privateKey Private key of the account
+   * @param {string} passphrase Passphrase to encrypt the PPK with
+   */
+  async createPPK(privateKey, passphrase) {
+    const ppkData = await this.__pocket.keybase.exportPPK(privateKey, passphrase);
+
+    if (ppkData instanceof Error) {
+      throw ppkData;
+    }
+
+    return JSON.parse(ppkData);
   }
 }

@@ -201,6 +201,17 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
+   * Get staked summary data.
+   *
+   * @return {Promise|Promise<*>}
+   */
+  getStakedNodeSummary() {
+    return axios
+      .get(this._getURL("summary/staked"))
+      .then((response) => response.data);
+  }
+
+  /**
    * Get all available nodes.
    *
    * @param {number} limit Limit of query.

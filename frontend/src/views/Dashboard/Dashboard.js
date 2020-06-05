@@ -16,7 +16,7 @@ import AppTable from "../../core/components/AppTable";
 
 // TODO: Integrate this data with backend.
 const CARDS = [
-  {title: "US $0.60", subtitle: "POKT Price"},
+  {title: "US $0.00", subtitle: "POKT Price"},
   {title: "33,456", subtitle: "Total Staked Tokens"},
   {title: "21,479", subtitle: "Total Staked nodes"},
   {title: "37,235", subtitle: "Total Staked apps"},
