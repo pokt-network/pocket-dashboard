@@ -37,10 +37,7 @@ class Dashboard extends Component {
       totalStakedApps,
       totalStakedNodes,
     } = await NetworkService.getNetworkSummaryData();
-    const userApps = await ApplicationService.getAllUserApplications(
-      userEmail,
-      APPLICATIONS_LIMIT
-    );
+    const userApps = await ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT);
     // const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
     const chains = await NetworkService.getAvailableNetworkChains();
     const welcomeAlert = UserService.getShowWelcomeMessage();
