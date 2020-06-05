@@ -6,6 +6,7 @@ import BaseAuthProvider from "../providers/auth/BaseAuthProvider";
 import {Configurations} from "../_configuration";
 import jwt from "jsonwebtoken";
 import axios from "axios";
+import {DashboardError, DashboardValidationError} from "../models/Exceptions";
 
 const AUTH_TOKEN_TYPE = "access_token";
 const USER_COLLECTION_NAME = "Users";
@@ -226,7 +227,7 @@ export default class UserService extends BaseService {
    * @param {string} password Password of user to authenticate.
    *
    * @returns {Promise<PocketUser>} An authenticated pocket user.
-   * @throws {Error} If username or password is invalid.
+   * @throws {DashboardError | DashboardValidationError} If username or password is invalid.
    * @async
    */
   async authenticateUser(username, password) {
@@ -234,19 +235,19 @@ export default class UserService extends BaseService {
     const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     if (!userDB) {
-      throw Error("Invalid username.");
+      throw new DashboardError("Invalid username.");
     }
 
     const pocketUser = PocketUser.createPocketUserFromDB(userDB);
 
     if (!pocketUser.password) {
-      throw Error("Passwords do not match");
+      throw new DashboardValidationError("Passwords do not match.");
     }
 
     const passwordValidated = await EmailUser.validatePassword(password, pocketUser.password);
 
     if (!passwordValidated) {
-      throw Error("Passwords do not match");
+      throw new DashboardValidationError("Passwords do not match.");
     }
 
     // Update last login of user on DB.
