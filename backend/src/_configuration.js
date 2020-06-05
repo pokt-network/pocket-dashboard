@@ -91,7 +91,6 @@ export const Configurations = {
              attempts: process.env.POCKET_NETWORK_SERVICE_WORKER_ATEMPTS,
            },
            aat_version: "0.0.1",
-           default_rpc_port: 8081,
            transaction_fee: "100000",
            chain_id: process.env.POCKET_NETWORK_CHAIN_ID,
            max_dispatchers: process.env.POCKET_NETWORK_MAX_DISPATCHER,
