@@ -13,7 +13,7 @@ import NinthPage from "./NinthPage";
 
 class PrintableInvoice extends React.Component {
   render() {
-    const {invoiceItems, purchaseDetails, total, cardHolderName} = this.props;
+    const {invoiceItems, purchaseDetails, total, cardHolderName, poktPrice} = this.props;
 
     return (
       <div className="printable-invoice">
@@ -22,7 +22,7 @@ class PrintableInvoice extends React.Component {
           purchaseDetails={purchaseDetails}
           total={total}
         />
-        <SecondPage />
+        <SecondPage poktPrice={poktPrice} />
         <ThirdPage />
         <FourthPage />
         <FifthPage />
@@ -39,6 +39,7 @@ PrintableInvoice.defaultProps = {
   invoiceItems: [],
   purchaseDetails: [],
   cardHolderName: "",
+  poktPrice: "0",
 };
 
 PrintableInvoice.propTypes = {
@@ -56,6 +57,7 @@ PrintableInvoice.propTypes = {
   ),
   total: PropTypes.string,
   cardHolderName: PropTypes.string,
+  poktPrice: PropTypes.string,
 };
 
 export default PrintableInvoice;

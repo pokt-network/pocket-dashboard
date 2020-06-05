@@ -4,6 +4,8 @@ import Logo from "./Logo";
 
 class SecondPage extends React.Component {
   render() {
+    const {poktPrice} = this.props;
+
     return (
       <div
         className="token-purchase-agreement"
@@ -28,10 +30,16 @@ class SecondPage extends React.Component {
         <h6 className="mb-3">
           <u>summary</u>
         </h6>
-        {/* TODO: Ask Polina INSERT SALE PORTAL URL */}
         <p>
           Review this POKT Token Purchase Agreement following your completion of
-          certain questions on our online website platform <a href="https://dashboard.pokt.network/">pokt.dashboard.network</a> (the “Purchasing Site”). If your responses remain accurate and
+          certain questions on our online website platform{" "}
+          <a
+            href="https://dashboard.pokt.network/"
+            style={{textDecoration: "none"}}
+          >
+            pokt.dashboard.network
+          </a>{" "}
+          (the “Purchasing Site”). If your responses remain accurate and
           correct, click the check box and the “I AGREE” button to indicate your
           agreement.
         </p>
@@ -89,13 +97,12 @@ class SecondPage extends React.Component {
           </li>
           <ol className="ordered-list">
             <li>
-              {/* TODO: Get POKT PRICE from backend */}
               <p>
                 Subject to the Purchasing Site Terms of Use and the terms and
                 conditions set forth herein, Purchaser, intending to be legally
                 bound, hereby irrevocably agrees to purchase from the Company
                 [up to 1,666,667 OR 1,666,667] Tokens (the “
-                <u>Purchased Tokens</u>”) at a purchase price of US$POKT_PRICE
+                <u>Purchased Tokens</u>”) at a purchase price of US${poktPrice}{" "}
                 per token (the “<u>Purchase Price</u>"), payable by [ETH, USD,
                 BTC] pursuant to the procedures set forth in this Agreement and
                 via the Purchasing Site. [Company: confirm that we can
@@ -124,8 +131,12 @@ class SecondPage extends React.Component {
   }
 }
 
-SecondPage.defaultProps = {};
+SecondPage.defaultProps = {
+  poktPrice: "0",
+};
 
-SecondPage.propTypes = {};
+SecondPage.propTypes = {
+  poktPrice: PropTypes.string,
+};
 
 export default SecondPage;

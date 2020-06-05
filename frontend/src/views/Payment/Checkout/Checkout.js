@@ -62,6 +62,7 @@ class Checkout extends Component {
     const {
       paymentID: id,
       createdDate: date,
+      poktPrice,
     } = await PaymentService.getPaymentDetail(paymentId);
 
     const {brand, lastDigits} = paymentMethod;
@@ -72,6 +73,7 @@ class Checkout extends Component {
       date: moment(date).format("DD MM YYYY"),
       owner: userName,
       card: `${capitalize(brand)} **** **** **** ${lastDigits}`,
+      poktPrice,
     };
 
     this.setState({
@@ -86,12 +88,8 @@ class Checkout extends Component {
     });
   }
 
-  handlePrintInvoice() {
-    window.print();
-  }
-
   render() {
-    const {owner, id, date, card} = this.state.invoice;
+    const {owner, id, date, card, poktPrice} = this.state.invoice;
     const {
       details,
       total,
@@ -211,8 +209,9 @@ class Checkout extends Component {
             {text: "card detail", value: card},
           ]}
           purchaseDetails={items}
-          total={totalAmount}
           cardHolderName={owner}
+          poktPrice={poktPrice}
+          total={totalAmount}
         />
       </>
     );
