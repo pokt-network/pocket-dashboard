@@ -139,7 +139,10 @@ class OrderSummary extends Component {
     const {paymentIntent, selectedPaymentMethod, type} = this.state;
 
     const result = await StripePaymentService.confirmPaymentWithSavedCard(
-      stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails
+      stripe,
+      paymentIntent.paymentNumber,
+      selectedPaymentMethod.id,
+      selectedPaymentMethod.billingDetails
     );
 
     if (result.error) {
@@ -172,7 +175,10 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       ApplicationService.stakeApplication(
-        application, chains, result.paymentIntent.id, applicationLink
+        application,
+        chains,
+        result.paymentIntent.id,
+        applicationLink
       ).then(() => {});
     } else {
       // Stake Node
@@ -192,7 +198,10 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       NodeService.stakeNode(
-        node, chains, result.paymentIntent.id, nodeLink
+        node,
+        chains,
+        result.paymentIntent.id,
+        nodeLink
       ).then(() => {});
     }
 
@@ -203,12 +212,15 @@ class OrderSummary extends Component {
   saveNewCard(e, cardData, stripe) {
     e.preventDefault();
 
+    let selectedPaymentMethod = null;
     const {setMethodDefault} = this.state;
     const {cardHolderName: name} = cardData;
     const billingDetails = {name};
 
     StripePaymentService.createPaymentMethod(
-      stripe, cardData.card, billingDetails
+      stripe,
+      cardData.card,
+      billingDetails
     ).then(async (result) => {
       // Adding a card on checkout doesn't ask you for billing info.
       if (!billingDetails.address) {
@@ -232,7 +244,8 @@ class OrderSummary extends Component {
 
       if (result.paymentMethod) {
         const {success, data} = await StripePaymentService.savePaymentMethod(
-          result.paymentMethod, billingDetails
+          result.paymentMethod,
+          billingDetails
         );
 
         if (!success) {
@@ -255,13 +268,17 @@ class OrderSummary extends Component {
           message: "Your payment method was successfully added",
         };
 
-        if (setMethodDefault) {
+        if (setMethodDefault || paymentMethods.length === 1) {
           PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
+          selectedPaymentMethod = paymentMethods.find(
+            (item) => item.id === result.paymentMethod.id
+          );
         }
 
         this.setState({
           alert,
           paymentMethods,
+          selectedPaymentMethod,
           isFormVisible: false,
           isAddNewDisabled: false,
         });
@@ -315,6 +332,8 @@ class OrderSummary extends Component {
       return <UnauthorizedAlert />;
     }
 
+    console.log("SELECTED PAYMENT METHODS", selectedPaymentMethod);
+
     return (
       <div id="order-summary">
         {alert.show && (
@@ -335,7 +354,9 @@ class OrderSummary extends Component {
               <Form className="cards">
                 {paymentMethods.map((card, idx) => {
                   const {brand, lastDigits, holder} = card;
-                  const isChecked = selectedPaymentMethod ? card.id === selectedPaymentMethod.id : false;
+                  const isChecked = selectedPaymentMethod
+                    ? card.id === selectedPaymentMethod.id
+                    : false;
 
                   return (
                     <div key={idx} className="payment-method">
@@ -343,7 +364,9 @@ class OrderSummary extends Component {
                         inline
                         label=""
                         type="radio"
-                        className={cls("payment-radio-input", {checked: isChecked})}
+                        className={cls("payment-radio-input", {
+                          checked: isChecked,
+                        })}
                         checked={isChecked}
                         onChange={() => {
                           this.setState({selectedPaymentMethod: card});
@@ -379,9 +402,9 @@ class OrderSummary extends Component {
                   <NewCardNoAddressForm
                     formActionHandler={this.saveNewCard}
                     actionButtonName="Add Card"
-                    setDefaultHandler={(setMethodDefault) =>
-                      this.setState({setMethodDefault})
-                    }
+                    setDefaultHandler={(setMethodDefault) => {
+                      this.setState({setMethodDefault});
+                    }}
                   />
                 </>
               )}
