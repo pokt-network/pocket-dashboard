@@ -3,13 +3,12 @@
 #breadcrumbs {
   font-weight: 400;
   font-family: "Open Sans";
-  height: 30px;
-  margin-bottom: 35px;
 
   .breadcrumb {
     background-color: transparent;
-    padding-left: 0;
-    margin-top: 10px;
+    line-height: normal;
+    padding: 1rem 0;
+    margin-bottom: 0;
 
     li {
       color: $dark-gray;
@@ -28,7 +27,6 @@
           color: $dark-gray;
         }
       }
-
     }
   }
 }
