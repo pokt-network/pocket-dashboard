@@ -114,7 +114,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.8.4",
-    "@pokt-network/pocket-js": "0.5.1-rc",
+    "@pokt-network/pocket-js": "0.5.2-rc",
     "@sendgrid/mail": "^7.1.0",
     "axios": "^0.19.2",
     "bcrypt": "^4.0.1",
