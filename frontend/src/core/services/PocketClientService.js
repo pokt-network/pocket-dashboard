@@ -151,6 +151,8 @@ class PocketClientService {
     return transactionSender;
   }
 
+  // TODO: On the stake methods, convert relays/validator-power to pokt.
+
   /**
    * Creates a transaction request to stake an application.
    * @param {string} address - Application address

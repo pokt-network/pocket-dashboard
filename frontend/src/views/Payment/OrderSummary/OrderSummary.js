@@ -22,6 +22,7 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import LoadingButton from "../../../core/components/LoadingButton";
 import {ITEM_TYPES} from "../../../_constants";
 import NodeService from "../../../core/services/PocketNodeService";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -160,12 +161,10 @@ class OrderSummary extends Component {
     if (type === ITEM_TYPES.APPLICATION) {
       // Stake application
       const {
-        privateKey,
         passphrase,
         chains,
         address,
       } = ApplicationService.getApplicationInfo();
-      const application = {privateKey, passphrase};
 
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
       const detail = url.replace(":address", address);
@@ -173,19 +172,24 @@ class OrderSummary extends Component {
 
       this.setState({loading: true});
 
-      ApplicationService.stakeApplication(
-        application, chains, result.paymentIntent.id, applicationLink
-      ).then(() => {});
+      // TODO: Calculate pokt amount from purchase
+      const pokt = 100000; 
+      const appStakeRequest = PocketClientService.appStakeRequest(
+        address, passphrase, chains, pokt);
+
+      // TODO: CAll backend and send request to finish transaction
+      // ApplicationService.stakeApplication(
+      //   application, chains, result.paymentIntent.id, applicationLink
+      // ).then(() => {});
+
     } else {
       // Stake Node
       const {
-        privateKey,
         passphrase,
         chains,
         address,
         serviceURL,
       } = NodeService.getNodeInfo();
-      const node = {privateKey, passphrase, serviceURL};
 
       const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
       const detail = url.replace(":address", address);
@@ -193,9 +197,15 @@ class OrderSummary extends Component {
 
       this.setState({loading: true});
 
-      NodeService.stakeNode(
-        node, chains, result.paymentIntent.id, nodeLink
-      ).then(() => {});
+      // TODO: Calculate pokt amount from purchase
+      const pokt = 100000; 
+      const nodeStakeRequest = PocketClientService.nodeStakeRequest(
+        address, passphrase, chains, pokt, serviceURL);
+
+      // TODO: CAll backend and send request to finish transaction
+      // NodeService.stakeNode(
+      //   node, chains, result.paymentIntent.id, nodeLink
+      // ).then(() => {});
     }
 
     PaymentService.setDefaultPaymentMethod(selectedPaymentMethod.id);

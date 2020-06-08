@@ -108,15 +108,21 @@ class AppDetail extends Component {
     }
   }
 
-  async unstakeApplication({privateKey, passphrase, address}) {
-    // FIXME: Change transaction to frontend
+  async unstakeApplication({ppk, passphrase, address}) {
     const {freeTier} = this.state.pocketApplication;
 
     const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
     const detail = url.replace(":address", address);
     const link = `${window.location.origin}${detail}`;
-    const application = {privateKey, passphrase, accountAddress: address};
+    const application = {passphrase, accountAddress: address};
 
+    await PocketClientService.saveAccount(ppk, passphrase);
+
+    const appUnstakeRequest = await PocketClientService.appUnstakeRequest(
+      address
+    );
+    
+    // TODO: Call backend and send request to finish transaction
     const {success, data} = freeTier
       ? await ApplicationService.unstakeFreeTierApplication(application)
       : await ApplicationService.unstakeApplication(application, link);

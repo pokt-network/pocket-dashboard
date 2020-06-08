@@ -93,14 +93,20 @@ class NodeDetail extends Component {
     }
   }
 
-  async unstakeNode({privateKey, passphrase, address: accountAddress}) {
-    // FIXME: Change transaction to frontend
+  async unstakeNode({ppk, passphrase, address}) {
     const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
-    const detail = url.replace(":address", accountAddress);
+    const detail = url.replace(":address", address);
     const nodeLink = `${window.location.origin}${detail}`;
 
+    await PocketClientService.saveAccount(ppk, passphrase);
+
+    const nodeUnstakeRequest = await PocketClientService.nodeUnstakeRequest(
+      address
+    );
+
+    // TODO: Call backend and send request to finish transaction
     const {success, data} = await NodeService.unstakeNode(
-      {privateKey, passphrase, accountAddress}, nodeLink
+      {passphrase, address}, nodeLink
     );
 
     if (success) {
@@ -110,14 +116,20 @@ class NodeDetail extends Component {
     }
   }
 
-  async unjailNode({privateKey, passphrase, address: accountAddress}) {
-    // FIXME: Change transaction to frontend
+  async unjailNode({ppk, passphrase, address}) {
     const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
-    const detail = url.replace(":address", accountAddress);
+    const detail = url.replace(":address", address);
     const nodeLink = `${window.location.origin}${detail}`;
 
+    await PocketClientService.saveAccount(ppk, passphrase);
+
+    const nodeUnstakeRequest = await PocketClientService.nodeUnjailRequest(
+      address
+    );
+
+    // TODO: Call backend and send request to finish transaction
     const {success, data} = NodeService.unjailNode(
-      {privateKey, passphrase, accountAddress}, nodeLink
+      {passphrase, address}, nodeLink
     );
 
     if (success) {
