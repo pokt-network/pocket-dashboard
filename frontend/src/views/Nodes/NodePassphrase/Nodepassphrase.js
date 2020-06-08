@@ -2,6 +2,7 @@ import Passphrase from "../../../core/components/Passphrase/Passphrase";
 import NodeService from "../../../core/services/PocketNodeService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {scrollToId} from "../../../_helpers";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class NodePassphrase extends Passphrase {
   componentDidMount() {
@@ -22,6 +23,9 @@ class NodePassphrase extends Passphrase {
     if (success) {
       const {privateNodeData, ppkData} = data;
       const {address, privateKey} = privateNodeData;
+
+      await PocketClientService.saveAccount(
+        JSON.stringify(ppkData), passPhrase);
 
       NodeService.removeNodeInfoFromCache();
       NodeService.saveNodeInfoInCache({

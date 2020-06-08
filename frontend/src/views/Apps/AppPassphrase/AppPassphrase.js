@@ -23,6 +23,7 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Segment from "../../../core/components/Segment/Segment";
 import LoadingButton from "../../../core/components/LoadingButton";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class AppPassphrase extends Component {
   constructor(props, context) {
@@ -143,6 +144,8 @@ class AppPassphrase extends Component {
         address,
         privateKey,
       });
+
+      await PocketClientService.saveAccount(JSON.stringify(ppkData), passPhrase);
 
       this.setState({
         created: true,
