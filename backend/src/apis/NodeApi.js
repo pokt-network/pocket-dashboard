@@ -35,6 +35,8 @@ router.post("", async (request, response) => {
 /**
  * Create new node account.
  * // FIXME: for imported nodes, change private key for PPK
+ * 
+ * @deprecated // TODO pocket.js account creation have to be moved to frontend
  */
 router.post("/account", async (request, response) => {
   try {

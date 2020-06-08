@@ -85,6 +85,21 @@ class PocketClientService {
   }
 
   /**
+   * @description Exports an account's private key stored in the keybase
+   * @param {Account} account - Account object.
+   * @param {string} passphrase - Passphrase to store the account in the keybase.
+   * @returns {Promise<string | Error>} - PPK string or error
+   */
+  async exportPrivateKey(account, passphrase) {
+    const privateKey = await this._pocket.keybase.exportAccount(
+      account.addressHex,
+      passphrase
+    );
+
+    return privateKey.toString("hex");
+  }
+
+  /**
    * @description Creates a Portable Private Key(PPK) from an account private key
    * @param {string} privateKey - Account raw private key.
    * @param {string} password - Desired password for the PPK.
