@@ -6,7 +6,7 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {NODES_LIMIT, STYLING, TABLE_COLUMNS} from "../../../_constants";
+import {NODES_LIMIT, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
@@ -14,7 +14,6 @@ import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
-import ClipLoader from "react-spinners/ClipLoader";
 import NodeService from "../../../core/services/PocketNodeService";
 import _ from "lodash";
 
@@ -97,7 +96,7 @@ class NodesMain extends Main {
       allItemsTableLoading,
       userItemsTableLoading,
       hasNodes,
-      hasMoreUserItems,
+      // hasMoreUserItems,
       hasMoreRegisteredItems,
     } = this.state;
 
@@ -115,18 +114,18 @@ class NodesMain extends Main {
       },
     ];
 
-    const loader = (
-      <ClipLoader
-        key={0}
-        size={30}
-        css={"display: block; margin: 0 auto;"}
-        color={STYLING.lightGray}
-        loading={true}
-      />
-    );
+    // const loader = (
+    //   <ClipLoader
+    //     key={0}
+    //     size={30}
+    //     css={"display: block; margin: 0 auto;"}
+    //     color={STYLING.lightGray}
+    //     loading={true}
+    //   />
+    // );
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     return (
