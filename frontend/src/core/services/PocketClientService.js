@@ -95,9 +95,6 @@ class PocketClientService {
     return await this._pocket.keybase.exportPPK(privateKey, passphrase);
   }
 
-  // TODO: Implement
-  async makeTransaction(ppkData, passphrase) {}
-
   /**
    * @description Retrieves an unlocked account from the keybase
    * @param {string} address - The address of the account to retrieve in hex string format
@@ -130,6 +127,160 @@ class PocketClientService {
       ppk,
       passphrase
     );
+  }
+
+  /**
+   * Creates a TransactionSenderObject to make operation requests over accounts.
+   * Account must be previously saved on the keybase
+   * @param {string} address - address of the account
+   * @param {string} passphrase - passphrase for the account
+   * @returns {Object} Transaction sender.
+   */
+  async _getTransactionSender(address, passphrase) {
+    const account = await this.getUnlockedAccount(address);
+
+    if (account instanceof Error) {
+      throw account;
+    }
+
+    const transactionSender = await this._pocket.withImportedAccount(
+      account.address,
+      passphrase
+    );
+
+    return transactionSender;
+  }
+
+  /**
+   * Creates a transaction request to stake an application.
+   * @param {string} address - Application address
+   * @param {string} passprase - Application passphrase
+   * @param {string[]} chains - Network identifier list to be requested by this app
+   * @param {string} stakeAmount - the amount to stake, must be greater than 0
+   * @returns {Promise<{address:string, txHex:string} - A transaction sender.
+   */
+  async appStakeRequest(address, passphrase, chains, stakeAmount) {
+    try {
+      const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+      const transactionSender = await this._getTransactionSender(
+        address,
+        passphrase
+      );
+      const {unlockedAccount: account} = transactionSender;
+
+      const transactionRequest = await transactionSender
+        .appStake(account.publicKey.toString("hex"), chains, stakeAmount)
+        .createTransaction(chain_id, transaction_fee);
+
+      return transactionRequest;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  /**
+   * Creates a transaction request to unstake an application.
+   * @param {string} address - Application address
+   * @param {string} passprase - Application passphrase
+   * @returns {Promise<{address:string, txHex:string} - A transaction sender.
+   */
+  async appUnstakeRequest(address, passphrase) {
+    try {
+      const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+      const transactionSender = await this._getTransactionSender(
+        address,
+        passphrase
+      );
+
+      const transactionRequest = await transactionSender
+        .appUnstake(address)
+        .createTransaction(chain_id, transaction_fee);
+
+      return transactionRequest;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  /**
+   * Creates a transaction request to stake a node.
+   * @param {string} address - Node address
+   * @param {string} passprase - Node passphrase
+   * @param {string[]} chains - Network identifier list to be requested by this node
+   * @param {string} stakeAmount - the amount to stake, must be greater than 0
+   * @param {string} serviceURL - Node service url
+   * @returns {Promise<{address:string, txHex:string} - A transaction sender.
+   */
+  async nodeStakeRequest(address, passphrase, chains, stakeAmount, serviceURL) {
+    try {
+      const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+      const transactionSender = await this._getTransactionSender(
+        address,
+        passphrase
+      );
+      const {unlockedAccount: account} = transactionSender;
+
+      const transactionRequest = await transactionSender
+        .nodeStake(
+          account.publicKey.toString("hex"),
+          chains,
+          stakeAmount,
+          new URL(serviceURL)
+        )
+        .createTransaction(chain_id, transaction_fee);
+
+      return transactionRequest;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  /**
+   * Creates a transaction request to unstake a node.
+   * @param {string} address - Node address
+   * @param {string} passprase - Node passphrase
+   * @returns {Promise<{address:string, txHex:string} - A transaction sender.
+   */
+  async nodeUnstakeRequest(address, passphrase) {
+    try {
+      const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+      const transactionSender = await this._getTransactionSender(
+        address,
+        passphrase
+      );
+
+      const transactionRequest = await transactionSender
+        .nodeUnstake(address)
+        .createTransaction(chain_id, transaction_fee);
+
+      return transactionRequest;
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  /**
+   * Creates a transaction request to unjail a node.
+   * @param {string} address - Node address
+   * @param {string} passprase - Node passphrase
+   * @returns {Promise<{address:string, txHex:string} - A transaction sender.
+   */
+  async nodeUnjailRequest(address, passphrase) {
+    try {
+      const {chain_id, transaction_fee} = POCKET_NETWORK_CONFIGURATION;
+      const transactionSender = await this._getTransactionSender(
+        address,
+        passphrase
+      );
+
+      const transactionRequest = await transactionSender
+        .nodeUnjail(address)
+        .createTransaction(chain_id, transaction_fee);
+
+      return transactionRequest;
+    } catch (e) {
+      return e.toString();
+    }
   }
 }
 
