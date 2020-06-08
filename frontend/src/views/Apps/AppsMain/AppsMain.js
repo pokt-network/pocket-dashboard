@@ -15,7 +15,6 @@ import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
-import InfiniteScroll from "react-infinite-scroller";
 import ClipLoader from "react-spinners/ClipLoader";
 import _ from "lodash";
 
@@ -207,23 +206,24 @@ class AppsMain extends Main {
                 })}
                 style={{height: `${MY_APPS_HEIGHT}px`}}
               >
-                <InfiniteScroll
-                  pageStart={0}
-                  loadMore={this.loadMoreUserApps}
-                  useWindow={false}
-                  hasMore={hasMoreUserItems}
-                  loader={loader}
-                >
-                  <LoadingOverlay active={userItemsTableLoading} spinner>
-                    {hasApps ? (
-                      filteredItems.map((app, idx) => {
-                        const {id: applicationID, name, address, stakedPOKT, status, icon} = app;
+                {/* FIXME: Always perform a search */}
+                {/*<InfiniteScroll*/}
+                {/*  pageStart={0}*/}
+                {/*  loadMore={this.loadMoreUserApps}*/}
+                {/*  useWindow={false}*/}
+                {/*  hasMore={hasMoreUserItems}*/}
+                {/*  loader={loader}*/}
+                {/*>*/}
+                <LoadingOverlay active={userItemsTableLoading} spinner>
+                  {hasApps ? (
+                    filteredItems.map((app, idx) => {
+                      const {id: applicationID, name, address, stakedPOKT, status, icon} = app;
 
-                        return (
-                          <Link
-                            key={idx}
-                            to={() => {
-                              if (!address) {
+                      return (
+                        <Link
+                          key={idx}
+                          to={() => {
+                            if (!address) {
                                 ApplicationService.saveAppInfoInCache({
                                   applicationID,
                                 });
@@ -263,7 +263,7 @@ class AppsMain extends Main {
                       </div>
                     )}
                   </LoadingOverlay>
-                </InfiniteScroll>
+                {/*</InfiniteScroll>*/}
               </div>
             </Segment>
           </Col>
@@ -274,23 +274,24 @@ class AppsMain extends Main {
             }`}
           >
             <Segment scroll={false} label="REGISTERED APPS">
-              <InfiniteScroll
-                pageStart={0}
-                loadMore={this.loadMoreRegisteredApps}
-                useWindow={false}
-                hasMore={hasMoreRegisteredItems}
-                loader={loader}
-              >
-                <AppTable
-                  scroll
-                  classes={`flex-body ${
-                    hasMoreRegisteredItems ? "loading" : ""
-                  } `}
-                  headerClasses="d-flex"
-                  toggle={registeredItems.length > 0}
-                  keyField="address"
-                  data={registeredItems}
-                  columns={TABLE_COLUMNS.APPS}
+              {/* FIXME: Always perform a search */}
+              {/*<InfiniteScroll*/}
+              {/*  pageStart={0}*/}
+              {/*  loadMore={this.loadMoreRegisteredApps}*/}
+              {/*  useWindow={false}*/}
+              {/*  hasMore={hasMoreRegisteredItems}*/}
+              {/*  loader={loader}*/}
+              {/*>*/}
+              <AppTable
+                scroll
+                classes={`flex-body ${
+                  hasMoreRegisteredItems ? "loading" : ""
+                } `}
+                headerClasses="d-flex"
+                toggle={registeredItems.length > 0}
+                keyField="address"
+                data={registeredItems}
+                columns={TABLE_COLUMNS.APPS}
                   bordered={false}
                   loading={allItemsTableLoading}
                   overlay={overlayFactory({
@@ -303,7 +304,7 @@ class AppsMain extends Main {
                     },
                   })}
                 />
-              </InfiniteScroll>
+              {/*</InfiniteScroll>*/}
             </Segment>
           </Col>
         </Row>

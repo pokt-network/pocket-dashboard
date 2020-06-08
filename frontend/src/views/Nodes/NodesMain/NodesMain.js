@@ -14,7 +14,6 @@ import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
-import InfiniteScroll from "react-infinite-scroller";
 import ClipLoader from "react-spinners/ClipLoader";
 import NodeService from "../../../core/services/PocketNodeService";
 import _ from "lodash";
@@ -195,22 +194,23 @@ class NodesMain extends Main {
                 </Row>
               )}
               <div className="scrollable main-list">
-                <InfiniteScroll
-                  pageStart={0}
-                  loadMore={this.loadMoreUserNodes}
-                  useWindow={false}
-                  hasMore={hasMoreUserItems}
-                  loader={loader}
-                >
-                  <LoadingOverlay active={userItemsTableLoading} spinner>
-                    {hasNodes ? (
-                      filteredItems.map((node, idx) => {
-                        const {id: nodeID, name, address, stakedPOKT, status, icon} = node;
+                {/* FIXME: Always perform a search */}
+                {/*<InfiniteScroll*/}
+                {/*  pageStart={0}*/}
+                {/*  loadMore={this.loadMoreUserNodes}*/}
+                {/*  useWindow={false}*/}
+                {/*  hasMore={hasMoreUserItems}*/}
+                {/*  loader={loader}*/}
+                {/*>*/}
+                <LoadingOverlay active={userItemsTableLoading} spinner>
+                  {hasNodes ? (
+                    filteredItems.map((node, idx) => {
+                      const {id: nodeID, name, address, stakedPOKT, status, icon} = node;
 
-                        return (
-                          <Link
-                            key={idx}
-                            to={() => {
+                      return (
+                        <Link
+                          key={idx}
+                          to={() => {
 
                               if (!address) {
                                 NodeService.saveNodeInfoInCache({
@@ -252,7 +252,7 @@ class NodesMain extends Main {
                       </div>
                     )}
                   </LoadingOverlay>
-                </InfiniteScroll>
+                {/*</InfiniteScroll>*/}
               </div>
             </Segment>
           </Col>
@@ -266,23 +266,24 @@ class NodesMain extends Main {
             }`}
           >
             <Segment scroll={false} label="REGISTERED NODES">
-              <InfiniteScroll
-                pageStart={0}
-                loadMore={this.loadMoreRegisteredNodes}
-                useWindow={false}
-                hasMore={hasMoreRegisteredItems}
-                loader={loader}
-              >
-                <AppTable
-                  scroll
-                  classes={`flex-body ${
-                    hasMoreRegisteredItems ? "loading" : ""
-                  } `}
-                  headerClasses="d-flex"
-                  toggle={registeredItems.length > 0}
-                  keyField="address"
-                  data={registeredItems}
-                  columns={TABLE_COLUMNS.NODES}
+              {/* FIXME: Always perform a search */}
+              {/*<InfiniteScroll*/}
+              {/*  pageStart={0}*/}
+              {/*  loadMore={this.loadMoreRegisteredNodes}*/}
+              {/*  useWindow={false}*/}
+              {/*  hasMore={hasMoreRegisteredItems}*/}
+              {/*  loader={loader}*/}
+              {/*>*/}
+              <AppTable
+                scroll
+                classes={`flex-body ${
+                  hasMoreRegisteredItems ? "loading" : ""
+                } `}
+                headerClasses="d-flex"
+                toggle={registeredItems.length > 0}
+                keyField="address"
+                data={registeredItems}
+                columns={TABLE_COLUMNS.NODES}
                   bordered={false}
                   loading={allItemsTableLoading}
                   overlay={overlayFactory({
@@ -295,7 +296,7 @@ class NodesMain extends Main {
                     },
                   })}
                 />
-              </InfiniteScroll>
+              {/*</InfiniteScroll>*/}
             </Segment>
           </Col>
         </Row>
