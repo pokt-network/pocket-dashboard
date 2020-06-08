@@ -266,13 +266,13 @@ export default class UserService extends BaseService {
    * @param {string} userData.password2 Password to validate against Password1.
    *
    * @returns {Promise<boolean>} If user was created or not.
-   * @throws {Error} If validation fails or already exists.
+   * @throws {DashboardError} If validation fails or already exists.
    * @async
    */
   async signupUser(userData) {
     if (EmailUser.validate(userData)) {
       if (await this.userExists(userData.email)) {
-        throw Error("This email is already registered");
+        throw new DashboardError("This email is already registered");
       }
 
       const emailPocketUser = await EmailUser.createEmailUserWithEncryptedPassword(userData.email, userData.username, userData.password1);
@@ -301,7 +301,7 @@ export default class UserService extends BaseService {
    * @param {Array<{question: string, answer:string}>} questions Questions to add or update.
    *
    * @returns {Promise<boolean>} If user record was updated or not.
-   * @throws {Error} If user is invalid.
+   * @throws {DashboardValidationError} If user is invalid.
    * @async
    */
   async addOrUpdateUserSecurityQuestions(userEmail, questions) {
@@ -309,7 +309,7 @@ export default class UserService extends BaseService {
     const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     if (!userDB) {
-      throw Error("Invalid user.");
+      throw new DashboardValidationError("Invalid user.");
     }
 
     const data = {securityQuestions: AnsweredSecurityQuestion.createAnsweredSecurityQuestions(questions)};
@@ -325,7 +325,7 @@ export default class UserService extends BaseService {
    * @param {string} userEmail Email of user.
    *
    * @returns {Promise<AnsweredSecurityQuestion[]>} User security questions.
-   * @throws {Error} If user is invalid.
+   * @throws {DashboardValidationError} If user is invalid.
    * @async
    */
   async getUserSecurityQuestions(userEmail) {
@@ -336,7 +336,7 @@ export default class UserService extends BaseService {
     const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     if (!userDB) {
-      throw Error("Invalid user.");
+      throw new DashboardValidationError("Invalid user.");
     }
 
     return AnsweredSecurityQuestion.createAnsweredSecurityQuestions(userDB.securityQuestions);
@@ -349,14 +349,14 @@ export default class UserService extends BaseService {
    * @param {string} password Password to verify.
    *
    * @returns {Promise<boolean>} If password was verify or not.
-   * @throws {Error} If user is invalid.
+   * @throws {DashboardValidationError} If user is invalid.
    * @async
    */
   async verifyPassword(userEmail, password) {
     const userDB = await this.__getUser(userEmail);
 
     if (!userDB) {
-      throw Error("Invalid user.");
+      throw new DashboardValidationError("Invalid user.");
     }
 
     return EmailUser.validatePassword(password, userDB.password);
@@ -370,14 +370,14 @@ export default class UserService extends BaseService {
    * @param {string} password2 Password confirmation.
    *
    * @returns {Promise<boolean>} If password was changed or not.
-   * @throws {Error} If passwords validation fails or if user does not exists.
+   * @throws {DashboardValidationError} If passwords validation fails or if user does not exists.
    * @async
    */
   async changePassword(userEmail, password1, password2) {
     const userDB = await this.__getUser(userEmail);
 
     if (!userDB) {
-      throw Error("Invalid user.");
+      throw new DashboardValidationError("Invalid user.");
     }
 
     if (EmailUser.validatePasswords(password1, password2)) {
@@ -399,7 +399,7 @@ export default class UserService extends BaseService {
    * @param {string} username New user name.
    *
    * @returns {Promise<boolean>} If was changed or not.
-   * @throws {Error} If validation fails or user does not exists.
+   * @throws {DashboardValidationError} If validation fails or user does not exists.
    * @async
    */
   async changeUsername(userEmail, username) {
@@ -407,7 +407,7 @@ export default class UserService extends BaseService {
       const userDB = await this.__getUser(userEmail);
 
       if (!userDB) {
-        throw Error("Invalid user.");
+        throw new DashboardValidationError("Invalid user.");
       }
 
       // Update the username.
@@ -427,7 +427,7 @@ export default class UserService extends BaseService {
    * @param {string} newEmail New user email.
    *
    * @returns {Promise<boolean>} If was changed or not.
-   * @throws {Error} If validation fails or user does not exists.
+   * @throws {DashboardValidationError} If validation fails or user does not exists.
    * @async
    */
   async changeEmail(userEmail, newEmail) {
@@ -435,7 +435,7 @@ export default class UserService extends BaseService {
       const userDB = await this.__getUser(userEmail);
 
       if (!userDB) {
-        throw Error("Invalid user.");
+        throw new DashboardValidationError("Invalid user.");
       }
 
       // Update the user email.

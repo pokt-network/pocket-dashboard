@@ -6,6 +6,7 @@ import AccountService from "./AccountService";
 import BasePocketService from "./BasePocketService";
 import {TransactionPostAction} from "../models/Transaction";
 import bigInt from "big-integer";
+import {DashboardError, DashboardValidationError} from "../models/Exceptions";
 
 const NODE_COLLECTION_NAME = "Nodes";
 
@@ -138,19 +139,19 @@ export default class NodeService extends BasePocketService {
    * @param {string} [privateKey] Node private key if is imported.
    *
    * @returns {Promise<{privateNodeData: PrivatePocketAccount, networkData:Node}>} Node information.
-   * @throws {Error} If validation fails or already exists.
+   * @throws {DashboardError | DashboardValidationError} If validation fails or already exists.
    * @async
    */
   async createNode(nodeData, privateKey = "") {
     if (PocketNode.validate(nodeData)) {
       if (!await this.userService.userExists(nodeData.user)) {
-        throw new Error("User does not exist");
+        throw new DashboardError("User does not exist");
       }
 
       const node = PocketNode.createPocketNode(nodeData);
 
       if (await this.nodeExists(node)) {
-        throw new Error("Node already exists");
+        throw new DashboardError("Node already exists");
       }
 
       return this.__persistNodeIfNotExists(node);
@@ -172,7 +173,7 @@ export default class NodeService extends BasePocketService {
     const nodeDB = await this.persistenceService.getEntityByID(NODE_COLLECTION_NAME, nodeID);
 
     if (!nodeDB) {
-      throw new Error("Node does not exists");
+      throw new DashboardError("Node does not exists");
     }
 
     const node = PocketNode.createPocketNode(nodeDB);
@@ -467,13 +468,13 @@ export default class NodeService extends BasePocketService {
    * @param {string} [nodeData.icon] Icon.
    *
    * @returns {Promise<boolean>} If was updated or not.
-   * @throws {Error} If validation fails or does not exists.
+   * @throws {DashboardError | DashboardValidationError} If validation fails or does not exists.
    * @async
    */
   async updateNode(nodeAccountAddress, nodeData) {
     if (PocketNode.validate(nodeData)) {
       if (!await this.userService.userExists(nodeData.user)) {
-        throw new Error("User does not exists");
+        throw new DashboardError("User does not exists");
       }
 
       const node = PocketNode.createPocketNode(nodeData);
@@ -484,7 +485,7 @@ export default class NodeService extends BasePocketService {
       const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
 
       if (!nodeDB) {
-        throw new Error("Node does not exists");
+        throw new DashboardError("Node does not exists");
       }
 
       const nodeToEdit = {
