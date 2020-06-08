@@ -219,7 +219,7 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async getAllApplications(limit, offset = 0) {
-    const networkApplications = this.pocketService.getApplications(StakingStatus.Staked);
+    const networkApplications = await this.pocketService.getApplications(StakingStatus.Staked);
 
     return networkApplications.map(PocketApplication.createRegisteredPocketApplication);
   }
