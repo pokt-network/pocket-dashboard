@@ -299,7 +299,6 @@ export default class PocketService {
    * @param {number} status Status of the apps to retrieve.
    *
    * @returns {Promise<Application[]>} The applications data.
-   * @throws Error If Query fails.
    * @async
    */
   async getApplications(status) {
@@ -308,7 +307,7 @@ export default class PocketService {
     const applicationsResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status, 0, chainID);
 
     if (applicationsResponse instanceof Error) {
-      throw applicationsResponse;
+      return [];
     }
 
     return applicationsResponse.applications;
@@ -324,20 +323,8 @@ export default class PocketService {
    * @async
    */
   async getAllApplications(appAddresses = []) {
-    let stakedApplications;
-    let unstakingApplications;
-
-    try {
-      stakedApplications = await this.getApplications(StakingStatus.Staked);
-    } catch (e) {
-      stakedApplications = [];
-    }
-
-    try {
-      unstakingApplications = await this.getApplications(StakingStatus.Unstaking);
-    } catch (e) {
-      unstakingApplications = [];
-    }
+    const stakedApplications = await this.getApplications(StakingStatus.Staked);
+    const unstakingApplications = await this.getApplications(StakingStatus.Unstaking);
 
     const allApplications = stakedApplications
       .concat(unstakingApplications);
@@ -359,7 +346,6 @@ export default class PocketService {
    * @param {number} status Status of the nodes to retrieve.
    *
    * @returns {Promise<Node[]>} The nodes data.
-   * @throws Error If Query fails.
    * @async
    */
   async getNodes(status) {
@@ -368,7 +354,7 @@ export default class PocketService {
     const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status, 0, chainID);
 
     if (nodesResponse instanceof Error) {
-      throw nodesResponse;
+      return [];
     }
 
     return nodesResponse.nodes;
@@ -384,20 +370,8 @@ export default class PocketService {
    * @async
    */
   async getAllNodes(nodeAddresses = []) {
-    let stakedNodes;
-    let unstakingNodes;
-
-    try {
-      stakedNodes = await this.getNodes(StakingStatus.Staked);
-    } catch (e) {
-      stakedNodes = [];
-    }
-
-    try {
-      unstakingNodes = await this.getNodes(StakingStatus.Unstaking);
-    } catch (e) {
-      unstakingNodes = [];
-    }
+    const stakedNodes = await this.getNodes(StakingStatus.Staked);
+    const unstakingNodes = await this.getNodes(StakingStatus.Unstaking);
 
     const allNodes = stakedNodes
       .concat(unstakingNodes);
