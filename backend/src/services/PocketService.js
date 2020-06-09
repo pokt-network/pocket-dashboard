@@ -5,6 +5,7 @@ import {
   CoinDenom,
   Configuration,
   HttpRpcProvider,
+  JailedStatus,
   Node,
   NodeParams,
   Pocket,
@@ -352,7 +353,7 @@ export default class PocketService {
   async getNodes(status) {
     const pocketRpcProvider = await this.getHttpRPCProvider();
     const chainID = POCKET_NETWORK_CONFIGURATION.chain_id;
-    const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status, 0, chainID);
+    const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status, JailedStatus.Unjailed, 0, chainID);
 
     if (nodesResponse instanceof Error) {
       return [];
