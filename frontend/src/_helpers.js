@@ -43,6 +43,15 @@ export const isActiveExactUrl = (match, location) => {
   return match.url === location.pathname;
 };
 
+export const isActiveUrl = (match, location, name) => {
+  if (!match) {
+    return false;
+  }
+
+  return location.pathname.includes(name.toLowerCase());
+};
+
+
 export const mapStatusToField = (item) => {
   return {
     ...item,

@@ -6,9 +6,27 @@
 
   .breadcrumb {
     background-color: transparent;
+    line-height: normal;
+    padding: 1rem 0;
+    margin-bottom: 0;
 
     li {
       color: $dark-gray;
+      padding-left: 1px;
+
+
+      span,
+      &::before {
+        color: $light-gray;
+        padding-right: 1px;
+        padding-left: 0;
+      }
+
+      &.is-active {
+        span {
+          color: $dark-gray;
+        }
+      }
     }
   }
 }

@@ -32,6 +32,8 @@ class EditApp extends CreateForm {
     const {icon, ...appData} = pocketApplication;
 
     this.setState({loading: false, icon, data: {...appData}});
+
+    this.props.onBreadCrumbChange(["Apps", "App   Information", "Edit"]);
   }
 
   async handleEdit() {

@@ -36,10 +36,15 @@ class CreateAppForm extends CreateForm {
 
     if (imported) {
       this.setState({imported});
+      PocketUserService.saveUserAction("Import App");
 
       // Prevent bugs related to leaving form mid-way and accesing again.
       ApplicationService.saveAppInfoInCache({imported: false});
+    } else {
+      PocketUserService.saveUserAction("Create App");
     }
+
+    this.props.onBreadCrumbChange();
   }
 
   async handleCreateImported(applicationId) {
@@ -107,7 +112,6 @@ class CreateAppForm extends CreateForm {
     if (success) {
       if (imported) {
         this.handleCreateImported(data);
-
       } else {
         ApplicationService.saveAppInfoInCache({
           applicationID: data,

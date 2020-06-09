@@ -36,6 +36,14 @@ class ValidateKeys extends Component {
     };
   }
 
+  componentDidMount() {
+    const {breadcrumbs, handleBreadcrumbs} = this.props;
+
+    if (handleBreadcrumbs) {
+      handleBreadcrumbs(breadcrumbs);
+    }
+  }
+
   handleChange({currentTarget: input}) {
     const data = {...this.state.data};
 
@@ -87,8 +95,7 @@ class ValidateKeys extends Component {
     const {privateKey, passphrase} = this.state.data;
 
     const {success, data} = await AccountService.importAccount(
-      privateKey, passphrase
-    );
+      privateKey, passphrase);
 
     const validated = success && data.address === address;
 
@@ -259,6 +266,7 @@ class ValidateKeys extends Component {
 }
 
 ValidateKeys.defaultProps = {
+  breadcrumbs: [],
   actionButtonName: "Verify",
   className: "",
 };
@@ -270,6 +278,8 @@ ValidateKeys.propTypes = {
   ]),
   address: PropTypes.string,
   handleAfterValidate: PropTypes.func,
+  breadcrumbs: PropTypes.array,
+  handleBreadcrumbs: PropTypes.func,
   actionButtonName: PropTypes.string,
   className: PropTypes.string,
 };

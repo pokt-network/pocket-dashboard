@@ -10,6 +10,7 @@ import NodeService from "../../../core/services/PocketNodeService";
 import {Formik} from "formik";
 import AppAlert from "../../../core/components/AppAlert";
 import {STAKE_STATUS} from "../../../_constants";
+import PocketUserService from "../../../core/services/PocketUserService";
 
 class CreateNodeForm extends CreateForm {
   constructor(props, context) {
@@ -34,8 +35,16 @@ class CreateNodeForm extends CreateForm {
 
     if (this.props.location.state) {
       imported = this.props.location.state.imported;
-      this.setState({imported});
     }
+
+    if (imported) {
+      this.setState({imported});
+      PocketUserService.saveUserAction("Import Node");
+    } else {
+      PocketUserService.saveUserAction("Create Node");
+    }
+
+    this.props.onBreadCrumbChange();
   }
 
   async handleCreateImported(nodeID) {

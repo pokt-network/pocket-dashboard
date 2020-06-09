@@ -101,6 +101,15 @@ class OrderSummary extends Component {
         isFormVisible: !hasPaymentMethods,
         isAddNewDisabled: !hasPaymentMethods,
       });
+
+
+    const action = UserService.getUserAction();
+    const appBreadcrumbs = ["Apps", action, "Checkout", "Payment"];
+    const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Payment"];
+    
+    type === ITEM_TYPES.APPLICATION ? 
+      this.props.onBreadCrumbChange(appBreadcrumbs) : 
+      this.props.onBreadCrumbChange(nodeBreadcrumbs);
     });
   }
 
@@ -173,7 +182,7 @@ class OrderSummary extends Component {
 
       ApplicationService.stakeApplication(
         application, chains, result.paymentIntent.id, applicationLink
-      ).then(() => {});
+      ).then();
     } else {
       // Stake Node
       const {
