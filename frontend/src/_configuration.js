@@ -14,4 +14,6 @@ export const Configurations = {
   recaptcha: {
     client: process.env.REACT_APP_RECAPTCHA_CLIENT_KEY,
   },
+  stakeDefaultStatus: process.env.REACT_APP_STAKE_DEFAULT_STATUS,
+  defaultMaxRelaysPerDay: process.env.REACT_APP_DEFAULT_MAX_RELAYS_PER_DAY
 };
