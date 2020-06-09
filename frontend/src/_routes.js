@@ -94,7 +94,7 @@ export const _getDashboardPath = (path) => {
   return `${ROUTE_PATHS.home}${path}`;
 };
 
-export const BREADCRUMBS = () => {
+export const breadcrumbsRoutes = () => {
   const action = UserService.getUserAction();
 
   return {

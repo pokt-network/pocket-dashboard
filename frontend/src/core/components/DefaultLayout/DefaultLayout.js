@@ -4,7 +4,7 @@ import {Redirect, Route} from "react-router-dom";
 import AppSidebar from "./AppSidebar/AppSidebar";
 import AppNavbar from "./AppNavbar/AppNavbar";
 import Breadcrumbs from "./BreadCrumb/Breadcrumb";
-import {dashboardRoutes, ROUTE_PATHS, BREADCRUMBS} from "../../../_routes";
+import {dashboardRoutes, ROUTE_PATHS, breadcrumbsRoutes} from "../../../_routes";
 import UserService from "../../services/PocketUserService";
 import "./DefaultLayout.scss";
 import isArray from "lodash/isArray";
@@ -29,7 +29,7 @@ class DefaultLayout extends Component {
   render() {
     // eslint-disable-next-line react/prop-types
     const {path} = this.props.match;
-    let {breadcrumbs} = this.state;
+    const {breadcrumbs} = this.state;
     let breadcrumbsShow = breadcrumbs;
 
     // eslint-disable-next-line react/prop-types
@@ -40,8 +40,8 @@ class DefaultLayout extends Component {
       return {label: br, active: idx === arr.length - 1};
     };
 
-    if (route_path in BREADCRUMBS()) {
-      breadcrumbsShow = BREADCRUMBS()[route_path];
+    if (route_path in breadcrumbsRoutes()) {
+      breadcrumbsShow = breadcrumbsRoutes()[route_path];
     }
     
     if (isArray(breadcrumbsShow)) {
