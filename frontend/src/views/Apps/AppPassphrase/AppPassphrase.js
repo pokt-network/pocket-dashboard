@@ -23,6 +23,7 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Segment from "../../../core/components/Segment/Segment";
 import LoadingButton from "../../../core/components/LoadingButton";
+import {Configurations} from "../../../_configuration";
 
 class AppPassphrase extends Component {
   constructor(props, context) {
@@ -103,6 +104,7 @@ class AppPassphrase extends Component {
   }
 
   async handlePassphrase(values) {
+    const {created} = this.state;
     const valid = await validateYup(values, this.schema);
 
     if (valid === undefined) {
@@ -111,7 +113,9 @@ class AppPassphrase extends Component {
           passPhrase: values.passPhrase,
           validPassphrase: true,
         }, () => {
-          this.createApplicationAccount();
+          if (!created) {
+this.createApplicationAccount();
+}
         }
       );
     } else {
@@ -187,8 +191,8 @@ class AppPassphrase extends Component {
     const generalInfo = [
       {title: "0 POKT", subtitle: "Staked tokens"},
       {title: "0 POKT", subtitle: "Balance"},
-      {title: "_ _", subtitle: "Stake status"},
-      {title: "_ _", subtitle: "Max Relay Per Day"},
+      {title: Configurations.stakeDefaultStatus, subtitle: "Stake status"},
+      {title: Configurations.defaultMaxRelaysPerDay, subtitle: "Max Relay Per Day"},
     ];
 
     return (

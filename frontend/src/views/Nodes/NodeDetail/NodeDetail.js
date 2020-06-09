@@ -70,6 +70,9 @@ class NodeDetail extends Component {
       accountBalance,
       loading: false,
     });
+
+    // eslint-disable-next-line react/prop-types
+    this.props.onBreadCrumbChange(["Nodes", "Node Detail"]);
   }
 
 
@@ -89,6 +92,8 @@ class NodeDetail extends Component {
 
     if (success) {
       this.setState({deleted: true});
+      // eslint-disable-next-line react/prop-types
+      this.props.onBreadCrumbChange(["Nodes", "Node Detail", "Node Removed"]);
     }
   }
 
@@ -127,6 +132,8 @@ class NodeDetail extends Component {
   async stakeNode({privateKey, passphrase, address}) {
     NodeService.removeNodeInfoFromCache();
     NodeService.saveNodeInfoInCache({address, privateKey, passphrase});
+
+    PocketUserService.saveUserAction("Stake Node");
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.nodeChainList));
@@ -235,26 +242,31 @@ class NodeDetail extends Component {
       {title: "Contact email", subtitle: contactEmail},
     ];
 
-    const renderValidation = (handleFunc) => (
-      <ValidateKeys address={address} handleAfterValidate={handleFunc}>
+    const renderValidation = (handleFunc, breadcrumbs) => (
+      <>      
+      {/* eslint-disable-next-line react/prop-types */}
+      <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
+      breadcrumbs={breadcrumbs}
+      address={address} handleAfterValidate={handleFunc}>
         <h1>Verify private key</h1>
         <p className="validate-text">
           Please import your account credentials before sending the Transaction.
           Be aware that this Transaction has a 0,1 POKT fee cost.
         </p>
       </ValidateKeys>
+      </>
     );
 
     if (ctaButtonPressed && stake) {
-      return renderValidation(this.stakeNode);
+      return renderValidation(this.stakeNode, ["Nodes", "Stake Node"]);
     }
 
     if (ctaButtonPressed && unstake) {
-      return renderValidation(this.unstakeNode);
+      return renderValidation(this.unstakeNode, ["Nodes", "Unstake Node"]);
     }
 
     if (ctaButtonPressed && unjail) {
-      return renderValidation(this.unjailNode);
+      return renderValidation(this.unjailNode, ["Nodes", "Unjail Node"]);
     }
 
     if (loading) {
@@ -383,8 +395,7 @@ class NodeDetail extends Component {
           ))}
         </Row>
         <Row className="action-buttons">
-          {/* TODO: Uncomment of fourth release */}
-          {/* <Col sm="3" md="3" lg="3">
+          <Col sm="3" md="3" lg="3">
             <span className="option">
               <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
               <p>
@@ -400,7 +411,7 @@ class NodeDetail extends Component {
                 to change your node description.
               </p>
             </span>
-          </Col> */}
+          </Col>
           <Col sm="3" md="3" lg="3">
             <span className="option">
               <img src={"/assets/trash.svg"} alt="trash-action-icon"/>

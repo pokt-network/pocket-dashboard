@@ -1,3 +1,4 @@
+import {Configurations} from "../_configuration";
 import {DashboardValidationError} from "./Exceptions";
 
 export class BillingAddress {
@@ -158,6 +159,9 @@ export class PaymentHistory {
     this.billingDetails = null;
 
     this.status = "pending";
+
+    /** @type {number} */
+    this.poktPrice = Configurations.pocket_network.pokt_market_price;
   }
 
   /**
@@ -170,6 +174,7 @@ export class PaymentHistory {
    * @param {number} paymentHistoryData.amount Amount.
    * @param {*} paymentHistoryData.item Item
    * @param {string} paymentHistoryData.user User.
+   * @param {number} paymentHistoryData.poktPrice Status.
    * @param {string} [paymentHistoryData.paymentMethodID] User.
    * @param {BillingDetails} [paymentHistoryData.billingDetails] Billing details.
    * @param {string} [paymentHistoryData.status] Status.
@@ -178,9 +183,14 @@ export class PaymentHistory {
    * @static
    */
   static createPaymentHistory(paymentHistoryData) {
-    const {createdDate, paymentID, currency, amount, item, user, paymentMethodID, billingDetails, status} = paymentHistoryData;
+    const {
+      createdDate, paymentID, currency, amount, item,
+      user, paymentMethodID, billingDetails, status, poktPrice
+    } = paymentHistoryData;
+
     const paymentHistory = new PaymentHistory(createdDate, paymentID, currency, amount, item, user);
 
+    paymentHistory.poktPrice = poktPrice ?? Configurations.pocket_network.pokt_market_price;
     paymentHistory.paymentMethodID = paymentMethodID;
     paymentHistory.billingDetails = billingDetails;
     paymentHistory.status = status ?? "pending";

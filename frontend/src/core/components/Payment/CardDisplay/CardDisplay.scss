@@ -1,8 +1,14 @@
 @import '../../../../scss/Variables/Colors.scss';
 
 .card-display {
+  .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
   border-bottom: 1px solid rgba(6, 32, 46, 0.1);
   font-size: 0.875rem;
@@ -10,5 +16,11 @@
 
   .name {
     font-weight: 300;
+  }
+
+
+  &.delete {
+    padding-top: 20px;
+    padding-bottom: 10px;
   }
 }

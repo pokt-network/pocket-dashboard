@@ -3,6 +3,7 @@ import {get_default_payment_provider} from "../providers/payment/Index";
 import {CardPaymentMethod, Payment, PaymentCurrencies, PaymentResult} from "../providers/payment/BasePaymentProvider";
 import {BillingDetails, PaymentHistory, PaymentMethod} from "../models/Payment";
 import UserService from "./UserService";
+import {Configurations} from "../_configuration";
 import {DashboardError, DashboardValidationError} from "../models/Exceptions";
 
 const PAYMENT_METHOD_COLLECTION_NAME = "PaymentMethods";
@@ -252,8 +253,16 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async savePaymentHistory(createdDate, paymentID, currency, amount, item, user) {
-
-    const paymentHistory = PaymentHistory.createPaymentHistory({createdDate, paymentID, currency, amount, item, user});
+    const {pokt_market_price: poktPrice} = Configurations.pocket_network;
+    const paymentHistory = PaymentHistory.createPaymentHistory({
+      createdDate,
+      paymentID,
+      currency,
+      amount,
+      item,
+      user,
+      poktPrice
+    });
 
     if (await this.paymentHistoryExists(paymentHistory)) {
       throw new Error("Payment history entry already exists");
