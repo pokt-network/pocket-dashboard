@@ -206,7 +206,7 @@ class Dashboard extends Component {
                   classes="flex-body"
                   headerClasses="d-flex"
                   toggle={networkNodes.length > 0}
-                  keyField="pocketNode.publicPocketAccount.address"
+                  keyField="address"
                   data={networkNodes}
                   columns={TABLE_COLUMNS.NODES}
                   bordered={false}

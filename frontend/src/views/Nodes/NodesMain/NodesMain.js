@@ -1,12 +1,13 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import cls from "classnames";
 import AppTable from "../../../core/components/AppTable";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {NODES_LIMIT, TABLE_COLUMNS} from "../../../_constants";
+import {NODES_LIMIT, TABLE_COLUMNS, STYLING} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
@@ -16,6 +17,10 @@ import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 import NodeService from "../../../core/services/PocketNodeService";
 import _ from "lodash";
+import InfiniteScroll from "react-infinite-scroller";
+import ClipLoader from "react-spinners/ClipLoader";
+
+const MY_NODES_HEIGHT = 358;
 
 class NodesMain extends Main {
   constructor(props, context) {
@@ -35,13 +40,13 @@ class NodesMain extends Main {
 
     NodeService.getAllUserNodes(userEmail, NODES_LIMIT).then((userItems) => {
       // TODO: Get node summary data
-      ApplicationService.getStakedApplicationSummary().then(
-        ({totalApplications, averageRelays, averageStaked}) => {
+      NodeService.getStakedNodeSummary().then(
+        ({totalNodes, averageValidatorPower: averageRelays, averageStaked}) => {
           NodeService.getAllNodes(NODES_LIMIT).then((registeredItems) => {
             this.setState({
               userItems,
               filteredItems: userItems,
-              total: totalApplications,
+              total: totalNodes,
               averageRelays,
               averageStaked,
               registeredItems,
@@ -96,11 +101,13 @@ class NodesMain extends Main {
       allItemsTableLoading,
       userItemsTableLoading,
       hasNodes,
-      // hasMoreUserItems,
+      hasMoreUserItems,
       hasMoreRegisteredItems,
     } = this.state;
 
     const registeredItems = allRegisteredItems.map(mapStatusToField);
+    const myNodessHasScroll =
+    hasNodes && filteredItems.length * 105 > MY_NODES_HEIGHT;
 
     const cards = [
       {title: formatNumbers(total), subtitle: "Total of Nodes"},
@@ -114,15 +121,15 @@ class NodesMain extends Main {
       },
     ];
 
-    // const loader = (
-    //   <ClipLoader
-    //     key={0}
-    //     size={30}
-    //     css={"display: block; margin: 0 auto;"}
-    //     color={STYLING.lightGray}
-    //     loading={true}
-    //   />
-    // );
+    const loader = (
+      <ClipLoader
+        key={0}
+        size={30}
+        css={"display: block; margin: 0 auto;"}
+        color={STYLING.lightGray}
+        loading={true}
+      />
+    );
 
     if (loading) {
       return <Loader/>;
@@ -192,15 +199,19 @@ class NodesMain extends Main {
                   </Col>
                 </Row>
               )}
-              <div className="scrollable main-list">
-                {/* FIXME: Always perform a search */}
-                {/*<InfiniteScroll*/}
-                {/*  pageStart={0}*/}
-                {/*  loadMore={this.loadMoreUserNodes}*/}
-                {/*  useWindow={false}*/}
-                {/*  hasMore={hasMoreUserItems}*/}
-                {/*  loader={loader}*/}
-                {/*>*/}
+              <div 
+                className={cls("scrollable main-list", {
+                  "has-scroll": myNodessHasScroll,
+                })}
+                style={{height: `${MY_NODES_HEIGHT}px`}}
+              >
+                <InfiniteScroll
+                  pageStart={0}
+                  loadMore={this.loadMoreUserNodes}
+                  useWindow={false}
+                  hasMore={hasMoreUserItems}
+                  loader={loader}
+                >
                 <LoadingOverlay active={userItemsTableLoading} spinner>
                   {hasNodes ? (
                     filteredItems.map((node, idx) => {
@@ -251,7 +262,7 @@ class NodesMain extends Main {
                       </div>
                     )}
                   </LoadingOverlay>
-                {/*</InfiniteScroll>*/}
+                </InfiniteScroll>
               </div>
             </Segment>
           </Col>

@@ -7,7 +7,7 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {APPLICATIONS_LIMIT, TABLE_COLUMNS} from "../../../_constants";
+import {APPLICATIONS_LIMIT, TABLE_COLUMNS, STYLING} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
@@ -16,6 +16,8 @@ import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 import _ from "lodash";
+import InfiniteScroll from "react-infinite-scroller";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const MY_APPS_HEIGHT = 358;
 
@@ -70,15 +72,15 @@ class AppsMain extends Main {
     const {userItems} = this.state;
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1
+      userEmail, APPLICATIONS_LIMIT, (offset) * APPLICATIONS_LIMIT + 1
     );
 
     const allUserItems = [...userItems, ...newUserItems];
 
     this.setState({
-      hasMoreUserItems: newUserItems.length !== 0,
+      hasMoreUserItems: newUserItems.length === APPLICATIONS_LIMIT,
       userItems: allUserItems,
-      filteredItems: userItems,
+      filteredItems: allUserItems,
     });
   }
 
@@ -108,7 +110,7 @@ class AppsMain extends Main {
       allItemsTableLoading,
       userItemsTableLoading,
       hasApps,
-      // hasMoreUserItems,
+      hasMoreUserItems,
       hasMoreRegisteredItems,
     } = this.state;
 
@@ -128,15 +130,15 @@ class AppsMain extends Main {
       },
     ];
 
-    // const loader = (
-    //   <ClipLoader
-    //     key={0}
-    //     size={30}
-    //     css={"display: block; margin: 0 auto;"}
-    //     color={STYLING.lightGray}
-    //     loading={true}
-    //   />
-    // );
+    const loader = (
+      <ClipLoader
+        key={0}
+        size={30}
+        css={"display: block; margin: 0 auto;"}
+        color={STYLING.lightGray}
+        loading={true}
+      />
+    );
 
     if (loading) {
       return <Loader/>;
@@ -205,14 +207,13 @@ class AppsMain extends Main {
                 })}
                 style={{height: `${MY_APPS_HEIGHT}px`}}
               >
-                {/* FIXME: Always perform a search */}
-                {/*<InfiniteScroll*/}
-                {/*  pageStart={0}*/}
-                {/*  loadMore={this.loadMoreUserApps}*/}
-                {/*  useWindow={false}*/}
-                {/*  hasMore={hasMoreUserItems}*/}
-                {/*  loader={loader}*/}
-                {/*>*/}
+                <InfiniteScroll
+                  pageStart={0}
+                  loadMore={this.loadMoreUserApps}
+                  useWindow={false}
+                  hasMore={hasApps && hasMoreUserItems}
+                  loader={loader}
+                >
                 <LoadingOverlay active={userItemsTableLoading} spinner>
                   {hasApps ? (
                     filteredItems.map((app, idx) => {
@@ -259,10 +260,11 @@ class AppsMain extends Main {
                         <p>
                           You have not created <br/> or imported any app yet
                         </p>
+
                       </div>
                     )}
-                  </LoadingOverlay>
-                {/*</InfiniteScroll>*/}
+                </LoadingOverlay>
+                </InfiniteScroll>
               </div>
             </Segment>
           </Col>
