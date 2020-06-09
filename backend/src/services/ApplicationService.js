@@ -215,15 +215,12 @@ export default class ApplicationService extends BasePocketService {
    *
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
-   * @param {number} [stakingStatus] Staking status filter.
    *
    * @returns {RegisteredPocketApplication[]} List of applications.
    * @async
    */
-  async getAllApplications(limit, offset = 0, stakingStatus = undefined) {
-    const networkApplications = await (stakingStatus ?
-      this.pocketService.getApplications(stakingStatus) :
-      this.pocketService.getApplications(StakingStatus.Staked));
+  async getAllApplications(limit, offset = 0) {
+    const networkApplications = await this.pocketService.getApplications(StakingStatus.Staked);
 
     return networkApplications.map(PocketApplication.createRegisteredPocketApplication);
   }
@@ -234,12 +231,11 @@ export default class ApplicationService extends BasePocketService {
    * @param {string} userEmail Email of user.
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
-   * @param {number} [stakingStatus] Staking status filter.
    *
    * @returns {Promise<UserPocketApplication[]>} List of applications.
    * @async
    */
-  async getUserApplications(userEmail, limit, offset = 0, stakingStatus = undefined) {
+  async getUserApplications(userEmail, limit, offset = 0) {
     const filter = {user: userEmail};
 
     const dashboardApplicationData = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
@@ -261,14 +257,8 @@ export default class ApplicationService extends BasePocketService {
       .getAllApplications(dashboardApplicationAddresses);
 
     if (dashboardApplicationData.length > 0) {
-      const userApplications = dashboardApplicationData
+      return dashboardApplicationData
         .map(app => PocketApplication.createUserPocketApplication(app, networkApplications));
-
-      if (stakingStatus === undefined) {
-        return userApplications;
-      }
-
-      return userApplications.filter(app => app.status === stakingStatus);
     }
 
     return [];
