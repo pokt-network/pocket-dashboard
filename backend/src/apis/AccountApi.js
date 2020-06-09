@@ -1,5 +1,6 @@
 import express from "express";
 import AccountService from "../services/AccountService";
+import {apiAsyncWrapper} from "./_helpers";
 
 const router = express.Router();
 
@@ -8,57 +9,31 @@ const accountService = new AccountService();
 /**
  * Import account.
  */
-router.post("/import", async (request, response) => {
-  try {
-    /** @type {{ppkData:object, passphrase: string}} */
-    const data = request.body;
-    const account = await accountService.importDashboardAccountToNetworkFromPPK(data.ppkData, data.passphrase);
+router.post("/import", apiAsyncWrapper(async (req, res) => {
+  /** @type {{ppkData:object, passphrase: string}} */
+  const data = req.body;
+  const account = await accountService.importDashboardAccountToNetworkFromPPK(data.ppkData, data.passphrase);
 
-    response.send(account);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
+  res.json(account);
+}));
 
-    response.status(400).send(error);
-  }
-});
+router.get("/balance/:accountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{accountAddress:string}} */
+  const params = req.params;
 
-router.get("/balance/:accountAddress", async (request, response) => {
-  try {
+  const balance = await accountService.getBalance(params.accountAddress);
 
-    /** @type {{accountAddress:string}} */
-    const params = request.params;
+  res.json({balance});
+}));
 
-    const balance = await accountService.getBalance(params.accountAddress);
+router.get("/balance/pokt/:accountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{accountAddress:string}} */
+  const params = req.params;
 
-    response.send({balance});
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
+  const balance = await accountService.getPoktBalance(params.accountAddress);
 
-    response.status(400).send(error);
-  }
-});
-
-router.get("/balance/pokt/:accountAddress", async (request, response) => {
-  try {
-
-    /** @type {{accountAddress:string}} */
-    const params = request.params;
-
-    const balance = await accountService.getPoktBalance(params.accountAddress);
-
-    response.send({balance});
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json({balance});
+}));
 
 
 export default router;

@@ -1,6 +1,6 @@
 import express from "express";
 import {configureRoutes} from "./_routes";
-import {configureExpress} from "./_configuration";
+import {configureExpress, handleErrors} from "./_configuration";
 
 import webpack from "webpack";
 import webPackConfig from "../webpack.config";
@@ -13,7 +13,7 @@ const app = express();
 
 configureExpress(app);
 configureRoutes(app);
-
+handleErrors(app);
 
 // Tell express to use the webpack-dev-middleware and use the webpack.config.js
 // configuration file as a base.

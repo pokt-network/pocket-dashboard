@@ -5,7 +5,6 @@ import {
   CoinDenom,
   Configuration,
   HttpRpcProvider,
-  JailedStatus,
   Node,
   NodeParams,
   Pocket,
@@ -266,8 +265,7 @@ export default class PocketService {
 
     if (applicationResponse instanceof Error) {
       if (throwError) {
-
-        throw new PocketNetworkError(applicationResponse.toString());
+        throw new PocketNetworkError(applicationResponse.message);
       }
 
       return undefined;
@@ -290,7 +288,7 @@ export default class PocketService {
     const nodeResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNode(addressHex);
 
     if (nodeResponse instanceof Error) {
-      throw new PocketNetworkError(nodeResponse.toString());
+      throw new PocketNetworkError(nodeResponse.message);
     }
 
     return nodeResponse.node;
@@ -306,8 +304,7 @@ export default class PocketService {
    */
   async getApplications(status) {
     const pocketRpcProvider = await this.getHttpRPCProvider();
-    const chainID = POCKET_NETWORK_CONFIGURATION.chain_id;
-    const applicationsResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status, 0, chainID);
+    const applicationsResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status);
 
     if (applicationsResponse instanceof Error) {
       return [];
@@ -352,8 +349,7 @@ export default class PocketService {
    */
   async getNodes(status) {
     const pocketRpcProvider = await this.getHttpRPCProvider();
-    const chainID = POCKET_NETWORK_CONFIGURATION.chain_id;
-    const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status, JailedStatus.Unjailed, 0, chainID);
+    const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status);
 
     if (nodesResponse instanceof Error) {
       return [];
@@ -400,7 +396,7 @@ export default class PocketService {
     const applicationParametersResponse = await this.__pocket.rpc(pocketRpcProvider).query.getAppParams();
 
     if (applicationParametersResponse instanceof Error) {
-      throw new PocketNetworkError(applicationParametersResponse.toString());
+      throw new PocketNetworkError(applicationParametersResponse.message);
     }
 
     return applicationParametersResponse.applicationParams;
@@ -542,7 +538,7 @@ export default class PocketService {
     const nodeParametersResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodeParams();
 
     if (nodeParametersResponse instanceof Error) {
-      throw new PocketNetworkError(nodeParametersResponse.toString());
+      throw new PocketNetworkError(nodeParametersResponse.message);
     }
 
     return nodeParametersResponse.nodeParams;
@@ -561,7 +557,7 @@ export default class PocketService {
     const ppkData = await this.__pocket.keybase.exportPPK(privateKey, passphrase);
 
     if (ppkData instanceof Error) {
-      throw new PocketNetworkError(ppkData.toString());
+      throw new PocketNetworkError(ppkData.message);
     }
 
     return JSON.parse(ppkData);
