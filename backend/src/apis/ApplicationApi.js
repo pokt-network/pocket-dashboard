@@ -189,10 +189,7 @@ router.get("", async (request, response) => {
     const offsetData = getOptionalQueryOption(request, "offset");
     const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    const statusData = getOptionalQueryOption(request, "status");
-    const stakingStatus = statusData !== "" ? parseInt(statusData) : undefined;
-
-    const applications = await applicationService.getAllApplications(limit, offset, stakingStatus);
+    const applications = await applicationService.getAllApplications(limit, offset);
 
     response.send(applications);
   } catch (e) {
@@ -215,13 +212,10 @@ router.post("/user/all", async (request, response) => {
     const offsetData = getOptionalQueryOption(request, "offset");
     const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    const statusData = getOptionalQueryOption(request, "status");
-    const stakingStatus = statusData !== "" ? parseInt(statusData) : undefined;
-
     /** @type {{user: string}} */
     const data = request.body;
 
-    const applications = await applicationService.getUserApplications(data.user, limit, offset, stakingStatus);
+    const applications = await applicationService.getUserApplications(data.user, limit, offset);
 
     response.send(applications);
   } catch (e) {

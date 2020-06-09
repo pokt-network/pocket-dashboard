@@ -1,10 +1,11 @@
 import UserService from "./UserService";
 import {Node, StakingStatus} from "@pokt-network/pocket-js";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
-import {ExtendedPocketNode, PocketNode} from "../models/Node";
+import {ExtendedPocketNode, PocketNode, RegisteredPocketNode, StakedNodeSummary, UserPocketNode} from "../models/Node";
 import AccountService from "./AccountService";
 import BasePocketService from "./BasePocketService";
 import {TransactionPostAction} from "../models/Transaction";
+import bigInt from "big-integer";
 
 const NODE_COLLECTION_NAME = "Nodes";
 
@@ -102,21 +103,6 @@ export default class NodeService extends BasePocketService {
   }
 
   /**
-   *
-   * @param {PocketNode[]} nodes Nodes to add pocket data.
-   *
-   * @returns {Promise<ExtendedPocketNode[]>} Pocket nodes with pocket data.
-   * @private
-   * @async
-   */
-  async __getExtendedPocketNodes(nodes) {
-    const extendedNodes = nodes.map(async (node) => this.__getExtendedPocketNode(node));
-
-    return Promise.all(extendedNodes);
-  }
-
-
-  /**
    * Check if node exists on DB.
    *
    * @param {PocketNode} node Node to check if exists.
@@ -178,7 +164,7 @@ export default class NodeService extends BasePocketService {
    * @param {string} passphrase Application account passphrase.
    * @param {string} [privateKey] Application private key if is imported.
    *
-   * @returns {Promise<{node: PocketNode, privateNodeData: PrivatePocketAccount, networkData:Node}>} A node information.
+   * @returns {Promise<{node: PocketNode, privateNodeData: PrivatePocketAccount, networkData:Node, ppkData: object}>} A node information.
    * @throws {Error} If application does not exists.
    * @async
    */
@@ -203,8 +189,10 @@ export default class NodeService extends BasePocketService {
     const privateNodeData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passphrase);
     const networkData = ExtendedPocketNode.createNetworkNode(node.publicPocketAccount, nodeParameters);
 
+    const ppkData = await this.pocketService.createPPK(privateNodeData.privateKey, passphrase);
+
     // noinspection JSValidateTypes
-    return {node, privateNodeData, networkData};
+    return {node, privateNodeData, networkData, ppkData};
   }
 
   /**
@@ -263,25 +251,35 @@ export default class NodeService extends BasePocketService {
    *
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
-   * @param {number} [stakingStatus] Staking status filter.
    *
-   * @returns {ExtendedPocketNode[]} List of nodes.
+   * @returns {RegisteredPocketNode[]} List of nodes.
    * @async
    */
-  async getAllNodes(limit, offset = 0, stakingStatus = undefined) {
-    const nodes = (await this.persistenceService.getEntities(NODE_COLLECTION_NAME, {}, limit, offset))
-      .map(PocketNode.createPocketNode);
+  async getAllNodes(limit, offset = 0) {
+    const networkApplications = await this.pocketService.getNodes(StakingStatus.Staked);
 
-    if (nodes) {
-      const extendedNodes = await this.__getExtendedPocketNodes(nodes);
+    return networkApplications.map(PocketNode.createRegisteredPocketNode);
+  }
 
-      if (stakingStatus !== undefined) {
-        return extendedNodes.filter((node) => node.networkData.status === StakingStatus.getStatus(stakingStatus));
-      }
-      return extendedNodes;
+  /**
+   * Get staked node summary from network.
+   *
+   * @returns {Promise<StakedNodeSummary>} Summary data of staked nodes.
+   * @async
+   */
+  async getStakedNodeSummary() {
+    try {
+      const stakedNodes = await this.pocketService.getNodes(StakingStatus.Staked);
+
+      const averageStaked = this._getAverageNetworkData(stakedNodes.map(node => bigInt(node.stakedTokens.toString())));
+
+      // 1 VP = 1 POKT, so, the validator power value is the same for staked token.
+      const averageValidatorPower = this._getAverageNetworkData(stakedNodes.map(node => bigInt(node.stakedTokens.toString())));
+
+      return new StakedNodeSummary(stakedNodes.length.toString(), averageStaked.toString(), averageValidatorPower.toString());
+    } catch (e) {
+      return new StakedNodeSummary("0", "0", "0");
     }
-
-    return [];
   }
 
   /**
@@ -290,24 +288,34 @@ export default class NodeService extends BasePocketService {
    * @param {string} userEmail Email of user.
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
-   * @param {number} [stakingStatus] Staking status filter.
    *
-   * @returns {Promise<ExtendedPocketNode[]>} List of nodes.
+   * @returns {Promise<UserPocketNode[]>} List of nodes.
    * @async
    */
-  async getUserNodes(userEmail, limit, offset = 0, stakingStatus = undefined) {
+  async getUserNodes(userEmail, limit, offset = 0) {
     const filter = {user: userEmail};
-    const nodes = (await this.persistenceService.getEntities(NODE_COLLECTION_NAME, filter, limit, offset))
-      .map(PocketNode.createPocketNode);
 
-    if (nodes) {
-      const extendedNodes = await this.__getExtendedPocketNodes(nodes);
+    const dashboardNodesData = (await this.persistenceService.getEntities(NODE_COLLECTION_NAME, filter, limit, offset))
+      .map(PocketNode.createPocketNode)
+      .map(node => {
+        return {
+          id: node.id,
+          name: node.name,
+          address: node.publicPocketAccount.address,
+          icon: node.icon
+        };
+      });
 
-      if (stakingStatus !== undefined) {
-        return extendedNodes.filter((node) => node.networkData.status === StakingStatus.getStatus(stakingStatus));
-      }
+    const dashboardNodeAddresses = dashboardNodesData
+      .map(node => node.address)
+      .filter(address => address.length > 0);
 
-      return extendedNodes;
+    const networkNodes = await this.pocketService
+      .getAllNodes(dashboardNodeAddresses);
+
+    if (dashboardNodesData.length > 0) {
+      return dashboardNodesData
+        .map(node => PocketNode.createUserPocketNode(node, networkNodes));
     }
 
     return [];

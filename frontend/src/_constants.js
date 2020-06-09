@@ -10,12 +10,6 @@ export const STAKE_STATUS = {
   Unstaked: "Unstaked",
 };
 
-export const BOND_STATUS_STR = {
-  bonded: 2,
-  unbonding: 1,
-  unbonded: 0,
-};
-
 export const ITEM_TYPES = {
   APPLICATION: "application",
   NODE: "node",
@@ -86,19 +80,19 @@ export const TABLE_COLUMNS = {
   ],
   APPS: [
     {
-      dataField: "pocketApplication.name",
+      dataField: "name",
       text: "Name",
       headerClasses: "col-2",
       classes: "col-2",
     },
     {
-      dataField: "pocketApplication.publicPocketAccount.address",
+      dataField: "address",
       text: "Address",
       headerClasses: "col-7",
       classes: "col-7",
     },
     {
-      dataField: "networkData.status",
+      dataField: "status",
       text: "Status",
       style: {
         color: STYLING.primaryColor,
@@ -110,20 +104,20 @@ export const TABLE_COLUMNS = {
   ],
   NODES: [
     {
-      dataField: "pocketNode.name",
+      dataField: "name",
       text: "Name",
       headerClasses: "col-2",
       classes: "col-2",
     },
     {
-      dataField: "pocketNode.publicPocketAccount.address",
+      dataField: "address",
       text: "Address",
       headerClasses: "col-7",
       classes: "col-7",
     },
 
     {
-      dataField: "networkData.status",
+      dataField: "status",
       text: "Status",
       style: {
         color: STYLING.primaryColor,

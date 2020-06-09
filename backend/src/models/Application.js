@@ -1,6 +1,31 @@
-import {Application, ApplicationParams} from "@pokt-network/pocket-js";
+import {Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
 import {PublicPocketAccount} from "./Account";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
+
+export class RegisteredPocketApplication {
+  /**
+   * @param {string} name Name.
+   * @param {string} address Address.
+   * @param {StakingStatus} status Status
+   */
+  constructor(name, address, status) {
+    Object.assign(this, {name, address, status});
+  }
+}
+
+export class UserPocketApplication {
+  /**
+   * @param {string} id ID.
+   * @param {string} name Name.
+   * @param {string} address Address.
+   * @param {string} icon Icon.
+   * @param {string} stakedPOKT staked POKT.
+   * @param {number} status Status.
+   */
+  constructor(id, name, address, icon, stakedPOKT, status) {
+    Object.assign(this, {id, name, address, icon, stakedPOKT, status});
+  }
+}
 
 export class PocketApplication {
 
@@ -97,6 +122,49 @@ export class PocketApplication {
     pocketApplication.publicPocketAccount = publicPocketAccount ?? new PublicPocketAccount("", "");
 
     return pocketApplication;
+  }
+
+  /**
+   * Convenient Factory method to create a registered pocket application.
+   *
+   * @param {object} applicationData Application to create.
+   * @param {string} applicationData.address Address.
+   * @param {StakingStatus} applicationData.status Status.
+   * @param {string} [applicationData.name] Name.
+   *
+   * @returns {RegisteredPocketApplication} A new resumed pocket application.
+   * @static
+   */
+  static createRegisteredPocketApplication(applicationData) {
+    const appName = applicationData.name ?? "N/A";
+
+    return new RegisteredPocketApplication(appName, applicationData.address, applicationData.status);
+  }
+
+  /**
+   * Convenient Factory method to create an user pocket application.
+   *
+   * @param {object} applicationData Application to create.
+   * @param {string} applicationData.id ID.
+   * @param {string} applicationData.name Name.
+   * @param {string} applicationData.address Address.
+   * @param {string} applicationData.icon Icon.
+   * @param {Application[]} networkApplications Applications.
+   *
+   * @returns {UserPocketApplication} A new user pocket application.
+   * @static
+   */
+  static createUserPocketApplication(applicationData, networkApplications) {
+    const {id, name, address, icon} = applicationData;
+    let networkApp = networkApplications.filter(app => app.address === applicationData.address);
+
+    if (networkApp.length > 0) {
+      networkApp = networkApp[0];
+
+      return new UserPocketApplication(id, name, address, icon, networkApp.stakedTokens.toString(), networkApp.status);
+    }
+
+    return new UserPocketApplication(id, name, address, icon, "0", 0);
   }
 }
 

@@ -59,7 +59,7 @@ class PocketUserService extends PocketBaseService {
    * @return {boolean}
    */
   isLoggedIn() {
-    return localStorage.hasOwnProperty("is_logged_in") && this.ls.get("is_logged_in").data === true;
+    return this.ls.getAllKeys().includes("is_logged_in") && this.ls.get("is_logged_in").data === true;
   }
 
   /**

@@ -7,25 +7,14 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {
-  APPLICATIONS_LIMIT,
-  STYLING,
-  TABLE_COLUMNS
-} from "../../../_constants";
+import {APPLICATIONS_LIMIT, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {
-  formatNetworkData,
-  formatNumbers,
-  getStakeStatus,
-  mapStatusToField,
-} from "../../../_helpers";
+import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
-import InfiniteScroll from "react-infinite-scroller";
-import ClipLoader from "react-spinners/ClipLoader";
 import _ from "lodash";
 
 const MY_APPS_HEIGHT = 358;
@@ -46,28 +35,35 @@ class AppsMain extends Main {
   componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
 
-    ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT
-    ).then((userItems) => {
-      ApplicationService.getStakedApplicationSummary().then(
+    ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT)
+      .then(userItems => {
+        this.setState({
+          userItems,
+          filteredItems: userItems,
+          hasApps: userItems.length > 0,
+        });
+      });
+
+    ApplicationService.getStakedApplicationSummary()
+      .then(
         ({totalApplications, averageRelays, averageStaked}) => {
-          // ApplicationService.getAllApplications(APPLICATIONS_LIMIT)
-          // .then((registeredItems) => {
           this.setState({
-            userItems,
-            filteredItems: userItems,
             total: totalApplications,
             averageRelays,
             averageStaked,
-            // registeredItems,
             loading: false,
-            hasApps: userItems.length > 0,
           });
-          // })
-          // .catch((err) => console.log(err.response));
         }
       );
-    });
+
+    ApplicationService.getAllApplications(APPLICATIONS_LIMIT)
+      .then(registeredItems => {
+          this.setState({
+            registeredItems,
+            loading: false,
+          });
+        }
+      );
   }
 
   async loadMoreUserApps(offset) {
@@ -112,7 +108,7 @@ class AppsMain extends Main {
       allItemsTableLoading,
       userItemsTableLoading,
       hasApps,
-      hasMoreUserItems,
+      // hasMoreUserItems,
       hasMoreRegisteredItems,
     } = this.state;
 
@@ -132,18 +128,18 @@ class AppsMain extends Main {
       },
     ];
 
-    const loader = (
-      <ClipLoader
-        key={0}
-        size={30}
-        css={"display: block; margin: 0 auto;"}
-        color={STYLING.lightGray}
-        loading={true}
-      />
-    );
+    // const loader = (
+    //   <ClipLoader
+    //     key={0}
+    //     size={30}
+    //     css={"display: block; margin: 0 auto;"}
+    //     color={STYLING.lightGray}
+    //     loading={true}
+    //   />
+    // );
 
     if (loading) {
-      return <Loader />;
+      return <Loader/>;
     }
 
     return (
@@ -173,7 +169,7 @@ class AppsMain extends Main {
           </Col>
         </Row>
         <Row className="stats">
-          <InfoCards cards={cards} />
+          <InfoCards cards={cards}/>
         </Row>
         <Row className="mb-4 app-tables">
           <Col sm="6" className="my-items-segment">
@@ -197,7 +193,7 @@ class AppsMain extends Main {
                         onClick={this.handleChainSearch}
                         variant="outline-primary"
                       >
-                        <img src={"/assets/search.svg"} alt="search-icon" />
+                        <img src={"/assets/search.svg"} alt="search-icon"/>
                       </Button>
                     </InputGroup.Append>
                   </InputGroup>
@@ -209,30 +205,24 @@ class AppsMain extends Main {
                 })}
                 style={{height: `${MY_APPS_HEIGHT}px`}}
               >
-                <InfiniteScroll
-                  pageStart={0}
-                  loadMore={this.loadMoreUserApps}
-                  useWindow={false}
-                  hasMore={hasMoreUserItems}
-                  loader={loader}
-                >
-                  <LoadingOverlay active={userItemsTableLoading} spinner>
-                    {hasApps ? (
-                      filteredItems.map((app, idx) => {
-                        const {name, icon} = app.pocketApplication;
-                        const {
-                          staked_tokens: stakedTokens,
-                          status,
-                        } = app.networkData;
+                {/* FIXME: Always perform a search */}
+                {/*<InfiniteScroll*/}
+                {/*  pageStart={0}*/}
+                {/*  loadMore={this.loadMoreUserApps}*/}
+                {/*  useWindow={false}*/}
+                {/*  hasMore={hasMoreUserItems}*/}
+                {/*  loader={loader}*/}
+                {/*>*/}
+                <LoadingOverlay active={userItemsTableLoading} spinner>
+                  {hasApps ? (
+                    filteredItems.map((app, idx) => {
+                      const {id: applicationID, name, address, stakedPOKT, status, icon} = app;
 
-                        return (
-                          <Link
-                            key={idx}
-                            to={() => {
-                              const address = app.networkData.address;
-                              const applicationID = app.pocketApplication.id;
-
-                              if (!address) {
+                      return (
+                        <Link
+                          key={idx}
+                          to={() => {
+                            if (!address) {
                                 ApplicationService.saveAppInfoInCache({
                                   applicationID,
                                 });
@@ -250,7 +240,7 @@ class AppsMain extends Main {
                             <PocketElementCard
                               title={name}
                               subtitle={`Staked POKT: ${formatNetworkData(
-                                stakedTokens
+                                stakedPOKT
                               )} POKT`}
                               status={getStakeStatus(
                                 _.isNumber(status) ? status : parseInt(status)
@@ -267,12 +257,12 @@ class AppsMain extends Main {
                           alt="apps-empty-box"
                         />
                         <p>
-                          You have not created <br /> or imported any app yet
+                          You have not created <br/> or imported any app yet
                         </p>
                       </div>
                     )}
                   </LoadingOverlay>
-                </InfiniteScroll>
+                {/*</InfiniteScroll>*/}
               </div>
             </Segment>
           </Col>
@@ -283,23 +273,24 @@ class AppsMain extends Main {
             }`}
           >
             <Segment scroll={false} label="REGISTERED APPS">
-              <InfiniteScroll
-                pageStart={0}
-                loadMore={this.loadMoreRegisteredApps}
-                useWindow={false}
-                hasMore={hasMoreRegisteredItems}
-                loader={loader}
-              >
-                <AppTable
-                  scroll
-                  classes={`flex-body ${
-                    hasMoreRegisteredItems ? "loading" : ""
-                  } `}
-                  headerClasses="d-flex"
-                  toggle={registeredItems.length > 0}
-                  keyField="pocketApplication.id"
-                  data={registeredItems}
-                  columns={TABLE_COLUMNS.APPS}
+              {/* FIXME: Always perform a search */}
+              {/*<InfiniteScroll*/}
+              {/*  pageStart={0}*/}
+              {/*  loadMore={this.loadMoreRegisteredApps}*/}
+              {/*  useWindow={false}*/}
+              {/*  hasMore={hasMoreRegisteredItems}*/}
+              {/*  loader={loader}*/}
+              {/*>*/}
+              <AppTable
+                scroll
+                classes={`flex-body ${
+                  hasMoreRegisteredItems ? "loading" : ""
+                } `}
+                headerClasses="d-flex"
+                toggle={registeredItems.length > 0}
+                keyField="address"
+                data={registeredItems}
+                columns={TABLE_COLUMNS.APPS}
                   bordered={false}
                   loading={allItemsTableLoading}
                   overlay={overlayFactory({
@@ -312,7 +303,7 @@ class AppsMain extends Main {
                     },
                   })}
                 />
-              </InfiniteScroll>
+              {/*</InfiniteScroll>*/}
             </Segment>
           </Col>
         </Row>

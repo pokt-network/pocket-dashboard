@@ -160,6 +160,24 @@ router.get("/:nodeAccountAddress", async (request, response) => {
   }
 });
 
+/**
+ * Get staked summary data.
+ */
+router.get("/summary/staked", async (request, response) => {
+  try {
+
+    const summaryData = await nodeService.getStakedNodeSummary();
+
+    response.send(summaryData);
+  } catch (e) {
+    const error = {
+      message: e.toString()
+    };
+
+    response.status(400).send(error);
+  }
+});
+
 
 /**
  * Get all nodes.
@@ -172,10 +190,7 @@ router.get("", async (request, response) => {
     const offsetData = getOptionalQueryOption(request, "offset");
     const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    const statusData = getOptionalQueryOption(request, "status");
-    const stakingStatus = statusData !== "" ? parseInt(statusData) : undefined;
-
-    const nodes = await nodeService.getAllNodes(limit, offset, stakingStatus);
+    const nodes = await nodeService.getAllNodes(limit, offset);
 
     response.send(nodes);
   } catch (e) {
@@ -198,13 +213,10 @@ router.post("/user/all", async (request, response) => {
     const offsetData = getOptionalQueryOption(request, "offset");
     const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    const statusData = getOptionalQueryOption(request, "status");
-    const stakingStatus = statusData !== "" ? parseInt(statusData) : undefined;
-
     /** @type {{user: string}} */
     const data = request.body;
 
-    const nodes = await nodeService.getUserNodes(data.user, limit, offset, stakingStatus);
+    const nodes = await nodeService.getUserNodes(data.user, limit, offset);
 
     response.send(nodes);
   } catch (e) {

@@ -112,12 +112,11 @@ export class PocketApplicationService extends PocketBaseService {
    *
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
-   * @param {number} [status] Status of applications.
    *
    * @return {Promise|Promise<Array.<*>>}
    */
-  getAllApplications(limit, offset = 0, status = undefined) {
-    const params = {limit, offset, status};
+  getAllApplications(limit, offset = 0) {
+    const params = {limit, offset};
 
     return axios
       .get(this._getURL(""), {params})
@@ -130,11 +129,10 @@ export class PocketApplicationService extends PocketBaseService {
    * @param {string} user Email of user.
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
-   * @param {number} [status] Status of applications.
    *
    * @return {Promise|Promise<Array.<*>>}
    */
-  getAllUserApplications(user, limit, offset = 0, status = undefined) {
+  getAllUserApplications(user, limit, offset = 0) {
     // Axios options format to send both query parameters and body data
     return axios({
       method: "post",
@@ -144,8 +142,7 @@ export class PocketApplicationService extends PocketBaseService {
       },
       params: {
         limit,
-        offset,
-        status,
+        offset
       },
     }).then((response) => response.data);
   }
@@ -401,20 +398,6 @@ export class PocketApplicationService extends PocketBaseService {
         return {success: false, data: err.response};
       });
   }
-
-  /**
-   * Get application data from network
-   *
-   * @param {string} applicationAccountAddress Application account address.
-   *
-   * @returns {Promise|Promise<*>}
-   */
-  getNetworkAppInfo(applicationAccountAddress) {
-    return axios
-      .get(this._getURL(`import/${applicationAccountAddress}`))
-      .then((response) => response.data);
-  }
-
 
 }
 

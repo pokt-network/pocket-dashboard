@@ -37,3 +37,15 @@ export class NetworkChain {
       .map(chain => new NetworkChain(chain.netID, chain.ticker, chain.name, chain.description, chain.hash));
   }
 }
+
+export class NetworkSummaryData {
+  /**
+   * @param {string} poktPrice POKT price
+   * @param {string} totalStakedTokens Total staked tokens.
+   * @param {string} totalStakedNodes Total staked nodes.
+   * @param {string} totalStakedApps Total staked apps.
+   */
+  constructor(poktPrice, totalStakedTokens, totalStakedNodes, totalStakedApps) {
+    Object.assign(this, {poktPrice, totalStakedTokens, totalStakedApps, totalStakedNodes});
+  }
+}
