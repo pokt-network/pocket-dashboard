@@ -10,6 +10,7 @@ import NodeService from "../../../core/services/PocketNodeService";
 import {Formik} from "formik";
 import AppAlert from "../../../core/components/AppAlert";
 import {STAKE_STATUS} from "../../../_constants";
+import PocketUserService from "../../../core/services/PocketUserService";
 
 class CreateNodeForm extends CreateForm {
   constructor(props, context) {
@@ -34,8 +35,24 @@ class CreateNodeForm extends CreateForm {
 
     if (this.props.location.state) {
       imported = this.props.location.state.imported;
-      this.setState({imported});
     }
+
+    if (imported) {
+      this.setState({imported});
+      PocketUserService.saveUserAction("Import Node");
+    } else {
+      PocketUserService.saveUserAction("Create Node");
+    }
+
+    this.props.onBreadCrumbChange();
+  }
+
+  validateError(err) {
+    if (err === "Error: Node already exists") {
+      return "A node with that name already exists, please use a different name.";
+    }
+
+    return err;
   }
 
   async handleCreateImported(nodeID) {
@@ -98,7 +115,9 @@ class CreateNodeForm extends CreateForm {
         redirectPath: _getDashboardPath(DASHBOARD_PATHS.nodePassphrase),
       });
     } else {
-      this.setState({error: {show: true, message: data.message}});
+      this.setState({error: {
+        show: true, 
+        message: this.validateError(data.message)}});
       scrollToId("alert");
     }
   }

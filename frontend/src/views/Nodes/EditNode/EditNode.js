@@ -73,7 +73,7 @@ class EditNode extends CreateForm {
               <AppAlert
                 onClose={() => this.setState({success: false})}
                 dismissible
-                title="Your app changes were successfully saved"
+                title="Your node changes were successfully saved"
               />
             )}
             {error.show && (
@@ -84,9 +84,12 @@ class EditNode extends CreateForm {
                 onClose={() => this.setState({error: false})}
               />
             )}
-            <h1 className="text-uppercase">App Information</h1>
+            <Button onClick={this.props.history.goBack} className="mb-3">
+              <span>Go back</span>
+            </Button>
+            <h1 className="text-uppercase">Node Information</h1>
             <p className="info">
-              Fill in these quick questions to identity your app on the
+              Fill in these quick questions to identity your node on the
               dashboard. Fields marked with * are required to continue.
             </p>
           </Col>
@@ -162,8 +165,8 @@ class EditNode extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
 
-                  <Button className="" variant="primary" type="submit">
-                    <span>Continue</span>
+                  <Button variant="primary" type="submit">
+                    <span>Save</span>
                   </Button>
                 </Form>
               )}
