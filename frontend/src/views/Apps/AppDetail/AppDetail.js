@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
@@ -30,13 +31,12 @@ class AppDetail extends Component {
       loading: true,
       deleteModal: false,
       deleted: false,
-      message: "",
-      purchase: true,
       hideTable: false,
       exists: true,
       unstake: false,
       stake: false,
       ctaButtonPressed: false,
+      freeTierMsg: false,
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -45,18 +45,12 @@ class AppDetail extends Component {
   }
 
   async componentDidMount() {
-    let message;
-    let purchase = true;
+    let freeTierMsg = false;
 
-    // eslint-disable-next-line react/prop-types
     if (this.props.location.state) {
-      // eslint-disable-next-line react/prop-types
-      message = this.props.location.state.message;
-      // eslint-disable-next-line react/prop-types
-      purchase = this.props.location.purchase;
+      freeTierMsg = this.props.location.state.freeTierMsg;
     }
 
-    // eslint-disable-next-line react/prop-types
     const {address} = this.props.match.params;
 
     const {
@@ -80,13 +74,12 @@ class AppDetail extends Component {
     }
 
     this.setState({
-      message,
-      purchase,
       pocketApplication,
       networkData,
       chains,
       aat,
       accountBalance,
+      freeTierMsg,
       loading: false,
     });
 
@@ -186,6 +179,7 @@ class AppDetail extends Component {
       stake,
       ctaButtonPressed,
       accountBalance,
+      freeTierMsg
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
@@ -277,6 +271,21 @@ class AppDetail extends Component {
       <div className="detail">
         <Row>
           <Col>
+          {freeTierMsg && (
+              <AppAlert
+                className="pb-3 pt-3 mb-4"
+                title={
+                  <h4 className="ml-3">
+                    This transaction may take some time to be completed.
+                  </h4>
+                }
+              >
+                <p>
+                  On the next block generated your app will be staked, also we
+                  will notify you by email.
+                </p>
+              </AppAlert>
+            )}
             {message && (
               <AppAlert
                 variant="danger"
@@ -399,8 +408,7 @@ class AppDetail extends Component {
             ))}
           </Row>}
         <Row className="action-buttons">
-          {/* TODO: Uncomment of fourth release */}
-          {/*<Col sm="3" md="3" lg="3">
+          <Col sm="3" md="3" lg="3">
              <span className="option">
                 <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
                 <p>
@@ -415,7 +423,7 @@ class AppDetail extends Component {
                   to change your app description.
                 </p>
               </span> 
-          </Col>*/}
+          </Col>
           <Col sm="3" md="3" lg="3">
             <span className="option">
                 <img src={"/assets/trash.svg"} alt="trash-action-icon"/>

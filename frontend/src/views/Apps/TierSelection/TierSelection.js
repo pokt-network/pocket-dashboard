@@ -2,7 +2,11 @@ import React, {Component} from "react";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import "./TierSelection.scss";
-import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../_routes";
+import {
+  _getDashboardPath,
+  DASHBOARD_PATHS,
+  ROUTE_PATHS,
+} from "../../../_routes";
 import {Link} from "react-router-dom";
 import Loader from "../../../core/components/Loader";
 import AppAlert from "../../../core/components/AppAlert";
@@ -41,7 +45,6 @@ class TierSelection extends Component {
       application, chains
     );
 
-    // TODO: Notify of errors on the frontend
     if (data !== false) {
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
       const path = url.replace(":address", address);
@@ -49,7 +52,7 @@ class TierSelection extends Component {
       ApplicationService.removeAppInfoFromCache();
 
       // eslint-disable-next-line react/prop-types
-      this.props.history.push(path);
+      this.props.history.push({pathname: path, state: {freeTierMsg: true}});
     } else {
       this.setState({
         creatingFreeTier: false,
@@ -168,8 +171,8 @@ class TierSelection extends Component {
             </div>
           </div>
         </Row>
-        <CustomTierModal show={customTierModal} onHide={this.handleHide}/>
-        <FreeTierModal show={freeTierModal} onHide={this.handleHide}/>
+        <CustomTierModal show={customTierModal} onHide={this.handleHide} />
+        <FreeTierModal show={freeTierModal} onHide={this.handleHide} />
       </div>
     );
   }

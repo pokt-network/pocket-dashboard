@@ -47,6 +47,14 @@ class CreateNodeForm extends CreateForm {
     this.props.onBreadCrumbChange();
   }
 
+  validateError(err) {
+    if (err === "Error: Node already exists") {
+      return "A node with that name already exists, please use a different name.";
+    }
+
+    return err;
+  }
+
   async handleCreateImported(nodeID) {
     const {address, privateKey, passphrase} = NodeService.getNodeInfo();
     const data = this.state.data;
@@ -107,7 +115,9 @@ class CreateNodeForm extends CreateForm {
         redirectPath: _getDashboardPath(DASHBOARD_PATHS.nodePassphrase),
       });
     } else {
-      this.setState({error: {show: true, message: data.message}});
+      this.setState({error: {
+        show: true, 
+        message: this.validateError(data.message)}});
       scrollToId("alert");
     }
   }
