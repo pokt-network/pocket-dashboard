@@ -40,7 +40,7 @@ class NodePassphrase extends Passphrase {
         privateKey,
         ppkData
       });
-    } else {
+    }   else {
       this.setState({error: {show: true, message: data.message}});
       scrollToId("alert");
     }
