@@ -251,15 +251,12 @@ export default class NodeService extends BasePocketService {
    *
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
-   * @param {number} [stakingStatus] Staking status filter.
    *
    * @returns {RegisteredPocketNode[]} List of nodes.
    * @async
    */
-  async getAllNodes(limit, offset = 0, stakingStatus = undefined) {
-    const networkApplications = await (stakingStatus ?
-      this.pocketService.getNodes(stakingStatus) :
-      this.pocketService.getNodes(StakingStatus.Staked));
+  async getAllNodes(limit, offset = 0) {
+    const networkApplications = await this.pocketService.getNodes(StakingStatus.Staked);
 
     return networkApplications.map(PocketNode.createRegisteredPocketNode);
   }
@@ -291,12 +288,11 @@ export default class NodeService extends BasePocketService {
    * @param {string} userEmail Email of user.
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
-   * @param {number} [stakingStatus] Staking status filter.
    *
    * @returns {Promise<UserPocketNode[]>} List of nodes.
    * @async
    */
-  async getUserNodes(userEmail, limit, offset = 0, stakingStatus = undefined) {
+  async getUserNodes(userEmail, limit, offset = 0) {
     const filter = {user: userEmail};
 
     const dashboardNodesData = (await this.persistenceService.getEntities(NODE_COLLECTION_NAME, filter, limit, offset))
@@ -318,14 +314,8 @@ export default class NodeService extends BasePocketService {
       .getAllNodes(dashboardNodeAddresses);
 
     if (dashboardNodesData.length > 0) {
-      const userNodes = dashboardNodesData
+      return dashboardNodesData
         .map(node => PocketNode.createUserPocketNode(node, networkNodes));
-
-      if (stakingStatus === undefined) {
-        return userNodes;
-      }
-
-      return userNodes.filter(node => node.status === stakingStatus);
     }
 
     return [];

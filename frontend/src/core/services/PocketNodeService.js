@@ -216,19 +216,18 @@ class PocketNodeService extends PocketBaseService {
    *
    * @param {number} limit Limit of query.
    * @param {number} offset Offset of query.
-   * @param {number} status Filter by status.
    *
    * @return {Promise|Promise<Array.<*>>}
    */
-  getAllNodes(limit, offset = 0, status = undefined) {
-    const params = {limit, offset, status};
+  getAllNodes(limit, offset = 0) {
+    const params = {limit, offset};
 
     return axios
       .get(this._getURL(""), {params})
       .then((response) => response.data);
   }
 
-  getAllUserNodes(user, limit, offset = 0, status = undefined) {
+  getAllUserNodes(user, limit, offset = 0) {
     // Axios options format to send both query parameters and body data
     return axios({
       method: "post",
@@ -238,8 +237,7 @@ class PocketNodeService extends PocketBaseService {
       },
       params: {
         limit,
-        offset,
-        status,
+        offset
       },
     }).then((response) => response.data);
   }
