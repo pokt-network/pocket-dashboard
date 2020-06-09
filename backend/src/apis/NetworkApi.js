@@ -51,7 +51,7 @@ router.post("/chains", async (request, response) => {
 router.get("/summary", async (request, response) => {
   try {
 
-    const networkData = networkService.getNetworkSummaryData();
+    const networkData = await networkService.getNetworkSummaryData();
 
     response.send(networkData);
   } catch (e) {

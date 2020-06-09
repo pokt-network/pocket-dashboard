@@ -61,8 +61,6 @@ class OrderSummary extends Component {
     };
   }
 
-  componentDidUpdate(prevProps) {}
-
   componentDidMount() {
     this.setState({loading: true});
     // eslint-disable-next-line react/prop-types
@@ -214,6 +212,7 @@ class OrderSummary extends Component {
   saveNewCard(e, cardData, stripe) {
     e.preventDefault();
 
+    let selectedPaymentMethod = null;
     const {setMethodDefault} = this.state;
     const {cardHolderName: name} = cardData;
     const billingDetails = {name};
@@ -266,13 +265,17 @@ class OrderSummary extends Component {
           message: "Your payment method was successfully added",
         };
 
-        if (setMethodDefault) {
+        if (setMethodDefault || paymentMethods.length === 1) {
           PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
+          selectedPaymentMethod = paymentMethods.find(
+            (item) => item.id === result.paymentMethod.id
+          );
         }
 
         this.setState({
           alert,
           paymentMethods,
+          selectedPaymentMethod,
           isFormVisible: false,
           isAddNewDisabled: false,
         });
@@ -346,7 +349,9 @@ class OrderSummary extends Component {
               <Form className="cards">
                 {paymentMethods.map((card, idx) => {
                   const {brand, lastDigits, holder} = card;
-                  const isChecked = card.id === selectedPaymentMethod.id;
+                  const isChecked = selectedPaymentMethod
+                    ? card.id === selectedPaymentMethod.id
+                    : false;
 
                   return (
                     <div key={idx} className="payment-method">
@@ -354,7 +359,9 @@ class OrderSummary extends Component {
                         inline
                         label=""
                         type="radio"
-                        className={cls("payment-radio-input", {checked: isChecked})}
+                        className={cls("payment-radio-input", {
+                          checked: isChecked,
+                        })}
                         checked={isChecked}
                         onChange={() => {
                           this.setState({selectedPaymentMethod: card});
@@ -390,9 +397,9 @@ class OrderSummary extends Component {
                   <NewCardNoAddressForm
                     formActionHandler={this.saveNewCard}
                     actionButtonName="Add Card"
-                    setDefaultHandler={(setMethodDefault) =>
-                      this.setState({setMethodDefault})
-                    }
+                    setDefaultHandler={(setMethodDefault) => {
+                      this.setState({setMethodDefault});
+                    }}
                   />
                 </>
               )}
@@ -451,7 +458,7 @@ class OrderSummary extends Component {
                           type: "submit",
                         }}
                       >
-                        <span>Confirm payment</span>
+                        <span>Confirm Payment</span>
                       </LoadingButton>
                     </Form>
                   )}
