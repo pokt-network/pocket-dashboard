@@ -61,6 +61,8 @@ export function errorsHandler(error, req, res, next) {
     case "DashboardValidationError":
       res.status(400); // Bad request.
       break;
+    case "Error":
+      res.status(500); // Server Error.
   }
 
   const {message, name} = error;
