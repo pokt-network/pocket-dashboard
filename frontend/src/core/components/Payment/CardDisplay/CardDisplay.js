@@ -8,16 +8,16 @@ class CardDisplay extends Component {
     const {cardData, holder, onDelete} = this.props;
 
     return (
-      <div className="card-display">
+      <div className={`card-display ${onDelete ? "delete" : ""}`}>
         <div className="info">
           <strong className="text-capitalize">
             {cardData.type} {cardData.digits}
           </strong>
+          <span className="name">{holder}</span>
         </div>
-        <span className="name">{holder}</span>
         {onDelete && (
           <Button
-            className="font-weight-light"
+            className="font-weight-light delete-card"
             style={{fontSize: "1.1em"}}
             variant="link"
             onClick={() => onDelete(cardData)}
