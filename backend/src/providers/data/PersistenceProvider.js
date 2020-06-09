@@ -45,18 +45,6 @@ export default class PersistenceProvider {
 
   /**
    * @param {string} entityName Collection name of entities.
-   *
-   * @returns {Promise<object>} DB provider collection object.
-   */
-  async getCollection(entityName) {
-    const connection = await this.__openConnection();
-    const db = this.__getDB(connection);
-
-    return db.collection(entityName);
-  }
-
-  /**
-   * @param {string} entityName Collection name of entities.
    * @param {object} [filter] Filter used to retrieve elements.
    * @param {number} [limit] Limit used to retrieve elements.
    * @param {number} [offset] Offset used to retrieve elements.

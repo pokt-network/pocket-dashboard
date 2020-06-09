@@ -1,6 +1,6 @@
 import express from "express";
 import PaymentService from "../services/PaymentService";
-import {getOptionalQueryOption, getQueryOption} from "./_helpers";
+import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helpers";
 
 const router = express.Router();
 
@@ -9,200 +9,127 @@ const paymentService = new PaymentService();
 /**
  * Get all available currencies.
  */
-router.get("/currencies", (request, response) => {
-  try {
+router.get("/currencies", apiAsyncWrapper((req, res) => {
+  const currencies = paymentService.getAvailableCurrencies();
 
-    const currencies = paymentService.getAvailableCurrencies();
-
-    response.send(currencies);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(currencies);
+}));
 
 /**
  * Save a new payment method.
  */
-router.post("/payment_method", async (request, response) => {
-  try {
-    /** @type {{user:string, paymentMethod: {id: string, card: *}, billingDetails: {name: string, address:{line1:string, postal_code:string, country:string}}}} */
-    const data = request.body;
+router.post("/payment_method", apiAsyncWrapper(async (req, res) => {
+  /** @type {{user:string, paymentMethod: {id: string, card: *}, billingDetails: {name: string, address:{line1:string, postal_code:string, country:string}}}} */
+  const data = req.body;
 
-    const saved = await paymentService.savePaymentMethod(data);
+  const saved = await paymentService.savePaymentMethod(data);
 
-    response.send(saved);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.send(saved);
+}));
 
 /**
  * Delete a payment method.
  */
-router.delete("/payment_method/:paymentMethodID", async (request, response) => {
-  try {
-    /** @type {{paymentMethodID: string}} */
-    const data = request.params;
+router.delete("/payment_method/:paymentMethodID", apiAsyncWrapper(async (req, res) => {
+  /** @type {{paymentMethodID: string}} */
+  const data = req.params;
 
-    const deleted = await paymentService.deletePaymentMethod(data.paymentMethodID);
+  const deleted = await paymentService.deletePaymentMethod(data.paymentMethodID);
 
-    response.send(deleted);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.send(deleted);
+}));
 
 
 /**
  * Get user payment methods.
  */
-router.post("/payment_methods", async (request, response) => {
-  try {
-    /** @type {{user:string}} */
-    const data = request.body;
+router.post("/payment_methods", apiAsyncWrapper(async (req, res) => {
+  /** @type {{user:string}} */
+  const data = req.body;
 
-    const paymentMethods = await paymentService.getUserPaymentMethods(data.user);
+  const paymentMethods = await paymentService.getUserPaymentMethods(data.user);
 
-    response.send(paymentMethods);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(paymentMethods);
+}));
 
 
 /**
  * Create a new intent of payment for apps.
  */
-router.post("/new_intent/apps", async (request, response) => {
-  try {
-    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, maxRelays: string}, amount: number}} */
-    const data = request.body;
+router.post("/new_intent/apps", apiAsyncWrapper(async (req, res) => {
+  /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, maxRelays: string}, amount: number}} */
+  const data = req.body;
 
-    const paymentIntent = await paymentService.createPocketPaymentIntentForApps(data);
+  const paymentIntent = await paymentService.createPocketPaymentIntentForApps(data);
 
-    if (paymentIntent) {
-      const {id, createdDate, currency, amount} = paymentIntent;
+  if (paymentIntent) {
+    const {id, createdDate, currency, amount} = paymentIntent;
 
-      await paymentService.savePaymentHistory(createdDate, id, currency, amount, data.item, data.user);
-    }
-
-    response.send(paymentIntent);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
+    await paymentService.savePaymentHistory(createdDate, id, currency, amount, data.item, data.user);
   }
-});
+
+  res.json(paymentIntent);
+}));
 
 /**
  * Create a new intent of payment for nodes.
  */
-router.post("/new_intent/nodes", async (request, response) => {
-  try {
-    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, validatorPower: string}, amount: number}} */
-    const data = request.body;
+router.post("/new_intent/nodes", apiAsyncWrapper(async (req, res) => {
+  /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, validatorPower: string}, amount: number}} */
+  const data = req.body;
 
-    const paymentIntent = await paymentService.createPocketPaymentIntentForNodes(data);
+  const paymentIntent = await paymentService.createPocketPaymentIntentForNodes(data);
 
-    if (paymentIntent) {
-      const {id, createdDate, currency, amount} = paymentIntent;
+  if (paymentIntent) {
+    const {id, createdDate, currency, amount} = paymentIntent;
 
-      await paymentService.savePaymentHistory(createdDate, id, currency, amount, data.item, data.user);
-    }
-
-    response.send(paymentIntent);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
+    await paymentService.savePaymentHistory(createdDate, id, currency, amount, data.item, data.user);
   }
-});
+
+  res.json(paymentIntent);
+}));
 
 /**
  * Retrieve history information about payments.
  */
-router.post("/history", async (request, response) => {
-  try {
-    const limit = parseInt(getQueryOption(request, "limit"));
+router.post("/history", apiAsyncWrapper(async (req, res) => {
+  const limit = parseInt(getQueryOption(req, "limit"));
 
-    const offsetData = getOptionalQueryOption(request, "offset");
-    const offset = offsetData !== "" ? parseInt(offsetData) : 0;
+  const offsetData = getOptionalQueryOption(req, "offset");
+  const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    /** @type {{user:string, fromDate: string, toDate: string}} */
-    const data = request.body;
+  /** @type {{user:string, fromDate: string, toDate: string}} */
+  const data = req.body;
 
-    const paymentHistory = await paymentService
-      .getPaymentHistory(data.user, limit, offset, data.fromDate, data.toDate);
+  const paymentHistory = await paymentService
+    .getPaymentHistory(data.user, limit, offset, data.fromDate, data.toDate);
 
-    response.send(paymentHistory);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(paymentHistory);
+}));
 
 /**
  * Retrieve history information about payments.
  */
-router.get("/history/:paymentID", async (request, response) => {
-  try {
-    /** @type {{paymentID:string}} */
-    const data = request.params;
+router.get("/history/:paymentID", apiAsyncWrapper(async (req, res) => {
+  /** @type {{paymentID:string}} */
+  const data = req.params;
 
-    const paymentHistory = await paymentService.getPaymentFromHistory(data.paymentID);
+  const paymentHistory = await paymentService.getPaymentFromHistory(data.paymentID);
 
-    response.send(paymentHistory);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(paymentHistory);
+}));
 
 /**
  * Mark payment as success on history.
  */
-router.put("/history", async (request, response) => {
-  try {
-    /** @type {{user:string, paymentID: string, paymentMethodID:string, billingDetails: {name: string, address:{line1:string, zip_code:string, country:string}}}} */
-    const data = request.body;
+router.put("/history", apiAsyncWrapper(async (req, res) => {
+  /** @type {{user:string, paymentID: string, paymentMethodID:string, billingDetails: {name: string, address:{line1:string, zip_code:string, country:string}}}} */
+  const data = req.body;
 
-    const saved = await paymentService.markPaymentAsSuccess(data);
+  const saved = await paymentService.markPaymentAsSuccess(data);
 
-    response.send(saved);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.send(saved);
+}));
 
 
 export default router;

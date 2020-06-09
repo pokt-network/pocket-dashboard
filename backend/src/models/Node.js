@@ -1,6 +1,7 @@
 import {Node, NodeParams, StakingStatus} from "@pokt-network/pocket-js";
 import {PublicPocketAccount} from "./Account";
 import {EMAIL_REGEX} from "./Regex";
+import {DashboardValidationError} from "./Exceptions";
 
 export class RegisteredPocketNode {
   /**
@@ -57,29 +58,29 @@ export class PocketNode {
    * @param {string} [nodeData.icon] Icon.
    *
    * @returns {boolean} If is validation success
-   * @throws {Error} If validation fails
+   * @throws {DashboardValidationError} If validation fails
    * @static
    */
   static validate(nodeData) {
 
     if (nodeData.name === "") {
-      throw Error("Name is not valid.");
+      throw new DashboardValidationError("Name is not valid.");
     }
 
     if (nodeData.name.length > 20) {
-      throw Error("Name length should not be greater than 20 character.");
+      throw new DashboardValidationError("Name length should not be greater than 20 character.");
     }
 
     if (nodeData.description !== "" && nodeData.description.length > 150) {
-      throw Error("Description length should not be greater than 150 character.");
+      throw new DashboardValidationError("Description length should not be greater than 150 character.");
     }
 
     if (!EMAIL_REGEX.test(nodeData.contactEmail)) {
-      throw Error("Contact email address is not valid.");
+      throw new DashboardValidationError("Contact email address is not valid.");
     }
 
     if (!EMAIL_REGEX.test(nodeData.user)) {
-      throw Error("User is not valid.");
+      throw new DashboardValidationError("User is not valid.");
     }
 
     return true;
