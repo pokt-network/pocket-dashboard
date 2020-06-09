@@ -1,6 +1,7 @@
 import {Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
 import {PublicPocketAccount} from "./Account";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
+import {DashboardValidationError} from "./Exceptions";
 
 export class RegisteredPocketApplication {
   /**
@@ -60,37 +61,37 @@ export class PocketApplication {
    * @param {string} [applicationData.icon] Icon.
    *
    * @returns {boolean} If is validation success
-   * @throws {Error} If validation fails
+   * @throws {DashboardValidationError} If validation fails
    * @static
    */
   static validate(applicationData) {
 
     if (applicationData.name === "") {
-      throw Error("Name is not valid.");
+      throw new DashboardValidationError("Name is not valid.");
     }
 
     if (applicationData.name.length > 20) {
-      throw Error("Name length should not be greater than 20 character.");
+      throw new DashboardValidationError("Name length should not be greater than 20 character.");
     }
 
     if (applicationData.description !== "" && applicationData.description.length > 150) {
-      throw Error("Description length should not be greater than 150 character.");
+      throw new DashboardValidationError("Description length should not be greater than 150 character.");
     }
 
     if (applicationData.owner === "") {
-      throw Error("Owner is not valid.");
+      throw new DashboardValidationError("Owner is not valid.");
     }
 
     if (applicationData.url && !URL_REGEX.test(applicationData.url)) {
-      throw Error("URL is not valid.");
+      throw new DashboardValidationError("URL is not valid.");
     }
 
     if (!EMAIL_REGEX.test(applicationData.contactEmail)) {
-      throw Error("Contact email address is not valid.");
+      throw new DashboardValidationError("Contact email address is not valid.");
     }
 
     if (!EMAIL_REGEX.test(applicationData.user)) {
-      throw Error("User is not valid.");
+      throw new DashboardValidationError("User is not valid.");
     }
 
     return true;

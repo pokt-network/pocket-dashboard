@@ -16,6 +16,7 @@ export default class AccountService extends BasePocketService {
    *
    * @returns {Promise<Account> | Error} A Pocket account created successfully.
    * @throws {Error} If creation of account fails.
+   * @deprecated This method will be deleted soon.
    */
   async createPocketAccount(pocketService, passphrase, privateKey) {
     if (privateKey) {
@@ -47,6 +48,7 @@ export default class AccountService extends BasePocketService {
    *
    * @returns {Promise<Account>} a pocket account.
    * @throws Error If account is invalid.
+   * @deprecated This method will be deleted soon.
    * @async
    */
   async importAccountToNetwork(pocketService, privateKey, passphrase) {
@@ -67,6 +69,7 @@ export default class AccountService extends BasePocketService {
    *
    * @returns {Promise<PublicPocketAccount>} a pocket account.
    * @throws Error If account is invalid.
+   * @deprecated This method will be deleted soon.
    * @async
    */
   async importDashboardAccountToNetwork(privateKey, passphrase) {
@@ -87,6 +90,7 @@ export default class AccountService extends BasePocketService {
    *
    * @returns {Promise<PublicPocketAccount>} a pocket account.
    * @throws Error If account is invalid.
+   * @deprecated This method will be deleted soon.
    * @async
    */
   async importDashboardAccountToNetworkFromPPK(ppkData, passphrase) {

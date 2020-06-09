@@ -1,6 +1,7 @@
 import express from "express";
 import {NetworkChain} from "../models/Network";
 import NetworkService from "../services/NetworkService";
+import {apiAsyncWrapper} from "./_helpers";
 
 const router = express.Router();
 
@@ -9,58 +10,31 @@ const networkService = new NetworkService();
 /**
  * Get all available network chains.
  */
-router.get("/chains", async (request, response) => {
-  try {
+router.get("/chains", apiAsyncWrapper(async (req, res) => {
+  const chains = NetworkChain.getAvailableNetworkChains();
 
-    const chains = NetworkChain.getAvailableNetworkChains();
-
-    response.send(chains);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(chains);
+}));
 
 /**
  * Get network chains from hashes.
  */
-router.post("/chains", async (request, response) => {
-  try {
+router.post("/chains", apiAsyncWrapper(async (req, res) => {
+  /** @type {{networkHashes: string[]}} */
+  const data = req.body;
 
-    /** @type {{networkHashes: string[]}} */
-    const data = request.body;
+  const chains = NetworkChain.getNetworkChains(data.networkHashes);
 
-    const chains = NetworkChain.getNetworkChains(data.networkHashes);
-
-    response.send(chains);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(chains);
+}));
 
 /**
  * Get network summary data.
  */
-router.get("/summary", async (request, response) => {
-  try {
+router.get("/summary", apiAsyncWrapper(async (req, res) => {
+  const networkData = await networkService.getNetworkSummaryData();
 
-    const networkData = await networkService.getNetworkSummaryData();
-
-    response.send(networkData);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(networkData);
+}));
 
 export default router;

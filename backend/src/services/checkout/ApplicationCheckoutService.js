@@ -1,5 +1,6 @@
 import {BaseCheckoutService} from "./BaseCheckoutService";
 import {Configurations} from "../../_configuration";
+import {DashboardValidationError} from "../../models/Exceptions";
 
 export default class ApplicationCheckoutService extends BaseCheckoutService {
 
@@ -36,7 +37,7 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
    * @param {number} relaysPerDay Relays per day.
    *
    * @returns {number} Money to spent.
-   * @throws {Error} if relays per day is out of allowed range.
+   * @throws {DashboardValidationError} if relays per day is out of allowed range.
    */
   getMoneyToSpent(relaysPerDay) {
     const {
@@ -51,7 +52,7 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
     } = this.options;
 
     if (relaysPerDay < minRelaysPerDay && relaysPerDay > maxRelaysPerDay) {
-      throw new Error("Relays per day is out of allowed range.");
+      throw new DashboardValidationError("Relays per day is out of allowed range.");
     }
     return (((((relaysPerDay / sessionsInADay) - stability) / pRate)) / baseRelayPerPOKT) * this.poktMarketPrice;
   }
