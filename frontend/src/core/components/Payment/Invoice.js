@@ -14,22 +14,22 @@ class Invoice extends Component {
         <div>
           {information.map((item, idx) => (
             <div key={idx} className="field">
-              <p>{item.text}</p>
-              <p>{item.value}</p>
+              <span>{item.text}:</span>
+              <span>{item.value}</span>
             </div>
           ))}
           <hr />
           <p className="text-uppercase detail">Purchase detail</p>
           {items.map((item, idx) => (
             <div key={idx} className="field">
-              <p>{item.text}</p>
-              <p>{item.value}</p>
+              <span>{item.text}:</span>
+              <span>{item.value}</span>
             </div>
           ))}
           <hr />
           <div className="label field mt-4 total">
-            <p className=""> Total Cost:</p>
-            <p>{`US${total}`}</p>
+            <span> Total Cost:</span>
+            <span>{`US${total}`}</span>
           </div>
         </div>
       </Col>

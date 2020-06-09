@@ -103,6 +103,7 @@ class AppPassphrase extends Component {
   }
 
   async handlePassphrase(values) {
+    const {created} = this.state;
     const valid = await validateYup(values, this.schema);
 
     if (valid === undefined) {
@@ -111,7 +112,9 @@ class AppPassphrase extends Component {
           passPhrase: values.passPhrase,
           validPassphrase: true,
         }, () => {
-          this.createApplicationAccount();
+          if (!created) {
+this.createApplicationAccount();
+}
         }
       );
     } else {

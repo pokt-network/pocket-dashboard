@@ -2,7 +2,7 @@
 import React, {Component} from "react";
 import "./Checkout.scss";
 import {Button, Col, Row} from "react-bootstrap";
-import AppSteps from "../../../core/components/AppSteps/AppSteps";
+import ReactToPrint from "react-to-print";
 import Invoice from "../../../core/components/Payment/Invoice";
 import {capitalize, formatCurrency} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
@@ -16,6 +16,7 @@ import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import Loader from "../../../core/components/Loader";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppAlert from "../../../core/components/AppAlert";
+import PrintableInvoice from "../PrintableInvoice/PrintableInvoice";
 
 class Checkout extends Component {
   constructor(props, context) {
@@ -61,6 +62,7 @@ class Checkout extends Component {
     const {
       paymentID: id,
       createdDate: date,
+      poktPrice,
     } = await PaymentService.getPaymentDetail(paymentId);
 
     const {brand, lastDigits} = paymentMethod;
@@ -70,7 +72,8 @@ class Checkout extends Component {
       id: id.replace("pi_", "").toLowerCase(),
       date: moment(date).format("DD MM YYYY"),
       owner: userName,
-      card: `${capitalize(brand)} ${lastDigits}`,
+      card: `${capitalize(brand)} **** **** **** ${lastDigits}`,
+      poktPrice,
     };
 
     this.setState({
@@ -86,7 +89,7 @@ class Checkout extends Component {
   }
 
   render() {
-    const {owner, id, date, card} = this.state.invoice;
+    const {owner, id, date, card, poktPrice} = this.state.invoice;
     const {
       details,
       total,
@@ -100,7 +103,7 @@ class Checkout extends Component {
 
     const information = [
       {text: "Date", value: date},
-      {text: "Bill To", value: owner},
+      {text: "Bill to", value: owner},
       {text: "Invoice", value: id},
       {text: "Card Detail", value: card},
     ];
@@ -112,7 +115,7 @@ class Checkout extends Component {
       if (!it.format) {
         return it;
       }
-      return {text: it.text, value: formatCurrency(it.value)};
+      return {text: it.text, value: `US${formatCurrency(it.value)}`};
     });
 
     const totalAmount = formatCurrency(total);
@@ -136,39 +139,19 @@ class Checkout extends Component {
           return url.replace(":address", address);
         }}
       >
-        <Button variant="primary" className="mt-3 float-right pr-4 pl-4 cta">
-          <span>Go to {isApp ? "app" : "node"} detail</span>
+        <Button variant="primary" className="mt-1 float-right cta">
+          <span>Go to {isApp ? "App" : "Node"} details</span>
         </Button>
       </Link>
     );
-    const icons = [
-      <img
-        key={0}
-        src={"/assets/cart.svg"}
-        className="step-icon"
-        alt="step-icon"
-      />,
-      <img
-        key={1}
-        src={"/assets/arrows.svg"}
-        className="step-icon"
-        alt="step-icon"
-      />,
-      <img
-        key={2}
-        src={"/assets/check.svg"}
-        className="step-icon"
-        alt="step-icon"
-      />,
-    ];
 
     if (unauthorized) {
     }
 
     return (
-      <div id="nodes-checkout" className="mb-5">
-        <Row className="mb-4">
-          <Col>
+      <>
+        <div id="nodes-checkout">
+          <Row className="mb-4">
             <AppAlert
               className="pb-3 pt-3"
               title={"This transaction may take some time to be completed."}
@@ -178,52 +161,59 @@ class Checkout extends Component {
                 be staked, also we will notify you by email.
               </p>
             </AppAlert>
-          </Col>
-        </Row>
-        <Row>
-          <Col className="header">
-            {detailButton}
-            <h1>Enjoy your purchase</h1>
-            <p>Please wait a few minutes until the process is completed</p>
-          </Col>
-        </Row>
-        <Row className="segment mb-3">
-          <Col className="title-page">
-            <AppSteps
-              icons={icons}
-              current={2}
-              steps={[
-                "Purchase",
-                <>
-                  Encode and sign
-                  <br /> stake transaction
-                </>,
-                "throughput available",
-              ]}
+          </Row>
+          <Row>
+            <Col className="header">
+              {detailButton}
+              <h1>Enjoy your purchase</h1>
+              <p>Please wait a few minutes until the process is completed.</p>
+            </Col>
+          </Row>
+
+          <div className="mb-4 title-page">
+            <h2>Your invoice</h2>
+          </div>
+          <Row className="segment mb-2">
+            <Invoice
+              title={`Invoice ${id}`}
+              information={information}
+              items={items}
+              total={totalAmount}
             />
-          </Col>
-        </Row>
-        <div className="mt-4 ml-4 mb-4 title-page">
-          <h2>Your invoice</h2>
+          </Row>
         </div>
-        <Row className="segment mb-2">
-          <Invoice
-            title={`Invoice ${id}`}
-            information={information}
-            items={items}
-            total={totalAmount}
-          />
-        </Row>
-        <p className="mt-4 ml-3 print">
-          {/* TODO: Add print functionality */}
-          <img
-            src={"/assets/printer.svg"}
-            className="icon"
-            alt="print-icon"
-          />{" "}
-          <span className="link">Print</span> your invoice
-        </p>
-      </div>
+        <ReactToPrint
+          trigger={() => (
+            <div className="print">
+              <img
+                src={"/assets/printer.svg"}
+                className="icon"
+                alt="print-icon"
+              />{" "}
+              <Button className="link">
+                Print
+              </Button>{" "}
+              your invoice
+            </div>
+          )}
+          content={() => this.componentRef}
+          bodyClass="printable-invoice"
+          copyStyles={true}
+        />
+        <PrintableInvoice
+          ref={(el) => (this.componentRef = el)}
+          invoiceItems={[
+            {text: "invoice", value: id},
+            {text: "bill to", value: owner},
+            {text: "date", value: date},
+            {text: "card detail", value: card},
+          ]}
+          purchaseDetails={items}
+          cardHolderName={owner}
+          poktPrice={poktPrice}
+          total={totalAmount}
+        />
+      </>
     );
   }
 }

@@ -210,6 +210,7 @@ input {
 }
 
 .alert {
+  width: 100%;
   min-height: 40px;
   font-family: $secondary-font-family;
   box-shadow: $default-box-shadow;
@@ -234,6 +235,10 @@ input {
       color: white;
       font-size: 1.5em;
       font-weight: 300;
+    }
+
+    &:focus {
+      outline: none;
     }
   }
 
