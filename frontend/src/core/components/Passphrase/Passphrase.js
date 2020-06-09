@@ -105,7 +105,11 @@ class Passphrase extends Component {
           passPhrase: values.passPhrase,
           validPassphrase: true,
         }, () => {
-          this.createAccount();
+          const {fileDownloaded} = this.state;
+
+          if (!fileDownloaded) {
+            this.createAccount();
+          }
         }
       );
     } else {

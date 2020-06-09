@@ -112,7 +112,11 @@ class AppPassphrase extends Component {
           passPhrase: values.passPhrase,
           validPassphrase: true,
         }, () => {
-          this.createApplicationAccount();
+          const {fileDownloaded} = this.state;
+          
+          if (!fileDownloaded) {
+            this.createApplicationAccount();
+          }
         }
       );
     } else {
@@ -132,6 +136,8 @@ class AppPassphrase extends Component {
     const {success, data} = await ApplicationService.createApplicationAccount(
       applicationInfo.id, passPhrase, applicationBaseLink
     );
+
+    console.log(data);
 
     if (success) {
       const {privateApplicationData, ppkData} = data;
