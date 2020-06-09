@@ -55,7 +55,7 @@ export function errorsHandler(error, req, res, next) {
 
   switch (error.name) {
     case "PocketNetworkError":
-      res.status(408); //  Request Timeout.
+      res.status(408); // Request Timeout.
       break;
     case "DashboardError":
     case "DashboardValidationError":
