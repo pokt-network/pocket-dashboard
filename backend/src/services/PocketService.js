@@ -7,7 +7,6 @@ import {
   Node,
   NodeParams,
   Pocket,
-  PocketAAT,
   StakingStatus,
   Transaction
 } from "@pokt-network/pocket-js";
@@ -81,18 +80,6 @@ export default class PocketService {
     return this.httpRpcProvider;
   }
 
-  /**
-   * Import an account to Pokt network using private key of the account.
-   *
-   * @param {string} privateKeyHex Private key of the account to import in hex.
-   * @param {string} passphrase Passphrase used to generate the account.
-   *
-   * @returns {Promise<Account | Error>} A pocket account.
-   * @deprecated using now PPK instead of private key
-   */
-  async importAccount(privateKeyHex, passphrase) {
-    return this.__pocket.keybase.importAccount(Buffer.from(privateKeyHex, "hex"), passphrase);
-  }
 
   /**
    * Import an account to Pokt network using ppk  of the account.
@@ -104,22 +91,6 @@ export default class PocketService {
    */
   async importAccountFromPPK(ppkData, passphrase) {
     return this.__pocket.keybase.importPPKFromJSON(passphrase, JSON.stringify(ppkData), passphrase);
-  }
-
-  /**
-   * Export raw Private key of the account.
-   *
-   * @param {string} addressHex Address of account to export in hex.
-   * @param {string} passphrase Passphrase used to generate the account.
-   * @param {string} encoding Encoding used to encode the buffer of private key.
-   *
-   * @returns {Promise<string>} A Hex private key.
-   */
-  async exportRawAccount(addressHex, passphrase, encoding = "hex") {
-    /** @type {Buffer} */
-    const privateKey = await this.__pocket.keybase.exportAccount(addressHex, passphrase);
-
-    return privateKey.toString(encoding);
   }
 
   /**
@@ -163,24 +134,6 @@ export default class PocketService {
     }
 
     return accountQueryResponse.balance.toString();
-  }
-
-  /**
-   * Get an Application Authentication Token to be used on Pokt network.
-   *
-   * @param {string} clientPublicKey The client Pocket account public key.
-   * @param {Account} applicationAccount The funded application Pocket account.
-   * @param {string} applicationAccountPassphrase The passphrase used to generate application address.
-   *
-   * @returns {Promise<PocketAAT>} An application authorization tokens.
-   */
-  async getApplicationAuthenticationToken(clientPublicKey, applicationAccount, applicationAccountPassphrase) {
-    const aatVersion = POCKET_NETWORK_CONFIGURATION.aat_version;
-
-    const applicationPublicKeyHex = applicationAccount.publicKey.toString("hex");
-    const applicationPrivateKeyHex = await this.exportRawAccount(applicationAccount.addressHex, applicationAccountPassphrase);
-
-    return PocketAAT.from(aatVersion, clientPublicKey, applicationPublicKeyHex, applicationPrivateKeyHex);
   }
 
   /**
