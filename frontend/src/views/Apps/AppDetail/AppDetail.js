@@ -2,7 +2,12 @@
 import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {POKT_UNSTAKING_DAYS, STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
+import {
+  POKT_UNSTAKING_DAYS, 
+  STAKE_STATUS, 
+  TABLE_COLUMNS,
+  DEFAULT_NETWORK_ERROR_MESSAGE,
+  BACKEND_ERRORS} from "../../../_constants";
 import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
@@ -37,6 +42,7 @@ class AppDetail extends Component {
       stake: false,
       ctaButtonPressed: false,
       freeTierMsg: false,
+      error: {show: false, message: ""}
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -46,6 +52,8 @@ class AppDetail extends Component {
 
   async componentDidMount() {
     let freeTierMsg = false;
+    let hasError = false;
+    let errorType = "";
 
     if (this.props.location.state) {
       freeTierMsg = this.props.location.state.freeTierMsg;
@@ -56,10 +64,20 @@ class AppDetail extends Component {
     const {
       pocketApplication,
       networkData,
+      error,
+      name,
     } = await ApplicationService.getApplication(address);
 
-    if (pocketApplication === undefined) {
-      this.setState({loading: false, exists: false});
+    hasError = error ? error : hasError;
+    errorType = error ? name : errorType;
+
+    if (hasError || pocketApplication === undefined ) {
+      if (errorType === BACKEND_ERRORS.NETWORK) {
+        this.setState({loading: false, error: {
+          show: true, message: DEFAULT_NETWORK_ERROR_MESSAGE}});
+      } else {
+        this.setState({loading: false, exists: false});
+      }
       return;
     }
 
@@ -173,7 +191,7 @@ class AppDetail extends Component {
       loading,
       deleteModal,
       deleted,
-      message,
+      error,
       exists,
       unstake,
       stake,
@@ -286,15 +304,15 @@ class AppDetail extends Component {
                 </p>
               </AppAlert>
             )}
-            {message && (
+            {error.show && (
               <AppAlert
                 variant="danger"
-                title={message}
-                onClose={() => this.setState({message: ""})}
+                title={error.message}
+                onClose={() => this.setState({error: {show: false}})}
                 dismissible/>
             )}
             <div className="head">
-              <img src={icon} alt="app-icon"/>
+              <img className="account-icon" src={icon} alt="app-icon"/>
               <div className="info">
                 <h1 className="name d-flex align-items-center">
                   {name}
