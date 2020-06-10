@@ -14,7 +14,14 @@ class TermsOfService extends Component {
   async componentDidMount() {
     const price = await PocketNetworkService.getNetworkSummaryData();
 
-    this.setState({poktPrice: price.poktPrice});
+    this.setState(
+      price.poktPrice > 0
+        ? {poktPrice: price.poktPrice}
+        : {
+            poktPrice:
+              "Error: Unable to retrieve Pokt price at the moment, please try again later.",
+          }
+    );
   }
 
   function;
