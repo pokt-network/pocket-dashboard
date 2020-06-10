@@ -23,6 +23,7 @@ import LoadingButton from "../../../core/components/LoadingButton";
 import {ITEM_TYPES} from "../../../_constants";
 import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
+import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -144,6 +145,8 @@ class OrderSummary extends Component {
   async makePurchaseWithSavedCard(e, stripe) {
     e.preventDefault();
 
+    const {total} = this.state;
+
     this.setState({purchasing: true});
 
     const {paymentIntent, selectedPaymentMethod, type} = this.state;
@@ -165,6 +168,9 @@ class OrderSummary extends Component {
       return;
     }
 
+    const pokt = PocketCheckoutService.getNodePoktToStake(total);
+
+
     if (type === ITEM_TYPES.APPLICATION) {
       // Stake application
       const {
@@ -179,15 +185,12 @@ class OrderSummary extends Component {
 
       this.setState({loading: true});
 
-      // TODO: Calculate pokt amount from purchase
-      const pokt = 100000;
       const appStakeRequest = PocketClientService.appStakeRequest(
         address, passphrase, chains, pokt);
 
-      // TODO: CAll backend and send request to finish transaction
-      // ApplicationService.stakeApplication(
-      //   application, chains, result.paymentIntent.id, applicationLink
-      // ).then(() => {});
+      ApplicationService.stakeApplication(
+        appStakeRequest, result.paymentIntent.id, applicationLink
+      ).then(() => {});
     } else {
       // Stake Node
       const {
@@ -203,15 +206,12 @@ class OrderSummary extends Component {
 
       this.setState({loading: true});
 
-      // TODO: Calculate pokt amount from purchase
-      const pokt = 100000;
       const nodeStakeRequest = PocketClientService.nodeStakeRequest(
         address, passphrase, chains, pokt, serviceURL);
 
-      // TODO: CAll backend and send request to finish transaction
-      // NodeService.stakeNode(
-      //   node, chains, result.paymentIntent.id, nodeLink
-      // ).then(() => {});
+      NodeService.stakeNode(
+        nodeStakeRequest, result.paymentIntent.id, nodeLink
+      ).then(() => {});
     }
 
     PaymentService.setDefaultPaymentMethod(selectedPaymentMethod.id);

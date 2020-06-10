@@ -105,13 +105,13 @@ class NodeDetail extends Component {
 
     await PocketClientService.saveAccount(ppk, passphrase);
 
-    const nodeUnstakeRequest = await PocketClientService.nodeUnstakeRequest(
+    const {tx} = await PocketClientService.nodeUnstakeRequest(
       address
     );
 
     // TODO: Call backend and send request to finish transaction
     const {success, data} = await NodeService.unstakeNode(
-      {passphrase, address}, nodeLink
+      tx, nodeLink
     );
 
     if (success) {
@@ -128,13 +128,13 @@ class NodeDetail extends Component {
 
     await PocketClientService.saveAccount(ppk, passphrase);
 
-    const nodeUnstakeRequest = await PocketClientService.nodeUnjailRequest(
+    const {tx} = await PocketClientService.nodeUnjailRequest(
       address
     );
 
     // TODO: Call backend and send request to finish transaction
     const {success, data} = NodeService.unjailNode(
-      {passphrase, address}, nodeLink
+      tx, nodeLink
     );
 
     if (success) {

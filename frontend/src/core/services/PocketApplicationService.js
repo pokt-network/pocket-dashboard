@@ -312,26 +312,24 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Create free tier application.
    *
-   * @param {{privateKey: string, passphrase: string}} application Application data.
-   * @param {string[]} networkChains Network chains to stake application.
+   * @param {string} transactionHash Transaction hash.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeFreeTierApplication(application, networkChains) {
+  stakeFreeTierApplication(transactionHash) {
     return axios
-      .post(this._getURL("freetier/stake"), {application, networkChains})
+      .post(this._getURL("freetier/stake"), {transactionHash})
       .then((response) => response.data);
   }
 
   /**
    * Unstake a free tier application.
-   *
-   * @param {{privateKey: string, passphrase: string, accountAddress: string}} application Application data.
+   * @param {string} transactionHash Transaction hash.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeFreeTierApplication(application) {
-    const data = {application};
+  unstakeFreeTierApplication(transactionHash) {
+    const data = {transactionHash};
 
     return axios
       .post(this._getURL("freetier/unstake"), data)
@@ -346,19 +344,15 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Stake a custom tier application.
    *
-   * @param {object} application Application data.
-   * @param {string} application.privateKey Application private key.
-   * @param {string} application.passphrase Application passphrase.
-   * @param {string[]} networkChains Application network chains.
+   * @param {string} transactionHash Transaction hash.
    * @param {string} paymentId payment's stripe confirmation id.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeApplication(application, networkChains, paymentId, applicationLink) {
+  stakeApplication(transactionHash, paymentId, applicationLink) {
     const data = {
-      application,
-      networkChains,
+      transactionHash,
       payment: {id: paymentId},
       applicationLink
     };
@@ -376,13 +370,13 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a custom tier application.
    *
-   * @param {{privateKey:string, passphrase: string, accountAddress: string}} application Application data.
+   * @param {string} transactionHash Transaction hash.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeApplication(application, applicationLink) {
-    const data = {application, applicationLink};
+  unstakeApplication(transactionHash, applicationLink) {
+    const data = {transactionHash, applicationLink};
 
     return axios
       .post(this._getURL("custom/unstake"), data)
