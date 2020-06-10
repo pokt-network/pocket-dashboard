@@ -11,21 +11,18 @@
     margin-bottom: 0;
 
     li {
-      color: $dark-gray;
+      color: $light-gray;
       padding-left: 1px;
 
+      &:last-of-type {
+        color: $dark-gray;
+      }
 
       span,
       &::before {
         color: $light-gray;
         padding-right: 1px;
         padding-left: 0;
-      }
-
-      &.is-active {
-        span {
-          color: $dark-gray;
-        }
       }
     }
   }

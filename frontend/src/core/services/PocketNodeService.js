@@ -273,20 +273,16 @@ class PocketNodeService extends PocketBaseService {
   /**
    * Stake a node.
    *
-   * @param {object} node Node data.
-   * @param {string} node.privateKey Node private key.
-   * @param {string} node.passphrase Node passphrase.
-   * @param {string} node.serviceURL Node service URL.
+   * @param {string} transactionHash Transaction hash.
    * @param {string[]} networkChains Node network chains.
    * @param {string} paymentId payment's stripe confirmation id.
    * @param {string} nodeLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeNode(node, networkChains, paymentId, nodeLink) {
+  stakeNode(transactionHash, paymentId, nodeLink) {
     const data = {
-      node,
-      networkChains,
+      transactionHash,
       payment: {id: paymentId},
       nodeLink,
     };
@@ -302,15 +298,15 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
-   * Unstake a node.
-   *
-   * @param {{privateKey:string, passphrase: string, accountAddress: string}} node Node data.
+   * Unstake a node
+   * 
+   * @param {string} transactionHash Transaction hash.
    * @param {string} nodeLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeNode(node, nodeLink) {
-    const data = {node, nodeLink};
+  unstakeNode(transactionHash, nodeLink) {
+    const data = {transactionHash, nodeLink};
 
     return axios
       .post(this._getURL("custom/unstake"), data)
@@ -324,14 +320,13 @@ class PocketNodeService extends PocketBaseService {
 
   /**
    * Unjail a jailed node
-   *
-   * @param {{privateKey:string, passphrase: string, accountAddress: string}} node Node data.
+   * @param {string} transactionHash Transaction hash.
    * @param {string} nodeLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unjailNode(node, nodeLink) {
-    const data = {node, nodeLink};
+  unjailNode(transactionHash, nodeLink) {
+    const data = {transactionHash, nodeLink};
 
     return axios
       .post(this._getURL("/unjail"), data)

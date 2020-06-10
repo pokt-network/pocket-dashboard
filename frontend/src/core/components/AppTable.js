@@ -49,7 +49,6 @@ class AppTable extends Component {
             empty: empty,
             hide: !show,
           })}
-          keyField="pocketNode.publicPocketAccount.address"
           data={data}
           columns={toggle ? columnsToggle : columns}
           {...restProps}

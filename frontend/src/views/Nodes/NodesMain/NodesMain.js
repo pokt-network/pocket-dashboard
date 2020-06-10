@@ -1,5 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
+import cls from "classnames";
 import AppTable from "../../../core/components/AppTable";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import InfoCards from "../../../core/components/InfoCards";
@@ -9,7 +10,8 @@ import {
   NODES_LIMIT, 
   TABLE_COLUMNS,
   BACKEND_ERRORS,
-  DEFAULT_NETWORK_ERROR_MESSAGE} from "../../../_constants";
+  DEFAULT_NETWORK_ERROR_MESSAGE,
+  STYLING} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
@@ -20,6 +22,10 @@ import LoadingOverlay from "react-loading-overlay";
 import NodeService from "../../../core/services/PocketNodeService";
 import _ from "lodash";
 import AppAlert from "../../../core/components/AppAlert";
+import InfiniteScroll from "react-infinite-scroller";
+import ClipLoader from "react-spinners/ClipLoader";
+
+const MY_NODES_HEIGHT = 358;
 
 class NodesMain extends Main {
   constructor(props, context) {
@@ -52,6 +58,23 @@ class NodesMain extends Main {
           hasNodes: userItems.length > 0,
         });
       }
+      // TODO: Get node summary data
+      NodeService.getStakedNodeSummary().then(
+        ({totalNodes, averageValidatorPower: averageRelays, averageStaked}) => {
+          NodeService.getAllNodes(NODES_LIMIT).then((registeredItems) => {
+            this.setState({
+              userItems,
+              filteredItems: userItems,
+              total: totalNodes,
+              averageRelays,
+              averageStaked,
+              registeredItems,
+              loading: false,
+              hasNodes: userItems.length > 0,
+            });
+          });
+        }
+      );
     });
 
 
@@ -145,12 +168,14 @@ class NodesMain extends Main {
       allItemsTableLoading,
       userItemsTableLoading,
       hasNodes,
-      // hasMoreUserItems,
+      hasMoreUserItems,
       hasMoreRegisteredItems,
       error,
     } = this.state;
 
     const registeredItems = allRegisteredItems.map(mapStatusToField);
+    const myNodessHasScroll =
+    hasNodes && filteredItems.length * 105 > MY_NODES_HEIGHT;
 
     const cards = [
       {title: formatNumbers(total), subtitle: "Total of Nodes"},
@@ -164,15 +189,15 @@ class NodesMain extends Main {
       },
     ];
 
-    // const loader = (
-    //   <ClipLoader
-    //     key={0}
-    //     size={30}
-    //     css={"display: block; margin: 0 auto;"}
-    //     color={STYLING.lightGray}
-    //     loading={true}
-    //   />
-    // );
+    const loader = (
+      <ClipLoader
+        key={0}
+        size={30}
+        css={"display: block; margin: 0 auto;"}
+        color={STYLING.lightGray}
+        loading={true}
+      />
+    );
 
     if (loading) {
       return <Loader/>;
@@ -250,15 +275,19 @@ class NodesMain extends Main {
                   </Col>
                 </Row>
               )}
-              <div className="scrollable main-list">
-                {/* FIXME: Always perform a search */}
-                {/*<InfiniteScroll*/}
-                {/*  pageStart={0}*/}
-                {/*  loadMore={this.loadMoreUserNodes}*/}
-                {/*  useWindow={false}*/}
-                {/*  hasMore={hasMoreUserItems}*/}
-                {/*  loader={loader}*/}
-                {/*>*/}
+              <div 
+                className={cls("scrollable main-list", {
+                  "has-scroll": myNodessHasScroll,
+                })}
+                style={{height: `${MY_NODES_HEIGHT}px`}}
+              >
+                <InfiniteScroll
+                  pageStart={0}
+                  loadMore={this.loadMoreUserNodes}
+                  useWindow={false}
+                  hasMore={hasMoreUserItems}
+                  loader={loader}
+                >
                 <LoadingOverlay active={userItemsTableLoading} spinner>
                   {hasNodes ? (
                     filteredItems.map((node, idx) => {
@@ -309,7 +338,7 @@ class NodesMain extends Main {
                       </div>
                     )}
                   </LoadingOverlay>
-                {/*</InfiniteScroll>*/}
+                </InfiniteScroll>
               </div>
             </Segment>
           </Col>
@@ -323,24 +352,23 @@ class NodesMain extends Main {
             }`}
           >
             <Segment scroll={false} label="REGISTERED NODES">
-              {/* FIXME: Always perform a search */}
-              {/*<InfiniteScroll*/}
-              {/*  pageStart={0}*/}
-              {/*  loadMore={this.loadMoreRegisteredNodes}*/}
-              {/*  useWindow={false}*/}
-              {/*  hasMore={hasMoreRegisteredItems}*/}
-              {/*  loader={loader}*/}
-              {/*>*/}
-              <AppTable
-                scroll
-                classes={`flex-body ${
-                  hasMoreRegisteredItems ? "loading" : ""
-                } `}
-                headerClasses="d-flex"
-                toggle={registeredItems.length > 0}
-                keyField="address"
-                data={registeredItems}
-                columns={TABLE_COLUMNS.NODES}
+              <InfiniteScroll
+                pageStart={0}
+                loadMore={this.loadMoreRegisteredNodes}
+                useWindow={false}
+                hasMore={hasMoreRegisteredItems}
+                loader={loader}
+              >
+              <div className="scroll-table">
+                <AppTable
+                  classes={`flex-body ${
+                    hasMoreRegisteredItems ? "loading" : ""
+                  } `}
+                  headerClasses="d-flex"
+                  toggle={registeredItems.length > 0}
+                  keyField="address"
+                  data={registeredItems}
+                  columns={TABLE_COLUMNS.NODES}
                   bordered={false}
                   loading={allItemsTableLoading}
                   overlay={overlayFactory({
@@ -351,9 +379,10 @@ class NodesMain extends Main {
                         background: "rgba(0, 0, 0, 0.2)",
                       }),
                     },
-                  })}
+                    })}
                 />
-              {/*</InfiniteScroll>*/}
+                </div>
+              </InfiniteScroll>
             </Segment>
           </Col>
         </Row>

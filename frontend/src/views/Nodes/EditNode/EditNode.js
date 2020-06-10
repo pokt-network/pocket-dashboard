@@ -59,7 +59,7 @@ class EditNode extends CreateForm {
   }
 
   render() {
-    const {loading, icon, success, error} = this.state;
+    const {loading, icon, success, error, imgError} = this.state;
 
     if (loading) {
       return <Loader />;
@@ -176,8 +176,13 @@ class EditNode extends CreateForm {
             <div className="ml-5 mt-4">
               <ImageFileUpload
                 defaultImg={icon}
-                handleDrop={(img) => this.handleDrop(img.preview)}
-              />
+                handleDrop={(img, error) => {
+                  const imgResult = img === null ? undefined : img;
+
+                  this.handleDrop(imgResult ?? undefined, error);
+                }}/>
+              {imgError && <p className="error mt-2 ml-3">{imgError}</p>}
+
             </div>
           </Col>
         </Row>

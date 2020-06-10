@@ -15,13 +15,13 @@ import {
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
+import NodeService from "../../core/services/PocketNodeService";
 import {formatCurrency, formatNumbers, mapStatusToField} from "../../_helpers";
 import Segment from "../../core/components/Segment/Segment";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppTable from "../../core/components/AppTable";
-import AppAlert from "../../core/components/AppAlert";
-import PocketNodeService from "../../core/services/PocketNodeService";
+import AppAlert from "../.Pocket./core/components/AppAlert";
 
 class Dashboard extends Component {
   constructor(props, context) {
@@ -31,8 +31,8 @@ class Dashboard extends Component {
       welcomeAlert: true,
       loading: true,
       chains: [],
-      userApps: [],
-      userNodes: [],
+      networkApps: [],
+      networkNodes: [],
       summary: [],
       error: {show: false, message: ""},
     };
@@ -58,19 +58,19 @@ class Dashboard extends Component {
     errorMessage = error ? message : errorMessage;
     errorType = error ? name : errorType;
 
-    const userApps = await ApplicationService.getAllUserApplications(
+    const networkApps = await ApplicationService.getAllUserApplications(
       userEmail, APPLICATIONS_LIMIT);
 
-    hasError = userApps.error ? userApps.error : hasError;
-    errorMessage = userApps.error ? userApps.message : errorMessage;
-    errorType = userApps.error ? userApps.name : errorType;
+    hasError = networkApps.error ? networkApps.error : hasError;
+    errorMessage = networkApps.error ? networkApps.message : errorMessage;
+    errorType = networkApps.error ? networkApps.name : errorType;
 
-    const userNodes = await PocketNodeService.getAllUserNodes(
+    const networkNodes = await NodeService.getAllUserNodes(
       userEmail, NODES_LIMIT);
 
-    hasError = userNodes.error ? userNodes.error : hasError;
-    errorMessage = userNodes.error ? userNodes.message : errorMessage;
-    errorType = userNodes.error ? userNodes.name : errorType;
+    hasError = networkNodes.error ? networkNodes.error : hasError;
+    errorMessage = networkNodes.error ? networkNodes.message : errorMessage;
+    errorType = networkNodes.error ? networkNodes.name : errorType;
     
     const chains = await NetworkService.getAvailableNetworkChains();
     const welcomeAlert = UserService.getShowWelcomeMessage();
@@ -85,8 +85,8 @@ class Dashboard extends Component {
 
     this.setState({
       welcomeAlert,
-      userApps,
-      userNodes,
+      networkApps,
+      networkNodes,
       error: {show: hasError, message: errorMessage},
       chains,
       summary: [
@@ -110,8 +110,8 @@ class Dashboard extends Component {
       welcomeAlert,
       chains,
       loading,
-      userApps: allUserApps,
-      userNodes: allUserNodes,
+      networkApps: allnetworkApps,
+      networkNodes: allnetworkNodes,
       summary,
       error,
     } = this.state;
@@ -120,8 +120,8 @@ class Dashboard extends Component {
       return <Loader />;
     }
 
-    const userApps = allUserApps.map(mapStatusToField);
-    const userNodes = allUserNodes.map(mapStatusToField);
+    const networkApps = allnetworkApps.map(mapStatusToField);
+    const networkNodes = allnetworkNodes.map(mapStatusToField);
 
     return (
       <div id="dashboard">
@@ -244,9 +244,9 @@ class Dashboard extends Component {
                   scroll
                   classes="flex-body"
                   headerClasses="d-flex"
-                  toggle={userNodes.length > 0}
-                  keyField="pocketNode.publicPocketAccount.address"
-                  data={userNodes}
+                  toggle={networkNodes.length > 0}
+                  keyField="address"
+                  data={networkNodes}
                   columns={TABLE_COLUMNS.NODES}
                   bordered={false}
                 />
@@ -258,9 +258,9 @@ class Dashboard extends Component {
                   scroll
                   classes="flex-body"
                   headerClasses="d-flex"
-                  toggle={userApps.length > 0}
+                  toggle={networkApps.length > 0}
                   keyField="pocketApplication.id"
-                  data={userApps}
+                  data={networkApps}
                   columns={TABLE_COLUMNS.APPS}
                   bordered={false}
                 />

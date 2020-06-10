@@ -7,8 +7,10 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {APPLICATIONS_LIMIT, 
+import {
+  APPLICATIONS_LIMIT, 
   TABLE_COLUMNS, 
+  STYLING,
   BACKEND_ERRORS,
   DEFAULT_NETWORK_ERROR_MESSAGE} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -20,6 +22,8 @@ import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 import _ from "lodash";
 import AppAlert from "../../../core/components/AppAlert";
+import InfiniteScroll from "react-infinite-scroller";
+import ClipLoader from "react-spinners/ClipLoader";
 
 const MY_APPS_HEIGHT = 358;
 
@@ -114,15 +118,15 @@ class AppsMain extends Main {
     const {userItems} = this.state;
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1
+      userEmail, APPLICATIONS_LIMIT, (offset) * APPLICATIONS_LIMIT + 1
     );
 
     const allUserItems = [...userItems, ...newUserItems];
 
     this.setState({
-      hasMoreUserItems: newUserItems.length !== 0,
+      hasMoreUserItems: newUserItems.length === APPLICATIONS_LIMIT,
       userItems: allUserItems,
-      filteredItems: userItems,
+      filteredItems: allUserItems,
     });
   }
 
@@ -152,7 +156,7 @@ class AppsMain extends Main {
       allItemsTableLoading,
       userItemsTableLoading,
       hasApps,
-      // hasMoreUserItems,
+      hasMoreUserItems,
       hasMoreRegisteredItems,
       error
     } = this.state;
@@ -173,15 +177,15 @@ class AppsMain extends Main {
       },
     ];
 
-    // const loader = (
-    //   <ClipLoader
-    //     key={0}
-    //     size={30}
-    //     css={"display: block; margin: 0 auto;"}
-    //     color={STYLING.lightGray}
-    //     loading={true}
-    //   />
-    // );
+    const loader = (
+      <ClipLoader
+        key={0}
+        size={30}
+        css={"display: block; margin: 0 auto;"}
+        color={STYLING.lightGray}
+        loading={true}
+      />
+    );
 
     if (loading) {
       return <Loader/>;
@@ -258,14 +262,13 @@ class AppsMain extends Main {
                 })}
                 style={{height: `${MY_APPS_HEIGHT}px`}}
               >
-                {/* FIXME: Always perform a search */}
-                {/*<InfiniteScroll*/}
-                {/*  pageStart={0}*/}
-                {/*  loadMore={this.loadMoreUserApps}*/}
-                {/*  useWindow={false}*/}
-                {/*  hasMore={hasMoreUserItems}*/}
-                {/*  loader={loader}*/}
-                {/*>*/}
+                <InfiniteScroll
+                  pageStart={0}
+                  loadMore={this.loadMoreUserApps}
+                  useWindow={false}
+                  hasMore={hasApps && hasMoreUserItems}
+                  loader={loader}
+                >
                 <LoadingOverlay active={userItemsTableLoading} spinner>
                   {hasApps ? (
                     filteredItems.map((app, idx) => {
@@ -312,10 +315,11 @@ class AppsMain extends Main {
                         <p>
                           You have not created <br/> or imported any app yet
                         </p>
+
                       </div>
                     )}
-                  </LoadingOverlay>
-                {/*</InfiniteScroll>*/}
+                </LoadingOverlay>
+                </InfiniteScroll>
               </div>
             </Segment>
           </Col>
@@ -326,24 +330,24 @@ class AppsMain extends Main {
             }`}
           >
             <Segment scroll={false} label="REGISTERED APPS">
-              {/* FIXME: Always perform a search */}
-              {/*<InfiniteScroll*/}
-              {/*  pageStart={0}*/}
-              {/*  loadMore={this.loadMoreRegisteredApps}*/}
-              {/*  useWindow={false}*/}
-              {/*  hasMore={hasMoreRegisteredItems}*/}
-              {/*  loader={loader}*/}
-              {/*>*/}
-              <AppTable
-                scroll
-                classes={`flex-body ${
-                  hasMoreRegisteredItems ? "loading" : ""
-                } `}
-                headerClasses="d-flex"
-                toggle={registeredItems.length > 0}
-                keyField="address"
-                data={registeredItems}
-                columns={TABLE_COLUMNS.APPS}
+              <InfiniteScroll
+                pageStart={0}
+                loadMore={this.loadMoreRegisteredApps}
+                useWindow={false}
+                hasMore={hasMoreRegisteredItems}
+                loader={loader}
+              >
+              <div className="scroll-table">
+                <AppTable
+                  scroll
+                  classes={`flex-body ${
+                    hasMoreRegisteredItems ? "loading" : ""
+                  } `}
+                  headerClasses="d-flex"
+                  toggle={registeredItems.length > 0}
+                  keyField="address"
+                  data={registeredItems}
+                  columns={TABLE_COLUMNS.APPS}
                   bordered={false}
                   loading={allItemsTableLoading}
                   overlay={overlayFactory({
@@ -354,9 +358,10 @@ class AppsMain extends Main {
                         background: "rgba(0, 0, 0, 0.2)",
                       }),
                     },
-                  })}
-                />
-              {/*</InfiniteScroll>*/}
+                    })}
+                  />
+              </div>
+              </InfiniteScroll>
             </Segment>
           </Col>
         </Row>
