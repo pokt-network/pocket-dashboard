@@ -5,7 +5,7 @@ import {
   StakedApplicationSummary,
   UserPocketApplication
 } from "../models/Application";
-import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
+import {PublicPocketAccount} from "../models/Account";
 import {Account, Application, PocketAAT, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import {Configurations} from "../_configuration";
@@ -505,18 +505,16 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
-   * Create an application account.
+   * Save an application public account.
    *
    * @param {string} applicationID Application ID.
-   * @param {string} passphrase Application account passphrase.
-   * @param {string} [privateKey] Application private key if is imported.
+   * @param {{address: string, publicKey: string}} accountData Application account data.
    *
-   * @returns {Promise<{application: PocketApplication, privateApplicationData: PrivatePocketAccount, networkData:Application, ppkData: object}>} An application information.
+   * @returns {Promise<PocketApplication>} An application information.
    * @throws {Error} If application does not exists.
-   * @deprecated This method will be moved soon.
    * @async
    */
-  async createApplicationAccount(applicationID, passphrase, privateKey = "") {
+  async saveApplicationAccount(applicationID, accountData) {
 
     const applicationDB = await this.persistenceService.getEntityByID(APPLICATION_COLLECTION_NAME, applicationID);
 
@@ -526,22 +524,11 @@ export default class ApplicationService extends BasePocketService {
 
     const application = PocketApplication.createPocketApplication(applicationDB);
 
-    const accountService = new AccountService();
-    const pocketAccount = await accountService.createPocketAccount(this.pocketService, passphrase, privateKey);
-
-    application.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
+    application.publicPocketAccount = new PublicPocketAccount(accountData.address, accountData.publicKey);
 
     await this.__updateApplicationByID(applicationID, application);
 
-    const appParameters = await this.pocketService.getApplicationParameters();
-
-    const privateApplicationData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passphrase);
-    const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
-
-    const ppkData = await this.pocketService.createPPK(privateApplicationData.privateKey, passphrase);
-
-    // noinspection JSValidateTypes
-    return {application, privateApplicationData, networkData, ppkData};
+    return application;
   }
 
   /**

@@ -118,23 +118,18 @@ class PocketNodeService extends PocketBaseService {
    * Create node account.
    *
    * @param {string} nodeID Node ID.
-   * @param {string} passphrase Passphrase.
+   * @param {{address: string, publicKey: string}} nodeData Application data.
    * @param {string} nodeBaseLink Node base link.
-   * @param {string} privateKey? Private Key(is imported).
+   * @param {object} ppkData? PPK data(is imported).
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async createNodeAccount(
-    nodeID,
-    passphrase,
-    nodeBaseLink,
-    privateKey = undefined
-  ) {
-    let data = {nodeID, passphrase, nodeBaseLink};
+  async saveNodeAccount(nodeID, nodeData, nodeBaseLink, ppkData = undefined) {
+    let data = {nodeID, nodeData, nodeBaseLink};
 
-    if (privateKey) {
-      data["privateKey"] = privateKey;
+    if (ppkData) {
+      data["ppkData"] = ppkData;
     }
 
     return axios

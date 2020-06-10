@@ -34,7 +34,7 @@ import TermsOfService from "./views/Support/TermsOfService";
 import PrivacyPolicy from "./views/Support/PrivacyPolicy";
 import AnswerSecurityQuestions from "./views/Auth/AnswerSecurityQuestions/AnswerSecurityQuestions";
 import SelectValidatorPower from "./views/Nodes/SelectValidatorPower/SelectValidatorPower";
-import NodePassphrase from "./views/Nodes/NodePassphrase/Nodepassphrase";
+import NodePassphrase from "./views/Nodes/NodePassphrase/NodePassphrase";
 import VerifyChangedEmail from "./views/Auth/VerifyChangedEmail/VerifyChangedEmail";
 import UserService from "./core/services/PocketUserService";
 import Unsubscribe from "./views/Support/Unsubscribe.js";

@@ -25,31 +25,25 @@ router.post("", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
- * Create new node account.
- * // FIXME: for imported nodes, change private key for PPK
- * 
- * @deprecated // TODO pocket.js account creation have to be moved to frontend
+ * Save node account.
  */
 router.post("/account", apiAsyncWrapper(async (req, res) => {
-  /** @type {{nodeID: string, passphrase: string, nodeBaseLink:string, privateKey?:string}} */
-  let data = req.body;
+  /** @type {{nodeID: string, nodeData: {address: string, publicKey: string}, nodeBaseLink:string, ppkData?: object}} */
+  const data = req.body;
 
-  if (!("privateKey" in data)) {
-    data["privateKey"] = "";
-  }
+  const node = await nodeService.createNodeAccount(data.nodeID, data.nodeData);
 
-  const nodeData = await nodeService.createNodeAccount(data.nodeID, data.passphrase, data.privateKey);
-  const emailAction = data.privateKey ? "imported" : "created";
+  const emailAction = data.ppkData ? "imported" : "created";
   const nodeEmailData = {
-    name: nodeData.node.name,
-    link: `${data.nodeBaseLink}/${nodeData.privateNodeData.address}`
+    name: node.name,
+    link: `${data.nodeBaseLink}/${data.nodeData.address}`
   };
 
   await EmailService
-    .to(nodeData.node.contactEmail)
-    .sendCreateOrImportNodeEmail(emailAction, nodeData.node.contactEmail, nodeEmailData);
+    .to(node.contactEmail)
+    .sendCreateOrImportNodeEmail(emailAction, node.contactEmail, nodeEmailData);
 
-  res.json(nodeData);
+  res.json(node);
 }));
 
 /**

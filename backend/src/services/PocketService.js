@@ -116,7 +116,6 @@ export default class PocketService {
    * @param {string} passphrase Passphrase used to generate the account.
    *
    * @returns {Promise<Account | Error>} A pocket account.
-   * @deprecated moved to frontend
    */
   async importAccountFromPPK(ppkData, passphrase) {
     return this.__pocket.keybase.importPPKFromJSON(passphrase, JSON.stringify(ppkData), passphrase);
@@ -554,7 +553,7 @@ export default class PocketService {
    *
    * @returns {*} PPK Data.
    * @throws {PocketNetworkError} If exportation of PPK fails.
-
+   *
    * @deprecated moved to frontend
    */
   async createPPK(privateKey, passphrase) {

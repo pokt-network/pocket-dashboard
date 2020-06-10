@@ -25,31 +25,24 @@ router.post("", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
- * Create new application account.
- * // FIXME: For imported apps, change private key for PPK. 
- * 
- * @deprecated // TODO pocket.js account creation have to be moved to frontend
+ * Save application account.
  */
 router.post("/account", apiAsyncWrapper(async (req, res) => {
-  /** @type {{applicationID: string, passphrase: string, applicationBaseLink:string, privateKey?:string}} */
-  let data = req.body;
+  /** @type {{applicationID: string, applicationData: {address: string, publicKey: string}, applicationBaseLink:string, ppkData?: object}} */
+  const data = req.body;
 
-  if (!("privateKey" in data)) {
-    data["privateKey"] = "";
-  }
-
-  const applicationData = await applicationService.createApplicationAccount(data.applicationID, data.passphrase, data.privateKey);
-  const emailAction = data.privateKey ? "imported" : "created";
+  const application = await applicationService.saveApplicationAccount(data.applicationID, data.applicationData);
+  const emailAction = data.ppkData ? "imported" : "created";
   const applicationEmailData = {
-    name: applicationData.application.name,
-    link: `${data.applicationBaseLink}/${applicationData.privateApplicationData.address}`
+    name: application.name,
+    link: `${data.applicationBaseLink}/${data.applicationData.address}`
   };
 
   await EmailService
-    .to(applicationData.application.contactEmail)
-    .sendCreateOrImportAppEmail(emailAction, applicationData.application.contactEmail, applicationEmailData);
+    .to(application.contactEmail)
+    .sendCreateOrImportAppEmail(emailAction, application.contactEmail, applicationEmailData);
 
-  res.send(applicationData);
+  res.send(application);
 }));
 
 /**

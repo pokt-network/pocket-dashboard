@@ -1,16 +1,16 @@
 import React from "react";
-import {Redirect, Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
 import {generateIcon, nodeFormSchema, scrollToId} from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
+import PocketUserService from "../../../core/services/PocketUserService";
 import NodeService from "../../../core/services/PocketNodeService";
 import {Formik} from "formik";
 import AppAlert from "../../../core/components/AppAlert";
 import {STAKE_STATUS} from "../../../_constants";
-import PocketUserService from "../../../core/services/PocketUserService";
 
 class CreateNodeForm extends CreateForm {
   constructor(props, context) {
@@ -56,6 +56,7 @@ class CreateNodeForm extends CreateForm {
   }
 
   async handleCreateImported(nodeID) {
+    // FIXME: We dont need private key.
     const {address, privateKey, passphrase} = NodeService.getNodeInfo();
     const data = this.state.data;
 
@@ -64,7 +65,7 @@ class CreateNodeForm extends CreateForm {
 
     const nodeBaseLink = `${window.location.origin}${nodeDetail}`;
 
-    const {success, data: importData} = await NodeService.createNodeAccount(
+    const {success, data: importData} = await NodeService.saveNodeAccount(
       nodeID, passphrase, nodeBaseLink, privateKey
     );
 
@@ -116,8 +117,9 @@ class CreateNodeForm extends CreateForm {
       });
     } else {
       this.setState({error: {
-        show: true, 
-        message: this.validateError(data.message)}});
+          show: true,
+          message: this.validateError(data.message)
+        }});
       scrollToId("alert");
     }
   }

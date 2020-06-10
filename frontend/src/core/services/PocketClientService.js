@@ -92,6 +92,7 @@ class PocketClientService {
    * @returns {Promise<string | Error>} - PPK string or error.
    */
   async exportPrivateKey(account, passphrase) {
+    /** @type {Buffer} */
     const privateKey = await this._pocket.keybase.exportAccount(account.addressHex, passphrase);
 
     return privateKey.toString("hex");
@@ -118,18 +119,6 @@ class PocketClientService {
    */
   async getUnlockedAccount(address) {
     return await this._pocket.keybase.getAccount(address);
-  }
-
-  /**
-   * Deletes an account stored in the key base.
-   *
-   * @param {*} address - Address of the account in hex string format.
-   * @param {*} passphrase - Passphrase of the account.
-   *
-   * @returns {Promise<Error | undefined>} undefined if the account was deleted or an Error.
-   */
-  async deleteAccount(address, passphrase) {
-    return await this._pocket.keybase.deleteAccount(address, passphrase);
   }
 
   /**

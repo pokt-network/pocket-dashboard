@@ -90,7 +90,6 @@ export default class AccountService extends BasePocketService {
    *
    * @returns {Promise<PublicPocketAccount>} a pocket account.
    * @throws Error If account is invalid.
-   * @deprecated This method will be deleted soon.
    * @async
    */
   async importDashboardAccountToNetworkFromPPK(ppkData, passphrase) {
