@@ -51,15 +51,15 @@ class PocketNodeService extends PocketBaseService {
    * @param {string} [serviceURL] The service URL.
    */
   saveNodeInfoInCache({
-                        nodeID,
-                        address,
-                        privateKey,
-                        passphrase,
-                        chains,
-                        data,
-                        imported,
-                        serviceURL,
-                      }) {
+    nodeID,
+    address,
+    privateKey,
+    passphrase,
+    chains,
+    data,
+    imported,
+    serviceURL,
+  }) {
     if (nodeID) {
       this.ls.set("node_id", {data: nodeID});
     }
@@ -155,6 +155,7 @@ class PocketNodeService extends PocketBaseService {
         return {
           success: false,
           data: err.response.data.message,
+          name: err.response.data.name,
         };
       });
   }
@@ -237,7 +238,7 @@ class PocketNodeService extends PocketBaseService {
       },
       params: {
         limit,
-        offset
+        offset,
       },
     }).then((response) => response.data);
   }
@@ -277,7 +278,7 @@ class PocketNodeService extends PocketBaseService {
       node,
       networkChains,
       payment: {id: paymentId},
-      nodeLink
+      nodeLink,
     };
 
     return axios

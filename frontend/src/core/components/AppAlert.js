@@ -11,10 +11,10 @@ class AppAlert extends Component {
   renderTitle() {
     const {title, variant} = this.props;
 
-    if (isString(title) && variant !== VARIANT_DANGER) {
+    if (isString(title) && !isEmpty(title)) {
       return <h4>{title}</h4>;
     }
-    if (title && isEmpty(title) && variant === VARIANT_DANGER) {
+    if (isEmpty(title) && variant === VARIANT_DANGER) {
       return <h4>{DEFAULT_ERROR_MESSAGE}</h4>;
     } else {
       return title;
@@ -35,7 +35,7 @@ class AppAlert extends Component {
           {iconPaths[variant] && (
             <img src={iconPaths[variant]} className="icon" alt="" />
           )}
-          {this.renderTitle()}
+          {title !== undefined && this.renderTitle()}
         </span>
         <div style={{marginLeft: iconPaths[variant] ? 48 : 0}} className="body">
           {children}

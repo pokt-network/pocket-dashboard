@@ -24,6 +24,7 @@ class Main extends Component {
       loading: true,
       hasMoreUserItems: true,
       hasMoreRegisteredItems: false,
+      error: {show: false, message: ""},
     };
   }
 

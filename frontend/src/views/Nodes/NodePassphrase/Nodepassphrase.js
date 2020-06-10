@@ -2,6 +2,10 @@ import Passphrase from "../../../core/components/Passphrase/Passphrase";
 import NodeService from "../../../core/services/PocketNodeService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {scrollToId} from "../../../_helpers";
+import {
+  DEFAULT_NETWORK_ERROR_MESSAGE,
+  BACKEND_ERRORS,
+} from "../../../_constants";
 
 class NodePassphrase extends Passphrase {
   componentDidMount() {
@@ -15,7 +19,7 @@ class NodePassphrase extends Passphrase {
     const nodeBaseLink = `${window.location.origin}${_getDashboardPath(
       DASHBOARD_PATHS.nodeDetail
     )}`;
-    const {success, data} = await NodeService.createNodeAccount(
+    const {success, data, name} = await NodeService.createNodeAccount(
       nodeId, passPhrase, nodeBaseLink
     );
 
@@ -34,10 +38,18 @@ class NodePassphrase extends Passphrase {
         created: true,
         address,
         privateKey,
-        ppkData
+        ppkData,
       });
     } else {
-      this.setState({error: {show: true, message: data.message}});
+      let error;
+
+      if (name === BACKEND_ERRORS) {
+        error = DEFAULT_NETWORK_ERROR_MESSAGE;
+      } else {
+        error = data.message;
+      }
+
+      this.setState({error: {show: true, message: error}});
       scrollToId("alert");
     }
     this.setState({

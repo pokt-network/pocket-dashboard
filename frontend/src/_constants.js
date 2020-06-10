@@ -15,6 +15,12 @@ export const ITEM_TYPES = {
   NODE: "node",
 };
 
+export const BACKEND_ERRORS = {
+  DASHBOARD: "DashboardError",
+  VALIDATION: "DashboardValidationError",
+  NETWORK: "PocketNetworkError",
+};
+
 export const MAX_FILE_IMG_SIZE = 100000; // 100KB
 
 export const IMG_ERROR_STR = "Please upload a file smaller than 100kb";
@@ -26,6 +32,9 @@ export const PURCHASE_ITEM_NAME = {
 
 export const DEFAULT_ERROR_MESSAGE =
   "An unexpected error occurred, please try again later.";
+
+export const DEFAULT_NETWORK_ERROR_MESSAGE =
+  "An unexpected error occurred with the network, please reload or try again later.";
 
 export const POKT_UNSTAKING_DAYS = 21;
 

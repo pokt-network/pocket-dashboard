@@ -47,7 +47,7 @@ export class PocketApplicationService extends PocketBaseService {
       passphrase: this.ls.get("app_passphrase").data,
       chains: this.ls.get("app_chains").data,
       data: this.ls.get("app_data").data,
-      imported: this.ls.get("app_imported").data
+      imported: this.ls.get("app_imported").data,
     };
   }
 
@@ -63,14 +63,14 @@ export class PocketApplicationService extends PocketBaseService {
    * @param {boolean} [imported] If the application is imported.
    */
   saveAppInfoInCache({
-                       applicationID,
-                       address,
-                       privateKey,
-                       passphrase,
-                       chains,
-                       data,
-                       imported
-                     }) {
+    applicationID,
+    address,
+    privateKey,
+    passphrase,
+    chains,
+    data,
+    imported,
+  }) {
     if (applicationID) {
       this.ls.set("app_id", {data: applicationID});
     }
@@ -142,7 +142,7 @@ export class PocketApplicationService extends PocketBaseService {
       },
       params: {
         limit,
-        offset
+        offset,
       },
     }).then((response) => response.data);
   }
@@ -239,6 +239,7 @@ export class PocketApplicationService extends PocketBaseService {
         return {
           success: false,
           data: err.response.data.message,
+          name: err.response.data.name,
         };
       });
   }
@@ -365,7 +366,7 @@ export class PocketApplicationService extends PocketBaseService {
       application,
       networkChains,
       payment: {id: paymentId},
-      applicationLink
+      applicationLink,
     };
 
     return axios
@@ -398,7 +399,6 @@ export class PocketApplicationService extends PocketBaseService {
         return {success: false, data: err.response};
       });
   }
-
 }
 
 export default new PocketApplicationService();

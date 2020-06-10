@@ -9,6 +9,8 @@ import {
   TABLE_COLUMNS,
   VALIDATION_MESSAGES,
   PASSPHRASE_REGEX,
+  BACKEND_ERRORS,
+  DEFAULT_NETWORK_ERROR_MESSAGE
 } from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
@@ -132,7 +134,7 @@ this.createApplicationAccount();
       DASHBOARD_PATHS.appDetail
     )}`;
 
-    const {success, data} = await ApplicationService.createApplicationAccount(
+    const {success, data, name} = await ApplicationService.createApplicationAccount(
       applicationInfo.id, passPhrase, applicationBaseLink
     );
 
@@ -156,7 +158,15 @@ this.createApplicationAccount();
         ppkData: ppkData,
       });
     } else {
-      this.setState({error: {show: true, message: data.message}});
+      let error;
+
+      if (name === BACKEND_ERRORS) {
+        error = DEFAULT_NETWORK_ERROR_MESSAGE;
+      } else {
+        error = data.message;
+      }
+
+      this.setState({error: {show: true, message: error}});
       scrollToId("alert");
     }
 
