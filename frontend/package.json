@@ -25,6 +25,7 @@
     "classnames": "^2.2.6",
     "formik": "^2.1.4",
     "identicon.js": "^2.3.3",
+    "big-integer": "^1.6.48",
     "lodash": "^4.17.15",
     "moment": "^2.25.3",
     "numeral": "^2.0.6",

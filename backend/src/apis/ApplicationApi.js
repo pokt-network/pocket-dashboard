@@ -4,7 +4,6 @@ import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helper
 import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
 import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
-import {CoinDenom} from "@pokt-network/pocket-js";
 
 const router = express.Router();
 
@@ -149,36 +148,33 @@ router.post("/user/all", apiAsyncWrapper(async (req, res) => {
 
 /**
  * Stake a free tier application.
- * // FIXME: Make transaction on frontend
  */
 router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[]}} */
+  /** @type {{transactionHash:string}} */
   const data = req.body;
 
-  const aat = await applicationService.stakeFreeTierApplication(data.application, data.networkChains);
+  const aat = await applicationService.stakeFreeTierApplication(data.transactionHash);
 
   res.json(aat);
 }));
 
 /**
  * Unstake a free tier application.
- * // FIXME: Make transaction on frontend
  */
 router.post("/freetier/unstake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{application: {privateKey:string, passphrase:string, accountAddress: string}}} */
+  /** @type {{transactionHash:string}} */
   const data = req.body;
 
-  const application = await applicationService.unstakeFreeTierApplication(data.application);
+  const application = await applicationService.unstakeFreeTierApplication(data.transactionHash);
 
   res.send(application !== undefined);
 }));
 
 /**
  * Stake an application.
- * // FIXME: Make transaction on frontend
  */
 router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[], payment:{id: string}, applicationLink: string}} */
+  /** @type {{transactionHash: string, payment:{id: string}, applicationLink: string}} */
   const data = req.body;
   const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
@@ -187,28 +183,28 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
     if (paymentHistory.isApplicationPaymentItem(true)) {
       const item = paymentHistory.getItem();
       const amountToSpent = applicationCheckoutService.getMoneyToSpent(parseInt(item.maxRelays));
-      const poktToStake = applicationCheckoutService.getPoktToStake(amountToSpent);
 
-      const application = await applicationService.stakeApplication(data.application, data.networkChains, poktToStake.toString());
+      await applicationService.stakeApplication(data.transactionHash);
 
-      if (application) {
-        const applicationEmailData = {
-          name: application.name,
-          link: data.applicationLink
-        };
-
-        const paymentEmailData = {
-          amountPaid: paymentHistory.amount,
-          maxRelayPerDayAmount: item.maxRelays,
-          poktStaked: applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
-        };
-
-        await EmailService
-          .to(application.contactEmail)
-          .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
-
-        res.send(true);
-      }
+      // TODO: Move this triggers.
+      // if (application) {
+      //   const applicationEmailData = {
+      //     name: application.name,
+      //     link: data.applicationLink
+      //   };
+      //
+      //   const paymentEmailData = {
+      //     amountPaid: paymentHistory.amount,
+      //     maxRelayPerDayAmount: item.maxRelays,
+      //     poktStaked: applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
+      //   };
+      //
+      //   await EmailService
+      //     .to(application.contactEmail)
+      //     .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
+      //
+      //   res.send(true);
+      // }
     }
   }
   // noinspection ExceptionCaughtLocallyJS
@@ -217,28 +213,28 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
 
 /**
  * Unstake an application.
- * // FIXME: Make transaction on frontend
  */
 router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{application:{privateKey:string, passphrase:string, accountAddress: string}, applicationLink: string}} */
+  /** @type {{transactionHash: string, applicationLink: string}} */
   const data = req.body;
 
-  const application = await applicationService.unstakeApplication(data.application);
+  const application = await applicationService.unstakeApplication(data.transactionHash);
 
-  if (application) {
-    const applicationEmailData = {
-      name: application.name,
-      link: data.applicationLink
-    };
-
-    await EmailService
-      .to(application.contactEmail)
-      .sendUnstakeAppEmail(application.contactEmail, applicationEmailData);
-
-    res.send(true);
-  } else {
-    res.send(false);
-  }
+  // TODO: Move this triggers.
+  // if (application) {
+  //   const applicationEmailData = {
+  //     name: application.name,
+  //     link: data.applicationLink
+  //   };
+  //
+  //   await EmailService
+  //     .to(application.contactEmail)
+  //     .sendUnstakeAppEmail(application.contactEmail, applicationEmailData);
+  //
+  //   res.send(true);
+  // } else {
+  //   res.send(false);
+  // }
 }));
 
 /**

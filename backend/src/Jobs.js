@@ -1,3 +1,4 @@
+// TODO: Move this logic to the frontend.
 import TransactionService from "./services/TransactionService";
 import PocketService, {get_default_pocket_network} from "./services/PocketService";
 import {PocketTransaction, POST_ACTION_TYPE} from "./models/Transaction";

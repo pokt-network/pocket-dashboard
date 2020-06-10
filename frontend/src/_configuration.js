@@ -21,6 +21,11 @@ export const Configurations = {
     dispatchers: process.env.REACT_APP_POCKET_NETWORK_DISPATCHERS,
     transaction_fee: "100000",
     chain_id: process.env.REACT_APP_POCKET_NETWORK_CHAIN_ID,
+    free_tier: {
+      account: process.env.REACT_APP_POCKET_FREE_TIER_ACCOUNT,
+      passphrase: process.env.REACT_APP_POCKET_FREE_TIER_ACCOUNT_PASSPRHASE,
+      stake_amount: process.env.REACT_APP_POCKET_FREE_TIER_STAKE_AMOUNT,
+    }
   },
   stakeDefaultStatus: process.env.REACT_APP_STAKE_DEFAULT_STATUS,
   defaultMaxRelaysPerDay: process.env.REACT_APP_DEFAULT_MAX_RELAYS_PER_DAY
