@@ -4,9 +4,27 @@ import {withRouter} from "react-router-dom";
 import {Container, Row} from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";
 import {scrollToId} from "../../_helpers";
+import PocketNetworkService from "../../core/services/PocketNetworkService.js";
 
 class TermsOfService extends Component {
-  state = {};
+  constructor(props, context) {
+    super(props, context);
+    this.state = {poktPrice: ""};
+  }
+  async componentDidMount() {
+    const price = await PocketNetworkService.getNetworkSummaryData();
+
+    this.setState(
+      price.poktPrice > 0
+        ? {poktPrice: price.poktPrice}
+        : {
+            poktPrice:
+              "Error: Unable to retrieve Pokt price at the moment, please try again later.",
+          }
+    );
+  }
+
+  function;
   render() {
     return (
       <Container fluid id="privacy-policy">
@@ -48,7 +66,7 @@ class TermsOfService extends Component {
                 http://dashboard.pokt.network/ (the “Purchasing Site”). If your
                 responses remain accurate and correct, click the check box and
                 the “I AGREE” button to indicate your agreement. <br />
-                Purchase Price (USD): 0.06
+                Purchase Price (USD): {this.state.poktPrice}
                 <br />
                 Number of POKT Tokens (Purchased Tokens): [____]
               </p>
