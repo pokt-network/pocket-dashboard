@@ -73,6 +73,5 @@ jobs:
       - name: Running prod build
         working-directory: frontend
         run: yarn build:prod
-
         env:
-          CI: true
+          NODE_OPTIONS:--max-old-space-size=8192
