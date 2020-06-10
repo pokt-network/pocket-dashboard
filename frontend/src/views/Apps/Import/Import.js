@@ -1,7 +1,7 @@
 import React, {Component} from "react";
-import {Button, Col, Form, Row, Alert} from "react-bootstrap";
+import {Alert, Button, Col, Form, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {TABLE_COLUMNS, ITEM_TYPES} from "../../../_constants";
+import {ITEM_TYPES, TABLE_COLUMNS} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
 import "./Import.scss";
@@ -108,7 +108,7 @@ class Import extends Component {
 
     if (!ppkData) {
       ppk = JSON.parse(
-        await PocketClientService.createPPKfromPrivateKey(
+        await PocketClientService.createPPKFromPrivateKey(
           privateKey, passphrase
         )
       );

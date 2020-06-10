@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Row, Col, Form, Button} from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import AccountService from "../../services/PocketAccountService";
 import {PropTypes} from "prop-types";
 import PocketClientService from "../../services/PocketClientService";
@@ -97,7 +97,7 @@ class ValidateKeys extends Component {
 
     if (!ppkData) {
       ppk = JSON.parse(
-        await PocketClientService.createPPKfromPrivateKey(
+        await PocketClientService.createPPKFromPrivateKey(
           privateKey, passphrase
         )
       );
