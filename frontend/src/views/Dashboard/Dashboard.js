@@ -4,7 +4,14 @@ import {Alert, Col, Dropdown, Row} from "react-bootstrap";
 import "./Dashboard.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
-import {APPLICATIONS_LIMIT, STYLING, TABLE_COLUMNS} from "../../_constants";
+import {
+  APPLICATIONS_LIMIT,
+  NODES_LIMIT,
+  STYLING,
+  TABLE_COLUMNS,
+  BACKEND_ERRORS,
+  DEFAULT_NETWORK_ERROR_MESSAGE
+} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
@@ -13,6 +20,8 @@ import Segment from "../../core/components/Segment/Segment";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppTable from "../../core/components/AppTable";
+import AppAlert from "../../core/components/AppAlert";
+import PocketNodeService from "../../core/services/PocketNodeService";
 
 class Dashboard extends Component {
   constructor(props, context) {
@@ -25,20 +34,44 @@ class Dashboard extends Component {
       userApps: [],
       userNodes: [],
       summary: [],
+      error: {show: false, message: ""},
     };
   }
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
+    let hasError = false;
+    let errorMessage = "";
+    let errorType = "";
 
     const {
       poktPrice,
       totalStakedTokens,
       totalStakedApps,
       totalStakedNodes,
+      error,
+      name,
+      message,
     } = await NetworkService.getNetworkSummaryData();
-    const userApps = await ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT);
-    // const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
+
+    hasError = error ? error : hasError;
+    errorMessage = error ? message : errorMessage;
+    errorType = error ? name : errorType;
+
+    const userApps = await ApplicationService.getAllUserApplications(
+      userEmail, APPLICATIONS_LIMIT);
+
+    hasError = userApps.error ? userApps.error : hasError;
+    errorMessage = userApps.error ? userApps.message : errorMessage;
+    errorType = userApps.error ? userApps.name : errorType;
+
+    const userNodes = await PocketNodeService.getAllUserNodes(
+      userEmail, NODES_LIMIT);
+
+    hasError = userNodes.error ? userNodes.error : hasError;
+    errorMessage = userNodes.error ? userNodes.message : errorMessage;
+    errorType = userNodes.error ? userNodes.name : errorType;
+    
     const chains = await NetworkService.getAvailableNetworkChains();
     const welcomeAlert = UserService.getShowWelcomeMessage();
 
@@ -46,9 +79,15 @@ class Dashboard extends Component {
       UserService.showWelcomeMessage(false);
     }
 
+    if (errorType === BACKEND_ERRORS.NETWORK) {
+      errorMessage = DEFAULT_NETWORK_ERROR_MESSAGE;
+    }
+
     this.setState({
       welcomeAlert,
       userApps,
+      userNodes,
+      error: {show: hasError, message: errorMessage},
       chains,
       summary: [
         {title: `US ${formatCurrency(poktPrice)}`, subtitle: "POKT Price"},
@@ -74,6 +113,7 @@ class Dashboard extends Component {
       userApps: allUserApps,
       userNodes: allUserNodes,
       summary,
+      error,
     } = this.state;
 
     if (loading) {
@@ -97,6 +137,14 @@ class Dashboard extends Component {
               WELCOME BACK {UserService.getUserInfo().name.toUpperCase()}!
             </h4>
           </Alert>
+        )}
+        {error.show && (
+          <AppAlert
+            variant="danger"
+            title={error.message}
+            dismissible
+            onClose={() => this.setState({error: {show: false}})}
+          />
         )}
         <Row noGutters>
           <Col sm="8" className="page-title">

@@ -4,9 +4,12 @@ import AppTable from "../../../core/components/AppTable";
 import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
 import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
-import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {NODES_LIMIT, TABLE_COLUMNS} from "../../../_constants";
+import {
+  NODES_LIMIT, 
+  TABLE_COLUMNS,
+  BACKEND_ERRORS,
+  DEFAULT_NETWORK_ERROR_MESSAGE} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
@@ -16,6 +19,7 @@ import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 import NodeService from "../../../core/services/PocketNodeService";
 import _ from "lodash";
+import AppAlert from "../../../core/components/AppAlert";
 
 class NodesMain extends Main {
   constructor(props, context) {
@@ -32,26 +36,71 @@ class NodesMain extends Main {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
+    let hasError = false;
+    let errorMessage = "";
+    let errorType = "";
 
     NodeService.getAllUserNodes(userEmail, NODES_LIMIT).then((userItems) => {
-      // TODO: Get node summary data
-      ApplicationService.getStakedApplicationSummary().then(
-        ({totalApplications, averageRelays, averageStaked}) => {
-          NodeService.getAllNodes(NODES_LIMIT).then((registeredItems) => {
-            this.setState({
-              userItems,
-              filteredItems: userItems,
-              total: totalApplications,
-              averageRelays,
-              averageStaked,
-              registeredItems,
-              loading: false,
-              hasNodes: userItems.length > 0,
-            });
-          });
-        }
-      );
+      hasError = userItems.error ? userItems.error : hasError;
+      errorMessage = userItems.error ? userItems.message : errorMessage;
+      errorType = userItems.error ? userItems.name : errorType;
+      
+      if (!userItems.error) {
+        this.setState({
+          userItems,
+          filteredItems: userItems,
+          hasNodes: userItems.length > 0,
+        });
+      }
     });
+
+
+    NodeService.getStakedNodeSummary().then(
+      ({totalNodes, 
+        averageValidatorPower: averageRelays, 
+        averageStaked, 
+        error,
+        name,
+        message}) => {
+        hasError = error ? error : hasError;
+        errorMessage = error ? message : errorMessage;
+        errorType = error ? name : errorType;
+
+        if (!error) {
+          this.setState({
+            total: totalNodes,
+            averageRelays,
+            averageStaked,
+            loading: false,
+          });          
+        }
+      });
+
+
+      NodeService.getAllNodes(NODES_LIMIT).then((registeredItems) => {
+        hasError = registeredItems.error ? registeredItems.error : hasError;
+        errorMessage = registeredItems.error
+          ? registeredItems.message
+          : errorMessage;
+        errorType = registeredItems.error ? registeredItems.name : errorType;
+
+ 
+        this.setState({
+          registeredItems,
+          loading: false,
+        });
+      });
+
+      if (errorType === BACKEND_ERRORS.NETWORK) {
+        errorMessage = DEFAULT_NETWORK_ERROR_MESSAGE;
+      }
+
+      if (hasError) {
+        this.setState({
+          loading: false,
+          error: {show: true, message: errorMessage},
+        });
+      }
   }
 
   async loadMoreUserNodes(offset) {
@@ -98,6 +147,7 @@ class NodesMain extends Main {
       hasNodes,
       // hasMoreUserItems,
       hasMoreRegisteredItems,
+      error,
     } = this.state;
 
     const registeredItems = allRegisteredItems.map(mapStatusToField);
@@ -131,6 +181,14 @@ class NodesMain extends Main {
     return (
       <div className="main">
         <Row>
+        {error.show && (
+          <AppAlert
+            variant="danger"
+            title={error.message}
+            dismissible
+            onClose={() => this.setState({error: {show: false}})}
+          />
+        )}
           <Col sm="8" md="8" lg="8" className="page-title">
             <h1 className="ml-1">General Nodes Information</h1>
           </Col>

@@ -120,7 +120,14 @@ export class PocketApplicationService extends PocketBaseService {
 
     return axios
       .get(this._getURL(""), {params})
-      .then((response) => response.data);
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**
@@ -144,7 +151,15 @@ export class PocketApplicationService extends PocketBaseService {
         limit,
         offset,
       },
-    }).then((response) => response.data);
+    })
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**
@@ -155,7 +170,14 @@ export class PocketApplicationService extends PocketBaseService {
   getStakedApplicationSummary() {
     return axios
       .get(this._getURL("summary/staked"))
-      .then((response) => response.data);
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**

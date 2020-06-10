@@ -7,7 +7,10 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
-import {APPLICATIONS_LIMIT, TABLE_COLUMNS} from "../../../_constants";
+import {APPLICATIONS_LIMIT, 
+  TABLE_COLUMNS, 
+  BACKEND_ERRORS,
+  DEFAULT_NETWORK_ERROR_MESSAGE} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
@@ -16,6 +19,7 @@ import Segment from "../../../core/components/Segment/Segment";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 import _ from "lodash";
+import AppAlert from "../../../core/components/AppAlert";
 
 const MY_APPS_HEIGHT = 358;
 
@@ -34,36 +38,76 @@ class AppsMain extends Main {
 
   componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
+    let hasError = false;
+    let errorMessage = "";
+    let errorType = "";
 
     ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT)
       .then(userItems => {
-        this.setState({
-          userItems,
-          filteredItems: userItems,
-          hasApps: userItems.length > 0,
-        });
+        hasError = userItems.error ? userItems.error : hasError;
+        errorMessage = userItems.error ? userItems.message : errorMessage;
+        errorType = userItems.error ? userItems.name : errorType;
+  
+        if (!userItems.error) {
+          this.setState({
+            userItems,
+            filteredItems: userItems,
+            hasApps: userItems.length > 0,
+          });
+        } 
       });
 
     ApplicationService.getStakedApplicationSummary()
       .then(
-        ({totalApplications, averageRelays, averageStaked}) => {
-          this.setState({
-            total: totalApplications,
-            averageRelays,
-            averageStaked,
-            loading: false,
-          });
+        ({totalApplications, 
+          averageRelays, 
+          averageStaked, 
+          error, 
+          name,
+          message}) => {
+
+          hasError = error ? error : hasError;
+          errorMessage = error ? message : errorMessage;
+          errorType = error ? name : errorType;
+          
+          if (!error) {
+            this.setState({
+              total: totalApplications,
+              averageRelays,
+              averageStaked,
+              loading: false,
+            });
+          }
         }
       );
 
     ApplicationService.getAllApplications(APPLICATIONS_LIMIT)
       .then(registeredItems => {
-          this.setState({
-            registeredItems,
-            loading: false,
-          });
+        hasError = registeredItems.error ? registeredItems.error : hasError;
+        errorMessage = registeredItems.error
+          ? registeredItems.message
+          : errorMessage;
+        errorType = registeredItems.error ? registeredItems.name : errorType;
+
+        if (!registeredItems.error) {
+            this.setState({
+              registeredItems,
+              loading: false,
+            });
+          }
         }
       );
+
+      if (errorType === BACKEND_ERRORS.NETWORK) {
+        errorMessage = DEFAULT_NETWORK_ERROR_MESSAGE;
+      }
+
+      if (hasError) {
+        this.setState({
+          loading: false,
+          error: {show: true, message: errorMessage},
+        });
+      }
   }
 
   async loadMoreUserApps(offset) {
@@ -110,6 +154,7 @@ class AppsMain extends Main {
       hasApps,
       // hasMoreUserItems,
       hasMoreRegisteredItems,
+      error
     } = this.state;
 
     const registeredItems = allRegisteredItems.map(mapStatusToField);
@@ -145,6 +190,14 @@ class AppsMain extends Main {
     return (
       <div className="main">
         <Row>
+          {error.show && (
+            <AppAlert
+              variant="danger"
+              title={error.message}
+              dismissible
+              onClose={() => this.setState({error: {show: false}})}
+            />
+          )}
           <Col sm="8" className="page-title">
             <h1>General Apps Information</h1>
           </Col>

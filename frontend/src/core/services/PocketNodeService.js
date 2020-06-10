@@ -240,7 +240,15 @@ class PocketNodeService extends PocketBaseService {
         limit,
         offset,
       },
-    }).then((response) => response.data);
+    })
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**
