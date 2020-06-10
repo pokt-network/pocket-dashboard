@@ -5,7 +5,11 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
 import AppTable from "../../../core/components/AppTable";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {PASSPHRASE_REGEX, TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
+import {
+  TABLE_COLUMNS,
+  VALIDATION_MESSAGES,
+  PASSPHRASE_REGEX,
+} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
 import isEmpty from "lodash/isEmpty";

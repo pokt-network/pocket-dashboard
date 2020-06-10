@@ -131,6 +131,8 @@ class PocketClientService {
    * @returns {Promise<Account | Error>}
    */
   async saveAccount(ppk, passphrase) {
+    // FIXME: PPK is giving different address than the one created with 
+    // @createAndImportAccount
     return await this._pocket.keybase.importPPKFromJSON(passphrase, ppk, passphrase);
   }
 

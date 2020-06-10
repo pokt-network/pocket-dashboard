@@ -1,7 +1,12 @@
 import React, {Component} from "react";
 import {Alert, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {POKT_UNSTAKING_DAYS, STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
+import {
+  POKT_UNSTAKING_DAYS, 
+  STAKE_STATUS, 
+  TABLE_COLUMNS,
+  DEFAULT_NETWORK_ERROR_MESSAGE,
+  BACKEND_ERRORS} from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -39,6 +44,7 @@ class NodeDetail extends Component {
       unjail: false,
       stake: false,
       ctaButtonPressed: false,
+      error: {show: false, message: ""}
     };
 
     this.deleteNode = this.deleteNode.bind(this);
@@ -48,15 +54,30 @@ class NodeDetail extends Component {
   }
 
   async componentDidMount() {
+    let hasError = false;
+    let errorType = "";
+
     // eslint-disable-next-line react/prop-types
     const {address} = this.props.match.params;
 
-    const {pocketNode, networkData} = await NodeService.getNode(address);
+    const {
+      pocketNode, 
+      networkData,
+      error,
+      name} = await NodeService.getNode(address);
 
-    if (pocketNode === undefined) {
-      this.setState({loading: false, exists: false});
-      return;
-    }
+      hasError = error ? error : hasError;
+      errorType = error ? name : errorType;
+
+      if (hasError || pocketNode === undefined ) {
+        if (errorType === BACKEND_ERRORS.NETWORK) {
+          this.setState({loading: false, error: {
+            show: true, message: DEFAULT_NETWORK_ERROR_MESSAGE}});
+        } else {
+          this.setState({loading: false, exists: false});
+        }
+        return;
+      }
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
 
@@ -188,7 +209,7 @@ class NodeDetail extends Component {
       loading,
       deleteModal,
       deleted,
-      message,
+      error,
       exists,
       unstake,
       unjail,
@@ -322,16 +343,16 @@ class NodeDetail extends Component {
       <div className="detail">
         <Row>
           <Col>
-            {message && (
+            {error.show && (
               <AppAlert
                 variant="danger"
-                title={message}
+                title={error.message}
                 onClose={() => this.setState({message: ""})}
                 dismissible
               />
             )}
             <div className="head">
-              <img src={icon} alt="node-icon"/>
+              <img className="account-icon" src={icon} alt="node-icon"/>
               <div className="info">
                 <h1 className="name d-flex align-items-center">{name}</h1>
                 <h3 className="owner">{operator}</h3>

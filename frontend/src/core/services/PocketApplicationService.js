@@ -47,7 +47,7 @@ export class PocketApplicationService extends PocketBaseService {
       passphrase: this.ls.get("app_passphrase").data,
       chains: this.ls.get("app_chains").data,
       data: this.ls.get("app_data").data,
-      imported: this.ls.get("app_imported").data
+      imported: this.ls.get("app_imported").data,
     };
   }
 
@@ -63,14 +63,14 @@ export class PocketApplicationService extends PocketBaseService {
    * @param {boolean} [imported] If the application is imported.
    */
   saveAppInfoInCache({
-                       applicationID,
-                       address,
-                       ppk,
-                       passphrase,
-                       chains,
-                       data,
-                       imported
-                     }) {
+    applicationID,
+    address,
+    ppk,
+    passphrase,
+    chains,
+    data,
+    imported
+    }) {
     if (applicationID) {
       this.ls.set("app_id", {data: applicationID});
     }
@@ -104,7 +104,14 @@ export class PocketApplicationService extends PocketBaseService {
   getApplication(applicationAddress) {
     return axios
       .get(this._getURL(`${applicationAddress}`))
-      .then((response) => response.data);
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**
@@ -120,7 +127,14 @@ export class PocketApplicationService extends PocketBaseService {
 
     return axios
       .get(this._getURL(""), {params})
-      .then((response) => response.data);
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**
@@ -142,9 +156,17 @@ export class PocketApplicationService extends PocketBaseService {
       },
       params: {
         limit,
-        offset
+        offset,
       },
-    }).then((response) => response.data);
+    })
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**
@@ -155,7 +177,14 @@ export class PocketApplicationService extends PocketBaseService {
   getStakedApplicationSummary() {
     return axios
       .get(this._getURL("summary/staked"))
-      .then((response) => response.data);
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**
@@ -234,6 +263,7 @@ export class PocketApplicationService extends PocketBaseService {
         return {
           success: false,
           data: err.response.data.message,
+          name: err.response.data.name,
         };
       });
   }
@@ -354,7 +384,7 @@ export class PocketApplicationService extends PocketBaseService {
     const data = {
       transactionHash,
       payment: {id: paymentId},
-      applicationLink
+      applicationLink,
     };
 
     return axios
@@ -387,7 +417,6 @@ export class PocketApplicationService extends PocketBaseService {
         return {success: false, data: err.response};
       });
   }
-
 }
 
 export default new PocketApplicationService();

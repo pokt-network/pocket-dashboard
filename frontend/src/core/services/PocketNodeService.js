@@ -51,15 +51,15 @@ class PocketNodeService extends PocketBaseService {
    * @param {string} [serviceURL] The service URL.
    */
   saveNodeInfoInCache({
-                        nodeID,
-                        address,
-                        ppk,
-                        passphrase,
-                        chains,
-                        data,
-                        imported,
-                        serviceURL,
-                      }) {
+      nodeID,
+      address,
+      ppk,
+      passphrase,
+      chains,
+      data,
+      imported,
+      serviceURL,
+    }) {
     if (nodeID) {
       this.ls.set("node_id", {data: nodeID});
     }
@@ -150,6 +150,7 @@ class PocketNodeService extends PocketBaseService {
         return {
           success: false,
           data: err.response.data.message,
+          name: err.response.data.name,
         };
       });
   }
@@ -192,7 +193,14 @@ class PocketNodeService extends PocketBaseService {
   getNode(nodeAddress) {
     return axios
       .get(this._getURL(`${nodeAddress}`))
-      .then((response) => response.data);
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**
@@ -232,9 +240,17 @@ class PocketNodeService extends PocketBaseService {
       },
       params: {
         limit,
-        offset
+        offset,
       },
-    }).then((response) => response.data);
+    })
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**
@@ -268,7 +284,7 @@ class PocketNodeService extends PocketBaseService {
     const data = {
       transactionHash,
       payment: {id: paymentId},
-      nodeLink
+      nodeLink,
     };
 
     return axios

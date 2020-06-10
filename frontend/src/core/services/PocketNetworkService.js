@@ -52,7 +52,16 @@ class PocketNetworkService extends PocketBaseService {
    * @returns {Promise|Promise<Array.<*>>}
    */
   getNetworkSummaryData() {
-    return axios.get(this._getURL("summary")).then(response => response.data);
+    return axios
+      .get(this._getURL("summary"))
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 }
 

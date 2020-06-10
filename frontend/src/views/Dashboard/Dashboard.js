@@ -9,6 +9,8 @@ import {
   NODES_LIMIT,
   STYLING,
   TABLE_COLUMNS,
+  BACKEND_ERRORS,
+  DEFAULT_NETWORK_ERROR_MESSAGE
 } from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
@@ -19,6 +21,7 @@ import Segment from "../../core/components/Segment/Segment";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppTable from "../../core/components/AppTable";
+import AppAlert from "../../core/components/AppAlert";
 
 class Dashboard extends Component {
   constructor(props, context) {
@@ -31,22 +34,44 @@ class Dashboard extends Component {
       networkApps: [],
       networkNodes: [],
       summary: [],
+      error: {show: false, message: ""},
     };
   }
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
+    let hasError = false;
+    let errorMessage = "";
+    let errorType = "";
 
     const {
       poktPrice,
       totalStakedTokens,
       totalStakedApps,
       totalStakedNodes,
+      error,
+      name,
+      message,
     } = await NetworkService.getNetworkSummaryData();
-    const networkApps = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT
-    );
-    const networkNodes = await NodeService.getAllNodes(userEmail, NODES_LIMIT);
+
+    hasError = error ? error : hasError;
+    errorMessage = error ? message : errorMessage;
+    errorType = error ? name : errorType;
+
+    const networkApps = await ApplicationService.getAllUserApplications(
+      userEmail, APPLICATIONS_LIMIT);
+
+    hasError = networkApps.error ? networkApps.error : hasError;
+    errorMessage = networkApps.error ? networkApps.message : errorMessage;
+    errorType = networkApps.error ? networkApps.name : errorType;
+
+    const networkNodes = await NodeService.getAllUserNodes(
+      userEmail, NODES_LIMIT);
+
+    hasError = networkNodes.error ? networkNodes.error : hasError;
+    errorMessage = networkNodes.error ? networkNodes.message : errorMessage;
+    errorType = networkNodes.error ? networkNodes.name : errorType;
+    
     const chains = await NetworkService.getAvailableNetworkChains();
     const welcomeAlert = UserService.getShowWelcomeMessage();
 
@@ -54,10 +79,15 @@ class Dashboard extends Component {
       UserService.showWelcomeMessage(false);
     }
 
+    if (errorType === BACKEND_ERRORS.NETWORK) {
+      errorMessage = DEFAULT_NETWORK_ERROR_MESSAGE;
+    }
+
     this.setState({
       welcomeAlert,
       networkApps,
       networkNodes,
+      error: {show: hasError, message: errorMessage},
       chains,
       summary: [
         {title: `US ${formatCurrency(poktPrice)}`, subtitle: "POKT Price"},
@@ -83,6 +113,7 @@ class Dashboard extends Component {
       networkApps: allnetworkApps,
       networkNodes: allnetworkNodes,
       summary,
+      error,
     } = this.state;
 
     if (loading) {
@@ -106,6 +137,14 @@ class Dashboard extends Component {
               WELCOME BACK {UserService.getUserInfo().name.toUpperCase()}!
             </h4>
           </Alert>
+        )}
+        {error.show && (
+          <AppAlert
+            variant="danger"
+            title={error.message}
+            dismissible
+            onClose={() => this.setState({error: {show: false}})}
+          />
         )}
         <Row noGutters>
           <Col sm="8" className="page-title">

@@ -105,24 +105,22 @@ class ValidateKeys extends Component {
       ppk = ppkData;
     }
 
-    const {success, data} = await AccountService.importAccount(ppk, passphrase);
+    const {addressHex} = await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
-    const validated = success && data.address === address;
+    const validated = addressHex !== address;
 
     if (validated) {
       this.setState({
         error: {show: false},
         validated: true,
-        address: data.address,
+        address: address,
         ppk: ppk,
       });
     } else {
       this.setState({
         error: {
           show: true,
-          message: data.message
-            ? data.message.replace("TypeError: ", "")
-            : "Invalid private key / passphrase",
+          message: "Invalid private key / passphrase"
         },
       });
     }
