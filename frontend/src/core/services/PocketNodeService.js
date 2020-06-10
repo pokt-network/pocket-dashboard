@@ -15,7 +15,7 @@ class PocketNodeService extends PocketBaseService {
   removeNodeInfoFromCache() {
     this.ls.remove("node_id");
     this.ls.remove("node_address");
-    this.ls.remove("node_private_key");
+    this.ls.remove("node_ppk");
     this.ls.remove("node_passphrase");
     this.ls.remove("node_chains");
     this.ls.remove("node_data");
@@ -29,7 +29,7 @@ class PocketNodeService extends PocketBaseService {
     return {
       id: this.ls.get("node_id").data,
       address: this.ls.get("node_address").data,
-      privateKey: this.ls.get("node_private_key").data,
+      ppk: this.ls.get("node_ppk").data,
       passphrase: this.ls.get("node_passphrase").data,
       chains: this.ls.get("node_chains").data,
       data: this.ls.get("node_data").data,
@@ -51,23 +51,23 @@ class PocketNodeService extends PocketBaseService {
    * @param {string} [serviceURL] The service URL.
    */
   saveNodeInfoInCache({
-    nodeID,
-    address,
-    privateKey,
-    passphrase,
-    chains,
-    data,
-    imported,
-    serviceURL,
-  }) {
+      nodeID,
+      address,
+      ppk,
+      passphrase,
+      chains,
+      data,
+      imported,
+      serviceURL,
+    }) {
     if (nodeID) {
       this.ls.set("node_id", {data: nodeID});
     }
     if (address) {
       this.ls.set("node_address", {data: address});
     }
-    if (privateKey) {
-      this.ls.set("node_private_key", {data: privateKey});
+    if (ppk) {
+      this.ls.set("node_ppk", {data: ppk});
     }
     if (passphrase) {
       this.ls.set("node_passphrase", {data: passphrase});
@@ -118,23 +118,18 @@ class PocketNodeService extends PocketBaseService {
    * Create node account.
    *
    * @param {string} nodeID Node ID.
-   * @param {string} passphrase Passphrase.
+   * @param {{address: string, publicKey: string}} nodeData Application data.
    * @param {string} nodeBaseLink Node base link.
-   * @param {string} privateKey? Private Key(is imported).
+   * @param {object} ppkData? PPK data(is imported).
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async createNodeAccount(
-    nodeID,
-    passphrase,
-    nodeBaseLink,
-    privateKey = undefined
-  ) {
-    let data = {nodeID, passphrase, nodeBaseLink};
+  async saveNodeAccount(nodeID, nodeData, nodeBaseLink, ppkData = undefined) {
+    let data = {nodeID, nodeData, nodeBaseLink};
 
-    if (privateKey) {
-      data["privateKey"] = privateKey;
+    if (ppkData) {
+      data["ppkData"] = ppkData;
     }
 
     return axios

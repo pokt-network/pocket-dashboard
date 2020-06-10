@@ -8,38 +8,6 @@ import BasePocketService from "./BasePocketService";
 export default class AccountService extends BasePocketService {
 
   /**
-   * Create a pocket account in the network.
-   *
-   * @param {PocketService} pocketService Pocket service used to get account.
-   * @param {string} passphrase Passphrase used to create pocket account.
-   * @param {string} [privateKey] Private key used to import pocket account.
-   *
-   * @returns {Promise<Account> | Error} A Pocket account created successfully.
-   * @throws {Error} If creation of account fails.
-   * @deprecated This method will be deleted soon.
-   */
-  async createPocketAccount(pocketService, passphrase, privateKey) {
-    if (privateKey) {
-      const importedAccount = await pocketService.importAccount(privateKey, passphrase);
-
-      if (importedAccount instanceof Error) {
-        throw Error("Imported account is invalid");
-      }
-
-      return importedAccount;
-    } else {
-      // Generate Pocket account for item.
-      const account = await pocketService.createAccount(passphrase);
-
-      if (account instanceof Error) {
-        throw account;
-      }
-
-      return account;
-    }
-  }
-
-  /**
    * Import account into network.
    *
    * @param {PocketService} pocketService Pocket service used to import account.
@@ -90,7 +58,6 @@ export default class AccountService extends BasePocketService {
    *
    * @returns {Promise<PublicPocketAccount>} a pocket account.
    * @throws Error If account is invalid.
-   * @deprecated This method will be deleted soon.
    * @async
    */
   async importDashboardAccountToNetworkFromPPK(ppkData, passphrase) {

@@ -15,13 +15,14 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
 import {formatDaysCountdown, formatNetworkData, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
-import UserService from "../../../core/services/PocketUserService";
+import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
 import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
 import Segment from "../../../core/components/Segment/Segment";
 import "../../../scss/Views/Detail.scss";
 import PocketAccountService from "../../../core/services/PocketAccountService";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class AppDetail extends Component {
   constructor(props, context) {
@@ -110,7 +111,7 @@ class AppDetail extends Component {
     const appsLink = `${window.location.origin}${_getDashboardPath(
       DASHBOARD_PATHS.apps
     )}`;
-    const userEmail = UserService.getUserInfo().email;
+    const userEmail = PocketUserService.getUserInfo().email;
 
     const success = await ApplicationService.deleteAppFromDashboard(
       address, userEmail, appsLink
@@ -123,14 +124,21 @@ class AppDetail extends Component {
     }
   }
 
-  async unstakeApplication({privateKey, passphrase, address}) {
+  async unstakeApplication({ppk, passphrase, address}) {
     const {freeTier} = this.state.pocketApplication;
 
     const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
     const detail = url.replace(":address", address);
     const link = `${window.location.origin}${detail}`;
-    const application = {privateKey, passphrase, accountAddress: address};
+    const application = {passphrase, accountAddress: address};
 
+    await PocketClientService.saveAccount(ppk, passphrase);
+
+    const appUnstakeRequest = await PocketClientService.appUnstakeRequest(
+      address
+    );
+
+    // TODO: Call backend and send request to finish transaction
     const {success, data} = freeTier
       ? await ApplicationService.unstakeFreeTierApplication(application)
       : await ApplicationService.unstakeApplication(application, link);
@@ -142,11 +150,13 @@ class AppDetail extends Component {
     }
   }
 
-  async stakeApplication({privateKey, passphrase, address}) {
+  async stakeApplication({ppk, passphrase, address}) {
     ApplicationService.removeAppInfoFromCache();
-    ApplicationService.saveAppInfoInCache({address, privateKey, passphrase});
+    ApplicationService.saveAppInfoInCache({address, passphrase});
 
-    UserService.saveUserAction("Stake App");
+    await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+
+    PocketUserService.saveUserAction("Stake App");
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(
@@ -440,7 +450,7 @@ class AppDetail extends Component {
                   </Link>{" "}
                   to change your app description.
                 </p>
-              </span> 
+              </span>
           </Col>
           <Col sm="3" md="3" lg="3">
             <span className="option">

@@ -86,65 +86,6 @@ describe("ApplicationService", () => {
     });
   });
 
-  if (FREE_TIER_PRIVATE_KEY_WITH_POKT) {
-    describe.skip("stakeFreeTierApplication", async () => {
-
-      it("Expect the aat value", async () => {
-
-        const applicationPassphrase = "Application";
-        const applicationAccount = await applicationService.pocketService
-          .createAccount(applicationPassphrase);
-
-        const applicationPrivateKey = await applicationService.pocketService
-          .exportRawAccount(applicationAccount.addressHex, applicationPassphrase);
-
-        const applicationDBData = {
-          name: "Test application 999",
-          owner: "Tester",
-          url: "http://example.com",
-          contactEmail: "tester@app.com",
-          user: "tester@app.com",
-          description: "A test application",
-          publicPocketAccount: {
-            address: applicationAccount.addressHex,
-            publicKey: applicationAccount.publicKey.toString("hex")
-          }
-        };
-
-        const persistenceService = sinon.createStubInstance(PersistenceProvider);
-        const stubFilter = {
-          "publicPocketAccount.address": applicationAccount.addressHex
-        };
-
-        persistenceService.getEntityByFilter
-          .withArgs("Applications", stubFilter)
-          .returns(applicationDBData);
-
-        sinon.stub(applicationService, "persistenceService").value(persistenceService);
-
-        const applicationData = {
-          privateKey: applicationPrivateKey,
-          passphrase: applicationPassphrase
-        };
-        const networkChains = [
-          "0001"
-        ];
-
-        const aatOrFalse = await applicationService.stakeFreeTierApplication(applicationData, networkChains);
-
-        assert.isNotFalse(aatOrFalse);
-        assert.isObject(aatOrFalse);
-
-      });
-    });
-
-    // TODO: Add unit test for unstake free tier app.
-
-    // TODO: Add unit test for stake an application.
-
-    // TODO: Add unit test for unstake an application.
-  }
-
   describe("getApplication", () => {
     const address = "bc28256f5c58611e96d13996cf535bdc0204366a";
 

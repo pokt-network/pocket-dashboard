@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import cls from "classnames";
 import "./AppPassphrase.scss";
-import {Col, Form, Row, Button} from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
 import AppTable from "../../../core/components/AppTable";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
@@ -9,23 +9,19 @@ import {
   TABLE_COLUMNS,
   VALIDATION_MESSAGES,
   PASSPHRASE_REGEX,
-  BACKEND_ERRORS,
-  DEFAULT_NETWORK_ERROR_MESSAGE
 } from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
 import isEmpty from "lodash/isEmpty";
-import {
-  createAndDownloadJSONFile,
-  scrollToId,
-  validateYup,
-} from "../../../_helpers";
+import {createAndDownloadJSONFile, scrollToId, validateYup} from "../../../_helpers";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Segment from "../../../core/components/Segment/Segment";
 import LoadingButton from "../../../core/components/LoadingButton";
+import PocketClientService from "../../../core/services/PocketClientService";
 import {Configurations} from "../../../_configuration";
+import {Account} from "@pokt-network/pocket-js";
 
 class AppPassphrase extends Component {
   constructor(props, context) {
@@ -106,7 +102,6 @@ class AppPassphrase extends Component {
   }
 
   async handlePassphrase(values) {
-    const {created} = this.state;
     const valid = await validateYup(values, this.schema);
 
     if (valid === undefined) {
@@ -115,9 +110,11 @@ class AppPassphrase extends Component {
           passPhrase: values.passPhrase,
           validPassphrase: true,
         }, () => {
-          if (!created) {
-this.createApplicationAccount();
-}
+          const {fileDownloaded} = this.state;
+
+          if (!fileDownloaded) {
+            this.createApplicationAccount();
+          }
         }
       );
     } else {
@@ -130,43 +127,42 @@ this.createApplicationAccount();
     const applicationInfo = PocketApplicationService.getApplicationInfo();
     const {passPhrase} = this.state;
 
-    const applicationBaseLink = `${window.location.origin}${_getDashboardPath(
-      DASHBOARD_PATHS.appDetail
-    )}`;
+    const applicationAccountOrError = await PocketClientService.createAndUnlockAccount(passPhrase);
 
-    const {success, data, name} = await ApplicationService.createApplicationAccount(
-      applicationInfo.id, passPhrase, applicationBaseLink
-    );
-
-    if (success) {
-      const {privateApplicationData, ppkData} = data;
-      const {address, privateKey} = privateApplicationData;
+    if (applicationAccountOrError instanceof Account) {
+      const ppkData = await PocketClientService.createPPKFromAccount(applicationAccountOrError, passPhrase);
+      const address = applicationAccountOrError.addressHex;
+      const publicKey = applicationAccountOrError.publicKey.toString("hex");
 
       PocketApplicationService.removeAppInfoFromCache();
       PocketApplicationService.saveAppInfoInCache({
         applicationID: applicationInfo.id,
         passphrase: passPhrase,
-        address,
-        privateKey,
+        address
       });
 
-      this.setState({
-        created: true,
-        address,
-        privateKey,
-        redirectPath: _getDashboardPath(DASHBOARD_PATHS.applicationChainsList),
-        ppkData: ppkData,
-      });
-    } else {
-      let error;
+      await PocketClientService.saveAccount(JSON.stringify(ppkData), passPhrase);
 
-      if (name === BACKEND_ERRORS) {
-        error = DEFAULT_NETWORK_ERROR_MESSAGE;
-      } else {
-        error = data.message;
+      const applicationBaseLink = `${window.location.origin}${_getDashboardPath(
+        DASHBOARD_PATHS.appDetail
+      )}`;
+
+      const {success} = await ApplicationService
+        .saveApplicationAccount(applicationInfo.id, {address, publicKey}, applicationBaseLink);
+
+      if (success) {
+        const privateKey = await PocketClientService.exportPrivateKey(applicationAccountOrError, passPhrase);
+
+        this.setState({
+          created: true,
+          address,
+          privateKey,
+          redirectPath: _getDashboardPath(DASHBOARD_PATHS.applicationChainsList),
+          ppkData: ppkData,
+        });
       }
-
-      this.setState({error: {show: true, message: error}});
+    } else {
+      this.setState({error: {show: true, message: applicationAccountOrError.message}});
       scrollToId("alert");
     }
 
@@ -321,7 +317,7 @@ this.createApplicationAccount();
           </Col>
           <Col sm="6">
             <h3>Address</h3>
-            <Form.Control readOnly value={address} />
+            <Form.Control readOnly value={address}/>
           </Col>
         </Row>
         <Row className="mt-5">
@@ -355,7 +351,7 @@ this.createApplicationAccount();
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle} />
+              <InfoCard title={card.title} subtitle={card.subtitle}/>
             </Col>
           ))}
         </Row>
