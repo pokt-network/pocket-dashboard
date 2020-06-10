@@ -5,7 +5,7 @@ import {
   StakedApplicationSummary,
   UserPocketApplication
 } from "../models/Application";
-import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
+import {PublicPocketAccount} from "../models/Account";
 import {Account, Application, PocketAAT, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import {Configurations} from "../_configuration";
@@ -13,6 +13,7 @@ import AccountService from "./AccountService";
 import BasePocketService from "./BasePocketService";
 import {TransactionPostAction} from "../models/Transaction";
 import bigInt from "big-integer";
+import {DashboardError, DashboardValidationError, PocketNetworkError} from "../models/Exceptions";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -164,7 +165,7 @@ export default class ApplicationService extends BasePocketService {
    * @param {string} applicationAddress Application address.
    *
    * @returns {Promise<Application>} Application data.
-   * @throws Error If application already exists on dashboard or application does exist on network.
+   * @throws {DashboardValidationError | PocketNetworkError} If application already exists on dashboard or application does exist on network.
    * @async
    */
   async importApplication(applicationAddress) {
@@ -175,13 +176,13 @@ export default class ApplicationService extends BasePocketService {
     const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
     if (applicationDB) {
-      throw Error("Application already exists in dashboard");
+      throw new DashboardValidationError("Application already exists in dashboard");
     }
 
     try {
       return this.pocketService.getApplication(applicationAddress);
     } catch (e) {
-      throw TypeError("Application does not exist on network");
+      throw new PocketNetworkError("Application does not exist on network");
     }
   }
 
@@ -321,6 +322,7 @@ export default class ApplicationService extends BasePocketService {
    * @param {string[]} networkChains Network chains to stake application.
    *
    * @returns {Promise<PocketAAT | boolean>} If application was created or not.
+   * @deprecated This method will be moved soon.
    * @async
    */
   async stakeFreeTierApplication(application, networkChains) {
@@ -361,6 +363,7 @@ export default class ApplicationService extends BasePocketService {
    * @param {{privateKey:string, passphrase:string, accountAddress: string}} applicationData Application data.
    *
    * @returns {Promise<PocketApplication | boolean>} If application was unstaked return the application, if not return false.
+   * @deprecated This method will be moved soon.
    * @async
    */
   async unstakeFreeTierApplication(applicationData) {
@@ -405,7 +408,8 @@ export default class ApplicationService extends BasePocketService {
    * @param {string} uPoktAmount uPokt amount used to stake.
    *
    * @returns {Promise<PocketApplication | boolean>} If was staked return the application, if not return false.
-   * @throws Error If private key is not valid or application does not exists on dashboard.
+   * @throws {Error} If private key is not valid or application does not exists on dashboard.
+   * @deprecated This method will be moved soon.
    */
   async stakeApplication(application, networkChains, uPoktAmount) {
     const accountService = new AccountService();
@@ -443,6 +447,7 @@ export default class ApplicationService extends BasePocketService {
    * @param {{privateKey:string, passphrase:string, accountAddress: string}} applicationData Application data.
    *
    * @returns {Promise<PocketApplication | boolean>} If application was unstaked return application, if not return false.
+   * @deprecated This method will be moved soon.
    * @async
    */
   async unstakeApplication(applicationData) {
@@ -480,19 +485,19 @@ export default class ApplicationService extends BasePocketService {
    * @param {string} [applicationData.icon] Icon.
    *
    * @returns {Promise<string | boolean>} If application was persisted return id, if not return false.
-   * @throws {Error} If validation fails or already exists.
+   * @throws {DashboardError} If validation fails or already exists.
    * @async
    */
   async createApplication(applicationData) {
     if (PocketApplication.validate(applicationData)) {
       if (!await this.userService.userExists(applicationData.user)) {
-        throw new Error("User does not exist");
+        throw new DashboardError("User does not exist.");
       }
 
       const application = PocketApplication.createPocketApplication(applicationData);
 
       if (await this.applicationExists(application)) {
-        throw new Error("Application already exists");
+        throw new DashboardError("An application with that name already exists, please use a different name.");
       }
 
       return this.__persistApplicationIfNotExists(application);
@@ -500,17 +505,16 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
-   * Create an application account.
+   * Save an application public account.
    *
    * @param {string} applicationID Application ID.
-   * @param {string} passphrase Application account passphrase.
-   * @param {string} [privateKey] Application private key if is imported.
+   * @param {{address: string, publicKey: string}} accountData Application account data.
    *
-   * @returns {Promise<{application: PocketApplication, privateApplicationData: PrivatePocketAccount, networkData:Application, ppkData: object}>} An application information.
+   * @returns {Promise<PocketApplication>} An application information.
    * @throws {Error} If application does not exists.
    * @async
    */
-  async createApplicationAccount(applicationID, passphrase, privateKey = "") {
+  async saveApplicationAccount(applicationID, accountData) {
 
     const applicationDB = await this.persistenceService.getEntityByID(APPLICATION_COLLECTION_NAME, applicationID);
 
@@ -520,22 +524,11 @@ export default class ApplicationService extends BasePocketService {
 
     const application = PocketApplication.createPocketApplication(applicationDB);
 
-    const accountService = new AccountService();
-    const pocketAccount = await accountService.createPocketAccount(this.pocketService, passphrase, privateKey);
-
-    application.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
+    application.publicPocketAccount = new PublicPocketAccount(accountData.address, accountData.publicKey);
 
     await this.__updateApplicationByID(applicationID, application);
 
-    const appParameters = await this.pocketService.getApplicationParameters();
-
-    const privateApplicationData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passphrase);
-    const networkData = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
-
-    const ppkData = await this.pocketService.createPPK(privateApplicationData.privateKey, passphrase);
-
-    // noinspection JSValidateTypes
-    return {application, privateApplicationData, networkData, ppkData};
+    return application;
   }
 
   /**
@@ -574,13 +567,13 @@ export default class ApplicationService extends BasePocketService {
    * @param {string} [applicationData.icon] Icon.
    *
    * @returns {Promise<boolean>} If was updated or not.
-   * @throws {Error} If validation fails or does not exists.
+   * @throws {DashboardError} If validation fails or does not exists.
    * @async
    */
   async updateApplication(applicationAccountAddress, applicationData) {
     if (PocketApplication.validate(applicationData)) {
       if (!await this.userService.userExists(applicationData.user)) {
-        throw new Error("User does not exists");
+        throw new DashboardError("User does not exists");
       }
 
       const application = PocketApplication.createPocketApplication(applicationData);
@@ -591,7 +584,7 @@ export default class ApplicationService extends BasePocketService {
       const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
       if (!applicationDB) {
-        throw new Error("Application does not exists");
+        throw new DashboardError("Application does not exists");
       }
 
       const applicationToEdit = {

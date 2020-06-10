@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import {AnsweredSecurityQuestion} from "./SecurityQuestion";
 import {EMAIL_REGEX} from "./Regex";
+import {DashboardValidationError} from "./Exceptions";
 
 const PASSWORD_MIN_LENGTH = 8;
 const SALT_ROUNDS = 10;
@@ -123,7 +124,7 @@ export class EmailUser extends PocketUser {
    * @param {string} userData.password2 Password to validate against Password1.
    *
    * @returns {boolean} If is validation success
-   * @throws {Error} If validation fails
+   * @throws {DashboardValidationError} If validation fails
    * @static
    */
   static validate(userData) {
@@ -144,16 +145,16 @@ export class EmailUser extends PocketUser {
    * @param {string} password2 Password to validate against password1.
    *
    * @returns {boolean} If passwords match or not.
-   * @throws {Error} If validation fails.
+   * @throws {DashboardValidationError} If validation fails.
    */
   static validatePasswords(password1, password2) {
 
     if (password1.length < PASSWORD_MIN_LENGTH || password2.length < PASSWORD_MIN_LENGTH) {
-      throw Error(`Passwords must have ${PASSWORD_MIN_LENGTH} characters at least.`);
+      throw new DashboardValidationError(`Passwords must have ${PASSWORD_MIN_LENGTH} characters at least.`);
     }
 
     if (password1 !== password2) {
-      throw Error("Passwords does not match.");
+      throw new DashboardValidationError("Passwords does not match.");
     }
 
     return true;
@@ -165,11 +166,11 @@ export class EmailUser extends PocketUser {
    * @param {string} username User name.
    *
    * @returns {boolean} If is valid
-   * @throws {Error} if validation fails.
+   * @throws {DashboardValidationError} if validation fails.
    */
   static validateUsername(username) {
     if (username === "") {
-      throw Error("Username is not valid.");
+      throw new DashboardValidationError("Username is not valid.");
     }
 
     return true;
@@ -181,11 +182,11 @@ export class EmailUser extends PocketUser {
    * @param {string} email User email.
    *
    * @returns {boolean} If is valid
-   * @throws {Error} if validation fails.
+   * @throws {DashboardValidationError} if validation fails.
    */
   static validateEmail(email) {
     if (!EMAIL_REGEX.test(email)) {
-      throw Error("Email address is not valid.");
+      throw new DashboardValidationError("Email address is not valid.");
     }
 
     return true;

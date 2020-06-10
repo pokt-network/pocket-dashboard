@@ -23,5 +23,5 @@ export const Configurations = {
     chain_id: process.env.REACT_APP_POCKET_NETWORK_CHAIN_ID,
   },
   stakeDefaultStatus: process.env.REACT_APP_STAKE_DEFAULT_STATUS,
-  defaultMaxRelaysPerDay: process.env.REACT_APP_DEFAULT_MAX_RELAYS_PER_DAY,
+  defaultMaxRelaysPerDay: process.env.REACT_APP_DEFAULT_MAX_RELAYS_PER_DAY
 };

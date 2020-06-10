@@ -1,4 +1,5 @@
 import {Configurations} from "../_configuration";
+import {DashboardValidationError} from "./Exceptions";
 
 export class BillingAddress {
 
@@ -20,20 +21,20 @@ export class BillingAddress {
    * @param {string} addressData.country Country.
    *
    * @returns {boolean} If is validation success
-   * @throws {Error} If validation fails
+   * @throws {DashboardValidationError} If validation fails
    * @static
    */
   static validate(addressData) {
     if (!addressData.line1) {
-      throw Error("Line 1 is required");
+      throw new DashboardValidationError("Line 1 is required");
     }
 
     if (!addressData.postal_code) {
-      throw Error("Postal code is required");
+      throw new DashboardValidationError("Postal code is required");
     }
 
     if (!addressData.country) {
-      throw Error("Country is required");
+      throw new DashboardValidationError("Country is required");
     }
 
     return true;
@@ -58,16 +59,16 @@ export class BillingDetails {
    * @param {BillingAddress} billingDetailData.address Billing address.
    *
    * @returns {boolean} If is validation success
-   * @throws {Error} If validation fails
+   * @throws {DashboardValidationError} If validation fails
    * @static
    */
   static validate(billingDetailData) {
     if (!billingDetailData.name) {
-      throw Error("Name is required");
+      throw new DashboardValidationError("Name is required");
     }
 
     if (!billingDetailData.address) {
-      throw Error("Address is required");
+      throw new DashboardValidationError("Address is required");
     }
 
     // noinspection JSCheckFunctionSignatures
@@ -97,20 +98,20 @@ export class PaymentMethod {
    * @param {BillingDetails} paymentMethodData.billingDetails Billing details.
    *
    * @returns {boolean} If is validation success
-   * @throws {Error} If validation fails
+   * @throws {DashboardValidationError} If validation fails
    * @static
    */
   static validate(paymentMethodData) {
     if (!paymentMethodData.paymentMethod.id) {
-      throw Error("ID is required");
+      throw new DashboardValidationError("ID is required");
     }
 
     if (!paymentMethodData.user) {
-      throw Error("User is required");
+      throw new DashboardValidationError("User is required");
     }
 
     if (!paymentMethodData.billingDetails) {
-      throw Error("Billing details is required");
+      throw new DashboardValidationError("Billing details is required");
     }
 
     // noinspection JSCheckFunctionSignatures
@@ -150,6 +151,7 @@ export class PaymentHistory {
   constructor(createdDate, paymentID, currency, amount, item, user) {
     Object.assign(this, {createdDate, paymentID, currency, amount, item, user});
 
+    // noinspection JSUnusedGlobalSymbols
     /** @type {string} */
     this.paymentMethodID = "";
 
@@ -207,7 +209,7 @@ export class PaymentHistory {
    * @param {boolean} throwError Throw an error if item is not a node.
    *
    * @returns {boolean} If payment item is a node or not.
-   * @throws Error if throwError is true and payment item is not a node.
+   * @throws {DashboardValidationError} if throwError is true and payment item is not a node.
    */
   isNodePaymentItem(throwError = false) {
     /** @type {string} */
@@ -216,7 +218,7 @@ export class PaymentHistory {
     const isNode = validatorPower !== undefined;
 
     if (throwError && !isNode) {
-      throw Error("The payment item is not a node");
+      throw new DashboardValidationError("The payment item is not a node");
     }
 
     return isNode;
@@ -226,7 +228,7 @@ export class PaymentHistory {
    * @param {boolean} throwError Throw an error if item is not an application.
    *
    * @returns {boolean} If payment item is an application or not.
-   * @throws Error if throwError is true and payment item is not application.
+   * @throws {DashboardValidationError} if throwError is true and payment item is not application.
    */
   isApplicationPaymentItem(throwError = false) {
     /** @type {string} */
@@ -235,7 +237,7 @@ export class PaymentHistory {
     const isApplication = maxRelays !== undefined;
 
     if (throwError && !isApplication) {
-      throw Error("The payment item is not an application");
+      throw new DashboardValidationError("The payment item is not an application");
     }
 
     return isApplication;
@@ -245,13 +247,13 @@ export class PaymentHistory {
    * @param {boolean} throwError Throw an error if is not succeed.
    *
    * @returns {boolean} If payment was succeeded or not.
-   * @throws Error if throwError is true and payment is not success.
+   * @throws {DashboardValidationError} if throwError is true and payment is not success.
    */
   isSuccessPayment(throwError = false) {
     const succeeded = this.status === "succeeded";
 
     if (throwError && !succeeded) {
-      throw Error("The payment is not succeed");
+      throw new DashboardValidationError("The payment is not succeed");
     }
 
     return succeeded;

@@ -107,9 +107,9 @@ class OrderSummary extends Component {
     const action = UserService.getUserAction();
     const appBreadcrumbs = ["Apps", action, "Checkout", "Payment"];
     const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Payment"];
-    
-    type === ITEM_TYPES.APPLICATION ? 
-      this.props.onBreadCrumbChange(appBreadcrumbs) : 
+
+    type === ITEM_TYPES.APPLICATION ?
+      this.props.onBreadCrumbChange(appBreadcrumbs) :
       this.props.onBreadCrumbChange(nodeBreadcrumbs);
     });
   }
@@ -180,7 +180,7 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       // TODO: Calculate pokt amount from purchase
-      const pokt = 100000; 
+      const pokt = 100000;
       const appStakeRequest = PocketClientService.appStakeRequest(
         address, passphrase, chains, pokt);
 
@@ -188,7 +188,6 @@ class OrderSummary extends Component {
       // ApplicationService.stakeApplication(
       //   application, chains, result.paymentIntent.id, applicationLink
       // ).then(() => {});
-
     } else {
       // Stake Node
       const {
@@ -205,7 +204,7 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       // TODO: Calculate pokt amount from purchase
-      const pokt = 100000; 
+      const pokt = 100000;
       const nodeStakeRequest = PocketClientService.nodeStakeRequest(
         address, passphrase, chains, pokt, serviceURL);
 

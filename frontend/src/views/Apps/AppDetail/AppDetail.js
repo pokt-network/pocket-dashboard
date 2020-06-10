@@ -10,7 +10,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
 import {formatDaysCountdown, formatNetworkData, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
-import UserService from "../../../core/services/PocketUserService";
+import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
 import ValidateKeys from "../../../core/components/ValidateKeys/ValidateKeys";
@@ -93,7 +93,7 @@ class AppDetail extends Component {
     const appsLink = `${window.location.origin}${_getDashboardPath(
       DASHBOARD_PATHS.apps
     )}`;
-    const userEmail = UserService.getUserInfo().email;
+    const userEmail = PocketUserService.getUserInfo().email;
 
     const success = await ApplicationService.deleteAppFromDashboard(
       address, userEmail, appsLink
@@ -119,7 +119,7 @@ class AppDetail extends Component {
     const appUnstakeRequest = await PocketClientService.appUnstakeRequest(
       address
     );
-    
+
     // TODO: Call backend and send request to finish transaction
     const {success, data} = freeTier
       ? await ApplicationService.unstakeFreeTierApplication(application)
@@ -135,10 +135,10 @@ class AppDetail extends Component {
   async stakeApplication({ppk, passphrase, address}) {
     ApplicationService.removeAppInfoFromCache();
     ApplicationService.saveAppInfoInCache({address, passphrase});
-    
+
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
-    UserService.saveUserAction("Stake App");
+    PocketUserService.saveUserAction("Stake App");
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(
@@ -432,7 +432,7 @@ class AppDetail extends Component {
                   </Link>{" "}
                   to change your app description.
                 </p>
-              </span> 
+              </span>
           </Col>
           <Col sm="3" md="3" lg="3">
             <span className="option">

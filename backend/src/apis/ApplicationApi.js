@@ -1,6 +1,6 @@
 import express from "express";
 import ApplicationService from "../services/ApplicationService";
-import {getOptionalQueryOption, getQueryOption} from "./_helpers";
+import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helpers";
 import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
 import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
@@ -15,370 +15,242 @@ const paymentService = new PaymentService();
 /**
  * Create new application.
  */
-router.post("", async (request, response) => {
-  try {
-    /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}}} */
-    const data = request.body;
+router.post("", apiAsyncWrapper(async (req, res) => {
+  /** @type {{application: {name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}}} */
+  const data = req.body;
 
-    const applicationID = await applicationService.createApplication(data.application);
+  const applicationID = await applicationService.createApplication(data.application);
 
-    response.send(applicationID);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.send(applicationID);
+}));
 
 /**
- * Create new application account.
- * // FIXME: For imported apps, change private key for PPK. 
- * 
- * @deprecated // TODO pocket.js account creation have to be moved to frontend
+ * Save application account.
  */
-router.post("/account", async (request, response) => {
-  try {
-    /** @type {{applicationID: string, passphrase: string, applicationBaseLink:string, privateKey?:string}} */
-    let data = request.body;
+router.post("/account", apiAsyncWrapper(async (req, res) => {
+  /** @type {{applicationID: string, applicationData: {address: string, publicKey: string}, applicationBaseLink:string, ppkData?: object}} */
+  const data = req.body;
 
-    if (!("privateKey" in data)) {
-      data["privateKey"] = "";
-    }
+  const application = await applicationService.saveApplicationAccount(data.applicationID, data.applicationData);
+  const emailAction = data.ppkData ? "imported" : "created";
+  const applicationEmailData = {
+    name: application.name,
+    link: `${data.applicationBaseLink}/${data.applicationData.address}`
+  };
 
-    const applicationData = await applicationService.createApplicationAccount(data.applicationID, data.passphrase, data.privateKey);
-    const emailAction = data.privateKey ? "imported" : "created";
-    const applicationEmailData = {
-      name: applicationData.application.name,
-      link: `${data.applicationBaseLink}/${applicationData.privateApplicationData.address}`
-    };
+  await EmailService
+    .to(application.contactEmail)
+    .sendCreateOrImportAppEmail(emailAction, application.contactEmail, applicationEmailData);
 
-    await EmailService
-      .to(applicationData.application.contactEmail)
-      .sendCreateOrImportAppEmail(emailAction, applicationData.application.contactEmail, applicationEmailData);
-
-    response.send(applicationData);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.send(application);
+}));
 
 /**
  * Update an application.
  */
-router.put("/:applicationAccountAddress", async (request, response) => {
-  try {
-    /** @type {{name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}} */
-    let data = request.body;
+router.put("/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}} */
+  let data = req.body;
 
-    /** @type {{applicationAccountAddress:string}} */
-    const params = request.params;
+  /** @type {{applicationAccountAddress:string}} */
+  const params = req.params;
 
-    const updated = await applicationService.updateApplication(params.applicationAccountAddress, data);
+  const updated = await applicationService.updateApplication(params.applicationAccountAddress, data);
 
-    response.send(updated);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.send(updated);
+}));
 
 /**
  * Delete an application from dashboard.
  */
-router.post("/:applicationAccountAddress", async (request, response) => {
-  try {
+router.post("/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{applicationAccountAddress:string}} */
+  const data = req.params;
+  /** @type {{user:string, appsLink:string}} */
+  const bodyData = req.body;
 
-    /** @type {{applicationAccountAddress:string}} */
-    const data = request.params;
-    /** @type {{user:string, appsLink:string}} */
-    const bodyData = request.body;
+  const application = await applicationService.deleteApplication(data.applicationAccountAddress, bodyData.user);
 
-    const application = await applicationService.deleteApplication(data.applicationAccountAddress, bodyData.user);
-
-    if (application) {
-      const applicationEmailData = {
-        name: application.name,
-        appsLink: bodyData.appsLink
-      };
-
-      await EmailService
-        .to(application.contactEmail)
-        .sendAppDeletedEmail(application.contactEmail, applicationEmailData);
-    }
-
-    response.send(application !== undefined);
-  } catch (e) {
-    const error = {
-      message: e.toString()
+  if (application) {
+    const applicationEmailData = {
+      name: application.name,
+      appsLink: bodyData.appsLink
     };
 
-    response.status(400).send(error);
+    await EmailService
+      .to(application.contactEmail)
+      .sendAppDeletedEmail(application.contactEmail, applicationEmailData);
   }
-});
+
+  res.send(application !== undefined);
+}));
 
 /**
  * Get staked summary data.
  */
-router.get("/summary/staked", async (request, response) => {
-  try {
+router.get("/summary/staked", apiAsyncWrapper(async (req, res) => {
+  const summaryData = await applicationService.getStakedApplicationSummary();
 
-    const summaryData = await applicationService.getStakedApplicationSummary();
-
-    response.send(summaryData);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(summaryData);
+}));
 
 /**
  * Import application from network.
  */
-router.get("/import/:applicationAccountAddress", async (request, response) => {
-  try {
-    /** @type {{applicationAccountAddress:string}} */
-    const data = request.params;
-    const application = await applicationService.importApplication(data.applicationAccountAddress);
+router.get("/import/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{applicationAccountAddress:string}} */
+  const data = req.params;
+  const application = await applicationService.importApplication(data.applicationAccountAddress);
 
-    response.send(application);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(application);
+}));
 
 /**
  * Get application that is already on dashboard by address.
  */
-router.get("/:applicationAccountAddress", async (request, response) => {
-  try {
-    /** @type {{applicationAccountAddress:string}} */
-    const data = request.params;
-    const application = await applicationService.getApplication(data.applicationAccountAddress);
+router.get("/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{applicationAccountAddress:string}} */
+  const data = req.params;
+  const application = await applicationService.getApplication(data.applicationAccountAddress);
 
-    response.send(application);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(application);
+}));
 
 /**
  * Get all applications.
  */
-router.get("", async (request, response) => {
-  try {
+router.get("", apiAsyncWrapper(async (req, res) => {
+  const limit = parseInt(getQueryOption(req, "limit"));
 
-    const limit = parseInt(getQueryOption(request, "limit"));
+  const offsetData = getOptionalQueryOption(req, "offset");
+  const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    const offsetData = getOptionalQueryOption(request, "offset");
-    const offset = offsetData !== "" ? parseInt(offsetData) : 0;
+  const applications = await applicationService.getAllApplications(limit, offset);
 
-    const applications = await applicationService.getAllApplications(limit, offset);
-
-    response.send(applications);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(applications);
+}));
 
 /**
  * Get all user applications.
  */
-router.post("/user/all", async (request, response) => {
-  try {
+router.post("/user/all", apiAsyncWrapper(async (req, res) => {
+  const limit = parseInt(getQueryOption(req, "limit"));
 
-    const limit = parseInt(getQueryOption(request, "limit"));
+  const offsetData = getOptionalQueryOption(req, "offset");
+  const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    const offsetData = getOptionalQueryOption(request, "offset");
-    const offset = offsetData !== "" ? parseInt(offsetData) : 0;
+  /** @type {{user: string}} */
+  const data = req.body;
 
-    /** @type {{user: string}} */
-    const data = request.body;
+  const applications = await applicationService.getUserApplications(data.user, limit, offset);
 
-    const applications = await applicationService.getUserApplications(data.user, limit, offset);
-
-    response.send(applications);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(applications);
+}));
 
 /**
  * Stake a free tier application.
  * // FIXME: Make transaction on frontend
  */
-router.post("/freetier/stake", async (request, response) => {
-  try {
+router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
+  /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[]}} */
+  const data = req.body;
 
-    /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[]}} */
-    const data = request.body;
+  const aat = await applicationService.stakeFreeTierApplication(data.application, data.networkChains);
 
-    const aat = await applicationService.stakeFreeTierApplication(data.application, data.networkChains);
-
-    response.send(aat);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(aat);
+}));
 
 /**
  * Unstake a free tier application.
  * // FIXME: Make transaction on frontend
  */
-router.post("/freetier/unstake", async (request, response) => {
-  try {
+router.post("/freetier/unstake", apiAsyncWrapper(async (req, res) => {
+  /** @type {{application: {privateKey:string, passphrase:string, accountAddress: string}}} */
+  const data = req.body;
 
-    /** @type {{application: {privateKey:string, passphrase:string, accountAddress: string}}} */
-    const data = request.body;
+  const application = await applicationService.unstakeFreeTierApplication(data.application);
 
-    const application = await applicationService.unstakeFreeTierApplication(data.application);
-
-    response.send(application !== undefined);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.send(application !== undefined);
+}));
 
 /**
  * Stake an application.
  * // FIXME: Make transaction on frontend
  */
-router.post("/custom/stake", async (request, response) => {
-  try {
+router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
+  /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[], payment:{id: string}, applicationLink: string}} */
+  const data = req.body;
+  const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
-    /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[], payment:{id: string}, applicationLink: string}} */
-    const data = request.body;
-    const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
+  if (paymentHistory.isSuccessPayment(true)) {
 
-    if (paymentHistory.isSuccessPayment(true)) {
+    if (paymentHistory.isApplicationPaymentItem(true)) {
+      const item = paymentHistory.getItem();
+      const amountToSpent = applicationCheckoutService.getMoneyToSpent(parseInt(item.maxRelays));
+      const poktToStake = applicationCheckoutService.getPoktToStake(amountToSpent);
 
-      if (paymentHistory.isApplicationPaymentItem(true)) {
-        const item = paymentHistory.getItem();
-        const amountToSpent = applicationCheckoutService.getMoneyToSpent(parseInt(item.maxRelays));
-        const poktToStake = applicationCheckoutService.getPoktToStake(amountToSpent);
+      const application = await applicationService.stakeApplication(data.application, data.networkChains, poktToStake.toString());
 
-        const application = await applicationService.stakeApplication(data.application, data.networkChains, poktToStake.toString());
+      if (application) {
+        const applicationEmailData = {
+          name: application.name,
+          link: data.applicationLink
+        };
 
-        if (application) {
-          const applicationEmailData = {
-            name: application.name,
-            link: data.applicationLink
-          };
+        const paymentEmailData = {
+          amountPaid: paymentHistory.amount,
+          maxRelayPerDayAmount: item.maxRelays,
+          poktStaked: applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
+        };
 
-          const paymentEmailData = {
-            amountPaid: paymentHistory.amount,
-            maxRelayPerDayAmount: item.maxRelays,
-            poktStaked: applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
-          };
+        await EmailService
+          .to(application.contactEmail)
+          .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
 
-          await EmailService
-            .to(application.contactEmail)
-            .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
-
-          response.send(true);
-        }
+        res.send(true);
       }
     }
-    // noinspection ExceptionCaughtLocallyJS
-    throw new Error("Error has occurred trying to stake application.");
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
   }
-});
+  // noinspection ExceptionCaughtLocallyJS
+  throw new Error("Error has occurred trying to stake application.");
+}));
 
 /**
  * Unstake an application.
  * // FIXME: Make transaction on frontend
  */
-router.post("/custom/unstake", async (request, response) => {
-  try {
+router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
+  /** @type {{application:{privateKey:string, passphrase:string, accountAddress: string}, applicationLink: string}} */
+  const data = req.body;
 
-    /** @type {{application:{privateKey:string, passphrase:string, accountAddress: string}, applicationLink: string}} */
-    const data = request.body;
+  const application = await applicationService.unstakeApplication(data.application);
 
-    const application = await applicationService.unstakeApplication(data.application);
-
-    if (application) {
-      const applicationEmailData = {
-        name: application.name,
-        link: data.applicationLink
-      };
-
-      await EmailService
-        .to(application.contactEmail)
-        .sendUnstakeAppEmail(application.contactEmail, applicationEmailData);
-
-      response.send(true);
-    } else {
-      response.send(false);
-    }
-  } catch (e) {
-    const error = {
-      message: e.toString()
+  if (application) {
+    const applicationEmailData = {
+      name: application.name,
+      link: data.applicationLink
     };
 
-    response.status(400).send(error);
+    await EmailService
+      .to(application.contactEmail)
+      .sendUnstakeAppEmail(application.contactEmail, applicationEmailData);
+
+    res.send(true);
+  } else {
+    res.send(false);
   }
-});
+}));
 
 /**
  * Get AAT for Free tier
  */
-router.get("/freetier/aat/:applicationAccountAddress", async (request, response) => {
-  try {
+router.get("/freetier/aat/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{applicationAccountAddress:string}} */
+  const data = req.params;
 
-    /** @type {{applicationAccountAddress:string}} */
-    const data = request.params;
+  const aat = await applicationService.getFreeTierAAT(data.applicationAccountAddress);
 
-    const aat = await applicationService.getFreeTierAAT(data.applicationAccountAddress);
-
-    response.send(aat);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(aat);
+}));
 
 export default router;

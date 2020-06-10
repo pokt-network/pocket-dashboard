@@ -202,23 +202,18 @@ export class PocketApplicationService extends PocketBaseService {
    * Create application account.
    *
    * @param {string} applicationID Application ID.
-   * @param {string} passphrase Passphrase.
+   * @param {{address: string, publicKey: string}} applicationData Application data.
    * @param {string} applicationBaseLink Application base link.
-   * @param {string} privateKey? Private Key(is imported).
+   * @param {object} ppkData? PPK data(is imported).
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async createApplicationAccount(
-    applicationID,
-    passphrase,
-    applicationBaseLink,
-    privateKey = undefined
-  ) {
-    let data = {applicationID, passphrase, applicationBaseLink};
+  async saveApplicationAccount(applicationID, applicationData, applicationBaseLink, ppkData = undefined) {
+    let data = {applicationID, applicationData, applicationBaseLink};
 
-    if (privateKey) {
-      data["privateKey"] = privateKey;
+    if (ppkData) {
+      data["ppkData"] = ppkData;
     }
 
     return axios

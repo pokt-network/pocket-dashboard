@@ -9,7 +9,9 @@ const STAKE_QUEUE = JobsProvider.getStakeJobQueue();
 const UNSTAKE_QUEUE = JobsProvider.getUnStakeJobQueue();
 const UNJAIL_QUEUE = JobsProvider.getUnJailJobQueue();
 
-
+/**
+ * @deprecated This logic will be moved soon.
+ */
 export default class TransactionService extends BaseService {
 
   /**

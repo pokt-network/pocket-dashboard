@@ -56,6 +56,7 @@ class CreateAppForm extends CreateForm {
   }
 
   async handleCreateImported(applicationId) {
+    // FIXME: We dont need private key.
     const {
       address,
       privateKey,
@@ -70,9 +71,7 @@ class CreateAppForm extends CreateForm {
     const {
       success,
       data: importData,
-    } = await ApplicationService.createApplicationAccount(
-      applicationId, passphrase, applicationBaseLink, privateKey
-    );
+    } = await ApplicationService.saveApplicationAccount(applicationId, passphrase, applicationBaseLink, privateKey);
 
     if (success) {
       const {status} = importData.networkData;

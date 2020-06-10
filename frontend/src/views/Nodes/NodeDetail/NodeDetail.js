@@ -259,7 +259,7 @@ class NodeDetail extends Component {
     ];
 
     const renderValidation = (handleFunc, breadcrumbs) => (
-      <>      
+      <>
       {/* eslint-disable-next-line react/prop-types */}
       <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
       breadcrumbs={breadcrumbs}
