@@ -120,16 +120,21 @@ class Import extends Component {
 
     if (success) {
       await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+
+      // Have to save ppk on cache as ppk generated from saved account is not 
+      // the same as one uploaded (even for the same account)
       if (type === ITEM_TYPES.APPLICATION) {
         ApplicationService.saveAppInfoInCache({
           imported: true,
           passphrase,
           address: data.address,
+          ppk,
         });
       } else {
         NodeService.saveNodeInfoInCache({
           passphrase,
           address: data.address,
+          ppk,
         });
       }
       this.setState({

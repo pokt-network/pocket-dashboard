@@ -7,10 +7,11 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import PocketUserService from "../../../core/services/PocketUserService";
 import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {appFormSchema, generateIcon, scrollToId} from "../../../_helpers";
+import {appFormSchema, generateIcon, scrollToId, getStakeStatus} from "../../../_helpers";
 import {Formik} from "formik";
 import AppAlert from "../../../core/components/AppAlert";
 import {STAKE_STATUS} from "../../../_constants";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class CreateAppForm extends CreateForm {
   constructor(props, context) {
@@ -56,27 +57,26 @@ class CreateAppForm extends CreateForm {
   }
 
   async handleCreateImported(applicationId) {
-    // FIXME: We dont need private key.
-    const {
-      address,
-      privateKey,
-      passphrase,
-    } = ApplicationService.getApplicationInfo();
+    const {address, ppk} = ApplicationService.getApplicationInfo();
     const data = this.state.data;
 
     const applicationBaseLink = `${window.location.origin}${_getDashboardPath(
       DASHBOARD_PATHS.appDetail
     )}`;
 
-    const {
-      success,
-      data: importData,
-    } = await ApplicationService.saveApplicationAccount(applicationId, passphrase, applicationBaseLink, privateKey);
+    const {publicKey} = await PocketClientService.getUnlockedAccount(address);
+    
+    const applicationData = {address, publicKey: publicKey.toString("hex")};
+
+    const {success} = await ApplicationService.saveApplicationAccount(
+      applicationId, applicationData, applicationBaseLink, ppk);
 
     if (success) {
-      const {status} = importData.networkData;
+      const networkData = ApplicationService.getApplicationInfo(address);
 
-      if (status === STAKE_STATUS.Staked) {
+      const {status} = networkData;
+
+      if (getStakeStatus(status) === STAKE_STATUS.Staked) {
         const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
 
         const path = url.replace(":address", address);

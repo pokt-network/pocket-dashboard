@@ -15,7 +15,7 @@ class PocketNodeService extends PocketBaseService {
   removeNodeInfoFromCache() {
     this.ls.remove("node_id");
     this.ls.remove("node_address");
-    this.ls.remove("node_private_key");
+    this.ls.remove("node_ppk");
     this.ls.remove("node_passphrase");
     this.ls.remove("node_chains");
     this.ls.remove("node_data");
@@ -29,7 +29,7 @@ class PocketNodeService extends PocketBaseService {
     return {
       id: this.ls.get("node_id").data,
       address: this.ls.get("node_address").data,
-      privateKey: this.ls.get("node_private_key").data,
+      ppk: this.ls.get("node_ppk").data,
       passphrase: this.ls.get("node_passphrase").data,
       chains: this.ls.get("node_chains").data,
       data: this.ls.get("node_data").data,
@@ -53,7 +53,7 @@ class PocketNodeService extends PocketBaseService {
   saveNodeInfoInCache({
                         nodeID,
                         address,
-                        privateKey,
+                        ppk,
                         passphrase,
                         chains,
                         data,
@@ -66,8 +66,8 @@ class PocketNodeService extends PocketBaseService {
     if (address) {
       this.ls.set("node_address", {data: address});
     }
-    if (privateKey) {
-      this.ls.set("node_private_key", {data: privateKey});
+    if (ppk) {
+      this.ls.set("node_ppk", {data: ppk});
     }
     if (passphrase) {
       this.ls.set("node_passphrase", {data: passphrase});
