@@ -21,7 +21,7 @@ import Segment from "../../core/components/Segment/Segment";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppTable from "../../core/components/AppTable";
-import AppAlert from "../.Pocket./core/components/AppAlert";
+import AppAlert from "../../core/components/AppAlert";
 
 class Dashboard extends Component {
   constructor(props, context) {
