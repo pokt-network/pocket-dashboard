@@ -1,5 +1,4 @@
 import {Account} from "@pokt-network/pocket-js";
-import PocketService from "../services/PocketService";
 
 export class PublicPocketAccount {
 
@@ -34,22 +33,5 @@ export class PrivatePocketAccount {
    */
   constructor(address, privateKey) {
     Object.assign(this, {address, privateKey});
-  }
-
-  /**
-   * Convenient Factory method to create a application private pocket account.
-   *
-   * @param {PocketService} pocketService Pocket service used to get account.
-   * @param {Account} account Pocket account.
-   * @param {string} passPhrase Passphrase used to generate account.
-   *
-   * @returns {Promise<PrivatePocketAccount>} A new application private pocket account.
-   * @static
-   * @async
-   */
-  static async createPrivatePocketAccount(pocketService, account, passPhrase) {
-    const privateKey = await pocketService.exportRawAccount(account.addressHex, passPhrase);
-
-    return new PrivatePocketAccount(account.addressHex, privateKey);
   }
 }

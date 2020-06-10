@@ -8,6 +8,9 @@ export const STAKE_STATUS = {
   Staked: "Staked",
   Unstaking: "Unstaking",
   Unstaked: "Unstaked",
+  "2": "Staked",
+  "1": "Unstaking",
+  "0": "Unstaked",
 };
 
 export const ITEM_TYPES = {

@@ -4,7 +4,6 @@ import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helper
 import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
 import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
-import {CoinDenom} from "@pokt-network/pocket-js";
 
 const router = express.Router();
 
@@ -25,28 +24,24 @@ router.post("", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
- * Create new application account.
+ * Save application account.
  */
 router.post("/account", apiAsyncWrapper(async (req, res) => {
-  /** @type {{applicationID: string, passphrase: string, applicationBaseLink:string, privateKey?:string}} */
-  let data = req.body;
+  /** @type {{applicationID: string, applicationData: {address: string, publicKey: string}, applicationBaseLink:string, ppkData?: object}} */
+  const data = req.body;
 
-  if (!("privateKey" in data)) {
-    data["privateKey"] = "";
-  }
-
-  const applicationData = await applicationService.createApplicationAccount(data.applicationID, data.passphrase, data.privateKey);
-  const emailAction = data.privateKey ? "imported" : "created";
+  const application = await applicationService.saveApplicationAccount(data.applicationID, data.applicationData);
+  const emailAction = data.ppkData ? "imported" : "created";
   const applicationEmailData = {
-    name: applicationData.application.name,
-    link: `${data.applicationBaseLink}/${applicationData.privateApplicationData.address}`
+    name: application.name,
+    link: `${data.applicationBaseLink}/${data.applicationData.address}`
   };
 
   await EmailService
-    .to(applicationData.application.contactEmail)
-    .sendCreateOrImportAppEmail(emailAction, applicationData.application.contactEmail, applicationEmailData);
+    .to(application.contactEmail)
+    .sendCreateOrImportAppEmail(emailAction, application.contactEmail, applicationEmailData);
 
-  res.send(applicationData);
+  res.send(application);
 }));
 
 /**
@@ -155,10 +150,10 @@ router.post("/user/all", apiAsyncWrapper(async (req, res) => {
  * Stake a free tier application.
  */
 router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[]}} */
+  /** @type {{transactionHash:string}} */
   const data = req.body;
 
-  const aat = await applicationService.stakeFreeTierApplication(data.application, data.networkChains);
+  const aat = await applicationService.stakeFreeTierApplication(data.transactionHash);
 
   res.json(aat);
 }));
@@ -167,10 +162,10 @@ router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
  * Unstake a free tier application.
  */
 router.post("/freetier/unstake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{application: {privateKey:string, passphrase:string, accountAddress: string}}} */
+  /** @type {{transactionHash:string}} */
   const data = req.body;
 
-  const application = await applicationService.unstakeFreeTierApplication(data.application);
+  const application = await applicationService.unstakeFreeTierApplication(data.transactionHash);
 
   res.send(application !== undefined);
 }));
@@ -179,7 +174,7 @@ router.post("/freetier/unstake", apiAsyncWrapper(async (req, res) => {
  * Stake an application.
  */
 router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{application: {privateKey: string, passphrase: string}, networkChains: string[], payment:{id: string}, applicationLink: string}} */
+  /** @type {{transactionHash: string, payment:{id: string}, applicationLink: string}} */
   const data = req.body;
   const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
@@ -188,28 +183,28 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
     if (paymentHistory.isApplicationPaymentItem(true)) {
       const item = paymentHistory.getItem();
       const amountToSpent = applicationCheckoutService.getMoneyToSpent(parseInt(item.maxRelays));
-      const poktToStake = applicationCheckoutService.getPoktToStake(amountToSpent);
 
-      const application = await applicationService.stakeApplication(data.application, data.networkChains, poktToStake.toString());
+      await applicationService.stakeApplication(data.transactionHash);
 
-      if (application) {
-        const applicationEmailData = {
-          name: application.name,
-          link: data.applicationLink
-        };
-
-        const paymentEmailData = {
-          amountPaid: paymentHistory.amount,
-          maxRelayPerDayAmount: item.maxRelays,
-          poktStaked: applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
-        };
-
-        await EmailService
-          .to(application.contactEmail)
-          .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
-
-        res.send(true);
-      }
+      // TODO: Move this triggers.
+      // if (application) {
+      //   const applicationEmailData = {
+      //     name: application.name,
+      //     link: data.applicationLink
+      //   };
+      //
+      //   const paymentEmailData = {
+      //     amountPaid: paymentHistory.amount,
+      //     maxRelayPerDayAmount: item.maxRelays,
+      //     poktStaked: applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
+      //   };
+      //
+      //   await EmailService
+      //     .to(application.contactEmail)
+      //     .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
+      //
+      //   res.send(true);
+      // }
     }
   }
   // noinspection ExceptionCaughtLocallyJS
@@ -220,37 +215,39 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
  * Unstake an application.
  */
 router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{application:{privateKey:string, passphrase:string, accountAddress: string}, applicationLink: string}} */
+  /** @type {{transactionHash: string, applicationLink: string}} */
   const data = req.body;
 
-  const application = await applicationService.unstakeApplication(data.application);
+  const application = await applicationService.unstakeApplication(data.transactionHash);
 
-  if (application) {
-    const applicationEmailData = {
-      name: application.name,
-      link: data.applicationLink
-    };
-
-    await EmailService
-      .to(application.contactEmail)
-      .sendUnstakeAppEmail(application.contactEmail, applicationEmailData);
-
-    res.send(true);
-  } else {
-    res.send(false);
-  }
+  // TODO: Move this triggers.
+  // if (application) {
+  //   const applicationEmailData = {
+  //     name: application.name,
+  //     link: data.applicationLink
+  //   };
+  //
+  //   await EmailService
+  //     .to(application.contactEmail)
+  //     .sendUnstakeAppEmail(application.contactEmail, applicationEmailData);
+  //
+  //   res.send(true);
+  // } else {
+  //   res.send(false);
+  // }
 }));
 
-/**
- * Get AAT for Free tier
- */
-router.get("/freetier/aat/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
-  /** @type {{applicationAccountAddress:string}} */
-  const data = req.params;
-
-  const aat = await applicationService.getFreeTierAAT(data.applicationAccountAddress);
-
-  res.json(aat);
-}));
+// TODO Move this logic to the frontend.
+// /**
+//  * Get AAT for Free tier
+//  */
+// router.get("/freetier/aat/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
+//   /** @type {{applicationAccountAddress:string}} */
+//   const data = req.params;
+//
+//   const aat = await applicationService.getFreeTierAAT(data.applicationAccountAddress);
+//
+//   res.json(aat);
+// }));
 
 export default router;

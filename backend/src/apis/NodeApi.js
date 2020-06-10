@@ -4,7 +4,6 @@ import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helper
 import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
 import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
-import {CoinDenom} from "@pokt-network/pocket-js";
 
 const router = express.Router();
 
@@ -25,28 +24,25 @@ router.post("", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
- * Create new node account.
+ * Save node account.
  */
 router.post("/account", apiAsyncWrapper(async (req, res) => {
-  /** @type {{nodeID: string, passphrase: string, nodeBaseLink:string, privateKey?:string}} */
-  let data = req.body;
+  /** @type {{nodeID: string, nodeData: {address: string, publicKey: string}, nodeBaseLink:string, ppkData?: object}} */
+  const data = req.body;
 
-  if (!("privateKey" in data)) {
-    data["privateKey"] = "";
-  }
+  const node = await nodeService.createNodeAccount(data.nodeID, data.nodeData);
 
-  const nodeData = await nodeService.createNodeAccount(data.nodeID, data.passphrase, data.privateKey);
-  const emailAction = data.privateKey ? "imported" : "created";
+  const emailAction = data.ppkData ? "imported" : "created";
   const nodeEmailData = {
-    name: nodeData.node.name,
-    link: `${data.nodeBaseLink}/${nodeData.privateNodeData.address}`
+    name: node.name,
+    link: `${data.nodeBaseLink}/${data.nodeData.address}`
   };
 
   await EmailService
-    .to(nodeData.node.contactEmail)
-    .sendCreateOrImportNodeEmail(emailAction, nodeData.node.contactEmail, nodeEmailData);
+    .to(node.contactEmail)
+    .sendCreateOrImportNodeEmail(emailAction, node.contactEmail, nodeEmailData);
 
-  res.json(nodeData);
+  res.json(node);
 }));
 
 /**
@@ -156,7 +152,7 @@ router.post("/user/all", apiAsyncWrapper(async (req, res) => {
  * Stake a node.
  */
 router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{node: {privateKey: string, passphrase: string, serviceURL: string}, networkChains: string[], payment:{id: string}, nodeLink: string}} */
+  /** @type {{transactionHash: string, nodeLink: string}} */
   const data = req.body;
 
   const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
@@ -168,26 +164,27 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
       const amountToSpent = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
       const poktToStake = nodeCheckoutService.getPoktToStake(amountToSpent);
 
-      const node = await nodeService.stakeNode(data.node, data.networkChains, poktToStake.toString());
+      const node = await nodeService.stakeNode(data.transactionHash);
 
-      if (node) {
-        const nodeEmailData = {
-          name: node.name,
-          link: data.nodeLink
-        };
-
-        const paymentEmailData = {
-          amountPaid: paymentHistory.amount,
-          validatorPowerAmount: item.validatorPower,
-          poktStaked: nodeCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
-        };
-
-        await EmailService
-          .to(node.contactEmail)
-          .sendStakeNodeEmail(node.contactEmail, nodeEmailData, paymentEmailData);
-
-        res.send(true);
-      }
+      // TODO: Move this triggers.
+      // if (node) {
+      //   const nodeEmailData = {
+      //     name: node.name,
+      //     link: data.nodeLink
+      //   };
+      //
+      //   const paymentEmailData = {
+      //     amountPaid: paymentHistory.amount,
+      //     validatorPowerAmount: item.validatorPower,
+      //     poktStaked: nodeCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
+      //   };
+      //
+      //   await EmailService
+      //     .to(node.contactEmail)
+      //     .sendStakeNodeEmail(node.contactEmail, nodeEmailData, paymentEmailData);
+      //
+      //   res.send(true);
+      // }
     }
   }
   // noinspection ExceptionCaughtLocallyJS
@@ -198,50 +195,52 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
  * Unstake a node.
  */
 router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */
+  /** @type {{transactionHash: string, nodeLink: string}} */
   const data = req.body;
 
-  const node = await nodeService.unstakeNode(data.node);
+  const node = await nodeService.unstakeNode(data.transactionHash);
 
-  if (node) {
-    const nodeEmailData = {
-      name: node.name,
-      link: data.nodeLink
-    };
-
-    await EmailService
-      .to(node.contactEmail)
-      .sendUnstakeNodeEmail(node.contactEmail, nodeEmailData);
-
-    res.send(true);
-  } else {
-    res.send(false);
-  }
+  // TODO: Move this triggers.
+  // if (node) {
+  //   const nodeEmailData = {
+  //     name: node.name,
+  //     link: data.nodeLink
+  //   };
+  //
+  //   await EmailService
+  //     .to(node.contactEmail)
+  //     .sendUnstakeNodeEmail(node.contactEmail, nodeEmailData);
+  //
+  //   res.send(true);
+  // } else {
+  //   res.send(false);
+  // }
 }));
 
 /**
  * UnJail a node.
  */
 router.post("/unjail", apiAsyncWrapper(async (req, res) => {
-  /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */
+  /** @type {{transactionHash: string, nodeLink: string}} */
   const data = req.body;
 
-  const node = await nodeService.unJailNode(data.node);
+  const node = await nodeService.unJailNode(data.transactionHash);
 
-  if (node) {
-    const nodeEmailData = {
-      name: node.name,
-      link: data.nodeLink
-    };
-
-    await EmailService
-      .to(node.contactEmail)
-      .sendNodeUnJailedEmail(node.contactEmail, nodeEmailData);
-
-    res.send(true);
-  } else {
-    res.send(false);
-  }
+  // TODO: Move this triggers.
+  // if (node) {
+  //   const nodeEmailData = {
+  //     name: node.name,
+  //     link: data.nodeLink
+  //   };
+  //
+  //   await EmailService
+  //     .to(node.contactEmail)
+  //     .sendNodeUnJailedEmail(node.contactEmail, nodeEmailData);
+  //
+  //   res.send(true);
+  // } else {
+  //   res.send(false);
+  // }
 }));
 
 

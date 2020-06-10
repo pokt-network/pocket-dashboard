@@ -1,6 +1,7 @@
+// TODO: Move this logic to the frontend.
 import TransactionService from "./services/TransactionService";
 import PocketService, {get_default_pocket_network} from "./services/PocketService";
-import {PocketTransaction, POST_ACTION_TYPE} from "./models/Transaction";
+import {PocketTransaction} from "./models/Transaction";
 import AccountService from "./services/AccountService";
 import JobsProvider from "./providers/data/JobsProvider";
 
@@ -93,27 +94,28 @@ POST_TRANSFER_QUEUE.process(async (job, done) => {
     if (transaction.hash === transactionHash) {
       const {account, pokt, chains} = stakeData;
 
-      const applicationAccount = await ACCOUNT_SERVICE
-        .importAccountToNetwork(POCKET_SERVICE, account.privateKey, account.passphrase);
-
-      switch (postActionType) {
-        case POST_ACTION_TYPE.stakeApplication: {
-          const stakeTransaction = await POCKET_SERVICE
-            .stakeApplication(applicationAccount, account.passphrase, pokt, chains);
-
-          await TRANSACTION_SERVICE.addStakeTransaction(stakeTransaction.hash);
-          break;
-        }
-        case POST_ACTION_TYPE.stakeNode: {
-          const serviceURL = new URL(stakeData.serviceURL);
-
-          const stakeTransaction = await POCKET_SERVICE
-            .stakeNode(applicationAccount, account.passphrase, pokt, chains, serviceURL);
-
-          await TRANSACTION_SERVICE.addStakeTransaction(stakeTransaction.hash);
-          break;
-        }
-      }
+      // TODO: Move this logic to frontend.
+      // const applicationAccount = await ACCOUNT_SERVICE
+      //   .importAccountToNetwork(POCKET_SERVICE, account.privateKey, account.passphrase);
+      //
+      // switch (postActionType) {
+      //   case POST_ACTION_TYPE.stakeApplication: {
+      //     const stakeTransaction = await POCKET_SERVICE
+      //       .stakeApplication(applicationAccount, account.passphrase, pokt, chains);
+      //
+      //     await TRANSACTION_SERVICE.addStakeTransaction(stakeTransaction.hash);
+      //     break;
+      //   }
+      //   case POST_ACTION_TYPE.stakeNode: {
+      //     const serviceURL = new URL(stakeData.serviceURL);
+      //
+      //     const stakeTransaction = await POCKET_SERVICE
+      //       .stakeNode(applicationAccount, account.passphrase, pokt, chains, serviceURL);
+      //
+      //     await TRANSACTION_SERVICE.addStakeTransaction(stakeTransaction.hash);
+      //     break;
+      //   }
+      // }
 
       await TRANSACTION_SERVICE.markTransactionSuccess(pocketTransaction);
 

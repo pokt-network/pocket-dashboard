@@ -69,10 +69,3 @@ jobs:
       - name: Running lint
         working-directory: frontend
         run: yarn lint
-
-      - name: Running prod build
-        working-directory: frontend
-        run: yarn build:prod
-
-        env:
-          CI: true

@@ -1,16 +1,17 @@
 import React from "react";
-import {Redirect, Link} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {generateIcon, nodeFormSchema, scrollToId} from "../../../_helpers";
+import {generateIcon, nodeFormSchema, scrollToId, getStakeStatus} from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
+import PocketUserService from "../../../core/services/PocketUserService";
 import NodeService from "../../../core/services/PocketNodeService";
 import {Formik} from "formik";
 import AppAlert from "../../../core/components/AppAlert";
 import {STAKE_STATUS} from "../../../_constants";
-import PocketUserService from "../../../core/services/PocketUserService";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class CreateNodeForm extends CreateForm {
   constructor(props, context) {
@@ -56,7 +57,7 @@ class CreateNodeForm extends CreateForm {
   }
 
   async handleCreateImported(nodeID) {
-    const {address, privateKey, passphrase} = NodeService.getNodeInfo();
+    const {address,  ppk} = NodeService.getNodeInfo();
     const data = this.state.data;
 
     const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
@@ -64,14 +65,22 @@ class CreateNodeForm extends CreateForm {
 
     const nodeBaseLink = `${window.location.origin}${nodeDetail}`;
 
-    const {success, data: importData} = await NodeService.createNodeAccount(
-      nodeID, passphrase, nodeBaseLink, privateKey
+    const {publicKey} = await PocketClientService.getUnlockedAccount(address);
+    
+    const nodeData = {address, publicKey: publicKey.toString("hex")};
+
+    const {success} = await NodeService.saveNodeAccount(
+      nodeID, nodeData, nodeBaseLink, ppk
     );
 
-    if (success) {
-      const {status} = importData.networkData;
+    // TODO: Get  network data
 
-      if (status === STAKE_STATUS.Staked) {
+    if (success) {
+      const networkData = NodeService.getNodeInfo(address);
+
+      const {status} = networkData;
+
+      if (getStakeStatus(status) === STAKE_STATUS.Staked) {
         this.props.history.push(nodeDetail);
       } else {
         NodeService.saveNodeInfoInCache({
@@ -116,8 +125,9 @@ class CreateNodeForm extends CreateForm {
       });
     } else {
       this.setState({error: {
-        show: true, 
-        message: this.validateError(data.message)}});
+          show: true,
+          message: this.validateError(data.message)
+        }});
       scrollToId("alert");
     }
   }

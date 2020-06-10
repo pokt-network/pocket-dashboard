@@ -16,6 +16,7 @@ import Segment from "../../../core/components/Segment/Segment";
 import NodeService from "../../../core/services/PocketNodeService";
 import "../../../scss/Views/Detail.scss";
 import PocketAccountService from "../../../core/services/PocketAccountService";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class NodeDetail extends Component {
   constructor(props, context) {
@@ -97,13 +98,20 @@ class NodeDetail extends Component {
     }
   }
 
-  async unstakeNode({privateKey, passphrase, address: accountAddress}) {
+  async unstakeNode({ppk, passphrase, address}) {
     const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
-    const detail = url.replace(":address", accountAddress);
+    const detail = url.replace(":address", address);
     const nodeLink = `${window.location.origin}${detail}`;
 
+    await PocketClientService.saveAccount(ppk, passphrase);
+
+    const {tx} = await PocketClientService.nodeUnstakeRequest(
+      address
+    );
+
+    // TODO: Call backend and send request to finish transaction
     const {success, data} = await NodeService.unstakeNode(
-      {privateKey, passphrase, accountAddress}, nodeLink
+      tx, nodeLink
     );
 
     if (success) {
@@ -113,13 +121,20 @@ class NodeDetail extends Component {
     }
   }
 
-  async unjailNode({privateKey, passphrase, address: accountAddress}) {
+  async unjailNode({ppk, passphrase, address}) {
     const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
-    const detail = url.replace(":address", accountAddress);
+    const detail = url.replace(":address", address);
     const nodeLink = `${window.location.origin}${detail}`;
 
+    await PocketClientService.saveAccount(ppk, passphrase);
+
+    const {tx} = await PocketClientService.nodeUnjailRequest(
+      address
+    );
+
+    // TODO: Call backend and send request to finish transaction
     const {success, data} = NodeService.unjailNode(
-      {privateKey, passphrase, accountAddress}, nodeLink
+      tx, nodeLink
     );
 
     if (success) {
@@ -129,10 +144,11 @@ class NodeDetail extends Component {
     }
   }
 
-  async stakeNode({privateKey, passphrase, address}) {
+  async stakeNode({ppk, passphrase, address}) {
     NodeService.removeNodeInfoFromCache();
-    NodeService.saveNodeInfoInCache({address, privateKey, passphrase});
+    NodeService.saveNodeInfoInCache({address, passphrase});
 
+    await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
     PocketUserService.saveUserAction("Stake Node");
 
     // eslint-disable-next-line react/prop-types
@@ -243,7 +259,7 @@ class NodeDetail extends Component {
     ];
 
     const renderValidation = (handleFunc, breadcrumbs) => (
-      <>      
+      <>
       {/* eslint-disable-next-line react/prop-types */}
       <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
       breadcrumbs={breadcrumbs}

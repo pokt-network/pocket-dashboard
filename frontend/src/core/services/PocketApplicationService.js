@@ -29,7 +29,7 @@ export class PocketApplicationService extends PocketBaseService {
   removeAppInfoFromCache() {
     this.ls.remove("app_id");
     this.ls.remove("app_address");
-    this.ls.remove("app_private_key");
+    this.ls.remove("app_ppk");
     this.ls.remove("app_passphrase");
     this.ls.remove("app_chains");
     this.ls.remove("app_data");
@@ -43,7 +43,7 @@ export class PocketApplicationService extends PocketBaseService {
     return {
       id: this.ls.get("app_id").data,
       address: this.ls.get("app_address").data,
-      privateKey: this.ls.get("app_private_key").data,
+      ppk: this.ls.get("app_ppk").data,
       passphrase: this.ls.get("app_passphrase").data,
       chains: this.ls.get("app_chains").data,
       data: this.ls.get("app_data").data,
@@ -65,7 +65,7 @@ export class PocketApplicationService extends PocketBaseService {
   saveAppInfoInCache({
                        applicationID,
                        address,
-                       privateKey,
+                       ppk,
                        passphrase,
                        chains,
                        data,
@@ -77,8 +77,8 @@ export class PocketApplicationService extends PocketBaseService {
     if (address) {
       this.ls.set("app_address", {data: address});
     }
-    if (privateKey) {
-      this.ls.set("app_private_key", {data: privateKey});
+    if (ppk) {
+      this.ls.set("app_ppk", {data: ppk});
     }
     if (passphrase) {
       this.ls.set("app_passphrase", {data: passphrase});
@@ -202,23 +202,18 @@ export class PocketApplicationService extends PocketBaseService {
    * Create application account.
    *
    * @param {string} applicationID Application ID.
-   * @param {string} passphrase Passphrase.
+   * @param {{address: string, publicKey: string}} applicationData Application data.
    * @param {string} applicationBaseLink Application base link.
-   * @param {string} privateKey? Private Key(is imported).
+   * @param {object} ppkData? PPK data(is imported).
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async createApplicationAccount(
-    applicationID,
-    passphrase,
-    applicationBaseLink,
-    privateKey = undefined
-  ) {
-    let data = {applicationID, passphrase, applicationBaseLink};
+  async saveApplicationAccount(applicationID, applicationData, applicationBaseLink, ppkData = undefined) {
+    let data = {applicationID, applicationData, applicationBaseLink};
 
-    if (privateKey) {
-      data["privateKey"] = privateKey;
+    if (ppkData) {
+      data["ppkData"] = ppkData;
     }
 
     return axios
@@ -317,26 +312,24 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Create free tier application.
    *
-   * @param {{privateKey: string, passphrase: string}} application Application data.
-   * @param {string[]} networkChains Network chains to stake application.
+   * @param {string} transactionHash Transaction hash.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeFreeTierApplication(application, networkChains) {
+  stakeFreeTierApplication(transactionHash) {
     return axios
-      .post(this._getURL("freetier/stake"), {application, networkChains})
+      .post(this._getURL("freetier/stake"), {transactionHash})
       .then((response) => response.data);
   }
 
   /**
    * Unstake a free tier application.
-   *
-   * @param {{privateKey: string, passphrase: string, accountAddress: string}} application Application data.
+   * @param {string} transactionHash Transaction hash.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeFreeTierApplication(application) {
-    const data = {application};
+  unstakeFreeTierApplication(transactionHash) {
+    const data = {transactionHash};
 
     return axios
       .post(this._getURL("freetier/unstake"), data)
@@ -351,19 +344,15 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Stake a custom tier application.
    *
-   * @param {object} application Application data.
-   * @param {string} application.privateKey Application private key.
-   * @param {string} application.passphrase Application passphrase.
-   * @param {string[]} networkChains Application network chains.
+   * @param {string} transactionHash Transaction hash.
    * @param {string} paymentId payment's stripe confirmation id.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeApplication(application, networkChains, paymentId, applicationLink) {
+  stakeApplication(transactionHash, paymentId, applicationLink) {
     const data = {
-      application,
-      networkChains,
+      transactionHash,
       payment: {id: paymentId},
       applicationLink
     };
@@ -381,13 +370,13 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a custom tier application.
    *
-   * @param {{privateKey:string, passphrase: string, accountAddress: string}} application Application data.
+   * @param {string} transactionHash Transaction hash.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeApplication(application, applicationLink) {
-    const data = {application, applicationLink};
+  unstakeApplication(transactionHash, applicationLink) {
+    const data = {transactionHash, applicationLink};
 
     return axios
       .post(this._getURL("custom/unstake"), data)

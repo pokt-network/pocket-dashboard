@@ -13,6 +13,7 @@ import AppAlert from "../../../core/components/AppAlert";
 import CustomTierModal from "./CustomTierModal";
 import FreeTierModal from "./FreeTierModal";
 import {FREE_TIER_MODAL, CUSTOM_TIER_MODAL} from "./constants";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class TierSelection extends Component {
   constructor(props, context) {
@@ -32,17 +33,17 @@ class TierSelection extends Component {
 
   async createFreeTierItem() {
     const {
-      privateKey,
       passphrase,
       chains,
       address,
     } = ApplicationService.getApplicationInfo();
-    const application = {privateKey, passphrase};
 
     this.setState({creatingFreeTier: true});
+    
+    const {tx} = PocketClientService.appStakeRequest(address, passphrase);
 
     const data = await ApplicationService.stakeFreeTierApplication(
-      application, chains
+      tx, chains
     );
 
     if (data !== false) {

@@ -22,6 +22,8 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import LoadingButton from "../../../core/components/LoadingButton";
 import {ITEM_TYPES} from "../../../_constants";
 import NodeService from "../../../core/services/PocketNodeService";
+import PocketClientService from "../../../core/services/PocketClientService";
+import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -106,9 +108,9 @@ class OrderSummary extends Component {
     const action = UserService.getUserAction();
     const appBreadcrumbs = ["Apps", action, "Checkout", "Payment"];
     const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Payment"];
-    
-    type === ITEM_TYPES.APPLICATION ? 
-      this.props.onBreadCrumbChange(appBreadcrumbs) : 
+
+    type === ITEM_TYPES.APPLICATION ?
+      this.props.onBreadCrumbChange(appBreadcrumbs) :
       this.props.onBreadCrumbChange(nodeBreadcrumbs);
     });
   }
@@ -143,6 +145,8 @@ class OrderSummary extends Component {
   async makePurchaseWithSavedCard(e, stripe) {
     e.preventDefault();
 
+    const {total} = this.state;
+
     this.setState({purchasing: true});
 
     const {paymentIntent, selectedPaymentMethod, type} = this.state;
@@ -164,15 +168,16 @@ class OrderSummary extends Component {
       return;
     }
 
+    const pokt = PocketCheckoutService.getNodePoktToStake(total);
+
+
     if (type === ITEM_TYPES.APPLICATION) {
       // Stake application
       const {
-        privateKey,
         passphrase,
         chains,
         address,
       } = ApplicationService.getApplicationInfo();
-      const application = {privateKey, passphrase};
 
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
       const detail = url.replace(":address", address);
@@ -180,19 +185,20 @@ class OrderSummary extends Component {
 
       this.setState({loading: true});
 
+      const appStakeRequest = PocketClientService.appStakeRequest(
+        address, passphrase, chains, pokt);
+
       ApplicationService.stakeApplication(
-        application, chains, result.paymentIntent.id, applicationLink
-      ).then();
+        appStakeRequest, result.paymentIntent.id, applicationLink
+      ).then(() => {});
     } else {
       // Stake Node
       const {
-        privateKey,
         passphrase,
         chains,
         address,
         serviceURL,
       } = NodeService.getNodeInfo();
-      const node = {privateKey, passphrase, serviceURL};
 
       const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
       const detail = url.replace(":address", address);
@@ -200,8 +206,11 @@ class OrderSummary extends Component {
 
       this.setState({loading: true});
 
+      const nodeStakeRequest = PocketClientService.nodeStakeRequest(
+        address, passphrase, chains, pokt, serviceURL);
+
       NodeService.stakeNode(
-        node, chains, result.paymentIntent.id, nodeLink
+        nodeStakeRequest, result.paymentIntent.id, nodeLink
       ).then(() => {});
     }
 

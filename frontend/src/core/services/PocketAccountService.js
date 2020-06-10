@@ -15,10 +15,6 @@ export class PocketAccountService extends PocketBaseService {
    * @returns {Promise<*>}
    */
   importAccount(ppkData, passphrase) {
-    // const data = {
-    //   accountPrivateKey,
-    //   passphrase,
-    // };
     const data = {
       ppkData,
       passphrase

@@ -15,7 +15,7 @@ class PocketNodeService extends PocketBaseService {
   removeNodeInfoFromCache() {
     this.ls.remove("node_id");
     this.ls.remove("node_address");
-    this.ls.remove("node_private_key");
+    this.ls.remove("node_ppk");
     this.ls.remove("node_passphrase");
     this.ls.remove("node_chains");
     this.ls.remove("node_data");
@@ -29,7 +29,7 @@ class PocketNodeService extends PocketBaseService {
     return {
       id: this.ls.get("node_id").data,
       address: this.ls.get("node_address").data,
-      privateKey: this.ls.get("node_private_key").data,
+      ppk: this.ls.get("node_ppk").data,
       passphrase: this.ls.get("node_passphrase").data,
       chains: this.ls.get("node_chains").data,
       data: this.ls.get("node_data").data,
@@ -53,7 +53,7 @@ class PocketNodeService extends PocketBaseService {
   saveNodeInfoInCache({
                         nodeID,
                         address,
-                        privateKey,
+                        ppk,
                         passphrase,
                         chains,
                         data,
@@ -66,8 +66,8 @@ class PocketNodeService extends PocketBaseService {
     if (address) {
       this.ls.set("node_address", {data: address});
     }
-    if (privateKey) {
-      this.ls.set("node_private_key", {data: privateKey});
+    if (ppk) {
+      this.ls.set("node_ppk", {data: ppk});
     }
     if (passphrase) {
       this.ls.set("node_passphrase", {data: passphrase});
@@ -118,23 +118,18 @@ class PocketNodeService extends PocketBaseService {
    * Create node account.
    *
    * @param {string} nodeID Node ID.
-   * @param {string} passphrase Passphrase.
+   * @param {{address: string, publicKey: string}} nodeData Application data.
    * @param {string} nodeBaseLink Node base link.
-   * @param {string} privateKey? Private Key(is imported).
+   * @param {object} ppkData? PPK data(is imported).
    *
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async createNodeAccount(
-    nodeID,
-    passphrase,
-    nodeBaseLink,
-    privateKey = undefined
-  ) {
-    let data = {nodeID, passphrase, nodeBaseLink};
+  async saveNodeAccount(nodeID, nodeData, nodeBaseLink, ppkData = undefined) {
+    let data = {nodeID, nodeData, nodeBaseLink};
 
-    if (privateKey) {
-      data["privateKey"] = privateKey;
+    if (ppkData) {
+      data["ppkData"] = ppkData;
     }
 
     return axios
@@ -262,20 +257,16 @@ class PocketNodeService extends PocketBaseService {
   /**
    * Stake a node.
    *
-   * @param {object} node Node data.
-   * @param {string} node.privateKey Node private key.
-   * @param {string} node.passphrase Node passphrase.
-   * @param {string} node.serviceURL Node service URL.
+   * @param {string} transactionHash Transaction hash.
    * @param {string[]} networkChains Node network chains.
    * @param {string} paymentId payment's stripe confirmation id.
    * @param {string} nodeLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeNode(node, networkChains, paymentId, nodeLink) {
+  stakeNode(transactionHash, paymentId, nodeLink) {
     const data = {
-      node,
-      networkChains,
+      transactionHash,
       payment: {id: paymentId},
       nodeLink
     };
@@ -291,15 +282,15 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
-   * Unstake a node.
-   *
-   * @param {{privateKey:string, passphrase: string, accountAddress: string}} node Node data.
+   * Unstake a node
+   * 
+   * @param {string} transactionHash Transaction hash.
    * @param {string} nodeLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeNode(node, nodeLink) {
-    const data = {node, nodeLink};
+  unstakeNode(transactionHash, nodeLink) {
+    const data = {transactionHash, nodeLink};
 
     return axios
       .post(this._getURL("custom/unstake"), data)
@@ -313,14 +304,13 @@ class PocketNodeService extends PocketBaseService {
 
   /**
    * Unjail a jailed node
-   *
-   * @param {{privateKey:string, passphrase: string, accountAddress: string}} node Node data.
+   * @param {string} transactionHash Transaction hash.
    * @param {string} nodeLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unjailNode(node, nodeLink) {
-    const data = {node, nodeLink};
+  unjailNode(transactionHash, nodeLink) {
+    const data = {transactionHash, nodeLink};
 
     return axios
       .post(this._getURL("/unjail"), data)

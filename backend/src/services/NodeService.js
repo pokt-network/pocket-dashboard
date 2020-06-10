@@ -2,9 +2,7 @@ import UserService from "./UserService";
 import {Node, StakingStatus} from "@pokt-network/pocket-js";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import {ExtendedPocketNode, PocketNode, RegisteredPocketNode, StakedNodeSummary, UserPocketNode} from "../models/Node";
-import AccountService from "./AccountService";
 import BasePocketService from "./BasePocketService";
-import {TransactionPostAction} from "../models/Transaction";
 import bigInt from "big-integer";
 import {DashboardError, DashboardValidationError} from "../models/Exceptions";
 
@@ -162,14 +160,13 @@ export default class NodeService extends BasePocketService {
    * Create a node account.
    *
    * @param {string} nodeID Node ID.
-   * @param {string} passphrase Application account passphrase.
-   * @param {string} [privateKey] Application private key if is imported.
+   * @param {{address: string, publicKey: string}} accountData Node account data.
    *
-   * @returns {Promise<{node: PocketNode, privateNodeData: PrivatePocketAccount, networkData:Node, ppkData: object}>} A node information.
-   * @throws {Error} If application does not exists.
+   * @returns {Promise<PocketNode>} A node information.
+   * @throws {Error} If node does not exists.
    * @async
    */
-  async createNodeAccount(nodeID, passphrase, privateKey) {
+  async createNodeAccount(nodeID, accountData) {
     const nodeDB = await this.persistenceService.getEntityByID(NODE_COLLECTION_NAME, nodeID);
 
     if (!nodeDB) {
@@ -178,22 +175,11 @@ export default class NodeService extends BasePocketService {
 
     const node = PocketNode.createPocketNode(nodeDB);
 
-    const accountService = new AccountService();
-    const pocketAccount = await accountService.createPocketAccount(this.pocketService, passphrase, privateKey);
-
-    node.publicPocketAccount = PublicPocketAccount.createPublicPocketAccount(pocketAccount);
+    node.publicPocketAccount = new PublicPocketAccount(accountData.address, accountData.publicKey);
 
     await this.__updateNodeByID(nodeID, node);
 
-    const nodeParameters = await this.pocketService.getNodeParameters();
-
-    const privateNodeData = await PrivatePocketAccount.createPrivatePocketAccount(this.pocketService, pocketAccount, passphrase);
-    const networkData = ExtendedPocketNode.createNetworkNode(node.publicPocketAccount, nodeParameters);
-
-    const ppkData = await this.pocketService.createPPK(privateNodeData.privateKey, passphrase);
-
-    // noinspection JSValidateTypes
-    return {node, privateNodeData, networkData, ppkData};
+    return node;
   }
 
   /**
@@ -325,102 +311,37 @@ export default class NodeService extends BasePocketService {
   /**
    * Stake a node on network.
    *
-   * @param {{privateKey: string, passphrase:string, serviceURL: string}} node Node to stake.
-   * @param {string[]} networkChains Network chains to stake node.
-   * @param {string} uPoktAmount uPokt amount used to stake.
+   * @param {string} transactionHash Transaction to stake.
    *
    * @returns {Promise<PocketNode | boolean>} If was staked return the node, if not return false.
    * @throws Error If private key is not valid or node does not exists on dashboard.
    */
-  async stakeNode(node, networkChains, uPoktAmount) {
-    const accountService = new AccountService();
-    const nodeAccount = await accountService
-      .importAccountToNetwork(this.pocketService, node.privateKey, node.passphrase);
-
-    const filter = {
-      "publicPocketAccount.address": nodeAccount.addressHex
-    };
-
-    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
-
-    if (!nodeDB) {
-      throw Error("Node does not exists on dashboard");
-    }
-
-    // FIXME: Now we use free tier for account to transfer the amount to stake the app on custom tier,
-    const {account: freeTierAccount, passphrase: freeTierPassphrase} = await this.pocketService.getFreeTierAccount();
-
-    const transferTransaction = await this.pocketService
-      .transferPoktBetweenAccounts(freeTierAccount, freeTierPassphrase, nodeAccount, uPoktAmount);
-
-    const postAction = TransactionPostAction
-      .createStakeNodePostAction(node.privateKey, node.passphrase, uPoktAmount, networkChains, node.serviceURL);
-
-    await this.transactionService.addTransferTransaction(transferTransaction.hash, postAction);
-
-    return PocketNode.createPocketNode(nodeDB);
+  async stakeNode(transactionHash) {
+    // TODO: Use the transaction.
   }
 
   /**
    * Unstake node.
    *
-   * @param {{privateKey:string, passphrase:string, accountAddress: string}} nodeData Node data.
+   * @param {string} transactionHash Transaction to stake.
    *
    * @returns {Promise<PocketNode | boolean>} If node was unstaked return node, if not return false.
    * @async
    */
-  async unstakeNode(nodeData) {
-    const filter = {
-      "publicPocketAccount.address": nodeData.accountAddress
-    };
-
-    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
-
-    if (!nodeDB) {
-      return false;
-    }
-
-    const accountService = new AccountService();
-    const nodeAccount = await accountService
-      .importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passphrase);
-
-    const unstakeTransaction = await this.pocketService
-      .unstakeNode(nodeAccount, nodeData.passphrase);
-
-    await this.transactionService.addUnstakeTransaction(unstakeTransaction.hash);
-
-    return PocketNode.createPocketNode(nodeDB);
+  async unstakeNode(transactionHash) {
+    // TODO: Use the transaction.
   }
 
   /**
    * UnJail node.
    *
-   * @param {{privateKey:string, passphrase:string, accountAddress: string}} nodeData Node data.
+   * @param {string} transactionHash Transaction to stake.
    *
    * @returns {Promise<PocketNode | boolean>} If node was unJail return node, if not return false.
    * @async
    */
-  async unJailNode(nodeData) {
-    const filter = {
-      "publicPocketAccount.address": nodeData.accountAddress
-    };
-
-    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
-
-    if (!nodeDB) {
-      return false;
-    }
-
-    const accountService = new AccountService();
-    const nodeAccount = await accountService
-      .importAccountToNetwork(this.pocketService, nodeData.privateKey, nodeData.passphrase);
-
-    const unjailTransaction = await this.pocketService
-      .unJailNode(nodeAccount, nodeData.passphrase);
-
-    await this.transactionService.addUnJailTransaction(unjailTransaction.hash);
-
-    return PocketNode.createPocketNode(nodeDB);
+  async unJailNode(transactionHash) {
+    // TODO: Use the transaction.
   }
 
   /**
