@@ -42,6 +42,19 @@ export class PocketCheckoutService extends PocketBaseService {
   }
 
   /**
+   * Get POKT to stake.
+   *
+   * @param {number} money Money spent.
+   *
+   * @returns {Promise<number|*>} Cost to spent.
+   */
+  getApplicationPoktToStake(money) {
+    return axios
+      .post(this._getURL("applications/pokt"), {money})
+      .then((response) => response.data);
+  }
+
+  /**
    * Get money to spent.
    *
    * @param {number} validatorPower Validator Power.
@@ -51,6 +64,20 @@ export class PocketCheckoutService extends PocketBaseService {
   getNodeMoneyToSpent(validatorPower) {
     return axios
       .get(this._getURL(`nodes/cost?vp=${validatorPower}`))
+      .then((response) => response.data);
+  }
+
+
+  /**
+   * Get money to spent.
+   *
+   * @param {number} money Money spent.
+   *
+   * @returns {Promise<number|*>} Cost to spent.
+   */
+  getNodePoktToStake(money) {
+    return axios
+      .post(this._getURL("nodes/pokt"), {money})
       .then((response) => response.data);
   }
 }

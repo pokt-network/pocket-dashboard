@@ -6,7 +6,7 @@ import {
   UserPocketApplication
 } from "../models/Application";
 import {PublicPocketAccount} from "../models/Account";
-import {Account, Application, PocketAAT, StakingStatus} from "@pokt-network/pocket-js";
+import {Application, PocketAAT, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
@@ -119,19 +119,6 @@ export default class ApplicationService extends BasePocketService {
 
     application.freeTier = freeTier;
     await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
-  }
-
-  /**
-   * Get an AAT of the application.
-   *
-   * @param {string} clientPublicKey Client account public key to create AAT.
-   * @param {Account} applicationAccount Application account to create AAT.
-   * @param {string} applicationPassphrase Application passphrase.
-   *
-   * @returns {PocketAAT} Application AAT.
-   */
-  async __getAAT(clientPublicKey, applicationAccount, applicationPassphrase) {
-    return this.pocketService.getApplicationAuthenticationToken(clientPublicKey, applicationAccount, applicationPassphrase);
   }
 
   /**
@@ -280,37 +267,39 @@ export default class ApplicationService extends BasePocketService {
     }
   }
 
-  /**
-   * Get AAT using Free tier account.
-   *
-   * @param {string} clientAccountAddress The client account address(In this case is the account of application).
-   *
-   * @returns {Promise<PocketAAT | boolean>} AAT for application.
-   * @async
-   */
-  async getFreeTierAAT(clientAccountAddress) {
-
-    const filter = {
-      "publicPocketAccount.address": clientAccountAddress
-    };
-
-    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
-
-    if (!applicationDB) {
-      return false;
-    }
-
-    const clientApplication = PocketApplication.createPocketApplication(applicationDB);
-
-    try {
-      const {account: freeTierAccount, passphrase} = await this.pocketService.getFreeTierAccount();
-
-      return this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, passphrase);
-
-    } catch (e) {
-      return false;
-    }
-  }
+  // TODO Move this logic to the frontend.
+  // /**
+  //  * Get AAT using Free tier account.
+  //  *
+  //  * @param {string} clientAccountAddress The client account address(In this case is the account of application).
+  //  *
+  //  * @returns {Promise<PocketAAT | boolean>} AAT for application.
+  //  * @async
+  //  */
+  // async getFreeTierAAT(clientAccountAddress) {
+  //
+  //   const filter = {
+  //     "publicPocketAccount.address": clientAccountAddress
+  //   };
+  //
+  //   const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+  //
+  //   if (!applicationDB) {
+  //     return false;
+  //   }
+  //
+  //   const clientApplication = PocketApplication.createPocketApplication(applicationDB);
+  //
+  //   try {
+  //     const {account: freeTierAccount, passphrase} = await this.pocketService.getFreeTierAccount();
+  //
+  //
+  //     // return this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, passphrase);
+  //
+  //   } catch (e) {
+  //     return false;
+  //   }
+  // }
 
   /**
    * Stake a free tier application.

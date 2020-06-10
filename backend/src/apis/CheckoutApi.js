@@ -28,12 +28,30 @@ router.get("/applications/cost", apiAsyncWrapper((req, res) => {
   res.json({cost});
 }));
 
+router.post("/applications/pokt", apiAsyncWrapper((req, res) => {
+  /** @type {{money: number}} */
+  const data = req.body;
+
+  const cost = applicationCheckoutService.getPoktToStake(data.money);
+
+  res.json({cost});
+}));
+
 router.get("/nodes/cost", apiAsyncWrapper((req, res) => {
   const validatorPower = parseInt(getQueryOption(req, "vp"));
 
-  const cost = nodeCheckoutService.getMoneyToSpent(validatorPower);
+  const pokt = nodeCheckoutService.getMoneyToSpent(validatorPower);
 
-  res.json({cost});
+  res.json({pokt});
+}));
+
+router.post("/nodes/pokt", apiAsyncWrapper((req, res) => {
+  /** @type {{money: number}} */
+  const data = req.body;
+
+  const pokt = nodeCheckoutService.getPoktToStake(data.money);
+
+  res.json({pokt});
 }));
 
 
