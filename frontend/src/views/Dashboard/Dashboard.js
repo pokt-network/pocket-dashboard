@@ -4,10 +4,16 @@ import {Alert, Col, Dropdown, Row} from "react-bootstrap";
 import "./Dashboard.scss";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
-import {APPLICATIONS_LIMIT, STYLING, TABLE_COLUMNS} from "../../_constants";
+import {
+  APPLICATIONS_LIMIT,
+  NODES_LIMIT,
+  STYLING,
+  TABLE_COLUMNS,
+} from "../../_constants";
 import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
+import NodeService from "../../core/services/PocketNodeService";
 import {formatCurrency, formatNumbers, mapStatusToField} from "../../_helpers";
 import Segment from "../../core/components/Segment/Segment";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
@@ -22,8 +28,8 @@ class Dashboard extends Component {
       welcomeAlert: true,
       loading: true,
       chains: [],
-      userApps: [],
-      userNodes: [],
+      networkApps: [],
+      networkNodes: [],
       summary: [],
     };
   }
@@ -37,8 +43,10 @@ class Dashboard extends Component {
       totalStakedApps,
       totalStakedNodes,
     } = await NetworkService.getNetworkSummaryData();
-    const userApps = await ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT);
-    // const userNodes = await NodeService.getAllUserNodes(userEmail, NODES_LIMIT);
+    const networkApps = await ApplicationService.getAllApplications(
+      APPLICATIONS_LIMIT
+    );
+    const networkNodes = await NodeService.getAllNodes(userEmail, NODES_LIMIT);
     const chains = await NetworkService.getAvailableNetworkChains();
     const welcomeAlert = UserService.getShowWelcomeMessage();
 
@@ -48,7 +56,8 @@ class Dashboard extends Component {
 
     this.setState({
       welcomeAlert,
-      userApps,
+      networkApps,
+      networkNodes,
       chains,
       summary: [
         {title: `US ${formatCurrency(poktPrice)}`, subtitle: "POKT Price"},
@@ -71,8 +80,8 @@ class Dashboard extends Component {
       welcomeAlert,
       chains,
       loading,
-      userApps: allUserApps,
-      userNodes: allUserNodes,
+      networkApps: allnetworkApps,
+      networkNodes: allnetworkNodes,
       summary,
     } = this.state;
 
@@ -80,8 +89,8 @@ class Dashboard extends Component {
       return <Loader />;
     }
 
-    const userApps = allUserApps.map(mapStatusToField);
-    const userNodes = allUserNodes.map(mapStatusToField);
+    const networkApps = allnetworkApps.map(mapStatusToField);
+    const networkNodes = allnetworkNodes.map(mapStatusToField);
 
     return (
       <div id="dashboard">
@@ -196,9 +205,9 @@ class Dashboard extends Component {
                   scroll
                   classes="flex-body"
                   headerClasses="d-flex"
-                  toggle={userNodes.length > 0}
-                  keyField="pocketNode.publicPocketAccount.address"
-                  data={userNodes}
+                  toggle={networkNodes.length > 0}
+                  keyField="address"
+                  data={networkNodes}
                   columns={TABLE_COLUMNS.NODES}
                   bordered={false}
                 />
@@ -210,9 +219,9 @@ class Dashboard extends Component {
                   scroll
                   classes="flex-body"
                   headerClasses="d-flex"
-                  toggle={userApps.length > 0}
+                  toggle={networkApps.length > 0}
                   keyField="pocketApplication.id"
-                  data={userApps}
+                  data={networkApps}
                   columns={TABLE_COLUMNS.APPS}
                   bordered={false}
                 />

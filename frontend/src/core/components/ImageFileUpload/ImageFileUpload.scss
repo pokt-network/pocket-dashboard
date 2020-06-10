@@ -4,6 +4,10 @@
   width: 0;
   cursor: pointer;
 
+  &:focus {
+    outline: none;
+  }
+
   .drop {
     display: flex;
     flex-direction: column;
@@ -34,6 +38,10 @@
     height: 150px;
     border: solid 2px $primary-color;
     border-radius: 50%;
+
+    &:focus {
+      outline: none;
+    }
   }
 
   img {

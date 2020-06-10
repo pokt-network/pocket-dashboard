@@ -34,7 +34,6 @@ class PaymentHistory extends Component {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
-    // FIXME: The firm of this method has been changed.
     const history = await PaymentService.getPaymentHistory(
       userEmail, PAYMENT_HISTORY_LIMIT
     );
