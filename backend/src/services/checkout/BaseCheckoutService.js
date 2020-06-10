@@ -1,7 +1,7 @@
 import {POKT_DENOMINATIONS} from "../PocketService";
 import BaseService from "../BaseService";
 import {CoinDenom} from "@pokt-network/pocket-js";
-
+import {DashboardValidationError} from "../../models/Exceptions";
 
 /**
  *  @abstract
@@ -52,7 +52,7 @@ export class BaseCheckoutService extends BaseService {
    * @param {number} value Relays per day.
    *
    * @returns {number} Money to spent.
-   * @throws {Error} if value is out of allowed range.
+   * @throws {DashboardValidationError} if value is out of allowed range.
    * @abstract
    */
   getMoneyToSpent(value) {

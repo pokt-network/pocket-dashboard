@@ -36,10 +36,23 @@ class CreateAppForm extends CreateForm {
 
     if (imported) {
       this.setState({imported});
+      PocketUserService.saveUserAction("Import App");
 
       // Prevent bugs related to leaving form mid-way and accesing again.
       ApplicationService.saveAppInfoInCache({imported: false});
+    } else {
+      PocketUserService.saveUserAction("Create App");
     }
+
+    this.props.onBreadCrumbChange();
+  }
+
+  validateError(err) {
+    if (err === "Error: Application already exists") {
+      return "An application with that name already exists, please use a different name.";
+    }
+
+    return err;
   }
 
   async handleCreateImported(applicationId) {
@@ -107,7 +120,6 @@ class CreateAppForm extends CreateForm {
     if (success) {
       if (imported) {
         this.handleCreateImported(data);
-
       } else {
         ApplicationService.saveAppInfoInCache({
           applicationID: data,
@@ -119,7 +131,7 @@ class CreateAppForm extends CreateForm {
         });
       }
     } else {
-      this.setState({error: {show: true, message: data}});
+      this.setState({error: {show: true, message: this.validateError(data)}});
       scrollToId("alert");
     }
   }

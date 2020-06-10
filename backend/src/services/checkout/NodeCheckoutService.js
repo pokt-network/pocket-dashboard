@@ -1,5 +1,6 @@
 import {BaseCheckoutService} from "./BaseCheckoutService";
 import {Configurations} from "../../_configuration";
+import {DashboardValidationError} from "../../models/Exceptions";
 
 export default class NodeCheckoutService extends BaseCheckoutService {
 
@@ -36,7 +37,7 @@ export default class NodeCheckoutService extends BaseCheckoutService {
    * @param {number} validatorPower Validator power.
    *
    * @returns {number} Money to spent.
-   * @throws {Error} if validator power is out of allowed range.
+   * @throws {DashboardValidationError} if validator power is out of allowed range.
    */
   getMoneyToSpent(validatorPower) {
     const {
@@ -47,7 +48,7 @@ export default class NodeCheckoutService extends BaseCheckoutService {
     } = this.options;
 
     if (validatorPower < minValidatorPower && validatorPower > maxValidatorPower) {
-      throw new Error("Validator power is out of allowed range.");
+      throw new DashboardValidationError("Validator power is out of allowed range.");
     }
     return validatorPower * this.poktMarketPrice;
   }

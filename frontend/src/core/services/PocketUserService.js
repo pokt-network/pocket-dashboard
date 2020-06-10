@@ -84,6 +84,23 @@ class PocketUserService extends PocketBaseService {
   }
 
   /**
+   * 
+   * @param {string} action Current action of user (i.e create app, stake node...)  
+   */
+  saveUserAction(action) {
+    localStorage.setItem("user_action", action);
+  }
+
+  /**
+   * Get current user action
+   * 
+   * @return {action:string}
+   */
+  getUserAction() {
+    return localStorage.getItem("user_action");
+  }
+
+  /**
    * Validate a token.
    *
    * @param {string} token Token to validate.

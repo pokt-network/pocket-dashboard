@@ -12,10 +12,9 @@ class Breadcrumbs extends Component {
         <Breadcrumb>
           {links.map((link, idx) => (
             <Breadcrumb.Item
-              className={idx === 0 ? "pl-4" : ""}
-              active={link.active}
-              href={link.url}
-              key={link.url}
+              className={link.active ? "is-active" : ""}
+              active={true}
+              key={idx}
             >
               {link.label}
             </Breadcrumb.Item>

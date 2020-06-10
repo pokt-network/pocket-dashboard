@@ -16,6 +16,7 @@ import Segment from "../../../core/components/Segment/Segment";
 import LoadingButton from "../../../core/components/LoadingButton";
 import cls from "classnames";
 import isEmpty from "lodash/isEmpty";
+import {Configurations} from "../../../_configuration";
 
 class Passphrase extends Component {
   constructor(props, context) {
@@ -151,8 +152,11 @@ class Passphrase extends Component {
     const generalInfo = [
       {title: "0 POKT", subtitle: "Staked tokens"},
       {title: "0 POKT", subtitle: "Balance"},
-      {title: "_ _", subtitle: "Stake status"},
-      {title: "_ _", subtitle: "Max Relay Per Day"},
+      {title: Configurations.stakeDefaultStatus, subtitle: "Stake status"},
+      {
+        title: Configurations.defaultMaxRelaysPerDay,
+        subtitle: "Max Relay Per Day",
+      },
     ];
 
     return (

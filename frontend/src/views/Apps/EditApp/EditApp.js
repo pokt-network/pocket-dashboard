@@ -32,6 +32,8 @@ class EditApp extends CreateForm {
     const {icon, ...appData} = pocketApplication;
 
     this.setState({loading: false, icon, data: {...appData}});
+
+    this.props.onBreadCrumbChange(["Apps", "App   Information", "Edit"]);
   }
 
   async handleEdit() {
@@ -84,6 +86,10 @@ class EditApp extends CreateForm {
                 onClose={() => this.setState({error: false})}
               />
             )}
+            {/* eslint-disable-next-line react/prop-types */}
+            <Button onClick={this.props.history.goBack} className="mb-3">
+              <span>Go back</span>
+            </Button>
             <h1 className="text-uppercase">App Information</h1>
             <p className="info">
               Fill in these quick questions to identity your app on the
@@ -177,11 +183,7 @@ class EditApp extends CreateForm {
                     </Form.Control.Feedback>
                   </Form.Group>
                   <div className="submit mt-2 mb-4">
-                    <Button
-                      variant="primary"
-                      size="md"
-                      type="submit"
-                    >
+                    <Button variant="primary" size="md" type="submit">
                       <span>Save</span>
                     </Button>
                   </div>

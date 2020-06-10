@@ -10,6 +10,8 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import AppTable from "../../../core/components/AppTable";
 import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
+import UserService from "../../../core/services/PocketUserService";
+import {Configurations} from "../../../_configuration";
 
 class Import extends Component {
   constructor(props, context) {
@@ -49,8 +51,10 @@ class Import extends Component {
 
     if (path === _getDashboardPath(DASHBOARD_PATHS.importApp)) {
       this.setState({type: ITEM_TYPES.APPLICATION});
+      UserService.saveUserAction("Import App");
     } else if (path === _getDashboardPath(DASHBOARD_PATHS.importNode)) {
       this.setState({type: ITEM_TYPES.NODE});
+      UserService.saveUserAction("Import Node");
     }
   }
 
@@ -157,8 +161,11 @@ class Import extends Component {
     const generalInfo = [
       {title: "0 POKT", subtitle: "Staked tokens"},
       {title: "0 POKT", subtitle: "Balance"},
-      {title: "_ _", subtitle: "Stake status"},
-      {title: "_ _", subtitle: "Max Relays per Day"},
+      {title: Configurations.stakeDefaultStatus, subtitle: "Stake status"},
+      {
+        title: Configurations.defaultMaxRelaysPerDay,
+        subtitle: "Max Relays per Day",
+      },
     ];
 
     return (

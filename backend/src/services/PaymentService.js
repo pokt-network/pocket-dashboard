@@ -3,6 +3,8 @@ import {get_default_payment_provider} from "../providers/payment/Index";
 import {CardPaymentMethod, Payment, PaymentCurrencies, PaymentResult} from "../providers/payment/BasePaymentProvider";
 import {BillingDetails, PaymentHistory, PaymentMethod} from "../models/Payment";
 import UserService from "./UserService";
+import {Configurations} from "../_configuration";
+import {DashboardError, DashboardValidationError} from "../models/Exceptions";
 
 const PAYMENT_METHOD_COLLECTION_NAME = "PaymentMethods";
 const PAYMENT_HISTORY_COLLECTION_NAME = "PaymentHistory";
@@ -47,7 +49,7 @@ export default class PaymentService extends BaseService {
    * @param {string} itemType Item type for payment.
    *
    * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
-   * @throws Error if validation fails.
+   * @throws {DashboardValidationError} if validation fails.
    * @async
    */
   async __createPocketPaymentForItem(userEmail, type, currency, item, amount, itemType) {
@@ -130,7 +132,7 @@ export default class PaymentService extends BaseService {
    * @param {BillingDetails} paymentMethodData.billingDetails Billing details.
    *
    * @returns {Promise<boolean>} If was saved or not.
-   * @throws {Error} If validation fails or already exists.
+   * @throws {DashboardValidationError | DashboardError} If validation fails or already exists.
    * @async
    */
   async savePaymentMethod(paymentMethodData) {
@@ -141,7 +143,7 @@ export default class PaymentService extends BaseService {
     const paymentMethod = PaymentMethod.createPaymentMethod(paymentMethodData);
 
     if (await this.paymentMethodExists(paymentMethod)) {
-      throw new Error("Payment method already exists");
+      throw new DashboardError("Payment method already exists");
     }
 
     /** @type {{result: {n:number, ok: number}}} */
@@ -177,7 +179,7 @@ export default class PaymentService extends BaseService {
    * @param {number} paymentIntentData.amount Amount intended to be collected by this payment.
    *
    * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
-   * @throws Error if validation fails.
+   * @throws {DashboardValidationError} if validation fails.
    * @async
    */
   async createPocketPaymentIntentForApps(paymentIntentData) {
@@ -196,7 +198,7 @@ export default class PaymentService extends BaseService {
    * @param {number} paymentIntentData.amount Amount intended to be collected by this payment.
    *
    * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
-   * @throws Error if validation fails.
+   * @throws {DashboardValidationError} if validation fails.
    * @async
    */
   async createPocketPaymentIntentForNodes(paymentIntentData) {
@@ -251,8 +253,16 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async savePaymentHistory(createdDate, paymentID, currency, amount, item, user) {
-
-    const paymentHistory = PaymentHistory.createPaymentHistory({createdDate, paymentID, currency, amount, item, user});
+    const {pokt_market_price: poktPrice} = Configurations.pocket_network;
+    const paymentHistory = PaymentHistory.createPaymentHistory({
+      createdDate,
+      paymentID,
+      currency,
+      amount,
+      item,
+      user,
+      poktPrice
+    });
 
     if (await this.paymentHistoryExists(paymentHistory)) {
       throw new Error("Payment history entry already exists");

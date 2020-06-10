@@ -1,6 +1,6 @@
 import express from "express";
 import NodeService from "../services/NodeService";
-import {getOptionalQueryOption, getQueryOption} from "./_helpers";
+import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helpers";
 import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
 import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
@@ -15,22 +15,14 @@ const nodeCheckoutService = NodeCheckoutService.getInstance();
 /**
  * Create new node.
  */
-router.post("", async (request, response) => {
-  try {
-    /** @type {{node: {name:string, contactEmail:string, user:string, owner:string, description:string, icon:string}}} */
-    const data = request.body;
+router.post("", apiAsyncWrapper(async (req, res) => {
+  /** @type {{node: {name:string, contactEmail:string, user:string, owner:string, description:string, icon:string}}} */
+  const data = req.body;
 
-    const nodeID = await nodeService.createNode(data.node);
+  const nodeID = await nodeService.createNode(data.node);
 
-    response.send(nodeID);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.send(nodeID);
+}));
 
 /**
  * Create new node account.
@@ -38,320 +30,225 @@ router.post("", async (request, response) => {
  * 
  * @deprecated // TODO pocket.js account creation have to be moved to frontend
  */
-router.post("/account", async (request, response) => {
-  try {
-    /** @type {{nodeID: string, passphrase: string, nodeBaseLink:string, privateKey?:string}} */
-    let data = request.body;
+router.post("/account", apiAsyncWrapper(async (req, res) => {
+  /** @type {{nodeID: string, passphrase: string, nodeBaseLink:string, privateKey?:string}} */
+  let data = req.body;
 
-    if (!("privateKey" in data)) {
-      data["privateKey"] = "";
-    }
-
-    const nodeData = await nodeService.createNodeAccount(data.nodeID, data.passphrase, data.privateKey);
-    const emailAction = data.privateKey ? "imported" : "created";
-    const nodeEmailData = {
-      name: nodeData.node.name,
-      link: `${data.nodeBaseLink}/${nodeData.privateNodeData.address}`
-    };
-
-    await EmailService
-      .to(nodeData.node.contactEmail)
-      .sendCreateOrImportNodeEmail(emailAction, nodeData.node.contactEmail, nodeEmailData);
-
-    response.send(nodeData);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
+  if (!("privateKey" in data)) {
+    data["privateKey"] = "";
   }
-});
+
+  const nodeData = await nodeService.createNodeAccount(data.nodeID, data.passphrase, data.privateKey);
+  const emailAction = data.privateKey ? "imported" : "created";
+  const nodeEmailData = {
+    name: nodeData.node.name,
+    link: `${data.nodeBaseLink}/${nodeData.privateNodeData.address}`
+  };
+
+  await EmailService
+    .to(nodeData.node.contactEmail)
+    .sendCreateOrImportNodeEmail(emailAction, nodeData.node.contactEmail, nodeEmailData);
+
+  res.json(nodeData);
+}));
 
 /**
  * Update a node.
  */
-router.put("/:nodeAccountAddress", async (request, response) => {
-  try {
-    /** @type {{name:string, operator:string, contactEmail:string, user:string, description:string, icon:string}} */
-    let data = request.body;
+router.put("/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{name:string, operator:string, contactEmail:string, user:string, description:string, icon:string}} */
+  let data = req.body;
 
-    /** @type {{nodeAccountAddress: string}} */
-    const params = request.params;
+  /** @type {{nodeAccountAddress: string}} */
+  const params = req.params;
 
-    const updated = await nodeService.updateNode(params.nodeAccountAddress, data);
+  const updated = await nodeService.updateNode(params.nodeAccountAddress, data);
 
-    response.send(updated);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.send(updated);
+}));
 
 /**
  * Import node from network.
  */
-router.get("import/:nodeAccountAddress", async (request, response) => {
-  try {
-    /** @type {{nodeAccountAddress:string}} */
-    const data = request.params;
-    const node = await nodeService.importNode(data.nodeAccountAddress);
+router.get("import/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{nodeAccountAddress:string}} */
+  const data = req.params;
+  const node = await nodeService.importNode(data.nodeAccountAddress);
 
-    response.send(node);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(node);
+}));
 
 /**
  * Delete a node from dashboard.
  */
-router.post("/:nodeAccountAddress", async (request, response) => {
-  try {
+router.post("/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{nodeAccountAddress:string}} */
+  const data = req.params;
+  /** @type {{user:string, nodesLink:string}} */
+  const bodyData = req.body;
 
-    /** @type {{nodeAccountAddress:string}} */
-    const data = request.params;
-    /** @type {{user:string, nodesLink:string}} */
-    const bodyData = request.body;
+  const node = await nodeService.deleteNode(data.nodeAccountAddress, bodyData.user);
 
-    const node = await nodeService.deleteNode(data.nodeAccountAddress, bodyData.user);
-
-    if (node) {
-      const nodeEmailData = {
-        name: node.name,
-        nodesLink: bodyData.nodesLink
-      };
-
-      await EmailService
-        .to(node.contactEmail)
-        .sendNodeDeletedEmail(node.contactEmail, nodeEmailData);
-    }
-
-    response.send(node !== undefined);
-  } catch (e) {
-    const error = {
-      message: e.toString()
+  if (node) {
+    const nodeEmailData = {
+      name: node.name,
+      nodesLink: bodyData.nodesLink
     };
 
-    response.status(400).send(error);
+    await EmailService
+      .to(node.contactEmail)
+      .sendNodeDeletedEmail(node.contactEmail, nodeEmailData);
   }
-});
+
+  res.send(node !== undefined);
+}));
 
 /**
  * Get node that is already on dashboard by address.
  */
-router.get("/:nodeAccountAddress", async (request, response) => {
-  try {
-    /** @type {{nodeAccountAddress:string}} */
-    const data = request.params;
-    const node = await nodeService.getNode(data.nodeAccountAddress);
+router.get("/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{nodeAccountAddress:string}} */
+  const data = req.params;
+  const node = await nodeService.getNode(data.nodeAccountAddress);
 
-    response.send(node);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(node);
+}));
 
 /**
  * Get staked summary data.
  */
-router.get("/summary/staked", async (request, response) => {
-  try {
+router.get("/summary/staked", apiAsyncWrapper(async (req, res) => {
+  const summaryData = await nodeService.getStakedNodeSummary();
 
-    const summaryData = await nodeService.getStakedNodeSummary();
-
-    response.send(summaryData);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(summaryData);
+}));
 
 
 /**
  * Get all nodes.
  */
-router.get("", async (request, response) => {
-  try {
+router.get("", apiAsyncWrapper(async (req, res) => {
+  const limit = parseInt(getQueryOption(req, "limit"));
 
-    const limit = parseInt(getQueryOption(request, "limit"));
+  const offsetData = getOptionalQueryOption(req, "offset");
+  const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    const offsetData = getOptionalQueryOption(request, "offset");
-    const offset = offsetData !== "" ? parseInt(offsetData) : 0;
+  const nodes = await nodeService.getAllNodes(limit, offset);
 
-    const nodes = await nodeService.getAllNodes(limit, offset);
-
-    response.send(nodes);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(nodes);
+}));
 
 /**
  * Get all user nodes.
  */
-router.post("/user/all", async (request, response) => {
-  try {
+router.post("/user/all", apiAsyncWrapper(async (req, res) => {
+  const limit = parseInt(getQueryOption(req, "limit"));
 
-    const limit = parseInt(getQueryOption(request, "limit"));
+  const offsetData = getOptionalQueryOption(req, "offset");
+  const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-    const offsetData = getOptionalQueryOption(request, "offset");
-    const offset = offsetData !== "" ? parseInt(offsetData) : 0;
+  /** @type {{user: string}} */
+  const data = req.body;
 
-    /** @type {{user: string}} */
-    const data = request.body;
+  const nodes = await nodeService.getUserNodes(data.user, limit, offset);
 
-    const nodes = await nodeService.getUserNodes(data.user, limit, offset);
-
-    response.send(nodes);
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
-  }
-});
+  res.json(nodes);
+}));
 
 /**
  * Stake a node.
  * // FIXME: Make transaction on frontend
  */
-router.post("/custom/stake", async (request, response) => {
-  try {
+router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
+  /** @type {{node: {privateKey: string, passphrase: string, serviceURL: string}, networkChains: string[], payment:{id: string}, nodeLink: string}} */
+  const data = req.body;
 
-    /** @type {{node: {privateKey: string, passphrase: string, serviceURL: string}, networkChains: string[], payment:{id: string}, nodeLink: string}} */
-    const data = request.body;
+  const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
-    const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
+  if (paymentHistory.isSuccessPayment(true)) {
 
-    if (paymentHistory.isSuccessPayment(true)) {
+    if (paymentHistory.isNodePaymentItem(true)) {
+      const item = paymentHistory.getItem();
+      const amountToSpent = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
+      const poktToStake = nodeCheckoutService.getPoktToStake(amountToSpent);
 
-      if (paymentHistory.isNodePaymentItem(true)) {
-        const item = paymentHistory.getItem();
-        const amountToSpent = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
-        const poktToStake = nodeCheckoutService.getPoktToStake(amountToSpent);
+      const node = await nodeService.stakeNode(data.node, data.networkChains, poktToStake.toString());
 
-        const node = await nodeService.stakeNode(data.node, data.networkChains, poktToStake.toString());
+      if (node) {
+        const nodeEmailData = {
+          name: node.name,
+          link: data.nodeLink
+        };
 
-        if (node) {
-          const nodeEmailData = {
-            name: node.name,
-            link: data.nodeLink
-          };
+        const paymentEmailData = {
+          amountPaid: paymentHistory.amount,
+          validatorPowerAmount: item.validatorPower,
+          poktStaked: nodeCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
+        };
 
-          const paymentEmailData = {
-            amountPaid: paymentHistory.amount,
-            validatorPowerAmount: item.validatorPower,
-            poktStaked: nodeCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
-          };
+        await EmailService
+          .to(node.contactEmail)
+          .sendStakeNodeEmail(node.contactEmail, nodeEmailData, paymentEmailData);
 
-          await EmailService
-            .to(node.contactEmail)
-            .sendStakeNodeEmail(node.contactEmail, nodeEmailData, paymentEmailData);
-
-          response.send(true);
-        }
+        res.send(true);
       }
     }
-    // noinspection ExceptionCaughtLocallyJS
-    throw new Error("Error has occurred trying to stake node.");
-  } catch (e) {
-    const error = {
-      message: e.toString()
-    };
-
-    response.status(400).send(error);
   }
-});
+  // noinspection ExceptionCaughtLocallyJS
+  throw new Error("Error has occurred trying to stake node.");
+}));
 
 /**
  * Unstake a node.
  * // FIXME: Make transaction on frontend
  */
-router.post("/custom/unstake", async (request, response) => {
-  try {
+router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
+  /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */
+  const data = req.body;
 
-    /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */
-    const data = request.body;
+  const node = await nodeService.unstakeNode(data.node);
 
-    const node = await nodeService.unstakeNode(data.node);
-
-    if (node) {
-      const nodeEmailData = {
-        name: node.name,
-        link: data.nodeLink
-      };
-
-      await EmailService
-        .to(node.contactEmail)
-        .sendUnstakeNodeEmail(node.contactEmail, nodeEmailData);
-
-      response.send(true);
-    } else {
-      response.send(false);
-    }
-  } catch (e) {
-    const error = {
-      message: e.toString()
+  if (node) {
+    const nodeEmailData = {
+      name: node.name,
+      link: data.nodeLink
     };
 
-    response.status(400).send(error);
+    await EmailService
+      .to(node.contactEmail)
+      .sendUnstakeNodeEmail(node.contactEmail, nodeEmailData);
+
+    res.send(true);
+  } else {
+    res.send(false);
   }
-});
+}));
 
 /**
  * UnJail a node.
  * // FIXME: Make transaction on frontend
  */
-router.post("/unjail", async (request, response) => {
-  try {
+router.post("/unjail", apiAsyncWrapper(async (req, res) => {
+  /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */
+  const data = req.body;
 
-    /** @type {{node:{privateKey:string, passphrase:string, accountAddress: string}, nodeLink: string}} */
-    const data = request.body;
+  const node = await nodeService.unJailNode(data.node);
 
-    const node = await nodeService.unJailNode(data.node);
-
-    if (node) {
-      const nodeEmailData = {
-        name: node.name,
-        link: data.nodeLink
-      };
-
-      await EmailService
-        .to(node.contactEmail)
-        .sendNodeUnJailedEmail(node.contactEmail, nodeEmailData);
-
-      response.send(true);
-    } else {
-      response.send(false);
-    }
-  } catch (e) {
-    const error = {
-      message: e.toString()
+  if (node) {
+    const nodeEmailData = {
+      name: node.name,
+      link: data.nodeLink
     };
 
-    response.status(400).send(error);
+    await EmailService
+      .to(node.contactEmail)
+      .sendNodeUnJailedEmail(node.contactEmail, nodeEmailData);
+
+    res.send(true);
+  } else {
+    res.send(false);
   }
-});
+}));
 
 
 export default router;

@@ -1,0 +1,197 @@
+@import "../../../scss/Variables/Fonts.scss";
+
+.print {
+  font-size: 16px;
+  font-family: $primary-font-family;
+  color: $dark-gray;
+  font-weight: 300;
+  letter-spacing: normal;
+  display: flex;
+  align-items: center;
+
+  .icon {
+    width: 27px;
+    height: 27px;
+  }
+
+  img {
+    margin-right: 10px;
+  }
+
+  .link {
+    max-width: 35px;
+    background-color: transparent;
+    border-color: transparent;
+    font-weight: 300;
+    color: $primary-color;
+    cursor: pointer;
+    margin-right: 5px;
+
+    &:hover {
+      background-color: transparent;
+      border-color: transparent;
+      color: $primary-color;
+    }
+
+    &:focus {
+      background-color: transparent;
+      border-color: transparent;
+      color: $primary-color;
+    }
+
+    &:not(:disabled):not(.disabled):active {
+      background-color: transparent;
+      border-color: transparent;
+      color: $primary-color;
+    }
+  }
+}
+
+.printable-invoice {
+  display: none;
+}
+
+@media print {
+  html,
+  body {
+    height: initial !important;
+    overflow: initial !important;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .printable-invoice {
+    display: block;
+    padding: 0 50px;
+
+    img {
+      margin-bottom: 5rem;
+    }
+
+    .invoice-page {
+      page-break-after: always;
+      padding-top: 40px;
+    }
+
+    .token-purchase-agreement {
+      img {
+        margin: 50px 0 100px 0;
+      }
+    }
+
+    h1 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 800;
+      color: $secondary-color;
+      text-transform: uppercase;
+      padding-left: 15px;
+    }
+
+    h3,
+    h6 {
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 700;
+      color: $secondary-color;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    p {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: normal;
+      text-align: justify;
+    }
+
+    span {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: normal;
+      text-align: justify;
+    }
+
+    .bold-ordered-list {
+      padding-inline-start: 15px;
+
+      li {
+        font-family: Arial, Helvetica, sans-serif;
+        padding-left: 15px;
+        margin-bottom: 10px;
+      }
+    }
+
+    .ordered-list {
+      padding-inline-start: 30px;
+    }
+
+    .ordered-list-new-page {
+      padding-inline-start: 60px;
+    }
+
+    hr {
+      background-color: rgba(6, 32, 46, 0.1);
+    }
+
+    .invoice-info {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 15px;
+      margin-bottom: 15px;
+
+      span {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 20px;
+        color: #656565;
+        text-transform: capitalize;
+      }
+    }
+
+    .title-background {
+      background-color: $white-smoke;
+      line-height: 40px;
+
+      h2 {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+        color: $secondary-color;
+        text-transform: uppercase;
+        padding: 5px 0 5px 15px;
+      }
+
+      .invoice-info {
+        margin-bottom: 0;
+
+        span {
+          font-family: Arial, Helvetica, sans-serif;
+          font-size: 2rem;
+          font-weight: 700;
+          color: $secondary-color;
+          text-transform: uppercase;
+        }
+      }
+    }
+
+    .invoice-pokt-info {
+      margin-top: 50px;
+      margin-left: 400px;
+
+      h4 {
+        font-family: Arial, Helvetica, sans-serif;
+        color: $secondary-color;
+      }
+
+      div {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 1.5rem;
+      }
+    }
+
+    .page-number {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+    }
+  }
+}
+
+@page {
+  size: auto;
+  margin: 0mm;
+}
