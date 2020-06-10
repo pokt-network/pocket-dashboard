@@ -275,24 +275,24 @@ class AppsMain extends Main {
             }`}
           >
             <Segment scroll={false} label="REGISTERED APPS">
-              {/* FIXME: Always perform a search */}
-              {/*<InfiniteScroll*/}
-              {/*  pageStart={0}*/}
-              {/*  loadMore={this.loadMoreRegisteredApps}*/}
-              {/*  useWindow={false}*/}
-              {/*  hasMore={hasMoreRegisteredItems}*/}
-              {/*  loader={loader}*/}
-              {/*>*/}
-              <AppTable
-                scroll
-                classes={`flex-body ${
-                  hasMoreRegisteredItems ? "loading" : ""
-                } `}
-                headerClasses="d-flex"
-                toggle={registeredItems.length > 0}
-                keyField="address"
-                data={registeredItems}
-                columns={TABLE_COLUMNS.APPS}
+              <InfiniteScroll
+                pageStart={0}
+                loadMore={this.loadMoreRegisteredApps}
+                useWindow={false}
+                hasMore={hasMoreRegisteredItems}
+                loader={loader}
+              >
+              <div className="scroll-table">
+                <AppTable
+                  scroll
+                  classes={`flex-body ${
+                    hasMoreRegisteredItems ? "loading" : ""
+                  } `}
+                  headerClasses="d-flex"
+                  toggle={registeredItems.length > 0}
+                  keyField="address"
+                  data={registeredItems}
+                  columns={TABLE_COLUMNS.APPS}
                   bordered={false}
                   loading={allItemsTableLoading}
                   overlay={overlayFactory({
@@ -303,9 +303,10 @@ class AppsMain extends Main {
                         background: "rgba(0, 0, 0, 0.2)",
                       }),
                     },
-                  })}
-                />
-              {/*</InfiniteScroll>*/}
+                    })}
+                  />
+              </div>
+              </InfiniteScroll>
             </Segment>
           </Col>
         </Row>

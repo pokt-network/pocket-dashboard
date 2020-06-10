@@ -275,24 +275,23 @@ class NodesMain extends Main {
             }`}
           >
             <Segment scroll={false} label="REGISTERED NODES">
-              {/* FIXME: Always perform a search */}
-              {/*<InfiniteScroll*/}
-              {/*  pageStart={0}*/}
-              {/*  loadMore={this.loadMoreRegisteredNodes}*/}
-              {/*  useWindow={false}*/}
-              {/*  hasMore={hasMoreRegisteredItems}*/}
-              {/*  loader={loader}*/}
-              {/*>*/}
-              <AppTable
-                scroll
-                classes={`flex-body ${
-                  hasMoreRegisteredItems ? "loading" : ""
-                } `}
-                headerClasses="d-flex"
-                toggle={registeredItems.length > 0}
-                keyField="address"
-                data={registeredItems}
-                columns={TABLE_COLUMNS.NODES}
+              <InfiniteScroll
+                pageStart={0}
+                loadMore={this.loadMoreRegisteredNodes}
+                useWindow={false}
+                hasMore={hasMoreRegisteredItems}
+                loader={loader}
+              >
+              <div className="scroll-table">
+                <AppTable
+                  classes={`flex-body ${
+                    hasMoreRegisteredItems ? "loading" : ""
+                  } `}
+                  headerClasses="d-flex"
+                  toggle={registeredItems.length > 0}
+                  keyField="address"
+                  data={registeredItems}
+                  columns={TABLE_COLUMNS.NODES}
                   bordered={false}
                   loading={allItemsTableLoading}
                   overlay={overlayFactory({
@@ -303,9 +302,10 @@ class NodesMain extends Main {
                         background: "rgba(0, 0, 0, 0.2)",
                       }),
                     },
-                  })}
+                    })}
                 />
-              {/*</InfiniteScroll>*/}
+                </div>
+              </InfiniteScroll>
             </Segment>
           </Col>
         </Row>
