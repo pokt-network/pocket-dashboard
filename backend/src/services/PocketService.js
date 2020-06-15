@@ -8,15 +8,24 @@ import {
   NodeParams,
   Pocket,
   StakingStatus,
-  Transaction
+  Transaction,
+  typeGuard,
+  RpcError
 } from "@pokt-network/pocket-js";
-import {Configurations} from "../_configuration";
-import {PocketNetworkError} from "../models/Exceptions";
+import { Configurations } from "../_configuration";
+import { PocketNetworkError } from "../models/Exceptions";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
 const POCKET_CONFIGURATION = new Configuration(
-  POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
+  POCKET_NETWORK_CONFIGURATION.max_dispatchers,
+  POCKET_NETWORK_CONFIGURATION.max_sessions,
+  0,
+  POCKET_NETWORK_CONFIGURATION.request_timeout
+);
+
+const POCKET_MAIN_FUND_ACCOUNT = POCKET_NETWORK_CONFIGURATION.main_fund_account;
+const POCKET_MAIN_FUND_ADDRESS = POCKET_NETWORK_CONFIGURATION.main_fund_address;
 
 export const POKT_DENOMINATIONS = {
   pokt: 0,
@@ -29,7 +38,8 @@ export const POKT_DENOMINATIONS = {
  * @returns {URL[]} Dispatcher urls.
  */
 function getPocketDispatchers() {
-  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers ?? "";
+  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers;
+  console.log(`DISPATCHERS: ${dispatchersStr}`)
 
   if (dispatchersStr === "") {
     return [];
@@ -39,16 +49,28 @@ function getPocketDispatchers() {
   });
 }
 
-/**
- * Get the default pokt network nodes.
- *
- * @returns {{nodes:string[], rpcProvider: string}} List of default nodes.
- */
-export function get_default_pocket_network() {
-  return {
-    nodes: POCKET_NETWORK_CONFIGURATION.nodes.main,
-    rpcProvider: POCKET_NETWORK_CONFIGURATION.nodes.rpc_provider
-  };
+async function getPocketRPCProvider() {
+  throw new Error("TODO IMPLEMENT THIS")
+}
+
+function getHttpRPCProvider() {
+  const httpProviderNode = POCKET_NETWORK_CONFIGURATION.http_provider_node;
+  if (!httpProviderNode || httpProviderNode === "") {
+    throw new Error("Invalid HTTP Provider Node: " + httpProviderNode)
+  }
+  return new HttpRpcProvider(new URL(httpProviderNode))
+}
+
+async function getRPCProvider() {
+  const providerType = POCKET_NETWORK_CONFIGURATION.provider_type;
+  if (providerType.toLowerCase() === "http") {
+    return getHttpRPCProvider();
+  } else if (providerType.toLowerCase() === "pocket") {
+    return getPocketRPCProvider();
+  } else {
+    // Default to HTTP RPC Provider
+    return getHttpRPCProvider();
+  }
 }
 
 export default class PocketService {
@@ -57,27 +79,16 @@ export default class PocketService {
    * @param {string[]} nodes List of nodes of Pokt network.
    * @param {string} rpcProvider RPC provider of Pokt network.
    */
-  constructor(nodes, rpcProvider) {
+  constructor() {
     /**
      * @type {Pocket}
      * @private
      */
-    this.__pocket = new Pocket(getPocketDispatchers(), undefined, POCKET_CONFIGURATION);
-  }
-
-  /**
-   * Creates a new PocketRPCProvider that fetches Pocket blockchain data using Pocket Network nodes
-   *
-   * @returns {HttpRpcProvider} HTTP RPC Provider
-   */
-  async getHttpRPCProvider() {
-    if (!this.httpRpcProvider) {
-      const nodeIndex = Math.floor(Math.random() * POCKET_NETWORK_CONFIGURATION.max_dispatchers);
-      const nodeDispatcher = getPocketDispatchers()[nodeIndex];
-
-      this.httpRpcProvider = new HttpRpcProvider(nodeDispatcher);
-    }
-    return this.httpRpcProvider;
+    this.__pocket = new Pocket(
+      getPocketDispatchers(),
+      undefined,
+      POCKET_CONFIGURATION
+    );
   }
 
 
@@ -102,7 +113,7 @@ export default class PocketService {
    * @async
    */
   async getTransaction(transactionHash) {
-    const pocketRpcProvider = await this.getHttpRPCProvider();
+    const pocketRpcProvider = await getRPCProvider();
     const transactionResponse = await this.__pocket.rpc(pocketRpcProvider).query.getTX(transactionHash);
 
     if (transactionResponse instanceof Error) {
@@ -122,7 +133,7 @@ export default class PocketService {
    * @async
    */
   async getBalance(accountAddress, throwError = true) {
-    const pocketRpcProvider = await this.getHttpRPCProvider();
+    const pocketRpcProvider = await getRPCProvider();
     const accountQueryResponse = await this.__pocket.rpc(pocketRpcProvider).query.getBalance(accountAddress);
 
     if (accountQueryResponse instanceof Error) {
@@ -133,7 +144,11 @@ export default class PocketService {
       return "0";
     }
 
-    return accountQueryResponse.balance.toString();
+    if (!accountQueryResponse.balance) {
+      return "0";
+    } else {
+      return accountQueryResponse.balance.toString();
+    }
   }
 
   /**
@@ -147,9 +162,10 @@ export default class PocketService {
    * @async
    */
   async getApplication(addressHex, throwError = true) {
-    const pocketRpcProvider = await this.getHttpRPCProvider();
+    const pocketRpcProvider = await getRPCProvider();
+    console.log(addressHex);
     const applicationResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApp(addressHex);
-
+    console.log(applicationResponse);
     if (applicationResponse instanceof Error) {
       if (throwError) {
         throw new PocketNetworkError(applicationResponse.message);
@@ -171,7 +187,7 @@ export default class PocketService {
    * @async
    */
   async getNode(addressHex) {
-    const pocketRpcProvider = await this.getHttpRPCProvider();
+    const pocketRpcProvider = await getRPCProvider();
     const nodeResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNode(addressHex);
 
     if (nodeResponse instanceof Error) {
@@ -190,7 +206,7 @@ export default class PocketService {
    * @async
    */
   async getApplications(status) {
-    const pocketRpcProvider = await this.getHttpRPCProvider();
+    const pocketRpcProvider = await getRPCProvider();
     const applicationsResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status);
 
     if (applicationsResponse instanceof Error) {
@@ -235,7 +251,7 @@ export default class PocketService {
    * @async
    */
   async getNodes(status) {
-    const pocketRpcProvider = await this.getHttpRPCProvider();
+    const pocketRpcProvider = await getRPCProvider();
     const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status);
 
     if (nodesResponse instanceof Error) {
@@ -279,9 +295,10 @@ export default class PocketService {
    * @async
    */
   async getApplicationParameters() {
-    const pocketRpcProvider = await this.getHttpRPCProvider();
+    const pocketRpcProvider = await getRPCProvider();
     const applicationParametersResponse = await this.__pocket.rpc(pocketRpcProvider).query.getAppParams();
 
+    console.error(applicationParametersResponse);
     if (applicationParametersResponse instanceof Error) {
       throw new PocketNetworkError(applicationParametersResponse.message);
     }
@@ -297,7 +314,7 @@ export default class PocketService {
    * @async
    */
   async getNodeParameters() {
-    const pocketRpcProvider = await this.getHttpRPCProvider();
+    const pocketRpcProvider = await getRPCProvider();
     const nodeParametersResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodeParams();
 
     if (nodeParametersResponse instanceof Error) {
@@ -305,6 +322,42 @@ export default class PocketService {
     }
 
     return nodeParametersResponse.nodeParams;
+  }
+
+
+  async submitRawTransaction(fromAddress, rawTxBytes) {
+    const pocketRpcProvider = await getRPCProvider();
+    const rawTxResponse = await this.__pocket.rpc(pocketRpcProvider).client.rawtx(fromAddress, rawTxBytes);
+
+    if (typeGuard(rawTxResponse, RpcError)) {
+      throw new PocketNetworkError(rawTxResponse.message)
+    }
+
+    return rawTxResponse.hash
+  }
+
+  /**
+   * Transfer funds from the Main Fund Account to the customer's Account
+   * @param {string} amount Amount to transfer in uPOKT denomination
+   * @param {string} customerAddress Receipient address
+   * @throws {PocketNetworkError}
+   * @returns {Promise<string>}
+   */
+  async transferFromMainFund(amount, customerAddress) {
+    // Include transaction fee for the stake transaction
+    const totalAmount = Number(amount) + 10000000;
+    const pocketRpcProvider = await getRPCProvider();
+    this.__pocket.rpc(pocketRpcProvider)
+    const rawTxResponse = await this.__pocket
+      .withPrivateKey(POCKET_MAIN_FUND_ACCOUNT)
+      .send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
+      .submit(POCKET_NETWORK_CONFIGURATION.chain_id, POCKET_NETWORK_CONFIGURATION.transaction_fee)
+
+    if (typeGuard(rawTxResponse, RpcError)) {
+      throw new PocketNetworkError(rawTxResponse.message)
+    }
+
+    return rawTxResponse.hash
   }
 
   /**

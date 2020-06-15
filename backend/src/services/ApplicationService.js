@@ -11,6 +11,8 @@ import UserService from "./UserService";
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
 import {DashboardError, DashboardValidationError, PocketNetworkError} from "../models/Exceptions";
+import TransactionService from "./TransactionService";
+import { TransactionPostAction, POST_ACTION_TYPE } from "../models/Transaction";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -20,6 +22,7 @@ export default class ApplicationService extends BasePocketService {
     super();
 
     this.userService = new UserService();
+    this.transactionService = new TransactionService()
   }
 
   /**
@@ -166,6 +169,7 @@ export default class ApplicationService extends BasePocketService {
     try {
       return this.pocketService.getApplication(applicationAddress);
     } catch (e) {
+      console.error(e);
       throw new PocketNetworkError("Application does not exist on network");
     }
   }
@@ -328,12 +332,28 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Stake an application on network.
    *
-   * @param {string} transactionHash Transaction to stake.
-   *
-   * @throws {Error} If private key is not valid or application does not exists on dashboard.
+   * @param {}
+   * @param {object} appStakeTransaction Transaction to stake.
+   * @throws {Error}
    */
-  async stakeApplication(transactionHash) {
-    // TODO: Use the transaction.
+  async stakeApplication(appAddress, upoktToStake, appStakeTransaction, application, emailData, paymentEmailData) {
+    // First transfer funds from the main fund
+    const fundingTransactionHash = await this.pocketService.transferFromMainFund(upoktToStake, appAddress);
+
+    // Create post confirmation action to stake application
+    const contactEmail = application.pocketApplication.contactEmail;
+    const appStakeAction = new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, {
+      appStakeTransaction,
+      contactEmail,
+      emailData,
+      paymentEmailData
+    });
+
+    // Create job to monitor transaction confirmation
+    const result = await this.transactionService.addTransferTransaction(fundingTransactionHash, appStakeAction);
+    if (!result) {
+      throw new Error("Couldn't add funding transaction for processing")
+    }
   }
 
   /**

@@ -38,29 +38,29 @@ export default class JobsProvider {
    * @returns {*} Stake job queue.
    * @static
    */
-  static getStakeJobQueue() {
-    return this.__getJobQueue("STAKE_QUEUE");
+  static getAppStakeJobQueue() {
+    return this.__getJobQueue("APP_STAKE_QUEUE");
   }
 
-  /**
-   * Get unstake job queue.
-   *
-   * @returns {*} Unstake job queue.
-   * @static
-   */
-  static getUnStakeJobQueue() {
-    return this.__getJobQueue("UNSTAKE_QUEUE");
-  }
+  // /**
+  //  * Get unstake job queue.
+  //  *
+  //  * @returns {*} Unstake job queue.
+  //  * @static
+  //  */
+  // static getUnStakeJobQueue() {
+  //   return this.__getJobQueue("UNSTAKE_QUEUE");
+  // }
 
-  /**
-   * Get unstake job queue.
-   *
-   * @returns {*} UnJail job queue.
-   * @static
-   */
-  static getUnJailJobQueue() {
-    return this.__getJobQueue("UNJAIL_QUEUE");
-  }
+  // /**
+  //  * Get unstake job queue.
+  //  *
+  //  * @returns {*} UnJail job queue.
+  //  * @static
+  //  */
+  // static getUnJailJobQueue() {
+  //   return this.__getJobQueue("UNJAIL_QUEUE");
+  // }
 
   /**
    * Add a job to a queue.

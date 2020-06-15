@@ -1,9 +1,10 @@
 import express from "express";
 import ApplicationService from "../services/ApplicationService";
-import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helpers";
+import { apiAsyncWrapper, getOptionalQueryOption, getQueryOption } from "./_helpers";
 import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
 import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
+import {CoinDenom} from "@pokt-network/pocket-js"
 
 const router = express.Router();
 
@@ -37,9 +38,11 @@ router.post("/account", apiAsyncWrapper(async (req, res) => {
     link: `${data.applicationBaseLink}/${data.applicationData.address}`
   };
 
-  await EmailService
-    .to(application.contactEmail)
-    .sendCreateOrImportAppEmail(emailAction, application.contactEmail, applicationEmailData);
+  if (emailAction === "imported" ) {
+    await EmailService
+      .to(application.contactEmail)
+      .sendCreateOrImportAppEmail(emailAction, application.contactEmail, applicationEmailData);
+  }
 
   res.send(application);
 }));
@@ -98,8 +101,10 @@ router.get("/summary/staked", apiAsyncWrapper(async (req, res) => {
  */
 router.get("/import/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
   /** @type {{applicationAccountAddress:string}} */
+  console.log(req.params)
   const data = req.params;
   const application = await applicationService.importApplication(data.applicationAccountAddress);
+  console.log(application)
 
   res.json(application);
 }));
@@ -174,41 +179,40 @@ router.post("/freetier/unstake", apiAsyncWrapper(async (req, res) => {
  * Stake an application.
  */
 router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{transactionHash: string, payment:{id: string}, applicationLink: string}} */
+  /** @type {{appStakeTransaction: {address: string, raw_hex_bytes: string}, payment:{id: string}, applicationLink: string}} */
   const data = req.body;
   const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
-  if (paymentHistory.isSuccessPayment(true)) {
+  if (
+    paymentHistory.isSuccessPayment(true) &&
+    paymentHistory.isApplicationPaymentItem(true)
+  ) {
+    // Call ApplicationService to stake the application
+    const appAddress = data.appStakeTransaction.address;
+    const application = await applicationService.getApplication(appAddress, true);
+    const appStakeTransaction = data.appStakeTransaction;
+    const item = paymentHistory.getItem();
+    const amountToSpent = applicationCheckoutService.getMoneyToSpent(parseInt(item.maxRelays));
+    const poktStaked = applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString();
+    const uPoktStaked = applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Upokt).toString();
 
-    if (paymentHistory.isApplicationPaymentItem(true)) {
-      const item = paymentHistory.getItem();
-      const amountToSpent = applicationCheckoutService.getMoneyToSpent(parseInt(item.maxRelays));
+    const applicationEmailData = {
+      name: application.pocketApplication.name,
+      link: data.applicationLink
+    };
 
-      await applicationService.stakeApplication(data.transactionHash);
+    const paymentEmailData = {
+      amountPaid: paymentHistory.amount,
+      maxRelayPerDayAmount: item.maxRelays,
+      poktStaked: poktStaked
+    };
 
-      // TODO: Move this triggers.
-      // if (application) {
-      //   const applicationEmailData = {
-      //     name: application.name,
-      //     link: data.applicationLink
-      //   };
-      //
-      //   const paymentEmailData = {
-      //     amountPaid: paymentHistory.amount,
-      //     maxRelayPerDayAmount: item.maxRelays,
-      //     poktStaked: applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
-      //   };
-      //
-      //   await EmailService
-      //     .to(application.contactEmail)
-      //     .sendStakeAppEmail(application.contactEmail, applicationEmailData, paymentEmailData);
-      //
-      //   res.send(true);
-      // }
-    }
+    await applicationService.stakeApplication(appAddress, uPoktStaked, appStakeTransaction, application, applicationEmailData, paymentEmailData);
+    res.send(true);
+  } else {
+    // Return error if payment was unsuccesful
+    throw new Error("Error processing payment, please try a different method");
   }
-  // noinspection ExceptionCaughtLocallyJS
-  throw new Error("Error has occurred trying to stake application.");
 }));
 
 /**

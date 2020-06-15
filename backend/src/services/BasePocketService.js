@@ -10,10 +10,7 @@ export default class BasePocketService extends BaseService {
 
   constructor() {
     super();
-
-    const pocketData = get_default_pocket_network();
-
-    this.pocketService = new PocketService(pocketData.nodes, pocketData.rpcProvider);
+    this.pocketService = new PocketService();
     this.transactionService = new TransactionService();
   }
 
