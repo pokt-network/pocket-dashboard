@@ -374,15 +374,15 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Stake a custom tier application.
    *
-   * @param {string} transactionHash Transaction hash.
+   * @param {string} appStakeTransaction Transaction hash.
    * @param {string} paymentId payment's stripe confirmation id.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeApplication(transactionHash, paymentId, applicationLink) {
+  stakeApplication(appStakeTransaction, paymentId, applicationLink) {
     const data = {
-      transactionHash,
+      appStakeTransaction,
       payment: {id: paymentId},
       applicationLink,
     };
