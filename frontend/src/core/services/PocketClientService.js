@@ -11,7 +11,7 @@ const POCKET_CONFIGURATION = new Configuration(POCKET_NETWORK_CONFIGURATION.max_
  * @returns {URL[]} Dispatcher urls.
  */
 function getPocketDispatchers() {
-  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers ?? "";
+  const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers;
 
   if (dispatchersStr === "") {
     return [];
@@ -131,7 +131,7 @@ class PocketClientService {
    * @returns {Promise<Account | Error>}
    */
   async saveAccount(ppk, passphrase) {
-    // FIXME: PPK is giving different address than the one created with 
+    // FIXME: PPK is giving different address than the one created with
     // @createAndImportAccount
     return await this._pocket.keybase.importPPKFromJSON(passphrase, ppk, passphrase);
   }
@@ -201,7 +201,11 @@ class PocketClientService {
       const {unlockedAccount: account} = transactionSender;
 
       return await transactionSender
-        .appStake(account.publicKey.toString("hex"), chains, stakeAmount)
+        .appStake(
+          account.publicKey.toString("hex"),
+          chains,
+          Number(stakeAmount.pokt).toString()
+        )
         .createTransaction(chainID, transactionFee);
 
     } catch (e) {

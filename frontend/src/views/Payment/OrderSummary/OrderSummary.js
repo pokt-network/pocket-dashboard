@@ -168,7 +168,7 @@ class OrderSummary extends Component {
       return;
     }
 
-    const pokt = PocketCheckoutService.getNodePoktToStake(total);
+    const pokt = await PocketCheckoutService.getNodePoktToStake(total);
 
 
     if (type === ITEM_TYPES.APPLICATION) {
@@ -185,11 +185,13 @@ class OrderSummary extends Component {
 
       this.setState({loading: true});
 
-      const appStakeRequest = PocketClientService.appStakeRequest(
+      const appStakeTransaction = await PocketClientService.appStakeRequest(
         address, passphrase, chains, pokt);
 
       ApplicationService.stakeApplication(
-        appStakeRequest, result.paymentIntent.id, applicationLink
+        appStakeTransaction,
+        result.paymentIntent.id,
+        applicationLink
       ).then(() => {});
     } else {
       // Stake Node

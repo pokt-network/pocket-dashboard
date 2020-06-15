@@ -19,7 +19,7 @@ export const Configurations = {
     max_sessions: process.env.REACT_APP_POCKET_NETWORK_MAX_SESSIONS,
     request_timeout: process.env.REACT_APP_POCKET_NETWORK_REQUEST_TIMEOUT,
     dispatchers: process.env.REACT_APP_POCKET_NETWORK_DISPATCHERS,
-    transaction_fee: "100000",
+    transaction_fee: process.env.REACT_APP_POCKET_NETWORK_TX_FEE,
     chain_id: process.env.REACT_APP_POCKET_NETWORK_CHAIN_ID,
     free_tier: {
       account: process.env.REACT_APP_POCKET_FREE_TIER_ACCOUNT,
