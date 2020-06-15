@@ -91,6 +91,7 @@ export class PocketApplication {
     }
 
     if (!EMAIL_REGEX.test(applicationData.user)) {
+      console.log(applicationData);
       throw new DashboardValidationError("User is not valid.");
     }
 

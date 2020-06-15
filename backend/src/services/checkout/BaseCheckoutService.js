@@ -40,7 +40,7 @@ export class BaseCheckoutService extends BaseService {
    * @returns {number} Pokt to use.
    */
   getPoktToStake(moneySpent, poktDenomination = CoinDenom.Upokt) {
-    const pokt = moneySpent / this.poktMarketPrice;
+    const pokt = ((moneySpent / this.poktMarketPrice) + 1);
     const poktWithDenomination = pokt * Math.pow(10, POKT_DENOMINATIONS[poktDenomination]);
 
     return Math.round(poktWithDenomination);

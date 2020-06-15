@@ -1,13 +1,14 @@
 import BaseService from "./BaseService";
-import {PocketTransaction, TransactionPostAction} from "../models/Transaction";
+import { PocketTransaction, TransactionPostAction, POST_ACTION_TYPE} from "../models/Transaction";
 import JobsProvider from "../providers/data/JobsProvider";
 
 const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";
 
 const POST_TRANSFER_QUEUE = JobsProvider.getPostTransferJobQueue();
-const STAKE_QUEUE = JobsProvider.getStakeJobQueue();
-const UNSTAKE_QUEUE = JobsProvider.getUnStakeJobQueue();
-const UNJAIL_QUEUE = JobsProvider.getUnJailJobQueue();
+const APP_STAKE_QUEUE = JobsProvider.getAppStakeJobQueue();
+// const STAKE_QUEUE = JobsProvider.getStakeJobQueue();
+// const UNSTAKE_QUEUE = JobsProvider.getUnStakeJobQueue();
+// const UNJAIL_QUEUE = JobsProvider.getUnJailJobQueue();
 
 /**
  * @deprecated This logic will be moved soon.
@@ -40,6 +41,12 @@ export default class TransactionService extends BaseService {
   }
 
   /**
+   *
+   * @param {*} transactionHash
+   * @param {*} postAction
+   */
+
+  /**
    * Add transfer transaction.
    *
    * @param {string} transactionHash Transaction hash.
@@ -61,60 +68,59 @@ export default class TransactionService extends BaseService {
 
   /**
    * Add stake transaction.
-   *
-   * @param {string} transactionHash Transaction hash.
-   *
+   * @param {string} appStakeTxHash The transaction hash for the submitted app stake transaction
+   * @param {{appStakeTransaction: object, contactEmail: string, emailData: object, paymentEmailData: object}} appStakeData App Stake Data
    * @returns {Promise<boolean>} if was added or not.
    */
-  async addStakeTransaction(transactionHash) {
-    const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
+  async addAppStakeTransaction(appStakeTxHash, appStakeData) {
+    const pocketTransaction = new PocketTransaction(new Date(), appStakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, appStakeData));
 
     const saved = await this.__addTransaction(pocketTransaction);
 
     if (saved) {
-      JobsProvider.addJob(STAKE_QUEUE, pocketTransaction);
+      JobsProvider.addJob(APP_STAKE_QUEUE, pocketTransaction);
     }
 
     return saved;
   }
 
-  /**
-   * Add unstake transaction.
-   *
-   * @param {string} transactionHash Transaction hash.
-   *
-   * @returns {Promise<boolean>} if was added or not.
-   */
-  async addUnstakeTransaction(transactionHash) {
-    const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
+  // /**
+  //  * Add unstake transaction.
+  //  *
+  //  * @param {string} transactionHash Transaction hash.
+  //  *
+  //  * @returns {Promise<boolean>} if was added or not.
+  //  */
+  // async addUnstakeTransaction(transactionHash) {
+  //   const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
 
-    const saved = await this.__addTransaction(pocketTransaction);
+  //   const saved = await this.__addTransaction(pocketTransaction);
 
-    if (saved) {
-      JobsProvider.addJob(UNSTAKE_QUEUE, pocketTransaction);
-    }
+  //   if (saved) {
+  //     JobsProvider.addJob(UNSTAKE_QUEUE, pocketTransaction);
+  //   }
 
-    return saved;
-  }
+  //   return saved;
+  // }
 
-  /**
-   * Add un jail transaction.
-   *
-   * @param {string} transactionHash Transaction hash.
-   *
-   * @returns {Promise<boolean>} if was added or not.
-   */
-  async addUnJailTransaction(transactionHash) {
-    const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
+  // /**
+  //  * Add un jail transaction.
+  //  *
+  //  * @param {string} transactionHash Transaction hash.
+  //  *
+  //  * @returns {Promise<boolean>} if was added or not.
+  //  */
+  // async addUnJailTransaction(transactionHash) {
+  //   const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
 
-    const saved = await this.__addTransaction(pocketTransaction);
+  //   const saved = await this.__addTransaction(pocketTransaction);
 
-    if (saved) {
-      JobsProvider.addJob(UNJAIL_QUEUE, pocketTransaction);
-    }
+  //   if (saved) {
+  //     JobsProvider.addJob(UNJAIL_QUEUE, pocketTransaction);
+  //   }
 
-    return saved;
-  }
+  //   return saved;
+  // }
 
   /**
    * Mark transaction as success.
@@ -124,4 +130,8 @@ export default class TransactionService extends BaseService {
   async markTransactionSuccess(transaction) {
     await this.__updateTransaction(transaction);
   }
+
+  /**
+   * Check if a transaction is succesful
+   */
 }
