@@ -10,7 +10,8 @@ import {
   StakingStatus,
   Transaction,
   typeGuard,
-  RpcError
+  RpcError,
+  UnlockedAccount
 } from "@pokt-network/pocket-js";
 import { Configurations } from "../_configuration";
 import { PocketNetworkError } from "../models/Exceptions";
@@ -358,6 +359,24 @@ export default class PocketService {
     }
 
     return rawTxResponse.hash
+  }
+
+  /**
+   * @throws {PocketNetworkError}
+   * @returns {Promise<UnlockedAccount>}
+   */
+  async createUnlockedAccount() {
+    // TODO: produce a random passphrase
+    const account = await this.__pocket.keybase.createAccount("test");
+    const unlockedAccountOrError = await this.__pocket.keybase.getUnlockedAccount(account.addressHex, "test");
+
+    if(typeGuard(unlockedAccountOrError, Error)) {
+      throw new PocketNetworkError(unlockedAccountOrError.message)
+    } else if (typeGuard(unlockedAccountOrError, UnlockedAccount)) {
+      return unlockedAccountOrError;
+    } else {
+      throw new PocketNetworkError("Unknown error while unlocking account");
+    }
   }
 
   /**

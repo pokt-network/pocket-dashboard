@@ -1,5 +1,5 @@
 import {Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
-import {PublicPocketAccount} from "./Account";
+import {PublicPocketAccount, PrivatePocketAccount} from "./Account";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
 import {DashboardValidationError} from "./Exceptions";
 
@@ -46,6 +46,7 @@ export class PocketApplication {
     this.id = "";
     this.publicPocketAccount = new PublicPocketAccount("", "");
     this.freeTier = freeTier || false;
+    this.freeTierApplicationAccount = new PrivatePocketAccount("", "", "");
   }
 
   /**

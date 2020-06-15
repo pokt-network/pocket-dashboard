@@ -5,7 +5,7 @@ import {
   StakedApplicationSummary,
   UserPocketApplication
 } from "../models/Application";
-import {PublicPocketAccount} from "../models/Account";
+import {PublicPocketAccount, PrivatePocketAccount} from "../models/Account";
 import {Application, PocketAAT, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import BasePocketService from "./BasePocketService";
@@ -308,13 +308,24 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Stake a free tier application.
    *
-   * @param {string} transactionHash Transaction to stake.
+   * @param {string} clientAddress Client Address
+   * @param {string} clientPubKey Client Public Key
    *
    * @returns {Promise<PocketAAT | boolean>} If application was created or not.
    * @async
    */
-  async stakeFreeTierApplication(transactionHash) {
-    // TODO: Use the transaction.
+  async stakeFreeTierApplication(clientAddress, clientPubKey) {
+    // Create Application credentials
+    const appAccount = await this.pocketService.createUnlockedAccount();
+
+    // Create AAT
+    const freeTierAAT = await PocketAAT.from("0.0.1", clientPubKey, appAccount.publicKey.toString("hex"), appAccount.privateKey.toString("hex"));
+
+    // Retrieve the application from persistence
+    const persistedApplication = await this.getApplication(clientAddress);
+
+    // Set the free tier credentials
+    persistedApplication.pocketApplication.freeTierApplicationAccount = new PrivatePocketAccount(appAccount.addressHex, appAccount.publicKey.toString("hex"), appAccount.privateKey.toString("hex"));
   }
 
   /**

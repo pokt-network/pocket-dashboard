@@ -117,6 +117,7 @@ export const Configurations = {
              account: process.env.POCKET_FREE_TIER_ACCOUNT,
              passphrase: process.env.POCKET_FREE_TIER_ACCOUNT_PASSPRHASE,
              stake_amount: process.env.POCKET_FREE_TIER_STAKE_AMOUNT,
+             rpd: 1000000
            },
            nodes: {
              test_rpc_provider: "http://localhost",

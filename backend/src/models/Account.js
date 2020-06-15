@@ -29,9 +29,10 @@ export class PrivatePocketAccount {
 
   /**
    * @param {string} address Address in Hex.
+   * @param {string} publicKey Public key in hex
    * @param {string} privateKey Unencrypted private key in Hex.
    */
-  constructor(address, privateKey) {
-    Object.assign(this, {address, privateKey});
+  constructor(address, publicKey, privateKey) {
+    Object.assign(this, { address, publicKey, privateKey });
   }
 }
