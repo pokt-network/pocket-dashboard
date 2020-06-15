@@ -342,13 +342,17 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Create free tier application.
    *
-   * @param {string} transactionHash Transaction hash.
+   * @param {string} clientAddressHex Address of the Client Keypair for the Free Tier Account
+   * @param {string} clientPubKeyHex Public key of the Client Keypair for the Free Tier Account
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeFreeTierApplication(transactionHash) {
+  stakeFreeTierApplication(clientAddressHex, clientPubKeyHex) {
     return axios
-      .post(this._getURL("freetier/stake"), {transactionHash})
+      .post(this._getURL("freetier/stake"), {
+        clientAddress: clientAddressHex,
+        clientPubKey: clientPubKeyHex
+      })
       .then((response) => response.data);
   }
 

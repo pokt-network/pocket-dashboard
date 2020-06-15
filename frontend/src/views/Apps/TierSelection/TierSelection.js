@@ -38,13 +38,13 @@ class TierSelection extends Component {
       address,
     } = ApplicationService.getApplicationInfo();
 
-    this.setState({creatingFreeTier: true});
-    
-    const {tx} = PocketClientService.appStakeRequest(address, passphrase);
+    const unlockedAccount = await PocketClientService.getUnlockedAccount(address);
+    const clientAddressHex = unlockedAccount.addressHex;
+    const clientPubKeyHex = unlockedAccount.publicKey.toString("hex");
 
-    const data = await ApplicationService.stakeFreeTierApplication(
-      tx, chains
-    );
+    this.setState({creatingFreeTier: true});
+
+    const data = await ApplicationService.stakeFreeTierApplication(clientAddressHex, clientPubKeyHex);
 
     if (data !== false) {
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
@@ -104,46 +104,6 @@ class TierSelection extends Component {
           </Col>
         </Row>
         <Row className="tiers justify-content-center">
-          <div className="tier">
-            <div className="tier-title">
-              <h2>Free</h2>
-              <h2 className="subtitle">tier</h2>
-            </div>
-            <ul>
-              <li>Limited to 1 Million Relays per Day</li>
-              <li>Access to AAT, but not ownership</li>
-              <li>Stake POKT is managed by Pocket Network Inc.</li>
-              <li>Unstake balance unavailable for transfers</li>
-            </ul>
-            {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
-            <Button
-              onClick={() => this.setState({freeTierModal: true})}
-              variant="link"
-              className="cta"
-            >
-              How it works
-            </Button>
-            <Form.Check
-              checked={agreeTerms}
-              onChange={() => this.setState({agreeTerms: !agreeTerms})}
-              className="terms-checkbox"
-              type="checkbox"
-              label={
-                <span>
-                  I agree to Pocket Dashboard{" "}
-                  <Link to={ROUTE_PATHS.termsOfService}>
-                    Terms and Conditions.
-                  </Link>
-                </span>
-              }
-            />
-            <Button
-              onClick={() => this.createFreeTierItem()}
-              disabled={!agreeTerms}
-            >
-              <span>Get Free Tier</span>
-            </Button>
-          </div>
           <div className="tier custom-tier">
             <div>
               <div className="tier-title">
