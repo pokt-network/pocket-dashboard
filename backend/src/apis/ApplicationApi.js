@@ -155,12 +155,16 @@ router.post("/user/all", apiAsyncWrapper(async (req, res) => {
  * Stake a free tier application.
  */
 router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{transactionHash:string}} */
+  /** @type {{clientAddress:string, clientPubKey:string}} */
   const data = req.body;
+  const {
+    clientAddress,
+    clientPubKey
+  } = data;
 
-  const aat = await applicationService.stakeFreeTierApplication(data.transactionHash);
+  await applicationService.stakeFreeTierApplication(clientAddress, clientPubKey);
 
-  res.json(aat);
+  res.send(true);
 }));
 
 /**
