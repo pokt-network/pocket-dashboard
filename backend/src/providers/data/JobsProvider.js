@@ -1,5 +1,5 @@
 import JobService from "bull";
-import {Configurations} from "../../_configuration";
+import { Configurations } from "../../_configuration";
 
 export default class JobsProvider {
 
@@ -33,13 +33,23 @@ export default class JobsProvider {
   }
 
   /**
-   * Get stake job queue.
+   * Get app stake job queue.
    *
-   * @returns {*} Stake job queue.
+   * @returns {*} App Stake job queue.
    * @static
    */
   static getAppStakeJobQueue() {
     return this.__getJobQueue("APP_STAKE_QUEUE");
+  }
+
+  /**
+   * Get app unstake job queue.
+   *
+   * @returns {*} App unstake job queue.
+   * @static
+   */
+  static getAppUnstakeJobQueue() {
+    return this.__getJobQueue("APP_UNSTAKE_QUEUE");
   }
 
   // /**
@@ -79,7 +89,7 @@ export default class JobsProvider {
     const delayedTimeNumber = parseInt(delayedTime.toString());
     const attemptsNumber = parseInt(attempts.toString());
 
-    const jobConfiguration = {delay: delayedTimeNumber, attempts: attemptsNumber, backoff: delayedTimeNumber};
+    const jobConfiguration = { delay: delayedTimeNumber, attempts: attemptsNumber, backoff: delayedTimeNumber };
 
     jobQueue.add(data, jobConfiguration);
   }

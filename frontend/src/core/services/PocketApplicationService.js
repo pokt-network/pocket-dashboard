@@ -404,13 +404,15 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a custom tier application.
    *
-   * @param {string} transactionHash Transaction hash.
+   * @param {object} appUnstakeTransaction Transaction hash.
+   * @param {string} appUnstakeTransaction.address Sender address
+   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeApplication(transactionHash, applicationLink) {
-    const data = {transactionHash, applicationLink};
+  unstakeApplication(appUnstakeTransaction, applicationLink) {
+    const data = { appUnstakeTransaction, applicationLink};
 
     return axios
       .post(this._getURL("custom/unstake"), data)

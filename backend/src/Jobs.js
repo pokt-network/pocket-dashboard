@@ -11,6 +11,43 @@ const POCKET_SERVICE = new PocketService();
 
 const POST_TRANSFER_QUEUE = JobsProvider.getPostTransferJobQueue();
 const APP_STAKE_QUEUE = JobsProvider.getAppStakeJobQueue();
+const APP_UNSTAKE_QUEUE = JobsProvider.getAppUnstakeJobQueue();
+
+// APP_UNSTAKE_QUEUE
+APP_UNSTAKE_QUEUE.process(async (job, done) => {
+  try {
+    // Parse the transaction from the job
+    const appUnstakePocketTransaction = job.data;
+
+    // Get the transaction hash to verify
+    const hash = appUnstakePocketTransaction.hash;
+
+    // Try to get the transaction from the network
+    const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
+
+    if (typeGuard(transactionOrError, RpcError)) {
+      done(new Error(transactionOrError.message));
+      return;
+    }
+
+    // Submit App Stake Email
+    const postAction = appUnstakePocketTransaction.postAction;
+    if (!postAction || postAction.type !== POST_ACTION_TYPE.unstakeApplication) {
+      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)))
+      return;
+    }
+
+    const { contactEmail, userName, applicationData } = postAction.data;
+    const emailService = new EmailService(contactEmail);
+    emailService.sendUnstakeAppEmail(userName, applicationData);
+
+    // Finish the job OK
+    done();
+  } catch(error) {
+    console.error(error);
+    done(error);
+  }
+});
 
 // APP_STAKE_QUEUE
 APP_STAKE_QUEUE.process(async (job, done) => {

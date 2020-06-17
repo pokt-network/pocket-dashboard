@@ -2,8 +2,8 @@ import React, {Component} from "react";
 import {Alert, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {
-  POKT_UNSTAKING_DAYS, 
-  STAKE_STATUS, 
+  POKT_UNSTAKING_DAYS,
+  STAKE_STATUS,
   TABLE_COLUMNS,
   DEFAULT_NETWORK_ERROR_MESSAGE,
   BACKEND_ERRORS} from "../../../_constants";
@@ -61,7 +61,7 @@ class NodeDetail extends Component {
     const {address} = this.props.match.params;
 
     const {
-      pocketNode, 
+      pocketNode,
       networkData,
       error,
       name} = await NodeService.getNode(address);
@@ -219,7 +219,7 @@ class NodeDetail extends Component {
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
-      ? formatDaysCountdown(unstakingCompletionTime, POKT_UNSTAKING_DAYS)
+      ? formatDaysCountdown(unstakingCompletionTime)
       : undefined;
 
     let jailStatus;

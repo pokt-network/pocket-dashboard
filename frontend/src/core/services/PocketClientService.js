@@ -55,7 +55,7 @@ class PocketClientService {
    */
   async createAndUnlockAccount(passphrase) {
     const account = await this._pocket.keybase.createAccount(passphrase);
-    const unlockedAccount = await this._pocket.keybase.unlockAccount(account.addressHex, passphrase, 0);
+    const unlockedAccount = await this._pocket.keybase.getUnlockedAccount(account.addressHex, passphrase);
 
     return unlockedAccount === undefined ? account : unlockedAccount;
   }

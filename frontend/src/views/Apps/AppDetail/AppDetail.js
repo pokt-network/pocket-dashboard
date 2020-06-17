@@ -3,8 +3,7 @@ import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {
-  POKT_UNSTAKING_DAYS, 
-  STAKE_STATUS, 
+  STAKE_STATUS,
   TABLE_COLUMNS,
   DEFAULT_NETWORK_ERROR_MESSAGE,
   BACKEND_ERRORS} from "../../../_constants";
@@ -131,16 +130,14 @@ class AppDetail extends Component {
     const detail = url.replace(":address", address);
     const link = `${window.location.origin}${detail}`;
 
-    await PocketClientService.saveAccount(ppk, passphrase);
+    const account = await PocketClientService.saveAccount(ppk, passphrase);
 
-    const {txHex} = await PocketClientService.appUnstakeRequest(
-      address
-    );
+    const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
 
     // TODO: Call backend and send request to finish transaction
     const {success, data} = freeTier
-      ? await ApplicationService.unstakeFreeTierApplication(txHex)
-      : await ApplicationService.unstakeApplication(txHex, link);
+      ? await ApplicationService.unstakeFreeTierApplication()
+      : await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
 
     if (success) {
       window.location.reload(false);
@@ -210,7 +207,7 @@ class AppDetail extends Component {
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
-      ? formatDaysCountdown(unstakingCompletionTime, POKT_UNSTAKING_DAYS)
+      ? formatDaysCountdown(unstakingCompletionTime)
       : undefined;
 
     const generalInfo = [
