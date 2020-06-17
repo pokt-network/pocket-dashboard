@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import "./TierSelection.scss";
 import {
@@ -7,12 +7,12 @@ import {
   DASHBOARD_PATHS,
   ROUTE_PATHS,
 } from "../../../_routes";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Loader from "../../../core/components/Loader";
 import AppAlert from "../../../core/components/AppAlert";
 import CustomTierModal from "./CustomTierModal";
 import FreeTierModal from "./FreeTierModal";
-import {FREE_TIER_MODAL, CUSTOM_TIER_MODAL} from "./constants";
+import { FREE_TIER_MODAL, CUSTOM_TIER_MODAL } from "./constants";
 import PocketClientService from "../../../core/services/PocketClientService";
 
 class TierSelection extends Component {
@@ -42,7 +42,7 @@ class TierSelection extends Component {
     const clientAddressHex = unlockedAccount.addressHex;
     const clientPubKeyHex = unlockedAccount.publicKey.toString("hex");
 
-    this.setState({creatingFreeTier: true});
+    this.setState({ creatingFreeTier: true });
 
     const data = await ApplicationService.stakeFreeTierApplication(clientAddressHex, clientPubKeyHex);
 
@@ -53,7 +53,7 @@ class TierSelection extends Component {
       ApplicationService.removeAppInfoFromCache();
 
       // eslint-disable-next-line react/prop-types
-      this.props.history.push({pathname: path, state: {freeTierMsg: true}});
+      this.props.history.push({ pathname: path, state: { freeTierMsg: true } });
     } else {
       this.setState({
         creatingFreeTier: false,
@@ -63,7 +63,7 @@ class TierSelection extends Component {
   }
 
   handleHide(key) {
-    this.setState({[key]: !this.state[key]});
+    this.setState({ [key]: !this.state[key] });
   }
 
   render() {
@@ -88,7 +88,7 @@ class TierSelection extends Component {
                 title={errorMessage}
                 variant="danger"
                 dismissible
-                onClose={() => this.setState({errorMessage: ""})}
+                onClose={() => this.setState({ errorMessage: "" })}
               />
             </Col>
           </Row>
@@ -104,6 +104,46 @@ class TierSelection extends Component {
           </Col>
         </Row>
         <Row className="tiers justify-content-center">
+          <div className="tier">
+            <div className="tier-title">
+              <h2>Free</h2>
+              <h2 className="subtitle">tier</h2>
+            </div>
+            <ul>
+              <li>Limited to 1 Million Relays per Day</li>
+              <li>Access to AAT, but not ownership</li>
+              <li>Stake POKT is managed by Pocket Network Inc.</li>
+              <li>Unstake balance unavailable for transfers</li>
+            </ul>
+            {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
+            <Button
+              onClick={() => this.setState({ freeTierModal: true })}
+              variant="link"
+              className="cta"
+            >
+              How it works
+            </Button>
+            <Form.Check
+              checked={agreeTerms}
+              onChange={() => this.setState({ agreeTerms: !agreeTerms })}
+              className="terms-checkbox"
+              type="checkbox"
+              label={
+                <span>
+                  I agree to Pocket Dashboard{" "}
+                  <Link to={ROUTE_PATHS.termsOfService}>
+                    Terms and Conditions.
+                  </Link>
+                </span>
+              }
+            />
+            <Button
+              onClick={() => this.createFreeTierItem()}
+              disabled={!agreeTerms}
+            >
+              <span>Get Free Tier</span>
+            </Button>
+          </div>
           <div className="tier custom-tier">
             <div>
               <div className="tier-title">
@@ -118,7 +158,7 @@ class TierSelection extends Component {
               </ul>
               {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
               <Button
-                onClick={() => this.setState({customTierModal: true})}
+                onClick={() => this.setState({ customTierModal: true })}
                 variant="link"
                 className="cta"
               >

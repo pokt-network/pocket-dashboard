@@ -130,7 +130,7 @@ class AppPassphrase extends Component {
     const applicationAccountOrError = await PocketClientService.createAndUnlockAccount(passPhrase);
 
     if (applicationAccountOrError instanceof Account) {
-      const ppkData = await PocketClientService.createPPKFromAccount(applicationAccountOrError, passPhrase);
+      const ppkData = await PocketClientService.createPPKFromPrivateKey(applicationAccountOrError.privateKey.toString("hex"), passPhrase);
       const address = applicationAccountOrError.addressHex;
       const publicKey = applicationAccountOrError.publicKey.toString("hex");
 

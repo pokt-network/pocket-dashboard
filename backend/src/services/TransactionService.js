@@ -1,11 +1,12 @@
 import BaseService from "./BaseService";
-import { PocketTransaction, TransactionPostAction, POST_ACTION_TYPE} from "../models/Transaction";
+import { PocketTransaction, TransactionPostAction, POST_ACTION_TYPE } from "../models/Transaction";
 import JobsProvider from "../providers/data/JobsProvider";
 
 const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";
 
 const POST_TRANSFER_QUEUE = JobsProvider.getPostTransferJobQueue();
 const APP_STAKE_QUEUE = JobsProvider.getAppStakeJobQueue();
+const APP_UNSTAKE_QUEUE = JobsProvider.getAppUnstakeJobQueue();
 // const STAKE_QUEUE = JobsProvider.getStakeJobQueue();
 // const UNSTAKE_QUEUE = JobsProvider.getUnStakeJobQueue();
 // const UNJAIL_QUEUE = JobsProvider.getUnJailJobQueue();
@@ -79,6 +80,29 @@ export default class TransactionService extends BaseService {
 
     if (saved) {
       JobsProvider.addJob(APP_STAKE_QUEUE, pocketTransaction);
+    }
+
+    return saved;
+  }
+
+  /**
+   * Add unstake transaction.
+   * @param {string} appUnstakeTxHash The transaction hash for the submitted app unstake transaction
+   * @param {object} emailData Data to submit unstake email
+   * @param {string} emailData.userName User that owns the application
+   * @param {string} emailData.contactEmail User that owns the application
+   * @param {object} emailData.applicationData Application information
+   * @param {string} emaildata.applicationData.name Name of the application
+   * @param {string} emaildata.applicationData.link Link to the application
+   * @returns {Promise<boolean>} if was added or not.
+   */
+  async addAppUnstakeTransaction(appUnstakeTxHash, emailData) {
+    const pocketTransaction = new PocketTransaction(new Date(), appUnstakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.unstakeApplication, emailData));
+
+    const saved = await this.__addTransaction(pocketTransaction);
+
+    if (saved) {
+      JobsProvider.addJob(APP_UNSTAKE_QUEUE, pocketTransaction);
     }
 
     return saved;

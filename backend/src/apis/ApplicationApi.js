@@ -223,26 +223,18 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
  * Unstake an application.
  */
 router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{transactionHash: string, applicationLink: string}} */
+  /** @type {{appUnstakeTransaction: {address: string, raw_hex_bytes: string}, applicationLink: string}} */
   const data = req.body;
+  const {
+    appUnstakeTransaction,
+    applicationLink
+  } = data;
 
-  const application = await applicationService.unstakeApplication(data.transactionHash);
+  // Submit Unstake transaction to the pocket network
+  await applicationService.unstakeApplication(appUnstakeTransaction, applicationLink);
 
-  // TODO: Move this triggers.
-  // if (application) {
-  //   const applicationEmailData = {
-  //     name: application.name,
-  //     link: data.applicationLink
-  //   };
-  //
-  //   await EmailService
-  //     .to(application.contactEmail)
-  //     .sendUnstakeAppEmail(application.contactEmail, applicationEmailData);
-  //
-  //   res.send(true);
-  // } else {
-  //   res.send(false);
-  // }
+  // Respond
+  res.send(true);
 }));
 
 // TODO Move this logic to the frontend.

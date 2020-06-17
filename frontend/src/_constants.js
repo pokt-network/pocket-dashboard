@@ -39,8 +39,6 @@ export const DEFAULT_ERROR_MESSAGE =
 export const DEFAULT_NETWORK_ERROR_MESSAGE =
   "An unexpected error occurred with the network, please reload or try again later.";
 
-export const POKT_UNSTAKING_DAYS = 21;
-
 export const DEFAULT_POKT_DENOMINATION_BASE = 6;
 
 export const APPLICATIONS_LIMIT = 10;

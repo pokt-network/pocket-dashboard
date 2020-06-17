@@ -162,9 +162,9 @@ export const tableShow = (table, handleClick) => {
   return tableFormatted;
 };
 
-export const formatDaysCountdown = (time, daysFromTime) => {
+export const formatDaysCountdown = (time) => {
   const now = moment(new Date());
-  const eventTime = moment(time).add(daysFromTime, "days");
+  const eventTime = moment(time);
   const duration = moment.duration(eventTime.diff(now));
   const days = duration.days().toString().padStart(2, "0");
   const hours = duration.hours().toString().padStart(2, "0");

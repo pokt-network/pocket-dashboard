@@ -369,13 +369,38 @@ export default class ApplicationService extends BasePocketService {
 
   /**
    * Unstake application.
-   *
-   * @param {string} transactionHash Transaction to stake.
-   *
+   * @param {object} appUnstakeTransaction Transaction hash.
+   * @param {string} appUnstakeTransaction.address Sender address
+   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {string} applicationLink Link to detail for email.
    * @async
    */
-  async unstakeApplication(transactionHash) {
-    // TODO: Use the transaction.
+  async unstakeApplication(appUnstakeTransaction, applicationLink) {
+    const {
+      address,
+      raw_hex_bytes
+    } = appUnstakeTransaction;
+
+    // Submit transaction
+    const appUnstakedHash = await this.pocketService.submitRawTransaction(address, raw_hex_bytes);
+
+    // Gather email data
+    const application = await this.getApplication(address);
+    const emailData = {
+      userName: application.pocketApplication.user,
+      contactEmail: application.pocketApplication.contactEmail,
+      applicationData: {
+        name: application.pocketApplication.name,
+        link: applicationLink
+      }
+    }
+
+    // Add transaction to queue
+    const result = await this.transactionService.addAppUnstakeTransaction(appUnstakedHash, emailData);
+
+    if (!result) {
+      throw new Error("Couldn't register app unstake transaction for email notification");
+    }
   }
 
   /**
