@@ -33,6 +33,6 @@ export class PrivatePocketAccount {
    * @param {string} privateKey Unencrypted private key in Hex.
    */
   constructor(address, publicKey, privateKey) {
-    Object.assign(this, { address, publicKey, privateKey });
+    Object.assign(this, {address, publicKey, privateKey});
   }
 }

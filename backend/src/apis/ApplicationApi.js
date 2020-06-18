@@ -1,10 +1,10 @@
 import express from "express";
 import ApplicationService from "../services/ApplicationService";
-import { apiAsyncWrapper, getOptionalQueryOption, getQueryOption } from "./_helpers";
+import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helpers";
 import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
 import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
-import {CoinDenom} from "@pokt-network/pocket-js"
+import {CoinDenom} from "@pokt-network/pocket-js";
 
 const router = express.Router();
 
@@ -101,10 +101,8 @@ router.get("/summary/staked", apiAsyncWrapper(async (req, res) => {
  */
 router.get("/import/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
   /** @type {{applicationAccountAddress:string}} */
-  console.log(req.params)
   const data = req.params;
   const application = await applicationService.importApplication(data.applicationAccountAddress);
-  console.log(application)
 
   res.json(application);
 }));

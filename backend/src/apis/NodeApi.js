@@ -4,7 +4,7 @@ import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helper
 import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
 import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
-import { CoinDenom } from "@pokt-network/pocket-js"
+import {CoinDenom} from "@pokt-network/pocket-js";
 
 const router = express.Router();
 

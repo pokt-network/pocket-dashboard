@@ -1,5 +1,5 @@
 import BaseService from "./BaseService";
-import { PocketTransaction, TransactionPostAction, POST_ACTION_TYPE } from "../models/Transaction";
+import {PocketTransaction, POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
 import JobsProvider from "../providers/data/JobsProvider";
 
 const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";
@@ -68,6 +68,7 @@ export default class TransactionService extends BaseService {
 
   /**
    * Add stake transaction.
+   *
    * @param {string} appStakeTxHash The transaction hash for the submitted app stake transaction
    * @param {{appStakeTransaction: object, contactEmail: string, emailData: object, paymentEmailData: object}} appStakeData App Stake Data
    * @returns {Promise<boolean>} if was added or not.
@@ -86,6 +87,7 @@ export default class TransactionService extends BaseService {
 
   /**
    * Add stake transaction.
+   *
    * @param {string} nodeStakeTxHash The transaction hash for the submitted app stake transaction
    * @param {{nodeStakeTransaction: object, contactEmail: string, emailData: object, paymentEmailData: object}} nodeStakeData Node Stake Data
    * @returns {Promise<boolean>} if was added or not.
@@ -104,6 +106,7 @@ export default class TransactionService extends BaseService {
 
   /**
    * Add unstake transaction.
+   *
    * @param {string} appUnstakeTxHash The transaction hash for the submitted app unstake transaction
    * @param {object} emailData Data to submit unstake email
    * @param {string} emailData.userName User that owns the application
@@ -127,6 +130,7 @@ export default class TransactionService extends BaseService {
 
   /**
    * Add unstake transaction.
+   *
    * @param {string} nodeUnstakeTxHash The transaction hash for the submitted app unstake transaction
    * @param {object} emailData Data to submit unstake email
    * @param {string} emailData.userName User that owns the application

@@ -201,9 +201,7 @@ class PocketClientService {
 
       return await transactionSender
         .appStake(
-          account.publicKey.toString("hex"),
-          chains,
-          Number(stakeAmount.pokt).toString()
+          account.publicKey.toString("hex"), chains, Number(stakeAmount.pokt).toString()
         )
         .createTransaction(chainID, transactionFee);
 

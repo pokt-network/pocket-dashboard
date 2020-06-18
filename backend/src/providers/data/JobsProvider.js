@@ -1,5 +1,5 @@
 import JobService from "bull";
-import { Configurations } from "../../_configuration";
+import {Configurations} from "../../_configuration";
 
 export default class JobsProvider {
 
@@ -109,7 +109,7 @@ export default class JobsProvider {
     const delayedTimeNumber = parseInt(delayedTime.toString());
     const attemptsNumber = parseInt(attempts.toString());
 
-    const jobConfiguration = { delay: delayedTimeNumber, attempts: attemptsNumber, backoff: delayedTimeNumber };
+    const jobConfiguration = {delay: delayedTimeNumber, attempts: attemptsNumber, backoff: delayedTimeNumber};
 
     jobQueue.add(data, jobConfiguration);
   }

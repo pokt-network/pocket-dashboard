@@ -189,9 +189,7 @@ class OrderSummary extends Component {
 
       // TODO: Add error handling
       ApplicationService.stakeApplication(
-        appStakeTransaction,
-        result.paymentIntent.id,
-        applicationLink
+        appStakeTransaction, result.paymentIntent.id, applicationLink
       ).then(() => {});
     } else {
       const pokt = await PocketCheckoutService.getNodePoktToStake(total);

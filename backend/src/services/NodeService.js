@@ -5,7 +5,7 @@ import {ExtendedPocketNode, PocketNode, RegisteredPocketNode, StakedNodeSummary,
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
 import {DashboardError, DashboardValidationError} from "../models/Exceptions";
-import { TransactionPostAction, POST_ACTION_TYPE } from "../models/Transaction";
+import {POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
 
 const NODE_COLLECTION_NAME = "Nodes";
 
@@ -312,8 +312,13 @@ export default class NodeService extends BasePocketService {
   /**
    * Stake a node on network.
    *
+   * @param nodeAddress
+   * @param upoktToStake
+   * @param nodeStakeTransaction
+   * @param node
+   * @param emailData
+   * @param paymentEmailData
    * @param {string} transactionHash Transaction to stake.
-   *
    * @returns {Promise<PocketNode | boolean>} If was staked return the node, if not return false.
    * @throws Error If private key is not valid or node does not exists on dashboard.
    */
@@ -332,13 +337,15 @@ export default class NodeService extends BasePocketService {
 
     // Create job to monitor transaction confirmation
     const result = await this.transactionService.addTransferTransaction(fundingTransactionHash, nodeStakeAction);
+
     if (!result) {
-      throw new Error("Couldn't add funding transaction for processing")
+      throw new Error("Couldn't add funding transaction for processing");
     }
   }
 
   /**
    * Unstake node.
+   *
    * @param {object} nodeUnstakeTransaction Transaction object.
    * @param {string} nodeUnstakeTransaction.address Sender address
    * @param {string} nodeUnstakeTransaction.raw_hex_bytes Raw transaction bytes
@@ -363,7 +370,7 @@ export default class NodeService extends BasePocketService {
         name: node.pocketNode.name,
         link: nodeLink
       }
-    }
+    };
 
     // Add transaction to queue
     const result = await this.transactionService.addNodeUnstakeTransaction(nodeUnstakedHash, emailData);

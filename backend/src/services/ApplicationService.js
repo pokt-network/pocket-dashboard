@@ -5,14 +5,14 @@ import {
   StakedApplicationSummary,
   UserPocketApplication
 } from "../models/Application";
-import {PublicPocketAccount, PrivatePocketAccount} from "../models/Account";
+import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
 import {Application, PocketAAT, StakingStatus} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
 import {DashboardError, DashboardValidationError, PocketNetworkError} from "../models/Exceptions";
 import TransactionService from "./TransactionService";
-import { TransactionPostAction, POST_ACTION_TYPE } from "../models/Transaction";
+import {POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -22,7 +22,7 @@ export default class ApplicationService extends BasePocketService {
     super();
 
     this.userService = new UserService();
-    this.transactionService = new TransactionService()
+    this.transactionService = new TransactionService();
   }
 
   /**
@@ -343,7 +343,12 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Stake an application on network.
    *
-   * @param {}
+   * @param
+   * @param appAddress
+   * @param upoktToStake
+   * @param application
+   * @param emailData
+   * @param paymentEmailData
    * @param {object} appStakeTransaction Transaction to stake.
    * @throws {Error}
    */
@@ -362,13 +367,15 @@ export default class ApplicationService extends BasePocketService {
 
     // Create job to monitor transaction confirmation
     const result = await this.transactionService.addTransferTransaction(fundingTransactionHash, appStakeAction);
+
     if (!result) {
-      throw new Error("Couldn't add funding transaction for processing")
+      throw new Error("Couldn't add funding transaction for processing");
     }
   }
 
   /**
    * Unstake application.
+   *
    * @param {object} appUnstakeTransaction Transaction object.
    * @param {string} appUnstakeTransaction.address Sender address
    * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
@@ -393,7 +400,7 @@ export default class ApplicationService extends BasePocketService {
         name: application.pocketApplication.name,
         link: applicationLink
       }
-    }
+    };
 
     // Add transaction to queue
     const result = await this.transactionService.addAppUnstakeTransaction(appUnstakedHash, emailData);

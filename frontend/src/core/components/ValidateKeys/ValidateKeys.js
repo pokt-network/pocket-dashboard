@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {Button, Col, Form, Row} from "react-bootstrap";
-import AccountService from "../../services/PocketAccountService";
 import {PropTypes} from "prop-types";
 import PocketClientService from "../../services/PocketClientService";
 
@@ -106,7 +105,7 @@ class ValidateKeys extends Component {
     }
 
     const account = await PocketClientService.saveAccount(ppk, passphrase);
-    const { addressHex } = account;
+    const {addressHex} = account;
 
     const validated = addressHex !== address;
 
