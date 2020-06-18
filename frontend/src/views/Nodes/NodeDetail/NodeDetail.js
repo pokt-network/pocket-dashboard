@@ -2,7 +2,6 @@ import React, {Component} from "react";
 import {Alert, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {
-  POKT_UNSTAKING_DAYS,
   STAKE_STATUS,
   TABLE_COLUMNS,
   DEFAULT_NETWORK_ERROR_MESSAGE,
@@ -124,16 +123,11 @@ class NodeDetail extends Component {
     const detail = url.replace(":address", address);
     const nodeLink = `${window.location.origin}${detail}`;
 
-    await PocketClientService.saveAccount(ppk, passphrase);
+    const account = await PocketClientService.saveAccount(ppk, passphrase);
 
-    const {tx} = await PocketClientService.nodeUnstakeRequest(
-      address
-    );
+    const nodeUnstakeTransaction = await PocketClientService.nodeUnstakeRequest(account.addressHex, passphrase);
 
-    // TODO: Call backend and send request to finish transaction
-    const {success, data} = await NodeService.unstakeNode(
-      tx, nodeLink
-    );
+    const {success, data} = await NodeService.unstakeNode(nodeUnstakeTransaction, nodeLink);
 
     if (success) {
       window.location.reload(false);

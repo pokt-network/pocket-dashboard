@@ -105,7 +105,8 @@ class ValidateKeys extends Component {
       ppk = ppkData;
     }
 
-    const {addressHex} = await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+    const account = await PocketClientService.saveAccount(ppk, passphrase);
+    const { addressHex } = account;
 
     const validated = addressHex !== address;
 

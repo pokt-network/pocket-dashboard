@@ -280,9 +280,9 @@ class PocketNodeService extends PocketBaseService {
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeNode(transactionHash, paymentId, nodeLink) {
+  stakeNode(nodeStakeTransaction, paymentId, nodeLink) {
     const data = {
-      transactionHash,
+      nodeStakeTransaction,
       payment: {id: paymentId},
       nodeLink,
     };
@@ -299,14 +299,14 @@ class PocketNodeService extends PocketBaseService {
 
   /**
    * Unstake a node
-   * 
+   *
    * @param {string} transactionHash Transaction hash.
    * @param {string} nodeLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeNode(transactionHash, nodeLink) {
-    const data = {transactionHash, nodeLink};
+  unstakeNode(nodeUnstakeTransaction, nodeLink) {
+    const data = {nodeUnstakeTransaction, nodeLink};
 
     return axios
       .post(this._getURL("custom/unstake"), data)
