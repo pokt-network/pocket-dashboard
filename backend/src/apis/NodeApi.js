@@ -163,7 +163,6 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
   ) {
     // Call NodeService to stake the application
     const nodeAddress = data.nodeStakeTransaction.address;
-    debugger;
     const node = await nodeService.getNode(nodeAddress, true);
     const nodeStakeTransaction = data.nodeStakeTransaction;
     const item = paymentHistory.getItem();
