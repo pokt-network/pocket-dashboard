@@ -66,14 +66,12 @@ class CreateNodeForm extends CreateForm {
     const nodeBaseLink = `${window.location.origin}${nodeDetail}`;
 
     const {publicKey} = await PocketClientService.getUnlockedAccount(address);
-    
+
     const nodeData = {address, publicKey: publicKey.toString("hex")};
 
     const {success} = await NodeService.saveNodeAccount(
       nodeID, nodeData, nodeBaseLink, ppk
     );
-
-    // TODO: Get  network data
 
     if (success) {
       const networkData = NodeService.getNodeInfo(address);
