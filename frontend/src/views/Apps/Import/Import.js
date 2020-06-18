@@ -107,6 +107,13 @@ class Import extends Component {
     let ppk;
 
     if (!ppkData) {
+      if (!passphrase) {
+        this.setState({
+          error: { show: true, message: "Your passphrase cannot be empty" },
+        });
+        return;
+      }
+
       ppk = JSON.parse(
         await PocketClientService.createPPKFromPrivateKey(
           privateKey, passphrase
