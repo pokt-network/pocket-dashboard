@@ -2,10 +2,16 @@ import {BaseCheckoutService} from "./BaseCheckoutService";
 import {Configurations} from "../../_configuration";
 import {DashboardValidationError} from "../../models/Exceptions";
 
+/**
+ * @param numericOption
+ */
 function isNumericOptionValid(numericOption) {
   return (numericOption === 0 || numericOption === "0" || numericOption === undefined || numericOption === null) === false;
 }
 
+/**
+ * @param numericOption
+ */
 function isNumericOptionNegative(numericOption) {
   return Number(numericOption) < 0;
 }

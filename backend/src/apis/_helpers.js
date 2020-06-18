@@ -52,22 +52,21 @@ export const apiAsyncWrapper = (fn) => (...args) => fn(...args).catch(args[2]);
  * @param {*} next Next object.
  */
 export function errorsHandler(error, req, res, next) {
-  console.error(error)
-  const { message, name } = error;
-  console.log(message)
+  const {message, name} = error;
+
   switch (error.name) {
     case "PocketNetworkError":
-      res.status(408).json({ message, name }); // Request Timeout.
+      res.status(408).json({message, name}); // Request Timeout.
       break;
     case "DashboardError":
     case "DashboardValidationError":
-      res.status(400).json({ message, name }); // Bad request.
+      res.status(400).json({message, name}); // Bad request.
       break;
     case "Error":
-      res.status(500).json({ message, name }); // Server Error.
+      res.status(500).json({message, name}); // Server Error.
       break;
     default:
-      res.status(500).json({ message, name }); // Server Error.
+      res.status(500).json({message, name}); // Server Error.
       break;
   }
   next();

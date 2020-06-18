@@ -412,7 +412,7 @@ export class PocketApplicationService extends PocketBaseService {
    * @returns {Promise|Promise<*>}
    */
   unstakeApplication(appUnstakeTransaction, applicationLink) {
-    const data = { appUnstakeTransaction, applicationLink};
+    const data = {appUnstakeTransaction, applicationLink};
 
     return axios
       .post(this._getURL("custom/unstake"), data)

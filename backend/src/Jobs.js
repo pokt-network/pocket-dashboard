@@ -2,9 +2,9 @@
 import TransactionService from "./services/TransactionService";
 import PocketService from "./services/PocketService";
 import JobsProvider from "./providers/data/JobsProvider";
-import { typeGuard, RpcError } from "@pokt-network/pocket-js";
+import {RpcError, typeGuard} from "@pokt-network/pocket-js";
 import EmailService from "./services/EmailService";
-import { POST_ACTION_TYPE } from "./models/Transaction";
+import {POST_ACTION_TYPE} from "./models/Transaction";
 
 const TRANSACTION_SERVICE = new TransactionService();
 const POCKET_SERVICE = new PocketService();
@@ -34,8 +34,9 @@ NODE_STAKE_QUEUE.process(async (job, done) => {
 
     // Submit Node Stake Email
     const postAction = nodeStakePocketTransaction.postAction;
+
     if (!postAction || postAction.type !== POST_ACTION_TYPE.stakeNode) {
-      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)))
+      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)));
       return;
     }
 
@@ -45,6 +46,7 @@ NODE_STAKE_QUEUE.process(async (job, done) => {
       paymentEmailData
     } = postAction.data;
     const emailService = new EmailService(contactEmail);
+
     await emailService.sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
 
     // Finish the job OK
@@ -74,13 +76,15 @@ NODE_UNSTAKE_QUEUE.process(async (job, done) => {
 
     // Submit App Stake Email
     const postAction = nodeUnstakeTransaction.postAction;
+
     if (!postAction || postAction.type !== POST_ACTION_TYPE.unstakeNode) {
-      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)))
+      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)));
       return;
     }
 
-    const { contactEmail, userName, nodeData } = postAction.data;
+    const {contactEmail, userName, nodeData} = postAction.data;
     const emailService = new EmailService(contactEmail);
+
     emailService.sendUnstakeNodeEmail(userName, nodeData);
 
     // Finish the job OK
@@ -110,8 +114,9 @@ APP_STAKE_QUEUE.process(async (job, done) => {
 
     // Submit App Stake Email
     const postAction = applicationStakePocketTransaction.postAction;
+
     if (!postAction || postAction.type !== POST_ACTION_TYPE.stakeApplication) {
-      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)))
+      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)));
       return;
     }
 
@@ -121,11 +126,12 @@ APP_STAKE_QUEUE.process(async (job, done) => {
       paymentEmailData
     } = postAction.data;
     const emailService = new EmailService(contactEmail);
+
     await emailService.sendStakeAppEmail(contactEmail, emailData, paymentEmailData);
 
     // Finish the job OK
     done();
-  } catch(e) {
+  } catch (e) {
     console.error(e);
     done(e);
   }
@@ -150,13 +156,15 @@ APP_UNSTAKE_QUEUE.process(async (job, done) => {
 
     // Submit App Stake Email
     const postAction = appUnstakePocketTransaction.postAction;
+
     if (!postAction || postAction.type !== POST_ACTION_TYPE.unstakeApplication) {
-      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)))
+      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)));
       return;
     }
 
-    const { contactEmail, userName, applicationData } = postAction.data;
+    const {contactEmail, userName, applicationData} = postAction.data;
     const emailService = new EmailService(contactEmail);
+
     emailService.sendUnstakeAppEmail(userName, applicationData);
 
     // Finish the job OK
@@ -181,7 +189,7 @@ POST_TRANSFER_QUEUE.process(async (job, done) => {
 
     if (typeGuard(transactionOrError, RpcError)) {
       done(new Error(transactionOrError.message));
-      return
+      return;
     }
 
     // Type cast after error checking
@@ -195,17 +203,22 @@ POST_TRANSFER_QUEUE.process(async (job, done) => {
       // Execute the post action
       if (pocketTransaction.postAction && pocketTransaction.postAction !== {}) {
         const postAction = pocketTransaction.postAction;
+
         switch (postAction.type) {
-          case POST_ACTION_TYPE.stakeApplication:
+          case POST_ACTION_TYPE.stakeApplication: {
             const appStakeTransaction = postAction.data.appStakeTransaction;
             const stakeAppPostActionHash = await POCKET_SERVICE.submitRawTransaction(appStakeTransaction.address, appStakeTransaction.raw_hex_bytes);
+
             await TRANSACTION_SERVICE.addAppStakeTransaction(stakeAppPostActionHash, postAction.data);
             break;
-          case POST_ACTION_TYPE.stakeNode:
+          }
+          case POST_ACTION_TYPE.stakeNode: {
             const nodeStakeTransaction = postAction.data.nodeStakeTransaction;
             const stakeNodePostActionHash = await POCKET_SERVICE.submitRawTransaction(nodeStakeTransaction.address, nodeStakeTransaction.raw_hex_bytes);
+
             await TRANSACTION_SERVICE.addNodeStakeTransaction(stakeNodePostActionHash, postAction.data);
             break;
+          }
           default:
             done(new Error(`Invalid Post Action: ${JSON.stringify(postAction)}`));
             break;

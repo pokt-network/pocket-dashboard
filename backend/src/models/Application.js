@@ -1,5 +1,5 @@
 import {Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
-import {PublicPocketAccount, PrivatePocketAccount} from "./Account";
+import {PrivatePocketAccount, PublicPocketAccount} from "./Account";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
 import {DashboardValidationError} from "./Exceptions";
 
@@ -92,7 +92,6 @@ export class PocketApplication {
     }
 
     if (!EMAIL_REGEX.test(applicationData.user)) {
-      console.log(applicationData);
       throw new DashboardValidationError("User is not valid.");
     }
 

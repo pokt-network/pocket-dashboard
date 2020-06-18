@@ -111,7 +111,7 @@ class Import extends Component {
     if (!ppkData) {
       if (!passphrase) {
         this.setState({
-          error: { show: true, message: "Your passphrase cannot be empty" },
+          error: {show: true, message: "Your passphrase cannot be empty"},
         });
         return;
       }

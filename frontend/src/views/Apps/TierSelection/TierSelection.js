@@ -1,18 +1,14 @@
-import React, { Component } from "react";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import React, {Component} from "react";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import "./TierSelection.scss";
-import {
-  _getDashboardPath,
-  DASHBOARD_PATHS,
-  ROUTE_PATHS,
-} from "../../../_routes";
-import { Link } from "react-router-dom";
+import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS,} from "../../../_routes";
+import {Link} from "react-router-dom";
 import Loader from "../../../core/components/Loader";
 import AppAlert from "../../../core/components/AppAlert";
 import CustomTierModal from "./CustomTierModal";
 import FreeTierModal from "./FreeTierModal";
-import { FREE_TIER_MODAL, CUSTOM_TIER_MODAL } from "./constants";
+import {CUSTOM_TIER_MODAL, FREE_TIER_MODAL} from "./constants";
 import PocketClientService from "../../../core/services/PocketClientService";
 
 class TierSelection extends Component {
@@ -42,7 +38,7 @@ class TierSelection extends Component {
     const clientAddressHex = unlockedAccount.addressHex;
     const clientPubKeyHex = unlockedAccount.publicKey.toString("hex");
 
-    this.setState({ creatingFreeTier: true });
+    this.setState({creatingFreeTier: true});
 
     const data = await ApplicationService.stakeFreeTierApplication(clientAddressHex, clientPubKeyHex);
 
@@ -53,7 +49,7 @@ class TierSelection extends Component {
       ApplicationService.removeAppInfoFromCache();
 
       // eslint-disable-next-line react/prop-types
-      this.props.history.push({ pathname: path, state: { freeTierMsg: true } });
+      this.props.history.push({pathname: path, state: {freeTierMsg: true}});
     } else {
       this.setState({
         creatingFreeTier: false,
@@ -63,7 +59,7 @@ class TierSelection extends Component {
   }
 
   handleHide(key) {
-    this.setState({ [key]: !this.state[key] });
+    this.setState({[key]: !this.state[key]});
   }
 
   render() {
@@ -88,7 +84,7 @@ class TierSelection extends Component {
                 title={errorMessage}
                 variant="danger"
                 dismissible
-                onClose={() => this.setState({ errorMessage: "" })}
+                onClose={() => this.setState({errorMessage: ""})}
               />
             </Col>
           </Row>
@@ -117,7 +113,7 @@ class TierSelection extends Component {
             </ul>
             {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
             <Button
-              onClick={() => this.setState({ freeTierModal: true })}
+              onClick={() => this.setState({freeTierModal: true})}
               variant="link"
               className="cta"
             >
@@ -125,7 +121,7 @@ class TierSelection extends Component {
             </Button>
             <Form.Check
               checked={agreeTerms}
-              onChange={() => this.setState({ agreeTerms: !agreeTerms })}
+              onChange={() => this.setState({agreeTerms: !agreeTerms})}
               className="terms-checkbox"
               type="checkbox"
               label={
@@ -158,7 +154,7 @@ class TierSelection extends Component {
               </ul>
               {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
               <Button
-                onClick={() => this.setState({ customTierModal: true })}
+                onClick={() => this.setState({customTierModal: true})}
                 variant="link"
                 className="cta"
               >

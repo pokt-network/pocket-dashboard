@@ -7,22 +7,19 @@ import {
   Node,
   NodeParams,
   Pocket,
+  RpcError,
   StakingStatus,
   Transaction,
   typeGuard,
-  RpcError,
   UnlockedAccount
 } from "@pokt-network/pocket-js";
-import { Configurations } from "../_configuration";
-import { PocketNetworkError } from "../models/Exceptions";
+import {Configurations} from "../_configuration";
+import {PocketNetworkError} from "../models/Exceptions";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
 const POCKET_CONFIGURATION = new Configuration(
-  POCKET_NETWORK_CONFIGURATION.max_dispatchers,
-  POCKET_NETWORK_CONFIGURATION.max_sessions,
-  0,
-  POCKET_NETWORK_CONFIGURATION.request_timeout
+  POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout
 );
 
 const POCKET_MAIN_FUND_ACCOUNT = POCKET_NETWORK_CONFIGURATION.main_fund_account;
@@ -40,7 +37,8 @@ export const POKT_DENOMINATIONS = {
  */
 function getPocketDispatchers() {
   const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers;
-  console.log(`DISPATCHERS: ${dispatchersStr}`)
+
+  console.log(`DISPATCHERS: ${dispatchersStr}`);
 
   if (dispatchersStr === "") {
     return [];
@@ -50,20 +48,31 @@ function getPocketDispatchers() {
   });
 }
 
+/**
+ *
+ */
 async function getPocketRPCProvider() {
-  throw new Error("TODO IMPLEMENT THIS")
+  throw new Error("TODO IMPLEMENT THIS");
 }
 
+/**
+ *
+ */
 function getHttpRPCProvider() {
   const httpProviderNode = POCKET_NETWORK_CONFIGURATION.http_provider_node;
+
   if (!httpProviderNode || httpProviderNode === "") {
-    throw new Error("Invalid HTTP Provider Node: " + httpProviderNode)
+    throw new Error("Invalid HTTP Provider Node: " + httpProviderNode);
   }
-  return new HttpRpcProvider(new URL(httpProviderNode))
+  return new HttpRpcProvider(new URL(httpProviderNode));
 }
 
+/**
+ *
+ */
 async function getRPCProvider() {
   const providerType = POCKET_NETWORK_CONFIGURATION.provider_type;
+
   if (providerType.toLowerCase() === "http") {
     return getHttpRPCProvider();
   } else if (providerType.toLowerCase() === "pocket") {
@@ -86,9 +95,7 @@ export default class PocketService {
      * @private
      */
     this.__pocket = new Pocket(
-      getPocketDispatchers(),
-      undefined,
-      POCKET_CONFIGURATION
+      getPocketDispatchers(), undefined, POCKET_CONFIGURATION
     );
   }
 
@@ -164,9 +171,8 @@ export default class PocketService {
    */
   async getApplication(addressHex, throwError = true) {
     const pocketRpcProvider = await getRPCProvider();
-    console.log(addressHex);
     const applicationResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApp(addressHex);
-    console.log(applicationResponse);
+
     if (applicationResponse instanceof Error) {
       if (throwError) {
         throw new PocketNetworkError(applicationResponse.message);
@@ -331,14 +337,15 @@ export default class PocketService {
     const rawTxResponse = await this.__pocket.rpc(pocketRpcProvider).client.rawtx(fromAddress, rawTxBytes);
 
     if (typeGuard(rawTxResponse, RpcError)) {
-      throw new PocketNetworkError(rawTxResponse.message)
+      throw new PocketNetworkError(rawTxResponse.message);
     }
 
-    return rawTxResponse.hash
+    return rawTxResponse.hash;
   }
 
   /**
    * Transfer funds from the Main Fund Account to the customer's Account
+   *
    * @param {string} amount Amount to transfer in uPOKT denomination
    * @param {string} customerAddress Receipient address
    * @throws {PocketNetworkError}
@@ -349,17 +356,18 @@ export default class PocketService {
     // TODO: Use the environment variable
     const totalAmount = Number(amount) + 10000000;
     const pocketRpcProvider = await getRPCProvider();
-    this.__pocket.rpc(pocketRpcProvider)
+
+    this.__pocket.rpc(pocketRpcProvider);
     const rawTxResponse = await this.__pocket
       .withPrivateKey(POCKET_MAIN_FUND_ACCOUNT)
       .send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
-      .submit(POCKET_NETWORK_CONFIGURATION.chain_id, POCKET_NETWORK_CONFIGURATION.transaction_fee)
+      .submit(POCKET_NETWORK_CONFIGURATION.chain_id, POCKET_NETWORK_CONFIGURATION.transaction_fee);
 
     if (typeGuard(rawTxResponse, RpcError)) {
-      throw new PocketNetworkError(rawTxResponse.message)
+      throw new PocketNetworkError(rawTxResponse.message);
     }
 
-    return rawTxResponse.hash
+    return rawTxResponse.hash;
   }
 
   /**
@@ -372,7 +380,7 @@ export default class PocketService {
     const unlockedAccountOrError = await this.__pocket.keybase.getUnlockedAccount(account.addressHex, "test");
 
     if(typeGuard(unlockedAccountOrError, Error)) {
-      throw new PocketNetworkError(unlockedAccountOrError.message)
+      throw new PocketNetworkError(unlockedAccountOrError.message);
     } else if (typeGuard(unlockedAccountOrError, UnlockedAccount)) {
       return unlockedAccountOrError;
     } else {
