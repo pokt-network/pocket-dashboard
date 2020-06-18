@@ -52,6 +52,26 @@ export default class JobsProvider {
     return this.__getJobQueue("APP_UNSTAKE_QUEUE");
   }
 
+  /**
+   * Get Node stake job queue.
+   *
+   * @returns {*} Node Stake job queue.
+   * @static
+   */
+  static getNodeStakeJobQueue() {
+    return this.__getJobQueue("NODE_STAKE_QUEUE");
+  }
+
+  /**
+   * Get Node unstake job queue.
+   *
+   * @returns {*} Node unstake job queue.
+   * @static
+   */
+  static getNodeUnstakeJobQueue() {
+    return this.__getJobQueue("NODE_UNSTAKE_QUEUE");
+  }
+
   // /**
   //  * Get unstake job queue.
   //  *

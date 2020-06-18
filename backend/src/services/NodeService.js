@@ -5,6 +5,7 @@ import {ExtendedPocketNode, PocketNode, RegisteredPocketNode, StakedNodeSummary,
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
 import {DashboardError, DashboardValidationError} from "../models/Exceptions";
+import { TransactionPostAction, POST_ACTION_TYPE } from "../models/Transaction";
 
 const NODE_COLLECTION_NAME = "Nodes";
 
@@ -316,20 +317,60 @@ export default class NodeService extends BasePocketService {
    * @returns {Promise<PocketNode | boolean>} If was staked return the node, if not return false.
    * @throws Error If private key is not valid or node does not exists on dashboard.
    */
-  async stakeNode(transactionHash) {
-    // TODO: Use the transaction.
+  async stakeNode(nodeAddress, upoktToStake, nodeStakeTransaction, node, emailData, paymentEmailData) {
+    // First transfer funds from the main fund
+    const fundingTransactionHash = await this.pocketService.transferFromMainFund(upoktToStake, nodeAddress);
+
+    // Create post confirmation action to stake node
+    const contactEmail = node.pocketNode.contactEmail;
+    const nodeStakeAction = new TransactionPostAction(POST_ACTION_TYPE.stakeNode, {
+      nodeStakeTransaction,
+      contactEmail,
+      emailData,
+      paymentEmailData
+    });
+
+    // Create job to monitor transaction confirmation
+    const result = await this.transactionService.addTransferTransaction(fundingTransactionHash, nodeStakeAction);
+    if (!result) {
+      throw new Error("Couldn't add funding transaction for processing")
+    }
   }
 
   /**
    * Unstake node.
-   *
-   * @param {string} transactionHash Transaction to stake.
-   *
-   * @returns {Promise<PocketNode | boolean>} If node was unstaked return node, if not return false.
+   * @param {object} nodeUnstakeTransaction Transaction object.
+   * @param {string} nodeUnstakeTransaction.address Sender address
+   * @param {string} nodeUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {string} nodeLink Link to detail for email.
    * @async
    */
-  async unstakeNode(transactionHash) {
-    // TODO: Use the transaction.
+  async unstakeNode(nodeUnstakeTransaction, nodeLink) {
+    const {
+      address,
+      raw_hex_bytes
+    } = nodeUnstakeTransaction;
+
+    // Submit transaction
+    const nodeUnstakedHash = await this.pocketService.submitRawTransaction(address, raw_hex_bytes);
+
+    // Gather email data
+    const node = await this.getNode(address);
+    const emailData = {
+      userName: node.pocketNode.user,
+      contactEmail: node.pocketNode.contactEmail,
+      nodeData: {
+        name: node.pocketNode.name,
+        link: nodeLink
+      }
+    }
+
+    // Add transaction to queue
+    const result = await this.transactionService.addNodeUnstakeTransaction(nodeUnstakedHash, emailData);
+
+    if (!result) {
+      throw new Error("Couldn't register app unstake transaction for email notification");
+    }
   }
 
   /**
