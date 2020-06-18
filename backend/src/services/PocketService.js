@@ -346,6 +346,7 @@ export default class PocketService {
    */
   async transferFromMainFund(amount, customerAddress) {
     // Include transaction fee for the stake transaction
+    // TODO: Use the environment variable
     const totalAmount = Number(amount) + 10000000;
     const pocketRpcProvider = await getRPCProvider();
     this.__pocket.rpc(pocketRpcProvider)

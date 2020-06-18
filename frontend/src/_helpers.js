@@ -24,7 +24,7 @@ export const formatNetworkData = (
 
 export const createAndDownloadJSONFile = (fileName, data) => {
   const element = document.createElement("a");
-  const file = new File([JSON.stringify(data)], fileName, {
+  const file = new File([data], fileName, {
     type: "application/json",
   });
 

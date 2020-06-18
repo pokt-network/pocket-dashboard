@@ -134,7 +134,6 @@ class AppDetail extends Component {
 
     const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
 
-    // TODO: Call backend and send request to finish transaction
     const {success, data} = freeTier
       ? await ApplicationService.unstakeFreeTierApplication()
       : await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
