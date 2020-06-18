@@ -2,6 +2,14 @@ import {BaseCheckoutService} from "./BaseCheckoutService";
 import {Configurations} from "../../_configuration";
 import {DashboardValidationError} from "../../models/Exceptions";
 
+function isNumericOptionValid(numericOption) {
+  return (numericOption === 0 || numericOption === "0" || numericOption === undefined || numericOption === null) === false;
+}
+
+function isNumericOptionNegative(numericOption) {
+  return Number(numericOption) < 0;
+}
+
 export default class ApplicationCheckoutService extends BaseCheckoutService {
 
   /**
@@ -42,7 +50,6 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
   getMoneyToSpent(relaysPerDay) {
     const {
       sessions_per_day: sessionsInADay,
-      p_rate: pRate,
       stability,
       relays_per_day: {
         min: minRelaysPerDay,
@@ -51,9 +58,26 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
       }
     } = this.options;
 
+    let {
+      p_rate: pRate
+    } = this.options;
+
     if (relaysPerDay < minRelaysPerDay && relaysPerDay > maxRelaysPerDay) {
       throw new DashboardValidationError("Relays per day is out of allowed range.");
     }
+    if (!isNumericOptionValid(baseRelayPerPOKT)) {
+      throw new DashboardValidationError("Base relays per POKT can't never be 0, currently it's " + baseRelayPerPOKT);
+    }
+    if (!isNumericOptionValid(sessionsInADay)) {
+      throw new DashboardValidationError("Session's in a day cannot be 0" + sessionsInADay);
+    }
+    if (!isNumericOptionValid(pRate)) {
+      pRate = 1;
+    }
+    if (!isNumericOptionValid(this.poktMarketPrice) || isNumericOptionNegative(this.poktMarketPrice)) {
+      throw new DashboardValidationError("Invalid POKT Market Price " + this.poktMarketPrice);
+    }
+
     return (((((relaysPerDay / sessionsInADay) - stability) / pRate)) / baseRelayPerPOKT) * this.poktMarketPrice;
   }
 }
