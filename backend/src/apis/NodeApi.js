@@ -4,6 +4,7 @@ import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helper
 import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
 import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
+import { CoinDenom } from "@pokt-network/pocket-js"
 
 const router = express.Router();
 
@@ -152,69 +153,59 @@ router.post("/user/all", apiAsyncWrapper(async (req, res) => {
  * Stake a node.
  */
 router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{transactionHash: string, nodeLink: string}} */
+  /** @type {{nodeStakeTransaction: {address: string, raw_hex_bytes: string}, payment:{id: string}, nodeLink: string}} */
   const data = req.body;
-
   const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
-  if (paymentHistory.isSuccessPayment(true)) {
+  if (
+    paymentHistory.isSuccessPayment(true) &&
+    paymentHistory.isNodePaymentItem(true)
+  ) {
+    // Call NodeService to stake the application
+    const nodeAddress = data.nodeStakeTransaction.address;
+    debugger;
+    const node = await nodeService.getNode(nodeAddress, true);
+    const nodeStakeTransaction = data.nodeStakeTransaction;
+    const item = paymentHistory.getItem();
+    const amountToSpend = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
+    const poktStaked = nodeCheckoutService.getPoktToStake(amountToSpend, CoinDenom.Pokt).toString();
+    const uPoktStaked = nodeCheckoutService.getPoktToStake(amountToSpend, CoinDenom.Upokt).toString();
 
-    if (paymentHistory.isNodePaymentItem(true)) {
-      const item = paymentHistory.getItem();
-      const amountToSpent = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
-      const poktToStake = nodeCheckoutService.getPoktToStake(amountToSpent);
+    const nodeEmailData = {
+      name: node.pocketNode.name,
+      link: data.nodeLink
+    };
 
-      const node = await nodeService.stakeNode(data.transactionHash);
+    const paymentEmailData = {
+      amountPaid: paymentHistory.amount,
+      validatorPowerAmount: item.validatorPower,
+      poktStaked: poktStaked
+    };
 
-      // TODO: Move this triggers.
-      // if (node) {
-      //   const nodeEmailData = {
-      //     name: node.name,
-      //     link: data.nodeLink
-      //   };
-      //
-      //   const paymentEmailData = {
-      //     amountPaid: paymentHistory.amount,
-      //     validatorPowerAmount: item.validatorPower,
-      //     poktStaked: nodeCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString()
-      //   };
-      //
-      //   await EmailService
-      //     .to(node.contactEmail)
-      //     .sendStakeNodeEmail(node.contactEmail, nodeEmailData, paymentEmailData);
-      //
-      //   res.send(true);
-      // }
-    }
+    await nodeService.stakeNode(nodeAddress, uPoktStaked, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
+    res.send(true);
+  } else {
+    // Return error if payment was unsuccesful
+    throw new Error("Error processing payment, please try a different method");
   }
-  // noinspection ExceptionCaughtLocallyJS
-  throw new Error("Error has occurred trying to stake node.");
 }));
 
 /**
  * Unstake a node.
  */
 router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{transactionHash: string, nodeLink: string}} */
+  /** @type {{nodeUnstakeTranaction: {address: string, raw_hex_bytes: string}, nodeLink: string}} */
   const data = req.body;
+  const {
+    nodeUnstakeTranaction,
+    nodeLink
+  } = data;
 
-  const node = await nodeService.unstakeNode(data.transactionHash);
+  // Submit Unstake transaction to the pocket network
+  await nodeService.unstakeNode(nodeUnstakeTranaction, nodeLink);
 
-  // TODO: Move this triggers.
-  // if (node) {
-  //   const nodeEmailData = {
-  //     name: node.name,
-  //     link: data.nodeLink
-  //   };
-  //
-  //   await EmailService
-  //     .to(node.contactEmail)
-  //     .sendUnstakeNodeEmail(node.contactEmail, nodeEmailData);
-  //
-  //   res.send(true);
-  // } else {
-  //   res.send(false);
-  // }
+  // Respond
+  res.send(true);
 }));
 
 /**

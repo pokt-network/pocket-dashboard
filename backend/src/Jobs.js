@@ -12,15 +12,57 @@ const POCKET_SERVICE = new PocketService();
 const POST_TRANSFER_QUEUE = JobsProvider.getPostTransferJobQueue();
 const APP_STAKE_QUEUE = JobsProvider.getAppStakeJobQueue();
 const APP_UNSTAKE_QUEUE = JobsProvider.getAppUnstakeJobQueue();
+const NODE_STAKE_QUEUE = JobsProvider.getNodeStakeJobQueue();
+const NODE_UNSTAKE_QUEUE = JobsProvider.getNodeUnstakeJobQueue();
 
-// APP_UNSTAKE_QUEUE
-APP_UNSTAKE_QUEUE.process(async (job, done) => {
+// NODE_STAKE_QUEUE
+NODE_STAKE_QUEUE.process(async (job, done) => {
   try {
-    // Parse the transaction from the job
-    const appUnstakePocketTransaction = job.data;
+    // Parse the transaction data
+    const nodeStakePocketTransaction = job.data;
 
     // Get the transaction hash to verify
-    const hash = appUnstakePocketTransaction.hash;
+    const hash = nodeStakePocketTransaction.hash;
+
+    // Try to get the transaction from the network
+    const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
+
+    if (typeGuard(transactionOrError, RpcError)) {
+      done(new Error(transactionOrError.message));
+      return;
+    }
+
+    // Submit Node Stake Email
+    const postAction = nodeStakePocketTransaction.postAction;
+    if (!postAction || postAction.type !== POST_ACTION_TYPE.stakeNode) {
+      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)))
+      return;
+    }
+
+    const {
+      contactEmail,
+      emailData,
+      paymentEmailData
+    } = postAction.data;
+    const emailService = new EmailService(contactEmail);
+    await emailService.sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
+
+    // Finish the job OK
+    done();
+  } catch (e) {
+    console.error(e);
+    done(e);
+  }
+});
+
+// NODE_UNSTAKE_QUEUE
+NODE_UNSTAKE_QUEUE.process(async (job, done) => {
+  try {
+    // Parse the transaction from the job
+    const nodeUnstakeTransaction = job.data;
+
+    // Get the transaction hash to verify
+    const hash = nodeUnstakeTransaction.hash;
 
     // Try to get the transaction from the network
     const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
@@ -31,19 +73,19 @@ APP_UNSTAKE_QUEUE.process(async (job, done) => {
     }
 
     // Submit App Stake Email
-    const postAction = appUnstakePocketTransaction.postAction;
-    if (!postAction || postAction.type !== POST_ACTION_TYPE.unstakeApplication) {
+    const postAction = nodeUnstakeTransaction.postAction;
+    if (!postAction || postAction.type !== POST_ACTION_TYPE.unstakeNode) {
       done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)))
       return;
     }
 
-    const { contactEmail, userName, applicationData } = postAction.data;
+    const { contactEmail, userName, nodeData } = postAction.data;
     const emailService = new EmailService(contactEmail);
-    emailService.sendUnstakeAppEmail(userName, applicationData);
+    emailService.sendUnstakeNodeEmail(userName, nodeData);
 
     // Finish the job OK
     done();
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     done(error);
   }
@@ -89,6 +131,42 @@ APP_STAKE_QUEUE.process(async (job, done) => {
   }
 });
 
+// APP_UNSTAKE_QUEUE
+APP_UNSTAKE_QUEUE.process(async (job, done) => {
+  try {
+    // Parse the transaction from the job
+    const appUnstakePocketTransaction = job.data;
+
+    // Get the transaction hash to verify
+    const hash = appUnstakePocketTransaction.hash;
+
+    // Try to get the transaction from the network
+    const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
+
+    if (typeGuard(transactionOrError, RpcError)) {
+      done(new Error(transactionOrError.message));
+      return;
+    }
+
+    // Submit App Stake Email
+    const postAction = appUnstakePocketTransaction.postAction;
+    if (!postAction || postAction.type !== POST_ACTION_TYPE.unstakeApplication) {
+      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)))
+      return;
+    }
+
+    const { contactEmail, userName, applicationData } = postAction.data;
+    const emailService = new EmailService(contactEmail);
+    emailService.sendUnstakeAppEmail(userName, applicationData);
+
+    // Finish the job OK
+    done();
+  } catch (error) {
+    console.error(error);
+    done(error);
+  }
+});
+
 POST_TRANSFER_QUEUE.process(async (job, done) => {
 
   try {
@@ -120,8 +198,13 @@ POST_TRANSFER_QUEUE.process(async (job, done) => {
         switch (postAction.type) {
           case POST_ACTION_TYPE.stakeApplication:
             const appStakeTransaction = postAction.data.appStakeTransaction;
-            const postActionTxHash = await POCKET_SERVICE.submitRawTransaction(appStakeTransaction.address, appStakeTransaction.raw_hex_bytes);
-            await TRANSACTION_SERVICE.addAppStakeTransaction(postActionTxHash, postAction.data);
+            const stakeAppPostActionHash = await POCKET_SERVICE.submitRawTransaction(appStakeTransaction.address, appStakeTransaction.raw_hex_bytes);
+            await TRANSACTION_SERVICE.addAppStakeTransaction(stakeAppPostActionHash, postAction.data);
+            break;
+          case POST_ACTION_TYPE.stakeNode:
+            const nodeStakeTransaction = postAction.data.nodeStakeTransaction;
+            const stakeNodePostActionHash = await POCKET_SERVICE.submitRawTransaction(nodeStakeTransaction.address, nodeStakeTransaction.raw_hex_bytes);
+            await TRANSACTION_SERVICE.addNodeStakeTransaction(stakeNodePostActionHash, postAction.data);
             break;
           default:
             done(new Error(`Invalid Post Action: ${JSON.stringify(postAction)}`));

@@ -15,7 +15,7 @@
   "scripts": {
     "build": "webpack --watch --mode development --config webpack.config.js",
     "build:prod": "webpack --mode production --config webpack.config.js",
-    "start": "pm2-dev dist/server.js",
+    "start": "pm2-dev --raw dist/server.js",
     "start:prod": "pm2-runtime dist/server.js",
     "test": "mocha test",
     "test:services": "mocha test/services",
@@ -114,7 +114,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.8.4",
-    "@pokt-network/pocket-js": "0.5.2-rc",
+    "@pokt-network/pocket-js": "0.5.4-rc",
     "@sendgrid/mail": "^7.1.0",
     "axios": "^0.19.2",
     "bcrypt": "^4.0.1",

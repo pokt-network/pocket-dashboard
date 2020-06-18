@@ -369,7 +369,7 @@ export default class ApplicationService extends BasePocketService {
 
   /**
    * Unstake application.
-   * @param {object} appUnstakeTransaction Transaction hash.
+   * @param {object} appUnstakeTransaction Transaction object.
    * @param {string} appUnstakeTransaction.address Sender address
    * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
    * @param {string} applicationLink Link to detail for email.

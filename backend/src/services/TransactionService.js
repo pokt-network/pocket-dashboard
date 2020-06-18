@@ -7,9 +7,8 @@ const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";
 const POST_TRANSFER_QUEUE = JobsProvider.getPostTransferJobQueue();
 const APP_STAKE_QUEUE = JobsProvider.getAppStakeJobQueue();
 const APP_UNSTAKE_QUEUE = JobsProvider.getAppUnstakeJobQueue();
-// const STAKE_QUEUE = JobsProvider.getStakeJobQueue();
-// const UNSTAKE_QUEUE = JobsProvider.getUnStakeJobQueue();
-// const UNJAIL_QUEUE = JobsProvider.getUnJailJobQueue();
+const NODE_STAKE_QUEUE = JobsProvider.getNodeStakeJobQueue();
+const NODE_UNSTAKE_QUEUE = JobsProvider.getNodeUnstakeJobQueue();
 
 /**
  * @deprecated This logic will be moved soon.
@@ -86,6 +85,24 @@ export default class TransactionService extends BaseService {
   }
 
   /**
+   * Add stake transaction.
+   * @param {string} nodeStakeTxHash The transaction hash for the submitted app stake transaction
+   * @param {{nodeStakeTransaction: object, contactEmail: string, emailData: object, paymentEmailData: object}} nodeStakeData Node Stake Data
+   * @returns {Promise<boolean>} if was added or not.
+   */
+  async addNodeStakeTransaction(nodeStakeTxHash, nodeStakeData) {
+    const pocketTransaction = new PocketTransaction(new Date(), nodeStakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.stakeNode, nodeStakeData));
+
+    const saved = await this.__addTransaction(pocketTransaction);
+
+    if (saved) {
+      JobsProvider.addJob(NODE_STAKE_QUEUE, pocketTransaction);
+    }
+
+    return saved;
+  }
+
+  /**
    * Add unstake transaction.
    * @param {string} appUnstakeTxHash The transaction hash for the submitted app unstake transaction
    * @param {object} emailData Data to submit unstake email
@@ -103,6 +120,29 @@ export default class TransactionService extends BaseService {
 
     if (saved) {
       JobsProvider.addJob(APP_UNSTAKE_QUEUE, pocketTransaction);
+    }
+
+    return saved;
+  }
+
+  /**
+   * Add unstake transaction.
+   * @param {string} nodeUnstakeTxHash The transaction hash for the submitted app unstake transaction
+   * @param {object} emailData Data to submit unstake email
+   * @param {string} emailData.userName User that owns the application
+   * @param {string} emailData.contactEmail User that owns the application
+   * @param {object} emailData.nodeData Application information
+   * @param {string} emaildata.nodeData.name Name of the application
+   * @param {string} emaildata.nodeData.link Link to the application
+   * @returns {Promise<boolean>} if was added or not.
+   */
+  async addNodeUnstakeTransaction(nodeUnstakeTxHash, emailData) {
+    const pocketTransaction = new PocketTransaction(new Date(), nodeUnstakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.unstakeNode, emailData));
+
+    const saved = await this.__addTransaction(pocketTransaction);
+
+    if (saved) {
+      JobsProvider.addJob(NODE_UNSTAKE_QUEUE, pocketTransaction);
     }
 
     return saved;
