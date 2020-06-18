@@ -106,6 +106,8 @@ class Import extends Component {
     const {privateKey, passphrase, ppkData} = this.state.data;
     let ppk;
 
+    debugger;
+
     if (!ppkData) {
       if (!passphrase) {
         this.setState({
