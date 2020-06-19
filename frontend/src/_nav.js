@@ -40,7 +40,7 @@ export default {
       url: "/dashboard/nodes",
       icon: "menu/nodes.svg",
     },
-    // TODO: Uncomment when second release
+
     {
       name: "Support",
       url: "https://pocket-dashboard.document360.io/docs",
