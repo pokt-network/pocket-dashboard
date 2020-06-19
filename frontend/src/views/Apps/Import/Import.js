@@ -176,8 +176,9 @@ class Import extends Component {
       {title: "0 POKT", subtitle: "Balance"},
       {title: Configurations.stakeDefaultStatus, subtitle: "Stake status"},
       {
-        title: Configurations.defaultMaxRelaysPerDay,
-        subtitle: "Max Relays per Day",
+        // TODO: Retrieve Data from the network
+        title: 0,
+        subtitle: type === ITEM_TYPES.APPLICATION ? "Max Relays per Day" : "Validator Power",
       },
     ];
 
