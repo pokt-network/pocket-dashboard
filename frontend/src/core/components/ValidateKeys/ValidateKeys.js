@@ -20,13 +20,14 @@ class ValidateKeys extends Component {
       ppk: "",
       created: false,
       error: {show: false, message: ""},
-      hasPrivateKey: false,
+      hasPPK: false,
       inputType: "password",
       validPassphrase: false,
       showPassphraseIconURL: this.iconUrl.open,
       address: "",
       uploadedPrivateKey: "",
       chains: [],
+      ppkFileName: "Upload your key file",
       data: {
         passphrase: "",
         privateKey: "",
@@ -72,6 +73,7 @@ class ValidateKeys extends Component {
   readUploadedFile = (e) => {
     e.preventDefault();
     const reader = new FileReader();
+    const ppkFileName = e.target.files[0].name;
 
     reader.onload = (e) => {
       const {result} = e.target;
@@ -79,7 +81,8 @@ class ValidateKeys extends Component {
       const ppkData = JSON.parse(result.trim());
 
       this.setState({
-        hasPrivateKey: true,
+        ppkFileName,
+        hasPPK: true,
         data: {...data, privateKey: "", ppkData},
       });
     };
@@ -104,7 +107,7 @@ class ValidateKeys extends Component {
       ppk = ppkData;
     }
 
-    const account = await PocketClientService.saveAccount(ppk, passphrase);
+    const account = await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
     const {addressHex} = account;
 
     const validated = addressHex !== address;
@@ -131,10 +134,11 @@ class ValidateKeys extends Component {
       inputType,
       showPassphraseIconURL,
       uploadedPrivateKey,
-      hasPrivateKey,
+      hasPPK,
       error,
       validated,
       ppk,
+      ppkFileName
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
@@ -164,7 +168,7 @@ class ValidateKeys extends Component {
                     <Form.Control
                       className="mr-3"
                       readOnly
-                      placeholder="Upload your key file"
+                      placeholder={ppkFileName}
                       value={uploadedPrivateKey}
                     />
                     <div className="file">
@@ -190,7 +194,7 @@ class ValidateKeys extends Component {
             <Form className="create-passphrase-form ">
               <Form.Row>
                 <Col className="show-passphrase flex-column">
-                  {!hasPrivateKey ? (
+                  {!hasPPK ? (
                     <>
                       <h2>Private key</h2>
                       <Form.Group className="d-flex">
@@ -214,7 +218,7 @@ class ValidateKeys extends Component {
                           type="submit"
                           disabled={privateKey.length === 0}
                           onClick={() => {
-                            this.setState({hasPrivateKey: true});
+                            this.setState({hasPPK: true});
                           }}
                         >
                           <span>continue </span>

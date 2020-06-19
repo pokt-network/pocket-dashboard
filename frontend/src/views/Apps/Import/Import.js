@@ -30,13 +30,13 @@ class Import extends Component {
       type: "",
       created: false,
       error: {show: false, message: ""},
-      hasPrivateKey: false,
+      hasPPK: false,
       inputType: "password",
       validPassphrase: false,
       showPassphraseIconURL: this.iconUrl.open,
       address: "",
-      uploadedPrivateKey: "",
       chains: [],
+      ppkFileName: "Upload your key file",
       data: {
         passphrase: "",
         privateKey: "",
@@ -84,6 +84,7 @@ class Import extends Component {
   readUploadedFile = (e) => {
     e.preventDefault();
     const reader = new FileReader();
+    const ppkFileName = e.target.files[0].name;
 
     reader.onload = (e) => {
       const {result} = e.target;
@@ -91,8 +92,8 @@ class Import extends Component {
       const ppkData = JSON.parse(result.trim());
 
       this.setState({
-        hasPrivateKey: true,
-        uploadedPrivateKey: "",
+        ppkFileName,
+        hasPPK: true,
         data: {...data, privateKey: "", ppkData},
       });
     };
@@ -105,8 +106,6 @@ class Import extends Component {
     const {type} = this.state;
     const {privateKey, passphrase, ppkData} = this.state.data;
     let ppk;
-
-    debugger;
 
     if (!ppkData) {
       if (!passphrase) {
@@ -163,11 +162,11 @@ class Import extends Component {
       inputType,
       showPassphraseIconURL,
       address,
-      uploadedPrivateKey,
-      hasPrivateKey,
+      hasPPK,
       error,
       imported,
       type,
+      ppkFileName,
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
@@ -219,8 +218,7 @@ class Import extends Component {
                     <Form.Control
                       className="mr-3"
                       readOnly
-                      placeholder="Upload your key file"
-                      value={uploadedPrivateKey}
+                      placeholder={ppkFileName}
                     />
                     <div className="file">
                       <label
@@ -245,7 +243,7 @@ class Import extends Component {
             <Form className="create-passphrase-form ">
               <Form.Row>
                 <Col className="show-passphrase flex-column">
-                  {!hasPrivateKey ? (
+                  {!hasPPK ? (
                     <>
                       <h2>Private key</h2>
                       <Form.Group className="d-flex">
@@ -268,7 +266,7 @@ class Import extends Component {
                           variant="dark"
                           type="submit"
                           onClick={() => {
-                            this.setState({hasPrivateKey: true});
+                            this.setState({hasPPK: true});
                           }}
                         >
                           <span>Continue</span>
