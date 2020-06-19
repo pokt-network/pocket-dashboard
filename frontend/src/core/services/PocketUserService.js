@@ -84,8 +84,7 @@ class PocketUserService extends PocketBaseService {
   }
 
   /**
-   * 
-   * @param {string} action Current action of user (i.e create app, stake node...)  
+   * @param {string} action Current action of user (i.e create app, stake node...)
    */
   saveUserAction(action) {
     localStorage.setItem("user_action", action);
@@ -93,7 +92,7 @@ class PocketUserService extends PocketBaseService {
 
   /**
    * Get current user action
-   * 
+   *
    * @return {action:string}
    */
   getUserAction() {
@@ -457,6 +456,34 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .post(this._getURL("verify-captcha"), {token})
+      .then(response => response.data);
+  }
+
+  /**
+   * Unsubscribe email.
+   *
+   * @param {string} email Email to unsubscribe.
+   *
+   * @return {Promise<*>}
+   * @async
+   */
+  unsubscribeUser(email) {
+    return axios
+      .post(this._getURL("unsubscribe"), {email})
+      .then(response => response.data);
+  }
+
+  /**
+   * Subscribe email.
+   *
+   * @param {string} email Email to subscribe.
+   *
+   * @return {Promise<*>}
+   * @async
+   */
+  subscribeUser(email) {
+    return axios
+      .post(this._getURL("subscribe"), {email})
       .then(response => response.data);
   }
 }
