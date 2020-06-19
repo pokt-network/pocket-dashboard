@@ -210,5 +210,29 @@ router.post("/verify-captcha", apiAsyncWrapper(async (req, res) => {
   res.json(result.data);
 }));
 
+/**
+ * Unsubscribe email
+ */
+router.post("/unsubscribe", apiAsyncWrapper(async (req, res) => {
+  /** @type {{email:string}} */
+  const data = req.body;
+
+  const unsubscribed = await EmailService.to(data.email).unsubscribeEmail();
+
+  res.send(unsubscribed);
+}));
+
+/**
+ * Subscribe email
+ */
+router.post("/subscribe", apiAsyncWrapper(async (req, res) => {
+  /** @type {{email:string}} */
+  const data = req.body;
+
+  const subscribed = await EmailService.to(data.email).subscribeEmail();
+
+  res.send(subscribed);
+}));
+
 
 export default router;
