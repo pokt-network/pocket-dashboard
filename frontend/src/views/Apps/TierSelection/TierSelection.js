@@ -29,8 +29,9 @@ class TierSelection extends Component {
 
   async createFreeTierItem() {
     const {
-      passphrase,
-      chains,
+      // TODO: Uncomment on free tier implementation
+      // passphrase,
+      // chains,
       address,
     } = ApplicationService.getApplicationInfo();
 
