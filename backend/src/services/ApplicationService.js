@@ -200,6 +200,18 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
+   * Get application data on network.
+   *
+   * @param {string} applicationAddress Application address.
+   *
+   * @returns {Promise<Application>} Application data.
+   * @async
+   */
+  async getNetworkApplication(applicationAddress) {
+    return this.pocketService.getApplication(applicationAddress);
+  }
+
+  /**
    * Get all applications on network.
    *
    * @param {number} limit Limit of query.

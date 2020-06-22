@@ -119,6 +119,17 @@ router.get("/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
+ * Get application that is on network by address.
+ */
+router.get("/network/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{applicationAccountAddress:string}} */
+  const data = req.params;
+  const application = await applicationService.getNetworkApplication(data.applicationAccountAddress);
+
+  res.json(application);
+}));
+
+/**
  * Get all applications.
  */
 router.get("", apiAsyncWrapper(async (req, res) => {
