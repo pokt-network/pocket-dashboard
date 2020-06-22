@@ -59,6 +59,42 @@ export default class EmailService {
   }
 
   /**
+   * Unsubscribe email.
+   *
+   * @returns {Promise<*>} Email response.
+   * @async
+   */
+  async unsubscribeEmail() {
+    try {
+      /** @type {{statusCode: number}[]} */
+      const emailResponse = await this.emailProvider.unsubscribeEmail(this.__toEmail);
+
+      return emailResponse[0].statusCode === 202;
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
+  }
+
+  /**
+   * Subscribe email.
+   *
+   * @returns {Promise<*>} Email response.
+   * @async
+   */
+  async subscribeEmail() {
+    try {
+      /** @type {{statusCode: number}[]} */
+      const emailResponse = await this.emailProvider.subscribeEmail(this.__toEmail);
+
+      return emailResponse[0].statusCode === 202;
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }
+  }
+
+  /**
    * Send email when user sign up.
    *
    * @param {string} userName User name.
@@ -274,5 +310,4 @@ export default class EmailService {
 
     await this.__sendEmail(Configurations.email.template_ids.PaymentDeclined, data);
   }
-
 }

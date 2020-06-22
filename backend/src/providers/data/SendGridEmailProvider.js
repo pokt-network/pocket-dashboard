@@ -1,4 +1,5 @@
 import mail from "@sendgrid/mail";
+import client from "@sendgrid/client";
 
 /**
  * For more information go to: https://github.com/sendgrid/sendgrid-nodejs
@@ -9,6 +10,9 @@ export class SendGridEmailProvider {
    */
   constructor(apiKey) {
     mail.setApiKey(apiKey);
+    client.setApiKey(apiKey);
+
+    this.__apiVersion = "v3";
   }
 
   /**
@@ -28,5 +32,42 @@ export class SendGridEmailProvider {
     };
 
     return mail.send(message);
+  }
+
+  /**
+   * Add email to global unsubscribe list.
+   *
+   * @param {string} email Email to unsubscribe.
+   *
+   * @returns {Promise<*>} Email response.
+   * @async
+   */
+  async unsubscribeEmail(email) {
+    const requestData = {
+      method: "POST",
+      url: `/${this.__apiVersion}/asm/suppressions/global`,
+      body: {
+        recipient_emails: [email]
+      }
+    };
+
+    return client.request(requestData);
+  }
+
+  /**
+   * Remove email from global unsubscribe list.
+   *
+   * @param {string} email Email to remove.
+   *
+   * @returns {Promise<*>} Email response.
+   * @async
+   */
+  async subscribeEmail(email) {
+    const requestData = {
+      method: "DELETE",
+      url: `/${this.__apiVersion}/asm/suppressions/global/${email}`
+    };
+
+    return client.request(requestData);
   }
 }
