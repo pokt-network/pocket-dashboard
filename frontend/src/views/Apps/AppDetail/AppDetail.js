@@ -62,7 +62,7 @@ class AppDetail extends Component {
       networkData,
       error,
       name,
-    } = await ApplicationService.getApplication(address);
+    } = await ApplicationService.getApplication(address) || {};
 
     hasError = error ? error : hasError;
     errorType = error ? name : errorType;
@@ -130,9 +130,8 @@ class AppDetail extends Component {
 
     const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
 
-    // FIXME: Create a free tier unstake transaction.
     const {success, data} = freeTier
-      ? await ApplicationService.unstakeFreeTierApplication(appFreeTierUnstakeTransaction, link)
+      ? await ApplicationService.unstakeFreeTierApplication(appUnstakeTransaction, link)
       : await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
 
     if (success) {
