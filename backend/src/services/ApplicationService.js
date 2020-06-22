@@ -362,13 +362,38 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Unstake free tier application.
    *
-   * @param {string} transactionHash Transaction to stake.
+   * @param {object} appUnstakeTransaction Transaction object.
+   * @param {string} appUnstakeTransaction.address Sender address
+   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {string} applicationLink Link to detail for email.
    *
-   * @returns {Promise<PocketApplication | boolean>} If application was unstaked return the application, if not return false.
    * @async
    */
-  async unstakeFreeTierApplication(transactionHash) {
-    // TODO: Use the transaction.
+  async unstakeFreeTierApplication(appUnstakeTransaction, applicationLink) {
+    const {address, raw_hex_bytes: rawHexBytes} = appUnstakeTransaction;
+
+    // Submit transaction
+    const appUnstakedTransaction = await this.pocketService.submitRawTransaction(address, rawHexBytes);
+
+    const application = await this.getApplication(address);
+    const emailData = {
+      userName: application.pocketApplication.user,
+      contactEmail: application.pocketApplication.contactEmail,
+      applicationData: {
+        name: application.pocketApplication.name,
+        link: applicationLink
+      }
+    };
+
+    // Add transaction to queue
+    const result = await this.transactionService.addAppUnstakeTransaction(appUnstakedTransaction, emailData);
+
+    if (!result) {
+      throw new Error("Couldn't register app unstake transaction for email notification");
+    }
+
+
+    await this.__markApplicationAsFreeTier(application.pocketApplication, false);
   }
 
   /**
@@ -411,6 +436,7 @@ export default class ApplicationService extends BasePocketService {
    * @param {string} appUnstakeTransaction.address Sender address
    * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
    * @param {string} applicationLink Link to detail for email.
+   *
    * @async
    */
   async unstakeApplication(appUnstakeTransaction, applicationLink) {
