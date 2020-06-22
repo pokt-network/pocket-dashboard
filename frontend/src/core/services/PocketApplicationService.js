@@ -115,6 +115,26 @@ export class PocketApplicationService extends PocketBaseService {
   }
 
   /**
+   * Get network application.
+   *
+   * @param {string} applicationAddress Application address in hex.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getNetworkApplication(applicationAddress) {
+    return axios
+      .get(this._getURL(`network/${applicationAddress}`))
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
+  }
+
+  /**
    * Get all available applications.
    *
    * @param {number} limit Limit of query.
