@@ -177,10 +177,11 @@ class NodeDetail extends Component {
       operator,
       description,
       icon,
-      jailed,
       publicPocketAccount,
     } = this.state.pocketNode;
+
     const {
+      jailed,
       tokens: stakedTokens,
       status: stakeStatus,
       unstaking_time: unstakingCompletionTime,

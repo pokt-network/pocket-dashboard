@@ -12,6 +12,8 @@ import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
 import UserService from "../../../core/services/PocketUserService";
 import {Configurations} from "../../../_configuration";
+import {getStakeStatus, formatNumbers} from "../../../_helpers";
+import PocketNetworkService from "../../../core/services/PocketNetworkService";
 
 class Import extends Component {
   constructor(props, context) {
@@ -41,6 +43,14 @@ class Import extends Component {
         passphrase: "",
         privateKey: "",
         ppkData: "",
+      },
+
+      accountData: {
+        tokens: 0,
+        balance: 0,
+        status: Configurations.stakeDefaultStatus,
+        // Could be either validator power / max relays per day
+        amount: 0,
       },
       imported: false,
     };
@@ -125,11 +135,13 @@ class Import extends Component {
     }
 
     const {success, data} = await AccountService.importAccount(
-        ppk, passphraseOrDefault);
+      ppk, passphraseOrDefault);
 
     if (success) {
       await PocketClientService.saveAccount(
         JSON.stringify(ppk), passphraseOrDefault);
+      let chains;
+      const {balance} = await AccountService.getPoktBalance(data.address);
 
       // Have to save ppk on cache as ppk generated from saved account is not
       // the same as one uploaded (even for the same account)
@@ -140,14 +152,53 @@ class Import extends Component {
           address: data.address,
           ppk,
         });
+
+        const {
+          staked_tokens: tokens,
+          max_relays: amount,
+          chains: networkChains,
+          status,
+        } = await ApplicationService.getNetworkApplication(data.address);
+
+        chains = networkChains;
+        this.setState({
+          accountData: {
+            balance,
+            tokens,
+            amount,
+            status: getStakeStatus(status),
+          },
+        });
       } else {
         NodeService.saveNodeInfoInCache({
           passphraseOrDefault,
           address: data.address,
           ppk,
         });
+
+        const {
+          tokens,
+          validatorPower: amount,
+          chains: networkChains,
+          status,
+          // TODO: Verify validator power
+        } = await NodeService.getNetworkNode(data.address);
+
+        chains = networkChains;
+        this.setState({
+          accountData: {
+            balance,
+            tokens,
+            amount: amount || 0,
+            status: getStakeStatus(status),
+          },
+        });
       }
+
+      const accountChains = await PocketNetworkService.getNetworkChains(chains);
+
       this.setState({
+        chains: accountChains,
         error: {show: false},
         imported: true,
         address: data.address,
@@ -169,18 +220,25 @@ class Import extends Component {
       imported,
       type,
       ppkFileName,
+      accountData,
+      chains,
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
 
     const generalInfo = [
-      {title: "0 POKT", subtitle: "Staked tokens"},
-      {title: "0 POKT", subtitle: "Balance"},
-      {title: Configurations.stakeDefaultStatus, subtitle: "Stake status"},
+      {title: formatNumbers(accountData.tokens), subtitle: "Staked tokens"},
       {
-        // TODO: Retrieve Data from the network
-        title: 0,
-        subtitle: type === ITEM_TYPES.APPLICATION ? "Max Relays per Day" : "Validator Power",
+        title: `${formatNumbers(accountData.balance)} POKT`,
+        subtitle: "Balance",
+      },
+      {title: accountData.status, subtitle: "Stake status"},
+      {
+        title: formatNumbers(accountData.amount),
+        subtitle:
+          type === ITEM_TYPES.APPLICATION
+            ? "Max Relays per Day"
+            : "Validator Power",
       },
     ];
 
@@ -356,8 +414,9 @@ class Import extends Component {
             <h3>Networks</h3>
             <AppTable
               scroll
+              toggle={chains.length > 0}
               keyField="hash"
-              data={[]}
+              data={chains}
               columns={TABLE_COLUMNS.NETWORK_CHAINS}
               bordered={false}
             />
