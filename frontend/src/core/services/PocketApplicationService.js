@@ -115,6 +115,26 @@ export class PocketApplicationService extends PocketBaseService {
   }
 
   /**
+   * Get network application.
+   *
+   * @param {string} applicationAddress Application address in hex.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getNetworkApplication(applicationAddress) {
+    return axios
+      .get(this._getURL(`network/${applicationAddress}`))
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
+  }
+
+  /**
    * Get all available applications.
    *
    * @param {number} limit Limit of query.
@@ -342,28 +362,29 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Create free tier application.
    *
-   * @param {string} clientAddressHex Address of the Client Keypair for the Free Tier Account
-   * @param {string} clientPubKeyHex Public key of the Client Keypair for the Free Tier Account
+   * @param {object} appStakeTransaction Transaction.
+   * @param {string} applicationLink Application link.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeFreeTierApplication(clientAddressHex, clientPubKeyHex) {
+  stakeFreeTierApplication(appStakeTransaction, applicationLink) {
     return axios
-      .post(this._getURL("freetier/stake"), {
-        clientAddress: clientAddressHex,
-        clientPubKey: clientPubKeyHex
-      })
+      .post(this._getURL("freetier/stake"), {appStakeTransaction, applicationLink})
       .then((response) => response.data);
   }
 
   /**
    * Unstake a free tier application.
-   * @param {string} transactionHash Transaction hash.
+   *
+   * @param {object} appUnstakeTransaction Transaction hash.
+   * @param {string} appUnstakeTransaction.address Sender address
+   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeFreeTierApplication(transactionHash) {
-    const data = {transactionHash};
+  unstakeFreeTierApplication(appUnstakeTransaction, applicationLink) {
+    const data = {appUnstakeTransaction, applicationLink};
 
     return axios
       .post(this._getURL("freetier/unstake"), data)
@@ -378,7 +399,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Stake a custom tier application.
    *
-   * @param {string} appStakeTransaction Transaction hash.
+   * @param {object} appStakeTransaction Transaction.
    * @param {string} paymentId payment's stripe confirmation id.
    * @param {string} applicationLink Link to detail for email.
    *

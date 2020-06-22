@@ -10,9 +10,6 @@ const APP_UNSTAKE_QUEUE = JobsProvider.getAppUnstakeJobQueue();
 const NODE_STAKE_QUEUE = JobsProvider.getNodeStakeJobQueue();
 const NODE_UNSTAKE_QUEUE = JobsProvider.getNodeUnstakeJobQueue();
 
-/**
- * @deprecated This logic will be moved soon.
- */
 export default class TransactionService extends BaseService {
 
   /**
@@ -107,13 +104,14 @@ export default class TransactionService extends BaseService {
   /**
    * Add unstake transaction.
    *
-   * @param {string} appUnstakeTxHash The transaction hash for the submitted app unstake transaction
-   * @param {object} emailData Data to submit unstake email
-   * @param {string} emailData.userName User that owns the application
-   * @param {string} emailData.contactEmail User that owns the application
-   * @param {object} emailData.applicationData Application information
-   * @param {string} emaildata.applicationData.name Name of the application
-   * @param {string} emaildata.applicationData.link Link to the application
+   * @param {string} appUnstakeTxHash The transaction hash for the submitted app unstake transaction.
+   * @param {object} emailData Data to submit unstake email.
+   * @param {string} emailData.userName User that owns the application.
+   * @param {string} emailData.contactEmail User that owns the application.
+   * @param {object} emailData.applicationData Application information.
+   * @param {string} emailData.applicationData.name Name of the application.
+   * @param {string} emailData.applicationData.link Link to the application.
+   *
    * @returns {Promise<boolean>} if was added or not.
    */
   async addAppUnstakeTransaction(appUnstakeTxHash, emailData) {
@@ -131,13 +129,14 @@ export default class TransactionService extends BaseService {
   /**
    * Add unstake transaction.
    *
-   * @param {string} nodeUnstakeTxHash The transaction hash for the submitted app unstake transaction
-   * @param {object} emailData Data to submit unstake email
-   * @param {string} emailData.userName User that owns the application
-   * @param {string} emailData.contactEmail User that owns the application
-   * @param {object} emailData.nodeData Application information
-   * @param {string} emaildata.nodeData.name Name of the application
-   * @param {string} emaildata.nodeData.link Link to the application
+   * @param {string} nodeUnstakeTxHash The transaction hash for the submitted app unstake transaction.
+   * @param {object} emailData Data to submit unstake email.
+   * @param {string} emailData.userName User that owns the application.
+   * @param {string} emailData.contactEmail User that owns the application.
+   * @param {object} emailData.nodeData Application information.
+   * @param {string} emailData.nodeData.name Name of the application.
+   * @param {string} emailData.nodeData.link Link to the application.
+   *
    * @returns {Promise<boolean>} if was added or not.
    */
   async addNodeUnstakeTransaction(nodeUnstakeTxHash, emailData) {
@@ -152,44 +151,6 @@ export default class TransactionService extends BaseService {
     return saved;
   }
 
-  // /**
-  //  * Add unstake transaction.
-  //  *
-  //  * @param {string} transactionHash Transaction hash.
-  //  *
-  //  * @returns {Promise<boolean>} if was added or not.
-  //  */
-  // async addUnstakeTransaction(transactionHash) {
-  //   const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
-
-  //   const saved = await this.__addTransaction(pocketTransaction);
-
-  //   if (saved) {
-  //     JobsProvider.addJob(UNSTAKE_QUEUE, pocketTransaction);
-  //   }
-
-  //   return saved;
-  // }
-
-  // /**
-  //  * Add un jail transaction.
-  //  *
-  //  * @param {string} transactionHash Transaction hash.
-  //  *
-  //  * @returns {Promise<boolean>} if was added or not.
-  //  */
-  // async addUnJailTransaction(transactionHash) {
-  //   const pocketTransaction = new PocketTransaction(new Date(), transactionHash);
-
-  //   const saved = await this.__addTransaction(pocketTransaction);
-
-  //   if (saved) {
-  //     JobsProvider.addJob(UNJAIL_QUEUE, pocketTransaction);
-  //   }
-
-  //   return saved;
-  // }
-
   /**
    * Mark transaction as success.
    *
@@ -198,8 +159,4 @@ export default class TransactionService extends BaseService {
   async markTransactionSuccess(transaction) {
     await this.__updateTransaction(transaction);
   }
-
-  /**
-   * Check if a transaction is succesful
-   */
 }

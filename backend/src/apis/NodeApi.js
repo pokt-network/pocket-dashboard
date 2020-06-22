@@ -109,6 +109,17 @@ router.get("/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
+ * Get node that is on network by address.
+ */
+router.get("/network/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{nodeAccountAddress:string}} */
+  const data = req.params;
+  const node = await nodeService.getNetworkNode(data.nodeAccountAddress);
+
+  res.json(node);
+}));
+
+/**
  * Get staked summary data.
  */
 router.get("/summary/staked", apiAsyncWrapper(async (req, res) => {

@@ -13,6 +13,8 @@ import bigInt from "big-integer";
 import {DashboardError, DashboardValidationError, PocketNetworkError} from "../models/Exceptions";
 import TransactionService from "./TransactionService";
 import {POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
+import {Configurations} from "../_configuration";
+import {POKT_DENOMINATIONS} from "./PocketService";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 
@@ -169,7 +171,6 @@ export default class ApplicationService extends BasePocketService {
     try {
       return this.pocketService.getApplication(applicationAddress);
     } catch (e) {
-      console.error(e);
       throw new PocketNetworkError("Application does not exist on network");
     }
   }
@@ -196,6 +197,18 @@ export default class ApplicationService extends BasePocketService {
     }
 
     return null;
+  }
+
+  /**
+   * Get application data on network.
+   *
+   * @param {string} applicationAddress Application address.
+   *
+   * @returns {Promise<Application>} Application data.
+   * @async
+   */
+  async getNetworkApplication(applicationAddress) {
+    return this.pocketService.getApplication(applicationAddress);
   }
 
   /**
@@ -308,48 +321,103 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Stake a free tier application.
    *
-   * @param {string} clientAddress Client Address
-   * @param {string} clientPubKey Client Public Key
+   * @param {ExtendedPocketApplication} application Application to stake.
+   * @param {{address: string, raw_hex_bytes: string}} appStakeTransaction Transaction to stake.
+   * @param {{name: string, link: string}} emailData Email data.
    *
    * @returns {Promise<PocketAAT | boolean>} If application was created or not.
    * @async
    */
-  async stakeFreeTierApplication(clientAddress, clientPubKey) {
-    // Create Application credentials
+  async stakeFreeTierApplication(application, appStakeTransaction, emailData) {
+    const {
+      aat_version: aatVersion,
+      free_tier: {stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount}
+    } = Configurations.pocket_network;
+
+    // Create Application credentials.
     const appAccount = await this.pocketService.createUnlockedAccount();
+    const appAccountPublicKeyHex = appAccount.publicKey.toString("hex");
+    const appAccountPrivateKeyHex = appAccount.privateKey.toString("hex");
 
-    // Create AAT
-    const freeTierAAT = await PocketAAT.from("0.0.1", clientPubKey, appAccount.publicKey.toString("hex"), appAccount.privateKey.toString("hex"));
+    // First transfer funds from the main fund.
+    const fundingTransactionHash = await this.pocketService.transferFromMainFund(upoktToStake, appAccount.addressHex);
 
-    // Retrieve the application from persistence
-    const persistedApplication = await this.getApplication(clientAddress);
+    // Create post confirmation action to stake application.
+    const contactEmail = application.pocketApplication.contactEmail;
+    const appStakeAction = new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, {
+      appStakeTransaction,
+      contactEmail,
+      emailData,
+      paymentEmailData: {
+        amountPaid: 0,
+        poktStaked: upoktToStake / Math.pow(10, POKT_DENOMINATIONS.upokt),
+        maxRelayPerDayAmount
+      }
+    });
 
-    // Set the free tier credentials
-    persistedApplication.pocketApplication.freeTierApplicationAccount = new PrivatePocketAccount(appAccount.addressHex, appAccount.publicKey.toString("hex"), appAccount.privateKey.toString("hex"));
+    // Create job to monitor transaction confirmation
+    const result = await this.transactionService.addTransferTransaction(fundingTransactionHash, appStakeAction);
+
+    if (!result) {
+      throw new Error("Couldn't add funding transaction for processing");
+    }
+
+    // Update application.
+    // Set the free tier credentials.
+    application.pocketApplication.freeTierApplicationAccount = new PrivatePocketAccount(appAccount.addressHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+    await this.__updatePersistedApplication(application.pocketApplication);
+    await this.__markApplicationAsFreeTier(application.pocketApplication, true);
+
+    return await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPublicKeyHex);
   }
 
   /**
    * Unstake free tier application.
    *
-   * @param {string} transactionHash Transaction to stake.
+   * @param {object} appUnstakeTransaction Transaction object.
+   * @param {string} appUnstakeTransaction.address Sender address
+   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {string} applicationLink Link to detail for email.
    *
-   * @returns {Promise<PocketApplication | boolean>} If application was unstaked return the application, if not return false.
    * @async
    */
-  async unstakeFreeTierApplication(transactionHash) {
-    // TODO: Use the transaction.
+  async unstakeFreeTierApplication(appUnstakeTransaction, applicationLink) {
+    const {address, raw_hex_bytes: rawHexBytes} = appUnstakeTransaction;
+
+    // Submit transaction
+    const appUnstakedTransaction = await this.pocketService.submitRawTransaction(address, rawHexBytes);
+
+    const application = await this.getApplication(address);
+    const emailData = {
+      userName: application.pocketApplication.user,
+      contactEmail: application.pocketApplication.contactEmail,
+      applicationData: {
+        name: application.pocketApplication.name,
+        link: applicationLink
+      }
+    };
+
+    // Add transaction to queue
+    const result = await this.transactionService.addAppUnstakeTransaction(appUnstakedTransaction, emailData);
+
+    if (!result) {
+      throw new Error("Couldn't register app unstake transaction for email notification");
+    }
+
+
+    await this.__markApplicationAsFreeTier(application.pocketApplication, false);
   }
 
   /**
    * Stake an application on network.
    *
-   * @param
-   * @param appAddress
-   * @param upoktToStake
-   * @param application
-   * @param emailData
-   * @param paymentEmailData
-   * @param {object} appStakeTransaction Transaction to stake.
+   * @param {string} appAddress Application address.
+   * @param {string} upoktToStake UPokt to stake.
+   * @param {{address: string, raw_hex_bytes: string}} appStakeTransaction Transaction to stake.
+   * @param {ExtendedPocketApplication} application Application to stake.
+   * @param {{name: string, link: string}} emailData Email data.
+   * @param {object} paymentEmailData Payment email data.
+   *
    * @throws {Error}
    */
   async stakeApplication(appAddress, upoktToStake, appStakeTransaction, application, emailData, paymentEmailData) {
@@ -380,6 +448,7 @@ export default class ApplicationService extends BasePocketService {
    * @param {string} appUnstakeTransaction.address Sender address
    * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
    * @param {string} applicationLink Link to detail for email.
+   *
    * @async
    */
   async unstakeApplication(appUnstakeTransaction, applicationLink) {

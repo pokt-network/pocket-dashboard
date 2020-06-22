@@ -235,6 +235,18 @@ export default class NodeService extends BasePocketService {
   }
 
   /**
+   * Get node data on network.
+   *
+   * @param {string} nodeAddress Node address.
+   *
+   * @returns {Promise<Node>} Node data.
+   * @async
+   */
+  async getNetworkNode(nodeAddress) {
+    return this.pocketService.getNode(nodeAddress);
+  }
+
+  /**
    * Get all nodes on network.
    *
    * @param {number} limit Limit of query.

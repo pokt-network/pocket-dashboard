@@ -2,11 +2,7 @@
 import React, {Component} from "react";
 import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {
-  STAKE_STATUS,
-  TABLE_COLUMNS,
-  DEFAULT_NETWORK_ERROR_MESSAGE,
-  BACKEND_ERRORS} from "../../../_constants";
+import {BACKEND_ERRORS, DEFAULT_NETWORK_ERROR_MESSAGE, STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
 import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
@@ -66,7 +62,7 @@ class AppDetail extends Component {
       networkData,
       error,
       name,
-    } = await ApplicationService.getApplication(address);
+    } = await ApplicationService.getApplication(address) || {};
 
     hasError = error ? error : hasError;
     errorType = error ? name : errorType;
@@ -135,7 +131,7 @@ class AppDetail extends Component {
     const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
 
     const {success, data} = freeTier
-      ? await ApplicationService.unstakeFreeTierApplication()
+      ? await ApplicationService.unstakeFreeTierApplication(appUnstakeTransaction, link)
       : await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
 
     if (success) {

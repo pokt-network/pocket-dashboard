@@ -10,6 +10,7 @@ import CustomTierModal from "./CustomTierModal";
 import FreeTierModal from "./FreeTierModal";
 import {CUSTOM_TIER_MODAL, FREE_TIER_MODAL} from "./constants";
 import PocketClientService from "../../../core/services/PocketClientService";
+import {Configurations} from "../../../_configuration";
 
 class TierSelection extends Component {
   constructor(props, context) {
@@ -29,19 +30,30 @@ class TierSelection extends Component {
 
   async createFreeTierItem() {
     const {
-      // TODO: Uncomment on free tier implementation
-      // passphrase,
-      // chains,
       address,
+      chains,
+      passphrase
     } = ApplicationService.getApplicationInfo();
 
     const unlockedAccount = await PocketClientService.getUnlockedAccount(address);
     const clientAddressHex = unlockedAccount.addressHex;
-    const clientPubKeyHex = unlockedAccount.publicKey.toString("hex");
+
+    const url = _getDashboardPath(
+      DASHBOARD_PATHS.appDetail
+    );
+
+    const detail = url.replace(":address", address);
+    const applicationLink = `${window.location.origin}${detail}`;
+
+    const stakeAmount = {
+      pokt: Configurations.pocket_network.free_tier.stake_amount.toString(),
+    };
+
+    const appStakeTransaction = await PocketClientService.appStakeRequest(clientAddressHex, passphrase, chains, stakeAmount);
 
     this.setState({creatingFreeTier: true});
 
-    const data = await ApplicationService.stakeFreeTierApplication(clientAddressHex, clientPubKeyHex);
+    const data = await ApplicationService.stakeFreeTierApplication(appStakeTransaction, applicationLink);
 
     if (data !== false) {
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);

@@ -204,6 +204,26 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
+   * Get network node.
+   *
+   * @param {string} nodeAddress Node address in hex.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getNetworkNode(nodeAddress) {
+    return axios
+      .get(this._getURL(`network/${nodeAddress}`))
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
+  }
+
+  /**
    * Get staked summary data.
    *
    * @return {Promise|Promise<*>}
