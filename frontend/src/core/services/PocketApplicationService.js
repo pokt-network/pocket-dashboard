@@ -342,17 +342,14 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Create free tier application.
    *
-   * @param {string} clientAddressHex Address of the Client Keypair for the Free Tier Account
-   * @param {string} clientPubKeyHex Public key of the Client Keypair for the Free Tier Account
+   * @param {object} appStakeTransaction Transaction.
+   * @param {string} applicationLink Application link.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeFreeTierApplication(clientAddressHex, clientPubKeyHex) {
+  stakeFreeTierApplication(appStakeTransaction, applicationLink) {
     return axios
-      .post(this._getURL("freetier/stake"), {
-        clientAddress: clientAddressHex,
-        clientPubKey: clientPubKeyHex
-      })
+      .post(this._getURL("freetier/stake"), {appStakeTransaction, applicationLink})
       .then((response) => response.data);
   }
 
@@ -378,7 +375,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Stake a custom tier application.
    *
-   * @param {string} appStakeTransaction Transaction hash.
+   * @param {object} appStakeTransaction Transaction.
    * @param {string} paymentId payment's stripe confirmation id.
    * @param {string} applicationLink Link to detail for email.
    *

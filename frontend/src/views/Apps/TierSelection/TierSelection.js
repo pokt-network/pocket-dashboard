@@ -29,8 +29,6 @@ class TierSelection extends Component {
 
   async createFreeTierItem() {
     const {
-      passphrase,
-      chains,
       address,
     } = ApplicationService.getApplicationInfo();
 
@@ -40,7 +38,8 @@ class TierSelection extends Component {
 
     this.setState({creatingFreeTier: true});
 
-    const data = await ApplicationService.stakeFreeTierApplication(clientAddressHex, clientPubKeyHex);
+    // FIXME: Make a free tier stake transaction
+    const data = await ApplicationService.stakeFreeTierApplication(appStakeTransaction, applicationLink);
 
     if (data !== false) {
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);

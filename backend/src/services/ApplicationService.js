@@ -378,7 +378,7 @@ export default class ApplicationService extends BasePocketService {
    * @param {string} upoktToStake UPokt to stake.
    * @param {{address: string, raw_hex_bytes: string}} appStakeTransaction Transaction to stake.
    * @param {ExtendedPocketApplication} application Application to stake.
-   * @param {name: string, link: string} emailData Email data.
+   * @param {{name: string, link: string}} emailData Email data.
    * @param {object} paymentEmailData Payment email data.
    *
    * @throws {Error}
