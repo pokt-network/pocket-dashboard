@@ -95,22 +95,25 @@ class ValidateKeys extends Component {
 
     const {address} = this.props;
     const {privateKey, passphrase, ppkData} = this.state.data;
+    const passphraseOrDefault = ppkData || passphrase ? passphrase : "default";
     let ppk;
 
     if (!ppkData) {
       ppk = JSON.parse(
         await PocketClientService.createPPKFromPrivateKey(
-          privateKey, passphrase
+          privateKey, passphraseOrDefault
         )
       );
     } else {
       ppk = ppkData;
     }
 
-    const account = await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+    const account = await PocketClientService.saveAccount(
+      JSON.stringify(ppk), passphraseOrDefault
+    );
     const {addressHex} = account;
 
-    const validated = addressHex !== address;
+    const validated = addressHex === address;
 
     if (validated) {
       this.setState({
@@ -123,7 +126,7 @@ class ValidateKeys extends Component {
       this.setState({
         error: {
           show: true,
-          message: "Invalid private key / passphrase"
+          message: "Invalid private key / passphrase",
         },
       });
     }
@@ -138,7 +141,7 @@ class ValidateKeys extends Component {
       error,
       validated,
       ppk,
-      ppkFileName
+      ppkFileName,
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
@@ -227,7 +230,7 @@ class ValidateKeys extends Component {
                     </>
                   ) : (
                     <>
-                      <h2>Passphrase</h2>
+                      <h2>Passphrase {privateKey ? "(Optional)" : ""}</h2>
                       <Form.Group className="d-flex">
                         <Form.Control
                           placeholder="*****************"

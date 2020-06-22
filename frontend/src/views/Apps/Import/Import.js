@@ -105,42 +105,44 @@ class Import extends Component {
 
     const {type} = this.state;
     const {privateKey, passphrase, ppkData} = this.state.data;
+    const passphraseOrDefault = ppkData || passphrase ? passphrase : "default";
     let ppk;
 
     if (!ppkData) {
+      ppk = JSON.parse(
+        await PocketClientService.createPPKFromPrivateKey(
+          privateKey, passphraseOrDefault
+        )
+      );
+    } else {
       if (!passphrase) {
         this.setState({
           error: {show: true, message: "Your passphrase cannot be empty"},
         });
         return;
       }
-
-      ppk = JSON.parse(
-        await PocketClientService.createPPKFromPrivateKey(
-          privateKey, passphrase
-        )
-      );
-    } else {
       ppk = ppkData;
     }
 
-    const {success, data} = await AccountService.importAccount(ppk, passphrase);
+    const {success, data} = await AccountService.importAccount(
+        ppk, passphraseOrDefault);
 
     if (success) {
-      await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+      await PocketClientService.saveAccount(
+        JSON.stringify(ppk), passphraseOrDefault);
 
       // Have to save ppk on cache as ppk generated from saved account is not
       // the same as one uploaded (even for the same account)
       if (type === ITEM_TYPES.APPLICATION) {
         ApplicationService.saveAppInfoInCache({
           imported: true,
-          passphrase,
+          passphraseOrDefault,
           address: data.address,
           ppk,
         });
       } else {
         NodeService.saveNodeInfoInCache({
-          passphrase,
+          passphraseOrDefault,
           address: data.address,
           ppk,
         });
@@ -276,7 +278,7 @@ class Import extends Component {
                     </>
                   ) : (
                     <>
-                      <h2>Passphrase</h2>
+                      <h2>Passphrase {privateKey ? "(Optional)" : ""}</h2>
                       <Form.Group className="d-flex">
                         <Form.Control
                           placeholder="*****************"
