@@ -7,6 +7,7 @@ import {
   Node,
   NodeParams,
   Pocket,
+  PocketRpcProvider,
   RpcError,
   StakingStatus,
   Transaction,
@@ -15,6 +16,7 @@ import {
 } from "@pokt-network/pocket-js";
 import {Configurations} from "../_configuration";
 import {PocketNetworkError} from "../models/Exceptions";
+import bigInt from "big-integer";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
@@ -38,8 +40,6 @@ export const POKT_DENOMINATIONS = {
 function getPocketDispatchers() {
   const dispatchersStr = POCKET_NETWORK_CONFIGURATION.dispatchers;
 
-  console.log(`DISPATCHERS: ${dispatchersStr}`);
-
   if (dispatchersStr === "") {
     return [];
   }
@@ -56,7 +56,7 @@ async function getPocketRPCProvider() {
 }
 
 /**
- *
+ * @returns {HttpRpcProvider} HTTP RPC Provider.
  */
 function getHttpRPCProvider() {
   const httpProviderNode = POCKET_NETWORK_CONFIGURATION.http_provider_node;
@@ -68,7 +68,7 @@ function getHttpRPCProvider() {
 }
 
 /**
- *
+ * @returns {HttpRpcProvider | PocketRpcProvider} RPC Provider.
  */
 async function getRPCProvider() {
   const providerType = POCKET_NETWORK_CONFIGURATION.provider_type;
@@ -85,10 +85,6 @@ async function getRPCProvider() {
 
 export default class PocketService {
 
-  /**
-   * @param {string[]} nodes List of nodes of Pokt network.
-   * @param {string} rpcProvider RPC provider of Pokt network.
-   */
   constructor() {
     /**
      * @type {Pocket}
@@ -305,7 +301,6 @@ export default class PocketService {
     const pocketRpcProvider = await getRPCProvider();
     const applicationParametersResponse = await this.__pocket.rpc(pocketRpcProvider).query.getAppParams();
 
-    console.error(applicationParametersResponse);
     if (applicationParametersResponse instanceof Error) {
       throw new PocketNetworkError(applicationParametersResponse.message);
     }
@@ -344,24 +339,26 @@ export default class PocketService {
   }
 
   /**
-   * Transfer funds from the Main Fund Account to the customer's Account
+   * Transfer funds from the Main Fund Account to the customer's Account.
    *
-   * @param {string} amount Amount to transfer in uPOKT denomination
-   * @param {string} customerAddress Receipient address
+   * @param {string} amount Amount to transfer in uPOKT denomination.
+   * @param {string} customerAddress Recipient address.
+   *
+   * @returns {Promise<string>} The transaction hash.
    * @throws {PocketNetworkError}
-   * @returns {Promise<string>}
    */
   async transferFromMainFund(amount, customerAddress) {
+    const {transaction_fee: transactionFee, chain_id: chainID} = POCKET_NETWORK_CONFIGURATION;
+
     // Include transaction fee for the stake transaction
-    // TODO: Use the environment variable
-    const totalAmount = Number(amount) + 10000000;
+    const totalAmount = bigInt(amount).add(bigInt(transactionFee));
     const pocketRpcProvider = await getRPCProvider();
 
     this.__pocket.rpc(pocketRpcProvider);
     const rawTxResponse = await this.__pocket
       .withPrivateKey(POCKET_MAIN_FUND_ACCOUNT)
       .send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
-      .submit(POCKET_NETWORK_CONFIGURATION.chain_id, POCKET_NETWORK_CONFIGURATION.transaction_fee);
+      .submit(chainID, transactionFee);
 
     if (typeGuard(rawTxResponse, RpcError)) {
       throw new PocketNetworkError(rawTxResponse.message);
@@ -371,15 +368,17 @@ export default class PocketService {
   }
 
   /**
+   * Create an unlock account.
+   *
+   * @returns {Promise<UnlockedAccount>} The unlock account.
    * @throws {PocketNetworkError}
-   * @returns {Promise<UnlockedAccount>}
    */
   async createUnlockedAccount() {
     // TODO: produce a random passphrase
     const account = await this.__pocket.keybase.createAccount("test");
     const unlockedAccountOrError = await this.__pocket.keybase.getUnlockedAccount(account.addressHex, "test");
 
-    if(typeGuard(unlockedAccountOrError, Error)) {
+    if (typeGuard(unlockedAccountOrError, Error)) {
       throw new PocketNetworkError(unlockedAccountOrError.message);
     } else if (typeGuard(unlockedAccountOrError, UnlockedAccount)) {
       return unlockedAccountOrError;

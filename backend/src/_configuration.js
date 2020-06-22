@@ -86,13 +86,13 @@ export const Configurations = {
          pocket_network: {
            jobs: {
              database_url:
-               process.env.POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL,
+             process.env.POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL,
              delayed_time:
-               process.env.POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME,
+             process.env.POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME,
              attempts: process.env.POCKET_NETWORK_SERVICE_WORKER_ATEMPTS,
            },
            aat_version: "0.0.1",
-           transaction_fee: "100000",
+           transaction_fee: "10000000",
            chain_id: process.env.POCKET_NETWORK_CHAIN_ID,
            max_dispatchers: process.env.POCKET_NETWORK_MAX_DISPATCHER,
            request_timeout: process.env.POCKET_NETWORK_REQUEST_TIMEOUT,
@@ -114,10 +114,8 @@ export const Configurations = {
              p_rate: process.env.CHECKOUT_P_RATE,
            },
            free_tier: {
-             account: process.env.POCKET_FREE_TIER_ACCOUNT,
-             passphrase: process.env.POCKET_FREE_TIER_ACCOUNT_PASSPRHASE,
              stake_amount: process.env.POCKET_FREE_TIER_STAKE_AMOUNT,
-             rpd: 1000000
+             max_relay_per_day_amount: "1000000"
            },
            nodes: {
              test_rpc_provider: "http://localhost",
