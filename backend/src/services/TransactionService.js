@@ -9,6 +9,7 @@ const APP_STAKE_QUEUE = JobsProvider.getAppStakeJobQueue();
 const APP_UNSTAKE_QUEUE = JobsProvider.getAppUnstakeJobQueue();
 const NODE_STAKE_QUEUE = JobsProvider.getNodeStakeJobQueue();
 const NODE_UNSTAKE_QUEUE = JobsProvider.getNodeUnstakeJobQueue();
+const NODE_UNJAIL_QUEUE = JobsProvider.getNodeUnJailJobQueue();
 
 export default class TransactionService extends BaseService {
 
@@ -85,7 +86,7 @@ export default class TransactionService extends BaseService {
   /**
    * Add stake transaction.
    *
-   * @param {string} nodeStakeTxHash The transaction hash for the submitted app stake transaction
+   * @param {string} nodeStakeTxHash The transaction hash for the submitted node stake transaction
    * @param {{nodeStakeTransaction: object, contactEmail: string, emailData: object, paymentEmailData: object}} nodeStakeData Node Stake Data
    * @returns {Promise<boolean>} if was added or not.
    */
@@ -129,7 +130,7 @@ export default class TransactionService extends BaseService {
   /**
    * Add unstake transaction.
    *
-   * @param {string} nodeUnstakeTxHash The transaction hash for the submitted app unstake transaction.
+   * @param {string} nodeUnstakeTxHash The transaction hash for the submitted node unstake transaction.
    * @param {object} emailData Data to submit unstake email.
    * @param {string} emailData.userName User that owns the application.
    * @param {string} emailData.contactEmail User that owns the application.
@@ -146,6 +147,31 @@ export default class TransactionService extends BaseService {
 
     if (saved) {
       JobsProvider.addJob(NODE_UNSTAKE_QUEUE, pocketTransaction);
+    }
+
+    return saved;
+  }
+
+  /**
+   * Add unjail transaction.
+   *
+   * @param {string} nodeUnJailTxHash The transaction hash for the submitted app unstake transaction.
+   * @param {object} emailData Data to submit unstake email.
+   * @param {string} emailData.userName User that owns the application.
+   * @param {string} emailData.contactEmail User that owns the application.
+   * @param {object} emailData.nodeData Application information.
+   * @param {string} emailData.nodeData.name Name of the application.
+   * @param {string} emailData.nodeData.link Link to the application.
+   *
+   * @returns {Promise<boolean>} if was added or not.
+   */
+  async addNodeUnJailTransaction(nodeUnJailTxHash, emailData) {
+    const pocketTransaction = new PocketTransaction(new Date(), nodeUnJailTxHash, new TransactionPostAction(POST_ACTION_TYPE.unjailNode, emailData));
+
+    const saved = await this.__addTransaction(pocketTransaction);
+
+    if (saved) {
+      JobsProvider.addJob(NODE_UNJAIL_QUEUE, pocketTransaction);
     }
 
     return saved;

@@ -1,11 +1,7 @@
 import React, {Component} from "react";
 import {Alert, Button, Col, Modal, Row} from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {
-  STAKE_STATUS,
-  TABLE_COLUMNS,
-  DEFAULT_NETWORK_ERROR_MESSAGE,
-  BACKEND_ERRORS} from "../../../_constants";
+import {BACKEND_ERRORS, DEFAULT_NETWORK_ERROR_MESSAGE, STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -143,7 +139,7 @@ class NodeDetail extends Component {
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
-    const nodeUnjailTransaction = await PocketClientService.nodeUnjailRequest(
+    const {nodeUnjailTransaction} = await PocketClientService.nodeUnjailRequest(
       address
     );
 
