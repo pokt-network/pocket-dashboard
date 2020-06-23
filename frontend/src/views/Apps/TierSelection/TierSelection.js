@@ -11,6 +11,7 @@ import FreeTierModal from "./FreeTierModal";
 import {CUSTOM_TIER_MODAL, FREE_TIER_MODAL} from "./constants";
 import PocketClientService from "../../../core/services/PocketClientService";
 import {Configurations} from "../../../_configuration";
+import {BACKEND_ERRORS, DEFAULT_NETWORK_ERROR_MESSAGE} from "../../../_constants";
 
 class TierSelection extends Component {
   constructor(props, context) {
@@ -52,9 +53,9 @@ class TierSelection extends Component {
 
     this.setState({creatingFreeTier: true});
 
-    const data = await ApplicationService.stakeFreeTierApplication(appStakeTransaction, applicationLink);
+    const {success, name: errorType} = await ApplicationService.stakeFreeTierApplication(appStakeTransaction, applicationLink);
 
-    if (data !== false) {
+    if (success !== false) {
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
       const path = url.replace(":address", address);
 
@@ -63,9 +64,15 @@ class TierSelection extends Component {
       // eslint-disable-next-line react/prop-types
       this.props.history.push({pathname: path, state: {freeTierMsg: true}});
     } else {
+      let errorMessage = "There was an error creating your free tier app.";
+
+      if (errorType === BACKEND_ERRORS.NETWORK) {
+        errorMessage = DEFAULT_NETWORK_ERROR_MESSAGE;
+      }
+
       this.setState({
         creatingFreeTier: false,
-        errorMessage: "There was an error creating your free tier app.",
+        errorMessage: errorMessage,
       });
     }
   }
