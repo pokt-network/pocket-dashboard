@@ -63,7 +63,7 @@ class NodeDetail extends Component {
       pocketNode,
       networkData,
       error,
-      name} = await NodeService.getNode(address);
+      name} = await NodeService.getNode(address) || {};
 
       hasError = error ? error : hasError;
       errorType = error ? name : errorType;

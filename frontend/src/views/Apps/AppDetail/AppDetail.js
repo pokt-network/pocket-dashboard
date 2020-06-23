@@ -84,7 +84,12 @@ class AppDetail extends Component {
     let aat;
 
     if (freeTier) {
-      aat = await ApplicationService.getFreeTierAppAAT(address);
+      const {success, data} = await ApplicationService.getFreeTierAppAAT(
+        address);
+
+      if (success) {
+        aat = data;
+      }
     }
 
     this.setState({
@@ -247,7 +252,7 @@ class AppDetail extends Component {
       </>
     );
 
-    if (freeTier) {
+    if (freeTier && aat) {
       aatStr = PocketApplicationService.parseAAT(aat);
     }
 
