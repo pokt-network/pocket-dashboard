@@ -45,9 +45,8 @@ class TierSelection extends Component {
     const detail = url.replace(":address", address);
     const applicationLink = `${window.location.origin}${detail}`;
 
-    const stakeAmount = {
-      pokt: Configurations.pocket_network.free_tier.stake_amount.toString(),
-    };
+
+    const stakeAmount = Configurations.pocket_network.free_tier.stake_amount.toString();
 
     const appStakeTransaction = await PocketClientService.appStakeRequest(clientAddressHex, passphrase, chains, stakeAmount);
 

@@ -131,7 +131,7 @@ class AppDetail extends Component {
     const detail = url.replace(":address", address);
     const link = `${window.location.origin}${detail}`;
 
-    await PocketClientService.saveAccount(ppk, passphrase);
+    await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
     const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
 

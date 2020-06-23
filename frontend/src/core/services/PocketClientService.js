@@ -201,7 +201,7 @@ class PocketClientService {
 
       return await transactionSender
         .appStake(
-          account.publicKey.toString("hex"), chains, Number(stakeAmount.pokt).toString()
+          account.publicKey.toString("hex"), chains, Number(stakeAmount).toString()
         )
         .createTransaction(chainID, transactionFee);
 
@@ -250,7 +250,7 @@ class PocketClientService {
       const {unlockedAccount: account} = transactionSender;
 
       return await transactionSender
-        .nodeStake(account.publicKey.toString("hex"), chains, Number(stakeAmount.cost).toString(), new URL(serviceURL))
+        .nodeStake(account.publicKey.toString("hex"), chains, Number(stakeAmount).toString(), new URL(serviceURL))
         .createTransaction(chainID, transactionFee);
 
     } catch (e) {
