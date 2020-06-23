@@ -346,6 +346,8 @@ class PocketNodeService extends PocketBaseService {
    * @returns {Promise|Promise<*>}
    */
   unjailNode(transactionHash, nodeLink) {
+    // FIXME: Use transactionObject instead of only transaction 
+    // hash (check stake/unstake endpoints)
     const data = {transactionHash, nodeLink};
 
     return axios

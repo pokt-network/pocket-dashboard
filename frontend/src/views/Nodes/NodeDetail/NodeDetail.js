@@ -143,13 +143,12 @@ class NodeDetail extends Component {
 
     await PocketClientService.saveAccount(ppk, passphrase);
 
-    const {tx} = await PocketClientService.nodeUnjailRequest(
+    const nodeUnjailTransaction = await PocketClientService.nodeUnjailRequest(
       address
     );
 
-    // TODO: Call backend and send request to finish transaction
     const {success, data} = NodeService.unjailNode(
-      tx, nodeLink
+      nodeUnjailTransaction, nodeLink
     );
 
     if (success) {
