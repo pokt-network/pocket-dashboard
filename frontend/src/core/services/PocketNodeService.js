@@ -293,8 +293,7 @@ class PocketNodeService extends PocketBaseService {
   /**
    * Stake a node.
    *
-   * @param {string} transactionHash Transaction hash.
-   * @param {string[]} networkChains Node network chains.
+   * @param {{address: string}} nodeStakeTransaction Transaction hash.
    * @param {string} paymentId payment's stripe confirmation id.
    * @param {string} nodeLink Link to detail for email.
    *
@@ -320,7 +319,7 @@ class PocketNodeService extends PocketBaseService {
   /**
    * Unstake a node
    *
-   * @param {string} transactionHash Transaction hash.
+   * @param {{address: string}} nodeUnstakeTransaction Transaction hash.
    * @param {string} nodeLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
@@ -339,14 +338,15 @@ class PocketNodeService extends PocketBaseService {
   }
 
   /**
-   * Unjail a jailed node
-   * @param {string} transactionHash Transaction hash.
+   * Unjail a jailed node.
+   *
+   * @param {{address: string}} nodeUnJailTransaction Transaction hash.
    * @param {string} nodeLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unjailNode(transactionHash, nodeLink) {
-    const data = {transactionHash, nodeLink};
+  unjailNode(nodeUnJailTransaction, nodeLink) {
+    const data = {nodeUnJailTransaction, nodeLink};
 
     return axios
       .post(this._getURL("/unjail"), data)

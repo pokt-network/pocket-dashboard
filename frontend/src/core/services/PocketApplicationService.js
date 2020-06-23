@@ -425,7 +425,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a custom tier application.
    *
-   * @param {object} appUnstakeTransaction Transaction hash.
+   * @param {{address: string}} appUnstakeTransaction Transaction hash.
    * @param {string} appUnstakeTransaction.address Sender address
    * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
    * @param {string} applicationLink Link to detail for email.
