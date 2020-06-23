@@ -2,7 +2,8 @@ export const POST_ACTION_TYPE = {
   stakeApplication: "STAKE_APPLICATION",
   stakeNode: "STAKE_NODE",
   unstakeApplication: "UNSTAKE_APPLICATION",
-  unstakeNode: "UNSTAKE_NODE"
+  unstakeNode: "UNSTAKE_NODE",
+  unjailNode: "UNJAIL_NODE"
 };
 
 export class TransactionPostAction {
@@ -13,54 +14,6 @@ export class TransactionPostAction {
    */
   constructor(type, data) {
     Object.assign(this, {type, data});
-  }
-
-  /**
-   * Create stake application post action.
-   *
-   * @param {string} privateKey Private key.
-   * @param {string} passphrase Passphrase
-   * @param {string} pokt POKT to stake.
-   * @param {string[]} chains Chains to stake.
-   *
-   * @returns {TransactionPostAction} Stake post action.
-   */
-  static createStakeApplicationPostAction(privateKey, passphrase, pokt, chains) {
-    const data = {
-      account: {
-        privateKey,
-        passphrase
-      },
-      pokt,
-      chains
-    };
-
-    return new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, data);
-  }
-
-  /**
-   * Create stake node post action.
-   *
-   * @param {string} privateKey Private key.
-   * @param {string} passphrase Passphrase
-   * @param {string} pokt POKT to stake.
-   * @param {string[]} chains Chains to stake.
-   * @param {string} serviceURL Service URL.
-   *
-   * @returns {TransactionPostAction} Stake post action.
-   */
-  static createStakeNodePostAction(privateKey, passphrase, pokt, chains, serviceURL) {
-    const data = {
-      account: {
-        privateKey,
-        passphrase
-      },
-      pokt,
-      chains,
-      serviceURL
-    };
-
-    return new TransactionPostAction(POST_ACTION_TYPE.stakeNode, data);
   }
 }
 

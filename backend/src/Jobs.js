@@ -1,4 +1,3 @@
-// TODO: Move this logic to the frontend.
 import TransactionService from "./services/TransactionService";
 import PocketService from "./services/PocketService";
 import JobsProvider from "./providers/data/JobsProvider";
@@ -14,6 +13,7 @@ const APP_STAKE_QUEUE = JobsProvider.getAppStakeJobQueue();
 const APP_UNSTAKE_QUEUE = JobsProvider.getAppUnstakeJobQueue();
 const NODE_STAKE_QUEUE = JobsProvider.getNodeStakeJobQueue();
 const NODE_UNSTAKE_QUEUE = JobsProvider.getNodeUnstakeJobQueue();
+const NODE_UNJAIL_QUEUE = JobsProvider.getNodeUnJailJobQueue();
 
 // NODE_STAKE_QUEUE
 NODE_STAKE_QUEUE.process(async (job, done) => {
@@ -45,14 +45,14 @@ NODE_STAKE_QUEUE.process(async (job, done) => {
       emailData,
       paymentEmailData
     } = postAction.data;
-    const emailService = new EmailService(contactEmail);
 
-    await emailService.sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
+    await EmailService
+      .to(contactEmail)
+      .sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
 
     // Finish the job OK
     done();
   } catch (e) {
-    console.error(e);
     done(e);
   }
 });
@@ -83,14 +83,52 @@ NODE_UNSTAKE_QUEUE.process(async (job, done) => {
     }
 
     const {contactEmail, userName, nodeData} = postAction.data;
-    const emailService = new EmailService(contactEmail);
 
-    emailService.sendUnstakeNodeEmail(userName, nodeData);
+    await EmailService
+      .to(contactEmail)
+      .sendUnstakeNodeEmail(userName, nodeData);
 
     // Finish the job OK
     done();
   } catch (error) {
-    console.error(error);
+    done(error);
+  }
+});
+
+// NODE_UNJAIL_QUEUE
+NODE_UNJAIL_QUEUE.process(async (job, done) => {
+  try {
+    // Parse the transaction from the job
+    const nodeUnjailTransaction = job.data;
+
+    // Get the transaction hash to verify
+    const hash = nodeUnjailTransaction.hash;
+
+    // Try to get the transaction from the network
+    const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
+
+    if (typeGuard(transactionOrError, RpcError)) {
+      done(new Error(transactionOrError.message));
+      return;
+    }
+
+    // Submit App Stake Email
+    const postAction = nodeUnjailTransaction.postAction;
+
+    if (!postAction || postAction.type !== POST_ACTION_TYPE.unjailNode) {
+      done(new Error("Invalid Post Action Type: " + JSON.stringify(postAction)));
+      return;
+    }
+
+    const {contactEmail, userName, nodeData} = postAction.data;
+
+    await EmailService
+      .to(contactEmail)
+      .sendNodeUnJailedEmail(userName, nodeData);
+
+    // Finish the job OK
+    done();
+  } catch (error) {
     done(error);
   }
 });
@@ -125,14 +163,14 @@ APP_STAKE_QUEUE.process(async (job, done) => {
       emailData,
       paymentEmailData
     } = postAction.data;
-    const emailService = new EmailService(contactEmail);
 
-    await emailService.sendStakeAppEmail(contactEmail, emailData, paymentEmailData);
+    await EmailService
+      .to(contactEmail)
+      .sendStakeAppEmail(contactEmail, emailData, paymentEmailData);
 
     // Finish the job OK
     done();
   } catch (e) {
-    console.error(e);
     done(e);
   }
 });
@@ -163,14 +201,14 @@ APP_UNSTAKE_QUEUE.process(async (job, done) => {
     }
 
     const {contactEmail, userName, applicationData} = postAction.data;
-    const emailService = new EmailService(contactEmail);
 
-    emailService.sendUnstakeAppEmail(userName, applicationData);
+    await EmailService
+      .to(contactEmail)
+      .sendUnstakeAppEmail(userName, applicationData);
 
     // Finish the job OK
     done();
   } catch (error) {
-    console.error(error);
     done(error);
   }
 });
@@ -227,7 +265,6 @@ POST_TRANSFER_QUEUE.process(async (job, done) => {
       done();
     }
   } catch (e) {
-    console.error(e);
     done(e);
   }
 });
