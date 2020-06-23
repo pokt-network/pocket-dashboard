@@ -10,7 +10,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatDaysCountdown, formatNetworkData, formatNumbers, getStakeStatus} from "../../../_helpers";
+import {formatDaysCountdown, formatNumbers, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -123,7 +123,7 @@ class NodeDetail extends Component {
     const detail = url.replace(":address", address);
     const nodeLink = `${window.location.origin}${detail}`;
 
-    const account = await PocketClientService.saveAccount(ppk, passphrase);
+    const account = await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
     const nodeUnstakeTransaction = await PocketClientService.nodeUnstakeRequest(account.addressHex, passphrase);
 
@@ -141,7 +141,7 @@ class NodeDetail extends Component {
     const detail = url.replace(":address", address);
     const nodeLink = `${window.location.origin}${detail}`;
 
-    await PocketClientService.saveAccount(ppk, passphrase);
+    await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
     const nodeUnjailTransaction = await PocketClientService.nodeUnjailRequest(
       address
@@ -245,11 +245,11 @@ class NodeDetail extends Component {
 
     const generalInfo = [
       {
-        title: `${formatNetworkData(stakedTokens)} POKT`,
+        title: `${formatNumbers(stakedTokens)} POKT`,
         subtitle: "Staked tokens",
       },
       {
-        title: `${formatNetworkData(accountBalance)} POKT`,
+        title: `${formatNumbers(accountBalance)} POKT`,
         subtitle: "Balance",
       },
       {
@@ -265,7 +265,7 @@ class NodeDetail extends Component {
         subtitle: "Jailed",
         children: jailActionItem,
       },
-      {title: formatNumbers(formatNetworkData(stakedTokens)), subtitle: "Validator Power"},
+      {title: formatNumbers(stakedTokens), subtitle: "Validator Power"},
     ];
 
     const contactInfo = [

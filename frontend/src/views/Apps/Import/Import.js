@@ -178,10 +178,8 @@ class Import extends Component {
 
         const {
           tokens,
-          validatorPower: amount,
           chains: networkChains,
           status,
-          // TODO: Verify validator power
         } = await NodeService.getNetworkNode(data.address);
 
         chains = networkChains;
@@ -189,7 +187,7 @@ class Import extends Component {
           accountData: {
             balance,
             tokens,
-            amount: amount || 0,
+            amount: tokens,
             status: getStakeStatus(status),
           },
         });
