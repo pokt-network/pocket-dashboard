@@ -249,17 +249,16 @@ router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
   res.send(true);
 }));
 
-// TODO Move this logic to the frontend.
-// /**
-//  * Get AAT for Free tier
-//  */
-// router.get("/freetier/aat/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
-//   /** @type {{applicationAccountAddress:string}} */
-//   const data = req.params;
-//
-//   const aat = await applicationService.getFreeTierAAT(data.applicationAccountAddress);
-//
-//   res.json(aat);
-// }));
+/**
+ * Get AAT for Free tier
+ */
+router.get("/freetier/aat/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{applicationAccountAddress:string}} */
+  const data = req.params;
+
+  const aat = await applicationService.getFreeTierAAT(data.applicationAccountAddress);
+
+  res.json(aat);
+}));
 
 export default router;
