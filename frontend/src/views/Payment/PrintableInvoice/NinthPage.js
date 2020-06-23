@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import {Row} from "react-bootstrap";
 import Logo from "./Logo";
 
 const now = new Date();
@@ -20,8 +21,8 @@ class NinthPage extends React.Component {
           and not exclusive of any rights or remedies provided by law.
         </p>
         <p style={{paddingLeft: "60px", marginBottom: 0}}>
-          The Company hereby formally accepts Purchaser&lsquo;s offer, as set forth in
-          the Token Purchase Terms and Conditions by and
+          The Company hereby formally accepts Purchaser&lsquo;s offer, as set
+          forth in the Token Purchase Terms and Conditions by and
         </p>
         <p>
           between the Company and {cardHolderName.toUpperCase()} as of the date
@@ -33,7 +34,14 @@ class NinthPage extends React.Component {
           </h4>
           <h4 className="text-uppercase mt-5">pocket network, inc</h4>
           <div className="mt-5">
-            By:{" "}
+            <div className="invoice-signature-wrapper">
+              <span>By:</span>
+              <img
+                className="invoice-ceo-signature"
+                alt="Michael O'Rourke"
+                src={"/assets/MS.jpg"}
+              />
+            </div>
             <div
               style={{
                 maxWidth: "300px",

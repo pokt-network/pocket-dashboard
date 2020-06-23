@@ -73,8 +73,14 @@
     }
 
     .token-purchase-agreement {
-      img {
-        margin: 50px 0 100px 0;
+      .invoice-signature-wrapper {
+        height: 150px;
+
+        .invoice-ceo-signature {
+          width: 250px;
+          height: 150px;
+          margin-left: 30px;
+        }
       }
     }
 
