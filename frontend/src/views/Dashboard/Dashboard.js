@@ -39,7 +39,6 @@ class Dashboard extends Component {
   }
 
   async componentDidMount() {
-    const userEmail = UserService.getUserInfo().email;
     let hasError = false;
     let errorMessage = "";
     let errorType = "";
@@ -58,15 +57,14 @@ class Dashboard extends Component {
     errorMessage = error ? message : errorMessage;
     errorType = error ? name : errorType;
 
-    const networkApps = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT);
+    const networkApps = await ApplicationService.getAllApplications(
+      APPLICATIONS_LIMIT);
 
     hasError = networkApps.error ? networkApps.error : hasError;
     errorMessage = networkApps.error ? networkApps.message : errorMessage;
     errorType = networkApps.error ? networkApps.name : errorType;
 
-    const networkNodes = await NodeService.getAllUserNodes(
-      userEmail, NODES_LIMIT);
+    const networkNodes = await NodeService.getAllNodes(NODES_LIMIT);
 
     hasError = networkNodes.error ? networkNodes.error : hasError;
     errorMessage = networkNodes.error ? networkNodes.message : errorMessage;

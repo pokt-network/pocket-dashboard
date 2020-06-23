@@ -53,7 +53,7 @@ export default class JobsProvider {
   }
 
   /**
-   * Get Node stake job queue.
+   * Get node stake job queue.
    *
    * @returns {*} Node Stake job queue.
    * @static
@@ -63,7 +63,7 @@ export default class JobsProvider {
   }
 
   /**
-   * Get Node unstake job queue.
+   * Get node unstake job queue.
    *
    * @returns {*} Node unstake job queue.
    * @static
@@ -72,25 +72,15 @@ export default class JobsProvider {
     return this.__getJobQueue("NODE_UNSTAKE_QUEUE");
   }
 
-  // /**
-  //  * Get unstake job queue.
-  //  *
-  //  * @returns {*} Unstake job queue.
-  //  * @static
-  //  */
-  // static getUnStakeJobQueue() {
-  //   return this.__getJobQueue("UNSTAKE_QUEUE");
-  // }
-
-  // /**
-  //  * Get unstake job queue.
-  //  *
-  //  * @returns {*} UnJail job queue.
-  //  * @static
-  //  */
-  // static getUnJailJobQueue() {
-  //   return this.__getJobQueue("UNJAIL_QUEUE");
-  // }
+  /**
+   * Get node unjail job queue.
+   *
+   * @returns {*} UnJail job queue.
+   * @static
+   */
+  static getNodeUnJailJobQueue() {
+    return this.__getJobQueue("NODE_UNJAIL_QUEUE");
+  }
 
   /**
    * Add a job to a queue.

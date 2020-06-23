@@ -109,6 +109,17 @@ router.get("/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
+ * Get node that is on network by address.
+ */
+router.get("/network/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
+  /** @type {{nodeAccountAddress:string}} */
+  const data = req.params;
+  const node = await nodeService.getNetworkNode(data.nodeAccountAddress);
+
+  res.json(node);
+}));
+
+/**
  * Get staked summary data.
  */
 router.get("/summary/staked", apiAsyncWrapper(async (req, res) => {
@@ -161,15 +172,15 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
     paymentHistory.isSuccessPayment(true) &&
     paymentHistory.isNodePaymentItem(true)
   ) {
-    // Call NodeService to stake the application
-    const nodeAddress = data.nodeStakeTransaction.address;
-    const node = await nodeService.getNode(nodeAddress, true);
-    const nodeStakeTransaction = data.nodeStakeTransaction;
     const item = paymentHistory.getItem();
     const amountToSpend = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
     const poktStaked = nodeCheckoutService.getPoktToStake(amountToSpend, CoinDenom.Pokt).toString();
     const uPoktStaked = nodeCheckoutService.getPoktToStake(amountToSpend, CoinDenom.Upokt).toString();
 
+    // Call NodeService to stake the application
+    const nodeStakeTransaction = data.nodeStakeTransaction;
+    const nodeAddress = nodeStakeTransaction.address;
+    const node = await nodeService.getNode(nodeAddress);
     const nodeEmailData = {
       name: node.pocketNode.name,
       link: data.nodeLink
@@ -182,9 +193,10 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
     };
 
     await nodeService.stakeNode(nodeAddress, uPoktStaked, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
+
     res.send(true);
   } else {
-    // Return error if payment was unsuccesful
+    // Return error if payment was unsuccessful
     throw new Error("Error processing payment, please try a different method");
   }
 }));
@@ -193,15 +205,15 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
  * Unstake a node.
  */
 router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{nodeUnstakeTranaction: {address: string, raw_hex_bytes: string}, nodeLink: string}} */
+  /** @type {{nodeUnstakeTransaction: {address: string, raw_hex_bytes: string}, nodeLink: string}} */
   const data = req.body;
   const {
-    nodeUnstakeTranaction,
+    nodeUnstakeTransaction,
     nodeLink
   } = data;
 
   // Submit Unstake transaction to the pocket network
-  await nodeService.unstakeNode(nodeUnstakeTranaction, nodeLink);
+  await nodeService.unstakeNode(nodeUnstakeTransaction, nodeLink);
 
   // Respond
   res.send(true);
@@ -211,26 +223,22 @@ router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
  * UnJail a node.
  */
 router.post("/unjail", apiAsyncWrapper(async (req, res) => {
-  /** @type {{transactionHash: string, nodeLink: string}} */
+  /** @type {{nodeUnJailTransaction: {address: string, raw_hex_bytes: string}, nodeLink: string}} */
   const data = req.body;
 
-  const node = await nodeService.unJailNode(data.transactionHash);
+  const node = await nodeService.getNode(data.nodeUnJailTransaction.address);
+  const nodeEmailData = {
+    userName: node.pocketNode.user,
+    contactEmail: node.pocketNode.contactEmail,
+    nodeData: {
+      name: node.pocketNode.name,
+      link: data.nodeLink
+    }
+  };
 
-  // TODO: Move this triggers.
-  // if (node) {
-  //   const nodeEmailData = {
-  //     name: node.name,
-  //     link: data.nodeLink
-  //   };
-  //
-  //   await EmailService
-  //     .to(node.contactEmail)
-  //     .sendNodeUnJailedEmail(node.contactEmail, nodeEmailData);
-  //
-  //   res.send(true);
-  // } else {
-  //   res.send(false);
-  // }
+  await nodeService.unJailNode(data.nodeUnJailTransaction, nodeEmailData);
+
+  res.send(true);
 }));
 
 

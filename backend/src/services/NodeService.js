@@ -52,6 +52,8 @@ export default class NodeService extends BasePocketService {
         "publicPocketAccount.address": node.publicPocketAccount.address
       };
 
+      delete node.id;
+
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this.persistenceService.updateEntity(NODE_COLLECTION_NAME, filter, node);
 
@@ -235,6 +237,18 @@ export default class NodeService extends BasePocketService {
   }
 
   /**
+   * Get node data on network.
+   *
+   * @param {string} nodeAddress Node address.
+   *
+   * @returns {Promise<Node>} Node data.
+   * @async
+   */
+  async getNetworkNode(nodeAddress) {
+    return this.pocketService.getNode(nodeAddress);
+  }
+
+  /**
    * Get all nodes on network.
    *
    * @param {number} limit Limit of query.
@@ -312,15 +326,16 @@ export default class NodeService extends BasePocketService {
   /**
    * Stake a node on network.
    *
-   * @param nodeAddress
-   * @param upoktToStake
-   * @param nodeStakeTransaction
-   * @param node
-   * @param emailData
-   * @param paymentEmailData
-   * @param {string} transactionHash Transaction to stake.
+   * @param {string} nodeAddress Node address in hex.
+   * @param {string} upoktToStake uPOKT amount to stake.
+   * @param {{address: string, raw_hex_bytes: string}} nodeStakeTransaction Stake transaction.
+   * @param {ExtendedPocketNode} node Node to stake.
+   * @param {{name: string, raw_hex_bytes: string}} emailData Email data.
+   * @param {object} paymentEmailData Payment email data.
+   *
    * @returns {Promise<PocketNode | boolean>} If was staked return the node, if not return false.
    * @throws Error If private key is not valid or node does not exists on dashboard.
+   * @async
    */
   async stakeNode(nodeAddress, upoktToStake, nodeStakeTransaction, node, emailData, paymentEmailData) {
     // First transfer funds from the main fund
@@ -350,16 +365,17 @@ export default class NodeService extends BasePocketService {
    * @param {string} nodeUnstakeTransaction.address Sender address
    * @param {string} nodeUnstakeTransaction.raw_hex_bytes Raw transaction bytes
    * @param {string} nodeLink Link to detail for email.
+   *
    * @async
    */
   async unstakeNode(nodeUnstakeTransaction, nodeLink) {
     const {
       address,
-      raw_hex_bytes
+      raw_hex_bytes: rawHexBytes
     } = nodeUnstakeTransaction;
 
     // Submit transaction
-    const nodeUnstakedHash = await this.pocketService.submitRawTransaction(address, raw_hex_bytes);
+    const nodeUnstakedHash = await this.pocketService.submitRawTransaction(address, rawHexBytes);
 
     // Gather email data
     const node = await this.getNode(address);
@@ -383,13 +399,26 @@ export default class NodeService extends BasePocketService {
   /**
    * UnJail node.
    *
-   * @param {string} transactionHash Transaction to stake.
+   * @param {{address: string, raw_hex_bytes: string}} unJailTransaction Transaction to unjail.
+   * @param {{userName: string, contactEmail: string, nodeData: {name: string, link: string}}} emailData Email data.
    *
-   * @returns {Promise<PocketNode | boolean>} If node was unJail return node, if not return false.
    * @async
    */
-  async unJailNode(transactionHash) {
-    // TODO: Use the transaction.
+  async unJailNode(unJailTransaction, emailData) {
+    const {
+      address,
+      raw_hex_bytes: rawHexBytes
+    } = unJailTransaction;
+
+    // Submit transaction
+    const nodeUnJailHash = await this.pocketService.submitRawTransaction(address, rawHexBytes);
+
+    // Add transaction to queue
+    const result = await this.transactionService.addNodeUnJailTransaction(nodeUnJailHash, emailData);
+
+    if (!result) {
+      throw new Error("Couldn't register app unjail transaction for email notification");
+    }
   }
 
   /**

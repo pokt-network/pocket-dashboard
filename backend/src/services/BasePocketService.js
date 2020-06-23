@@ -1,5 +1,5 @@
 import BaseService from "./BaseService";
-import PocketService, {get_default_pocket_network} from "./PocketService";
+import PocketService from "./PocketService";
 import TransactionService from "./TransactionService";
 import bigInt from "big-integer";
 
