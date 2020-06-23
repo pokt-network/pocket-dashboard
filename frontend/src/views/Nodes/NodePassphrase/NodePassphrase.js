@@ -18,7 +18,7 @@ class NodePassphrase extends Passphrase {
     const nodeAccountOrError = await PocketClientService.createAndUnlockAccount(passPhrase);
 
     if (nodeAccountOrError instanceof Account) {
-      const ppkData = await PocketClientService.createPPKFromAccount(nodeAccountOrError, passPhrase);
+      const ppkData = await PocketClientService.createPPKFromPrivateKey(nodeAccountOrError.privateKey.toString("hex"), passPhrase);
       const address = nodeAccountOrError.addressHex;
       const publicKey = nodeAccountOrError.publicKey.toString("hex");
 
