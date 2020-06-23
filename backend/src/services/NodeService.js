@@ -52,6 +52,8 @@ export default class NodeService extends BasePocketService {
         "publicPocketAccount.address": node.publicPocketAccount.address
       };
 
+      delete node.id;
+
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this.persistenceService.updateEntity(NODE_COLLECTION_NAME, filter, node);
 

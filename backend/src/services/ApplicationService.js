@@ -62,6 +62,8 @@ export default class ApplicationService extends BasePocketService {
         "publicPocketAccount.address": application.publicPocketAccount.address
       };
 
+      delete application.id;
+
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
 
@@ -284,39 +286,43 @@ export default class ApplicationService extends BasePocketService {
     }
   }
 
-  // TODO Move this logic to the frontend.
-  // /**
-  //  * Get AAT using Free tier account.
-  //  *
-  //  * @param {string} clientAccountAddress The client account address(In this case is the account of application).
-  //  *
-  //  * @returns {Promise<PocketAAT | boolean>} AAT for application.
-  //  * @async
-  //  */
-  // async getFreeTierAAT(clientAccountAddress) {
-  //
-  //   const filter = {
-  //     "publicPocketAccount.address": clientAccountAddress
-  //   };
-  //
-  //   const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
-  //
-  //   if (!applicationDB) {
-  //     return false;
-  //   }
-  //
-  //   const clientApplication = PocketApplication.createPocketApplication(applicationDB);
-  //
-  //   try {
-  //     const {account: freeTierAccount, passphrase} = await this.pocketService.getFreeTierAccount();
-  //
-  //
-  //     // return this.__getAAT(clientApplication.publicPocketAccount.publicKey, freeTierAccount, passphrase);
-  //
-  //   } catch (e) {
-  //     return false;
-  //   }
-  // }
+  /**
+   * Get AAT using Free tier account.
+   *
+   * @param {string} clientAccountAddress The client account address(In this case is the account of application).
+   *
+   * @returns {Promise<PocketAAT | boolean>} AAT for application.
+   * @async
+   */
+  async getFreeTierAAT(clientAccountAddress) {
+
+    const filter = {
+      "publicPocketAccount.address": clientAccountAddress
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (!applicationDB) {
+      return false;
+    }
+
+    try {
+      const {aat_version: aatVersion} = Configurations.pocket_network;
+      const {
+        publicPocketAccount: {
+          publicKey: applicationPublicKeyHex
+        },
+        freeTierApplicationAccount: {
+          publicKey: appAccountPublicKeyHex,
+          privateKey: appAccountPrivateKeyHex
+        }
+      } = applicationDB;
+
+      return PocketAAT.from(aatVersion, applicationPublicKeyHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+    } catch (e) {
+      return false;
+    }
+  }
 
   /**
    * Stake a free tier application.
@@ -368,7 +374,7 @@ export default class ApplicationService extends BasePocketService {
     await this.__updatePersistedApplication(application.pocketApplication);
     await this.__markApplicationAsFreeTier(application.pocketApplication, true);
 
-    return await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPublicKeyHex);
+    return PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
   }
 
   /**
