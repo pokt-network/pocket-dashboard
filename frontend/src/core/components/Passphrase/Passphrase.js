@@ -154,8 +154,8 @@ class Passphrase extends Component {
       {title: "0 POKT", subtitle: "Balance"},
       {title: Configurations.stakeDefaultStatus, subtitle: "Stake status"},
       {
-        title: Configurations.defaultMaxRelaysPerDay,
-        subtitle: "Max Relay Per Day",
+        title: 0,
+        subtitle: "Validator Power",
       },
     ];
 

@@ -12,6 +12,8 @@ import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
 import UserService from "../../../core/services/PocketUserService";
 import {Configurations} from "../../../_configuration";
+import {getStakeStatus, formatNumbers} from "../../../_helpers";
+import PocketNetworkService from "../../../core/services/PocketNetworkService";
 
 class Import extends Component {
   constructor(props, context) {
@@ -30,17 +32,25 @@ class Import extends Component {
       type: "",
       created: false,
       error: {show: false, message: ""},
-      hasPrivateKey: false,
+      hasPPK: false,
       inputType: "password",
       validPassphrase: false,
       showPassphraseIconURL: this.iconUrl.open,
       address: "",
-      uploadedPrivateKey: "",
       chains: [],
+      ppkFileName: "Upload your key file",
       data: {
         passphrase: "",
         privateKey: "",
         ppkData: "",
+      },
+
+      accountData: {
+        tokens: 0,
+        balance: 0,
+        status: Configurations.stakeDefaultStatus,
+        // Could be either validator power / max relays per day
+        amount: 0,
       },
       imported: false,
     };
@@ -84,6 +94,7 @@ class Import extends Component {
   readUploadedFile = (e) => {
     e.preventDefault();
     const reader = new FileReader();
+    const ppkFileName = e.target.files[0].name;
 
     reader.onload = (e) => {
       const {result} = e.target;
@@ -91,8 +102,8 @@ class Import extends Component {
       const ppkData = JSON.parse(result.trim());
 
       this.setState({
-        hasPrivateKey: true,
-        uploadedPrivateKey: "",
+        ppkFileName,
+        hasPPK: true,
         data: {...data, privateKey: "", ppkData},
       });
     };
@@ -104,49 +115,88 @@ class Import extends Component {
 
     const {type} = this.state;
     const {privateKey, passphrase, ppkData} = this.state.data;
+    const passphraseOrDefault = ppkData || passphrase ? passphrase : "default";
     let ppk;
 
-    debugger;
-
     if (!ppkData) {
+      ppk = JSON.parse(
+        await PocketClientService.createPPKFromPrivateKey(
+          privateKey, passphraseOrDefault
+        )
+      );
+    } else {
       if (!passphrase) {
         this.setState({
           error: {show: true, message: "Your passphrase cannot be empty"},
         });
         return;
       }
-
-      ppk = JSON.parse(
-        await PocketClientService.createPPKFromPrivateKey(
-          privateKey, passphrase
-        )
-      );
-    } else {
       ppk = ppkData;
     }
 
-    const {success, data} = await AccountService.importAccount(ppk, passphrase);
+    const {success, data} = await AccountService.importAccount(
+      ppk, passphraseOrDefault);
 
     if (success) {
-      await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+      await PocketClientService.saveAccount(
+        JSON.stringify(ppk), passphraseOrDefault);
+      let chains;
+      const {balance} = await AccountService.getPoktBalance(data.address);
 
       // Have to save ppk on cache as ppk generated from saved account is not
       // the same as one uploaded (even for the same account)
       if (type === ITEM_TYPES.APPLICATION) {
         ApplicationService.saveAppInfoInCache({
           imported: true,
-          passphrase,
+          passphraseOrDefault,
           address: data.address,
           ppk,
+        });
+
+        const {
+          staked_tokens: tokens,
+          max_relays: amount,
+          chains: networkChains,
+          status,
+        } = await ApplicationService.getNetworkApplication(data.address);
+
+        chains = networkChains;
+        this.setState({
+          accountData: {
+            balance,
+            tokens,
+            amount,
+            status: getStakeStatus(status),
+          },
         });
       } else {
         NodeService.saveNodeInfoInCache({
-          passphrase,
+          passphraseOrDefault,
           address: data.address,
           ppk,
         });
+
+        const {
+          tokens,
+          chains: networkChains,
+          status,
+        } = await NodeService.getNetworkNode(data.address);
+
+        chains = networkChains;
+        this.setState({
+          accountData: {
+            balance,
+            tokens,
+            amount: tokens,
+            status: getStakeStatus(status),
+          },
+        });
       }
+
+      const accountChains = await PocketNetworkService.getNetworkChains(chains);
+
       this.setState({
+        chains: accountChains,
         error: {show: false},
         imported: true,
         address: data.address,
@@ -163,22 +213,30 @@ class Import extends Component {
       inputType,
       showPassphraseIconURL,
       address,
-      uploadedPrivateKey,
-      hasPrivateKey,
+      hasPPK,
       error,
       imported,
       type,
+      ppkFileName,
+      accountData,
+      chains,
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
 
     const generalInfo = [
-      {title: "0 POKT", subtitle: "Staked tokens"},
-      {title: "0 POKT", subtitle: "Balance"},
-      {title: Configurations.stakeDefaultStatus, subtitle: "Stake status"},
+      {title: formatNumbers(accountData.tokens), subtitle: "Staked tokens"},
       {
-        title: Configurations.defaultMaxRelaysPerDay,
-        subtitle: "Max Relays per Day",
+        title: `${formatNumbers(accountData.balance)} POKT`,
+        subtitle: "Balance",
+      },
+      {title: accountData.status, subtitle: "Stake status"},
+      {
+        title: formatNumbers(accountData.amount),
+        subtitle:
+          type === ITEM_TYPES.APPLICATION
+            ? "Max Relays per Day"
+            : "Validator Power",
       },
     ];
 
@@ -219,8 +277,7 @@ class Import extends Component {
                     <Form.Control
                       className="mr-3"
                       readOnly
-                      placeholder="Upload your key file"
-                      value={uploadedPrivateKey}
+                      placeholder={ppkFileName}
                     />
                     <div className="file">
                       <label
@@ -245,7 +302,7 @@ class Import extends Component {
             <Form className="create-passphrase-form ">
               <Form.Row>
                 <Col className="show-passphrase flex-column">
-                  {!hasPrivateKey ? (
+                  {!hasPPK ? (
                     <>
                       <h2>Private key</h2>
                       <Form.Group className="d-flex">
@@ -268,7 +325,7 @@ class Import extends Component {
                           variant="dark"
                           type="submit"
                           onClick={() => {
-                            this.setState({hasPrivateKey: true});
+                            this.setState({hasPPK: true});
                           }}
                         >
                           <span>Continue</span>
@@ -277,7 +334,7 @@ class Import extends Component {
                     </>
                   ) : (
                     <>
-                      <h2>Passphrase</h2>
+                      <h2>Passphrase {privateKey ? "(Optional)" : ""}</h2>
                       <Form.Group className="d-flex">
                         <Form.Control
                           placeholder="*****************"
@@ -355,8 +412,9 @@ class Import extends Component {
             <h3>Networks</h3>
             <AppTable
               scroll
+              toggle={chains.length > 0}
               keyField="hash"
-              data={[]}
+              data={chains}
               columns={TABLE_COLUMNS.NETWORK_CHAINS}
               bordered={false}
             />

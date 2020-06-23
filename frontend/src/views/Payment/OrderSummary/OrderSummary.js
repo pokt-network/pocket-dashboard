@@ -185,7 +185,7 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       const appStakeTransaction = await PocketClientService.appStakeRequest(
-        address, passphrase, chains, pokt);
+        address, passphrase, chains, pokt.cost.toString());
 
       // TODO: Add error handling
       ApplicationService.stakeApplication(
@@ -209,7 +209,7 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       const nodeStakeRequest = await PocketClientService.nodeStakeRequest(
-        address, passphrase, chains, pokt, serviceURL);
+        address, passphrase, chains, pokt.cost.toString(), serviceURL);
 
       // TODO: add error handling
       NodeService.stakeNode(

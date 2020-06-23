@@ -339,7 +339,15 @@ export class PocketApplicationService extends PocketBaseService {
   getFreeTierAppAAT(applicationAccountAddress) {
     return axios
       .get(this._getURL(`freetier/aat/${applicationAccountAddress}`))
-      .then((response) => response.data);
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {
+          success: false,
+          data: err.response.data.message,
+        };
+      });
   }
 
   /**
@@ -370,7 +378,19 @@ export class PocketApplicationService extends PocketBaseService {
   stakeFreeTierApplication(appStakeTransaction, applicationLink) {
     return axios
       .post(this._getURL("freetier/stake"), {appStakeTransaction, applicationLink})
-      .then((response) => response.data);
+      .then((response) => {
+        return {
+          success: true,
+          data: response.data,
+        };
+      })     
+      .catch((err) => {
+        return {
+          success: false,
+          data: err.response.data.message,
+          name: err.response.data.name,
+        };
+      });;
   }
 
   /**

@@ -17,7 +17,6 @@ import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
 import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
-import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 import NodeService from "../../../core/services/PocketNodeService";
 import _ from "lodash";
@@ -58,21 +57,18 @@ class NodesMain extends Main {
           hasNodes: userItems.length > 0,
         });
       }
-      // TODO: Get node summary data
+
       NodeService.getStakedNodeSummary().then(
         ({totalNodes, averageValidatorPower: averageRelays, averageStaked}) => {
-          NodeService.getAllNodes(NODES_LIMIT).then((registeredItems) => {
             this.setState({
               userItems,
               filteredItems: userItems,
               total: totalNodes,
               averageRelays,
               averageStaked,
-              registeredItems,
               loading: false,
               hasNodes: userItems.length > 0,
             });
-          });
         }
       );
     });
@@ -107,7 +103,6 @@ class NodesMain extends Main {
           : errorMessage;
         errorType = registeredItems.error ? registeredItems.name : errorType;
 
- 
         this.setState({
           registeredItems,
           loading: false,
@@ -352,37 +347,28 @@ class NodesMain extends Main {
             }`}
           >
             <Segment scroll={false} label="REGISTERED NODES">
-              <InfiniteScroll
-                pageStart={0}
-                loadMore={this.loadMoreRegisteredNodes}
-                useWindow={false}
-                hasMore={hasMoreRegisteredItems}
-                loader={loader}
-              >
               <div className="scroll-table">
-                <AppTable
-                  classes={`flex-body ${
-                    hasMoreRegisteredItems ? "loading" : ""
-                  } `}
-                  headerClasses="d-flex"
-                  toggle={registeredItems.length > 0}
-                  keyField="address"
-                  data={registeredItems}
-                  columns={TABLE_COLUMNS.NODES}
-                  bordered={false}
-                  loading={allItemsTableLoading}
-                  overlay={overlayFactory({
-                    spinner: true,
-                    styles: {
-                      overlay: (base) => ({
-                        ...base,
-                        background: "rgba(0, 0, 0, 0.2)",
-                      }),
-                    },
-                    })}
-                />
-                </div>
-              </InfiniteScroll>
+                <InfiniteScroll
+                  pageStart={0}
+                  loadMore={this.loadMoreRegisteredNodes}
+                  useWindow={false}
+                  hasMore={hasMoreRegisteredItems}
+                  loader={loader}
+                >
+                  <AppTable
+                    classes={`flex-body ${
+                      hasMoreRegisteredItems ? "loading" : ""
+                    } `}
+                    headerClasses="d-flex"
+                    toggle={registeredItems.length > 0}
+                    keyField="address"
+                    data={registeredItems}
+                    columns={TABLE_COLUMNS.NODES}
+                    bordered={false}
+                    loading={allItemsTableLoading}
+                  />
+                </InfiniteScroll>
+              </div>
             </Segment>
           </Col>
         </Row>

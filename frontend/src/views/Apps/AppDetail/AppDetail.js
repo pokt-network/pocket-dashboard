@@ -8,7 +8,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatDaysCountdown, formatNetworkData, getStakeStatus} from "../../../_helpers";
+import {formatDaysCountdown, formatNetworkData, getStakeStatus, formatNumbers} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -84,7 +84,12 @@ class AppDetail extends Component {
     let aat;
 
     if (freeTier) {
-      aat = await ApplicationService.getFreeTierAppAAT(address);
+      const {success, data} = await ApplicationService.getFreeTierAppAAT(
+        address);
+
+      if (success) {
+        aat = data;
+      }
     }
 
     this.setState({
@@ -126,7 +131,7 @@ class AppDetail extends Component {
     const detail = url.replace(":address", address);
     const link = `${window.location.origin}${detail}`;
 
-    await PocketClientService.saveAccount(ppk, passphrase);
+    await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
     const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
 
@@ -222,7 +227,7 @@ class AppDetail extends Component {
             <p className="unstaking-time">{`Unstaking time: ${unstakingTime}`}</p>
           ) : undefined,
       },
-      {title: formatNetworkData(maxRelays), subtitle: "Max Relays Per Day"},
+      {title: formatNumbers(maxRelays), subtitle: "Max Relays Per Day"},
     ];
 
     const contactInfo = [
@@ -247,7 +252,7 @@ class AppDetail extends Component {
       </>
     );
 
-    if (freeTier) {
+    if (freeTier && aat) {
       aatStr = PocketApplicationService.parseAAT(aat);
     }
 
