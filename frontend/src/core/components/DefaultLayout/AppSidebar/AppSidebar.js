@@ -19,6 +19,7 @@ class AppSidebar extends Component {
                 key={idx}
                 label={route.name}
                 url={route.url}
+                isExternal={route.isExternal}
                 icon={route.icon}
                 isActive={(match, location) =>
                   isActiveUrl(match, location, route.name)

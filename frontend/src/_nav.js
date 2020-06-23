@@ -40,11 +40,12 @@ export default {
       url: "/dashboard/nodes",
       icon: "menu/nodes.svg",
     },
-    // TODO: Uncomment when second release
-    // {
-    //   name: "Support",
-    //   url: "/dashboard/Documentation",
-    //   icon: "menu/support.svg",
-    // },
+
+    {
+      name: "Support",
+      url: "https://pocket-dashboard.document360.io/docs",
+      icon: "menu/support.svg",
+      isExternal: true,
+    },
   ],
 };
