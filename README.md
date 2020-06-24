@@ -4,9 +4,10 @@
   </a>
 </div>
 
-# Project Title
+# Pocket Dashboard
 
-One sentence summary of project
+The pocket dashboard where you can register, stake, unstake apps and nodes on pocket network.
+
 <div>
   <a  href="https://godoc.org/github.com/pokt-network/pocket-core"><img src="https://img.shields.io/badge/godoc-reference-blue.svg"/></a>
   <a  href="https://goreportcard.com/report/github.com/pokt-network/pocket-core"><img src="https://goreportcard.com/badge/github.com/pokt-network/pocket-core"/></a>
@@ -26,46 +27,177 @@ One sentence summary of project
     <a href="https://github.com/pokt-network/pocket-core/issues"><img src="https://img.shields.io/github/issues-closed/pokt-network/pocket-core.svg"/></a>
 </div>
 
-Full Description
-
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-### Example usage
-
-```
-The most basic example of how you would use the project
-```
-
 ### Installation
 
-A step by step series of examples that tell you how to get a development env running
+#### Infrastructure
 
-Say what the step will be
+- MongoDB
+- Redis
 
+To run the pocket dashboard on your machine you need the next steps:
+
+#### Backend
 ```
-Give the step
+1. yarn install
+2. yarn build // on seperate console.
+3. yarn start // on seperate console.
 ```
 
-And repeat
-
+#### Frontend
 ```
-until finished
+1. yarn install
+3. yarn start
 ```
 
-End with an example of getting data out of the system or using it for a demo
+Go to http://localhost/login to see the login page.
 
 ## Documentation
 
-Full usage and options or a link to the docs.pokt.network site
+You must create the following account/app/api keys:
+
+- Github app
+- Google app
+- Sendgrid api key
+- Stripe account
+- Recapcha api key
+
+### Backend
+
+```
+# Web server
+PORT=4200
+
+# Persistence
+DATABASE_URL=mongodb://localhost:27017
+DATABASE_NAME=pokt_dashboard
+
+# Pocket Network
+POCKET_NETWORK_DISPATCHERS=https://node1.testnet.pokt.network:443,https://node2.testnet.pokt.network:443,https://node3.testnet.pokt.network:443,https://node4.testnet.pokt.network:443,https://node5.testnet.pokt.network:443,https://node6.testnet.pokt.network:443,https://node7.testnet.pokt.network:443
+POCKET_NETWORK_CHAIN_HASH=0002
+# Pocket account could be a new one.
+POCKET_NETWORK_AAT_CLIENT_PRIV_KEY=
+# Pocket account must be stake on network (dashboard)
+POCKET_NETWORK_AAT_APP_PRIV_KEY=
+POCKET_NETWORK_AAT_CLIENT_PASSPHRASE=
+POCKET_NETWORK_CHAIN_ID=testnet
+POCKET_NETWORK_MAX_DISPATCHER=7
+POCKET_NETWORK_REQUEST_TIMEOUT=60000
+POCKET_NETWORK_MAX_SESSIONS=1000000
+POCKET_NETWORK_PROVIDER_TYPE=HTTP
+POCKET_NETWORK_HTTP_PROVIDER_NODE=https://node1.testnet.pokt.network:443
+# Pocket account private key that has POKT to transfers proporse
+POCKET_NETWORK_MAIN_FUND_ACCOUNT=
+# Pocket account address that has POKT to transfers proporse
+POCKET_NETWORK_MAIN_FUND_ADDRESS=
+POCKET_NETWORK_AAT_VERSION=0.0.1
+# Fee amount of transactions
+POCKET_NETWORK_TRANSACTION_FEE=10000000
+POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT=10000000
+POCKET_FREE_TIER_STAKE_AMOUNT=1000000000
+POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL=redis://localhost:6379
+POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME=50000
+POCKET_NETWORK_SERVICE_WORKER_ATEMPTS=10
+POKT_MARKET_PRICE=0.06
+
+# Auth Provider
+
+JWT_SECRET_KEY=
+AUTH_PROVIDER_GITHUB_CLIENT_ID=
+AUTH_PROVIDER_GITHUB_CLIENT_SECRET=
+AUTH_PROVIDER_GITHUB_CALLBACK_URL=http://<HOST:PORT>/api/auth/provider/github
+
+AUTH_PROVIDER_GOOGLE_CLIENT_ID=
+AUTH_PROVIDER_GOOGLE_CLIENT_SECRET=
+AUTH_PROVIDER_GOOGLE_CALLBACK_URL=http://<HOST:PORT>/api/auth/provider/google
+
+# Stripe integration
+PAYMENT_DEFAULT_CLIENT_ID=
+PAYMENT_DEFAULT_CLIENT_SECRET=
+
+# Sendgrid email integration
+EMAIL_API_KEY=
+EMAIL_FROM=
+
+# Recaptcha
+RECAPTCHA_SERVER_SECRET=
+
+# Check out information
+CHECKOUT_DEFAULT_CURRENCY=USD
+CHECKOUT_MIN_RELAYS_PER_DAY=433
+CHECKOUT_MAX_RELAYS_PER_DAY=6912000
+CHECKOUT_MIN_VALIDATOR_POWER=15000
+CHECKOUT_MAX_VALIDATOR_POWER=1666666
+CHECKOUT_BASE_RELAY_PER_POKT=0.12
+CHECKOUT_STABILITY=0
+CHECKOUT_SESSIONS_PER_DAY=3456
+CHECKOUT_P_RATE=0.1
+```
+
+### Frontend
+
+```
+REACT_APP_BACKEND_URL=http://localhost:4200
+
+REACT_APP_SECURE_LS_SECRET=
+REACT_APP_PAYMENT_DEFAULT_CLIENT_ID=
+REACT_APP_RECAPTCHA_CLIENT_KEY=
+
+REACT_APP_STAKE_DEFAULT_STATUS=Unstake
+REACT_APP_DEFAULT_MAX_RELAYS_PER_DAY=6912000
+
+# Pocket Network
+REACT_APP_POCKET_NETWORK_MAX_DISPATCHER=7
+REACT_APP_POCKET_NETWORK_MAX_SESSIONS=1000000
+REACT_APP_POCKET_NETWORK_REQUEST_TIMEOUT=60000
+REACT_APP_POCKET_FREE_TIER_ACCOUNT=
+REACT_APP_POCKET_FREE_TIER_ACCOUNT_PASSPRHASE=
+REACT_APP_POCKET_FREE_TIER_STAKE_AMOUNT=1000000000
+REACT_APP_POCKET_NETWORK_DISPATCHERS=https://node1.testnet.pokt.network:443,https://node2.testnet.pokt.network:443,https://node3.testnet.pokt.network:443,https://node4.testnet.pokt.network:443,https://node5.testnet.pokt.network:443,https://node6.testnet.pokt.network:443,https://node7.testnet.pokt.network:443
+REACT_APP_POCKET_NETWORK_CHAIN_ID=testnet
+# Pocket account could be a new one.
+REACT_APP_POCKET_NETWORK_AAT_CLIENT_PRIV_KEY=
+# Pocket account must be stake on network (dashboard)
+REACT_APP_POCKET_NETWORK_AAT_APP_PRIV_KEY=
+REACT_APP_POCKET_NETWORK_AAT_CLIENT_PASSPHRASE=
+
+```
+
+For more information visit https://docs.pokt.network
 
 ## Running the tests
 
-Explain how to run the automated tests
+### Backend
+
+To run all tests
 
 ```
-Give an example
+1. cd backend
+2. yarn test
+```
+
+To run service tests
+
+```
+1. cd backend
+2. yarn services
+```
+
+To run providers tests
+
+```
+1. cd backend
+2. yarn providers
+```
+
+To run models tests
+
+```
+1. cd backend
+2. yarn models
 ```
 
 ## Contributing

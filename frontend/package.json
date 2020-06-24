@@ -130,7 +130,7 @@
     "node-sass": "^4.13.1"
   },
   "scripts": {
-    "start": "NODE_OPTIONS=--max-old-space-size=8192 PORT=80 BROWSER=none node_modules/.bin/react-scripts start",
+    "start": "PORT=80 BROWSER=none node_modules/.bin/react-scripts start",
     "build": "node_modules/.bin/react-scripts build",
     "build:prod": "node_modules/.bin/react-scripts --expose-gc --max-old-space-size=8192 build --prod ",
     "test": "node_modules/.bin/react-scripts test",
