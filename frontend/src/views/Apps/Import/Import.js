@@ -14,6 +14,7 @@ import UserService from "../../../core/services/PocketUserService";
 import {Configurations} from "../../../_configuration";
 import {getStakeStatus, formatNumbers} from "../../../_helpers";
 import PocketNetworkService from "../../../core/services/PocketNetworkService";
+import LoadingButton from "../../../core/components/LoadingButton";
 
 class Import extends Component {
   constructor(props, context) {
@@ -29,6 +30,7 @@ class Import extends Component {
     };
 
     this.state = {
+      importing: false,
       type: "",
       created: false,
       error: {show: false, message: ""},
@@ -113,6 +115,8 @@ class Import extends Component {
   async importAccount(e) {
     e.preventDefault();
 
+    this.setState({importing: true});
+
     const {type} = this.state;
     const {privateKey, passphrase, ppkData} = this.state.data;
     const passphraseOrDefault = ppkData || passphrase ? passphrase : "default";
@@ -127,6 +131,7 @@ class Import extends Component {
     } else {
       if (!passphrase) {
         this.setState({
+          importing: false,
           error: {show: true, message: "Your passphrase cannot be empty"},
         });
         return;
@@ -199,10 +204,12 @@ class Import extends Component {
         chains: accountChains,
         error: {show: false},
         imported: true,
+        importing: false,
         address: data.address,
       });
     } else {
       this.setState({
+        importing: false,
         error: {show: true, message: data.message.replace("TypeError: ", "")},
       });
     }
@@ -210,6 +217,7 @@ class Import extends Component {
 
   render() {
     const {
+      importing,
       inputType,
       showPassphraseIconURL,
       address,
@@ -357,11 +365,12 @@ class Import extends Component {
                           src={showPassphraseIconURL}
                           alt=""
                         />
-                        <Button
-                          variant="dark"
-                          type="submit"
-                          onClick={
-                            !imported
+                        <LoadingButton
+                          loading={importing}
+                          buttonProps={{
+                            variant: "dark",
+                            type: "submit",
+                            onClick: !imported
                               ? this.importAccount
                               : () => {
                                   // eslint-disable-next-line react/prop-types
@@ -373,11 +382,11 @@ class Import extends Component {
                                     ),
                                     state: {imported: true},
                                   });
-                                }
-                          }
+                                },
+                          }}
                         >
                           <span>{!imported ? "Import" : "Continue"}</span>
-                        </Button>
+                        </LoadingButton>
                       </Form.Group>
                     </>
                   )}
