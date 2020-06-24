@@ -72,7 +72,7 @@ class CreateAppForm extends CreateForm {
       applicationId, applicationData, applicationBaseLink, ppk);
 
     if (success) {
-      const networkData = ApplicationService.getApplicationInfo(address);
+      const {networkData} = await ApplicationService.getApplication(address);
 
       const {status} = networkData;
 

@@ -74,7 +74,7 @@ class CreateNodeForm extends CreateForm {
     );
 
     if (success) {
-      const networkData = NodeService.getNodeInfo(address);
+      const {networkData} = await NodeService.getNode(address);
 
       const {status} = networkData;
 
