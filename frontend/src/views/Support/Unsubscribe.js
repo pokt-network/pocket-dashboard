@@ -37,7 +37,7 @@ class Unsubscribe extends Component {
         this.setState({
           alertOverlay: {
             show: true,
-            variant: "danger", // TODO update this variant to non danger
+            variant: "danger",
             message: "An error ocurred, please contact your administrator.",
           },
         });
