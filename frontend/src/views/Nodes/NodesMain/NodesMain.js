@@ -121,8 +121,6 @@ class NodesMain extends Main {
   async loadMoreUserNodes(offset) {
     const {userItems} = this.state;
 
-    console.log("state", this.state);
-
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await NodeService.getAllUserNodes(
       userEmail, NODES_LIMIT, offset * NODES_LIMIT + 1
@@ -167,8 +165,6 @@ class NodesMain extends Main {
       hasMoreRegisteredItems,
       error,
     } = this.state;
-
-    console.log(filteredItems);
 
     const registeredItems = allRegisteredItems.map(mapStatusToField);
     const myNodessHasScroll =
