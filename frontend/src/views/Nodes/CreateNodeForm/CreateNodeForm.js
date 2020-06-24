@@ -299,7 +299,7 @@ class CreateNodeForm extends CreateForm {
                       <p>
                         {/* eslint-disable-next-line react/no-unescaped-entities */}
                         I agree to these Pocket's{" "}
-                        <Link to={ROUTE_PATHS.privacyPolicy}>
+                        <Link target="_blank" to={ROUTE_PATHS.privacyPolicy}>
                           Terms and Conditions.
                         </Link>
                       </p>
