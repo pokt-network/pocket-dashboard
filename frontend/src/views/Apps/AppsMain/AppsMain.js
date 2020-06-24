@@ -18,7 +18,6 @@ import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
 import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
-import overlayFactory from "react-bootstrap-table2-overlay";
 import LoadingOverlay from "react-loading-overlay";
 import _ from "lodash";
 import AppAlert from "../../../core/components/AppAlert";
@@ -329,7 +328,7 @@ class AppsMain extends Main {
               registeredItems.length === 0 ? "segment-table-empty" : ""
             }`}
           >
-            <Segment scroll={false} label="REGISTERED APPS">
+            <Segment bordered scroll={false} label="REGISTERED APPS">
               <div className="scroll-table">
                 <InfiniteScroll
                   pageStart={0}
@@ -349,15 +348,6 @@ class AppsMain extends Main {
                     columns={TABLE_COLUMNS.APPS}
                     bordered={false}
                     loading={allItemsTableLoading}
-                    overlay={overlayFactory({
-                      spinner: true,
-                      styles: {
-                        overlay: (base) => ({
-                          ...base,
-                          background: "rgba(0, 0, 0, 0.2)",
-                        }),
-                      },
-                      })}
                     />
                 </InfiniteScroll>
               </div>

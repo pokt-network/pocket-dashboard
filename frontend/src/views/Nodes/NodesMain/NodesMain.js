@@ -344,7 +344,7 @@ class NodesMain extends Main {
               registeredItems.length === 0 ? "segment-table-empty" : ""
             }`}
           >
-            <Segment scroll={false} label="REGISTERED NODES">
+            <Segment bordered scroll={false} label="REGISTERED NODES">
               <div className="scroll-table">
                 <InfiniteScroll
                   pageStart={0}
