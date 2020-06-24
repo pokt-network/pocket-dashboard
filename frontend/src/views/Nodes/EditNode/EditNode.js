@@ -52,14 +52,14 @@ class EditNode extends CreateForm {
     });
 
     if (success) {
-      this.setState({success: true});
+      this.props.history.goBack();
     } else {
       this.setState({error: {show: true, message: data}});
     }
   }
 
   render() {
-    const {loading, icon, success, error, imgError} = this.state;
+    const {loading, icon, error, imgError} = this.state;
 
     if (loading) {
       return <Loader />;
@@ -69,13 +69,6 @@ class EditNode extends CreateForm {
       <div className="create-form">
         <Row>
           <Col sm="12" md="12" lg="12">
-            {success && (
-              <AppAlert
-                onClose={() => this.setState({success: false})}
-                dismissible
-                title="Your node changes were successfully saved"
-              />
-            )}
             {error.show && (
               <AppAlert
                 variant="danger"
@@ -84,14 +77,7 @@ class EditNode extends CreateForm {
                 onClose={() => this.setState({error: false})}
               />
             )}
-            <Button onClick={this.props.history.goBack} className="mb-3">
-              <span>Go back</span>
-            </Button>
             <h1 className="text-uppercase">Node Information</h1>
-            <p className="info">
-              Fill in these quick questions to identity your node on the
-              dashboard. Fields marked with * are required to continue.
-            </p>
           </Col>
         </Row>
         <Row className="mt-3">
