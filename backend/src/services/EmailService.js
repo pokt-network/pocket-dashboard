@@ -69,7 +69,7 @@ export default class EmailService {
       /** @type {{statusCode: number}[]} */
       const emailResponse = await this.emailProvider.unsubscribeEmail(this.__toEmail);
 
-      return emailResponse[0].statusCode === 202;
+      return emailResponse[0].statusCode === 201;
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
@@ -87,7 +87,7 @@ export default class EmailService {
       /** @type {{statusCode: number}[]} */
       const emailResponse = await this.emailProvider.subscribeEmail(this.__toEmail);
 
-      return emailResponse[0].statusCode === 202;
+      return emailResponse[0].statusCode === 204;
     } catch (e) {
       // eslint-disable-next-line no-console
       console.log(e);
