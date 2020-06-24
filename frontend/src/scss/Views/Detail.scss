@@ -130,6 +130,7 @@
     margin-left: -35px;
 
     div.alert.alert-light {
+      overflow-wrap: break-word;
       box-shadow: none;
       min-height: 40px;
       padding: 13px 18px 9px 18px;
@@ -266,6 +267,10 @@
   }
 
   .action-buttons {
+    span.option:first-child {
+      margin-right: 30px;
+    }
+
     margin-top: 30px;
     margin-left: -26px;
 

@@ -143,8 +143,6 @@ class NodeDetail extends Component {
       address, passphrase
     );
 
-    console.log("transaction", nodeUnjailTransaction);
-
     const {success, data} = await NodeService.unjailNode(
       nodeUnjailTransaction, nodeLink
     );
@@ -424,7 +422,7 @@ class NodeDetail extends Component {
           ))}
         </Row>
         <Row className="action-buttons">
-          <Col sm="3" md="3" lg="3">
+          <Col>
             <span className="option">
               <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
               <p>
@@ -440,8 +438,6 @@ class NodeDetail extends Component {
                 to change your node description.
               </p>
             </span>
-          </Col>
-          <Col sm="3" md="3" lg="3">
             <span className="option">
               <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
               <p>
