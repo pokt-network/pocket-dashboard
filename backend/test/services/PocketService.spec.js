@@ -1,8 +1,6 @@
-import {describe, it} from "mocha";
 import "chai/register-should";
 import PocketService from "../../src/services/PocketService";
 import {Configurations} from "../../src/_configuration";
-import {StakingStatus} from "@pokt-network/pocket-js";
 
 /** @type {string} */
 const FREE_TIER_PRIVATE_KEY_WITH_POKT = process.env.POCKET_FREE_TIER_ACCOUNT;
@@ -23,8 +21,9 @@ const NODE_ACCOUNT_IN_NETWORK = process.env.TEST_NODE_ACCOUNT_IN_NETWORK;
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
-const pocketService = new PocketService(POCKET_NETWORK_CONFIGURATION.nodes.test, POCKET_NETWORK_CONFIGURATION.nodes.test_rpc_provider);
+const pocketService = new PocketService();
 
+// FIXME: Fix unit testing.
 // describe("PocketService", () => {
 
 //   describe("createAccount", () => {

@@ -91,8 +91,8 @@ export const Configurations = {
              process.env.POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME,
              attempts: process.env.POCKET_NETWORK_SERVICE_WORKER_ATEMPTS,
            },
-           aat_version: "0.0.1",
-           transaction_fee: "10000000",
+           aat_version: process.env.POCKET_NETWORK_AAT_VERSION,
+           transaction_fee: process.env.POCKET_NETWORK_TRANSACTION_FEE,
            chain_id: process.env.POCKET_NETWORK_CHAIN_ID,
            max_dispatchers: process.env.POCKET_NETWORK_MAX_DISPATCHER,
            request_timeout: process.env.POCKET_NETWORK_REQUEST_TIMEOUT,
@@ -115,49 +115,19 @@ export const Configurations = {
            },
            free_tier: {
              stake_amount: process.env.POCKET_FREE_TIER_STAKE_AMOUNT,
-             max_relay_per_day_amount: "1000000"
-           },
-           nodes: {
-             test_rpc_provider: "http://localhost",
-             test: [
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-             ],
-             rpc_provider: "http://localhost",
-             main: [
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-               "http://localhost",
-             ],
+             max_relay_per_day_amount: process.env.POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT
            },
            dispatchers: process.env.POCKET_NETWORK_DISPATCHERS,
            chain_hash: process.env.POCKET_NETWORK_CHAIN_HASH,
            dashboard_aat: {
              client_priv_key: process.env.POCKET_NETWORK_AAT_CLIENT_PRIV_KEY,
-             client_priv_key_passphrase:
-               process.env.POCKET_NETWORK_AAT_CLIENT_PASSPHRASE,
+             client_priv_key_passphrase: process.env.POCKET_NETWORK_AAT_CLIENT_PASSPHRASE,
              app_priv_key: process.env.POCKET_NETWORK_AAT_APP_PRIV_KEY,
            },
-           provider_type: "http",
-           http_provider_node: "https://node1.testnet.pokt.network:443",
-           main_fund_account:
-             "b4d0d4933d4ccdd5faf5a19457d7485c9605664c3ea71e26d6c2c96b19ad6f94e603378f4c0fe1ca57d545741a8150231218aa3d9e2f62c06a5005dfbca3bf3d",
-           main_fund_address: "cad3b0b8f5b54f0750385c6ca17a5c745d9dba17"
+           provider_type: process.env.POCKET_NETWORK_PROVIDER_TYPE,
+           http_provider_node: process.env.POCKET_NETWORK_HTTP_PROVIDER_NODE,
+           main_fund_account: process.env.POCKET_NETWORK_MAIN_FUND_ACCOUNT,
+           main_fund_address: process.env.POCKET_NETWORK_MAIN_FUND_ADDRESS
          },
          recaptcha: {
            google_server: process.env.RECAPTCHA_SERVER_SECRET,
