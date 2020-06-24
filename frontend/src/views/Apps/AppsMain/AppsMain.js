@@ -239,7 +239,7 @@ class AppsMain extends Main {
                       onChange={this.handleChange}
                       onKeyPress={({key}) => {
                         if (key === "Enter") {
-                          this.handleSearch("pocketApplication.name");
+                          this.handleSearch("name");
                         }
                       }}
                     />

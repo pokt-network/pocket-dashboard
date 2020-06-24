@@ -251,7 +251,7 @@ class NodesMain extends Main {
                         onChange={this.handleChange}
                         onKeyPress={({key}) => {
                           if (key === "Enter") {
-                            this.handleSearch("pocketNode.name");
+                            this.handleSearch("name");
                           }
                         }}
                       />
