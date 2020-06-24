@@ -26,7 +26,6 @@ class MenuItem extends Component {
             target="_blank"
             rel="noopener noreferrer"
             href={url}
-            {...restProps}
           >
             <li>
               <img
