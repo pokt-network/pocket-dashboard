@@ -5,9 +5,9 @@ import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDispla
 import PaymentService from "../../../core/services/PocketPaymentService";
 import UserService from "../../../core/services/PocketUserService";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
-import NewCardForm from "../../../core/components/Payment/Stripe/NewCardForm";
 import Loader from "../../../core/components/Loader";
 import AppAlert from "../../../core/components/AppAlert";
+import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCardNoAddressForm";
 
 class PaymentMethods extends Component {
   constructor(props, context) {
@@ -35,28 +35,26 @@ class PaymentMethods extends Component {
 
   async saveNewCard(e, cardData, stripe) {
     e.preventDefault();
-
-    const {
-      cardHolderName: name,
-      billingAddressLine1: line1,
-      zipCode: postal_code,
-      country,
-    } = cardData;
-
-    const billingDetails = {
-      name,
-      address: {line1, postal_code, country},
-    };
+    const {cardHolderName: name} = cardData;
+    const billingDetails = {name};
 
     StripePaymentService.createPaymentMethod(
       stripe, cardData.card, billingDetails
     ).then(async (result) => {
-      if (result.errors) {
+      if (!billingDetails.address) {
+        billingDetails.address = {
+          country: " ",
+          line1: " ",
+          postal_code: " ",
+        };
+      }
+
+      if (result.error) {
         this.setState({
           alert: {
             show: true,
             variant: "danger",
-            text: result.errors,
+            text: result.error.message,
           },
         });
         return;
@@ -75,6 +73,11 @@ class PaymentMethods extends Component {
               text: "Your payment method was successfully added.",
             },
           });
+
+          const user = UserService.getUserInfo().email;
+          const paymentMethods = await PaymentService.getPaymentMethods(user);
+
+          this.setState({paymentMethods});
         } else {
           this.setState({
             alert: {
@@ -172,9 +175,9 @@ class PaymentMethods extends Component {
             )}
             {newCard && (
               <div id="card-form">
-                <NewCardForm
-                  formTitle=""
+                <NewCardNoAddressForm
                   formActionHandler={this.saveNewCard}
+                  formTitle=""
                 />
               </div>
             )}

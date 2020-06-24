@@ -3,6 +3,10 @@
 #dashboard {
   .cta-buttons {
     .dropdown.cta {
+      .dropdown-menu.show {
+        min-width: 50px;
+      }
+
       button {
         width: 80px;
         height: 33px;
@@ -25,7 +29,7 @@
       }
 
       .dropdown-item:hover {
-        background-color: transparent;
+        background-color: #ededed;
       }
     }
 

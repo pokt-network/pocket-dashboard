@@ -139,18 +139,18 @@ class NodeDetail extends Component {
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
-    const {nodeUnjailTransaction} = await PocketClientService.nodeUnjailRequest(
-      address
+    const nodeUnjailTransaction = await PocketClientService.nodeUnjailRequest(
+      address, passphrase
     );
 
-    const {success, data} = NodeService.unjailNode(
+    const {success, data} = await NodeService.unjailNode(
       nodeUnjailTransaction, nodeLink
     );
 
     if (success) {
       window.location.reload(false);
     } else {
-      this.setState({unstaking: false, message: data});
+      this.setState({unjail: false, error: {show: true, message: data}});
     }
   }
 
@@ -337,7 +337,7 @@ class NodeDetail extends Component {
               <AppAlert
                 variant="danger"
                 title={error.message}
-                onClose={() => this.setState({message: ""})}
+                onClose={() => this.setState({error: {show: false}})}
                 dismissible
               />
             )}
@@ -422,7 +422,7 @@ class NodeDetail extends Component {
           ))}
         </Row>
         <Row className="action-buttons">
-          <Col sm="3" md="3" lg="3">
+          <Col>
             <span className="option">
               <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
               <p>
@@ -438,8 +438,6 @@ class NodeDetail extends Component {
                 to change your node description.
               </p>
             </span>
-          </Col>
-          <Col sm="3" md="3" lg="3">
             <span className="option">
               <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
               <p>

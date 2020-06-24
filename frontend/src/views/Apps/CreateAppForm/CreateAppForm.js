@@ -72,7 +72,7 @@ class CreateAppForm extends CreateForm {
       applicationId, applicationData, applicationBaseLink, ppk);
 
     if (success) {
-      const networkData = ApplicationService.getApplicationInfo(address);
+      const {networkData} = await ApplicationService.getApplication(address);
 
       const {status} = networkData;
 
@@ -338,7 +338,7 @@ class CreateAppForm extends CreateForm {
                       <span>
                         {/* eslint-disable-next-line react/no-unescaped-entities */}
                         I agree to these Pocket's{" "}
-                        <Link to={ROUTE_PATHS.termsOfService}>
+                        <Link  target="_blank" to={ROUTE_PATHS.termsOfService}>
                           Terms and Conditions.
                         </Link>
                       </span>

@@ -51,15 +51,15 @@ class PocketNodeService extends PocketBaseService {
    * @param {string} [serviceURL] The service URL.
    */
   saveNodeInfoInCache({
-      nodeID,
-      address,
-      ppk,
-      passphrase,
-      chains,
-      data,
-      imported,
-      serviceURL,
-    }) {
+    nodeID,
+    address,
+    ppk,
+    passphrase,
+    chains,
+    data,
+    imported,
+    serviceURL,
+  }) {
     if (nodeID) {
       this.ls.set("node_id", {data: nodeID});
     }
@@ -350,7 +350,16 @@ class PocketNodeService extends PocketBaseService {
 
     return axios
       .post(this._getURL("/node/unjail"), data)
-      .then((response) => response.data);
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {
+          success: false,
+          name: err.response.data.name,
+          data: err.response.data.message,
+        };
+      });
   }
 }
 

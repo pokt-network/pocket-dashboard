@@ -54,14 +54,14 @@ class EditApp extends CreateForm {
     });
 
     if (success) {
-      this.setState({success: true});
+      this.props.history.goBack();
     } else {
       this.setState({error: {show: true, message: data}});
     }
   }
 
   render() {
-    const {loading, icon, success, error, imgError} = this.state;
+    const {loading, icon, error, imgError} = this.state;
 
     if (loading) {
       return <Loader />;
@@ -71,13 +71,6 @@ class EditApp extends CreateForm {
       <div className="create-form">
         <Row>
           <Col sm="12" md="12" lg="12">
-            {success && (
-              <AppAlert
-                onClose={() => this.setState({success: false})}
-                dismissible
-                title="Your app changes were successfully saved"
-              />
-            )}
             {error.show && (
               <AppAlert
                 variant="danger"
@@ -87,14 +80,7 @@ class EditApp extends CreateForm {
               />
             )}
             {/* eslint-disable-next-line react/prop-types */}
-            <Button onClick={this.props.history.goBack} className="mb-3">
-              <span>Go back</span>
-            </Button>
             <h1 className="text-uppercase">App Information</h1>
-            <p className="info">
-              Fill in these quick questions to identity your app on the
-              dashboard. Fields marked with * are required to continue.
-            </p>
           </Col>
         </Row>
         <Row className="mt-3">
@@ -193,13 +179,14 @@ class EditApp extends CreateForm {
           </Col>
           <Col sm="7" md="7" lg="7">
             <div className="ml-5 mt-4">
-            <ImageFileUpload
+              <ImageFileUpload
                 defaultImg={icon}
                 handleDrop={(img, error) => {
                   const imgResult = img === null ? undefined : img;
 
                   this.handleDrop(imgResult ?? undefined, error);
-                }}/>
+                }}
+              />
               {imgError && <p className="error mt-2 ml-3">{imgError}</p>}
             </div>
           </Col>

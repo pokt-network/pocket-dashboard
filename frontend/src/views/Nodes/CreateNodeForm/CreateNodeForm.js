@@ -74,7 +74,7 @@ class CreateNodeForm extends CreateForm {
     );
 
     if (success) {
-      const networkData = NodeService.getNodeInfo(address);
+      const {networkData} = await NodeService.getNode(address);
 
       const {status} = networkData;
 
@@ -299,7 +299,7 @@ class CreateNodeForm extends CreateForm {
                       <p>
                         {/* eslint-disable-next-line react/no-unescaped-entities */}
                         I agree to these Pocket's{" "}
-                        <Link to={ROUTE_PATHS.privacyPolicy}>
+                        <Link target="_blank" to={ROUTE_PATHS.privacyPolicy}>
                           Terms and Conditions.
                         </Link>
                       </p>

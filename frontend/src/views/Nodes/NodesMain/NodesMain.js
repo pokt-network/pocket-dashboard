@@ -58,21 +58,19 @@ class NodesMain extends Main {
         });
       }
 
+      // console.log("mount state", this.state);
+
       NodeService.getStakedNodeSummary().then(
         ({totalNodes, averageValidatorPower: averageRelays, averageStaked}) => {
             this.setState({
-              userItems,
-              filteredItems: userItems,
               total: totalNodes,
               averageRelays,
               averageStaked,
               loading: false,
-              hasNodes: userItems.length > 0,
             });
         }
       );
     });
-
 
     NodeService.getStakedNodeSummary().then(
       ({totalNodes, 
@@ -94,7 +92,6 @@ class NodesMain extends Main {
           });          
         }
       });
-
 
       NodeService.getAllNodes(NODES_LIMIT).then((registeredItems) => {
         hasError = registeredItems.error ? registeredItems.error : hasError;
@@ -123,6 +120,7 @@ class NodesMain extends Main {
 
   async loadMoreUserNodes(offset) {
     const {userItems} = this.state;
+
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await NodeService.getAllUserNodes(
       userEmail, NODES_LIMIT, offset * NODES_LIMIT + 1
@@ -131,9 +129,9 @@ class NodesMain extends Main {
     const allUserItems = [...userItems, ...newUserItems];
 
     this.setState({
-      hasMoreUserItems: newUserItems.length !== 0,
+      hasMoreUserItems: newUserItems.length === NODES_LIMIT,
       userItems: allUserItems,
-      filteredItems: userItems,
+      filteredItems: allUserItems,
     });
   }
 
@@ -253,7 +251,7 @@ class NodesMain extends Main {
                         onChange={this.handleChange}
                         onKeyPress={({key}) => {
                           if (key === "Enter") {
-                            this.handleSearch("pocketNode.name");
+                            this.handleSearch("name");
                           }
                         }}
                       />
@@ -280,7 +278,7 @@ class NodesMain extends Main {
                   pageStart={0}
                   loadMore={this.loadMoreUserNodes}
                   useWindow={false}
-                  hasMore={hasMoreUserItems}
+                  hasMore={hasNodes && hasMoreUserItems}
                   loader={loader}
                 >
                 <LoadingOverlay active={userItemsTableLoading} spinner>
@@ -346,7 +344,7 @@ class NodesMain extends Main {
               registeredItems.length === 0 ? "segment-table-empty" : ""
             }`}
           >
-            <Segment scroll={false} label="REGISTERED NODES">
+            <Segment bordered scroll={false} label="REGISTERED NODES">
               <div className="scroll-table">
                 <InfiniteScroll
                   pageStart={0}
