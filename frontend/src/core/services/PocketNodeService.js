@@ -349,7 +349,7 @@ class PocketNodeService extends PocketBaseService {
     const data = {nodeUnJailTransaction, nodeLink};
 
     return axios
-      .post(this._getURL("/unjail"), data)
+      .post(this._getURL("/node/unjail"), data)
       .then((response) => response.data);
   }
 }

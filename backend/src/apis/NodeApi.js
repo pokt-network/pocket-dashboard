@@ -222,11 +222,12 @@ router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
 /**
  * UnJail a node.
  */
-router.post("/unjail", apiAsyncWrapper(async (req, res) => {
+router.post("/node/unjail", apiAsyncWrapper(async (req, res) => {
   /** @type {{nodeUnJailTransaction: {address: string, raw_hex_bytes: string}, nodeLink: string}} */
   const data = req.body;
 
   const node = await nodeService.getNode(data.nodeUnJailTransaction.address);
+
   const nodeEmailData = {
     userName: node.pocketNode.user,
     contactEmail: node.pocketNode.contactEmail,
