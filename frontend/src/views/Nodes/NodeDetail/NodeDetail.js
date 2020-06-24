@@ -139,18 +139,20 @@ class NodeDetail extends Component {
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
-    const {nodeUnjailTransaction} = await PocketClientService.nodeUnjailRequest(
-      address
+    const nodeUnjailTransaction = await PocketClientService.nodeUnjailRequest(
+      address, passphrase
     );
 
-    const {success, data} = NodeService.unjailNode(
+    console.log("transaction", nodeUnjailTransaction);
+
+    const {success, data} = await NodeService.unjailNode(
       nodeUnjailTransaction, nodeLink
     );
 
     if (success) {
       window.location.reload(false);
     } else {
-      this.setState({unstaking: false, message: data});
+      this.setState({unjail: false, error: {show: true, message: data}});
     }
   }
 
@@ -337,7 +339,7 @@ class NodeDetail extends Component {
               <AppAlert
                 variant="danger"
                 title={error.message}
-                onClose={() => this.setState({message: ""})}
+                onClose={() => this.setState({error: {show: false}})}
                 dismissible
               />
             )}
