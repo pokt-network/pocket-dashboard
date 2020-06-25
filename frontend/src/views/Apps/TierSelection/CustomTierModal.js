@@ -20,20 +20,25 @@ class CustomTierModal extends Component {
           <h4>How the custom tier works?</h4>
           <p>
             The custom tier is a plan for the apps to be able to purchase the
-            required amount of throughput and scale up the application as it
+            desired amount of throughput and scale up the application as it
             grows without overpaying for infrastructure.
           </p>
           <p>
             In the custom tier, the staked POKT is completely owned and managed
             by the user as well as the AAT (Application Authentication Token).
             The Pocket protocol uses a staking mechanism, which lets individuals
-            essentially reserve a daily allocated API throughput in perpetuity
-            in relation to their stake. Just purchase the relays you need.
+            access a daily allocated API throughput in perpetuity in relation to
+            their POKT stake.Purchase the relays you need. It’s recommended to
+            give your application a comfortable throughput buffer to account for
+            usage spikes as you will not be able to exceed your throughput
+            limit.
           </p>
           <p>
-            Keep in mind the POKT in your account could only be transferred
-            after 21 days of staked state and after going trough unstake process
-            and your app in Unstaked.{" "}
+            Keep in mind that the POKT in your account can only be transferred
+            after meeting the minimum required bonding period of 21 days. Once
+            your application goes through the unstaking process, it will be
+            considered “Unstaked” and have its stake status updated. From this
+            point, you’ll be able to transfer POKT or restake POKT.
           </p>
           <p>
             If you still have questions please take a look at our{" "}
@@ -43,15 +48,15 @@ class CustomTierModal extends Component {
             <b>Pocket Network</b>
           </p>
           <p>
-            An AAT is needed to authorize the use of throughput. Providing your
-            {/* eslint-disable-next-line react/no-unescaped-entities */}
-            users with AAT's dynamically allows you to control who you let use
-            your Pocket Network bandwidth at your app discretion. (Note: a
-            backend server is required for this).
+            An Application Authentication Token (AAT) is needed to authorize the
+            use of relay throughput. Providing your users with AAT’s dynamically
+            allows you to control who you let use your Pocket Network bandwidth
+            at your app discretion. (Note: a backend server is required for
+            this).
           </p>
           <p>
-            Please note: To discourage speculation, the Unstaking period of
-            tokens is 21 days.
+            Please note: To discourage spamming the network, the bonding period
+            of POKT tokens for both applications and nodes is a 21 day minimum.
           </p>
 
           <a href="/todo">Please see our FAQ for additional information.</a>
