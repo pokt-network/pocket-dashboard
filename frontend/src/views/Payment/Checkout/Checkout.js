@@ -75,12 +75,11 @@ class Checkout extends Component {
     } = await PaymentService.getPaymentDetail(paymentId);
 
     const {brand, lastDigits} = paymentMethod;
-    const userName = UserService.getUserInfo().name;
 
     const invoice = {
       id: id.replace("pi_", "").toLowerCase(),
       date: moment(date).format("DD MM YYYY"),
-      owner: userName,
+      owner: paymentMethod.billingDetails.name,
       card: `${capitalize(brand)} **** **** **** ${lastDigits}`,
       poktPrice,
     };
