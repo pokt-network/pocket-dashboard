@@ -90,10 +90,10 @@ class Checkout extends Component {
     const action = UserService.getUserAction();
     const appBreadcrumbs = ["Apps", action, "Checkout", "Invoice"];
     const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Invoice"];
-    
-    type === ITEM_TYPES.APPLICATION ? 
-      this.props.onBreadCrumbChange(appBreadcrumbs) : 
-      this.props.onBreadCrumbChange(nodeBreadcrumbs);
+
+    type === ITEM_TYPES.APPLICATION
+      ? this.props.onBreadCrumbChange(appBreadcrumbs)
+      : this.props.onBreadCrumbChange(nodeBreadcrumbs);
   }
 
   render() {
@@ -173,7 +173,7 @@ class Checkout extends Component {
           <Row>
             <Col className="header">
               {detailButton}
-              <h1>Enjoy your purchase</h1>
+              <h1>Get Ready For Staking</h1>
               <p>Please wait a few minutes until the process is completed.</p>
             </Col>
           </Row>
@@ -198,10 +198,7 @@ class Checkout extends Component {
                 className="icon"
                 alt="print-icon"
               />{" "}
-              <Button className="link">
-                Print
-              </Button>{" "}
-              your invoice
+              <Button className="link">Print</Button> your invoice
             </div>
           )}
           content={() => this.componentRef}

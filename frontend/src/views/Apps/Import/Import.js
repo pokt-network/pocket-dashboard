@@ -258,9 +258,8 @@ class Import extends Component {
         <Row>
           <Col className="page-title">
             <p>
-              Import to the dashboard a pocket account previously created as a
-              {type === ITEM_TYPES.APPLICATION ? "n " : " "}
-              {type} in the network. If your account is not a
+              Use the dashboard to import a previously created Pocket {type} {" "}
+              in the network. If your account is not a
               {type === ITEM_TYPES.APPLICATION ? "n " : " "} {type} go to{" "}
               <Link
                 className="font-weight-light"
@@ -270,7 +269,7 @@ class Import extends Component {
                     : DASHBOARD_PATHS.createNodeForm
                 )}
               >
-                Create.
+                Create. Set one up
               </Link>
             </p>
           </Col>
