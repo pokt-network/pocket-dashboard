@@ -293,7 +293,7 @@ class SelectRelays extends Component {
             >
               <p className="alert-max">
                 If your app requires more than {formatNumbers(maxRelays)} Relays
-                per Day please <a href="/todo">contact us</a> directly to find a
+                per Day please <a href="mailto:dashboard@pokt.network">contact us</a> directly to find a
                 solution specially designed for your app.
               </p>
             </AppAlert>
