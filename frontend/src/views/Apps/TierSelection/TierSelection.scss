@@ -16,6 +16,10 @@
           margin: 0;
           top: -5px;
           right: -15px;
+
+          &:focus {
+            outline: none;
+          }
         }
       }
 
@@ -91,7 +95,7 @@
       height: 448px;
       border-radius: 12px;
       box-shadow: $default-box-shadow;
-      padding: 30px 0 0 20px;
+      padding: 30px 20px 0 20px;
       margin-right: 14px;
 
       .tier-title {
@@ -185,8 +189,8 @@
       margin-right: 0;
       margin-left: 14px;
 
-      .tier-title > .subtitle,
-      ul > li {
+      .tier-title>.subtitle,
+      ul>li {
         color: white;
       }
 

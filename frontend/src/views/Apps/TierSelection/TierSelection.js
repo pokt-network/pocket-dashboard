@@ -112,9 +112,9 @@ class TierSelection extends Component {
           <Col className="page-title">
             <h1>Choose what is more convenient for your app</h1>
             <p className="info">
-              Don&#39;t overpay for the infrastructure your app needs, stake,
-              and scale as your user base grows or you can start connecting to
-              any blockchain with our free tier.
+              Don&#39;t overpay for the infrastructure your app needs. Stake,
+              and scale as your user base grows. Or start connecting to any
+              blockchain with our free tier capped at 1 Million Relays per day.
             </p>
           </Col>
         </Row>
@@ -126,9 +126,10 @@ class TierSelection extends Component {
             </div>
             <ul>
               <li>Limited to 1 Million Relays per Day</li>
-              <li>Access to AAT, but not ownership</li>
-              <li>Stake POKT is managed by Pocket Network Inc.</li>
-              <li>Unstake balance unavailable for transfers</li>
+              <li>Access to Application Authentication Token (AAT), but not 
+                ownership of the AAT</li>
+              <li>Staked POKT is managed by Pocket Network Inc.</li>
+              <li>POKT balance unavailable for transfers</li>
             </ul>
             {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
             <Button
@@ -168,7 +169,7 @@ class TierSelection extends Component {
               <ul>
                 <li>Custom Relays per Day</li>
                 <li>AAT ownership</li>
-                <li>Unstake balance available for transfers</li>
+                <li>Unstaked balance available for transfers</li>
                 <li>Staked POKT is own by the user</li>
               </ul>
               {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
