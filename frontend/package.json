@@ -130,7 +130,7 @@
     "node-sass": "^4.13.1"
   },
   "scripts": {
-    "start": "BROWSER=none node_modules/.bin/react-scripts start",
+    "start": "PORT=80 BROWSER=none node_modules/.bin/react-scripts start",
     "build": "node_modules/.bin/react-scripts build",
     "build:prod": "node_modules/.bin/react-scripts build --prod",
     "test": "node_modules/.bin/react-scripts test",

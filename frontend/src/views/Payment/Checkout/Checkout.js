@@ -120,8 +120,6 @@ class Checkout extends Component {
     } = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
-    console.log("DETAILS", purchasedTokens);
-
     const information = [
       {text: "Date", value: date},
       {text: "Bill to", value: owner},
