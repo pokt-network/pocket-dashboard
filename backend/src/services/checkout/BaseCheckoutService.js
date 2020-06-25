@@ -2,6 +2,7 @@ import {POKT_DENOMINATIONS} from "../PocketService";
 import BaseService from "../BaseService";
 import {CoinDenom} from "@pokt-network/pocket-js";
 import {DashboardValidationError} from "../../models/Exceptions";
+import {Configurations} from "../../_configuration";
 
 /**
  *  @abstract
@@ -40,7 +41,9 @@ export class BaseCheckoutService extends BaseService {
    * @returns {number} Pokt to use.
    */
   getPoktToStake(moneySpent, poktDenomination = CoinDenom.Upokt) {
-    const pokt = ((moneySpent / this.poktMarketPrice) + 1);
+    const {transaction_fee: transactionFee} = Configurations.pocket_network;
+
+    const pokt = ((moneySpent / this.poktMarketPrice) + parseInt(transactionFee));
     const poktWithDenomination = pokt * Math.pow(10, POKT_DENOMINATIONS[poktDenomination]);
 
     return Math.round(poktWithDenomination);
