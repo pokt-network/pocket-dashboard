@@ -1,10 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
+import {formatNetworkData} from "../../../_helpers";
 import Logo from "./Logo";
 
 class SecondPage extends React.Component {
   render() {
-    const {poktPrice} = this.props;
+    const {poktPrice, purchasedTokens} = this.props;
 
     return (
       <div
@@ -100,14 +101,15 @@ class SecondPage extends React.Component {
               <p>
                 Subject to the Purchasing Site Terms of Use and the terms and
                 conditions set forth herein, Purchaser, intending to be legally
-                bound, hereby irrevocably agrees to purchase from the Company
-                [up to 1,666,667 OR 1,666,667] Tokens (the “
-                <u>Purchased Tokens</u>”) at a purchase price of US${poktPrice}{" "}
-                per token (the &quot;<u>Purchase Price</u>&quot;), payable by [ETH, USD,
-                BTC] pursuant to the procedures set forth in this Agreement and
-                via the Purchasing Site. [Company: confirm that we can
-                auto-populate the number of tokens, purchase price per token,
-                and form of payment based on purchaser selection.]
+                bound, hereby irrevocably agrees to purchase from the Company{" "}
+                {formatNetworkData(purchasedTokens)} Tokens (the “
+                <u>Purchased Tokens</u>”) at a purchase price of $USD{" "}
+                {poktPrice} per token (the &quot;
+                <u>Purchase Price</u>&quot;), payable by [ETH, USD, BTC]
+                pursuant to the procedures set forth in this Agreement and via
+                the Purchasing Site. [Company: confirm that we can auto-populate
+                the number of tokens, purchase price per token, and form of
+                payment based on purchaser selection.]
               </p>
             </li>
             <li>
@@ -133,10 +135,12 @@ class SecondPage extends React.Component {
 
 SecondPage.defaultProps = {
   poktPrice: "0",
+  purchasedTokens: 0,
 };
 
 SecondPage.propTypes = {
   poktPrice: PropTypes.string,
+  purchasedTokens: PropTypes.number,
 };
 
 export default SecondPage;

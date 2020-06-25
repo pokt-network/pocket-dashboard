@@ -3,18 +3,20 @@ import React, {Component} from "react";
 import "./Checkout.scss";
 import {Button, Col, Row} from "react-bootstrap";
 import ReactToPrint from "react-to-print";
+import has from "lodash/has";
 import Invoice from "../../../core/components/Payment/Invoice";
 import {capitalize, formatCurrency} from "../../../_helpers";
-import PaymentService from "../../../core/services/PocketPaymentService";
 import moment from "moment";
 import {ITEM_TYPES} from "../../../_constants";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import NodeService from "../../../core/services/PocketNodeService";
+import UserService from "../../../core/services/PocketUserService";
+import PaymentService from "../../../core/services/PocketPaymentService";
+import CheckoutService from "../../../core/services/PocketCheckoutService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import Loader from "../../../core/components/Loader";
-import UserService from "../../../core/services/PocketUserService";
 import AppAlert from "../../../core/components/AppAlert";
 import PrintableInvoice from "../PrintableInvoice/PrintableInvoice";
 
@@ -34,6 +36,7 @@ class Checkout extends Component {
       details: [],
       total: 0,
       currentAccountBalance: 0,
+      purchasedTokens: 0,
       address: "",
       unauthorized: false,
     };
@@ -54,10 +57,16 @@ class Checkout extends Component {
       total,
       currentAccountBalance,
     } = this.props.location.state;
+
     const address =
       type === ITEM_TYPES.APPLICATION
         ? ApplicationService.getApplicationInfo().address
         : NodeService.getNodeInfo().address;
+
+    const purchasedTokens =
+      type === ITEM_TYPES.APPLICATION
+        ? await CheckoutService.getApplicationPoktToStake(total)
+        : await CheckoutService.getNodePoktToStake(total);
 
     const {
       paymentID: id,
@@ -84,16 +93,17 @@ class Checkout extends Component {
       details,
       total,
       currentAccountBalance,
+      purchasedTokens: has(purchasedTokens, "cost") ? purchasedTokens.cost : 0,
       paymentMethod,
     });
 
     const action = UserService.getUserAction();
     const appBreadcrumbs = ["Apps", action, "Checkout", "Invoice"];
     const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Invoice"];
-    
-    type === ITEM_TYPES.APPLICATION ? 
-      this.props.onBreadCrumbChange(appBreadcrumbs) : 
-      this.props.onBreadCrumbChange(nodeBreadcrumbs);
+
+    type === ITEM_TYPES.APPLICATION
+      ? this.props.onBreadCrumbChange(appBreadcrumbs)
+      : this.props.onBreadCrumbChange(nodeBreadcrumbs);
   }
 
   render() {
@@ -106,6 +116,7 @@ class Checkout extends Component {
       loading,
       unauthorized,
       currentAccountBalance,
+      purchasedTokens,
     } = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
@@ -198,10 +209,7 @@ class Checkout extends Component {
                 className="icon"
                 alt="print-icon"
               />{" "}
-              <Button className="link">
-                Print
-              </Button>{" "}
-              your invoice
+              <Button className="link">Print</Button> your invoice
             </div>
           )}
           content={() => this.componentRef}
@@ -219,6 +227,7 @@ class Checkout extends Component {
           purchaseDetails={items}
           cardHolderName={owner}
           poktPrice={poktPrice}
+          purchasedTokens={purchasedTokens}
           total={totalAmount}
         />
       </>
