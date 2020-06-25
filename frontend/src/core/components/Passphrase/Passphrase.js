@@ -296,8 +296,8 @@ class Passphrase extends Component {
             >
               <p>
                 The key file by itself is useless without the passphrase.
-                You&#39;ll need the key file in order to import or set up your 
-                application.
+                You&#39;ll need the key file in order to import or set up 
+                your node.
               </p>
             </AppAlert>
           </Col>

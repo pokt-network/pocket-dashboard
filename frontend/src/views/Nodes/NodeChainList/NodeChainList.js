@@ -81,9 +81,9 @@ class NodeChainList extends Chains {
           <Col className="page-title">
             <h1>Choose chains</h1>
             <p>
-              Choose the chains you want to connect your app or node to.
-              Remember you won&#39;t be able to change these chains until your
-              next stake which will be evenly divided on the selected number of
+              Choose the chains you want to connect your node to. Remember you
+              won&#39;t be able to change these chains unless you unstake then
+              restake which will be evenly divided across the selected number of
               chains.
             </p>
           </Col>
@@ -147,7 +147,7 @@ class NodeChainList extends Chains {
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
                     <Form.Label className="service-url-label">
-                      Service URL. Please provide the endpoint HTTPS of your
+                      Service URL. Please provide the HTTPS endpoint of your
                       node.
                     </Form.Label>
                     <Form.Control

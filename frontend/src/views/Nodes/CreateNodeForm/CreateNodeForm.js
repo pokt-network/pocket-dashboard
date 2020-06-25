@@ -157,10 +157,10 @@ class CreateNodeForm extends CreateForm {
             )}
             <h1>Node Information</h1>
             <p className="info">
-              Fill in these quick questions to identity your node on the
-              dashboard. Fields marked with * are required to continue.
+              Fill in these questions to identify your node on your
+              dashboard. Fields marked with (*) are required to continue.
               <br />
-              If you have an existing account in Pocket Network with an assigned
+              If you have an existing account in Pocket Network with an associated
               Private Key and you want to register it as a node, please proceed
               to{" "}
               <Link
@@ -271,17 +271,15 @@ class CreateNodeForm extends CreateForm {
                 <ul>
                   <li>
                     <strong>Purchasers</strong> are not buying POKT as an
-                    investment with the expectation of profit or appreciation
-                  </li>
-                  <li>
+                    investment with the expectation of profit or appreciation.
                     <strong>Purchasers</strong> are buying POKT to use it.
                   </li>
                   <li>
                     To ensure <strong>purchasers</strong> are bona fide and not
-                    investors, the Company has set a purchase maximum per user
-                    and requires users must hold POKT for 4 weeks and use (bond
-                    and stake) it before transferring to another wallet or
-                    selling.
+                    investors, the Company has set a purchase maximum per user.
+                    Users must hold POKT for 21 days and use (bond
+                    and stake) it before either transferring POKT to another 
+                    wallet or selling POKT.
                   </li>
                   <li>
                     <strong>Purchasers</strong> are acquiring POKT for their own
@@ -298,7 +296,7 @@ class CreateNodeForm extends CreateForm {
                     label={
                       <p>
                         {/* eslint-disable-next-line react/no-unescaped-entities */}
-                        I agree to these Pocket's{" "}
+                        I agree to Pocket's{" "}
                         <Link target="_blank" to={ROUTE_PATHS.privacyPolicy}>
                           Terms and Conditions.
                         </Link>

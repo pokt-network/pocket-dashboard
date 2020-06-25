@@ -218,9 +218,11 @@ class SelectValidatorPower extends Purchase {
             )}
             <h1>Run actually decentralized infrastructure</h1>
             <p className="subtitle">
-              Starting at 900 USD you will be able to run a node in the Pocket
-              Network and increasing the Validator Power (VP) you increase the
-              node chances to produce blocks and win the block&lsquo;s reward.
+              Starting at $900 USD (~15,000 POKT) you will be able to run a node 
+              on the Pocket Network. By increasing the Validator Power (VP) 
+              through staking more than the minimum required POKT, you increase 
+              the chance your node will to produce blocks and win a 
+              block&lsquo;s reward.
             </p>
           </Col>
         </Row>
@@ -261,8 +263,8 @@ class SelectValidatorPower extends Purchase {
               title={<h4 className="alert-max">*More Validator Power?</h4>}
             >
               <p className="alert-max">
-                If your node requires more than {formatNumbers(max)} VP, please{" "}
-                <a href="/todo">Contact us</a> directly to find a solution
+                If your node requires more than {formatNumbers(max)} PKT, please{" "}
+                <a href="/todo">contact us</a> directly to find a solution
                 specially designed for your node.
               </p>
             </AppAlert>
