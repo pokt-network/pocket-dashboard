@@ -79,10 +79,10 @@ class Login extends Component {
     if (!success) {
       const {message: err} = data.response.data;
 
-      if (err === "Error: Passwords do not match") {
-        errors.password = "Wrong password";
-      } else if (err === "Error: Invalid username.") {
-        errors.email = "invalid email.";
+      if (err === "Passwords do not match.") {
+        errors.password = "Wrong password.";
+      } else if (err === "Invalid username.") {
+        errors.email = "Invalid email.";
       }
     } else {
       this.setState({user: data});
@@ -106,7 +106,7 @@ class Login extends Component {
           <Col className={"content"}>
             <div className="change">
               <p>
-                New in Pocket Dashboard?{" "}
+                New to Pocket Dashboard?{" "}
                 <Link to={signup}>Create an account</Link>
               </p>
             </div>

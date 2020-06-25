@@ -117,10 +117,10 @@ class VerifyEmail extends Component {
                 </p>
 
                 <p className="p-style-lg">
-                  Check your junk folder, be sure to mark it as not spam to
-                  avoid any problems with notifications from dashboard.
+                  Please check your junk folder. Be sure to mark it as not spam to
+                  avoid any problems with notifications from the Pocket Dashboard.
                 </p>
-                <p className="p-style-md">Did you not receive it?</p>
+                <p className="p-style-md">Did you not receive our email?</p>
                 <Button
                   className="button"
                   variant="primary"

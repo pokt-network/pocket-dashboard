@@ -216,7 +216,7 @@ class SecurityQuestions extends Component {
                   />
                 )}
                 <h1 className="text-uppercase">
-                  Please answer theree security questions before creating a new
+                  Please answer These security questions before creating a new
                   account
                 </h1>
                 <Form onSubmit={this.sendQuestions}>
