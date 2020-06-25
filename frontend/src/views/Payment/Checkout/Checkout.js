@@ -3,7 +3,7 @@ import React, {Component} from "react";
 import "./Checkout.scss";
 import {Button, Col, Row} from "react-bootstrap";
 import ReactToPrint from "react-to-print";
-import has from 'lodash/has';
+import has from "lodash/has";
 import Invoice from "../../../core/components/Payment/Invoice";
 import {capitalize, formatCurrency} from "../../../_helpers";
 import moment from "moment";
