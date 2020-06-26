@@ -75,11 +75,7 @@ class ResetPassword extends Component {
         <Navbar />
         {!alertOverlay.show ? (
           <Row className="mt-1">
-            <Col
-              id={"main"}
-              md={{span: 8, offset: 2}}
-              lg={{span: 4, offset: 3}}
-            >
+            <div id="main">
               <PocketBox iconUrl={"/assets/triangle.png"}>
                 <h1 className="title-password">Reset password</h1>
                 <Formik
@@ -126,18 +122,18 @@ class ResetPassword extends Component {
                         </Form.Control.Feedback>
                       </Form.Group>
                       <Button
-                        className="resetButton"
+                        className="resetButton mt-4"
                         type="submit"
                         size="md"
                         variant="primary"
                       >
-                        <span className="resetButtonText">Change Password</span>
+                        <span>Change Password</span>
                       </Button>
                     </Form>
                   )}
                 </Formik>
               </PocketBox>
-            </Col>
+            </div>
           </Row>
         ) : (
           <Row>
