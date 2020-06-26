@@ -221,8 +221,8 @@ class AppPassphrase extends Component {
             <h2>Protect your private key with a passphrase</h2>
             <p>
               Write down a Passphrase to protect your key file. This should
-              have: minimum 15 alphanumeric symbols, one capital letter, one
-              lowercase, one special character and one number.
+              have: minimum 15 alphanumeric symbols with one capital letter, one
+              lowercase letter, one special character and one number.
             </p>
             <Formik
               validationSchema={this.schema}
@@ -337,8 +337,9 @@ class AppPassphrase extends Component {
               }
             >
               <p>
-                The key file by itself is useless without the passphrase and
-                you&#39;ll need it to import or set up your application.
+              The key file by itself is useless without the passphrase.
+              You&#39;ll need the key file in order to import or set up your 
+              application.
               </p>
             </AppAlert>
           </Col>

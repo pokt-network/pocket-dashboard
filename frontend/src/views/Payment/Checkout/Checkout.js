@@ -183,7 +183,7 @@ class Checkout extends Component {
           <Row>
             <Col className="header">
               {detailButton}
-              <h1>Enjoy your purchase</h1>
+              <h1>Get Ready For Staking</h1>
               <p>Please wait a few minutes until the process is completed.</p>
             </Col>
           </Row>

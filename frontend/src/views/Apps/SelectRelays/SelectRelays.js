@@ -253,7 +253,7 @@ class SelectRelays extends Component {
             <p className="subtitle">
               With the custom tier, you only need to pay for the API throughput
               you application needs. If you expect your application to grow in
-              the short term, we recommend giving it a small buffer.
+              the short term, we recommend giving it a buffer.
             </p>
           </Col>
         </Row>

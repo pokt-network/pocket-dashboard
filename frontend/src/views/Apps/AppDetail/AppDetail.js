@@ -336,7 +336,7 @@ class AppDetail extends Component {
         </Row>
         <Row>
           <Col sm="11" md="11" lg="11" className="general-header page-title">
-            <h1>General Information</h1>
+            <h1>App Detal</h1>
           </Col>
           <Col sm="1" md="1" lg="1">
             {status !== STAKE_STATUS.Unstaking &&
@@ -472,8 +472,9 @@ class AppDetail extends Component {
           <Modal.Body>
             <h4>Are you sure you want to remove this App?</h4>
             Your application will be removed from the Pocket Dashboard.
-            However, you will be able access it through the command line interface (CLI) or import it
-            back into Pocket Dashboard with the private key assigned to it.
+            However, you will still be able to access it through the Command 
+            Line Interface (CLI) or import it back into Pocket Dashboard with 
+            the private key assigned to it.
           </Modal.Body>
           <Modal.Footer>
             <Button className="dark-button" onClick={() => this.setState({deleteModal: false})}>

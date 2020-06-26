@@ -42,10 +42,10 @@ class ApplicationChainList extends Chains {
           <Col className="page-title">
             <h1>Choose chains</h1>
             <p>
-              Choose the chains you want to connect your app or node to.
-              Remember you won&#39;t be able to change these chains until your
-              next stake which will be evenly divided on the selected number of
-              chains.
+              Choose the blockchains you want to connect your app to.
+              Remember you won&#39;t be able to change these chains unless you 
+              unstake then restake which will then be evenly divided across the 
+              selected number of networks.
             </p>
           </Col>
         </Row>

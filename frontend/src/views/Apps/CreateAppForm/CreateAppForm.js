@@ -49,7 +49,7 @@ class CreateAppForm extends CreateForm {
   }
 
   validateError(err) {
-    if (err === "Error: Application already exists") {
+    if (err === "Application already exists.") {
       return "An application with that name already exists, please use a different name.";
     }
 
@@ -170,14 +170,14 @@ class CreateAppForm extends CreateForm {
             )}
             <h1>App Information</h1>
             <p className="info">
-              Fill in these few quick questions to identity your app on the
+              Fill in these few quick questions to identify your app on the
               Dashboard. Fields mark with <b>* </b>are required to continue.
               <br />
               If you have an existing account in Pocket Network with an assigned
               Private Key and you want to register it as an app, please proceed
               to{" "}
               <Link to={_getDashboardPath(DASHBOARD_PATHS.importApp)}>
-                Import.
+                Import Application.
               </Link>
             </p>
           </Col>
@@ -269,7 +269,9 @@ class CreateAppForm extends CreateForm {
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>
-                      Write an optional description of your app here
+                      Write an optional description of your app here. This 
+                      information is private and will not be shared outside of 
+                      your personal dashboard.
                     </Form.Label>
                     <Form.Control
                       placeholder="maximum of 150 characters"
@@ -310,17 +312,14 @@ class CreateAppForm extends CreateForm {
                 <ul>
                   <li>
                     <strong>Purchasers</strong> are not buying POKT as an
-                    investment with the expectation of profit or appreciation.
-                  </li>
-                  <li>
-                    <strong>Purchasers</strong> are buying POKT to use it.
+                    investment with the expectation of profit or appreciation. <strong>Purchasers</strong> are buying POKT to use it.
                   </li>
                   <li>
                     To ensure <strong>purchasers</strong> are bona fide and not
-                    investors, the Company has set a purchase maximum per user
-                    and requires users must hold POKT for 4 weeks and use (bond
-                    and stake) it before transferring to another wallet or
-                    selling.
+                    investors, the Company has set a purchase maximum per user.
+                    Users must hold POKT for 21 days and use (bond
+                    and stake) it before either transferring  POKT to another 
+                    wallet or selling POKT.
                   </li>
                   <li>
                     <strong>Purchasers</strong> are acquiring POKT for their own
@@ -337,7 +336,7 @@ class CreateAppForm extends CreateForm {
                     label={
                       <span>
                         {/* eslint-disable-next-line react/no-unescaped-entities */}
-                        I agree to these Pocket's{" "}
+                        I agree to Pocket's{" "}
                         <Link  target="_blank" to={ROUTE_PATHS.termsOfService}>
                           Terms and Conditions.
                         </Link>

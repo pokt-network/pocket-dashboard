@@ -19,8 +19,8 @@ class FreeTierModal extends Component {
         <Modal.Body>
           <h4>How the free tier works?</h4>
           <p>
-            The free tier is a plan for any app to receive free throughput
-            limited to 1 Million Relays per Day.
+            The free tier is a limited time infrastructure plan for any app to
+            receive free API throughput maxed at 1 Million Relays per Day.
           </p>
           <p>
             In the free tier, Pocket Network Inc stakes on behalf of the
@@ -29,8 +29,9 @@ class FreeTierModal extends Component {
             and connect to any of the available chains for free.
           </p>
           <p>
-            Once your app scales up you can unstake and transition to the Custom
-            Tier to get the exact amount of throughput you need.
+            As your app grows and scales you will be able to unstake and
+            transition to the Custom Tier to get the exact amount of relay
+            throughput you need.
           </p>
           <p>
             If you still have questions please take a look at our{" "}
@@ -41,15 +42,15 @@ class FreeTierModal extends Component {
           </p>
           <p>
             In the free tier, Pocket Network Inc stakes on behalf of the user
-            and manages the staked POKT and Application Authentication Token
-            (AAT). PNI reserves the right to revoke throughput at any time for
-            violation of the Terms and Conditions. PNI is not responsible for
-            damage resulting from managing AATs or POKT.
+            and manages both the staked POKT and Application Authentication
+            Token (AAT). PNI reserves the right to revoke relay throughput at
+            any time for violating the Terms and Conditions. PNI is not
+            responsible for damage resulting from managing AATs or POKT.
           </p>
           <p>
-            If you need additional bandwidth, you will always have the option to
-            upgrade to a paid tier with additional control over your AAT and
-            POKT.
+            If you need additional API bandwidth, you will always have the
+            option to upgrade to a paid tier that comes with additional control
+            over your AAT and POKT.
           </p>
           <a href="/todo">Please see our FAQ for additional information.</a>
         </Modal.Body>
