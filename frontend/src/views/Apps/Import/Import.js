@@ -115,36 +115,36 @@ class Import extends Component {
   async importAccount(e) {
     e.preventDefault();
 
-    this.setState({importing: true});
+    this.setState({importing: true, error: {show: false, message: ""}});
 
     const {type} = this.state;
     const {privateKey, passphrase, ppkData} = this.state.data;
-    const passphraseOrDefault = ppkData || passphrase ? passphrase : "default";
     let ppk;
+
+    if (!passphrase) {
+      this.setState({
+        importing: false,
+        error: {show: true, message: "Your passphrase cannot be empty"},
+      });
+      return;
+    }
 
     if (!ppkData) {
       ppk = JSON.parse(
         await PocketClientService.createPPKFromPrivateKey(
-          privateKey, passphraseOrDefault
+          privateKey, passphrase
         )
       );
     } else {
-      if (!passphrase) {
-        this.setState({
-          importing: false,
-          error: {show: true, message: "Your passphrase cannot be empty"},
-        });
-        return;
-      }
       ppk = ppkData;
     }
 
     const {success, data} = await AccountService.importAccount(
-      ppk, passphraseOrDefault);
+      ppk, passphrase);
 
     if (success) {
       await PocketClientService.saveAccount(
-        JSON.stringify(ppk), passphraseOrDefault);
+        JSON.stringify(ppk), passphrase);
       let chains;
       const {balance} = await AccountService.getPoktBalance(data.address);
 
@@ -153,7 +153,7 @@ class Import extends Component {
       if (type === ITEM_TYPES.APPLICATION) {
         ApplicationService.saveAppInfoInCache({
           imported: true,
-          passphraseOrDefault,
+          passphrase,
           address: data.address,
           ppk,
         });
@@ -176,7 +176,7 @@ class Import extends Component {
         });
       } else {
         NodeService.saveNodeInfoInCache({
-          passphraseOrDefault,
+          passphrase,
           address: data.address,
           ppk,
         });
@@ -341,7 +341,7 @@ class Import extends Component {
                     </>
                   ) : (
                     <>
-                      <h2>Passphrase {privateKey ? "(Optional)" : ""}</h2>
+                      <h2>Passphrase</h2>
                       <Form.Group className="d-flex">
                         <Form.Control
                           placeholder="*****************"

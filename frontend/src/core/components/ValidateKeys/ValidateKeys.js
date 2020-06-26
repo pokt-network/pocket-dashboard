@@ -3,8 +3,6 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 import {PropTypes} from "prop-types";
 import PocketClientService from "../../services/PocketClientService";
 
-const DEFAULT_PASSPHRASE = "default";
-
 class ValidateKeys extends Component {
   constructor(props, context) {
     super(props, context);
@@ -97,14 +95,19 @@ class ValidateKeys extends Component {
 
     const {address} = this.props;
     const {privateKey, passphrase, ppkData} = this.state.data;
-    const passphraseOrDefault =
-      ppkData || passphrase ? passphrase : DEFAULT_PASSPHRASE;
     let ppk;
+
+    if (!passphrase) {
+      this.setState({
+        error: {show: true, message: "Your passphrase cannot be empty"},
+      });
+      return;
+    }
 
     if (!ppkData) {
       ppk = JSON.parse(
         await PocketClientService.createPPKFromPrivateKey(
-          privateKey, passphraseOrDefault
+          privateKey, passphrase
         )
       );
     } else {
@@ -112,7 +115,7 @@ class ValidateKeys extends Component {
     }
 
     const account = await PocketClientService.saveAccount(
-      JSON.stringify(ppk), passphraseOrDefault
+      JSON.stringify(ppk), passphrase
     );
     const {addressHex} = account;
 
@@ -264,14 +267,10 @@ class ValidateKeys extends Component {
                               ? this.validateAccount
                               : (e) => {
                                   e.preventDefault();
-                                  const passphraseOrDefault = passphrase
-                                    ? passphrase
-                                    : DEFAULT_PASSPHRASE;
-
                                   handleAfterValidate({
                                     address,
                                     ppk,
-                                    passphrase: passphraseOrDefault,
+                                    passphrase,
                                   });
                                 }
                           }
