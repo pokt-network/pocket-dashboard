@@ -1,6 +1,5 @@
 import {Configurations} from "../../_configuration";
 import {Configuration, Pocket} from "@pokt-network/pocket-js/dist/web.js";
-import bigInt from "big-integer";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 const POCKET_CONFIGURATION = new Configuration(POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
@@ -134,54 +133,6 @@ class PocketClientService {
     // @createAndImportAccount
     return await this._pocket.keybase.importPPKFromJSON(passphrase, ppk, passphrase);
   }
-
-  /**
-   * Retrieve the free tier account.
-   *
-   * @returns {Promise<{account:Account, passphrase:string} | Error>} Free Tier account.
-   * @throws Error If the account is not valid.
-   */
-  async getFreeTierAccount() {
-    const privateKey = POCKET_NETWORK_CONFIGURATION.free_tier.account;
-    const passphrase = POCKET_NETWORK_CONFIGURATION.free_tier.passphrase;
-
-    if (!privateKey) {
-      throw Error("Free tier account value is required");
-    }
-
-    const account = await this.importAccount(privateKey, passphrase);
-
-    if (account instanceof Error) {
-      throw Error("Free tier account is not valid");
-    }
-
-    return {account, passphrase};
-  }
-
-  /**
-   * Transfer Pokt between Accounts
-   *
-   * @param {Account} fromAccount From account address.
-   * @param {string} passphrase passphrase of fromAccount.
-   * @param {Account} toAccount To account address.
-   * @param {string} uPoktAmount uPokt to transfer.
-   *
-   * @returns {Promise<{address:string, txHex:string}>} Raw Tx Response.
-   * @async
-   */
-  async transferPoktBetweenAccounts(fromAccount, passphrase, toAccount, uPoktAmount) {
-    const {chain_id: chainID, transaction_fee: transactionFee} = POCKET_NETWORK_CONFIGURATION;
-    const transactionSender = await this._getTransactionSender(fromAccount.addressHex, passphrase);
-    const {unlockedAccount: account} = transactionSender;
-
-    const uPoktAmountWithFee = bigInt(uPoktAmount).add(bigInt(transactionFee));
-
-    return await transactionSender
-      .send(account.addressHex, toAccount.addressHex, uPoktAmountWithFee.toString())
-      .submit(chainID, transactionFee);
-  }
-
-  // TODO: On the stake methods, convert relays/validator-power to pokt.
 
   /**
    * Creates a transaction request to stake an application.
