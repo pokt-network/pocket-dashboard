@@ -98,7 +98,7 @@ export const breadcrumbsRoutes = () => {
   const action = UserService.getUserAction();
 
   return {
-    [DASHBOARD_PATHS.home]: ["Status"],
+    [DASHBOARD_PATHS.home]: ["Network status"],
 
     // Apps
     [DASHBOARD_PATHS.apps]: ["Apps"],

@@ -24,6 +24,7 @@ import {ITEM_TYPES} from "../../../_constants";
 import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
+import {ROUTE_PATHS} from "../../../_routes";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -448,7 +449,8 @@ class OrderSummary extends Component {
               />
               <Link
                 className="terms-link"
-                to={_getDashboardPath(DASHBOARD_PATHS.termsOfService)}
+                target="_blank"
+                to={ROUTE_PATHS.termsOfService}
               >
                 Terms and conditions.
               </Link>

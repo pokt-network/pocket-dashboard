@@ -264,7 +264,7 @@ class SelectValidatorPower extends Purchase {
             >
               <p className="alert-max">
                 If your node requires more than {formatNumbers(max)} PKT, please{" "}
-                <a href="/todo">contact us</a> directly to find a solution
+                <a href="mailto:dashboard@pokt.network">contact us</a> directly to find a solution
                 specially designed for your node.
               </p>
             </AppAlert>
