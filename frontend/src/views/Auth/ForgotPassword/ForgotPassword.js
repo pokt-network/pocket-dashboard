@@ -67,7 +67,7 @@ class ForgotPassword extends Component {
       <Container fluid id={"forgot-password-page"}>
         <Navbar />
         <Row className="mt-1">
-          <div style={{margin: "0 auto"}}>
+          <div id="main">
             <PocketBox iconUrl={"/assets/circle.png"}>
               <h1 className="forgotPassword">Forgot your password?</h1>
               <p className="passwordLabel">
@@ -95,7 +95,7 @@ class ForgotPassword extends Component {
                   variant="primary"
                   size={"md"}
                 >
-                  <span className="resetButtonText">Reset Password</span>
+                  <span>Reset Password</span>
                 </Button>
               </Form>
             </PocketBox>
