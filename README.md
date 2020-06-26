@@ -164,21 +164,21 @@ To run service tests
 
 ```
 1. cd backend
-2. yarn services
+2. yarn test:services
 ```
 
 To run providers tests
 
 ```
 1. cd backend
-2. yarn providers
+2. yarn test:providers
 ```
 
 To run models tests
 
 ```
 1. cd backend
-2. yarn models
+2. yarn test:models
 ```
 
 ## Contributing
