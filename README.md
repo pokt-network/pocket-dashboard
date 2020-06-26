@@ -69,11 +69,6 @@ DATABASE_NAME=pokt_dashboard
 # Pocket Network
 POCKET_NETWORK_DISPATCHERS=https://node1.testnet.pokt.network:443,https://node2.testnet.pokt.network:443,https://node3.testnet.pokt.network:443,https://node4.testnet.pokt.network:443,https://node5.testnet.pokt.network:443,https://node6.testnet.pokt.network:443,https://node7.testnet.pokt.network:443
 POCKET_NETWORK_CHAIN_HASH=0002
-# Pocket account could be a new one.
-POCKET_NETWORK_AAT_CLIENT_PRIV_KEY=
-# Pocket account must be stake on network (dashboard)
-POCKET_NETWORK_AAT_APP_PRIV_KEY=
-POCKET_NETWORK_AAT_CLIENT_PASSPHRASE=
 POCKET_NETWORK_CHAIN_ID=testnet
 POCKET_NETWORK_MAX_DISPATCHER=7
 POCKET_NETWORK_REQUEST_TIMEOUT=60000
@@ -149,11 +144,6 @@ REACT_APP_POCKET_FREE_TIER_ACCOUNT_PASSPRHASE=
 REACT_APP_POCKET_FREE_TIER_STAKE_AMOUNT=1000000000
 REACT_APP_POCKET_NETWORK_DISPATCHERS=https://node1.testnet.pokt.network:443,https://node2.testnet.pokt.network:443,https://node3.testnet.pokt.network:443,https://node4.testnet.pokt.network:443,https://node5.testnet.pokt.network:443,https://node6.testnet.pokt.network:443,https://node7.testnet.pokt.network:443
 REACT_APP_POCKET_NETWORK_CHAIN_ID=testnet
-# Pocket account could be a new one.
-REACT_APP_POCKET_NETWORK_AAT_CLIENT_PRIV_KEY=
-# Pocket account must be stake on network (dashboard)
-REACT_APP_POCKET_NETWORK_AAT_APP_PRIV_KEY=
-REACT_APP_POCKET_NETWORK_AAT_CLIENT_PASSPHRASE=
 
 ```
 
