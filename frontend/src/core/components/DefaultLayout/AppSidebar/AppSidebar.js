@@ -24,7 +24,8 @@ class AppSidebar extends Component {
                 isActive={(match, location) =>
                   // Network status doesn't have its name on the route
                   isActiveUrl(
-                    match, location, route.name, route.name === "Network Status")
+                    match, location, route.name, route.name.toLowerCase() === "Network Status".toLowerCase()
+                  )
                 }
               />
             ))}
