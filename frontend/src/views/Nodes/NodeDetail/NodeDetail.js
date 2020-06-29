@@ -241,11 +241,11 @@ class NodeDetail extends Component {
 
     const generalInfo = [
       {
-        title: `${formatNumbers(stakedTokens)} POKT`,
+        title: `${formatNumbers(stakedTokens)} UPOKT`,
         subtitle: "Staked tokens",
       },
       {
-        title: `${formatNumbers(accountBalance)} POKT`,
+        title: `${formatNumbers(accountBalance)} UPOKT`,
         subtitle: "Balance",
       },
       {
