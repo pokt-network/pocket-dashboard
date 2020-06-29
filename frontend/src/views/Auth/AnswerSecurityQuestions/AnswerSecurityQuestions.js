@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Container, Form, Row} from "react-bootstrap";
 import "./AnswerSecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
