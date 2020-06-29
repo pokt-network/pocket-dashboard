@@ -445,6 +445,8 @@ export default class ApplicationService extends BasePocketService {
     if (!result) {
       throw new Error("Couldn't add funding transaction for processing");
     }
+
+    await this.__markApplicationAsFreeTier(application.pocketApplication, false);
   }
 
   /**
@@ -483,6 +485,8 @@ export default class ApplicationService extends BasePocketService {
     if (!result) {
       throw new Error("Couldn't register app unstake transaction for email notification");
     }
+
+    await this.__markApplicationAsFreeTier(application.pocketApplication, false);
   }
 
   /**
