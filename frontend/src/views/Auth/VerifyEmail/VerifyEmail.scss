@@ -1,18 +1,10 @@
-@import "../../../scss/Variables/Fonts.scss";
-@import "../../../scss/Variables/Colors.scss";
+@import "../../../scss/Variables/All.scss";
 
 #verify-email-page {
   h1 {
-    width: 573px;
-    height: 41px;
     font-family: $secondary-font-family;
     font-size: 30px;
     font-weight: 800;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    text-transform: uppercase;
   }
 
   h2 {
@@ -20,61 +12,27 @@
   }
 
   .email-address {
-    width: 197px;
-    height: 24px;
     font-family: $secondary-font-family;
     font-size: 18px;
     font-weight: 800;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
-    color: $border-blue;
-  }
-
-  .email-not {
-    width: 225px;
-    height: 17px;
-    font-family: $primary-font-family;
-    font-size: 14px;
-    font-weight: 300;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
     color: $border-blue;
   }
 
   .p-style-lg {
-    width: 573px;
-    height: 34px;
     font-family: $primary-font-family;
     font-size: 14px;
     font-weight: 300;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
     color: $dark-gray;
   }
 
   .button {
-    width: 93px;
-    height: 32px;
     border-radius: 25px;
     background-color: $border-blue;
   }
 
   .button-label {
-    width: 39px;
-    height: 15px;
     font-family: $primary-font-family;
     font-size: 12px;
-    font-weight: normal;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
     color: $white-smoke;
   }
 
@@ -82,18 +40,14 @@
     font-family: $primary-font-family;
     font-size: 14px;
     font-weight: 300;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: normal;
-    letter-spacing: normal;
     color: #494949;
   }
 
   #main {
-    margin-top: 40px;
-  }
-
-  .content {
-    margin-top: 8em;
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 60px;
+    box-shadow: 0 6px 25px -8px rgba(6, 32, 46, 0.1);
+    padding: 40px 30px;
   }
 }

@@ -212,11 +212,11 @@ class AppDetail extends Component {
 
     const generalInfo = [
       {
-        title: `${formatNetworkData(stakedTokens)} POKT`,
+        title: `${formatNetworkData(stakedTokens)} UPOKT`,
         subtitle: "Staked tokens",
       },
       {
-        title: `${formatNetworkData(freeTier ? 0 : accountBalance)} POKT`,
+        title: `${formatNetworkData(freeTier ? 0 : accountBalance)} UPOKT`,
         subtitle: "Balance"
       },
       {
@@ -336,7 +336,7 @@ class AppDetail extends Component {
         </Row>
         <Row>
           <Col sm="11" md="11" lg="11" className="general-header page-title">
-            <h1>App Detal</h1>
+            <h1>App Detail</h1>
           </Col>
           <Col sm="1" md="1" lg="1">
             {status !== STAKE_STATUS.Unstaking &&
@@ -357,7 +357,7 @@ class AppDetail extends Component {
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
               <InfoCard title={card.title} subtitle={card.subtitle}>
-                {card.children || <br/>}
+                {card.children || <></>}
               </InfoCard>
             </Col>
           ))}

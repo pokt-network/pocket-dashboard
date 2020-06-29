@@ -31,14 +31,8 @@ class TermsOfService extends Component {
         <Navbar />
 
         <div className="wrapper">
-          {/* eslint-disable-next-line react/prop-types */}
-          <span className="go" onClick={this.props.history.goBack}>
-            <img src="/assets/arrow-left.svg" alt="" className="icon" />
-            <span className="text">Go back</span>
-          </span>
-          <br />
           <Row>
-            <div className="address offset-lg-4">
+            <div className="address">
               <p className="">POCKET NETWORK, INC. </p>
               <p>POKT TOKEN PURCHASE AGREEMENT</p>
             </div>

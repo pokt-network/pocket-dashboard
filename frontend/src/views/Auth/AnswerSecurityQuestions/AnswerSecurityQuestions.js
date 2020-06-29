@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Container, Form, Row} from "react-bootstrap";
 import "./AnswerSecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
@@ -26,7 +26,10 @@ class AnswerSecurityQuestions extends Component {
   }
   async componentDidMount() {
     // eslint-disable-next-line react/prop-types
-    const {email} = this.props.location.state;
+    const email = this.props.location.state
+      ? // eslint-disable-next-line react/prop-types
+        this.props.location.state.email
+      : undefined;
 
     if (email !== undefined) {
       const questions = await SecurityQuestionService.getUserRandomSecurityQuestion(
@@ -75,11 +78,7 @@ class AnswerSecurityQuestions extends Component {
       <Container fluid id={"answer-security-questions-page"}>
         <Navbar />
         <Row className="mt-1">
-          <Col
-            id={"main"}
-            md={{span: 8, offset: 2}}
-            lg={{span: 4, offset: 3}}
-          >
+          <div id={"main"}>
             <PocketBox iconUrl={"/assets/squared.png"}>
               <h1 className="forgotPassword">
                 Answer this question before continuing.
@@ -94,10 +93,7 @@ class AnswerSecurityQuestions extends Component {
                     type="input"
                     className={error ? "is-invalid emailInput" : "emailInput"}
                   />{" "}
-                  <Form.Control.Feedback
-                    className="feedback"
-                    type="invalid"
-                  >
+                  <Form.Control.Feedback className="feedback" type="invalid">
                     {error ? error : ""}
                   </Form.Control.Feedback>
                 </Form.Group>
@@ -107,11 +103,11 @@ class AnswerSecurityQuestions extends Component {
                   variant="primary"
                   size={"md"}
                 >
-                  <span className="resetButtonText">Continue</span>
+                  <span>Continue</span>
                 </Button>
               </Form>
             </PocketBox>
-          </Col>
+          </div>
         </Row>
       </Container>
     );

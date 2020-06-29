@@ -75,7 +75,7 @@ class VerifyEmail extends Component {
         {!unauthorized ? (
           <>
             <Row className="mt-5 mb-3">
-              <Col lg={{span: 8, offset: 2}}>
+              <Col lg={{span: 8, offset: 2}} md={{span: 10, offset: 1}}>
                 <AppSteps
                   icons={icons}
                   steps={[
@@ -87,12 +87,8 @@ class VerifyEmail extends Component {
                 />
               </Col>
             </Row>
-            <Row className="content">
-              <Col
-                id="main"
-                md={{span: 8, offset: 2}}
-                lg={{span: 5, offset: 4}}
-              >
+            <Row className="content justify-content-center">
+              <div id="main">
                 {resentEmail && (
                   <AppAlert
                     variant={alert.variant}
@@ -117,8 +113,9 @@ class VerifyEmail extends Component {
                 </p>
 
                 <p className="p-style-lg">
-                  Please check your junk folder. Be sure to mark it as not spam to
-                  avoid any problems with notifications from the Pocket Dashboard.
+                  Please check your junk folder. Be sure to mark it as not spam
+                  to avoid any problems with notifications from the Pocket
+                  Dashboard.
                 </p>
                 <p className="p-style-md">Did you not receive our email?</p>
                 <Button
@@ -129,7 +126,7 @@ class VerifyEmail extends Component {
                 >
                   <span className="button-label">Resend</span>
                 </Button>
-              </Col>
+              </div>
             </Row>
           </>
         ) : (

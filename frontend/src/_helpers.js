@@ -43,9 +43,13 @@ export const isActiveExactUrl = (match, location) => {
   return match.url === location.pathname;
 };
 
-export const isActiveUrl = (match, location, name) => {
+export const isActiveUrl = (match, location, name, exact = false) => {
   if (!match) {
     return false;
+  }
+
+  if (exact) {
+    return match.url === location.pathname;
   }
 
   return location.pathname.includes(name.toLowerCase());

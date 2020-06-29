@@ -241,11 +241,11 @@ class NodeDetail extends Component {
 
     const generalInfo = [
       {
-        title: `${formatNumbers(stakedTokens)} POKT`,
+        title: `${formatNumbers(stakedTokens)} UPOKT`,
         subtitle: "Staked tokens",
       },
       {
-        title: `${formatNumbers(accountBalance)} POKT`,
+        title: `${formatNumbers(accountBalance)} UPOKT`,
         subtitle: "Balance",
       },
       {
@@ -373,8 +373,8 @@ class NodeDetail extends Component {
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle}>
-                {card.children || <br/>}
+                <InfoCard title={card.title} subtitle={card.subtitle}>
+                {card.children || <></>}
               </InfoCard>
             </Col>
           ))}

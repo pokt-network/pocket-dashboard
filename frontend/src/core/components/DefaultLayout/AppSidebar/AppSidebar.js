@@ -22,7 +22,10 @@ class AppSidebar extends Component {
                 isExternal={route.isExternal}
                 icon={route.icon}
                 isActive={(match, location) =>
-                  isActiveUrl(match, location, route.name)
+                  // Network status doesn't have its name on the route
+                  isActiveUrl(
+                    match, location, route.name, route.name.toLowerCase() === "Network Status".toLowerCase()
+                  )
                 }
               />
             ))}

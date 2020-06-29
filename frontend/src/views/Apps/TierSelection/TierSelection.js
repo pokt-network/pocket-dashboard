@@ -147,7 +147,7 @@ class TierSelection extends Component {
               label={
                 <span>
                   I agree to the Pocket Dashboard{" "}
-                  <Link to={ROUTE_PATHS.termsOfService}>
+                  <Link target="_blank" to={ROUTE_PATHS.termsOfService}>
                     Terms and Conditions.
                   </Link>
                 </span>
