@@ -53,6 +53,7 @@ NODE_STAKE_QUEUE.process(async (job, done) => {
     // Finish the job OK
     done();
   } catch (e) {
+    console.log(e);
     done(e);
   }
 });
@@ -91,6 +92,7 @@ NODE_UNSTAKE_QUEUE.process(async (job, done) => {
     // Finish the job OK
     done();
   } catch (error) {
+    console.log(e);
     done(error);
   }
 });
@@ -129,6 +131,7 @@ NODE_UNJAIL_QUEUE.process(async (job, done) => {
     // Finish the job OK
     done();
   } catch (error) {
+    console.log(e);
     done(error);
   }
 });
@@ -171,6 +174,7 @@ APP_STAKE_QUEUE.process(async (job, done) => {
     // Finish the job OK
     done();
   } catch (e) {
+    console.log("app stake", e);
     done(e);
   }
 });
@@ -209,6 +213,7 @@ APP_UNSTAKE_QUEUE.process(async (job, done) => {
     // Finish the job OK
     done();
   } catch (error) {
+    console.log(e);
     done(error);
   }
 });
@@ -265,6 +270,7 @@ POST_TRANSFER_QUEUE.process(async (job, done) => {
       done();
     }
   } catch (e) {
+    console.log("transfer", e);
     done(e);
   }
 });

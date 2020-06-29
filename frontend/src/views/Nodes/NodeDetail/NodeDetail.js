@@ -373,8 +373,8 @@ class NodeDetail extends Component {
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle}>
-                {card.children || <br/>}
+                <InfoCard title={card.title} subtitle={card.subtitle}>
+                {card.children || <></>}
               </InfoCard>
             </Col>
           ))}

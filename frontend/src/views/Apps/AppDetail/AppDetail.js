@@ -357,7 +357,7 @@ class AppDetail extends Component {
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
               <InfoCard title={card.title} subtitle={card.subtitle}>
-                {card.children || <br/>}
+                {card.children || <></>}
               </InfoCard>
             </Col>
           ))}
