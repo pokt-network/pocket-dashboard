@@ -119,11 +119,6 @@ export const Configurations = {
            },
            dispatchers: process.env.POCKET_NETWORK_DISPATCHERS,
            chain_hash: process.env.POCKET_NETWORK_CHAIN_HASH,
-           dashboard_aat: {
-             client_priv_key: process.env.POCKET_NETWORK_AAT_CLIENT_PRIV_KEY,
-             client_priv_key_passphrase: process.env.POCKET_NETWORK_AAT_CLIENT_PASSPHRASE,
-             app_priv_key: process.env.POCKET_NETWORK_AAT_APP_PRIV_KEY,
-           },
            provider_type: process.env.POCKET_NETWORK_PROVIDER_TYPE,
            http_provider_node: process.env.POCKET_NETWORK_HTTP_PROVIDER_NODE,
            main_fund_account: process.env.POCKET_NETWORK_MAIN_FUND_ACCOUNT,

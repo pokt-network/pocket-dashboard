@@ -326,7 +326,7 @@ class NodesMain extends Main {
                           alt="apps-empty-box"
                         />
                         <p>
-                          You have not created <br /> or imported any node yet
+                          You have not created <br /> or imported any nodes yet
                         </p>
                       </div>
                     )}

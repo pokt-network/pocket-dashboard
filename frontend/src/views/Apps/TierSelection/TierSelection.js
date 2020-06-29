@@ -146,7 +146,7 @@ class TierSelection extends Component {
               type="checkbox"
               label={
                 <span>
-                  I agree to Pocket Dashboard{" "}
+                  I agree to the Pocket Dashboard{" "}
                   <Link target="_blank" to={ROUTE_PATHS.termsOfService}>
                     Terms and Conditions.
                   </Link>

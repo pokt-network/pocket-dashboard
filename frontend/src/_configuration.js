@@ -22,8 +22,6 @@ export const Configurations = {
     transaction_fee: process.env.REACT_APP_POCKET_NETWORK_TX_FEE,
     chain_id: process.env.REACT_APP_POCKET_NETWORK_CHAIN_ID,
     free_tier: {
-      account: process.env.REACT_APP_POCKET_FREE_TIER_ACCOUNT,
-      passphrase: process.env.REACT_APP_POCKET_FREE_TIER_ACCOUNT_PASSPRHASE,
       stake_amount: process.env.REACT_APP_POCKET_FREE_TIER_STAKE_AMOUNT,
     }
   },
