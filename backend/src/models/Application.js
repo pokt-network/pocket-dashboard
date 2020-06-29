@@ -212,7 +212,7 @@ export class ExtendedPocketApplication {
       status: "0",
       chains: [],
       staked_tokens: "0",
-      max_relays: applicationParameters.baseRelaysPerPokt.toString(),
+      max_relays: "0",
       unstaking_time: applicationParameters.unstakingTime.toString()
     };
   }
