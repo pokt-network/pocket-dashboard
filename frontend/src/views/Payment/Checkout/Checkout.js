@@ -79,7 +79,7 @@ class Checkout extends Component {
     const invoice = {
       id: id.replace("pi_", "").toLowerCase(),
       date: moment(date).format("DD MM YYYY"),
-      owner: paymentMethod.billingDetails.name,
+      owner: paymentMethod.holder,
       card: `${capitalize(brand)} **** **** **** ${lastDigits}`,
       poktPrice,
     };
