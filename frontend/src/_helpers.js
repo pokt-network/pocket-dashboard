@@ -1,10 +1,16 @@
 import React from "react";
 import numeral from "numeral";
-import {BOND_STATUS, DEFAULT_POKT_DENOMINATION_BASE, STAKE_STATUS, VALIDATION_MESSAGES} from "./_constants";
+import {
+  BOND_STATUS,
+  DEFAULT_POKT_DENOMINATION_BASE,
+  STAKE_STATUS,
+  VALIDATION_MESSAGES,
+} from "./_constants";
 import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
 import moment from "moment";
+import abbreviate from "mout/number/abbreviate";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
@@ -21,6 +27,11 @@ export const formatNetworkData = (
     ? formatNumbers(poktNumber)
     : numeral(poktNumber).format("0,0.0");
 };
+
+const FORMAT_DELIMITER = 1000000;
+
+export const formatNumbersAbreviation = (num) =>
+  parseInt(num) >= FORMAT_DELIMITER ? abbreviate(num) : formatNumbers(num);
 
 export const createAndDownloadJSONFile = (fileName, data) => {
   const element = document.createElement("a");
@@ -55,11 +66,12 @@ export const isActiveUrl = (match, location, name, exact = false) => {
   return location.pathname.includes(name.toLowerCase());
 };
 
-
 export const mapStatusToField = (item) => {
   return {
     ...item,
-    status: getStakeStatus(_.isNumber(item.status) ? item.status : parseInt(item.status)),
+    status: getStakeStatus(
+      _.isNumber(item.status) ? item.status : parseInt(item.status)
+    ),
   };
 };
 
@@ -117,7 +129,6 @@ export const passwordChangeSchema = yup.object().shape({
     .required(VALIDATION_MESSAGES.REQUIRED)
     .oneOf([yup.ref("password1"), null], "Passwords must match"),
 });
-
 
 export const validateYup = async (values, schema) => {
   let errors = {};

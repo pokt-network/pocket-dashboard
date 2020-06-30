@@ -8,7 +8,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatDaysCountdown, formatNetworkData, getStakeStatus, formatNumbers} from "../../../_helpers";
+import {formatDaysCountdown, getStakeStatus, formatNumbers, formatNetworkData} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -212,11 +212,13 @@ class AppDetail extends Component {
 
     const generalInfo = [
       {
-        title: `${formatNetworkData(stakedTokens)} UPOKT`,
+        title: `${formatNetworkData(stakedTokens)} POKT`,
+        titleAttrs: {title: stakedTokens ? formatNumbers(stakedTokens) : undefined},
         subtitle: "Staked tokens",
       },
       {
-        title: `${formatNetworkData(freeTier ? 0 : accountBalance)} UPOKT`,
+        title: `${formatNetworkData(freeTier ? 0 : accountBalance)} POKT`,
+        titleAttrs: {title: maxRelays && !freeTier ? formatNumbers(accountBalance) : undefined},
         subtitle: "Balance"
       },
       {
@@ -227,7 +229,11 @@ class AppDetail extends Component {
             <p className="unstaking-time">{`Unstaking time: ${unstakingTime}`}</p>
           ) : undefined,
       },
-      {title: formatNumbers(maxRelays), subtitle: "Max Relays Per Day"},
+      {
+        title: formatNetworkData(maxRelays), 
+        titleAttrs: {title: maxRelays ? formatNumbers(maxRelays) : undefined},
+        subtitle: "Max Relays Per Day"
+      },
     ];
 
     const contactInfo = [
@@ -356,7 +362,7 @@ class AppDetail extends Component {
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle}>
+              <InfoCard titleAttrs={card.titleAttrs} title={card.title} subtitle={card.subtitle}>
                 {card.children || <></>}
               </InfoCard>
             </Col>
