@@ -10,7 +10,6 @@ import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
 import moment from "moment";
-import abbreviate from "mout/number/abbreviate";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
@@ -27,11 +26,6 @@ export const formatNetworkData = (
     ? formatNumbers(poktNumber)
     : numeral(poktNumber).format("0,0.0");
 };
-
-const FORMAT_DELIMITER = 1000000;
-
-export const formatNumbersAbreviation = (num) =>
-  parseInt(num) >= FORMAT_DELIMITER ? abbreviate(num) : formatNumbers(num);
 
 export const createAndDownloadJSONFile = (fileName, data) => {
   const element = document.createElement("a");

@@ -16,7 +16,7 @@ import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
 import NodeService from "../../core/services/PocketNodeService";
-import {formatCurrency, formatNumbers, mapStatusToField, formatNumbersAbreviation} from "../../_helpers";
+import {formatCurrency, formatNumbers, mapStatusToField, formatNetworkData} from "../../_helpers";
 import Segment from "../../core/components/Segment/Segment";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -90,12 +90,12 @@ class Dashboard extends Component {
       summary: [
         {title: `US ${formatCurrency(poktPrice)}`, subtitle: "POKT Price"},
         {
-          title: formatNumbersAbreviation(totalStakedTokens),
+          title: formatNetworkData(totalStakedTokens),
         titleAttrs: {title: totalStakedTokens ? formatNumbers(totalStakedTokens) : undefined},
           subtitle: "Total Staked Tokens",
         },
         {
-          title: formatNumbersAbreviation(totalStakedNodes),
+          title: formatNumbers(totalStakedNodes),
           subtitle: "Total Staked nodes",
         },
         {title: formatNumbers(totalStakedApps), subtitle: "Total Staked apps"},
