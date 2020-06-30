@@ -16,7 +16,7 @@ import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
 import NodeService from "../../core/services/PocketNodeService";
-import {formatCurrency, formatNumbers, mapStatusToField} from "../../_helpers";
+import {formatCurrency, formatNumbers, mapStatusToField, formatNetworkData} from "../../_helpers";
 import Segment from "../../core/components/Segment/Segment";
 import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -90,7 +90,8 @@ class Dashboard extends Component {
       summary: [
         {title: `US ${formatCurrency(poktPrice)}`, subtitle: "POKT Price"},
         {
-          title: formatNumbers(totalStakedTokens),
+          title: formatNetworkData(totalStakedTokens),
+        titleAttrs: {title: totalStakedTokens ? formatNumbers(totalStakedTokens) : undefined},
           subtitle: "Total Staked Tokens",
         },
         {
@@ -230,7 +231,7 @@ class Dashboard extends Component {
         <Row className="stats mb-4" noGutters>
           {summary.map((card, idx) => (
             <Col key={idx} className="stat-column" md={3}>
-              <InfoCard title={card.title} subtitle={card.subtitle} />
+              <InfoCard titleAttrs={card.titleAttrs} title={card.title} subtitle={card.subtitle} />
             </Col>
           ))}
         </Row>

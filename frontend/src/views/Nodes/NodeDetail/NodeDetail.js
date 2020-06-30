@@ -6,7 +6,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatDaysCountdown, formatNumbers, getStakeStatus} from "../../../_helpers";
+import {formatDaysCountdown, formatNumbers, getStakeStatus, formatNetworkData} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -241,11 +241,13 @@ class NodeDetail extends Component {
 
     const generalInfo = [
       {
-        title: `${formatNumbers(stakedTokens)} UPOKT`,
+        title: `${formatNetworkData(stakedTokens)} POKT`,
+        titleAttrs: {title: stakedTokens ? formatNumbers(stakedTokens) : undefined},
         subtitle: "Staked tokens",
       },
       {
-        title: `${formatNumbers(accountBalance)} UPOKT`,
+        title: `${formatNetworkData(accountBalance)} POKT`,
+        titleAttrs: {title: accountBalance ? formatNumbers(accountBalance) : undefined},
         subtitle: "Balance",
       },
       {
@@ -261,7 +263,11 @@ class NodeDetail extends Component {
         subtitle: "Jailed",
         children: jailActionItem,
       },
-      {title: formatNumbers(stakedTokens), subtitle: "Validator Power"},
+      { 
+        title: formatNetworkData(stakedTokens), 
+        titleAttrs: {title: stakedTokens ? formatNumbers(stakedTokens) : undefined},
+        subtitle: "Validator Power"
+      },
     ];
 
     const contactInfo = [
@@ -373,7 +379,7 @@ class NodeDetail extends Component {
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-                <InfoCard title={card.title} subtitle={card.subtitle}>
+                <InfoCard titleAttrs={card.titleAttrs} title={card.title} subtitle={card.subtitle}>
                 {card.children || <></>}
               </InfoCard>
             </Col>

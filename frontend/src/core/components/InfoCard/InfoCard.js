@@ -4,7 +4,15 @@ import "./InfoCard.scss";
 
 class InfoCard extends Component {
   render() {
-    const {title, subtitle, className, children, flexAlign} = this.props;
+    const {
+      title,
+      subtitle,
+      titleAttrs,
+      subtitleAttrs,
+      className,
+      children,
+      flexAlign,
+    } = this.props;
 
     const style = {
       alignItems: flexAlign,
@@ -13,8 +21,8 @@ class InfoCard extends Component {
     return (
       <div className={"p-badge " + className} style={style}>
         <div className="p-badge-body">
-          <h2>{title}</h2>
-          <p>{subtitle}</p>
+          <h2 {...titleAttrs}>{title}</h2>
+          <p {...subtitleAttrs}>{subtitle}</p>
           {children}
         </div>
       </div>
@@ -26,6 +34,8 @@ InfoCard.defaultProps = {
   className: "text-center",
   children: undefined,
   flexAlign: "center",
+  titleAttrs: undefined,
+  subtitleAttrs: undefined,
 };
 
 InfoCard.propTypes = {
@@ -34,6 +44,8 @@ InfoCard.propTypes = {
     PropTypes.node,
   ]),
   title: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  titleAttrs: PropTypes.object,
+  subtitleAttrs: PropTypes.object,
   subtitle: PropTypes.string,
   className: PropTypes.string,
   flexAlign: PropTypes.string,

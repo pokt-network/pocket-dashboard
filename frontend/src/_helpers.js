@@ -1,6 +1,11 @@
 import React from "react";
 import numeral from "numeral";
-import {BOND_STATUS, DEFAULT_POKT_DENOMINATION_BASE, STAKE_STATUS, VALIDATION_MESSAGES} from "./_constants";
+import {
+  BOND_STATUS,
+  DEFAULT_POKT_DENOMINATION_BASE,
+  STAKE_STATUS,
+  VALIDATION_MESSAGES,
+} from "./_constants";
 import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
@@ -55,11 +60,12 @@ export const isActiveUrl = (match, location, name, exact = false) => {
   return location.pathname.includes(name.toLowerCase());
 };
 
-
 export const mapStatusToField = (item) => {
   return {
     ...item,
-    status: getStakeStatus(_.isNumber(item.status) ? item.status : parseInt(item.status)),
+    status: getStakeStatus(
+      _.isNumber(item.status) ? item.status : parseInt(item.status)
+    ),
   };
 };
 
@@ -117,7 +123,6 @@ export const passwordChangeSchema = yup.object().shape({
     .required(VALIDATION_MESSAGES.REQUIRED)
     .oneOf([yup.ref("password1"), null], "Passwords must match"),
 });
-
 
 export const validateYup = async (values, schema) => {
   let errors = {};
