@@ -65,8 +65,9 @@ export function errorsHandler(error, req, res, next) {
     default:
       res.status(500).json({message, name}); // Server Error.
 
-      if(process.env.NODE_ENV === 'development')
+      if(process.env.NODE_ENV === "development") {
         next(error);
+      }
       break;
   }
   next();
