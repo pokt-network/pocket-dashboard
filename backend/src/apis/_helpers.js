@@ -62,11 +62,11 @@ export function errorsHandler(error, req, res, next) {
     case "DashboardValidationError":
       res.status(400).json({message, name}); // Bad request.
       break;
-    case "Error":
-      res.status(500).json({message, name}); // Server Error.
-      break;
     default:
       res.status(500).json({message, name}); // Server Error.
+
+      if(process.env.NODE_ENV === 'development')
+        next(error);
       break;
   }
   next();
