@@ -21,6 +21,24 @@ jobs:
       run: yarn
     - name: Production build
       working-directory: frontend
+      env:
+        GENERATE_SOURCEMAP: false
+        PUBLIC_URL: https://dashboard.pokt.network
+        REACT_APP_BACKEND_URL: https://api.dashboard.pokt.network:4200
+        REACT_APP_POCKET_NETWORK_MAX_DISPATCHER: 10
+        REACT_APP_POCKET_NETWORK_MAX_SESSIONS: 100
+        REACT_APP_POCKET_NETWORK_REQUEST_TIMEOUT: 60000
+        REACT_APP_POCKET_NETWORK_DISPATCHERS: https://node1.testnet.pokt.network:443
+        REACT_APP_POCKET_NETWORK_TX_FEE: 100000
+        REACT_APP_POCKET_NETWORK_CHAIN_ID: testnet-r1
+        REACT_APP_POCKET_FREE_TIER_STAKE_AMOUNT: 20833330000
+        REACT_APP_STAKE_DEFAULT_STATUS: Unstaked
+        REACT_APP_DEFAULT_MAX_RELAYS_PER_DAY: 6912000
+        REACT_APP_SECURE_LS_SECRET: ${{ secrets.REACT_APP_SECURE_LS_SECRET }}
+        REACT_APP_PAYMENT_DEFAULT_CLIENT_ID: ${{ secrets.REACT_APP_PAYMENT_DEFAULT_CLIENT_ID }}
+        REACT_APP_RECAPTCHA_CLIENT_KEY: ${{ secrets.REACT_APP_RECAPTCHA_CLIENT_KEY }}
+        REACT_APP_POCKET_FREE_TIER_ACCOUNT: ${{ secrets.REACT_APP_POCKET_FREE_TIER_ACCOUNT }}
+        REACT_APP_POCKET_FREE_TIER_ACCOUNT_PASSPRHASE: ${{ secrets.REACT_APP_POCKET_FREE_TIER_ACCOUNT_PASSPRHASE }}
       run: yarn build:prod
     - name: Deploy to S3
       uses: jakejarvis/s3-sync-action@master

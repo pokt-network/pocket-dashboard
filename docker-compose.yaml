@@ -1,28 +1,5 @@
 version: "2.1"
 services:
-    dashboard-frontend:
-        build: ./frontend/
-        environment: 
-            HOST: "0.0.0.0"
-            PORT: 80
-        command: "yarn start"
-        ports:
-          - "80:80"
-        volumes:
-          - ./env-frontend-dev:/app/.env
-        networks:
-          - pocket
-    dashboard-backend:
-        build: ./backend/
-        ports:
-          - "4200:4200"
-        depends_on:
-          - "mongodb"
-          - "redis"
-        volumes:
-          - ./env-backend-dev:/app/.env
-        networks:
-          - pocket
     mongodb:
         image: mongo:3.2.11
         environment:

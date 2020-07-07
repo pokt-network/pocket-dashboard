@@ -16,4 +16,4 @@ RUN yarn install && yarn build:prod
 ENV HOST=0.0.0.0 PORT=4200
 
 EXPOSE ${PORT}
-CMD [ "yarn", "start" ]
+CMD [ "yarn", "start:prod" ]
