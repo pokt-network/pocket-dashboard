@@ -1,5 +1,5 @@
 import {Configurations} from "../../_configuration";
-import {Configuration, Pocket} from "@pokt-network/pocket-js/dist/web.js";
+import {Configuration, Pocket} from "@pokt-network/pocket-js";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 const POCKET_CONFIGURATION = new Configuration(POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
@@ -117,7 +117,18 @@ class PocketClientService {
    *
    * @returns {Promise<Account | Error>} - The account or an Error.
    */
-  async getUnlockedAccount(address) {
+  async getUnlockedAccount(address, passphrase) {
+    return await this._pocket.keybase.getUnlockedAccount(address, passphrase);
+  }
+
+  /**
+   * Retrieves an account from the key base.
+   *
+   * @param {string} address - The address of the account to retrieve in hex string format.
+   *
+   * @returns {Promise<Account | Error>} - The account or an Error.
+   */
+  async getAccount(address) {
     return await this._pocket.keybase.getAccount(address);
   }
 

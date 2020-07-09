@@ -148,8 +148,6 @@ class Import extends Component {
       let chains;
       const {balance} = await AccountService.getPoktBalance(data.address);
 
-      // Have to save ppk on cache as ppk generated from saved account is not
-      // the same as one uploaded (even for the same account)
       if (type === ITEM_TYPES.APPLICATION) {
         ApplicationService.saveAppInfoInCache({
           imported: true,
@@ -158,45 +156,47 @@ class Import extends Component {
           ppk,
         });
 
-        const {
-          staked_tokens: tokens,
-          max_relays: amount,
-          chains: networkChains,
-          status,
-        } = await ApplicationService.getNetworkApplication(data.address);
-
-        chains = networkChains;
-        this.setState({
-          accountData: {
-            balance,
-            tokens,
-            amount,
-            status: getStakeStatus(status),
-          },
-        });
+        // Retrieve the application information if available
+        const application = await ApplicationService.getNetworkApplication(data.address);
+        if (application.error === undefined) {
+          // Add the chains value
+          chains = application.chains
+          // Update the state
+          this.setState({
+            accountData:{
+              tokens: application.staked_tokens,
+              balance: balance,
+              status: getStakeStatus(application.status.toString()),
+              amount: application.max_relays
+            },
+            // App Staked chains
+            chains: application.chains
+          })
+        }
       } else {
         NodeService.saveNodeInfoInCache({
           passphrase,
           address: data.address,
           ppk,
         });
-
-        const {
-          tokens,
-          chains: networkChains,
-          status,
-        } = await NodeService.getNetworkNode(data.address);
-
-        chains = networkChains;
-        this.setState({
-          accountData: {
-            balance,
-            tokens,
-            amount: tokens,
-            status: getStakeStatus(status),
-          },
-        });
+        const node = await NodeService.getNetworkNode(data.address);
+        if (node.error === undefined) {
+          // Add the chains value
+          chains = node.chains
+          // Update the state
+          this.setState({
+            accountData:{
+              tokens: node.staked_tokens,
+              balance: balance,
+              status: getStakeStatus(node.status.toString()),
+              amount: node.max_relays
+            },
+            // Node Staked chains
+            chains: node.chains
+          })
+        }
       }
+      let accountChains = []
 
       let accountChains = [];
 
