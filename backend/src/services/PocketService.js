@@ -12,7 +12,8 @@ import {
   StakingStatus,
   Transaction,
   typeGuard,
-  UnlockedAccount
+  UnlockedAccount,
+  PocketAAT
 } from "@pokt-network/pocket-js";
 import {Configurations} from "../_configuration";
 import {PocketNetworkError} from "../models/Exceptions";
@@ -21,7 +22,8 @@ import bigInt from "big-integer";
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
 const POCKET_CONFIGURATION = new Configuration(
-  POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout
+  POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout,
+  undefined, undefined, POCKET_NETWORK_CONFIGURATION.block_time, undefined, undefined, POCKET_NETWORK_CONFIGURATION.reject_self_signed_certificates
 );
 
 const POCKET_MAIN_FUND_ACCOUNT = POCKET_NETWORK_CONFIGURATION.main_fund_account;
@@ -49,10 +51,49 @@ function getPocketDispatchers() {
 }
 
 /**
+ * Retrieve a Pocket RPC Provider with the AAT and client account unlocked
  *
  */
 async function getPocketRPCProvider() {
-  throw new Error("TODO IMPLEMENT THIS");
+  const chain = POCKET_NETWORK_CONFIGURATION.chain_hash
+  const clientPubKeyHex = POCKET_NETWORK_CONFIGURATION.client_pub_key
+  const clientPrivateKey = POCKET_NETWORK_CONFIGURATION.client_priv_key
+  const clientPassphrase = POCKET_NETWORK_CONFIGURATION.client_passphrase
+  const appPublicKey = POCKET_NETWORK_CONFIGURATION.app_pub_key
+  const appSignature = POCKET_NETWORK_CONFIGURATION.app_signature
+
+  // Pocket instance
+  const pocket = new Pocket(
+    getPocketDispatchers(), undefined, POCKET_CONFIGURATION
+  )
+
+  // Import client Account
+  const clientAccountOrError = await pocket.keybase.importAccount(Buffer.from(clientPrivateKey, "hex"), clientPassphrase)
+  if (typeGuard(clientAccountOrError, Error)) {
+      throw clientAccountOrError
+  }
+  // Unlock the client account
+  const unlockOrError = await pocket.keybase.unlockAccount(clientAccountOrError.addressHex, clientPassphrase, 0)
+  if (typeGuard(unlockOrError, Error)) {
+      throw clientAccountOrError
+  }
+
+  // Generate the AAT
+  const aat = new PocketAAT(
+      POCKET_NETWORK_CONFIGURATION.aat_version,
+      clientPubKeyHex,
+      appPublicKey,
+      appSignature
+  )
+  // Pocket Rpc Instance
+  const pocketRpcProvider = new PocketRpcProvider(
+      pocket,
+      aat,
+      chain,
+      POCKET_NETWORK_CONFIGURATION.enable_consensus_relay
+  )
+
+  return pocketRpcProvider
 }
 
 /**
@@ -76,7 +117,7 @@ async function getRPCProvider() {
   if (providerType.toLowerCase() === "http") {
     return getHttpRPCProvider();
   } else if (providerType.toLowerCase() === "pocket") {
-    return getPocketRPCProvider();
+    return await getPocketRPCProvider();
   } else {
     // Default to HTTP RPC Provider
     return getHttpRPCProvider();
@@ -125,6 +166,50 @@ export default class PocketService {
     }
 
     return transactionResponse.transaction;
+  }
+  /**
+   * Creates a TransactionSenderObject to make operation requests over accounts.
+   * Account must be previously saved on the keybase.
+   *
+   * @param {string} address - address of the account.
+   * @param {string} passphrase - passphrase for the account.
+   *
+   * @returns {Object} Transaction sender.
+   */
+  async _getTransactionSender(address, passphrase) {
+    const account = await this.__pocket.keybase.getUnlockedAccount(address, passphrase);
+    if (account instanceof Error) {
+      throw account;
+    }
+
+    return await this.__pocket.withImportedAccount(account.address, passphrase);
+  }
+  /**
+   * Creates a transaction request to stake an application.
+   * \
+   * @param {string} address - Application address.
+   * @param {string} passphrase - Application passphrase.
+   * @param {string[]} chains - Network identifier list to be requested by this app.
+   * @param {string} stakeAmount - the amount to stake, must be greater than 0.
+   *
+   * @returns {Promise<{address:string, txHex:string} | string>} - A transaction sender.
+   */
+  async appStakeRequest(address, passphrase, chains, stakeAmount) {
+    try {
+      const {chain_id: chainID, transaction_fee: transactionFee} = POCKET_NETWORK_CONFIGURATION;
+
+      const transactionSender = await this._getTransactionSender(address, passphrase);
+      const {unlockedAccount: account} = transactionSender;
+
+      return await transactionSender
+        .appStake(
+          account.publicKey.toString("hex"), chains, Number(stakeAmount).toString()
+        )
+        .createTransaction(chainID, transactionFee);
+
+    } catch (e) {
+      return e.toString();
+    }
   }
 
   /**
@@ -373,10 +458,9 @@ export default class PocketService {
    * @returns {Promise<UnlockedAccount>} The unlock account.
    * @throws {PocketNetworkError}
    */
-  async createUnlockedAccount() {
-    // TODO: produce a random passphrase
-    const account = await this.__pocket.keybase.createAccount("test");
-    const unlockedAccountOrError = await this.__pocket.keybase.getUnlockedAccount(account.addressHex, "test");
+  async createUnlockedAccount(passphrase) {
+    const account = await this.__pocket.keybase.createAccount(passphrase);
+    const unlockedAccountOrError = await this.__pocket.keybase.getUnlockedAccount(account.addressHex, passphrase);
 
     if (typeGuard(unlockedAccountOrError, Error)) {
       throw new PocketNetworkError(unlockedAccountOrError.message);
