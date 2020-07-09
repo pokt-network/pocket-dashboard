@@ -164,18 +164,18 @@ router.post("/user/all", apiAsyncWrapper(async (req, res) => {
  * Stake a free tier application.
  */
 router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{appStakeTransaction: {address: string, raw_hex_bytes: string}, applicationLink: string}} */
+  /** @type {{stakeInformation: {app_address: string, chains: string[], stake_amount: string}, applicationLink: string}} */
   const data = req.body;
 
-  const appStakeTransaction = data.appStakeTransaction;
-  const application = await applicationService.getApplication(appStakeTransaction.address);
+  const stakeInformation = data.stakeInformation;
+  const application = await applicationService.getApplication(stakeInformation.app_address);
 
   const applicationEmailData = {
     name: application.pocketApplication.name,
     link: data.applicationLink
   };
 
-  const aat = await applicationService.stakeFreeTierApplication(application, data.appStakeTransaction, applicationEmailData);
+  const aat = await applicationService.stakeFreeTierApplication(application, stakeInformation, applicationEmailData);
 
   res.json(aat);
 }));

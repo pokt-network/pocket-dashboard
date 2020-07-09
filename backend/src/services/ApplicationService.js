@@ -15,7 +15,7 @@ import TransactionService from "./TransactionService";
 import {POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
 import {Configurations} from "../_configuration";
 import {POKT_DENOMINATIONS} from "./PocketService";
-
+import PocketService from "./PocketService";
 const APPLICATION_COLLECTION_NAME = "Applications";
 
 export default class ApplicationService extends BasePocketService {
@@ -25,6 +25,7 @@ export default class ApplicationService extends BasePocketService {
 
     this.userService = new UserService();
     this.transactionService = new TransactionService();
+    this.pocketService = new PocketService();
   }
 
   /**
@@ -323,33 +324,39 @@ export default class ApplicationService extends BasePocketService {
       return false;
     }
   }
-
   /**
    * Stake a free tier application.
    *
    * @param {ExtendedPocketApplication} application Application to stake.
-   * @param {{address: string, raw_hex_bytes: string}} appStakeTransaction Transaction to stake.
+   * @param {{app_address: string, chains: string[], stake_amount: string}} stakeInformation Information for the stake action.
    * @param {{name: string, link: string}} emailData Email data.
    *
    * @returns {Promise<PocketAAT | boolean>} If application was created or not.
    * @async
    */
-  async stakeFreeTierApplication(application, appStakeTransaction, emailData) {
+  async stakeFreeTierApplication(application, stakeInformation, emailData) {
     const {
       aat_version: aatVersion,
       free_tier: {stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount}
     } = Configurations.pocket_network;
 
+    // Generate a passphrase for the app account
+    const passphrase = Math.random().toString(36).substr(2, 8);
+
     // Create Application credentials.
-    const appAccount = await this.pocketService.createUnlockedAccount();
+    const appAccount = await this.pocketService.createUnlockedAccount(passphrase);
     const appAccountPublicKeyHex = appAccount.publicKey.toString("hex");
     const appAccountPrivateKeyHex = appAccount.privateKey.toString("hex");
 
-    // First transfer funds from the main fund.
+    // First transfer funds from the main fund to the new Application account.
     const fundingTransactionHash = await this.pocketService.transferFromMainFund(upoktToStake, appAccount.addressHex);
+
+    // Create the stake transaction object
+    const appStakeTransaction = await this.pocketService.appStakeRequest(appAccount.addressHex, passphrase, stakeInformation.chains, stakeInformation.stake_amount)
 
     // Create post confirmation action to stake application.
     const contactEmail = application.pocketApplication.contactEmail;
+
     const appStakeAction = new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, {
       appStakeTransaction,
       contactEmail,
@@ -374,7 +381,7 @@ export default class ApplicationService extends BasePocketService {
     await this.__updatePersistedApplication(application.pocketApplication);
     await this.__markApplicationAsFreeTier(application.pocketApplication, true);
 
-    return PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+    return await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
   }
 
   /**

@@ -15,10 +15,15 @@ export class PocketApplicationService extends PocketBaseService {
       version: aat.version,
     };
 
-    delete aat.version;
+    // delete aat.version;
 
     for (let [key, value] of Object.entries(aat)) {
-      aatParsed[key] = `${value.slice(0, 15)}...`;
+      if (key !== "version") {
+        aatParsed[key] = `${value.slice(0, 15)}...`;
+      } else {
+        aatParsed[key] = value
+      }
+
     }
     return JSON.stringify(aatParsed, null, 2);
   }
@@ -370,20 +375,20 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Create free tier application.
    *
-   * @param {object} appStakeTransaction Transaction.
+   * @param {object} stakeInformation Stake information.
    * @param {string} applicationLink Application link.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeFreeTierApplication(appStakeTransaction, applicationLink) {
+  stakeFreeTierApplication(stakeInformation, applicationLink) {
     return axios
-      .post(this._getURL("freetier/stake"), {appStakeTransaction, applicationLink})
+      .post(this._getURL("freetier/stake"), {stakeInformation, applicationLink})
       .then((response) => {
         return {
           success: true,
           data: response.data,
         };
-      })     
+      })
       .catch((err) => {
         return {
           success: false,
