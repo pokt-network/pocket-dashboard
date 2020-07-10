@@ -76,6 +76,40 @@ jobs:
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
+    
+    - name: Make envfile
+      uses: SpicyPizza/create-envfile@v1
+      with:
+        envkey_DATABASE_NAME: gateway-testnet
+        envkey_POCKET_NETWORK_MAX_DISPATCHER: 7
+        envkey_POCKET_NETWORK_REQUEST_TIMEOUT: 60000
+        envkey_POCKET_NETWORK_MAX_SESSIONS: 1000000
+        envkey_POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL: redis://dashboard.js6zbp.ng.0001.usw2.cache.amazonaws.com:6379
+        envkey_POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME: 50000
+        envkey_POCKET_NETWORK_SERVICE_WORKER_ATTEMPTS: 10
+        envkey_POCKET_FREE_TIER_STAKE_AMOUNT: 10000000
+        envkey_POKT_MARKET_PRICE: 0.06
+        envkey_POCKET_NETWORK_DISPATCHERS: https://node1.testnet.pokt.network:443,https://node2.testnet.pokt.network:443,https://node3.testnet.pokt.network:443,https://node4.testnet.pokt.network:443,https://node5.testnet.pokt.network:443,https://node6.testnet.pokt.network:443,https://node7.testnet.pokt.network:443
+        envkey_POCKET_NETWORK_CHAIN_HASH: 0002
+        envkey_POCKET_NETWORK_CHAIN_ID: testnet-r1
+        envkey_POCKET_NETWORK_AAT_VERSION: 0.0.1
+        envkey_POCKET_NETWORK_TRANSACTION_FEE: 10000000
+        envkey_POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT: 10000000
+        envkey_POCKET_NETWORK_PROVIDER_TYPE: HTTP
+        envkey_POCKET_NETWORK_HTTP_PROVIDER_NODE: https://node1.testnet.pokt.network:443
+        envkey_AUTH_PROVIDER_GITHUB_CALLBACK_URL: https://dashboard.pokt.network/api/auth/provider/github
+        envkey_AUTH_PROVIDER_GOOGLE_CALLBACK_URL: https://dashboard.pokt.network/api/auth/provider/google
+        envkey_EMAIL_FROM: dashboard@pokt.network
+        envkey_CHECKOUT_DEFAULT_CURRENCY: USD
+        envkey_CHECKOUT_MIN_RELAYS_PER_DAY: 433
+        envkey_CHECKOUT_MAX_RELAYS_PER_DAY: 6912000
+        envkey_CHECKOUT_MIN_VALIDATOR_POWER: 15000
+        envkey_CHECKOUT_MAX_VALIDATOR_POWER: 1666666
+        envkey_CHECKOUT_BASE_RELAY_PER_POKT: 0.12
+        envkey_CHECKOUT_STABILITY: 0
+        envkey_CHECKOUT_SESSIONS_PER_DAY: 3456
+        envkey_CHECKOUT_P_RATE: 0.1
+        file_name: backend/.env
 
     - name: Build, tag, and push image to Amazon ECR
       id: build-image
@@ -83,35 +117,6 @@ jobs:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: dashboard
         IMAGE_TAG: latest
-        DATABASE_NAME: gateway-testnet
-        POCKET_NETWORK_MAX_DISPATCHER: 7
-        POCKET_NETWORK_REQUEST_TIMEOUT: 60000
-        POCKET_NETWORK_MAX_SESSIONS: 1000000
-        POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL: redis://dashboard.js6zbp.ng.0001.usw2.cache.amazonaws.com:6379
-        POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME: 50000
-        POCKET_NETWORK_SERVICE_WORKER_ATTEMPTS: 10
-        POCKET_FREE_TIER_STAKE_AMOUNT: 10000000
-        POKT_MARKET_PRICE: 0.06
-        POCKET_NETWORK_DISPATCHERS: https://node1.testnet.pokt.network:443,https://node2.testnet.pokt.network:443,https://node3.testnet.pokt.network:443,https://node4.testnet.pokt.network:443,https://node5.testnet.pokt.network:443,https://node6.testnet.pokt.network:443,https://node7.testnet.pokt.network:443
-        POCKET_NETWORK_CHAIN_HASH: 0002
-        POCKET_NETWORK_CHAIN_ID: testnet-r1
-        POCKET_NETWORK_AAT_VERSION: 0.0.1
-        POCKET_NETWORK_TRANSACTION_FEE: 10000000
-        POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT: 10000000
-        POCKET_NETWORK_PROVIDER_TYPE: HTTP
-        POCKET_NETWORK_HTTP_PROVIDER_NODE: https://node1.testnet.pokt.network:443
-        AUTH_PROVIDER_GITHUB_CALLBACK_URL: https://dashboard.pokt.network/api/auth/provider/github
-        AUTH_PROVIDER_GOOGLE_CALLBACK_URL: https://dashboard.pokt.network/api/auth/provider/google
-        EMAIL_FROM: dashboard@pokt.network
-        CHECKOUT_DEFAULT_CURRENCY: USD
-        CHECKOUT_MIN_RELAYS_PER_DAY: 433
-        CHECKOUT_MAX_RELAYS_PER_DAY: 6912000
-        CHECKOUT_MIN_VALIDATOR_POWER: 15000
-        CHECKOUT_MAX_VALIDATOR_POWER: 1666666
-        CHECKOUT_BASE_RELAY_PER_POKT: 0.12
-        CHECKOUT_STABILITY: 0
-        CHECKOUT_SESSIONS_PER_DAY: 3456
-        CHECKOUT_P_RATE: 0.1
       run: |
         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./backend/
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
