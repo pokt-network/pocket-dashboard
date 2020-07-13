@@ -32,9 +32,13 @@ export class NetworkChain {
    * @static
    */
   static getNetworkChains(networkHashes) {
-    return Chains
-      .filter(chain => networkHashes.includes(chain.hash))
-      .map(chain => new NetworkChain(chain.netID, chain.ticker, chain.name, chain.description, chain.hash));
+    if(networkHashes === undefined) {
+      return Chains.map(chain => new NetworkChain(chain.netID, chain.ticker, chain.name, chain.description, chain.hash));
+    } else {
+      return Chains
+        .filter(chain => networkHashes.includes(chain.hash))
+        .map(chain => new NetworkChain(chain.netID, chain.ticker, chain.name, chain.description, chain.hash));
+    }
   }
 }
 
