@@ -198,7 +198,11 @@ class Import extends Component {
         });
       }
 
-      const accountChains = await PocketNetworkService.getNetworkChains(chains);
+      let accountChains = []
+
+      if (chains !== undefined && chains.length > 0) {
+        accountChains = await PocketNetworkService.getNetworkChains(chains);
+      }
 
       this.setState({
         chains: accountChains,

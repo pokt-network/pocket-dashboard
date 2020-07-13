@@ -33,7 +33,7 @@ export class NetworkChain {
    */
   static getNetworkChains(networkHashes) {
     if(networkHashes === undefined) {
-      return Chains.map(chain => new NetworkChain(chain.netID, chain.ticker, chain.name, chain.description, chain.hash));
+      return [];
     } else {
       return Chains
         .filter(chain => networkHashes.includes(chain.hash))
