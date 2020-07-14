@@ -49,7 +49,7 @@ class TierSelection extends Component {
     const stakeAmount = Configurations.pocket_network.free_tier.stake_amount.toString();
 
     const stakeInformation = {
-      app_address: clientAddressHex,
+      client_address: clientAddressHex,
       chains: chains,
       stake_amount: stakeAmount
     }

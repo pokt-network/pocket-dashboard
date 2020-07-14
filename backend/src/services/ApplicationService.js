@@ -16,6 +16,8 @@ import {POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
 import {Configurations} from "../_configuration";
 import {POKT_DENOMINATIONS} from "./PocketService";
 import PocketService from "./PocketService";
+import {ObjectID} from "mongodb";
+
 const APPLICATION_COLLECTION_NAME = "Applications";
 
 export default class ApplicationService extends BasePocketService {
@@ -113,6 +115,28 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
+   *
+   * @param {PocketApplication} application Application to add pocket data.
+   *
+   * @returns {Promise<ExtendedPocketApplication>} Pocket application with pocket data.
+   * @private
+   * @async
+   */
+  async __getExtendedPocketClientApplication(application) {
+    let networkApplication;
+    const appParameters = await this.pocketService.getApplicationParameters();
+
+    try {
+      networkApplication = await this.pocketService.getApplication(application.freeTierApplicationAccount.address);
+    } catch (e) {
+      networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
+    }
+
+    return ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
+  }
+
+
+  /**
    * Mark application as free tier.
    *
    * @param {PocketApplication} application Pocket application to mark as free tier.
@@ -176,6 +200,34 @@ export default class ApplicationService extends BasePocketService {
     } catch (e) {
       throw new PocketNetworkError("Application does not exist on network");
     }
+  }
+
+  /**
+   * Get client's application account data.
+   *
+   * @param {string} applicationId Application address.
+   *
+   * @returns {Promise<ExtendedPocketApplication>} Application data.
+   * @async
+   */
+  async getClientApplication(applicationId) {
+    console.log("========")
+    console.log(ObjectID)
+    const filter = {
+      "id": ObjectID(applicationId)
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    console.log("applicationDB")
+    console.log(applicationDB)
+    if (applicationDB) {
+      const application = PocketApplication.createPocketApplication(applicationDB);
+      console.log("application")
+      console.log(application)
+      return this.__getExtendedPocketClientApplication(application);
+    }
+
+    return null;
   }
 
   /**
@@ -248,7 +300,7 @@ export default class ApplicationService extends BasePocketService {
         return {
           id: app.id,
           name: app.name,
-          address: app.publicPocketAccount.address,
+          address: app.freeTierApplicationAccount.address,
           icon: app.icon
         };
       });

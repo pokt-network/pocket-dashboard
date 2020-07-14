@@ -55,14 +55,14 @@ class AppDetail extends Component {
       freeTierMsg = this.props.location.state.freeTierMsg;
     }
 
-    const {address} = this.props.match.params;
+    const {id} = this.props.match.params;
 
     const {
       pocketApplication,
       networkData,
       error,
       name,
-    } = await ApplicationService.getApplication(address) || {};
+    } = await ApplicationService.getClientApplication(id) || {};
 
     hasError = error ? error : hasError;
     errorType = error ? name : errorType;
@@ -76,8 +76,9 @@ class AppDetail extends Component {
       }
       return;
     }
-
-    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(address);
+    const freeTierAppAddress = pocketApplication.freeTierApplicationAccount.address || ""
+    const clientAddress = pocketApplication.publicPocketAccount.address || ""
+    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(freeTierAppAddress);
     const chains = await NetworkService.getNetworkChains(networkData.chains);
     const {freeTier} = pocketApplication;
 
@@ -85,7 +86,7 @@ class AppDetail extends Component {
 
     if (freeTier) {
       const {success, data} = await ApplicationService.getFreeTierAppAAT(
-        address);
+        clientAddress);
 
       if (success) {
         aat = data;
@@ -230,7 +231,7 @@ class AppDetail extends Component {
           ) : undefined,
       },
       {
-        title: formatNetworkData(maxRelays), 
+        title: formatNumbers(maxRelays),
         titleAttrs: {title: maxRelays ? formatNumbers(maxRelays) : undefined},
         subtitle: "Max Relays Per Day"
       },
@@ -478,8 +479,8 @@ class AppDetail extends Component {
           <Modal.Body>
             <h4>Are you sure you want to remove this App?</h4>
             Your application will be removed from the Pocket Dashboard.
-            However, you will still be able to access it through the Command 
-            Line Interface (CLI) or import it back into Pocket Dashboard with 
+            However, you will still be able to access it through the Command
+            Line Interface (CLI) or import it back into Pocket Dashboard with
             the private key assigned to it.
           </Modal.Body>
           <Modal.Footer>

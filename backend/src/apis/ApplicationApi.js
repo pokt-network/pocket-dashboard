@@ -119,6 +119,17 @@ router.get("/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
+ * Get application that is already on dashboard using the application id.
+ */
+router.get("/client/:applicationId", apiAsyncWrapper(async (req, res) => {
+  /** @type {{applicationId:string}} */
+  const data = req.params;
+  const application = await applicationService.getClientApplication(data.applicationId);
+
+  res.json(application);
+}));
+
+/**
  * Get application that is on network by address.
  */
 router.get("/network/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
@@ -164,11 +175,11 @@ router.post("/user/all", apiAsyncWrapper(async (req, res) => {
  * Stake a free tier application.
  */
 router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{stakeInformation: {app_address: string, chains: string[], stake_amount: string}, applicationLink: string}} */
+  /** @type {{stakeInformation: {client_address: string, chains: string[], stake_amount: string}, applicationLink: string}} */
   const data = req.body;
 
   const stakeInformation = data.stakeInformation;
-  const application = await applicationService.getApplication(stakeInformation.app_address);
+  const application = await applicationService.getApplication(stakeInformation.client_address);
 
   const applicationEmailData = {
     name: application.pocketApplication.name,

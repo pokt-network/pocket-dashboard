@@ -59,8 +59,8 @@ export const ROUTE_PATHS = {
 export const DASHBOARD_PATHS = {
   home: "",
   apps: "/apps",
-  appDetail: "/apps/detail/:address",
-  editApp: "/apps/edit/:address",
+  appDetail: "/apps/detail/:id",
+  editApp: "/apps/edit/:id",
   importApp: "/apps/import",
   createAppInfo: "/apps/new",
   appPassphrase: "/apps/new/passphrase",

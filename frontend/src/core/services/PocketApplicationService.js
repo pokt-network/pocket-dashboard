@@ -119,6 +119,26 @@ export class PocketApplicationService extends PocketBaseService {
       });
   }
 
+    /**
+   * Get application by using the client's address.
+   *
+   * @param {string} applicationId Application's id.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getClientApplication(applicationId) {
+    return axios
+      .get(this._getURL(`client/${applicationId}`))
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
+  }
+
   /**
    * Get network application.
    *
