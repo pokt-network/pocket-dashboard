@@ -357,14 +357,7 @@ export default class PocketService {
 
     this.__pocket.rpc(pocketRpcProvider);
 
-    console.log("transferFromMainFund")
-    console.log(POCKET_MAIN_FUND_ACCOUNT)
-
-    const objectTx = await this.__pocket.withPrivateKey(POCKET_MAIN_FUND_ACCOUNT)
-
-    console.log(objectTx)
-
-    const rawTxResponse = objectTx.send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
+    const rawTxResponse = await this.__pocket.withPrivateKey(POCKET_MAIN_FUND_ACCOUNT).send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
       .submit(chainID, transactionFee);
 
     if (typeGuard(rawTxResponse, RpcError)) {

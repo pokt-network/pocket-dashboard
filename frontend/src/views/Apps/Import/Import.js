@@ -198,7 +198,7 @@ class Import extends Component {
         });
       }
 
-      let accountChains = []
+      let accountChains = [];
 
       if (chains !== undefined && chains.length > 0) {
         accountChains = await PocketNetworkService.getNetworkChains(chains);
