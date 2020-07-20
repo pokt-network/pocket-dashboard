@@ -133,19 +133,6 @@ class PocketClientService {
   }
 
   /**
-   * Imports an a PPK (pocket's Portable Private key format) and stores it in the key base.
-   *
-   * @param {string} ppk - Non-parsed ppk.
-   * @param {*} passphrase - account passphrase.
-   *
-   * @returns {Promise<Account | Error>}
-   */
-  async saveAccount(ppk, passphrase) {
-    // @createAndImportAccount
-    return await this._pocket.keybase.importPPKFromJSON(passphrase, ppk, passphrase);
-  }
-
-  /**
    * Creates a transaction request to stake an application.
    * \
    * @param {string} address - Application address.
@@ -158,6 +145,7 @@ class PocketClientService {
   async appStakeRequest(address, passphrase, chains, stakeAmount) {
     try {
       const {chain_id: chainID, transaction_fee: transactionFee} = POCKET_NETWORK_CONFIGURATION;
+
       const transactionSender = await this._getTransactionSender(address, passphrase);
       const {unlockedAccount: account} = transactionSender;
 
@@ -175,7 +163,7 @@ class PocketClientService {
   /**
    * Creates a transaction request to unstake an application.
    *
-   * @param {string} address - Application address.
+   * @param {string} applicationId - Application address.
    * @param {string} passphrase - Application passphrase.
    *
    * @returns {Promise<{address:string, txHex:string}> | string} - A transaction sender.
@@ -192,6 +180,19 @@ class PocketClientService {
     } catch (e) {
       return e.toString();
     }
+  }
+
+  /**
+   * Imports an a PPK (pocket's Portable Private key format) and stores it in the key base.
+   *
+   * @param {string} ppk - Non-parsed ppk.
+   * @param {*} passphrase - account passphrase.
+   *
+   * @returns {Promise<Account | Error>}
+   */
+  async saveAccount(ppk, passphrase) {
+    // @createAndImportAccount
+    return await this._pocket.keybase.importPPKFromJSON(passphrase, ppk, passphrase);
   }
 
   /**

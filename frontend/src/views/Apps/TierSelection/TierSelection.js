@@ -31,6 +31,7 @@ class TierSelection extends Component {
 
   async createFreeTierItem() {
     const {
+      id,
       address,
       chains,
       passphrase
@@ -43,7 +44,7 @@ class TierSelection extends Component {
       DASHBOARD_PATHS.appDetail
     );
 
-    const detail = url.replace(":address", address);
+    const detail = url.replace(":id", id);
     const applicationLink = `${window.location.origin}${detail}`;
 
     const stakeAmount = Configurations.pocket_network.free_tier.stake_amount.toString();
@@ -59,7 +60,7 @@ class TierSelection extends Component {
 
     if (success !== false) {
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
-      const path = url.replace(":address", address);
+      const path = url.replace(":id", id);
 
       ApplicationService.removeAppInfoFromCache();
 

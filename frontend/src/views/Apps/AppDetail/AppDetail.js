@@ -125,25 +125,38 @@ class AppDetail extends Component {
     }
   }
 
-  async unstakeApplication({ppk, passphrase, address}) {
+  async unstakeApplication({ppk, passphrase, applicationId}) {
     const {freeTier} = this.state.pocketApplication;
+    const {address} = this.state.pocketApplication.publicPocketAccount
 
     const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
-    const detail = url.replace(":address", address);
+    const detail = url.replace(":id", applicationId);
     const link = `${window.location.origin}${detail}`;
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
-    const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
+    const unstakeInformation = {
+      application_id: applicationId
+    }
+    if (freeTier) {
+      // Create unstake transaction
+      const {success, data} = await ApplicationService.unstakeFreeTierApplication(unstakeInformation, link);
 
-    const {success, data} = freeTier
-      ? await ApplicationService.unstakeFreeTierApplication(appUnstakeTransaction, link)
-      : await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
-
-    if (success) {
-      window.location.reload(false);
+      if (success) {
+        window.location.reload(false);
+      } else {
+        this.setState({unstake: false, ctaButtonPressed: false, message: data});
+      }
     } else {
-      this.setState({unstake: false, ctaButtonPressed: false, message: data});
+      const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
+
+      const {success, data} = await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
+
+      if (success) {
+        window.location.reload(false);
+      } else {
+        this.setState({unstake: false, ctaButtonPressed: false, message: data});
+      }
     }
   }
 

@@ -421,15 +421,13 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a free tier application.
    *
-   * @param {object} appUnstakeTransaction Transaction hash.
-   * @param {string} appUnstakeTransaction.address Sender address
-   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {object} unstakeInformation Object holding the unstake information.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeFreeTierApplication(appUnstakeTransaction, applicationLink) {
-    const data = {appUnstakeTransaction, applicationLink};
+  unstakeFreeTierApplication(unstakeInformation, applicationLink) {
+    const data = {unstakeInformation, applicationLink};
 
     return axios
       .post(this._getURL("freetier/unstake"), data)
@@ -470,9 +468,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a custom tier application.
    *
-   * @param {{address: string}} appUnstakeTransaction Transaction hash.
-   * @param {string} appUnstakeTransaction.address Sender address
-   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {{address: string}} unstakeInformation Transaction hash.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}

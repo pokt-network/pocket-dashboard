@@ -79,11 +79,12 @@ class CreateAppForm extends CreateForm {
       if (getStakeStatus(status) === STAKE_STATUS.Staked) {
         const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
 
-        const path = url.replace(":address", address);
+        const path = url.replace(":id", applicationId);
 
         this.props.history.push(path);
       } else {
         ApplicationService.saveAppInfoInCache({
+          applicationID: applicationId,
           data: data,
         });
         this.props.history.replace(
