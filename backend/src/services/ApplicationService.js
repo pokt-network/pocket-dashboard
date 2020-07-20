@@ -467,13 +467,15 @@ export default class ApplicationService extends BasePocketService {
    */
   async unstakeFreeTierApplication(unstakeInformation, applicationLink) {
     // Retrieve the private application account information
+
     const application = await this.getPrivateApplication(unstakeInformation.application_id);
+    const freeTierApplicationAccount = application.pocketApplication.freeTierApplicationAccount
 
     // Generate a passphrase for the app account
     const passphrase = Math.random().toString(36).substr(2, 8);
 
     // Import the application to the keybase
-    const pocketAccount = await this.pocketService.importAccountFromPrivateKey(application.freeTierApplicationAccount.privateKey, passphrase)
+    const pocketAccount = await this.pocketService.importAccountFromPrivateKey(freeTierApplicationAccount.privateKey, passphrase)
 
     // Create unstake transaction request
     const appUnstakeRequest = await this.pocketService.appUnstakeRequest(pocketAccount.addressHex, passphrase)

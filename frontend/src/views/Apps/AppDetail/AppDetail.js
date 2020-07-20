@@ -76,9 +76,10 @@ class AppDetail extends Component {
       }
       return;
     }
-    const freeTierAppAddress = pocketApplication.freeTierApplicationAccount.address || ""
-    const clientAddress = pocketApplication.publicPocketAccount.address || ""
-    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(freeTierAppAddress);
+
+    const clientAddress = pocketApplication.publicPocketAccount.address
+
+    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(clientAddress);
     const chains = await NetworkService.getNetworkChains(networkData.chains);
     const {freeTier} = pocketApplication;
 
@@ -125,18 +126,18 @@ class AppDetail extends Component {
     }
   }
 
-  async unstakeApplication({ppk, passphrase, applicationId}) {
-    const {freeTier} = this.state.pocketApplication;
+  async unstakeApplication({ppk, passphrase}) {
+    const {freeTier, id} = this.state.pocketApplication;
     const {address} = this.state.pocketApplication.publicPocketAccount
 
     const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
-    const detail = url.replace(":id", applicationId);
+    const detail = url.replace(":id", id);
     const link = `${window.location.origin}${detail}`;
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
     const unstakeInformation = {
-      application_id: applicationId
+      application_id: id
     }
     if (freeTier) {
       // Create unstake transaction

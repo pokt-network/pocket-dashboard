@@ -237,9 +237,9 @@ class Import extends Component {
     const {passphrase, privateKey} = this.state.data;
 
     const generalInfo = [
-      {title: formatNumbers(accountData.tokens), subtitle: "Staked tokens"},
+      {title: formatNumbers(accountData.tokens / 1000000), subtitle: "Staked tokens"},
       {
-        title: `${formatNumbers(accountData.balance)} POKT`,
+        title: `${formatNumbers(accountData.balance / 1000000)} POKT`,
         subtitle: "Balance",
       },
       {title: accountData.status, subtitle: "Stake status"},
