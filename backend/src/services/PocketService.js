@@ -146,7 +146,19 @@ export default class PocketService {
    * @returns {Promise<Account | Error>} A pocket account.
    */
   async importAccountFromPPK(ppkData, passphrase) {
-    return this.__pocket.keybase.importPPKFromJSON(passphrase, JSON.stringify(ppkData), passphrase);
+    return await this.__pocket.keybase.importPPKFromJSON(passphrase, JSON.stringify(ppkData), passphrase);
+  }
+
+  /**
+   * Import an account to Pokt network using a private key.
+   *
+   * @param {string} privateKey Private Key of the account to import.
+   * @param {string} passphrase Passphrase used to generate the account.
+   *
+   * @returns {Promise<Account | Error>} A pocket account.
+   */
+  async importAccountFromPrivateKey(privateKey, passphrase) {
+    return await this.__pocket.keybase.importAccount(Buffer.from(privateKey, "hex"), passphrase);
   }
 
   /**
@@ -205,6 +217,28 @@ export default class PocketService {
         .appStake(
           account.publicKey.toString("hex"), chains, Number(stakeAmount).toString()
         )
+        .createTransaction(chainID, transactionFee);
+
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  /**
+   * Creates a transaction request to unstake an application.
+   *
+   * @param {string} applicationId - Application address.
+   * @param {string} passphrase - Application passphrase.
+   *
+   * @returns {Promise<{address:string, txHex:string}> | string} - A transaction sender.
+   */
+  async appUnstakeRequest(address, passphrase) {
+    try {
+      const {chain_id: chainID, transaction_fee: transactionFee} = POCKET_NETWORK_CONFIGURATION;
+      const transactionSender = await this._getTransactionSender(address, passphrase);
+
+      return await transactionSender
+        .appUnstake(address)
         .createTransaction(chainID, transactionFee);
 
     } catch (e) {

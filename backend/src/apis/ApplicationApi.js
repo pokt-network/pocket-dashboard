@@ -195,10 +195,12 @@ router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
  * Unstake a free tier application.
  */
 router.post("/freetier/unstake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{appUnstakeTransaction: {address: string, raw_hex_bytes: string}, applicationLink: string}} */
+  /** @type {{unstakeInformation: {application_id: string}, applicationLink: string}} */
   const data = req.body;
 
-  await applicationService.unstakeFreeTierApplication(data.appUnstakeTransaction, data.applicationLink);
+  const unstakeInformation = data.unstakeInformation;
+
+  await applicationService.unstakeFreeTierApplication(unstakeInformation, data.applicationLink);
 
   res.send(true);
 }));

@@ -110,8 +110,9 @@ export default class ApplicationService extends BasePocketService {
     } catch (e) {
       networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
     }
+    const extendedPocketApplication = ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
 
-    return ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
+    return extendedPocketApplication
   }
 
   /**
@@ -211,19 +212,14 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async getClientApplication(applicationId) {
-    console.log("========")
-    console.log(ObjectID)
     const filter = {
       "id": ObjectID(applicationId)
     };
 
     const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
-    console.log("applicationDB")
-    console.log(applicationDB)
     if (applicationDB) {
       const application = PocketApplication.createPocketApplication(applicationDB);
-      console.log("application")
-      console.log(application)
+
       return this.__getExtendedPocketClientApplication(application);
     }
 
@@ -247,6 +243,30 @@ export default class ApplicationService extends BasePocketService {
 
     if (applicationDB) {
       const application = PocketApplication.createPocketApplication(applicationDB);
+
+      return this.__getExtendedPocketApplication(application);
+    }
+
+    return null;
+  }
+
+  /**
+   * Get private application data.
+   *
+   * @param {string} applicationId Application Id.
+   *
+   * @returns {Promise<ExtendedPocketApplication>} Application data.
+   * @async
+   */
+  async getPrivateApplication(applicationId) {
+    const filter = {
+      "id": ObjectID(applicationId)
+    };
+
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
+    if (applicationDB) {
+      const application = PocketApplication.createPocketPrivateApplication(applicationDB);
 
       return this.__getExtendedPocketApplication(application);
     }
@@ -439,20 +459,28 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Unstake free tier application.
    *
-   * @param {object} appUnstakeTransaction Transaction object.
-   * @param {string} appUnstakeTransaction.address Sender address
-   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {object} application Application object.
+   * @param {object} unstakeInformation Object that holds the unstake information
    * @param {string} applicationLink Link to detail for email.
    *
    * @async
    */
-  async unstakeFreeTierApplication(appUnstakeTransaction, applicationLink) {
-    const {address, raw_hex_bytes: rawHexBytes} = appUnstakeTransaction;
+  async unstakeFreeTierApplication(unstakeInformation, applicationLink) {
+    // Retrieve the private application account information
+    const application = await this.getPrivateApplication(unstakeInformation.application_id);
+
+    // Generate a passphrase for the app account
+    const passphrase = Math.random().toString(36).substr(2, 8);
+
+    // Import the application to the keybase
+    const pocketAccount = await this.pocketService.importAccountFromPrivateKey(application.freeTierApplicationAccount.privateKey, passphrase)
+
+    // Create unstake transaction request
+    const appUnstakeRequest = await this.pocketService.appUnstakeRequest(pocketAccount.addressHex, passphrase)
 
     // Submit transaction
-    const appUnstakedTransaction = await this.pocketService.submitRawTransaction(address, rawHexBytes);
+    const appUnstakedTransaction = await this.pocketService.submitRawTransaction(appUnstakeRequest.address, appUnstakeRequest.txHex);
 
-    const application = await this.getApplication(address);
     const emailData = {
       userName: application.pocketApplication.user,
       contactEmail: application.pocketApplication.contactEmail,
@@ -468,7 +496,6 @@ export default class ApplicationService extends BasePocketService {
     if (!result) {
       throw new Error("Couldn't register app unstake transaction for email notification");
     }
-
 
     await this.__markApplicationAsFreeTier(application.pocketApplication, false);
   }
