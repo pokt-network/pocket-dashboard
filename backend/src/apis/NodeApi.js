@@ -107,7 +107,6 @@ router.get("/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
 
   res.json(node);
 }));
-
 /**
  * Get node that is on network by address.
  */
