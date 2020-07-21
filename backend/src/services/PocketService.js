@@ -173,7 +173,7 @@ export default class PocketService {
     const pocketRpcProvider = await getRPCProvider();
     const transactionResponse = await this.__pocket.rpc(pocketRpcProvider).query.getTX(transactionHash);
 
-    if (transactionResponse instanceof Error) {
+    if (transactionResponse instanceof RpcError) {
       throw transactionResponse;
     }
 
@@ -259,7 +259,7 @@ export default class PocketService {
     const pocketRpcProvider = await getRPCProvider();
     const accountQueryResponse = await this.__pocket.rpc(pocketRpcProvider).query.getBalance(accountAddress);
 
-    if (accountQueryResponse instanceof Error) {
+    if (accountQueryResponse instanceof RpcError) {
       if (throwError) {
         throw accountQueryResponse;
       }
@@ -288,7 +288,7 @@ export default class PocketService {
     const pocketRpcProvider = await getRPCProvider();
     const applicationResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApp(addressHex);
 
-    if (applicationResponse instanceof Error) {
+    if (applicationResponse instanceof RpcError) {
       if (throwError) {
         throw new PocketNetworkError(applicationResponse.message);
       }
@@ -312,8 +312,7 @@ export default class PocketService {
     const pocketRpcProvider = await getRPCProvider();
     const nodeResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNode(addressHex);
 
-
-    if (nodeResponse instanceof Error) {
+    if (nodeResponse instanceof RpcError) {
       throw new PocketNetworkError(nodeResponse.message);
     }
 
@@ -329,14 +328,38 @@ export default class PocketService {
    * @async
    */
   async getApplications(status) {
-    const pocketRpcProvider = await getRPCProvider();
-    const applicationsResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status);
+    let page = 1;
+    let applicationList = [];
 
-    if (applicationsResponse instanceof Error) {
+    const pocketRpcProvider = await getRPCProvider();
+    const perPage = 100;
+    const applicationsResponse = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status, BigInt(0), undefined, page, perPage);
+
+    // Check for RpcError
+    if (applicationsResponse instanceof RpcError) {
       return [];
     }
 
-    return applicationsResponse.applications;
+    // Retrieve the total pages count
+    const totalPages = applicationsResponse.totalPages;
+
+    // Retrieve the app list
+    while (page <= totalPages) {
+      const response = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status, BigInt(0), undefined, page, perPage);
+      // Increment page variable
+      page++;
+      // Check for error
+      if (response instanceof RpcError) {
+        page = totalPages
+        return
+      }
+      // Add the result to the application list
+      response.applications.forEach(app => {
+        applicationList.push(app)
+      });
+    }
+
+    return applicationList;
   }
 
   /**
@@ -377,7 +400,7 @@ export default class PocketService {
     const pocketRpcProvider = await getRPCProvider();
     const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status);
 
-    if (nodesResponse instanceof Error) {
+    if (nodesResponse instanceof RpcError) {
       return [];
     }
 
@@ -421,7 +444,7 @@ export default class PocketService {
     const pocketRpcProvider = await getRPCProvider();
     const applicationParametersResponse = await this.__pocket.rpc(pocketRpcProvider).query.getAppParams();
 
-    if (applicationParametersResponse instanceof Error) {
+    if (applicationParametersResponse instanceof RpcError) {
       throw new PocketNetworkError(applicationParametersResponse.message);
     }
 
@@ -439,7 +462,7 @@ export default class PocketService {
     const pocketRpcProvider = await getRPCProvider();
     const nodeParametersResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodeParams();
 
-    if (nodeParametersResponse instanceof Error) {
+    if (nodeParametersResponse instanceof RpcError) {
       throw new PocketNetworkError(nodeParametersResponse.message);
     }
 
