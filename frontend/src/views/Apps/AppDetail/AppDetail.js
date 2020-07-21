@@ -44,7 +44,20 @@ class AppDetail extends Component {
     this.deleteApplication = this.deleteApplication.bind(this);
     this.unstakeApplication = this.unstakeApplication.bind(this);
     this.stakeApplication = this.stakeApplication.bind(this);
+    this.copyAAT = this.copyAAT.bind(this);
   }
+
+  copyAAT(){
+    const aatInput = document.getElementById("aat-value")
+
+    if (aatInput) {
+        aatInput.select();
+        aatInput.setSelectionRange(0, 99999); /*For mobile devices*/
+
+        document.execCommand("copy");
+        console.log("Copied the aat: "+ aatInput.value)
+    }
+}
 
   async componentDidMount() {
     let freeTierMsg = false;
@@ -162,8 +175,10 @@ class AppDetail extends Component {
   }
 
   async stakeApplication({ppk, passphrase, address}) {
+    const {id} = this.state.pocketApplication;
+
     ApplicationService.removeAppInfoFromCache();
-    ApplicationService.saveAppInfoInCache({address, passphrase});
+    ApplicationService.saveAppInfoInCache({id, address, passphrase});
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
@@ -274,6 +289,10 @@ class AppDetail extends Component {
     );
 
     if (freeTier && aat) {
+      const aatInput = document.getElementById("aat-value")
+      if (aatInput) {
+        aatInput.value = JSON.stringify(aat)
+      }
       aatStr = PocketApplicationService.parseAAT(aat);
     }
 
@@ -418,10 +437,12 @@ class AppDetail extends Component {
                   <h2>AAT</h2>
                 </div>
                 <Alert variant="light" className="aat-code">
+                <span id="aat-copy"className="copy-button" onClick={this.copyAAT}> <img src={"/assets/edit.svg"} alt="copy" /></span>
                 <pre>
+                  <input id="aat-value" style={{display: "none"}}></input>
                   <code className="language-html" data-lang="html">
                     {"# Returns\n"}
-                    <span id="aat">{aatStr}</span>
+                    <span id="aat" >{aatStr}</span>
                   </code>
                 </pre>
                 </Alert>
