@@ -193,6 +193,7 @@ export default class PocketService {
     const pocketRpcProvider = await getRPCProvider();
     const nodeResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNode(addressHex);
 
+
     if (nodeResponse instanceof Error) {
       throw new PocketNetworkError(nodeResponse.message);
     }
@@ -355,9 +356,8 @@ export default class PocketService {
     const pocketRpcProvider = await getRPCProvider();
 
     this.__pocket.rpc(pocketRpcProvider);
-    const rawTxResponse = await this.__pocket
-      .withPrivateKey(POCKET_MAIN_FUND_ACCOUNT)
-      .send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
+
+    const rawTxResponse = await this.__pocket.withPrivateKey(POCKET_MAIN_FUND_ACCOUNT).send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
       .submit(chainID, transactionFee);
 
     if (typeGuard(rawTxResponse, RpcError)) {
