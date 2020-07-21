@@ -126,9 +126,9 @@ export default class ApplicationService extends BasePocketService {
   async __getExtendedPocketClientApplication(application) {
     let networkApplication;
     const appParameters = await this.pocketService.getApplicationParameters();
-
+    const address = application.freeTierApplicationAccount.address || application.publicPocketAccount.address
     try {
-      networkApplication = await this.pocketService.getApplication(application.freeTierApplicationAccount.address);
+      networkApplication = await this.pocketService.getApplication(address);
     } catch (e) {
       networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
     }
@@ -320,7 +320,7 @@ export default class ApplicationService extends BasePocketService {
         return {
           id: app.id,
           name: app.name,
-          address: app.freeTierApplicationAccount.address,
+          address: app.freeTierApplicationAccount.address || app.publicPocketAccount.address,
           icon: app.icon
         };
       });
