@@ -48,14 +48,13 @@ class AppDetail extends Component {
   }
 
   copyAAT(){
-    const aatInput = document.getElementById("aat-value")
+    const aatInput = document.getElementById("aat-value");
 
     if (aatInput) {
         aatInput.select();
         aatInput.setSelectionRange(0, 99999); /*For mobile devices*/
 
         document.execCommand("copy");
-        console.log("Copied the aat: "+ aatInput.value)
     }
 }
 
@@ -90,7 +89,7 @@ class AppDetail extends Component {
       return;
     }
 
-    const clientAddress = pocketApplication.publicPocketAccount.address
+    const clientAddress = pocketApplication.publicPocketAccount.address;
 
     const {balance: accountBalance} = await PocketAccountService.getPoktBalance(clientAddress);
     const chains = await NetworkService.getNetworkChains(networkData.chains);
@@ -141,7 +140,7 @@ class AppDetail extends Component {
 
   async unstakeApplication({ppk, passphrase}) {
     const {freeTier, id} = this.state.pocketApplication;
-    const {address} = this.state.pocketApplication.publicPocketAccount
+    const {address} = this.state.pocketApplication.publicPocketAccount;
 
     const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
     const detail = url.replace(":id", id);
@@ -151,7 +150,8 @@ class AppDetail extends Component {
 
     const unstakeInformation = {
       application_id: id
-    }
+    };
+
     if (freeTier) {
       // Create unstake transaction
       const {success, data} = await ApplicationService.unstakeFreeTierApplication(unstakeInformation, link);
@@ -289,9 +289,10 @@ class AppDetail extends Component {
     );
 
     if (freeTier && aat) {
-      const aatInput = document.getElementById("aat-value")
+      const aatInput = document.getElementById("aat-value");
+
       if (aatInput) {
-        aatInput.value = JSON.stringify(aat)
+        aatInput.value = JSON.stringify(aat);
       }
       aatStr = PocketApplicationService.parseAAT(aat);
     }

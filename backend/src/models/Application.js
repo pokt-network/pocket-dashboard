@@ -39,6 +39,8 @@ export class PocketApplication {
    * @param {string} [description] Description.
    * @param {string} [icon] Icon.
    * @param {boolean} [freeTier] If is on free tier or not.
+   * @param {string} freeTierAppAddress Internal application address for free tier accounts.
+   * @param {object} freeTierPrivateApp Internal private app object.
    */
   constructor(name, owner, url, contactEmail, user, description, icon, freeTier, freeTierAppAddress, freeTierPrivateApp) {
     Object.assign(this, {name, owner, url, contactEmail, user, description, icon});
@@ -120,12 +122,12 @@ export class PocketApplication {
    * @returns {PocketApplication} A new Pocket application.
    * @static
    */
-  static createPocketApplication(applicationData) {
+  static createPocketApplication(applicationData){
     const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount, freeTier} = applicationData;
-    let { freeTierApplicationAccount } = applicationData
+    let {freeTierApplicationAccount} = applicationData;
 
-    if (freeTierApplicationAccount === undefined) {
-      freeTierApplicationAccount = {address: ""}
+    if (freeTierApplicationAccount === undefined){
+      freeTierApplicationAccount = {address: ""};
     }
 
     const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, freeTier, freeTierApplicationAccount.address, undefined);

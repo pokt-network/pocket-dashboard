@@ -53,7 +53,8 @@ class TierSelection extends Component {
       client_address: clientAddressHex,
       chains: chains,
       stake_amount: stakeAmount
-    }
+    };
+
     this.setState({creatingFreeTier: true});
 
     const {success, name: errorType} = await ApplicationService.stakeFreeTierApplication(stakeInformation, applicationLink);

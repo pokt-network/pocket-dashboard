@@ -158,9 +158,10 @@ class Import extends Component {
 
         // Retrieve the application information if available
         const application = await ApplicationService.getNetworkApplication(data.address);
+
         if (application.error === undefined) {
           // Add the chains value
-          chains = application.chains
+          chains = application.chains;
           // Update the state
           this.setState({
             accountData:{
@@ -171,7 +172,7 @@ class Import extends Component {
             },
             // App Staked chains
             chains: application.chains
-          })
+          });
         }
       } else {
         NodeService.saveNodeInfoInCache({
@@ -180,9 +181,10 @@ class Import extends Component {
           ppk,
         });
         const node = await NodeService.getNetworkNode(data.address);
+
         if (node.error === undefined) {
           // Add the chains value
-          chains = node.chains
+          chains = node.chains;
           // Update the state
           this.setState({
             accountData:{
@@ -193,10 +195,10 @@ class Import extends Component {
             },
             // Node Staked chains
             chains: node.chains
-          })
+          });
         }
       }
-      let accountChains = []
+      let accountChains = [];
 
       let accountChains = [];
 

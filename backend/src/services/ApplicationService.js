@@ -112,7 +112,7 @@ export default class ApplicationService extends BasePocketService {
     }
     const extendedPocketApplication = ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
 
-    return extendedPocketApplication
+    return extendedPocketApplication;
   }
 
   /**
@@ -126,7 +126,8 @@ export default class ApplicationService extends BasePocketService {
   async __getExtendedPocketClientApplication(application) {
     let networkApplication;
     const appParameters = await this.pocketService.getApplicationParameters();
-    const address = application.freeTierApplicationAccount.address || application.publicPocketAccount.address
+    const address = application.freeTierApplicationAccount.address || application.publicPocketAccount.address;
+
     try {
       networkApplication = await this.pocketService.getApplication(address);
     } catch (e) {
@@ -217,6 +218,7 @@ export default class ApplicationService extends BasePocketService {
     };
 
     const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+
     if (applicationDB) {
       const application = PocketApplication.createPocketApplication(applicationDB);
 
@@ -424,7 +426,7 @@ export default class ApplicationService extends BasePocketService {
     const fundingTransactionHash = await this.pocketService.transferFromMainFund(upoktToStake, appAccount.addressHex);
 
     // Create the stake transaction object
-    const appStakeTransaction = await this.pocketService.appStakeRequest(appAccount.addressHex, passphrase, stakeInformation.chains, stakeInformation.stake_amount)
+    const appStakeTransaction = await this.pocketService.appStakeRequest(appAccount.addressHex, passphrase, stakeInformation.chains, stakeInformation.stake_amount);
 
     // Create post confirmation action to stake application.
     const contactEmail = application.pocketApplication.contactEmail;
@@ -459,7 +461,6 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Unstake free tier application.
    *
-   * @param {object} application Application object.
    * @param {object} unstakeInformation Object that holds the unstake information
    * @param {string} applicationLink Link to detail for email.
    *
@@ -469,16 +470,16 @@ export default class ApplicationService extends BasePocketService {
     // Retrieve the private application account information
 
     const application = await this.getPrivateApplication(unstakeInformation.application_id);
-    const freeTierApplicationAccount = application.pocketApplication.freeTierApplicationAccount
+    const freeTierApplicationAccount = application.pocketApplication.freeTierApplicationAccount;
 
     // Generate a passphrase for the app account
     const passphrase = Math.random().toString(36).substr(2, 8);
 
     // Import the application to the keybase
-    const pocketAccount = await this.pocketService.importAccountFromPrivateKey(freeTierApplicationAccount.privateKey, passphrase)
+    const pocketAccount = await this.pocketService.importAccountFromPrivateKey(freeTierApplicationAccount.privateKey, passphrase);
 
     // Create unstake transaction request
-    const appUnstakeRequest = await this.pocketService.appUnstakeRequest(pocketAccount.addressHex, passphrase)
+    const appUnstakeRequest = await this.pocketService.appUnstakeRequest(pocketAccount.addressHex, passphrase);
 
     // Submit transaction
     const appUnstakedTransaction = await this.pocketService.submitRawTransaction(appUnstakeRequest.address, appUnstakeRequest.txHex);

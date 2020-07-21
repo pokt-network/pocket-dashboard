@@ -21,7 +21,7 @@ export class PocketApplicationService extends PocketBaseService {
       if (key !== "version") {
         aatParsed[key] = `${value.slice(0, 15)}...`;
       } else {
-        aatParsed[key] = value
+        aatParsed[key] = value;
       }
 
     }
