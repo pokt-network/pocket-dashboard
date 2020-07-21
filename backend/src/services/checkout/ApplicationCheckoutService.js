@@ -3,14 +3,16 @@ import {Configurations} from "../../_configuration";
 import {DashboardValidationError} from "../../models/Exceptions";
 
 /**
- * @param numericOption
+ * @param {object} [numericOption] number to be evaluated
+ * @returns {boolean} A Boolean indicating if a number is valid
  */
 function isNumericOptionValid(numericOption) {
   return (numericOption === 0 || numericOption === "0" || numericOption === undefined || numericOption === null) === false;
 }
 
 /**
- * @param numericOption
+ * @param {object} [numericOption] number to be evaluated
+ * @returns {boolean} A Boolean indicating if the number is negative
  */
 function isNumericOptionNegative(numericOption) {
   return Number(numericOption) < 0;
