@@ -7,11 +7,13 @@ import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import UserService from "../../../core/services/PocketUserService";
 import {
-  NODES_LIMIT, 
-  TABLE_COLUMNS,
   BACKEND_ERRORS,
   DEFAULT_NETWORK_ERROR_MESSAGE,
-  STYLING} from "../../../_constants";
+  DEFAULT_POKT_DENOMINATION_BASE,
+  NODES_LIMIT,
+  STYLING,
+  TABLE_COLUMNS
+} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
@@ -49,7 +51,7 @@ class NodesMain extends Main {
       hasError = userItems.error ? userItems.error : hasError;
       errorMessage = userItems.error ? userItems.message : errorMessage;
       errorType = userItems.error ? userItems.name : errorType;
-      
+
       if (!userItems.error) {
         this.setState({
           userItems,
@@ -62,23 +64,26 @@ class NodesMain extends Main {
 
       NodeService.getStakedNodeSummary().then(
         ({totalNodes, averageValidatorPower: averageRelays, averageStaked}) => {
-            this.setState({
-              total: totalNodes,
-              averageRelays,
-              averageStaked,
-              loading: false,
-            });
+
+          this.setState({
+            total: totalNodes,
+            averageRelays,
+            averageStaked,
+            loading: false,
+          });
         }
       );
     });
 
     NodeService.getStakedNodeSummary().then(
-      ({totalNodes, 
-        averageValidatorPower: averageRelays, 
-        averageStaked, 
-        error,
-        name,
-        message}) => {
+      ({
+         totalNodes,
+         averageValidatorPower: averageRelays,
+         averageStaked,
+         error,
+         name,
+         message
+       }) => {
         hasError = error ? error : hasError;
         errorMessage = error ? message : errorMessage;
         errorType = error ? name : errorType;
@@ -89,33 +94,33 @@ class NodesMain extends Main {
             averageRelays,
             averageStaked,
             loading: false,
-          });          
+          });
         }
       });
 
-      NodeService.getAllNodes(NODES_LIMIT).then((registeredItems) => {
-        hasError = registeredItems.error ? registeredItems.error : hasError;
-        errorMessage = registeredItems.error
-          ? registeredItems.message
-          : errorMessage;
-        errorType = registeredItems.error ? registeredItems.name : errorType;
+    NodeService.getAllNodes(NODES_LIMIT).then((registeredItems) => {
+      hasError = registeredItems.error ? registeredItems.error : hasError;
+      errorMessage = registeredItems.error
+        ? registeredItems.message
+        : errorMessage;
+      errorType = registeredItems.error ? registeredItems.name : errorType;
 
-        this.setState({
-          registeredItems,
-          loading: false,
-        });
+      this.setState({
+        registeredItems,
+        loading: false,
       });
+    });
 
-      if (errorType === BACKEND_ERRORS.NETWORK) {
-        errorMessage = DEFAULT_NETWORK_ERROR_MESSAGE;
-      }
+    if (errorType === BACKEND_ERRORS.NETWORK) {
+      errorMessage = DEFAULT_NETWORK_ERROR_MESSAGE;
+    }
 
-      if (hasError) {
-        this.setState({
-          loading: false,
-          error: {show: true, message: errorMessage},
-        });
-      }
+    if (hasError) {
+      this.setState({
+        loading: false,
+        error: {show: true, message: errorMessage},
+      });
+    }
   }
 
   async loadMoreUserNodes(offset) {
@@ -168,16 +173,16 @@ class NodesMain extends Main {
 
     const registeredItems = allRegisteredItems.map(mapStatusToField);
     const myNodessHasScroll =
-    hasNodes && filteredItems.length * 105 > MY_NODES_HEIGHT;
+      hasNodes && filteredItems.length * 105 > MY_NODES_HEIGHT;
 
     const cards = [
       {title: formatNumbers(total), subtitle: "Total of Nodes"},
       {
-        title: formatNetworkData(averageStaked, false),
+        title: formatNetworkData(averageStaked, false, DEFAULT_POKT_DENOMINATION_BASE),
         subtitle: "Avr Staked Token Per Node",
       },
       {
-        title: formatNetworkData(averageRelays, false),
+        title: formatNetworkData(averageRelays, false, DEFAULT_POKT_DENOMINATION_BASE),
         subtitle: "Avr Validator Power Per Node",
       },
     ];
@@ -199,14 +204,14 @@ class NodesMain extends Main {
     return (
       <div className="main">
         <Row>
-        {error.show && (
-          <AppAlert
-            variant="danger"
-            title={error.message}
-            dismissible
-            onClose={() => this.setState({error: {show: false}})}
-          />
-        )}
+          {error.show && (
+            <AppAlert
+              variant="danger"
+              title={error.message}
+              dismissible
+              onClose={() => this.setState({error: {show: false}})}
+            />
+          )}
           <Col sm="8" md="8" lg="8" className="page-title">
             <h1 className="ml-1">General Nodes Information</h1>
           </Col>
@@ -236,7 +241,7 @@ class NodesMain extends Main {
           </Col>
         </Row>
         <Row className="stats mb-4">
-          <InfoCards cards={cards} />
+          <InfoCards cards={cards}/>
         </Row>
         <Row className="mb-4 app-tables">
           <Col sm="6" md="6" lg="6" className="my-items-segment">
@@ -261,14 +266,14 @@ class NodesMain extends Main {
                           onClick={this.handleChainSearch}
                           variant="outline-primary"
                         >
-                          <img src={"/assets/search.svg"} alt="search-icon" />
+                          <img src={"/assets/search.svg"} alt="search-icon"/>
                         </Button>
                       </InputGroup.Append>
                     </InputGroup>
                   </Col>
                 </Row>
               )}
-              <div 
+              <div
                 className={cls("scrollable main-list", {
                   "has-scroll": myNodessHasScroll,
                 })}
@@ -281,15 +286,15 @@ class NodesMain extends Main {
                   hasMore={hasNodes && hasMoreUserItems}
                   loader={loader}
                 >
-                <LoadingOverlay active={userItemsTableLoading} spinner>
-                  {hasNodes ? (
-                    filteredItems.map((node, idx) => {
-                      const {id: nodeID, name, address, stakedPOKT, status, icon} = node;
+                  <LoadingOverlay active={userItemsTableLoading} spinner>
+                    {hasNodes ? (
+                      filteredItems.map((node, idx) => {
+                        const {id: nodeID, name, address, stakedPOKT, status, icon} = node;
 
-                      return (
-                        <Link
-                          key={idx}
-                          to={() => {
+                        return (
+                          <Link
+                            key={idx}
+                            to={() => {
 
                               if (!address) {
                                 NodeService.saveNodeInfoInCache({
@@ -326,7 +331,7 @@ class NodesMain extends Main {
                           alt="apps-empty-box"
                         />
                         <p>
-                          You have not created <br /> or imported any nodes yet
+                          You have not created <br/> or imported any nodes yet
                         </p>
                       </div>
                     )}

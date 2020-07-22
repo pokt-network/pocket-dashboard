@@ -160,6 +160,23 @@ export default class NodeService extends BasePocketService {
   }
 
   /**
+   * Update node on db by ID.
+   *
+   * @param {string} nodeID Node ID.
+   * @param {PocketNode} nodeData Node data.
+   *
+   * @returns {Promise<boolean>} If node was updated or not.
+   * @private
+   * @async
+   */
+  async updateNodeData(nodeID, nodeData) {
+    /** @type {{result: {n:number, ok: number}}} */
+    const result = await this.persistenceService.updateEntityByID(NODE_COLLECTION_NAME, nodeID, nodeData);
+
+    return result.result.ok === 1;
+  }
+
+  /**
    * Create a node account.
    *
    * @param {string} nodeID Node ID.
@@ -259,7 +276,6 @@ export default class NodeService extends BasePocketService {
    */
   async getAllNodes(limit, offset = 0) {
     const networkApplications = await this.pocketService.getNodes(StakingStatus.Staked);
-
     return networkApplications.map(PocketNode.createRegisteredPocketNode);
   }
 

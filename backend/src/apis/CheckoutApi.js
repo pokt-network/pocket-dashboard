@@ -2,6 +2,7 @@ import express from "express";
 import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
 import {apiAsyncWrapper, getQueryOption} from "./_helpers";
 import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
+import {CoinDenom} from "@pokt-network/pocket-js";
 
 const router = express.Router();
 
@@ -49,7 +50,7 @@ router.post("/nodes/pokt", apiAsyncWrapper((req, res) => {
   /** @type {{money: number}} */
   const data = req.body;
 
-  const cost = nodeCheckoutService.getPoktToStake(data.money);
+  const cost = nodeCheckoutService.getPoktToStake(data.money, CoinDenom.Pokt);
 
   res.json({cost});
 }));

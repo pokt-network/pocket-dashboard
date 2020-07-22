@@ -1,10 +1,6 @@
 import React from "react";
 import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
-import {
-  TABLE_COLUMNS,
-  URL_HTTPS_REGEX,
-  VALIDATION_MESSAGES,
-} from "../../../_constants";
+import {TABLE_COLUMNS, URL_HTTPS_REGEX, VALIDATION_MESSAGES,} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
 import Segment from "../../../core/components/Segment/Segment";
@@ -45,9 +41,11 @@ class NodeChainList extends Chains {
     const {serviceURL} = this.state.data;
     const chainsHashes = chosenChains.map((ch) => ch.hash);
 
+
     NodeService.saveNodeInfoInCache({
       chains: chainsHashes,
       serviceURL,
+      chainsObject: chosenChains
     });
 
     // eslint-disable-next-line react/prop-types
@@ -113,7 +111,7 @@ class NodeChainList extends Chains {
                     onClick={this.handleChainSearch}
                     variant="outline-primary"
                   >
-                    <img src="/assets/search.svg" alt="search-icon" />
+                    <img src="/assets/search.svg" alt="search-icon"/>
                   </Button>
                 </InputGroup.Append>
               </InputGroup>
