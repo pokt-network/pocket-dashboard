@@ -32,7 +32,7 @@ jobs:
         REACT_APP_POCKET_NETWORK_DISPATCHERS: https://node1.testnet.pokt.network:443
         REACT_APP_POCKET_NETWORK_TX_FEE: 100000
         REACT_APP_POCKET_NETWORK_CHAIN_ID: testnet-r2
-        REACT_APP_POCKET_FREE_TIER_STAKE_AMOUNT: 20833330000
+        REACT_APP_POCKET_FREE_TIER_STAKE_AMOUNT: 25950100000
         REACT_APP_STAKE_DEFAULT_STATUS: Unstaked
         REACT_APP_DEFAULT_MAX_RELAYS_PER_DAY: 6912000
         REACT_APP_SECURE_LS_SECRET: ${{ secrets.REACT_APP_SECURE_LS_SECRET }}
@@ -83,6 +83,11 @@ jobs:
         envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }}
         envkey_POCKET_NETWORK_MAIN_FUND_ACCOUNT: ${{ secrets.POCKET_NETWORK_MAIN_FUND_ACCOUNT }}
         envkey_POCKET_NETWORK_MAIN_FUND_ADDRESS: ${{ secrets.POCKET_NETWORK_MAIN_FUND_ADDRESS }}
+        envkey_POCKET_NETWORK_CLIENT_PUB_KEY: ${{ secrets.POCKET_NETWORK_CLIENT_PUB_KEY }}
+        envkey_POCKET_NETWORK_CLIENT_PRIV_KEY: ${{ secrets.POCKET_NETWORK_CLIENT_PRIV_KEY }}
+        envkey_POCKET_NETWORK_CLIENT_PASSPHRASE: ${{ secrets.POCKET_NETWORK_CLIENT_PASSPHRASE }}
+        envkey_POCKET_NETWORK_APP_PUB_KEY: ${{ secrets.POCKET_NETWORK_APP_PUB_KEY }}
+        envkey_POCKET_NETWORK_APP_SIGNATURE: ${{ secrets.POCKET_NETWORK_APP_SIGNATURE }}  
         envkey_JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
         envkey_envkey_AUTH_PROVIDER_GITHUB_CLIENT_ID: ${{ secrets.AUTH_PROVIDER_GITHUB_CLIENT_ID }}
         envkey_AUTH_PROVIDER_GITHUB_CLIENT_SECRET: ${{ secrets.AUTH_PROVIDER_GITHUB_CLIENT_SECRET }}
@@ -99,7 +104,7 @@ jobs:
         envkey_POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL: redis://dashboard.js6zbp.ng.0001.usw2.cache.amazonaws.com:6379
         envkey_POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME: 60000
         envkey_POCKET_NETWORK_SERVICE_WORKER_ATTEMPTS: 15
-        envkey_POCKET_FREE_TIER_STAKE_AMOUNT: 10000000
+        envkey_POCKET_FREE_TIER_STAKE_AMOUNT: 25950100000
         envkey_POKT_MARKET_PRICE: 0.06
         envkey_POCKET_NETWORK_DISPATCHERS: https://node1.testnet.pokt.network:443,https://node2.testnet.pokt.network:443,https://node3.testnet.pokt.network:443,https://node4.testnet.pokt.network:443,https://node5.testnet.pokt.network:443,https://node6.testnet.pokt.network:443,https://node7.testnet.pokt.network:443
         envkey_POCKET_NETWORK_CHAIN_HASH: 0002
