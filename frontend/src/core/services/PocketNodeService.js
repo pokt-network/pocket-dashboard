@@ -35,6 +35,7 @@ class PocketNodeService extends PocketBaseService {
       data: this.ls.get("node_data").data,
       imported: this.ls.get("node_imported").data,
       serviceURL: this.ls.get("node_service_url").data,
+      chainsObject: this.ls.get("node_chains_object").data,
     };
   }
 
@@ -49,17 +50,19 @@ class PocketNodeService extends PocketBaseService {
    * @param {object} [data] Pocket node dashboard data.
    * @param {boolean} [imported] If the node is imported.
    * @param {string} [serviceURL] The service URL.
+   * @param {Array<object>} [chainsObject] Pocket node chosen chains whole object.
    */
   saveNodeInfoInCache({
-    nodeID,
-    address,
-    ppk,
-    passphrase,
-    chains,
-    data,
-    imported,
-    serviceURL,
-  }) {
+                        nodeID,
+                        address,
+                        ppk,
+                        passphrase,
+                        chains,
+                        data,
+                        imported,
+                        serviceURL,
+                        chainsObject
+                      }) {
     if (nodeID) {
       this.ls.set("node_id", {data: nodeID});
     }
@@ -83,6 +86,9 @@ class PocketNodeService extends PocketBaseService {
     }
     if (imported !== undefined) {
       this.ls.set("node_imported", {data: imported});
+    }
+    if (chainsObject) {
+      this.ls.set("node_chains_object", {data: chainsObject});
     }
   }
 

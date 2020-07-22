@@ -6,7 +6,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatDaysCountdown, formatNumbers, getStakeStatus, formatNetworkData} from "../../../_helpers";
+import {formatDaysCountdown, formatNetworkData, formatNumbers, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -39,6 +39,7 @@ class NodeDetail extends Component {
       unjail: false,
       stake: false,
       ctaButtonPressed: false,
+      serviceUrl: "",
       error: {show: false, message: ""}
     };
 
@@ -59,32 +60,42 @@ class NodeDetail extends Component {
       pocketNode,
       networkData,
       error,
-      name} = await NodeService.getNode(address) || {};
+      name
+    } = await NodeService.getNode(address) || {};
 
-      hasError = error ? error : hasError;
-      errorType = error ? name : errorType;
+    hasError = error ? error : hasError;
+    errorType = error ? name : errorType;
 
-      if (hasError || pocketNode === undefined ) {
-        if (errorType === BACKEND_ERRORS.NETWORK) {
-          this.setState({loading: false, error: {
-            show: true, message: DEFAULT_NETWORK_ERROR_MESSAGE}});
-        } else {
-          this.setState({loading: false, exists: false});
-        }
-        return;
+    if (hasError || pocketNode === undefined) {
+      if (errorType === BACKEND_ERRORS.NETWORK) {
+        this.setState({
+          loading: false, error: {
+            show: true, message: DEFAULT_NETWORK_ERROR_MESSAGE
+          }
+        });
+      } else {
+        this.setState({loading: false, exists: false});
       }
+      return;
+    }
 
-    const chains = await NetworkService.getNetworkChains(networkData.chains);
+    let chains = await NetworkService.getNetworkChains(networkData.chains);
 
     const {balance: accountBalance} = await PocketAccountService.getPoktBalance(
       address
     );
+
+    const nodeFromCache = NodeService.getNodeInfo()
+    if(nodeFromCache.chainsObject !== undefined) {
+      chains = nodeFromCache.chainsObject
+    }
 
     this.setState({
       pocketNode,
       networkData,
       chains,
       accountBalance,
+      serviceUrl: nodeFromCache.serviceURL,
       loading: false,
     });
 
@@ -180,8 +191,9 @@ class NodeDetail extends Component {
       tokens: stakedTokens,
       status: stakeStatus,
       unstaking_time: unstakingCompletionTime,
-      service_url: serviceURL,
     } = this.state.networkData;
+
+    const serviceURL = this.state.serviceUrl
     const status = getStakeStatus(parseInt(stakeStatus));
     const isStaked =
       status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
@@ -263,8 +275,8 @@ class NodeDetail extends Component {
         subtitle: "Jailed",
         children: jailActionItem,
       },
-      { 
-        title: formatNetworkData(stakedTokens), 
+      {
+        title: formatNetworkData(stakedTokens),
         titleAttrs: {title: stakedTokens ? formatNumbers(stakedTokens) : undefined},
         subtitle: "Validator Power"
       },
@@ -277,16 +289,16 @@ class NodeDetail extends Component {
 
     const renderValidation = (handleFunc, breadcrumbs) => (
       <>
-      {/* eslint-disable-next-line react/prop-types */}
-      <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
-      breadcrumbs={breadcrumbs}
-      address={address} handleAfterValidate={handleFunc}>
-        <h1>Verify private key</h1>
-        <p className="validate-text">
-          Please import your account credentials before sending the Transaction.
-          Be aware that this Transaction has a 0,1 POKT fee cost.
-        </p>
-      </ValidateKeys>
+        {/* eslint-disable-next-line react/prop-types */}
+        <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
+                      breadcrumbs={breadcrumbs}
+                      address={address} handleAfterValidate={handleFunc}>
+          <h1>Verify private key</h1>
+          <p className="validate-text">
+            Please import your account credentials before sending the Transaction.
+            Be aware that this Transaction has a 0,1 POKT fee cost.
+          </p>
+        </ValidateKeys>
       </>
     );
 
@@ -379,7 +391,7 @@ class NodeDetail extends Component {
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-                <InfoCard titleAttrs={card.titleAttrs} title={card.title} subtitle={card.subtitle}>
+              <InfoCard titleAttrs={card.titleAttrs} title={card.title} subtitle={card.subtitle}>
                 {card.children || <></>}
               </InfoCard>
             </Col>
@@ -469,8 +481,8 @@ class NodeDetail extends Component {
           <Modal.Body>
             <h4> Are you sure you want to remove this Node?</h4>
             Your Node will be removed from the Pocket Dashboard. However, you
-            will still be able to access it through the Command Line Interface  
-            (CLI) or import it back into Pocket Dashboard with the private key 
+            will still be able to access it through the Command Line Interface
+            (CLI) or import it back into Pocket Dashboard with the private key
             associated to the node
           </Modal.Body>
           <Modal.Footer>
