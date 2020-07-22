@@ -31,33 +31,37 @@ class TierSelection extends Component {
 
   async createFreeTierItem() {
     const {
+      id,
       address,
       chains,
       passphrase
     } = ApplicationService.getApplicationInfo();
 
-    const unlockedAccount = await PocketClientService.getUnlockedAccount(address);
+    const unlockedAccount = await PocketClientService.getUnlockedAccount(address, passphrase);
     const clientAddressHex = unlockedAccount.addressHex;
 
     const url = _getDashboardPath(
       DASHBOARD_PATHS.appDetail
     );
 
-    const detail = url.replace(":address", address);
+    const detail = url.replace(":id", id);
     const applicationLink = `${window.location.origin}${detail}`;
-
 
     const stakeAmount = Configurations.pocket_network.free_tier.stake_amount.toString();
 
-    const appStakeTransaction = await PocketClientService.appStakeRequest(clientAddressHex, passphrase, chains, stakeAmount);
+    const stakeInformation = {
+      client_address: clientAddressHex,
+      chains: chains,
+      stake_amount: stakeAmount
+    };
 
     this.setState({creatingFreeTier: true});
 
-    const {success, name: errorType} = await ApplicationService.stakeFreeTierApplication(appStakeTransaction, applicationLink);
+    const {success, name: errorType} = await ApplicationService.stakeFreeTierApplication(stakeInformation, applicationLink);
 
     if (success !== false) {
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
-      const path = url.replace(":address", address);
+      const path = url.replace(":id", id);
 
       ApplicationService.removeAppInfoFromCache();
 
@@ -126,7 +130,7 @@ class TierSelection extends Component {
             </div>
             <ul>
               <li>Limited to 1 Million Relays per Day</li>
-              <li>Access to Application Authentication Token (AAT), but not 
+              <li>Access to Application Authentication Token (AAT), but not
                 ownership of the AAT</li>
               <li>Staked POKT is managed by Pocket Network Inc.</li>
               <li>POKT balance unavailable for transfers</li>

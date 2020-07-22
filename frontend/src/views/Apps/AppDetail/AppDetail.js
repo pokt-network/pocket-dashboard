@@ -44,7 +44,19 @@ class AppDetail extends Component {
     this.deleteApplication = this.deleteApplication.bind(this);
     this.unstakeApplication = this.unstakeApplication.bind(this);
     this.stakeApplication = this.stakeApplication.bind(this);
+    this.copyAAT = this.copyAAT.bind(this);
   }
+
+  copyAAT(){
+    const aatInput = document.getElementById("aat-value");
+
+    if (aatInput) {
+        aatInput.select();
+        aatInput.setSelectionRange(0, 99999); /*For mobile devices*/
+
+        document.execCommand("copy");
+    }
+}
 
   async componentDidMount() {
     let freeTierMsg = false;
@@ -55,14 +67,14 @@ class AppDetail extends Component {
       freeTierMsg = this.props.location.state.freeTierMsg;
     }
 
-    const {address} = this.props.match.params;
+    const {id} = this.props.match.params;
 
     const {
       pocketApplication,
       networkData,
       error,
       name,
-    } = await ApplicationService.getApplication(address) || {};
+    } = await ApplicationService.getClientApplication(id) || {};
 
     hasError = error ? error : hasError;
     errorType = error ? name : errorType;
@@ -77,7 +89,9 @@ class AppDetail extends Component {
       return;
     }
 
-    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(address);
+    const clientAddress = pocketApplication.publicPocketAccount.address;
+
+    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(clientAddress);
     const chains = await NetworkService.getNetworkChains(networkData.chains);
     const {freeTier} = pocketApplication;
 
@@ -85,7 +99,7 @@ class AppDetail extends Component {
 
     if (freeTier) {
       const {success, data} = await ApplicationService.getFreeTierAppAAT(
-        address);
+        clientAddress);
 
       if (success) {
         aat = data;
@@ -124,31 +138,47 @@ class AppDetail extends Component {
     }
   }
 
-  async unstakeApplication({ppk, passphrase, address}) {
-    const {freeTier} = this.state.pocketApplication;
+  async unstakeApplication({ppk, passphrase}) {
+    const {freeTier, id} = this.state.pocketApplication;
+    const {address} = this.state.pocketApplication.publicPocketAccount;
 
     const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
-    const detail = url.replace(":address", address);
+    const detail = url.replace(":id", id);
     const link = `${window.location.origin}${detail}`;
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
-    const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
+    const unstakeInformation = {
+      application_id: id
+    };
 
-    const {success, data} = freeTier
-      ? await ApplicationService.unstakeFreeTierApplication(appUnstakeTransaction, link)
-      : await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
+    if (freeTier) {
+      // Create unstake transaction
+      const {success, data} = await ApplicationService.unstakeFreeTierApplication(unstakeInformation, link);
 
-    if (success) {
-      window.location.reload(false);
+      if (success) {
+        window.location.reload(false);
+      } else {
+        this.setState({unstake: false, ctaButtonPressed: false, message: data});
+      }
     } else {
-      this.setState({unstake: false, ctaButtonPressed: false, message: data});
+      const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
+
+      const {success, data} = await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
+
+      if (success) {
+        window.location.reload(false);
+      } else {
+        this.setState({unstake: false, ctaButtonPressed: false, message: data});
+      }
     }
   }
 
   async stakeApplication({ppk, passphrase, address}) {
+    const {id} = this.state.pocketApplication;
+
     ApplicationService.removeAppInfoFromCache();
-    ApplicationService.saveAppInfoInCache({address, passphrase});
+    ApplicationService.saveAppInfoInCache({id, address, passphrase});
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
@@ -230,7 +260,7 @@ class AppDetail extends Component {
           ) : undefined,
       },
       {
-        title: formatNetworkData(maxRelays), 
+        title: formatNumbers(maxRelays),
         titleAttrs: {title: maxRelays ? formatNumbers(maxRelays) : undefined},
         subtitle: "Max Relays Per Day"
       },
@@ -259,6 +289,11 @@ class AppDetail extends Component {
     );
 
     if (freeTier && aat) {
+      const aatInput = document.getElementById("aat-value");
+
+      if (aatInput) {
+        aatInput.value = JSON.stringify(aat);
+      }
       aatStr = PocketApplicationService.parseAAT(aat);
     }
 
@@ -403,10 +438,12 @@ class AppDetail extends Component {
                   <h2>AAT</h2>
                 </div>
                 <Alert variant="light" className="aat-code">
+                <span id="aat-copy"className="copy-button" onClick={this.copyAAT}> <img src={"/assets/edit.svg"} alt="copy" /></span>
                 <pre>
+                  <input id="aat-value" style={{display: "none"}}></input>
                   <code className="language-html" data-lang="html">
                     {"# Returns\n"}
-                    <span id="aat">{aatStr}</span>
+                    <span id="aat" >{aatStr}</span>
                   </code>
                 </pre>
                 </Alert>
@@ -478,8 +515,8 @@ class AppDetail extends Component {
           <Modal.Body>
             <h4>Are you sure you want to remove this App?</h4>
             Your application will be removed from the Pocket Dashboard.
-            However, you will still be able to access it through the Command 
-            Line Interface (CLI) or import it back into Pocket Dashboard with 
+            However, you will still be able to access it through the Command
+            Line Interface (CLI) or import it back into Pocket Dashboard with
             the private key assigned to it.
           </Modal.Body>
           <Modal.Footer>

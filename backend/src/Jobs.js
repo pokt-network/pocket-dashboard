@@ -132,7 +132,7 @@ NODE_UNJAIL_QUEUE.process(async (job, done) => {
     done(error);
   }
 });
-
+// TODO: CREATE APP STAKE FREE TIER, USE EMAIL SERVICE FREE TIER
 // APP_STAKE_QUEUE
 APP_STAKE_QUEUE.process(async (job, done) => {
   try {

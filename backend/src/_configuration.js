@@ -87,9 +87,8 @@ export const Configurations = {
            jobs: {
              database_url:
              process.env.POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL,
-             delayed_time:
-             process.env.POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME,
-             attempts: process.env.POCKET_NETWORK_SERVICE_WORKER_ATTEMPTS,
+             delayed_time: process.env.POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME,
+             attempts: process.env.POCKET_NETWORK_SERVICE_WORKER_ATEMPTS,
            },
            aat_version: process.env.POCKET_NETWORK_AAT_VERSION,
            transaction_fee: process.env.POCKET_NETWORK_TRANSACTION_FEE,

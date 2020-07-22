@@ -1,5 +1,5 @@
 import {Configurations} from "../../_configuration";
-import {Configuration, Pocket} from "@pokt-network/pocket-js/dist/web.js";
+import {Configuration, Pocket} from "@pokt-network/pocket-js";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 const POCKET_CONFIGURATION = new Configuration(POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
@@ -117,21 +117,19 @@ class PocketClientService {
    *
    * @returns {Promise<Account | Error>} - The account or an Error.
    */
-  async getUnlockedAccount(address) {
-    return await this._pocket.keybase.getAccount(address);
+  async getUnlockedAccount(address, passphrase) {
+    return await this._pocket.keybase.getUnlockedAccount(address, passphrase);
   }
 
   /**
-   * Imports an a PPK (pocket's Portable Private key format) and stores it in the key base.
+   * Retrieves an account from the key base.
    *
-   * @param {string} ppk - Non-parsed ppk.
-   * @param {*} passphrase - account passphrase.
+   * @param {string} address - The address of the account to retrieve in hex string format.
    *
-   * @returns {Promise<Account | Error>}
+   * @returns {Promise<Account | Error>} - The account or an Error.
    */
-  async saveAccount(ppk, passphrase) {
-    // @createAndImportAccount
-    return await this._pocket.keybase.importPPKFromJSON(passphrase, ppk, passphrase);
+  async getAccount(address) {
+    return await this._pocket.keybase.getAccount(address);
   }
 
   /**
@@ -147,6 +145,7 @@ class PocketClientService {
   async appStakeRequest(address, passphrase, chains, stakeAmount) {
     try {
       const {chain_id: chainID, transaction_fee: transactionFee} = POCKET_NETWORK_CONFIGURATION;
+
       const transactionSender = await this._getTransactionSender(address, passphrase);
       const {unlockedAccount: account} = transactionSender;
 
@@ -164,7 +163,7 @@ class PocketClientService {
   /**
    * Creates a transaction request to unstake an application.
    *
-   * @param {string} address - Application address.
+   * @param {string} applicationId - Application address.
    * @param {string} passphrase - Application passphrase.
    *
    * @returns {Promise<{address:string, txHex:string}> | string} - A transaction sender.
@@ -181,6 +180,19 @@ class PocketClientService {
     } catch (e) {
       return e.toString();
     }
+  }
+
+  /**
+   * Imports an a PPK (pocket's Portable Private key format) and stores it in the key base.
+   *
+   * @param {string} ppk - Non-parsed ppk.
+   * @param {*} passphrase - account passphrase.
+   *
+   * @returns {Promise<Account | Error>}
+   */
+  async saveAccount(ppk, passphrase) {
+    // @createAndImportAccount
+    return await this._pocket.keybase.importPPKFromJSON(passphrase, ppk, passphrase);
   }
 
   /**

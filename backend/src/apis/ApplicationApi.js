@@ -119,6 +119,17 @@ router.get("/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
+ * Get application that is already on dashboard using the application id.
+ */
+router.get("/client/:applicationId", apiAsyncWrapper(async (req, res) => {
+  /** @type {{applicationId:string}} */
+  const data = req.params;
+  const application = await applicationService.getClientApplication(data.applicationId);
+
+  res.json(application);
+}));
+
+/**
  * Get application that is on network by address.
  */
 router.get("/network/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
@@ -164,18 +175,18 @@ router.post("/user/all", apiAsyncWrapper(async (req, res) => {
  * Stake a free tier application.
  */
 router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{appStakeTransaction: {address: string, raw_hex_bytes: string}, applicationLink: string}} */
+  /** @type {{stakeInformation: {client_address: string, chains: string[], stake_amount: string}, applicationLink: string}} */
   const data = req.body;
 
-  const appStakeTransaction = data.appStakeTransaction;
-  const application = await applicationService.getApplication(appStakeTransaction.address);
+  const stakeInformation = data.stakeInformation;
+  const application = await applicationService.getApplication(stakeInformation.client_address);
 
   const applicationEmailData = {
     name: application.pocketApplication.name,
     link: data.applicationLink
   };
 
-  const aat = await applicationService.stakeFreeTierApplication(application, data.appStakeTransaction, applicationEmailData);
+  const aat = await applicationService.stakeFreeTierApplication(application, stakeInformation, applicationEmailData);
 
   res.json(aat);
 }));
@@ -184,10 +195,12 @@ router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
  * Unstake a free tier application.
  */
 router.post("/freetier/unstake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{appUnstakeTransaction: {address: string, raw_hex_bytes: string}, applicationLink: string}} */
+  /** @type {{unstakeInformation: {application_id: string}, applicationLink: string}} */
   const data = req.body;
 
-  await applicationService.unstakeFreeTierApplication(data.appUnstakeTransaction, data.applicationLink);
+  const unstakeInformation = data.unstakeInformation;
+
+  await applicationService.unstakeFreeTierApplication(unstakeInformation, data.applicationLink);
 
   res.send(true);
 }));

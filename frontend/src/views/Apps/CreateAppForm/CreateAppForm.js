@@ -64,8 +64,8 @@ class CreateAppForm extends CreateForm {
       DASHBOARD_PATHS.appDetail
     )}`;
 
-    const {publicKey} = await PocketClientService.getUnlockedAccount(address);
-    
+    const {publicKey} = await PocketClientService.getAccount(address);
+
     const applicationData = {address, publicKey: publicKey.toString("hex")};
 
     const {success} = await ApplicationService.saveApplicationAccount(
@@ -79,11 +79,12 @@ class CreateAppForm extends CreateForm {
       if (getStakeStatus(status) === STAKE_STATUS.Staked) {
         const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
 
-        const path = url.replace(":address", address);
+        const path = url.replace(":id", applicationId);
 
         this.props.history.push(path);
       } else {
         ApplicationService.saveAppInfoInCache({
+          applicationID: applicationId,
           data: data,
         });
         this.props.history.replace(
@@ -269,8 +270,8 @@ class CreateAppForm extends CreateForm {
                   </Form.Group>
                   <Form.Group>
                     <Form.Label>
-                      Write an optional description of your app here. This 
-                      information is private and will not be shared outside of 
+                      Write an optional description of your app here. This
+                      information is private and will not be shared outside of
                       your personal dashboard.
                     </Form.Label>
                     <Form.Control
@@ -318,7 +319,7 @@ class CreateAppForm extends CreateForm {
                     To ensure <strong>purchasers</strong> are bona fide and not
                     investors, the Company has set a purchase maximum per user.
                     Users must hold POKT for 21 days and use (bond
-                    and stake) it before either transferring  POKT to another 
+                    and stake) it before either transferring  POKT to another
                     wallet or selling POKT.
                   </li>
                   <li>

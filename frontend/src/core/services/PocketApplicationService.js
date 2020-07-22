@@ -15,10 +15,15 @@ export class PocketApplicationService extends PocketBaseService {
       version: aat.version,
     };
 
-    delete aat.version;
+    // delete aat.version;
 
     for (let [key, value] of Object.entries(aat)) {
-      aatParsed[key] = `${value.slice(0, 15)}...`;
+      if (key !== "version") {
+        aatParsed[key] = `${value.slice(0, 15)}...`;
+      } else {
+        aatParsed[key] = value;
+      }
+
     }
     return JSON.stringify(aatParsed, null, 2);
   }
@@ -104,6 +109,26 @@ export class PocketApplicationService extends PocketBaseService {
   getApplication(applicationAddress) {
     return axios
       .get(this._getURL(`${applicationAddress}`))
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
+  }
+
+    /**
+   * Get application by using the client's address.
+   *
+   * @param {string} applicationId Application's id.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getClientApplication(applicationId) {
+    return axios
+      .get(this._getURL(`client/${applicationId}`))
       .then((response) => response.data)
       .catch((err) => {
         return {
@@ -370,20 +395,20 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Create free tier application.
    *
-   * @param {object} appStakeTransaction Transaction.
+   * @param {object} stakeInformation Stake information.
    * @param {string} applicationLink Application link.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeFreeTierApplication(appStakeTransaction, applicationLink) {
+  stakeFreeTierApplication(stakeInformation, applicationLink) {
     return axios
-      .post(this._getURL("freetier/stake"), {appStakeTransaction, applicationLink})
+      .post(this._getURL("freetier/stake"), {stakeInformation, applicationLink})
       .then((response) => {
         return {
           success: true,
           data: response.data,
         };
-      })     
+      })
       .catch((err) => {
         return {
           success: false,
@@ -396,15 +421,13 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a free tier application.
    *
-   * @param {object} appUnstakeTransaction Transaction hash.
-   * @param {string} appUnstakeTransaction.address Sender address
-   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {object} unstakeInformation Object holding the unstake information.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeFreeTierApplication(appUnstakeTransaction, applicationLink) {
-    const data = {appUnstakeTransaction, applicationLink};
+  unstakeFreeTierApplication(unstakeInformation, applicationLink) {
+    const data = {unstakeInformation, applicationLink};
 
     return axios
       .post(this._getURL("freetier/unstake"), data)
@@ -445,9 +468,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a custom tier application.
    *
-   * @param {{address: string}} appUnstakeTransaction Transaction hash.
-   * @param {string} appUnstakeTransaction.address Sender address
-   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {{address: string}} unstakeInformation Transaction hash.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
