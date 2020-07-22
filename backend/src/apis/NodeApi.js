@@ -193,6 +193,10 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
 
     await nodeService.stakeNode(nodeAddress, uPoktStaked, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
 
+    await EmailService
+      .to(node.pocketNode.contactEmail)
+      .sendStakeNodeEmail(node.pocketNode.contactEmail, nodeEmailData, paymentEmailData);
+
     res.send(true);
   } else {
     // Return error if payment was unsuccessful

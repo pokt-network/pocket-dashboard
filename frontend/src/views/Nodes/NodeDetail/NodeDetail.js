@@ -85,9 +85,10 @@ class NodeDetail extends Component {
       address
     );
 
-    const nodeFromCache = NodeService.getNodeInfo()
+    const nodeFromCache = NodeService.getNodeInfo();
+
     if(nodeFromCache.chainsObject !== undefined) {
-      chains = nodeFromCache.chainsObject
+      chains = nodeFromCache.chainsObject;
     }
 
     this.setState({
@@ -193,7 +194,7 @@ class NodeDetail extends Component {
       unstaking_time: unstakingCompletionTime,
     } = this.state.networkData;
 
-    const serviceURL = this.state.serviceUrl
+    const serviceURL = this.state.serviceUrl;
     const status = getStakeStatus(parseInt(stakeStatus));
     const isStaked =
       status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
@@ -296,7 +297,7 @@ class NodeDetail extends Component {
           <h1>Verify private key</h1>
           <p className="validate-text">
             Please import your account credentials before sending the Transaction.
-            Be aware that this Transaction has a 0,1 POKT fee cost.
+            Be aware that this Transaction has a 0.1 POKT fee cost.
           </p>
         </ValidateKeys>
       </>
