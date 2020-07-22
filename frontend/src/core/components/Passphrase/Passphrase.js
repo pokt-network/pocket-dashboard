@@ -4,7 +4,7 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
 import AppTable from "../../../core/components/AppTable";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {PASSPHRASE_REGEX, TABLE_COLUMNS, VALIDATION_MESSAGES,} from "../../../_constants";
+import {PASSPHRASE_REGEX, TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
 import {createAndDownloadJSONFile, validateYup} from "../../../_helpers";
@@ -299,7 +299,7 @@ class Passphrase extends Component {
             </AppAlert>
           </Col>
         </Row>
-        <div style={{display: 'none'}}>
+        <div style={{display: "none"}}>
           <Row>
             <Col className="page-title">
               <h1>General information</h1>

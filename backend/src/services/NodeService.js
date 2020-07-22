@@ -276,6 +276,7 @@ export default class NodeService extends BasePocketService {
    */
   async getAllNodes(limit, offset = 0) {
     const networkApplications = await this.pocketService.getNodes(StakingStatus.Staked);
+
     return networkApplications.map(PocketNode.createRegisteredPocketNode);
   }
 
