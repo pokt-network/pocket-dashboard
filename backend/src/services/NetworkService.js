@@ -1,10 +1,52 @@
 import BasePocketService from "./BasePocketService";
 import {Configurations} from "../_configuration";
 import {Application, Node, StakingStatus} from "@pokt-network/pocket-js";
-import {NetworkSummaryData} from "../models/Network";
+import {NetworkSummaryData, NetworkChain} from "../models/Network";
 import bigInt from "big-integer";
 
+const NETWORK_COLLECTION_NAME = "Blockchains";
+
 export default class NetworkService extends BasePocketService {
+
+  /**
+   * Get all blockchains available to stake
+   *
+   * @returns {Promise<NetworkChain[]>} List of applications.
+   * @async
+   */
+  async getAvailableNetworkChains() {
+    const filter = {active: true};
+    const networkChainData = await this.persistenceService.getEntities(NETWORK_COLLECTION_NAME, filter, 1000, 0);
+
+    if (networkChainData.length > 0) {
+      return networkChainData;
+    }
+
+    return [];
+  }
+
+  /**
+   * Get Network chains from hashes.
+   *
+   * @param {string[]} networkHashes Network hashes.
+   *
+   * @returns {Promise<NetworkChain[]>} List of applications.
+   * @async
+   */
+  async getNetworkChains(networkHashes) {
+    if(networkHashes === undefined) {
+      return [];
+    } else {
+      const filter = {active: true, _id: networkHashes};
+      const networkChainData = await this.persistenceService.getEntities(NETWORK_COLLECTION_NAME, filter, 1000, 0);
+
+      if (networkChainData.length > 0) {
+        return networkChainData;
+      }
+
+      return [];
+    }
+  }
 
   /**
    * Get the POKT price.

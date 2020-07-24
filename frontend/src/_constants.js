@@ -61,18 +61,18 @@ export const STYLING = {
 export const TABLE_COLUMNS = {
   NETWORK_CHAINS: [
     {
-      dataField: "name",
+      dataField: "network",
       text: "Network",
     },
     {
-      dataField: "netID",
+      dataField: "networkID",
       text: "Network ID",
       headerStyle: {
         whiteSpace: "nowrap",
       },
     },
     {
-      dataField: "hash",
+      dataField: "_id",
       text: "Hash",
     },
     {

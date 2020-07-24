@@ -1,0 +1,109 @@
+0001,POKT,mainnet,POKT-mainnet,,1,mainnet,1
+0002,POKT,testnet,POKT-testnet,,2,testnet,1
+0003,AION,32,AION-32,,3,aion-32,1
+0004,AION,256,AION-256,,4,aion-256,1
+0005,ALGO,mainnet-v1.0,ALGO-mainnet-v1.0,,5,algo-mainnet,1
+0006,ALGO,testnet-v1.0,ALGO-testnet-v1.0,,6,algo-testnet,1
+0007,ALGO,betanet-v1.0,ALGO-betanet-v1.0,,7,algo-betanet,1
+0008,ANT,mainnet,ANT-mainnet,,8,ant-mainnet,1
+0009,ANT,testnet,ANT-testnet,,9,ant-testnet,1
+000A,AR,mainnet,AR-mainnet,Arweave Mainnet,10,ar-mainnet,1
+000B,BCH,mainnet,BCH-mainnet,,11,bch-mainnet,1
+000C,BCH,testnet,BCH-testnet,,12,bch-testnet,1
+000D,BSV,mainnet,BSV-mainnet,Bitcoin SV,13,bsv-mainnet,1
+000E,BSV,testnet,BSV-testnet,,14,bsv-testnet,1
+000F,BSV,stn,BSV-stn,,15,bsv-stn,1
+0010,BTC,mainnet,BTC-mainnet,,16,btc-mainnet,1
+0011,BTC,testnet,BTC-testnet,,17,btc-testnet,1
+0012,BTG,testnet,BTG-testnet,,18,btg-testnet,1
+0013,BTG,mainnet,BTG-mainnet,,19,btg-mainnet,1
+0014,DAPS,mainnet,DAPS-mainnet,,20,daps-mainnet,1
+0015,DASH,testnet,DASH-testnet,,21,dash-testnet,1
+0016,DASH,mainnet,DASH-mainnet,,22,dash-mainnet,1
+0017,DGB,testnet,DGB-testnet,digibyte,23,dgb-testnet,1
+0018,DGB,mainnet,DGB-mainnet,,24,dgb-mainnet,1
+0019,DOGE,mainnet,DOGE-mainnet,,25,doge-mainnet,1
+001A,DOGE,mainnet,DOGE-mainnet,,26,doge-mainnet,1
+001B,EBST,mainnet,EBST-mainnet,Eboost,27,ebst,1
+001C,EOS,main,EOS-main,,28,eos-main,1
+001D,EOS,jungle,EOS-jungle,,29,eos-jungle,1
+001E,ETC,61,ETC-61,Mainnet,30,etc-mainnet,1
+001F,ETC,6,ETC-6,Kotti,31,etc-kotti,1
+0020,ETH,5,ETH-5,,32,eth-goerli,1
+0021,ETH,1,ETH-1,,33,eth-mainnet,1
+0022,ETH,4,ETH-4,,34,eth-rinkeby,1
+0023,ETH,3,ETH-3,,35,eth-ropsten,1
+0024,FIL,mainnet,FIL-mainnet,Filecoin Mainnet,36,fil-mainnet,1
+0025,FIL,testnet,FIL-testnet,Filecoin Testnet,37,fil-testnet,1
+0026,FLOW,mainnet,FLOW-mainnet,Flow,38,flow-mainnet,1
+0027,FLOW,testnet,FLOW-testnet,Flow,39,flow-testnet,1
+0028,FLOW,alpha,FLOW-alpha,Flow ,40,flow-alpha,1
+0029,FTC,testnet,FTC-testnet,FeatherCoin,41,ftc-testnet,1
+002A,FTC,mainnet,FTC-mainnet,,42,ftc-mainnet,1
+002B,FTM,mainnet,FTM-mainnet,Fantom Mainnet,43,ftm-mainnet,1
+002C,FTM,testnet,FTM-testnet,Fantom Testnet,44,ftm-testnet,1
+002D,GRS,mainnet,GRS-mainnet,Groestlcoin,45,grs,1
+002E,HERC,mainnet,HERC-mainnet,Hercules ,46,herc-mainnet,1
+002F,HOT,mainnet,HOT-mainnet,Holochain Mainnet,47,hot-mainnet,1
+0030,HOT,testnet,HOT-testnet,Holochain Testnet,48,hot-testnet,1
+0031,ICX,1,ICX-1,,49,icx-1,1
+0032,ICX,3,ICX-3,,50,icx-3,1
+0033,IND,mainnet,IND-mainnet,Indorse Token,51,ind-mainnet,1
+0034,IND,testnet,IND-testnet,,52,ind-testnet,1
+0035,LTC,testnet,LTC-testnet,,53,ltc-testnet,1
+0036,LTC,mainnet,LTC-mainnet,,54,ltc-mainnet,1
+0037,MATIC,mainnet,MATIC-mainnet,,55,matic-mainnet,1
+0038,BNB,mainnet,BNB-mainnet,Binance Chain,56,binance-mainnet,1
+0039,BNB,testnet,BNB-testnet,,57,binance-testnet,1
+003A,BNB,binance-chain-tigris(mainnet),BNB-binance-chain-tigris(mainnet),,58,binance-tigris,1
+003B,BNB,binance-chain-nile(testnet),BNB-binance-chain-nile(testnet),,59,binance-nile,1
+003C,NEO,mainnet,NEO-mainnet,NEO2 Mainnet,60,neo-mainnet,1
+003D,NEO,testnet,NEO-testnet,NEO2 Testnet,61,neo-testnet,1
+003E,PART,mainnet,PART-mainnet,,62,part-mainnet,1
+003F,PHT,162,PHT-162,,63,pht-162,1
+0040,PHT,163,PHT-163,,64,pht-163,1
+0041,PIVX,mainnet,PIVX-mainnet,,65,pivx-mainnet,1
+0042,POA,99,POA-99,POA Mainnet,66,poa-mainnet,1
+0043,POA,42,POA-42,POA Kovan,67,poa-kovan,1
+0044,POA,77,POA-77,POA Sokol,68,poa-sokol,1
+0045,POA,100,POA-100,POA xdai,69,poa-xdai,1
+0046,POKT,mainnet,POKT-mainnet,,70,dupe1,0
+0047,POKT,testnet,POKT-testnet,,71,dupe2,0
+0048,QTUM,mainnet,QTUM-mainnet,,72,qtum-mainnet,1
+0049,QTUM,testnet,QTUM-testnet,,73,qtum-testnet,1
+004A,REN,mainnet,REN-mainnet,,74,ren-mainnet,1
+004B,REN,testnet,REN-testnet,,75,ren-testnet,1
+004C,RSK,mainnet,RSK-mainnet,,76,rsk-mainnet,1
+004D,RSK,testnet,RSK-testnet,,77,rsk-testnet,1
+004E,RVN,testnet,RVN-testnet,Raven coin,78,rvn-testnet,1
+004F,RVN,mainnet,RVN-mainnet,,79,rvn-mainnet,1
+0050,SMART,testnet,SMART-testnet,,80,smart-testnet,1
+0051,SMART,mainnet,SMART-mainnet,,81,smart-mainnet,1
+0052,SOL,mainnet,SOL-mainnet,,82,sol-mainnet,1
+0053,SOL,mainnet-beta,SOL-mainnet-beta,,83,sol-mainnet-beta,1
+0054,SOL,testnet,SOL-testnet,,84,sol-testnet,1
+0055,SOL,devnet,SOL-devnet,,85,sol-devnet,1
+0056,TOMO,mainnet,TOMO-mainnet,,86,tomo-mainnet,1
+0057,TRX,mainnet,TRX-mainnet,,87,trx-mainnet,1
+0058,TRX,shasta,TRX-shasta,,88,trx-shasta,1
+0059,UFO,mainnet,UFO-mainnet,Unknown Fair Object,89,ufo-mainnet,1
+005A,VTC,mainnet,VTC-mainnet,Vertcoin,90,vtc-mainnet,1
+005B,WAVES,w,WAVES-w,,91,waves,1
+005C,XLM,testnet(horizon),XLM-testnet(horizon),,92,xlm-testnet,1
+005D,XLM,mainnet,XLM-mainnet,,93,xlm-mainnet,1
+005E,XMR,mainnet,XMR-mainnet,,94,xmr-mainnet,1
+005F,XMR,stagenet,XMR-stagenet,,95,xmr-stagenet,1
+0060,XMR,testnet,XMR-testnet,,96,xmr-testnet,1
+0061,XRP,devnet,XRP-devnet,,97,xrp-devnet,1
+0062,XRP,testnet,XRP-testnet,,98,xrp-testnet,1
+0063,XRP,mainnet,XRP-mainnet,,99,xrp-mainnet,1
+0064,XTZ,alphanet,XTZ-alphanet,,100,xtz-alphanet,1
+0065,XTZ,mainnet,XTZ-mainnet,,101,xtz-mainnet,1
+0066,XZC,mainnet,XZC-mainnet,,102,xzc-mainnet,1
+0067,XZC,mainnet,XZC-mainnet,zcoin,103,xzc-mainnet,1
+0068,XZC,testnet,XZC-testnet,,104,xzc-testnet,1
+0069,ZIL,mainnet,ZIL-mainnet,Ziliqa Mainnet,105,zil-mainnet,1
+006A,ZIL,devnet,ZIL-devnet,Ziliqua Testnet,106,zil-devnet,1
+006B,IPFS,mainnet,IPFS-mainnet,IPFS,107,ipfs-mainnet,1
+006C,MATIC,testnetV3,MATIC-testnetV3,,108,matic-testnetv3,1
+006D,MATIC,betanetV2,MATIC-betanetV2,,109,matic-betanetv2,1
