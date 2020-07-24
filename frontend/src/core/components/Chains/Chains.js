@@ -31,9 +31,10 @@ class Chains extends Component {
   handleChainSearch() {
     const {chains} = this.state;
     const {searchChainQuery} = this.state.data;
+    console.log(searchChainQuery);
 
     const filteredChains = chains.filter((c) =>
-      c.name.toLowerCase().includes(searchChainQuery.toLowerCase())
+      c.network.toLowerCase().includes(searchChainQuery.toLowerCase())
     );
 
     this.setState({filteredChains});
