@@ -1,7 +1,8 @@
 import BaseService from "./BaseService";
 import {get_auth_providers, getAuthProvider} from "../providers/auth/Index";
 import {AuthProviderUser, EmailUser, PocketUser} from "../models/User";
-import {AnsweredSecurityQuestion} from "../models/SecurityQuestion";
+import {AnsweredSecurityQuestion} from "../models/AnsweredSecurityQuestion";
+import {SecurityQuestion} from "../models/SecurityQuestion";
 import BaseAuthProvider from "../providers/auth/BaseAuthProvider";
 import {Configurations} from "../_configuration";
 import jwt from "jsonwebtoken";
@@ -191,12 +192,14 @@ export default class UserService extends BaseService {
    * @returns {{name:string, consent_url:string}[]} The consent url for all Auth provider available.
    */
   getConsentProviderUrls() {
-    return this.__authProviders.map(provider => {
+    const result = this.__authProviders.map(provider => {
       return {
         name: provider.name,
         consent_url: provider.getConsentURL()
       };
     });
+
+    return result;
   }
 
   /**
@@ -305,6 +308,7 @@ export default class UserService extends BaseService {
    * @async
    */
   async addOrUpdateUserSecurityQuestions(userEmail, questions) {
+
     const filter = {email: userEmail};
     const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
@@ -314,6 +318,7 @@ export default class UserService extends BaseService {
 
     const data = {securityQuestions: AnsweredSecurityQuestion.createAnsweredSecurityQuestions(questions)};
     /** @type {{result: {n:number, ok: number}}} */
+
     const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, filter, data);
 
     return result.result.ok === 1;
@@ -324,7 +329,7 @@ export default class UserService extends BaseService {
    *
    * @param {string} userEmail Email of user.
    *
-   * @returns {Promise<AnsweredSecurityQuestion[]>} User security questions.
+   * @returns {Promise<SecurityQuestion[]>} User security questions.
    * @throws {DashboardValidationError} If user is invalid.
    * @async
    */
@@ -339,7 +344,62 @@ export default class UserService extends BaseService {
       throw new DashboardValidationError("Invalid user.");
     }
 
-    return AnsweredSecurityQuestion.createAnsweredSecurityQuestions(userDB.securityQuestions);
+    return SecurityQuestion.createSecurityQuestions(userDB.securityQuestions);
+  }
+
+  /**
+   * Validate user security questions.
+   *
+   * @param {string} userEmail Email of user.
+   * @param {[{question: string, answer: string}]} userAnswers User input answers.
+   *
+   * @returns {Promise<SecurityQuestion[]>} True or false if the answers are valid.
+   * @throws {DashboardValidationError} If user is invalid.
+   * @async
+   */
+  async validateUserSecurityQuestions(userEmail, userAnswers) {
+    const filter = {
+      email: userEmail,
+      securityQuestions: {$ne: null}
+    };
+    const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
+    if (!userDB) {
+      throw new DashboardValidationError("Invalid user.");
+    }
+    const isValid = AnsweredSecurityQuestion.validateAnsweredSecurityQuestions(userDB, userAnswers);
+
+    if (isValid) {
+      return userDB;
+    } else {
+      throw new DashboardError("User answers are invalid.");
+    }
+  }
+
+  /**
+   * Generate a password reset token and expiration date for user.
+   *
+   * @param {PocketUser} user User to update password reset fields.
+   *
+   * @returns {Promise<boolean>} If token was generated or not.
+   * @async
+   */
+  async generateResetPasswordToken(user) {
+    // Generate the password reset token
+    const resetPasswordToken = await this.generateToken(user.email);
+
+    // Generate expiring date for the password reset token
+    const actualDate = new Date();
+
+    actualDate.setHours(actualDate.getHours()+1);
+    const expiringDate = actualDate.toUTCString();
+
+    // Return the user with the latest information
+    const userToUpdate = new PocketUser(user.provider, user.email, user.username, user.password, resetPasswordToken, expiringDate, user.lastLogin, user.securityQuestions, user.customerID);
+
+    const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, {email: user.email}, userToUpdate);
+
+    return result.result.ok === 1;
   }
 
   /**
@@ -360,6 +420,96 @@ export default class UserService extends BaseService {
     }
 
     return EmailUser.validatePassword(password, userDB.password);
+  }
+
+  /**
+   * Retrieves user password reset token.
+   *
+   * @param {string} userEmail Email of user.
+   *
+   * @returns {Promise<string>} Password reset token.
+   * @throws {DashboardValidationError} If passwords validation fails or if user does not exists.
+   * @async
+   */
+  async retrievePasswordResetToken(userEmail) {
+    const userDB = await this.__getUser(userEmail);
+
+    if (userDB.resetPasswordToken) {
+      return userDB.resetPasswordToken;
+    } else {
+      throw new DashboardValidationError("No reset password token is available.");
+    }
+  }
+
+  /**
+   * Verify password reset token
+   *
+   * @param {object} userDB User entry.
+   * @param {string} providedToken User provided password reset token.
+   *
+   * @returns {Promise<boolean>} If password reset token was verify or not.
+   * @throws {DashboardValidationError} If password reset token is invalid.
+   * @async
+   */
+  async verifyPasswordResetToken(userDB, providedToken) {
+
+    if (!userDB) {
+      throw new DashboardValidationError("Invalid user.");
+    }
+
+    if (userDB.resetPasswordToken && userDB.resetPasswordExpiration) {
+      // Compare both tokens
+      if (providedToken === userDB.resetPasswordToken) {
+        // Retrieve the dates
+        const actualDate = Date.parse(new Date());
+        const expirationDate = Date.parse(userDB.resetPasswordExpiration);
+
+        const seconds = (expirationDate - actualDate) / 1000;
+        const minutes = seconds / 60;
+
+        // Check if the date diferences is bigger than 60 minutes(1 hour)
+        if (minutes > 60) {
+          return false;
+        } else {
+          return true;
+        }
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  /**
+   * Reset user's password.
+   *
+   * @param {string} userEmail Email of user.
+   * @param {string} token Password reset token.
+   * @param {string} password1 New password.
+   * @param {string} password2 Password confirmation.
+   *
+   * @returns {Promise<boolean>} If password was changed or not.
+   * @throws {DashboardValidationError} If passwords validation fails or if user does not exists.
+   * @async
+   */
+  async resetPassword(userEmail, token, password1, password2) {
+    const userDB = await this.__getUser(userEmail);
+
+    if (this.verifyPasswordResetToken(userDB, token)) {
+      if (EmailUser.validatePasswords(password1, password2)) {
+
+        // Update the user password.
+        userDB.password = await EmailUser.encryptPassword(password1);
+
+        /** @type {{result: {n:number, ok: number}}} */
+        const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);
+
+        return result.result.ok === 1;
+      } else {
+        return false;
+      }
+    }
   }
 
   /**

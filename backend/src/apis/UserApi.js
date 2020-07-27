@@ -143,6 +143,38 @@ router.put("/auth/change-password", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
+ * Reset the user password.
+ */
+router.put("/auth/reset-password", apiAsyncWrapper(async (req, res) => {
+  /** @type {{email:string, token: string, password1: string, password2: string}} */
+  const data = req.body;
+
+  const passwordChanged = await userService.resetPassword(data.email, data.token, data.password1, data.password2);
+
+  res.send(passwordChanged);
+}));
+
+/**
+ * Send's to the user a password reset email.
+ */
+router.put("/auth/send-reset-password-email", apiAsyncWrapper(async (req, res) => {
+  /** @type {{email:string, passwordResetLinkPage: string}} */
+  const data = req.body;
+
+  const token = await userService.retrievePasswordResetToken(data.email);
+
+  if (token) {
+    await EmailService
+      .to(data.email)
+      .sendResetPasswordEmail(data.email, token, data.passwordResetLinkPage);
+
+    res.send(true);
+  } else {
+    res.send(false);
+  }
+}));
+
+/**
  * Change user name.
  */
 router.put("/auth/change-username", apiAsyncWrapper(async (req, res) => {
@@ -191,9 +223,9 @@ router.post("/validate-token", apiAsyncWrapper(async (req, res) => {
       const user = await userService.getUser(userEmail);
 
       res.json({success: true, data: user});
+    } else {
+      res.json({success: false, data: "User does not exists or is invalid."});
     }
-
-    res.json({success: false, data: "User does not exists or is invalid."});
   } else {
     res.json({success: false, data: "Invalid token."});
   }

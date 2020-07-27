@@ -65,6 +65,7 @@ export const Configurations = {
              StakeApp: "d-524c799dd69741d08da0b461193f8f56",
              UnstakeApp: "d-43a51e9535a94c8c96a8546212115c3b",
              PaymentDeclined: "d-dd1a7b11445f471184beb8024f637d75",
+             PasswordReset: "d-4e4ea689c9d1446581aa086bbc409fdd"
            },
          },
          persistence: {

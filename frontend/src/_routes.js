@@ -5,6 +5,7 @@ import GoogleAuthProviderHook from "./core/components/Providers/Auth/GoogleAuthP
 import SecurityQuestions from "./views/Auth/SecurityQuestions/SecurityQuestions";
 import SignUp from "./views/Auth/SignUp/SignUp";
 import VerifyEMail from "./views/Auth/VerifyEmail/VerifyEmail";
+import ResetPasswordEmail from "./views/Auth/ResetPasswordEmail/ResetPasswordEmail";
 import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
 import Dashboard from "./views/Dashboard/Dashboard";
 import AppsMain from "./views/Apps/AppsMain/AppsMain";
@@ -50,6 +51,7 @@ export const ROUTE_PATHS = {
   answer_security_questions: "/answer-security-questions",
   verify_email: "/verify-email",
   verify_changed_email: "/verify-email-changed",
+  reset_password_email: "/reset-password-email",
   reset_password: "/reset-password",
   termsOfService: "/support/terms-of-service",
   privacyPolicy: "/support/privacy-policy",
@@ -196,6 +198,12 @@ const pageRoutes = [
     exact: true,
     name: "Verify Changed Email",
     component: VerifyChangedEmail,
+  },
+  {
+    path: ROUTE_PATHS.reset_password_email,
+    exact: true,
+    name: "Reset Password Email",
+    component: ResetPasswordEmail,
   },
   {
     path: ROUTE_PATHS.home,

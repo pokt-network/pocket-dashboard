@@ -383,6 +383,69 @@ class PocketUserService extends PocketBaseService {
   }
 
   /**
+   * Send reset password email.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} passwordResetLinkPage Password reset link page.
+   *
+   * @return {Promise<*>} If the email was sent, otherwise false.
+   */
+  sendResetPasswordEmail(userEmail, passwordResetLinkPage) {
+    const data = {
+      email: userEmail,
+      passwordResetLinkPage: passwordResetLinkPage
+    };
+
+    return axios
+      .put(this._getURL("auth/send-reset-password-email"), data)
+      .then(response => {
+        return {
+          success: true,
+          data: response.data
+        };
+      })
+      .catch(err => {
+        return {
+          success: false,
+          data: err.response.data
+        };
+      });
+  }
+
+  /**
+   * Reset user's password.
+   *
+   * @param {string} userEmail User email.
+   * @param {string} password1 New password.
+   * @param {string} password2 Password confirmation.
+   *
+   * @return {Promise<*>} If password was changed returns true, otherwise false.
+   */
+  resetPassword(userEmail, token, password1, password2) {
+    const data = {
+      email: userEmail,
+      token: token,
+      password1: password1,
+      password2: password2
+    };
+
+    return axios
+      .put(this._getURL("auth/reset-password"), data)
+      .then(response => {
+        return {
+          success: true,
+          data: response.data
+        };
+      })
+      .catch(err => {
+        return {
+          success: false,
+          data: err.response.data
+        };
+      });
+  }
+
+  /**
    * Change user name.
    *
    * @param {string} userEmail User email.

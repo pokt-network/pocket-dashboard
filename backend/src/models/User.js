@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import {AnsweredSecurityQuestion} from "./SecurityQuestion";
+import {AnsweredSecurityQuestion} from "./AnsweredSecurityQuestion";
 import {EMAIL_REGEX} from "./Regex";
 import {DashboardValidationError} from "./Exceptions";
 
@@ -13,22 +13,25 @@ export class PocketUser {
    * @param {string} email Email of user.
    * @param {string} username Username of user.
    * @param {string} [password] Password.
+   * @param {string} [resetPasswordToken] Reset password token.
+   * @param {string} [resetPasswordExpiration] Reset password token expiration date.
    * @param {string} [lastLogin] Last login.
    * @param {Array<AnsweredSecurityQuestion>} [securityQuestions] Answered security question of user.
    * @param {string} [customerID] Customer ID.
    */
-  constructor(provider, email, username, password, lastLogin, securityQuestions, customerID) {
+  constructor(provider, email, username, password, resetPasswordToken, resetPasswordExpiration, lastLogin, securityQuestions, customerID) {
     Object.assign(this, {
       provider: provider.toLowerCase(),
       email,
       username,
       password,
+      resetPasswordToken,
+      resetPasswordExpiration,
       lastLogin,
       securityQuestions,
       customerID
     });
   }
-
 
   /**
    * Factory type to create an user object.
@@ -41,7 +44,7 @@ export class PocketUser {
   static createPocketUserWithUTCLastLogin(user) {
     const lastLoginUTC = new Date().toUTCString();
 
-    return new PocketUser(user.provider, user.email, user.username, user.password, lastLoginUTC);
+    return new PocketUser(user.provider, user.email, user.username, user.password, user.resetPasswordToken, user.resetPasswordExpiration, lastLoginUTC);
   }
 
 
@@ -61,7 +64,7 @@ export class PocketUser {
    * @static
    */
   static createPocketUserFromDB(user) {
-    return new PocketUser(user.provider, user.email, user.username, user.password, user.lastLogin, user.securityQuestions, user.customerID);
+    return new PocketUser(user.provider, user.email, user.username, user.password, user.resetPasswordToken, user.resetPasswordExpiration, user.lastLogin, user.securityQuestions, user.customerID);
   }
 
   /**
