@@ -237,6 +237,7 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async getApplication(applicationAddress) {
+
     const filter = {
       "publicPocketAccount.address": applicationAddress
     };
@@ -393,7 +394,7 @@ export default class ApplicationService extends BasePocketService {
         }
       } = applicationDB;
 
-      return PocketAAT.from(aatVersion, applicationPublicKeyHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+      return await PocketAAT.from(aatVersion, applicationPublicKeyHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
     } catch (e) {
       return false;
     }

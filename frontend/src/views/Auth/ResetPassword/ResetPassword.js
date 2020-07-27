@@ -31,12 +31,13 @@ class ResetPassword extends Component {
 
   handleSubmit() {
     // eslint-disable-next-line react/prop-types
+    const {token} = this.props.match.params;
     const {email} = this.props.location.state;
     const {password1} = this.state.data;
     const {password2} = this.state.data;
 
-    if (password1 === password2) {
-      PocketUserService.changePassword(email, password1, password2).then(
+    if (password1 === password2 && token && email) {
+      PocketUserService.resetPassword(email, token, password1, password2).then(
         (result) => {
           if (result) {
             // eslint-disable-next-line react/prop-types
@@ -54,6 +55,14 @@ class ResetPassword extends Component {
           }
         }
       );
+    } else{
+      this.setState({
+        alertOverlay: {
+          show: true,
+          variant: "danger",
+          message: "One or more properties are missing or invalid.",
+        },
+      });
     }
   }
 

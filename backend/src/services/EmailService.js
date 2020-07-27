@@ -139,6 +139,24 @@ export default class EmailService {
   }
 
   /**
+   * Send email to reset password.
+   *
+   * @param {string} email User email.
+   * @param {string} token Password reset token.
+   * @param {string} passwordResetLinkPage Password reset url.
+   */
+  async sendResetPasswordEmail(email, token, passwordResetLinkPage) {
+    const postValidationLink = `${passwordResetLinkPage}?d=${token}`;
+
+    const data = {
+      USER_NAME: email,
+      POST_VALIDATION_LINK: postValidationLink
+    };
+
+    await this.__sendEmail(Configurations.email.template_ids.PasswordReset, data);
+  }
+
+  /**
    * Send email when node was created or imported.
    *
    * @param {string} action The action taken(imported or created).

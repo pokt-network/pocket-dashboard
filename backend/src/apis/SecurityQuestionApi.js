@@ -1,7 +1,11 @@
 import express from "express";
 import UserService from "../services/UserService";
-import {SECURITY_QUESTIONS} from "../models/SecurityQuestion";
-import {apiAsyncWrapper} from "./_helpers";
+import {
+  SECURITY_QUESTIONS
+} from "../models/SecurityQuestion";
+import {
+  apiAsyncWrapper
+} from "./_helpers";
 
 const router = express.Router();
 
@@ -36,6 +40,51 @@ router.post("/user/random", apiAsyncWrapper(async (req, res) => {
   const randomSecurityQuestion = userSecurityQuestions[Math.floor(Math.random() * userSecurityQuestions.length)];
 
   res.send(randomSecurityQuestion);
+}));
+
+/**
+ * Get all the user security questions.
+ */
+router.post("/user/all", apiAsyncWrapper(async (req, res) => {
+  /** @type {{email:string}} */
+  const data = req.body;
+
+  const userSecurityQuestions = await userService.getUserSecurityQuestions(data.email);
+
+  res.send(userSecurityQuestions);
+}));
+
+/**
+ * Validate all the user security questions for reset password.
+ */
+router.post("/user/validate-answers", apiAsyncWrapper(async (req, res) => {
+  /** @type {{email:string, answeredQuestions:[{question: string, answer: string}]}} */
+  const data = req.body;
+
+  const userDB = await userService.validateUserSecurityQuestions(data.email, data.answeredQuestions);
+
+  if (userDB) {
+    // Generate the reset password token and expiration date
+    const isGenerated = await userService.generateResetPasswordToken(userDB);
+
+    if (isGenerated) {
+      res.send(true);
+      return;
+    }
+  }
+  res.send(false);
+}));
+
+/**
+ * Validate answers for the user.
+ */
+router.post("/user/questions-answer", apiAsyncWrapper(async (req, res) => {
+  /** @type {{email:string}} */
+  const data = req.body;
+
+  const userSecurityQuestions = await userService.getUserSecurityQuestions(data.email);
+
+  res.send(userSecurityQuestions);
 }));
 
 
