@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import "./ResetPasswordEmail.scss";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
-import {_getDashboardPath, ROUTE_PATHS} from "../../../_routes";
+import {ROUTE_PATHS} from "../../../_routes";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import AppAlert from "../../../core/components/AppAlert";
 
@@ -51,12 +51,6 @@ class ResetPasswordEmail extends Component {
   render() {
     const {email, unauthorized, resentEmail} = this.state;
 
-    /* eslint-disable jsx-a11y/alt-text */
-    const icons = [
-      <img key={0} src="/assets/user.svg" className="step-icon" />,
-      <img key={1} src="/assets/mail.svg" className="step-icon" />,
-      <img key={2} src="/assets/profile/key.svg" className="step-icon" />,
-    ];
     /* eslint-enable jsx-a11y/alt-text */
 
     return (
