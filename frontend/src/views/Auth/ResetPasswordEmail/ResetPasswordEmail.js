@@ -3,9 +3,7 @@ import PropTypes from "prop-types";
 import "./ResetPasswordEmail.scss";
 import {Button, Col, Container, Row} from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
-import {ROUTE_PATHS} from "../../../_routes";
-import {Link} from "react-router-dom";
-import UserService from "../../../core/services/PocketUserService";
+import {_getDashboardPath, ROUTE_PATHS} from "../../../_routes";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import AppAlert from "../../../core/components/AppAlert";
 
@@ -42,9 +40,10 @@ class ResetPasswordEmail extends Component {
 
   pushToHome() {
     const {email} = this.state.email;
+
     // eslint-disable-next-line react/prop-types
     this.props.history.push({
-      pathname: ROUTE_PATHS.reset_password_email,
+      pathname: ROUTE_PATHS.home,
       state: {email},
     });
   }
