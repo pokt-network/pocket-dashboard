@@ -30,10 +30,11 @@ class ResetPassword extends Component {
   }
 
   handleSubmit() {
-    // eslint-disable-next-line react/prop-types
-    const {token} = this.props.match.params;
-    // eslint-disable-next-line react/prop-types
-    const {email} = this.props.location.state;
+    const search = this.props.location.search;
+    const params = new URLSearchParams(search);
+    const token = params.get('d');
+    const email = params.get('e');
+
     const {password1} = this.state.data;
     const {password2} = this.state.data;
 
@@ -98,9 +99,10 @@ class ResetPassword extends Component {
                   values={this.state.data}
                   validateOnChange={false}
                   validateOnBlur={false}
+                  autoComplete="off"
                 >
                   {({handleSubmit, handleChange, values, errors}) => (
-                    <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
+                    <Form autoComplete="off" noValidate onSubmit={handleSubmit} id={"main-form"}>
                       <Form.Group>
                         <Form.Label>Password</Form.Label>
                         <Form.Control

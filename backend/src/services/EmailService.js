@@ -146,7 +146,7 @@ export default class EmailService {
    * @param {string} passwordResetLinkPage Password reset url.
    */
   async sendResetPasswordEmail(email, token, passwordResetLinkPage) {
-    const postValidationLink = `${passwordResetLinkPage}?d=${token}`;
+    const postValidationLink = `${passwordResetLinkPage}?d=${token}&e=${email}`;
 
     const data = {
       USER_NAME: email,
