@@ -468,7 +468,7 @@ export default class UserService extends BaseService {
         const minutes = seconds / 60;
 
         // Check if the date diferences is bigger than 60 minutes(1 hour)
-        if (minutes > 60) {
+        if (minutes > 0) {
           return false;
         } else {
           return true;
@@ -501,6 +501,9 @@ export default class UserService extends BaseService {
 
         // Update the user password.
         userDB.password = await EmailUser.encryptPassword(password1);
+        // Remove current token and expiration date
+        userDB.resetPasswordToken = null;
+        userDB.resetPasswordExpiration = null;
 
         /** @type {{result: {n:number, ok: number}}} */
         const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);

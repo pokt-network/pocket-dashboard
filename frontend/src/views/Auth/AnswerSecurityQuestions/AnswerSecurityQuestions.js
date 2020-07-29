@@ -110,7 +110,7 @@ class AnswerSecurityQuestions extends Component {
                 Answer this question before continuing.
               </h1>
 
-              <Form id={"main-form"} onSubmit={this.handleSubmit}>
+              <Form autoComplete="off" id={"main-form"} onSubmit={this.handleSubmit}>
                 <Form.Group className="mb-4">
                   <Form.Label id="question-label-1">{questions[0].question}</Form.Label>
                   <Form.Control

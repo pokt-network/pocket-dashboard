@@ -44,7 +44,7 @@ export class PocketUser {
   static createPocketUserWithUTCLastLogin(user) {
     const lastLoginUTC = new Date().toUTCString();
 
-    return new PocketUser(user.provider, user.email, user.username, user.password, user.resetPasswordToken, user.resetPasswordExpiration, lastLoginUTC);
+    return new PocketUser(user.provider, user.email, user.username, user.password, user.resetPasswordToken, user.resetPasswordExpiration, lastLoginUTC, user.securityQuestions, user.customerID);
   }
 
 

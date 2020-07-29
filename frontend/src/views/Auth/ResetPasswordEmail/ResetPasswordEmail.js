@@ -6,6 +6,7 @@ import Navbar from "../../../core/components/Navbar";
 import {ROUTE_PATHS} from "../../../_routes";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import AppAlert from "../../../core/components/AppAlert";
+import PocketBox from "../../../core/components/PocketBox/PocketBox";
 
 class ResetPasswordEmail extends Component {
   constructor(props, context) {
@@ -58,50 +59,40 @@ class ResetPasswordEmail extends Component {
         <Navbar />
         {!unauthorized ? (
           <>
-            <Row className="mt-5 mb-3">
-              <Col lg={{span: 8, offset: 2}} md={{span: 10, offset: 1}}>
-                {/* <AppSteps
-                  icons={icons}
-                  steps={[
-                    "Account Created",
-                    "Email Verified",
-                    "Security Questions",
-                  ]}
-                  current={1}
-                /> */}
-              </Col>
-            </Row>
             <Row className="content justify-content-center">
               <div id="main">
-                {resentEmail && (
-                  <AppAlert
-                    variant={alert.variant}
-                    dismissible
-                    onClose={() => {
-                      this.setState({resentEmail: false});
-                    }}
-                    title={<h4>An Email has been resent to your address</h4>}
-                  />
-                )}
-                <h1>
-                  CHECK YOUR INBOX <br />
-                </h1>
-                <p className="p-style-lg">
-                  We have sent a link to reset your password to:
-                </p>
-                <h2 className="email-address mt-4">{email}</h2>
+                <PocketBox iconUrl={"/assets/circle.png"}>
+                  {resentEmail && (
+                    <AppAlert
+                      variant={alert.variant}
+                      dismissible
+                      onClose={() => {
+                        this.setState({resentEmail: false});
+                      }}
+                      title={<h4>An Email has been resent to your address</h4>}
+                    />
+                  )}
+                  <h1>
+                    CHECK YOUR INBOX <br />
+                  </h1>
+                  <p className="p-style-lg">
+                    We have sent a link to reset your password to:
+                  </p>
+                  <h2 className="email-address mt-4">{email}</h2>
 
-                <p className="p-style-lg">
-                  If you don&apos;t receive this message in a few minutes, please make sure it was not sent to your spam folder.
-                </p>
-                <Button
-                  className="button"
-                  variant="primary"
-                  size={"md"}
-                  onClick={this.pushToHome}
-                >
-                  <span className="button-label">Cancel</span>
-                </Button>
+                  <p className="p-style-lg">
+                    If you don&apos;t receive this message in a few minutes,
+                    please make sure it was not sent to your spam folder.
+                  </p>
+                  <Button
+                    className="button"
+                    variant="primary"
+                    size={"md"}
+                    onClick={this.pushToHome}
+                  >
+                    <span className="button-label">Cancel</span>
+                  </Button>
+                </PocketBox>
               </div>
             </Row>
           </>
