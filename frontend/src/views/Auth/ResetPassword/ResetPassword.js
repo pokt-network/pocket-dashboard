@@ -30,10 +30,11 @@ class ResetPassword extends Component {
   }
 
   handleSubmit() {
+    // eslint-disable-next-line react/prop-types
     const search = this.props.location.search;
     const params = new URLSearchParams(search);
-    const token = params.get('d');
-    const email = params.get('e');
+    const token = params.get("d");
+    const email = params.get("e");
 
     const {password1} = this.state.data;
     const {password2} = this.state.data;
