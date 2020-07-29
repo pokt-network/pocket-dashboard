@@ -92,7 +92,7 @@ class ResetPasswordEmail extends Component {
                 <h2 className="email-address mt-4">{email}</h2>
 
                 <p className="p-style-lg">
-                  If you don't receive this message in a few minutes, please make sure it was not sent to your spam folder.
+                  If you don&apos;t receive this message in a few minutes, please make sure it was not sent to your spam folder.
                 </p>
                 <Button
                   className="button"

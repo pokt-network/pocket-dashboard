@@ -32,6 +32,7 @@ class ResetPassword extends Component {
   handleSubmit() {
     // eslint-disable-next-line react/prop-types
     const {token} = this.props.match.params;
+    // eslint-disable-next-line react/prop-types
     const {email} = this.props.location.state;
     const {password1} = this.state.data;
     const {password2} = this.state.data;

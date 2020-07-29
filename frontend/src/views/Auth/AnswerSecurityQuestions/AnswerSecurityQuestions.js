@@ -67,16 +67,13 @@ class AnswerSecurityQuestions extends Component {
         {question: this.state.questions[0].question, answer: answer1},
         {question: this.state.questions[1].question, answer: answer2},
         {question: this.state.questions[2].question, answer: answer3}
-      ]
+      ];
 
       // eslint-disable-next-line react/prop-types
       const email = this.props.location.state.email;
 
       // Validate answers
-      const isValid = await SecurityQuestionService.validateUserSecurityQuestions(
-        email,
-        answeredQuestions
-      );
+      const isValid = await SecurityQuestionService.validateUserSecurityQuestions(email, answeredQuestions);
 
       // Password reset link page
       const passwordResetLinkPage = `${window.location.origin}${ROUTE_PATHS.reset_password}`;
