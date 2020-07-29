@@ -167,11 +167,9 @@ router.put("/auth/send-reset-password-email", apiAsyncWrapper(async (req, res) =
     await EmailService
       .to(data.email)
       .sendResetPasswordEmail(data.email, token, data.passwordResetLinkPage);
-
-    res.send(true);
-  } else {
-    res.send(false);
   }
+   
+  res.send(true);
 }));
 
 /**
