@@ -1,16 +1,16 @@
 import React from "react";
-import { Link, Redirect } from "react-router-dom";
-import { Button, Col, Form, Row } from "react-bootstrap";
+import {Link, Redirect} from "react-router-dom";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
-import { _getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS } from "../../../_routes";
+import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import { generateIcon, nodeFormSchema, scrollToId, getStakeStatus } from "../../../_helpers";
+import {generateIcon, nodeFormSchema, scrollToId, getStakeStatus} from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
 import PocketUserService from "../../../core/services/PocketUserService";
 import NodeService from "../../../core/services/PocketNodeService";
-import { Formik } from "formik";
+import {Formik} from "formik";
 import AppAlert from "../../../core/components/AppAlert";
-import { STAKE_STATUS } from "../../../_constants";
+import {STAKE_STATUS} from "../../../_constants";
 import PocketClientService from "../../../core/services/PocketClientService";
 import Segment from "../../../core/components/Segment/Segment";
 
@@ -40,7 +40,7 @@ class CreateNodeForm extends CreateForm {
     }
 
     if (imported) {
-      this.setState({ imported });
+      this.setState({imported});
       PocketUserService.saveUserAction("Import Node");
     } else {
       PocketUserService.saveUserAction("Create Node");
@@ -58,7 +58,7 @@ class CreateNodeForm extends CreateForm {
   }
 
   async handleCreateImported(nodeID) {
-    const { address, ppk } = NodeService.getNodeInfo();
+    const {address, ppk} = NodeService.getNodeInfo();
     const data = this.state.data;
 
     const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
@@ -66,18 +66,18 @@ class CreateNodeForm extends CreateForm {
 
     const nodeBaseLink = `${window.location.origin}${nodeDetail}`;
 
-    const { publicKey } = await PocketClientService.getUnlockedAccount(address);
+    const {publicKey} = await PocketClientService.getUnlockedAccount(address);
 
-    const nodeData = { address, publicKey: publicKey.toString("hex") };
+    const nodeData = {address, publicKey: publicKey.toString("hex")};
 
-    const { success } = await NodeService.saveNodeAccount(
+    const {success} = await NodeService.saveNodeAccount(
       nodeID, nodeData, nodeBaseLink, ppk
     );
 
     if (success) {
-      const { networkData } = await NodeService.getNode(address);
+      const {networkData} = await NodeService.getNode(address);
 
-      const { status } = networkData;
+      const {status} = networkData;
 
       if (getStakeStatus(status) === STAKE_STATUS.Staked) {
         this.props.history.push(nodeDetail);
@@ -90,18 +90,18 @@ class CreateNodeForm extends CreateForm {
         );
       }
     } else {
-      this.setState({ error: { show: true, message: data } });
+      this.setState({error: {show: true, message: data}});
       scrollToId("alert");
     }
   }
 
   async handleCreate() {
-    const { name, contactEmail, description, operator } = this.state.data;
-    const { imported } = this.state;
+    const {name, contactEmail, description, operator} = this.state.data;
+    const {imported} = this.state;
     const icon = this.state.icon ? this.state.icon : generateIcon();
     const user = UserService.getUserInfo().email;
 
-    const { success, data } = await NodeService.createNode({
+    const {success, data} = await NodeService.createNode({
       name,
       operator,
       contactEmail,
@@ -115,7 +115,7 @@ class CreateNodeForm extends CreateForm {
         this.handleCreateImported(data);
         return;
       } else {
-        NodeService.saveNodeInfoInCache({ nodeID: data, data: { name } });
+        NodeService.saveNodeInfoInCache({nodeID: data, data: {name}});
       }
 
       this.setState({
@@ -134,7 +134,7 @@ class CreateNodeForm extends CreateForm {
   }
 
   render() {
-    const { created, agreeTerms, error, redirectPath, imgError } = this.state;
+    const {created, agreeTerms, error, redirectPath, imgError} = this.state;
 
     if (created) {
       return (
@@ -155,7 +155,7 @@ class CreateNodeForm extends CreateForm {
                 variant="danger"
                 title={error.message}
                 dismissible
-                onClose={() => this.setState({ error: { show: false } })}
+                onClose={() => this.setState({error: {show: false}})}
               />
             )}
             <h1>Node Information</h1>
@@ -176,13 +176,13 @@ class CreateNodeForm extends CreateForm {
           </Col>
         </Row>
         <Row>
-          <Col className="create-form-left-side" style={{ marginTop: "-40px" }}>
+          <Col className="create-form-left-side" style={{marginTop: "-40px"}}>
             <Segment bordered scroll={false}>
-              <div className="checking-margin-test" style={{ padding: "50px" }}>
+              <div className="checking-margin-test" style={{padding: "50px"}}>
                 <Formik
                   validationSchema={nodeFormSchema}
                   onSubmit={async (data) => {
-                    this.setState({ data });
+                    this.setState({data});
                     await this.handleCreate();
                   }}
                   initialValues={this.state.data}
@@ -190,10 +190,10 @@ class CreateNodeForm extends CreateForm {
                   validateOnChange={false}
                   validateOnBlur={false}
                 >
-                  {({ handleSubmit, handleChange, values, errors }) => (
+                  {({handleSubmit, handleChange, values, errors}) => (
                     <Form noValidate onSubmit={handleSubmit}>
                       <Row>
-                        <Col sm="1" md="1" lg="1" style={{ paddingLeft: "0px" }}>
+                        <Col sm="1" md="1" lg="1" style={{paddingLeft: "0px"}}>
                           <ImageFileUpload
                             handleDrop={(img, error) => {
                               const imgResult = img === null ? undefined : img;
@@ -221,7 +221,7 @@ class CreateNodeForm extends CreateForm {
                       </Row>
                       <br />
                       <Row>
-                        <Col style={{ paddingLeft: "0px" }}>
+                        <Col style={{paddingLeft: "0px"}}>
                           <Form.Group>
                             <Form.Label>Node operator or Company name*</Form.Label>
                             <Form.Control
@@ -236,7 +236,7 @@ class CreateNodeForm extends CreateForm {
                             </Form.Control.Feedback>
                           </Form.Group>
                         </Col>
-                        <Col style={{ paddingRight: "0px" }}>
+                        <Col style={{paddingRight: "0px"}}>
                           <Form.Group>
                             <Form.Label>Contact Email*</Form.Label>
                             <Form.Control
