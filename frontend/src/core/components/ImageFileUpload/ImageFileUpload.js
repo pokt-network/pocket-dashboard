@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from "react";
-import {useDropzone} from "react-dropzone";
+import React, { useEffect, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import "./ImageFileUpload.scss";
-import {PropTypes} from "prop-types";
-import {MAX_FILE_IMG_SIZE, IMG_ERROR_STR} from "../../../_constants";
+import { PropTypes } from "prop-types";
+import { MAX_FILE_IMG_SIZE, IMG_ERROR_STR } from "../../../_constants";
 
 function ImageFileUpload(props) {
   const [files, setFiles] = useState([]);
-  const {getRootProps, getInputProps} = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     accept: "image/*",
     maxSize: MAX_FILE_IMG_SIZE,
     onDrop: (acceptedFiles, notAcceptedFiles) => {
@@ -30,14 +30,14 @@ function ImageFileUpload(props) {
 
   useEffect(() => {
     if (props.defaultImg) {
-      setFiles([{preview: props.defaultImg}]);
+      setFiles([{ preview: props.defaultImg }]);
     }
   }, [props.defaultImg]);
 
   const thumbs = files.map((file, idx) => (
     <React.Fragment key={idx}>
       {/*eslint-disable-next-line jsx-a11y/alt-text*/}
-      <img src={file.preview} className="drop-border"/>
+      <img src={file.preview} className="drop-border" />
     </React.Fragment>
   ));
 
@@ -53,13 +53,7 @@ function ImageFileUpload(props) {
     } else {
       return (
         <>
-          <img src="/assets/upload_icon.svg" className="icon" alt=""/>
-          <p>
-            Drag and drop an icon{" "}
-            <span className="alt">
-              <br></br>or upload from your computer
-            </span>
-          </p>
+          <img src="/assets/upload_icon.svg" className="icon" alt="" />
         </>
       );
     }
@@ -67,7 +61,7 @@ function ImageFileUpload(props) {
 
   return (
     <section className="container">
-      <div {...getRootProps({className: "dropzone"})}>
+      <div {...getRootProps({ className: "dropzone" })}>
         <div className="drop drop-border">
           <input {...getInputProps()} />
           {renderDropZone()}
