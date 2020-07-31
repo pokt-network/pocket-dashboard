@@ -119,7 +119,6 @@ class Checkout extends Component {
       details,
       total,
       type,
-      address,
       loading,
       unauthorized,
       currentAccountBalance,
