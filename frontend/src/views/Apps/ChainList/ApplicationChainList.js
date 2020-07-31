@@ -16,7 +16,7 @@ class ApplicationChainList extends Chains {
 
   handleChains() {
     const {chosenChains} = this.state;
-    const chainsHashes = chosenChains.map((ch) => ch.hash);
+    const chainsHashes = chosenChains.map((ch) => ch._id);
 
     PocketApplicationService.saveAppInfoInCache({chains: chainsHashes});
 
