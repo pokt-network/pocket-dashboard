@@ -250,7 +250,7 @@ class SelectRelays extends Component {
                 onClose={() => this.setState({error: false})}
               />
             )}
-            <h1>Custom tier</h1>
+            <h1>Stake and scale</h1>
             <p className="subtitle">
               With the custom tier, you only need to pay for the API throughput
               you application needs. If you expect your application to grow in
