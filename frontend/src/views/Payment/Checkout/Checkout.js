@@ -33,6 +33,7 @@ class Checkout extends Component {
         date: "",
         card: "",
       },
+      applicationId: "",
       details: [],
       total: 0,
       currentAccountBalance: 0,
@@ -63,6 +64,11 @@ class Checkout extends Component {
         ? ApplicationService.getApplicationInfo().address
         : NodeService.getNodeInfo().address;
 
+    const applicationId =
+      type === ITEM_TYPES.APPLICATION
+        ? ApplicationService.getApplicationInfo().id
+        : NodeService.getNodeInfo().id;
+
     const purchasedTokens =
       type === ITEM_TYPES.APPLICATION
         ? await CheckoutService.getApplicationPoktToStake(total)
@@ -85,6 +91,7 @@ class Checkout extends Component {
     };
 
     this.setState({
+      applicationId,
       loading: false,
       type,
       address,
@@ -108,6 +115,7 @@ class Checkout extends Component {
   render() {
     const {owner, id, date, card, poktPrice} = this.state.invoice;
     const {
+      applicationId,
       details,
       total,
       type,
@@ -154,7 +162,7 @@ class Checkout extends Component {
             : DASHBOARD_PATHS.nodeDetail;
           const url = _getDashboardPath(route);
 
-          return url.replace(":address", address);
+          return url.replace(":id", applicationId);
         }}
       >
         <Button variant="primary" className="mt-1 float-right cta">

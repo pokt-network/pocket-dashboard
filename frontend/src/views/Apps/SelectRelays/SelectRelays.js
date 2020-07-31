@@ -269,17 +269,17 @@ class SelectRelays extends Component {
                   type={PURCHASE_ITEM_NAME.APPS}
                   marks={{
                     [minRelays]: `${formatNumbers(minRelays)} RPD`,
-                    [maxRelays / 2]: {
-                      label: (
-                        <div className="average-stake-wrapper">
-                          <FontAwesomeIcon
-                            style={{color: STYLING.primaryColor}}
-                            icon={faCaretUp}
-                          />
-                          <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
-                        </div>
-                      ),
-                    },
+                    // [maxRelays / 2]: {
+                    //   label: (
+                    //     <div className="average-stake-wrapper">
+                    //       <FontAwesomeIcon
+                    //         style={{color: STYLING.primaryColor}}
+                    //         icon={faCaretUp}
+                    //       />
+                    //       <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
+                    //     </div>
+                    //   ),
+                    // },
                     [maxRelays]: `*${formatNumbers(maxRelays)} RPD`,
                   }}
                   min={minRelays}
