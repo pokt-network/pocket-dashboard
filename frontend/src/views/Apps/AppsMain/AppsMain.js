@@ -312,7 +312,7 @@ class AppsMain extends Main {
                           alt="apps-empty-box"
                         />
                         <p>
-                          You don't have any app yet.
+                          You don&apos;t have any app yet.
                         </p>
 
                       </div>

@@ -94,6 +94,7 @@ class AppDetail extends Component {
 
     if (clientAddress) {
       const {balance} = await PocketAccountService.getPoktBalance(clientAddress);
+
       accountBalance = balance;
     } else {
       accountBalance = 0;
@@ -130,7 +131,7 @@ class AppDetail extends Component {
 
   async deleteApplication() {
     const {id} = this.state.pocketApplication;
-    console.log(this.state.pocketApplication);
+    
     const appsLink = `${window.location.origin}${_getDashboardPath(
       DASHBOARD_PATHS.apps
     )}`;
