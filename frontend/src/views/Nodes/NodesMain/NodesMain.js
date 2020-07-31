@@ -77,13 +77,13 @@ class NodesMain extends Main {
 
     NodeService.getStakedNodeSummary().then(
       ({
-         totalNodes,
-         averageValidatorPower: averageRelays,
-         averageStaked,
-         error,
-         name,
-         message
-       }) => {
+        totalNodes,
+        averageValidatorPower: averageRelays,
+        averageStaked,
+        error,
+        name,
+        message
+      }) => {
         hasError = error ? error : hasError;
         errorMessage = error ? message : errorMessage;
         errorType = error ? name : errorType;
@@ -198,7 +198,7 @@ class NodesMain extends Main {
     );
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     return (
@@ -241,7 +241,7 @@ class NodesMain extends Main {
           </Col>
         </Row>
         <Row className="stats mb-4">
-          <InfoCards cards={cards}/>
+          <InfoCards cards={cards} />
         </Row>
         <Row className="mb-4 app-tables">
           <Col sm="6" md="6" lg="6" className="my-items-segment">
@@ -266,7 +266,7 @@ class NodesMain extends Main {
                           onClick={this.handleChainSearch}
                           variant="outline-primary"
                         >
-                          <img src={"/assets/search.svg"} alt="search-icon"/>
+                          <img src={"/assets/search.svg"} alt="search-icon" />
                         </Button>
                       </InputGroup.Append>
                     </InputGroup>
@@ -325,16 +325,19 @@ class NodesMain extends Main {
                         );
                       })
                     ) : (
-                      <div className="empty-overlay">
-                        <img
-                          src={"/assets/empty-box.svg"}
-                          alt="apps-empty-box"
-                        />
-                        <p>
-                          You have not created <br/> or imported any nodes yet
+                        <div className="empty-overlay node">
+                          <div className="node">
+                            <img
+                              src={"/assets/ball-white.svg"}
+                              alt="apps-empty-box"
+                            />
+
+                            <p>
+                              You don’t have any nodes yet
                         </p>
-                      </div>
-                    )}
+                          </div>
+                        </div>
+                      )}
                   </LoadingOverlay>
                 </InfiniteScroll>
               </div>
@@ -347,7 +350,7 @@ class NodesMain extends Main {
             lg="6"
             className={`${
               registeredItems.length === 0 ? "segment-table-empty" : ""
-            }`}
+              }`}
           >
             <Segment bordered scroll={false} label="REGISTERED NODES">
               <div className="scroll-table">
@@ -361,7 +364,7 @@ class NodesMain extends Main {
                   <AppTable
                     classes={`flex-body ${
                       hasMoreRegisteredItems ? "loading" : ""
-                    } `}
+                      } `}
                     headerClasses="d-flex"
                     toggle={registeredItems.length > 0}
                     keyField="address"
@@ -375,7 +378,7 @@ class NodesMain extends Main {
             </Segment>
           </Col>
         </Row>
-      </div>
+      </div >
     );
   }
 }
