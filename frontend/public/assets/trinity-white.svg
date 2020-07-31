@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="455px" height="306px" viewBox="0 0 455 306" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>geometric/ball - white copy 3</title>
+    <defs>
+        <linearGradient x1="29.9930428%" y1="5.57338519%" x2="121.719189%" y2="135.119942%" id="linearGradient-1">
+            <stop stop-color="#FFFFFF" offset="0.0765413851%"></stop>
+            <stop stop-color="#D8D8D8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="49.4565971%" y1="15.3932613%" x2="50.2424979%" y2="62.7902106%" id="linearGradient-2">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#D8D8D8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="40.2396952%" y1="15.3932613%" x2="54.3556135%" y2="62.7902106%" id="linearGradient-3">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#D8D8D8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="50%" y1="37.6075346%" x2="70.9985186%" y2="87.2406392%" id="linearGradient-4">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#D8D8D8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="49.663196%" y1="-26.7506642%" x2="50.2449045%" y2="260.875286%" id="linearGradient-5">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#D8D8D8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="37.9222331%" y1="85.3908262%" x2="37.9222331%" y2="-157.517844%" id="linearGradient-6">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#D8D8D8" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="36.8863457%" y1="0%" x2="58.1158512%" y2="57.6120604%" id="linearGradient-7">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#D4D4D4" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="34.2884808%" y1="40.3925421%" x2="63.9684629%" y2="100%" id="linearGradient-8">
+            <stop stop-color="#FFFFFF" offset="0%"></stop>
+            <stop stop-color="#CACACA" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Mockups" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="App-deleted" transform="translate(-611.000000, -198.000000)">
+            <g id="Group" transform="translate(611.000000, 198.000000)">
+                <g transform="translate(0.000000, 127.000000)" fill="url(#linearGradient-1)" id="Oval">
+                    <circle cx="89.5" cy="89.5" r="89.5"></circle>
+                </g>
+                <g transform="translate(152.000000, 0.000000)" id="geometric/ball---white-copy-2">
+                    <polygon id="Path-4" fill="url(#linearGradient-2)" points="90.3375858 0 96.6933092 13.8245318 102 172.949974 90.3375858 179 81 174.369073 86.1958341 13.8245318"></polygon>
+                    <polygon id="Clip-2" fill="url(#linearGradient-3)" points="90 0 90 179 179 135.201889"></polygon>
+                    <polygon id="Fill-4" fill="url(#linearGradient-4)" points="90 0 0 135.201889 90 179"></polygon>
+                </g>
+                <g transform="translate(281.000000, 111.000000)" id="Group">
+                    <polygon id="Rectangle-Copy-2" fill="url(#linearGradient-5)" points="85.1459459 32.2616279 108.367568 32.2616279 108.367568 172.445153 96.8119582 179 85.1459459 174.532555"></polygon>
+                    <polygon id="Path-Copy-2" fill="url(#linearGradient-6)" points="0 21.5076402 95.7891892 38.6468119 173.194595 13.5290698 82.1325261 0"></polygon>
+                    <polygon id="Path-2-Copy-2" fill="url(#linearGradient-7)" points="95.7891892 38.6468119 95.7891892 179 173.194595 136.270057 173.194595 13.5290698"></polygon>
+                    <polygon id="Path-3-Copy-2" fill="url(#linearGradient-8)" points="0 21.8546512 95.7891892 37.9396607 95.7891892 179 0 143.470892"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
