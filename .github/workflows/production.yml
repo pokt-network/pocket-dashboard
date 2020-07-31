@@ -97,7 +97,7 @@ jobs:
         envkey_PAYMENT_DEFAULT_CLIENT_SECRET: ${{ secrets.PAYMENT_DEFAULT_CLIENT_SECRET }}
         envkey_EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
         envkey_RECAPTCHA_SERVER_SECRET: ${{ secrets.RECAPTCHA_SERVER_SECRET }}
-        envkey_POKT_USD_VALUE: ${{ secrets.POKT_USD_MARKET_PRICE }}
+        envkey_POKT_USD_MARKET_PRICE: ${{ secrets.POKT_USD_MARKET_PRICE }}
         envkey_DATABASE_NAME: gateway-testnet
         envkey_POCKET_NETWORK_MAX_DISPATCHER: 7
         envkey_POCKET_NETWORK_REQUEST_TIMEOUT: 60000
