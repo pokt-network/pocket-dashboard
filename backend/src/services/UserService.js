@@ -520,6 +520,7 @@ export default class UserService extends BaseService {
    * Change user password.
    *
    * @param {string} userEmail Email of user.
+   * @param {string} oldPassword Old password.
    * @param {string} password1 New password.
    * @param {string} password2 Password confirmation.
    *
@@ -527,22 +528,30 @@ export default class UserService extends BaseService {
    * @throws {DashboardValidationError} If passwords validation fails or if user does not exists.
    * @async
    */
-  async changePassword(userEmail, password1, password2) {
+  async changePassword(userEmail, oldPassword, password1, password2) {
     const userDB = await this.__getUser(userEmail);
 
     if (!userDB) {
       throw new DashboardValidationError("Invalid user.");
     }
 
-    if (EmailUser.validatePasswords(password1, password2)) {
+    const isVerified = await this.verifyPassword(userEmail, oldPassword);
 
-      // Update the user password.
-      userDB.password = await EmailUser.encryptPassword(password1);
+    if (isVerified) {
+      if (EmailUser.validatePasswords(password1, password2)) {
 
-      /** @type {{result: {n:number, ok: number}}} */
-      const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);
+        // Update the user password.
+        userDB.password = await EmailUser.encryptPassword(password1);
 
-      return result.result.ok === 1;
+        /** @type {{result: {n:number, ok: number}}} */
+        const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);
+
+        return result.result.ok === 1;
+      } else {
+        throw new DashboardValidationError("New password doesn't match the confirm password.");
+      }
+    } else {
+      throw new DashboardValidationError("Failed to validate old password.");
     }
   }
 

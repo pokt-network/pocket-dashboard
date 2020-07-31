@@ -128,10 +128,10 @@ router.post("/auth/verify-password", apiAsyncWrapper(async (req, res) => {
  * Change user password.
  */
 router.put("/auth/change-password", apiAsyncWrapper(async (req, res) => {
-  /** @type {{email:string, password1: string, password2: string}} */
+  /** @type {email:string, oldPassword: string, password1: string, password2: string}} */
   const data = req.body;
 
-  const passwordChanged = await userService.changePassword(data.email, data.password1, data.password2);
+  const passwordChanged = await userService.changePassword(data.email, data.oldPassword, data.password1, data.password2);
 
   if (passwordChanged) {
     await EmailService

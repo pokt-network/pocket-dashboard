@@ -354,14 +354,16 @@ class PocketUserService extends PocketBaseService {
    * Change user password.
    *
    * @param {string} userEmail User email.
+   * @param {string} oldPassword Answered question.
    * @param {string} password1 New password.
    * @param {string} password2 Password confirmation.
    *
    * @return {Promise<*>} If password was changed returns true, otherwise false.
    */
-  changePassword(userEmail, password1, password2) {
-    const data = {
+  changePassword(userEmail, oldPassword, password1, password2) {
+    const data = {      
       email: userEmail,
+      oldPassword,
       password1,
       password2
     };
