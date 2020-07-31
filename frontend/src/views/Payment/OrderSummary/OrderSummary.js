@@ -408,7 +408,7 @@ class OrderSummary extends Component {
                   float: "right",
                   marginTop: "-7px"
                 }} 
-                  src="/assets/stripe-payment_3.svg" ></img>
+                  src="/assets/stripe-payment_3.svg" alt="stripe"></img>
               {isFormVisible && (
                 <>
                   <h5 className="card-form-title">
