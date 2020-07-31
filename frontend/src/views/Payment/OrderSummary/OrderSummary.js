@@ -454,16 +454,14 @@ class OrderSummary extends Component {
                   </li>
                   <br></br>
                   <li>
-                    To ensure purchasers are bona fide <strong>users</strong> ,
+                    To ensure purchasers are bona fide <strong>users</strong> and not investors, 
                     the Company has set a purchase maximum per user and requires users must
-                    hold POKT for 3 <strong>weeks</strong> and{" "}
-                    <strong>use stake</strong> it before transferring to
-                    <br />
-                    another wallet or selling.
+                    hold POKT for <strong>21 days</strong> and{" "}
+                    <strong>stake</strong> it before transferring to another wallet or selling.
                   </li>
                   <br></br>
                   <li>
-                  Purchasers are acquiring POKT for their own account and use,
+                    Purchasers are acquiring POKT for their own account and use,
                     and not with the intention to re-sell or distribute POKT to
                     others.
                   </li>
