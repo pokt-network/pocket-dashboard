@@ -367,24 +367,25 @@ export default class UserService extends BaseService {
     if (!userDB) {
       throw new DashboardValidationError("Invalid user.");
     }
-    const isValid = AnsweredSecurityQuestion.validateAnsweredSecurityQuestions(userDB, userAnswers);
+    const isValid = await AnsweredSecurityQuestion.validateAnsweredSecurityQuestions(userDB, userAnswers);
 
-    if (isValid) {
-      return userDB;
-    } else {
-      throw new DashboardError("User answers are invalid.");
-    }
+    return isValid;
   }
 
   /**
    * Generate a password reset token and expiration date for user.
    *
-   * @param {PocketUser} user User to update password reset fields.
+   * @param {string} userEmail User's email to update password reset fields.
    *
    * @returns {Promise<boolean>} If token was generated or not.
    * @async
    */
-  async generateResetPasswordToken(user) {
+  async generateResetPasswordToken(userEmail) {
+    const filter = {
+      email: userEmail
+    };
+    const user = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+
     // Generate the password reset token
     const resetPasswordToken = await this.generateToken(user.email);
 

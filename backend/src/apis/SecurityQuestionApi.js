@@ -61,11 +61,11 @@ router.post("/user/validate-answers", apiAsyncWrapper(async (req, res) => {
   /** @type {{email:string, answeredQuestions:[{question: string, answer: string}]}} */
   const data = req.body;
 
-  const userDB = await userService.validateUserSecurityQuestions(data.email, data.answeredQuestions);
+  const isValid = await userService.validateUserSecurityQuestions(data.email, data.answeredQuestions);
 
-  if (userDB) {
+  if (isValid) {
     // Generate the reset password token and expiration date
-    const isGenerated = await userService.generateResetPasswordToken(userDB);
+    const isGenerated = await userService.generateResetPasswordToken(data.email);
 
     if (isGenerated) {
       res.send(true);

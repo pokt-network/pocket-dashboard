@@ -151,6 +151,12 @@ router.put("/auth/reset-password", apiAsyncWrapper(async (req, res) => {
 
   const passwordChanged = await userService.resetPassword(data.email, data.token, data.password1, data.password2);
 
+  if (passwordChanged) {
+    await EmailService
+      .to(data.email)
+      .sendPasswordChangedEmail(data.email);
+  }
+
   res.send(passwordChanged);
 }));
 
@@ -163,7 +169,7 @@ router.put("/auth/send-reset-password-email", apiAsyncWrapper(async (req, res) =
 
   const token = await userService.retrievePasswordResetToken(data.email);
 
-  if (token) {
+  if (typeof token === "string") {
     await EmailService
       .to(data.email)
       .sendResetPasswordEmail(data.email, token, data.passwordResetLinkPage);
