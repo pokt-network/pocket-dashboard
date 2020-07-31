@@ -214,7 +214,7 @@ export default class ApplicationService extends BasePocketService {
    */
   async getClientApplication(applicationId) {
     const filter = {
-      "id": ObjectID(applicationId)
+      "_id": ObjectID(applicationId)
     };
 
     const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
@@ -263,7 +263,7 @@ export default class ApplicationService extends BasePocketService {
    */
   async getPrivateApplication(applicationId) {
     const filter = {
-      "id": ObjectID(applicationId)
+      "_id": ObjectID(applicationId)
     };
 
     const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
@@ -639,17 +639,17 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
-   * Delete an application from dashboard(not from network).
+   * Delete an application from dashboard.
    *
-   * @param {string} applicationAccountAddress Application account address.
+   * @param {string} applicationId Application Id.
    * @param {string} user Owner email of application.
    *
    * @returns {Promise<PocketApplication>} The deleted application.
    * @async
    */
-  async deleteApplication(applicationAccountAddress, user) {
+  async deleteApplication(applicationId, user) {
     const filter = {
-      "publicPocketAccount.address": applicationAccountAddress,
+      "_id": ObjectID(applicationId),
       user
     };
 
@@ -663,7 +663,7 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Update an application on network.
    *
-   * @param {string} applicationAccountAddress Application account address.
+   * @param {string} applicationId Application Id.
    * @param {object} applicationData Application data.
    * @param {string} applicationData.name Name.
    * @param {string} applicationData.owner Owner.
@@ -677,7 +677,7 @@ export default class ApplicationService extends BasePocketService {
    * @throws {DashboardError} If validation fails or does not exists.
    * @async
    */
-  async updateApplication(applicationAccountAddress, applicationData) {
+  async updateApplication(applicationId, applicationData) {
     if (PocketApplication.validate(applicationData)) {
       if (!await this.userService.userExists(applicationData.user)) {
         throw new DashboardError("User does not exists");
@@ -685,7 +685,7 @@ export default class ApplicationService extends BasePocketService {
 
       const application = PocketApplication.createPocketApplication(applicationData);
       const filter = {
-        "publicPocketAccount.address": applicationAccountAddress
+        "_id": ObjectID(applicationId)
       };
 
       const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);

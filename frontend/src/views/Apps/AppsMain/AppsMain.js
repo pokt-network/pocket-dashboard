@@ -306,13 +306,13 @@ class AppsMain extends Main {
                         );
                       })
                     ) : (
-                      <div className="empty-overlay">
+                      <div className="app-empty-overlay">
                         <img
-                          src={"/assets/empty-box.svg"}
+                          src={"/assets/triangle-gray.svg"}
                           alt="apps-empty-box"
                         />
                         <p>
-                          You have not created <br/> or imported any apps yet
+                          You don't have any app yet.
                         </p>
 
                       </div>
