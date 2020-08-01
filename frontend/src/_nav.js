@@ -42,9 +42,9 @@ export default {
     },
 
     {
-      name: "Support",
+      name: "Documentation",
       url: "https://dashboard.docs.pokt.network/",
-      icon: "menu/support.svg",
+      icon: "menu/Documentation.svg",
       isExternal: true,
     },
   ],

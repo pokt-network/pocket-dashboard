@@ -2,6 +2,7 @@ import React from "react";
 import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
 import {TABLE_COLUMNS, URL_HTTPS_REGEX, VALIDATION_MESSAGES} from "../../../_constants";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import AppAlert from "../../../core/components/AppAlert";
 import Chains from "../../../core/components/Chains/Chains";
 import Segment from "../../../core/components/Segment/Segment";
 import AppTable from "../../../core/components/AppTable";
@@ -79,10 +80,7 @@ class NodeChainList extends Chains {
           <Col className="page-title">
             <h1>Choose chains</h1>
             <p>
-              Choose the chains you want to connect your node to. Remember you
-              won&#39;t be able to change these chains unless you unstake then
-              restake which will be evenly divided across the selected number of
-              chains.
+              Choose the chains that your Pocket Node will service. Your staked POKT will be evenly divided between these selections. You will not be able to change this selection unless you unstake and restake your node.
             </p>
           </Col>
         </Row>
@@ -111,7 +109,7 @@ class NodeChainList extends Chains {
                     onClick={this.handleChainSearch}
                     variant="outline-primary"
                   >
-                    <img src="/assets/search.svg" alt="search-icon"/>
+                    <img src="/assets/search.svg" alt="search-icon" />
                   </Button>
                 </InputGroup.Append>
               </InputGroup>
@@ -127,8 +125,13 @@ class NodeChainList extends Chains {
             />
           </Segment>
         </Row>
-        <Row className="mt-4">
-          <Col>
+        <Row>
+          <Col className="page-title">
+            <h2>Service URL</h2>
+          </Col>
+        </Row>
+        <Row className="mt-2">
+          <Col style={{paddingLeft: "0px"}}>
             <Formik
               enableReinitialize
               validationSchema={schema}
@@ -145,12 +148,11 @@ class NodeChainList extends Chains {
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
                     <Form.Label className="service-url-label">
-                      Service URL. Please provide the HTTPS endpoint of your
-                      node.
+                      Please provide the HTTPS endpoint of your Pocket Node. <a href="https://docs.pokt.network/docs/faq-for-nodes#section-what-is-the-service-uri">What is the service URL?</a>
                     </Form.Label>
                     <Form.Control
                       name="serviceURL"
-                      placeholder="https://example.com"
+                      placeholder="https://example.com:443"
                       value={values.serviceURL}
                       onChange={handleChange}
                       isInvalid={!!errors.serviceURL}
@@ -159,6 +161,31 @@ class NodeChainList extends Chains {
                       {errors.serviceURL}
                     </Form.Control.Feedback>
                   </Form.Group>
+
+                  <Row className="mt-4">
+                    <Col style={{paddingLeft: "0px"}}>
+                      <AppAlert
+                        className="pb-4 pt-4"
+                        variant="warning"
+                        title={
+                          <>
+                            <h4 className="text-uppercase">
+                              WARNING, BEFORE YOU CONTINUE!{" "}
+                            </h4>
+                            <p className="ml-2">
+                            </p>
+                          </>
+                        }
+                      >
+                        <p>
+                          The key file by itself is useless without the passphrase.
+                          You&#39;ll need the key file in order to import or set up
+                          your node.
+                Before continuing, be aware that we are not responsible of any jailing or slashing that may incur due to mis-configuration of your node. If you are not completely sure if your node is configured, <a href="https://docs.pokt.network/docs/testing-your-node">click here</a> and make sure you have done all of the steps and tested your node BEFORE you continue.
+              </p>
+                      </AppAlert>
+                    </Col>
+                  </Row>
                   <Button
                     disabled={chosenChains.length <= 0}
                     type="submit"
@@ -173,6 +200,7 @@ class NodeChainList extends Chains {
             </Formik>
           </Col>
         </Row>
+
       </div>
     );
   }

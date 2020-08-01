@@ -658,6 +658,24 @@ button {
   align-items: center;
   border-radius: 20px;
 
+  .node {
+    
+    img {
+      width: 179px !important;
+      height: 179px !important;
+      display:block;
+      margin:auto;
+    }
+
+    p{
+      margin-top: 17px;
+      text-transform: none !important;
+      font-family: $primary-font-family !important;
+      font-size: 14px !important;
+      text-align: center !important;
+      color: #929392 !important;
+    }
+  }
   img {
     width: 132px;
     height: 105px;
