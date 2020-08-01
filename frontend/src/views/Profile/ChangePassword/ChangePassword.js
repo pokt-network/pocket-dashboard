@@ -5,7 +5,6 @@ import {Formik} from "formik";
 import {validateYup, passwordChangeSchema} from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
 import AppAlert from "../../../core/components/AppAlert";
-import SecurityQuestionModal from "../../../core/components/SecurityQuestionModal";
 
 class ChangePassword extends Component {
   constructor(props, context) {
@@ -17,7 +16,6 @@ class ChangePassword extends Component {
     this.min_password_length = 8;
 
     this.state = {
-      securityQuestion: false,
       data: {
         oldPassword: "",
         password1: "",
@@ -41,30 +39,36 @@ class ChangePassword extends Component {
       return yupErr;
     }
 
-    const {email} = UserService.getUserInfo();
-
-    const isOldPasswordValid = await UserService.verifyPassword(
-      email, values.oldPassword
-    );
-
-    if (isOldPasswordValid) {
-      if (values.password1 === values.oldPassword) {
-        errors.password1 =
-          "New password cannot be the same as the old password";
-      }
-    } else {
-      errors.oldPassword = "Incorrect password";
+    if (values.oldPassword.length === 0) {
+      errors.oldPassword =
+      "Old password can't be empty";
     }
+
+    if (values.password1 === values.oldPassword) {
+      errors.password1 =
+        "New password cannot be the same as the old password";
+    }
+
+    if (values.password1 !== values.password2) {
+      errors.password1 =
+        "New password doesn't match the confirm password";
+    }
+
+    this.setState({
+      oldPassword: values.oldPassword, 
+      password1: values.password1, 
+      password2: values.password2
+    });
 
     return errors;
   }
 
   async handleChangePassword() {
     const {email} = UserService.getUserInfo();
-    const {password1, password2} = this.state.data;
+    const {oldPassword, password1, password2} = this.state.data;
 
     const {success, data} = await UserService.changePassword(
-      email, password1, password2
+      email, oldPassword, password1, password2
     );
 
     if (success) {
@@ -72,7 +76,7 @@ class ChangePassword extends Component {
         alert: {
           show: true,
           variant: "primary",
-          text: "password successfully changed",
+          text: "Password successfully changed",
         },
       });
     } else {
@@ -87,7 +91,7 @@ class ChangePassword extends Component {
   }
 
   render() {
-    const {alert, securityQuestion} = this.state;
+    const {alert} = this.state;
 
     return (
       <Row id="general">
@@ -104,8 +108,9 @@ class ChangePassword extends Component {
             <h1>Change your Password</h1>
             <Formik
               validate={this.validate}
-              onSubmit={(data) => {
-                this.setState({data, securityQuestion: true});
+              onSubmit={async (data) => {
+                this.setState({data});
+                await this.handleChangePassword();
               }}
               initialValues={this.state.data}
               values={this.state.data}
@@ -132,6 +137,7 @@ class ChangePassword extends Component {
                     <Form.Label>Password</Form.Label>
                     <Form.Control
                       name="password1"
+                      type="password"
                       value={values.password1}
                       onChange={handleChange}
                       isInvalid={!!errors.password1}
@@ -145,6 +151,7 @@ class ChangePassword extends Component {
                     <Form.Label>Password Confirm</Form.Label>
                     <Form.Control
                       name="password2"
+                      type="password"
                       value={values.password2}
                       onChange={handleChange}
                       isInvalid={!!errors.password2}
@@ -160,15 +167,6 @@ class ChangePassword extends Component {
                 </Form>
               )}
             </Formik>
-            {securityQuestion && (
-              <SecurityQuestionModal
-                show={securityQuestion}
-                onClose={() => {
-                  this.setState({securityQuestion: false});
-                }}
-                onAfterValidation={this.handleChangePassword}
-              />
-            )}
           </div>
         </Col>
       </Row>

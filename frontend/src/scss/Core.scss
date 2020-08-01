@@ -627,6 +627,29 @@ button {
   }
 }
 
+.app-empty-overlay {
+  height: 42vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+
+  img {
+    width: 179px;
+    height: 179px;
+    margin-bottom: 17px;
+  }
+
+  p {
+    font-family: $secondary-font-family;
+    font-size: 14px;
+    font-weight: 400;
+    text-align: center;
+    color: #9d9d9d;
+  }
+}
+
 .empty-overlay {
   height: 42vh;
   display: flex;

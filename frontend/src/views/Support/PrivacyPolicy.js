@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import "../Support/SupportPages.scss";
+import "./PrivacyPolicy.scss";
 import {withRouter} from "react-router-dom";
 import {Container, Row} from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";

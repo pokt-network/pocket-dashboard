@@ -90,8 +90,17 @@ class AppDetail extends Component {
     }
 
     const clientAddress = pocketApplication.publicPocketAccount.address;
+    let accountBalance;
 
-    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(clientAddress);
+    if (clientAddress) {
+      const {balance} = await PocketAccountService.getPoktBalance(clientAddress);
+
+      accountBalance = balance;
+    } else {
+      accountBalance = 0;
+    }
+
+    
     const chains = await NetworkService.getNetworkChains(networkData.chains);
     const {freeTier} = pocketApplication;
 
@@ -121,14 +130,15 @@ class AppDetail extends Component {
   }
 
   async deleteApplication() {
-    const {address} = this.state.pocketApplication.publicPocketAccount;
+    const {id} = this.state.pocketApplication;
+    
     const appsLink = `${window.location.origin}${_getDashboardPath(
       DASHBOARD_PATHS.apps
     )}`;
     const userEmail = PocketUserService.getUserInfo().email;
 
     const success = await ApplicationService.deleteAppFromDashboard(
-      address, userEmail, appsLink
+      id, userEmail, appsLink
     );
 
     if (success) {
@@ -192,6 +202,7 @@ class AppDetail extends Component {
 
   render() {
     const {
+      id,
       name,
       url,
       contactEmail,
@@ -325,7 +336,11 @@ class AppDetail extends Component {
     if (deleted) {
       return (
         <DeletedOverlay
-          text={<p>Your application<br/>was successfully removed</p>}
+          text={<p style={{
+            position: "absolute",
+            top: "40%",
+            left: "42.3%"
+          }}>Your application<br/>was successfully removed</p>}
           buttonText="Go to App List"
           buttonLink={_getDashboardPath(DASHBOARD_PATHS.apps)}
         />
@@ -483,7 +498,7 @@ class AppDetail extends Component {
                     to={() => {
                       const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
 
-                      return url.replace(":address", address);
+                      return url.replace(":id", id);
                     }}>
                     Edit
                   </Link>{" "}

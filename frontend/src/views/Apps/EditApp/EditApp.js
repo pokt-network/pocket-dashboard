@@ -25,9 +25,9 @@ class EditApp extends CreateForm {
 
   async componentDidMount() {
     // eslint-disable-next-line react/prop-types
-    const {address} = this.props.match.params;
-    const {pocketApplication} = await ApplicationService.getApplication(
-      address
+    const {id} = this.props.match.params;
+    const {pocketApplication} = await ApplicationService.getClientApplication(
+      id
     );
     const {icon, ...appData} = pocketApplication;
 
@@ -39,11 +39,11 @@ class EditApp extends CreateForm {
   async handleEdit() {
     this.setState({success: false});
     const user = UserService.getUserInfo().email;
-    const {address} = this.props.match.params;
+    const {id} = this.props.match.params;
     const {name, owner, contactEmail, description, url} = this.state.data;
     const {icon} = this.state;
 
-    const {success, data} = await ApplicationService.editApplication(address, {
+    const {success, data} = await ApplicationService.editApplication(id, {
       name,
       contactEmail,
       description,
@@ -143,7 +143,7 @@ class EditApp extends CreateForm {
                   <Form.Group>
                     <Form.Label>Website</Form.Label>
                     <Form.Control
-                      placeholder="www.example.com"
+                      placeholder="https://www.example.com"
                       name="url"
                       value={values.url}
                       onChange={handleChange}
