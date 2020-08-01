@@ -97,6 +97,7 @@ jobs:
         envkey_PAYMENT_DEFAULT_CLIENT_SECRET: ${{ secrets.PAYMENT_DEFAULT_CLIENT_SECRET }}
         envkey_EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
         envkey_RECAPTCHA_SERVER_SECRET: ${{ secrets.RECAPTCHA_SERVER_SECRET }}
+        envkey_POKT_USD_MARKET_PRICE: ${{ secrets.POKT_USD_MARKET_PRICE }}
         envkey_DATABASE_NAME: gateway-testnet
         envkey_POCKET_NETWORK_MAX_DISPATCHER: 7
         envkey_POCKET_NETWORK_REQUEST_TIMEOUT: 60000
@@ -105,7 +106,6 @@ jobs:
         envkey_POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME: 60000
         envkey_POCKET_NETWORK_SERVICE_WORKER_ATTEMPTS: 15
         envkey_POCKET_FREE_TIER_STAKE_AMOUNT: 25950100000
-        envkey_POKT_MARKET_PRICE: 0.06
         envkey_POCKET_NETWORK_DISPATCHERS: https://node1.testnet.pokt.network:443,https://node2.testnet.pokt.network:443,https://node3.testnet.pokt.network:443,https://node4.testnet.pokt.network:443,https://node5.testnet.pokt.network:443,https://node6.testnet.pokt.network:443,https://node7.testnet.pokt.network:443
         envkey_POCKET_NETWORK_CHAIN_HASH: 0002
         envkey_POCKET_NETWORK_CHAIN_ID: testnet-r2

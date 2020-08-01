@@ -2,10 +2,22 @@
 @import "../../scss/Variables/Colors.scss";
 @import "../../scss/Variables/Fonts.scss";
 
-#privacy-policy {
+#terms-of-use {
+  .title p {
+    font-size: 2.25rem;
+    word-break: keep-all;
+    font-size: 700;
+    margin-top: 0;
+    display: block;
+  }
   .wrapper {
     padding-left: 10em;
     padding-right: 10em;
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 19.920px;
+    }
   }
 
   .go {
@@ -123,17 +135,17 @@
     text-align: justify !important;
   }
 
-  p {
-    font-family: $secondary-font-family;
-    font-size: 14px;
-    font-weight: 300;
-    font-stretch: normal;
-    font-style: normal;
-    line-height: 2.71;
-    letter-spacing: -0.38px;
-    text-align: center;
-    color: $dark-gray;
-  }
+  // p {
+  //   font-family: $secondary-font-family;
+  //   font-size: 14px;
+  //   font-weight: 300;
+  //   font-stretch: normal;
+  //   font-style: normal;
+  //   line-height: 2.71;
+  //   letter-spacing: -0.38px;
+  //   text-align: center;
+  //   color: $dark-gray;
+  // }
 
   .information p {
     text-align: justify !important;

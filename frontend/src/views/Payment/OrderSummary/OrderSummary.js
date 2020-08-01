@@ -394,13 +394,21 @@ class OrderSummary extends Component {
                 })}
               </Form>
               <Button
+                style={{display: "inline-block"}}
                 className="new-card-btn mb-3"
                 onClick={() => this.setState({isFormVisible: !isFormVisible})}
                 disabled={isAddNewDisabled}
               >
                 Add a New Card
               </Button>
-
+                <img style={{
+                  height: "88px", 
+                  width: "88px",
+                  display: "inline-block",
+                  float: "right",
+                  marginTop: "-7px"
+                }} 
+                  src="/assets/stripe-payment_3.svg" alt="stripe"></img>
               {isFormVisible && (
                 <>
                   <h5 className="card-form-title">
@@ -431,10 +439,34 @@ class OrderSummary extends Component {
               </div>
               <InfoCard
                 className="text-center"
-                title={`${numeral(total - currentAccountBalance).format("$0,0.000")} USD`}
+                title={`${numeral(total - currentAccountBalance).format(
+                  "$0,0.000"
+                )} USD`}
                 subtitle={"Total cost"}
               />
               <hr />
+              <div style={{fontSize: "12px"}} >
+                <ul>
+                  <li>
+                    Purchasers are not buying POKT as an investment with the
+                    expectation of profit or appreciation.{" "}
+                    <strong>Purchasers are buying POKT to use it.</strong>
+                  </li>
+                  <br></br>
+                  <li>
+                    To ensure purchasers are bona fide <strong>users</strong> and not investors, 
+                    the Company has set a purchase maximum per user and requires users must
+                    hold POKT for <strong>21 days</strong> and{" "}
+                    <strong>stake</strong> it before transferring to another wallet or selling.
+                  </li>
+                  <br></br>
+                  <li>
+                    Purchasers are acquiring POKT for their own account and use,
+                    and not with the intention to re-sell or distribute POKT to
+                    others.
+                  </li>
+                </ul>
+              </div>
               <Form.Check
                 checked={agreeTerms}
                 onChange={() => this.setState({agreeTerms: !agreeTerms})}
@@ -443,17 +475,17 @@ class OrderSummary extends Component {
                 type="checkbox"
                 label={
                   <span className="agree">
-                    I agree to Pocket Network&#39;s Purchase <br />
-                  </span>
-                }
-              />
-              <Link
+                    I agree to <Link
                 className="terms-link"
                 target="_blank"
                 to={ROUTE_PATHS.termsOfService}
               >
-                Terms and conditions.
+                Purchase Terms and conditions.
               </Link>
+                  </span>
+                }
+              />
+
               <PaymentContainer>
                 <ElementsConsumer>
                   {({_, stripe}) => (

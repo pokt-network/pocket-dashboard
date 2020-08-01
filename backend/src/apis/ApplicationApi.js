@@ -50,14 +50,14 @@ router.post("/account", apiAsyncWrapper(async (req, res) => {
 /**
  * Update an application.
  */
-router.put("/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
+router.put("/:applicationId", apiAsyncWrapper(async (req, res) => {
   /** @type {{name:string, owner:string, url:string, contactEmail:string, user:string, description:string, icon:string}} */
   let data = req.body;
 
-  /** @type {{applicationAccountAddress:string}} */
+  /** @type {{applicationId:string}} */
   const params = req.params;
 
-  const updated = await applicationService.updateApplication(params.applicationAccountAddress, data);
+  const updated = await applicationService.updateApplication(params.applicationId, data);
 
   res.send(updated);
 }));
@@ -65,13 +65,13 @@ router.put("/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
 /**
  * Delete an application from dashboard.
  */
-router.post("/:applicationAccountAddress", apiAsyncWrapper(async (req, res) => {
-  /** @type {{applicationAccountAddress:string}} */
+router.post("/:applicationId", apiAsyncWrapper(async (req, res) => {
+  /** @type {{applicationId:string}} */
   const data = req.params;
   /** @type {{user:string, appsLink:string}} */
   const bodyData = req.body;
 
-  const application = await applicationService.deleteApplication(data.applicationAccountAddress, bodyData.user);
+  const application = await applicationService.deleteApplication(data.applicationId, bodyData.user);
 
   if (application) {
     const applicationEmailData = {

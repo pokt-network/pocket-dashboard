@@ -229,7 +229,13 @@ class SignUp extends Component {
                             <Link
                               to={ROUTE_PATHS.privacyPolicy}
                             >
-                              Privacy Policy.
+                              Privacy Policy
+                            </Link>
+                            &nbsp;and&nbsp;
+                            <Link
+                              to={ROUTE_PATHS.termsOfService}
+                            >
+                              Terms of Use
                             </Link>
                           </span>
                         }

@@ -1,15 +1,16 @@
 import React, {Component} from "react";
 import "../../../core/components/Purchase/Purchase.scss";
 import {Col, Row} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+//import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {ITEM_TYPES, PURCHASE_ITEM_NAME, STYLING} from "../../../_constants";
+import {ITEM_TYPES, PURCHASE_ITEM_NAME} from "../../../_constants";
+//import {STYLING} from "../../../_constants";
 import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import PocketPaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
-import {faCaretUp} from "@fortawesome/free-solid-svg-icons";
+//import {faCaretUp} from "@fortawesome/free-solid-svg-icons";
 import AppAlert from "../../../core/components/AppAlert";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
 import Loader from "../../../core/components/Loader";
@@ -249,7 +250,7 @@ class SelectRelays extends Component {
                 onClose={() => this.setState({error: false})}
               />
             )}
-            <h1>Custom tier</h1>
+            <h1>Stake and scale</h1>
             <p className="subtitle">
               With the custom tier, you only need to pay for the API throughput
               you application needs. If you expect your application to grow in
@@ -269,17 +270,17 @@ class SelectRelays extends Component {
                   type={PURCHASE_ITEM_NAME.APPS}
                   marks={{
                     [minRelays]: `${formatNumbers(minRelays)} RPD`,
-                    [maxRelays / 2]: {
-                      label: (
-                        <div className="average-stake-wrapper">
-                          <FontAwesomeIcon
-                            style={{color: STYLING.primaryColor}}
-                            icon={faCaretUp}
-                          />
-                          <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
-                        </div>
-                      ),
-                    },
+                    // [maxRelays / 2]: {
+                    //   label: (
+                    //     <div className="average-stake-wrapper">
+                    //       <FontAwesomeIcon
+                    //         style={{color: STYLING.primaryColor}}
+                    //         icon={faCaretUp}
+                    //       />
+                    //       <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
+                    //     </div>
+                    //   ),
+                    // },
                     [maxRelays]: `*${formatNumbers(maxRelays)} RPD`,
                   }}
                   min={minRelays}

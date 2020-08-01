@@ -120,7 +120,7 @@ export class PocketApplicationService extends PocketBaseService {
   }
 
     /**
-   * Get application by using the client's address.
+   * Get application by using the Application id.
    *
    * @param {string} applicationId Application's id.
    *
@@ -316,7 +316,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Edit application.
    *
-   * @param {string} applicationAccountAddress Application address.
+   * @param {string} applicationId Application Id.
    * @param {Object} applicationData Application data.
    * @param {string} applicationData.name Name.
    * @param {string} applicationData.owner Owner.
@@ -329,11 +329,11 @@ export class PocketApplicationService extends PocketBaseService {
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async editApplication(applicationAccountAddress, applicationData) {
+  async editApplication(applicationId, applicationData) {
     const data = {...applicationData};
 
     return axios
-      .put(this._getURL(`${applicationAccountAddress}`), data)
+      .put(this._getURL(`${applicationId}`), data)
       .then((response) => {
         if (response.status === 200) {
           return {
@@ -378,17 +378,17 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Delete an application from dashboard (but not from the network).
    *
-   * @param {string} applicationAccountAddress Application account address.
+   * @param {string} applicationId Application Id.
    * @param {string} userEmail User email address.
    * @param {string} appsLink Applications links.
    *
    * @returns {Promise|Promise<*>}
    */
-  deleteAppFromDashboard(applicationAccountAddress, userEmail, appsLink) {
+  deleteAppFromDashboard(applicationId, userEmail, appsLink) {
     const data = {user: userEmail, appsLink};
 
     return axios
-      .post(this._getURL(`${applicationAccountAddress}`), data)
+      .post(this._getURL(`${applicationId}`), data)
       .then((response) => response.data);
   }
 
