@@ -254,7 +254,7 @@ class CreateNodeForm extends CreateForm {
                         </Col>
                       </Row>
                       <Form.Group>
-                        <Form.Label>Write an optional descriptio of your app here</Form.Label>
+                        <Form.Label>Write an optional description of your app here</Form.Label>
                         <Form.Control
                           as="textarea"
                           rows="6"

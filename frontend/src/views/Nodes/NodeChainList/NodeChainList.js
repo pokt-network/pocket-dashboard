@@ -80,7 +80,7 @@ class NodeChainList extends Chains {
           <Col className="page-title">
             <h1>Choose chains</h1>
             <p>
-              Choose the chains you want to connect your app or node to. Remember you won&#39;t be able to change these chains until your next stake which will be evenly divided on the selected number of chains.
+              Choose the chains that your Pocket Node will service. Your staked POKT will be evenly divided between these selections. You will not be able to change this selection unless you unstake and restake your node.
             </p>
           </Col>
         </Row>
@@ -148,7 +148,7 @@ class NodeChainList extends Chains {
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
                     <Form.Label className="service-url-label">
-                      Please provide the endpoint HTTPS of your node. <a href="https://docs.pokt.network/docs/faq-for-nodes#section-what-is-the-service-uri">What is the service URL?</a>
+                      Please provide the HTTPS endpoint of your Pocket Node. <a href="https://docs.pokt.network/docs/faq-for-nodes#section-what-is-the-service-uri">What is the service URL?</a>
                     </Form.Label>
                     <Form.Control
                       name="serviceURL"
@@ -170,7 +170,7 @@ class NodeChainList extends Chains {
                         title={
                           <>
                             <h4 className="text-uppercase">
-                              WARNING, BEFORE YOU CONTINUE!!{" "}
+                              WARNING, BEFORE YOU CONTINUE!{" "}
                             </h4>
                             <p className="ml-2">
                             </p>
@@ -181,7 +181,7 @@ class NodeChainList extends Chains {
                           The key file by itself is useless without the passphrase.
                           You&#39;ll need the key file in order to import or set up
                           your node.
-                Before continue, be aware that we are not responsible of any jailing or slashing that may incur due to mis-configuration of your node. If you are not completely sure if your node is configured, <a href="https://docs.pokt.network/docs/testing-your-node">click here</a> and make sure you have done all of the steps and tested your node BEFORE you continue.
+                Before continuing, be aware that we are not responsible of any jailing or slashing that may incur due to mis-configuration of your node. If you are not completely sure if your node is configured, <a href="https://docs.pokt.network/docs/testing-your-node">click here</a> and make sure you have done all of the steps and tested your node BEFORE you continue.
               </p>
                       </AppAlert>
                     </Col>
