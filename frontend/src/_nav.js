@@ -43,7 +43,7 @@ export default {
 
     {
       name: "Documentation",
-      url: "https://pocket-dashboard.document360.io/docs",
+      url: "https://dashboard.docs.pokt.network/",
       icon: "menu/Documentation.svg",
       isExternal: true,
     },
