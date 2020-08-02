@@ -6,7 +6,7 @@ import {
   UserPocketApplication
 } from "../models/Application";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
-import {Application, PocketAAT, StakingStatus, typeGuard, UnlockedAccount} from "@pokt-network/pocket-js";
+import {Application, PocketAAT, StakingStatus, typeGuard} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
@@ -60,16 +60,17 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async __updatePersistedApplication(application) {
+
     if (await this.applicationExists(application)) {
       const filter = {
-        "publicPocketAccount.address": application.publicPocketAccount.address
+        "_id": ObjectID(application.id)
       };
 
       delete application.id;
 
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
-
+      
       return result.result.ok === 1;
     }
 
@@ -148,11 +149,14 @@ export default class ApplicationService extends BasePocketService {
    */
   async __markApplicationAsFreeTier(application, freeTier) {
     const filter = {
-      "publicPocketAccount.address": application.publicPocketAccount.address
+      "_id": ObjectID(application.id)
     };
 
     application.freeTier = freeTier;
-    await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
+    /** @type {{result: {n:number, ok: number}}} */
+    const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
+    
+    return result.result.ok === 1;
   }
 
   /**
@@ -459,13 +463,19 @@ export default class ApplicationService extends BasePocketService {
       throw new Error("Couldn't add funding transaction for processing");
     }
 
-    // Update application.
     // Set the free tier credentials.
     application.pocketApplication.freeTierApplicationAccount = new PrivatePocketAccount(appAccount.addressHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+    application.pocketApplication.freeTier = true;
+    // Update application.
     await this.__updatePersistedApplication(application.pocketApplication);
-    await this.__markApplicationAsFreeTier(application.pocketApplication, true);
+    
+    const aat = await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
 
-    return await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+    if (typeGuard(appAccount, PocketAAT)) {
+      return aat;
+    } else {
+      throw new Error("Failed to generate the AAT.");
+    }
   }
 
   /**

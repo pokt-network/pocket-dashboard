@@ -525,7 +525,7 @@ export default class PocketService {
     } else if (typeGuard(unlockedAccountOrError, UnlockedAccount)) {
       return unlockedAccountOrError;
     } else {
-      throw new PocketNetworkError("Unknown error while unlocking account");
+      throw new PocketNetworkError("Unknown error while creating an unlocked account");
     }
   }
 }
