@@ -18,7 +18,6 @@ import {
 } from "@pokt-network/pocket-js";
 import {Configurations} from "../_configuration";
 import {PocketNetworkError} from "../models/Exceptions";
-import bigInt from "big-integer";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
@@ -203,21 +202,17 @@ export default class PocketService {
    * @returns {Promise<{address:string, txHex:string} | string>} - A transaction sender.
    */
   async appStakeRequest(address, passphrase, chains, stakeAmount) {
-    try {
-      const {chain_id: chainID, transaction_fee: transactionFee} = POCKET_NETWORK_CONFIGURATION;
 
-      const transactionSender = await this._getTransactionSender(address, passphrase);
-      const {unlockedAccount: account} = transactionSender;
+    const {chain_id: chainID, transaction_fee: transactionFee} = POCKET_NETWORK_CONFIGURATION;
 
-      return await transactionSender
-        .appStake(
-          account.publicKey.toString("hex"), chains, stakeAmount
-        )
-        .createTransaction(chainID, transactionFee);
+    const transactionSender = await this._getTransactionSender(address, passphrase);
+    const {unlockedAccount: account} = transactionSender;
 
-    } catch (e) {
-      throw e;
-    }
+    return await transactionSender
+       .appStake(
+         account.publicKey.toString("hex"), chains, stakeAmount
+       )
+      .createTransaction(chainID, transactionFee);
   }
 
   /**
@@ -508,7 +503,7 @@ export default class PocketService {
 
       return rawTxResponse.hash;
     } else {
-      throw new PocketNetworkError("Failed to retrieve transactionFee and/or chainID values.")
+      throw new PocketNetworkError("Failed to retrieve transactionFee and/or chainID values.");
     }
 
   }
