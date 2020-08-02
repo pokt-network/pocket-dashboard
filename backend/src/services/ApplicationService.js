@@ -6,7 +6,7 @@ import {
   UserPocketApplication
 } from "../models/Application";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
-import {Application, PocketAAT, StakingStatus, typeGuard} from "@pokt-network/pocket-js";
+import {Application, PocketAAT, StakingStatus, typeGuard, UnlockedAccount} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
@@ -429,7 +429,7 @@ export default class ApplicationService extends BasePocketService {
     // Create Application credentials.
     const appAccount = await this.pocketService.createUnlockedAccount(passphrase);
 
-    if (typeGuard(appAccount, Error)) {
+    if (!typeGuard(appAccount, UnlockedAccount)) {
       throw appAccount;
     }
 
