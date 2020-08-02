@@ -484,11 +484,19 @@ export default class PocketService {
    * @throws {PocketNetworkError}
    */
   async transferFromMainFund(amount, customerAddress) {
+    console.log("transferFromMainFund() ++++++++++++");
     const {transaction_fee: transactionFee, chain_id: chainID} = POCKET_NETWORK_CONFIGURATION;
+
+    console.log("transactionFee = "+ transactionFee);
+    console.log("chainID= "+ chainID);
+    console.log("amount= "+ amount);
+    console.log("customerAddress= "+ customerAddress);
 
     if (transactionFee && chainID && amount && customerAddress) {
       // Include transaction fee for the stake transaction
       const totalAmount = BigInt(Number(amount) + Number(transactionFee));
+      
+      console.log("totalAmount= "+ totalAmount);
 
       if (totalAmount) {
         const pocketRpcProvider = await getRPCProvider();
