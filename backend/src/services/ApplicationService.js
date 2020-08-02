@@ -471,7 +471,7 @@ export default class ApplicationService extends BasePocketService {
     
     const aat = await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
 
-    if (typeGuard(appAccount, PocketAAT)) {
+    if (typeGuard(aat, PocketAAT)) {
       return aat;
     } else {
       throw new Error("Failed to generate the AAT.");
