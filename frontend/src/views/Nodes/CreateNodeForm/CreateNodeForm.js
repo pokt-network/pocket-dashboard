@@ -1,5 +1,5 @@
 import React from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Redirect} from "react-router-dom";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
@@ -162,16 +162,6 @@ class CreateNodeForm extends CreateForm {
             <p className="info">
               Fill in these questions to identify your node on your
               dashboard. Fields marked with (*) are required to continue.
-              <br />
-              If you have an existing account in Pocket Network with an associated
-              Private Key and you want to register it as a node, please proceed
-              to{" "}
-              <Link
-                className="font-weight-light"
-                to={_getDashboardPath(DASHBOARD_PATHS.importNode)}
-              >
-                Import.
-              </Link>
             </p>
           </Col>
         </Row>

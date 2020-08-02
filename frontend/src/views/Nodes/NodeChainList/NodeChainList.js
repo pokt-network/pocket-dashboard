@@ -148,7 +148,7 @@ class NodeChainList extends Chains {
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
                     <Form.Label className="service-url-label">
-                      Please provide the HTTPS endpoint of your Pocket Node. <a href="https://docs.pokt.network/docs/faq-for-nodes#section-what-is-the-service-uri">What is the service URL?</a>
+                      Please provide the HTTPS endpoint of your Pocket Node. <a rel="noopener noreferrer" target="_blank" href="https://docs.pokt.network/docs/faq-for-nodes#section-what-is-the-service-uri">What is the service URL?</a>
                     </Form.Label>
                     <Form.Control
                       name="serviceURL"
@@ -177,11 +177,15 @@ class NodeChainList extends Chains {
                           </>
                         }
                       >
-                        <p>
+                        <p ref={(el) => {
+                          if (el) {
+                            el.style.setProperty("font-size", "14px", "important");
+                          }
+                        }}>
                           The key file by itself is useless without the passphrase.
                           You&#39;ll need the key file in order to import or set up
                           your node.
-                Before continuing, be aware that we are not responsible of any jailing or slashing that may incur due to mis-configuration of your node. If you are not completely sure if your node is configured, <a href="https://docs.pokt.network/docs/testing-your-node">click here</a> and make sure you have done all of the steps and tested your node BEFORE you continue.
+                Before continuing, be aware that we are not responsible of any jailing or slashing that may incur due to mis-configuration of your node. If you are not completely sure if your node is configured, <a rel="noopener noreferrer" target="_blank" href="https://docs.pokt.network/docs/testing-your-node">click here</a> and make sure you have done all of the steps and tested your node BEFORE you continue.
               </p>
                       </AppAlert>
                     </Col>

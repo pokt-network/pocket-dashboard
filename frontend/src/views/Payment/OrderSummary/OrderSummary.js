@@ -106,13 +106,13 @@ class OrderSummary extends Component {
       });
 
 
-    const action = UserService.getUserAction();
-    const appBreadcrumbs = ["Apps", action, "Checkout", "Payment"];
-    const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Payment"];
+      const action = UserService.getUserAction();
+      const appBreadcrumbs = ["Apps", action, "Checkout", "Payment"];
+      const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Payment"];
 
-    type === ITEM_TYPES.APPLICATION ?
-      this.props.onBreadCrumbChange(appBreadcrumbs) :
-      this.props.onBreadCrumbChange(nodeBreadcrumbs);
+      type === ITEM_TYPES.APPLICATION ?
+        this.props.onBreadCrumbChange(appBreadcrumbs) :
+        this.props.onBreadCrumbChange(nodeBreadcrumbs);
     });
   }
 
@@ -152,21 +152,23 @@ class OrderSummary extends Component {
 
     const {paymentIntent, selectedPaymentMethod, type} = this.state;
 
-    const result = await StripePaymentService.confirmPaymentWithSavedCard(
-      stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails
-    );
+    if (total > 0) {
+      const result = await StripePaymentService.confirmPaymentWithSavedCard(
+        stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails
+      );
 
-    if (result.error) {
-      this.setState({
-        purchasing: false,
-        alert: {
-          show: true,
-          variant: "warning",
-          message: <h4>{result.error.message}</h4>,
-        },
-      });
-      scrollToId("alert");
-      return;
+      if (result.error) {
+        this.setState({
+          purchasing: false,
+          alert: {
+            show: true,
+            variant: "warning",
+            message: <h4>{result.error.message}</h4>,
+          },
+        });
+        scrollToId("alert");
+        return;
+      }
     }
 
     if (type === ITEM_TYPES.APPLICATION) {
@@ -394,14 +396,15 @@ class OrderSummary extends Component {
                 })}
               </Form>
               <Button
-                style={{display: "inline-block"}}
+		style={{display: "inline-block"}}
                 className="new-card-btn mb-3"
                 onClick={() => this.setState({isFormVisible: !isFormVisible})}
                 disabled={isAddNewDisabled}
               >
                 Add a New Card
               </Button>
-                <img style={{
+
+		<img style={{
                   height: "88px", 
                   width: "88px",
                   display: "inline-block",
@@ -409,6 +412,7 @@ class OrderSummary extends Component {
                   marginTop: "-7px"
                 }} 
                   src="/assets/stripe-payment_3.svg" alt="stripe"></img>
+
               {isFormVisible && (
                 <>
                   <h5 className="card-form-title">
@@ -439,34 +443,18 @@ class OrderSummary extends Component {
               </div>
               <InfoCard
                 className="text-center"
-                title={`${numeral(total - currentAccountBalance).format(
-                  "$0,0.000"
-                )} USD`}
+                title={`${numeral(total).format("$0,0.000")} USD`}
                 subtitle={"Total cost"}
               />
               <hr />
-              <div style={{fontSize: "12px"}} >
-                <ul>
-                  <li>
-                    Purchasers are not buying POKT as an investment with the
-                    expectation of profit or appreciation.{" "}
-                    <strong>Purchasers are buying POKT to use it.</strong>
-                  </li>
-                  <br></br>
-                  <li>
-                    To ensure purchasers are bona fide <strong>users</strong> and not investors, 
-                    the Company has set a purchase maximum per user and requires users must
-                    hold POKT for <strong>21 days</strong> and{" "}
-                    <strong>stake</strong> it before transferring to another wallet or selling.
-                  </li>
-                  <br></br>
-                  <li>
-                    Purchasers are acquiring POKT for their own account and use,
-                    and not with the intention to re-sell or distribute POKT to
-                    others.
-                  </li>
-                </ul>
-              </div>
+              <p style={{fontSize: "12px"}}>
+                Purchasers are not buying POKT as an investment with the expectation of profit or appreciation. <b>Purchasers are buying POKT to use it.</b><br /> <br />
+
+                  To ensure purchasers are bona fide users and not investors, the Company has set a purchase maximum per user and requires users must hold POKT for <b>21 days</b> and <b>stake</b> it before transferring to another wallet or selling.<br /> <br />
+
+                  Purchasers are acquiring POKT for their own account and use, and not with an intention to re-sell or distribute POKT to others. <br /> <br />
+                  Pocket Network is governed according to the Pocket Network Constitution. For more more information please read the <a target="_blank" rel="noopener noreferrer" href="https://github.com/pokt-network/governance/blob/master/constitution/constitution.md">Constitution</a>
+              </p>
               <Form.Check
                 checked={agreeTerms}
                 onChange={() => this.setState({agreeTerms: !agreeTerms})}
@@ -475,17 +463,17 @@ class OrderSummary extends Component {
                 type="checkbox"
                 label={
                   <span className="agree">
-                    I agree to <Link
+                    I agree to Pocket Network&#39;s Purchase <br />
+                  </span>
+                }
+              />
+              <Link
                 className="terms-link"
                 target="_blank"
                 to={ROUTE_PATHS.termsOfService}
               >
-                Purchase Terms and conditions.
+                Terms and conditions.
               </Link>
-                  </span>
-                }
-              />
-
               <PaymentContainer>
                 <ElementsConsumer>
                   {({_, stripe}) => (
@@ -512,8 +500,8 @@ class OrderSummary extends Component {
               </PaymentContainer>
             </div>
           </Col>
-        </Row>
-      </div>
+        </Row >
+      </div >
     );
   }
 }

@@ -64,7 +64,7 @@ class AppOrderSummary extends Component {
           </div>
         ))}
         <div className="item current-balance">
-          <span>Current balance</span>
+          <span>Use My Balance</span>
           <span className="currency-wrapper">
             <span className="currency">{currency}</span>
             <Form.Control
@@ -73,7 +73,7 @@ class AppOrderSummary extends Component {
               min={0}
               max={maxBalance}
               name="balanceInput"
-              value={balanceInput}
+              value={"-" + balanceInput}
               onChange={(e) => {
                 this.handleChange(e);
                 balanceOnChange(e);

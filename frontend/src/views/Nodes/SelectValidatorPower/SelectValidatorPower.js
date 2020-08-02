@@ -1,14 +1,12 @@
 import React from "react";
 import "./SelectValidatorPower.scss";
 import {Col, Row} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {ITEM_TYPES, PURCHASE_ITEM_NAME, STYLING} from "../../../_constants";
+import {ITEM_TYPES, PURCHASE_ITEM_NAME} from "../../../_constants";
 import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import PocketPaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
-import {faCaretUp} from "@fortawesome/free-solid-svg-icons";
 import AppAlert from "../../../core/components/AppAlert";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
 import Loader from "../../../core/components/Loader";
@@ -56,7 +54,6 @@ class SelectValidatorPower extends Purchase {
                   subTotal,
                   total,
                   type: ITEM_TYPES.NODE,
-                  purchaseType: PURCHASE_ITEM_NAME.NODES,
                 });
               }
             );
@@ -192,7 +189,6 @@ class SelectValidatorPower extends Purchase {
       max,
       currentAccountBalance,
       loading,
-      purchaseType,
     } = this.state;
 
     // At the moment the only available currency is USD.
@@ -218,18 +214,14 @@ class SelectValidatorPower extends Purchase {
             )}
             <h1>Run actually decentralized infrastructure</h1>
             <p className="subtitle">
-              Starting at $900 USD (~15,000 POKT) you will be able to run a node 
-              on the Pocket Network. By increasing the Validator Power (VP) 
-              through staking more than the minimum required POKT, you increase 
-              the chance your node will to produce blocks and win a 
-              block&lsquo;s reward.
+              15,000 POKT is the minimum stake to run a node. By increasing the Validator Power (VP) beyond the minimum stake, odds are increased that a node will be selected to produce blocks and receive the block reward. <b>Best Practices:</b> If a node stake at any time falls below the minimum stake for any reason, the stake will be burned by the protocol. For this reason, we recommend staking at least 10% beyond the minimum stake to account for any accidental or unforeseen slashing due to misconfiguration.
             </p>
           </Col>
         </Row>
         <Row>
           <Col sm="7" className="relays-column">
             <h2>
-              Slide to Select how much {purchaseType} your node will require
+              SLIDE TO SELECT VALIDATOR POWER
             </h2>
             <div className="calc">
               <div className="slider-wrapper">
@@ -239,18 +231,7 @@ class SelectValidatorPower extends Purchase {
                   type={PURCHASE_ITEM_NAME.NODES}
                   marks={{
                     [min]: `${formatNumbers(min)} VP`,
-                    [max / 2]: {
-                      label: (
-                        <span>
-                          <FontAwesomeIcon
-                            style={{color: STYLING.primaryColor}}
-                            icon={faCaretUp}
-                          />
-                          <p style={{fontSize: "0.9em"}}>AVRG STAKE</p>
-                        </span>
-                      ),
-                    },
-                    [max]: `*${formatNumbers(max)} VP`,
+                    [max]: `${formatNumbers(max)} VP*`,
                   }}
                   min={min}
                   max={max}
@@ -260,12 +241,13 @@ class SelectValidatorPower extends Purchase {
             <AppAlert
               className="max-alert"
               variant="primary"
-              title={<h4 className="alert-max">*More Validator Power?</h4>}
+              title={<h4 className="alert-max">About VP, Validator Power:</h4>}
             >
               <p className="alert-max">
-                If your node requires more than {formatNumbers(max)} PKT, please{" "}
-                <a href="mailto:dashboard@pokt.network">contact us</a> directly to find a solution
-                specially designed for your node.
+                Each VP unite purchased on the Pocket Dashboard has a representation as POKT token on the Pocket Network. 1VP=  1POKT
+                <br />
+                <br />
+                *Need More validator power? If you're interested in more validator power beyond the maximum on the dashboard, please contact us.
               </p>
             </AppAlert>
           </Col>

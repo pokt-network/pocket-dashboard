@@ -55,7 +55,7 @@ class Purchase extends Component {
       throw new Error(`${purchaseType} must be a positive value.`);
     }
 
-    if (total <= 0 || isNaN(total)) {
+    if (total < 0 || isNaN(total)) {
       throw new Error("Total Cost must be a positive value.");
     }
 
