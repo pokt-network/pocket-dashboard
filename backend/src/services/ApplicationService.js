@@ -415,6 +415,7 @@ export default class ApplicationService extends BasePocketService {
    */
   async stakeFreeTierApplication(application, stakeInformation, emailData) {
     const {
+      main_fund_address: mainFundAccount,
       aat_version: aatVersion,
       free_tier: {stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount}
     } = Configurations.pocket_network;
@@ -424,7 +425,7 @@ export default class ApplicationService extends BasePocketService {
     }
 
     // Generate a passphrase for the app account
-    const passphrase = Math.floor(Math.random() *99999999999).toString(16);
+    const passphrase = mainFundAccount;
 
     // Create Application credentials.
     const appAccount = await this.pocketService.createUnlockedAccount(passphrase);
