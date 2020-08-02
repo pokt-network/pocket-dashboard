@@ -424,7 +424,7 @@ export default class ApplicationService extends BasePocketService {
     }
 
     // Generate a passphrase for the app account
-    const passphrase = Math.random().toString(36).substr(2, 8);
+    const passphrase = Math.floor(Math.random() *99999999999).toString(16);
 
     // Create Application credentials.
     const appAccount = await this.pocketService.createUnlockedAccount(passphrase);
