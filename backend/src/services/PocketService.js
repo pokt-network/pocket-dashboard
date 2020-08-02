@@ -486,24 +486,28 @@ export default class PocketService {
   async transferFromMainFund(amount, customerAddress) {
     const {transaction_fee: transactionFee, chain_id: chainID} = POCKET_NETWORK_CONFIGURATION;
 
-    if (transactionFee && chainID) {
+    if (transactionFee && chainID && amount && customerAddress) {
       // Include transaction fee for the stake transaction
       const totalAmount = BigInt(Number(amount) + Number(transactionFee));
 
-      const pocketRpcProvider = await getRPCProvider();
+      if (totalAmount) {
+        const pocketRpcProvider = await getRPCProvider();
 
-      this.__pocket.rpc(pocketRpcProvider);
-
-      const rawTxResponse = await this.__pocket.withPrivateKey(POCKET_MAIN_FUND_ACCOUNT).send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
-        .submit(chainID, transactionFee);
-
-      if (typeGuard(rawTxResponse, RpcError)) {
-        throw new PocketNetworkError(rawTxResponse.message);
+        this.__pocket.rpc(pocketRpcProvider);
+  
+        const rawTxResponse = await this.__pocket.withPrivateKey(POCKET_MAIN_FUND_ACCOUNT).send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
+          .submit(chainID, transactionFee);
+  
+        if (typeGuard(rawTxResponse, RpcError)) {
+          throw new PocketNetworkError(rawTxResponse.message);
+        }
+  
+        return rawTxResponse.hash;
+      } else {
+        throw new PocketNetworkError("totalAmount is undefined, failed to tansfer funds for free tier staking.");
       }
-
-      return rawTxResponse.hash;
     } else {
-      throw new PocketNetworkError("Failed to retrieve transactionFee and/or chainID values.");
+      throw new PocketNetworkError("Failed to retrieve transactionFee and/or chainID and/or amount and/or customerAddress values.");
     }
 
   }
