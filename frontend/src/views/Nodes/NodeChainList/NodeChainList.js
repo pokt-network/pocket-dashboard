@@ -40,7 +40,7 @@ class NodeChainList extends Chains {
   handleChains() {
     const {chosenChains} = this.state;
     const {serviceURL} = this.state.data;
-    const chainsHashes = chosenChains.map((ch) => ch.hash);
+    const chainsHashes = chosenChains.map((ch) => ch._id);
 
 
     NodeService.saveNodeInfoInCache({
