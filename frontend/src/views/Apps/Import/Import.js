@@ -148,6 +148,8 @@ class Import extends Component {
       let chains;
       const {balance} = await AccountService.getPoktBalance(data.address);
 
+      console.log('Balance: ' + balance);
+
       if (type === ITEM_TYPES.APPLICATION) {
         ApplicationService.saveAppInfoInCache({
           imported: true,
@@ -164,7 +166,7 @@ class Import extends Component {
           chains = application.chains;
           // Update the state
           this.setState({
-            accountData:{
+            accountData: {
               tokens: application.staked_tokens,
               balance: balance,
               status: getStakeStatus(application.status.toString()),
@@ -172,6 +174,12 @@ class Import extends Component {
             },
             // App Staked chains
             chains: application.chains
+          });
+        } else {
+          this.setState({
+            accountData: {
+              balance: balance
+            }
           });
         }
       } else {
@@ -187,7 +195,7 @@ class Import extends Component {
           chains = node.chains;
           // Update the state
           this.setState({
-            accountData:{
+            accountData: {
               tokens: node.staked_tokens,
               balance: balance,
               status: getStakeStatus(node.status.toString()),
@@ -195,6 +203,12 @@ class Import extends Component {
             },
             // Node Staked chains
             chains: node.chains
+          });
+        } else {
+          this.setState({
+            accountData: {
+              balance: balance
+            }
           });
         }
       }
@@ -273,7 +287,7 @@ class Import extends Component {
                     : DASHBOARD_PATHS.createNodeForm
                 )}
               >
-                Create. Set one up
+                Create Node.
               </Link>
             </p>
           </Col>
@@ -344,38 +358,38 @@ class Import extends Component {
                       </Form.Group>
                     </>
                   ) : (
-                    <>
-                      <h2>Passphrase</h2>
-                      <Form.Group className="d-flex">
-                        <Form.Control
-                          placeholder="*****************"
-                          value={passphrase}
-                          required
-                          onChange={this.handleChange}
-                          type={inputType}
-                          name="passphrase"
-                          className={error.show ? "is-invalid" : ""}
-                        />
-                        <Form.Control.Feedback
-                          className="invalid-account"
-                          type="invalid"
-                        >
-                          {error.show ? error.message : ""}
-                        </Form.Control.Feedback>
-                        <img
-                          className="eye-icon"
-                          onClick={this.changeInputType}
-                          src={showPassphraseIconURL}
-                          alt=""
-                        />
-                        <LoadingButton
-                          loading={importing}
-                          buttonProps={{
-                            variant: "dark",
-                            type: "submit",
-                            onClick: !imported
-                              ? this.importAccount
-                              : () => {
+                      <>
+                        <h2>Passphrase</h2>
+                        <Form.Group className="d-flex">
+                          <Form.Control
+                            placeholder="*****************"
+                            value={passphrase}
+                            required
+                            onChange={this.handleChange}
+                            type={inputType}
+                            name="passphrase"
+                            className={error.show ? "is-invalid" : ""}
+                          />
+                          <Form.Control.Feedback
+                            className="invalid-account"
+                            type="invalid"
+                          >
+                            {error.show ? error.message : ""}
+                          </Form.Control.Feedback>
+                          <img
+                            className="eye-icon"
+                            onClick={this.changeInputType}
+                            src={showPassphraseIconURL}
+                            alt=""
+                          />
+                          <LoadingButton
+                            loading={importing}
+                            buttonProps={{
+                              variant: "dark",
+                              type: "submit",
+                              onClick: !imported
+                                ? this.importAccount
+                                : () => {
                                   // eslint-disable-next-line react/prop-types
                                   this.props.history.push({
                                     pathname: _getDashboardPath(
@@ -386,13 +400,13 @@ class Import extends Component {
                                     state: {imported: true},
                                   });
                                 },
-                          }}
-                        >
-                          <span>{!imported ? "Import" : "Continue"}</span>
-                        </LoadingButton>
-                      </Form.Group>
-                    </>
-                  )}
+                            }}
+                          >
+                            <span>{!imported ? "Import" : "Continue"}</span>
+                          </LoadingButton>
+                        </Form.Group>
+                      </>
+                    )}
                 </Col>
               </Form.Row>
             </Form>
