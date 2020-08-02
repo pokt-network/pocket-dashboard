@@ -244,7 +244,7 @@ class SelectValidatorPower extends Purchase {
               title={<h4 className="alert-max">About VP, Validator Power:</h4>}
             >
               <p className="alert-max">
-                Each VP unite purchased on the Pocket Dashboard has a representation as POKT token on the Pocket Network. 1VP=  1POKT
+                Each VP unit purchased on the Pocket Dashboard is represented by a POKT token on the Pocket Network. 1 VP = 1 POKT
                 <br />
                 <br />
                 *Need More validator power? If you&apos;re interested in more validator power beyond the maximum on the dashboard, please contact us.
