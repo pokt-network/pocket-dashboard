@@ -51,7 +51,7 @@ router.post("/nodes/pokt", apiAsyncWrapper((req, res) => {
   /** @type {{money: number}} */
   const data = req.body;
 
-  const cost = nodeCheckoutService.getPoktToStake(data.money, CoinDenom.Pokt);
+  const cost = nodeCheckoutService.getPoktToStake(data.money, CoinDenom.Upokt);
 
   res.json({cost});
 }));
