@@ -211,12 +211,12 @@ export default class PocketService {
 
       return await transactionSender
         .appStake(
-          account.publicKey.toString("hex"), chains, Number(stakeAmount).toString()
+          account.publicKey.toString("hex"), chains, stakeAmount
         )
         .createTransaction(chainID, transactionFee);
 
     } catch (e) {
-      return e.toString();
+      throw e;
     }
   }
 
@@ -491,20 +491,26 @@ export default class PocketService {
   async transferFromMainFund(amount, customerAddress) {
     const {transaction_fee: transactionFee, chain_id: chainID} = POCKET_NETWORK_CONFIGURATION;
 
-    // Include transaction fee for the stake transaction
-    const totalAmount = bigInt(amount).add(bigInt(transactionFee));
-    const pocketRpcProvider = await getRPCProvider();
+    if (transactionFee && chainID) {
+      // Include transaction fee for the stake transaction
+      const totalAmount = BigInt(Number(amount) + Number(transactionFee));
 
-    this.__pocket.rpc(pocketRpcProvider);
+      const pocketRpcProvider = await getRPCProvider();
 
-    const rawTxResponse = await this.__pocket.withPrivateKey(POCKET_MAIN_FUND_ACCOUNT).send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
-      .submit(chainID, transactionFee);
+      this.__pocket.rpc(pocketRpcProvider);
 
-    if (typeGuard(rawTxResponse, RpcError)) {
-      throw new PocketNetworkError(rawTxResponse.message);
+      const rawTxResponse = await this.__pocket.withPrivateKey(POCKET_MAIN_FUND_ACCOUNT).send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
+        .submit(chainID, transactionFee);
+
+      if (typeGuard(rawTxResponse, RpcError)) {
+        throw new PocketNetworkError(rawTxResponse.message);
+      }
+
+      return rawTxResponse.hash;
+    } else {
+      throw new PocketNetworkError("Failed to retrieve transactionFee and/or chainID values.")
     }
 
-    return rawTxResponse.hash;
   }
 
   /**

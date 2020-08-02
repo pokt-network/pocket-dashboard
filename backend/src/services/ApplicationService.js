@@ -6,7 +6,7 @@ import {
   UserPocketApplication
 } from "../models/Application";
 import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
-import {Application, PocketAAT, StakingStatus} from "@pokt-network/pocket-js";
+import {Application, PocketAAT, StakingStatus, typeGuard, UnlockedAccount} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
@@ -415,11 +415,20 @@ export default class ApplicationService extends BasePocketService {
       free_tier: {stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount}
     } = Configurations.pocket_network;
 
+    if (aatVersion === undefined || upoktToStake === undefined || maxRelayPerDayAmount === undefined) {
+      throw new Error("Couldn't retrieve aatVersion and/or upoktToStake and/or maxRelayPerDayAmount values for free tier stake.");
+    }
+
     // Generate a passphrase for the app account
     const passphrase = Math.random().toString(36).substr(2, 8);
 
     // Create Application credentials.
     const appAccount = await this.pocketService.createUnlockedAccount(passphrase);
+
+    if (typeGuard(appAccount, Error)) {
+      throw appAccount;
+    }
+
     const appAccountPublicKeyHex = appAccount.publicKey.toString("hex");
     const appAccountPrivateKeyHex = appAccount.privateKey.toString("hex");
 
