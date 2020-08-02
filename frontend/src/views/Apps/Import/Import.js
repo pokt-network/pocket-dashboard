@@ -148,8 +148,6 @@ class Import extends Component {
       let chains;
       const {balance} = await AccountService.getPoktBalance(data.address);
 
-      console.log('Balance: ' + balance);
-
       if (type === ITEM_TYPES.APPLICATION) {
         ApplicationService.saveAppInfoInCache({
           imported: true,

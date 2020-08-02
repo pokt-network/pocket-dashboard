@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {formatNetworkData} from "../../../_helpers";
 import Logo from "./Logo";
 
 class SecondPage extends React.Component {

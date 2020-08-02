@@ -152,24 +152,25 @@ class OrderSummary extends Component {
 
     const {paymentIntent, selectedPaymentMethod, type} = this.state;
 
-    if (total > 0) {
-      const result = await StripePaymentService.confirmPaymentWithSavedCard(
-        stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails
-      );
+    
+    const result = await StripePaymentService.confirmPaymentWithSavedCard(
+      stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails
+    );
 
-      if (result.error) {
-        this.setState({
-          purchasing: false,
-          alert: {
-            show: true,
-            variant: "warning",
-            message: <h4>{result.error.message}</h4>,
-          },
-        });
-        scrollToId("alert");
-        return;
-      }
+    if (result.error) {
+      this.setState({
+        purchasing: false,
+        alert: {
+          show: true,
+          variant: "warning",
+          message: <h4>{result.error.message}</h4>,
+        },
+
+      });
+      scrollToId("alert");
+      return;
     }
+    
 
     if (type === ITEM_TYPES.APPLICATION) {
       const pokt = await PocketCheckoutService.getApplicationPoktToStake(total);
