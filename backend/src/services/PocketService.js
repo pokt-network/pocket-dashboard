@@ -499,18 +499,24 @@ export default class PocketService {
       console.log("totalAmount= "+ totalAmount);
 
       if (totalAmount) {
-        const pocketRpcProvider = await getRPCProvider();
+        try {
+          const pocketRpcProvider = await getRPCProvider();
 
-        this.__pocket.rpc(pocketRpcProvider);
-  
-        const rawTxResponse = await this.__pocket.withPrivateKey(POCKET_MAIN_FUND_ACCOUNT).send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
-          .submit(chainID, transactionFee);
-  
-        if (typeGuard(rawTxResponse, RpcError)) {
-          throw new PocketNetworkError(rawTxResponse.message);
+          this.__pocket.rpc(pocketRpcProvider);
+    
+          const rawTxResponse = await this.__pocket.withPrivateKey(POCKET_MAIN_FUND_ACCOUNT).send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
+            .submit(chainID, transactionFee);
+          console.log("rawTxResponse");
+          console.log(rawTxResponse);
+          if (typeGuard(rawTxResponse, RpcError)) {
+            throw new PocketNetworkError(rawTxResponse.message);
+          }
+    
+          return rawTxResponse.hash;
+        } catch (error) {
+          console.error(error);
         }
-  
-        return rawTxResponse.hash;
+
       } else {
         throw new PocketNetworkError("totalAmount is undefined, failed to tansfer funds for free tier staking.");
       }
