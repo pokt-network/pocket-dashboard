@@ -67,7 +67,7 @@ class Checkout extends Component {
     const applicationId =
       type === ITEM_TYPES.APPLICATION
         ? ApplicationService.getApplicationInfo().id
-        : NodeService.getNodeInfo().id;
+        : NodeService.getNodeInfo().address;
 
     const purchasedTokens =
       type === ITEM_TYPES.APPLICATION
@@ -161,7 +161,11 @@ class Checkout extends Component {
             : DASHBOARD_PATHS.nodeDetail;
           const url = _getDashboardPath(route);
 
-          return url.replace(":id", applicationId);
+          if (isApp) {
+            return url.replace(":id", applicationId);
+          } else {
+            return url.replace(":address", applicationId);
+          }
         }}
       >
         <Button variant="primary" className="mt-1 float-right cta">

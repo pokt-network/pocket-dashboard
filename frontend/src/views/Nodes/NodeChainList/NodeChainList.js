@@ -117,7 +117,7 @@ class NodeChainList extends Chains {
             <AppTable
               scroll
               toggle={chains.length > 0}
-              keyField="hash"
+              keyField="_id"
               data={chains}
               columns={TABLE_COLUMNS.NETWORK_CHAINS}
               selectRow={tableSelectOptions}

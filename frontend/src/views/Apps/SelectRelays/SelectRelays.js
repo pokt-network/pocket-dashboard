@@ -133,11 +133,11 @@ class SelectRelays extends Component {
       throw new Error(`Current balance cannot be greater than ${originalAccountBalance} ${currency}.`);
     }
 
-    if (subTotal <= 0 || isNaN(subTotal)) {
+    if (subTotal < 0 || isNaN(subTotal)) {
       throw new Error("Relays per day cost must be a positive value.");
     }
 
-    if (total <= 0 || isNaN(total)) {
+    if (total < 0 || isNaN(total)) {
       throw new Error("Total Cost must be a positive value.");
     }
 
@@ -263,30 +263,30 @@ class SelectRelays extends Component {
             <h2>
               Slide to Select how much relays per day you want to buy
             </h2>
-              <div className="slider-wrapper">
-                <AppSlider
-                  defaultValue={minRelays}
-                  onChange={this.onSliderChange}
-                  type={PURCHASE_ITEM_NAME.APPS}
-                  marks={{
-                    [minRelays]: `${formatNumbers(minRelays)} RPD`,
-                    // [maxRelays / 2]: {
-                    //   label: (
-                    //     <div className="average-stake-wrapper">
-                    //       <FontAwesomeIcon
-                    //         style={{color: STYLING.primaryColor}}
-                    //         icon={faCaretUp}
-                    //       />
-                    //       <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
-                    //     </div>
-                    //   ),
-                    // },
-                    [maxRelays]: `*${formatNumbers(maxRelays)} RPD`,
-                  }}
-                  min={minRelays}
-                  max={maxRelays}
-                />
-              </div>
+            <div className="slider-wrapper">
+              <AppSlider
+                defaultValue={minRelays}
+                onChange={this.onSliderChange}
+                type={PURCHASE_ITEM_NAME.APPS}
+                marks={{
+                  [minRelays]: `${formatNumbers(minRelays)} RPD`,
+                  // [maxRelays / 2]: {
+                  //   label: (
+                  //     <div className="average-stake-wrapper">
+                  //       <FontAwesomeIcon
+                  //         style={{color: STYLING.primaryColor}}
+                  //         icon={faCaretUp}
+                  //       />
+                  //       <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
+                  //     </div>
+                  //   ),
+                  // },
+                  [maxRelays]: `*${formatNumbers(maxRelays)} RPD`,
+                }}
+                min={minRelays}
+                max={maxRelays}
+              />
+            </div>
             <AppAlert
               className="max-alert"
               variant="primary"

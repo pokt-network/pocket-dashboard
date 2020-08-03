@@ -40,7 +40,7 @@ class SelectValidatorPower extends Purchase {
           ({cost}) => {
             PocketAccountService.getBalance(accountAddress).then(
               ({balance}) => {
-                const currentAccountBalance = parseFloat(balance);
+                const currentAccountBalance = parseFloat(balance == null ? 0 : balance);
                 const subTotal = parseFloat(cost);
                 const total = subTotal - currentAccountBalance;
 

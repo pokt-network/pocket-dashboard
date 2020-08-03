@@ -152,7 +152,7 @@ class OrderSummary extends Component {
 
     const {paymentIntent, selectedPaymentMethod, type} = this.state;
 
-    
+
     const result = await StripePaymentService.confirmPaymentWithSavedCard(
       stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails
     );
@@ -170,7 +170,7 @@ class OrderSummary extends Component {
       scrollToId("alert");
       return;
     }
-    
+
 
     if (type === ITEM_TYPES.APPLICATION) {
       const pokt = await PocketCheckoutService.getApplicationPoktToStake(total);
@@ -397,7 +397,7 @@ class OrderSummary extends Component {
                 })}
               </Form>
               <Button
-		style={{display: "inline-block"}}
+                style={{display: "inline-block"}}
                 className="new-card-btn mb-3"
                 onClick={() => this.setState({isFormVisible: !isFormVisible})}
                 disabled={isAddNewDisabled}
@@ -405,14 +405,14 @@ class OrderSummary extends Component {
                 Add a New Card
               </Button>
 
-		<img style={{
-                  height: "88px", 
-                  width: "88px",
-                  display: "inline-block",
-                  float: "right",
-                  marginTop: "-7px"
-                }} 
-                  src="/assets/stripe-payment_3.svg" alt="stripe"></img>
+              <img style={{
+                height: "88px",
+                width: "88px",
+                display: "inline-block",
+                float: "right",
+                marginTop: "-7px"
+              }}
+                src="/assets/stripe-payment_3.svg" alt="stripe"></img>
 
               {isFormVisible && (
                 <>
@@ -454,7 +454,7 @@ class OrderSummary extends Component {
                   To ensure purchasers are bona fide users and not investors, the Company has set a purchase maximum per user and requires users must hold POKT for <b>21 days</b> and <b>stake</b> it before transferring to another wallet or selling.<br /> <br />
 
                   Purchasers are acquiring POKT for their own account and use, and not with an intention to re-sell or distribute POKT to others. <br /> <br />
-                  Pocket Network is governed according to the Pocket Network Constitution. For more more information please read the <a target="_blank" rel="noopener noreferrer" href="https://github.com/pokt-network/governance/blob/master/constitution/constitution.md">Constitution</a>
+                  Pocket Network is governed according to the Pocket Network Constitution. For more more information please read the <a target="_blank" rel="noopener noreferrer" href="https://github.com/pokt-network/governance/blob/master/constitution/constitution.md">Constitution.</a>
               </p>
               <Form.Check
                 checked={agreeTerms}
@@ -464,17 +464,17 @@ class OrderSummary extends Component {
                 type="checkbox"
                 label={
                   <span className="agree">
-                    I agree to Pocket Network&#39;s Purchase <br />
+                    I agree to{" "}
+                    <Link
+                      className="terms-link"
+                      target="_blank"
+                      style={{marginLeft: "0px"}}
+                      to={ROUTE_PATHS.termsOfService}>
+                      Purchase Terms and conditions.
+                      </Link>
                   </span>
                 }
               />
-              <Link
-                className="terms-link"
-                target="_blank"
-                to={ROUTE_PATHS.termsOfService}
-              >
-                Terms and conditions.
-              </Link>
               <PaymentContainer>
                 <ElementsConsumer>
                   {({_, stripe}) => (
