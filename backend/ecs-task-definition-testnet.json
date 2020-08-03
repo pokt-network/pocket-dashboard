@@ -9,7 +9,7 @@
 		  "logDriver": "awslogs",
 		  "secretOptions": null,
 		  "options": {
-			"awslogs-group": "/ecs/dashboard",
+			"awslogs-group": "/ecs/dashboard-testnet",
 			"awslogs-region": "us-west-2",
 			"awslogs-stream-prefix": "ecs"
 		  }
@@ -36,7 +36,7 @@
 		"memoryReservation": 512,
 		"volumesFrom": [],
 		"stopTimeout": null,
-		"image": "059424750518.dkr.ecr.us-west-2.amazonaws.com/dashboard:latest",
+		"image": "059424750518.dkr.ecr.us-west-2.amazonaws.com/dashboard-testnet:latest",
 		"startTimeout": null,
 		"firelensConfiguration": null,
 		"dependsOn": null,
@@ -53,13 +53,13 @@
 		"dockerLabels": null,
 		"systemControls": null,
 		"privileged": null,
-		"name": "dashboard"
+		"name": "dashboard-testnet"
 	  }
 	],
 	"placementConstraints": [],
 	"memory": "512",
 	"taskRoleArn": null,
-	"family": "dashboard",
+	"family": "dashboard-testnet",
 	"pidMode": null,
 	"requiresCompatibilities": [
 	  "FARGATE"
