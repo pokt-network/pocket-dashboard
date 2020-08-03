@@ -357,15 +357,17 @@ export default class ApplicationService extends BasePocketService {
     try {
       const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
 
-      const averageStaked = this._getAverageNetworkData(stakedApplications.map(app => bigInt(app.stakedTokens.toString())));
-      const averageRelays = this._getAverageNetworkData(stakedApplications.map(app => bigInt(app.maxRelays.toString())));
+      const averageStaked = this._getAverageNetworkData(stakedApplications.map(app => Number(app.stakedTokens.toString())));
+      const totalStaked = this._getAverageNetworkData(stakedApplications.map(app => bigInt(app.stakedTokens.toString())));
 
-      return new StakedApplicationSummary(stakedApplications.length.toString(), averageStaked.toString(), averageRelays.toString());
+      const averageStakedResult = averageStaked / stakedApplications.length;
+
+      return new StakedApplicationSummary(stakedApplications.length.toString(), averageStakedResult.toString(), totalStaked.toString());
     } catch (e) {
       return new StakedApplicationSummary("0", "0", "0");
     }
   }
-
+ 
   /**
    * Get AAT using Free tier account.
    *

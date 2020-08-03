@@ -263,9 +263,9 @@ export class StakedApplicationSummary {
   /**
    * @param {string} totalApplications Total of Applications.
    * @param {string} averageStaked Average of staked applications.
-   * @param {string} averageRelays Average of relays.
+   * @param {string} totalStaked Total staked applications.
    */
-  constructor(totalApplications, averageStaked, averageRelays) {
-    Object.assign(this, {totalApplications, averageStaked, averageRelays});
+  constructor(totalApplications, averageStaked, totalStaked) {
+    Object.assign(this, {totalApplications, averageStaked, totalStaked});
   }
 }
