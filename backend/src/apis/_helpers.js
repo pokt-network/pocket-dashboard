@@ -53,8 +53,7 @@ export const apiAsyncWrapper = (fn) => (...args) => fn(...args).catch(args[2]);
  */
 export function errorsHandler(error, req, res, next) {
   const {message, name} = error;
-  console.error(error);
-  console.error(error.stack);
+
   switch (error.name) {
     case "PocketNetworkError":
       res.status(408).json({message, name}); // Request Timeout.

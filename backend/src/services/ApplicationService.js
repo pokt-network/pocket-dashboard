@@ -471,8 +471,7 @@ export default class ApplicationService extends BasePocketService {
     await this.__updatePersistedApplication(application.pocketApplication);
     
     const aat = await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
-    console.log("AAT = ");
-    console.log(aat);
+
     if (typeGuard(aat, PocketAAT)) {
       return aat;
     } else {
