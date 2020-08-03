@@ -138,7 +138,7 @@ class SelectRelays extends Component {
     }
 
     if (total < 0 || isNaN(total)) {
-      throw new Error("Total Cost must be a positive value.");
+      throw new Error("Total cost must be a positive value.");
     }
 
     return true;
@@ -261,7 +261,7 @@ class SelectRelays extends Component {
         <Row>
           <Col sm="7" className="relays-column">
             <h2>
-              Slide to Select how much relays per day you want to buy
+              Slide to select how many relays per day to purchase
             </h2>
             <div className="slider-wrapper">
               <AppSlider
