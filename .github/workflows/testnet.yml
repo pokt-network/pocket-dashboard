@@ -104,7 +104,7 @@ jobs:
         envkey_POCKET_NETWORK_MAX_DISPATCHER: 7
         envkey_POCKET_NETWORK_REQUEST_TIMEOUT: 60000
         envkey_POCKET_NETWORK_MAX_SESSIONS: 1000000
-        envkey_POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL: redis://dashboard.js6zbp.ng.0001.usw2.cache.amazonaws.com:6379
+        envkey_POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL: redis://dashboard-testnet.js6zbp.ng.0001.usw2.cache.amazonaws.com:6379
         envkey_POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME: 60000
         envkey_POCKET_NETWORK_SERVICE_WORKER_ATTEMPTS: 15
         envkey_POCKET_FREE_TIER_STAKE_AMOUNT: 25950100000
