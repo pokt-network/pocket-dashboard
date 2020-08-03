@@ -179,11 +179,11 @@ class NodesMain extends Main {
       {title: formatNumbers(total), subtitle: "Total of Nodes"},
       {
         title: formatNetworkData(averageStaked, false, DEFAULT_POKT_DENOMINATION_BASE),
-        subtitle: "Avg POKT Staked",
+        subtitle: "Average POKT Staked",
       },
       {
         title: formatNetworkData(averageRelays, false, DEFAULT_POKT_DENOMINATION_BASE),
-        subtitle: "Avg Validator Power Per Node",
+        subtitle: "Nodes Total POKT Staked",
       },
     ];
 

@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import {formatNetworkData} from "../../../_helpers";
 import Logo from "./Logo";
 
 class SecondPage extends React.Component {
@@ -101,7 +102,7 @@ class SecondPage extends React.Component {
                 Subject to the Purchasing Site Terms of Use and the terms and
                 conditions set forth herein, Purchaser, intending to be legally
                 bound, hereby irrevocably agrees to purchase from the Company{" "}
-                {purchasedTokens} Tokens (the “
+                {formatNetworkData(purchasedTokens)} Tokens (the “
                 <u>Purchased Tokens</u>”) at a purchase price of $USD{" "}
                 {poktPrice} per token (the &quot;
                 <u>Purchase Price</u>&quot;), payable by [ETH, USD, BTC]

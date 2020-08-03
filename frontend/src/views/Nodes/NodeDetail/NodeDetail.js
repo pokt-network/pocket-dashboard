@@ -87,7 +87,7 @@ class NodeDetail extends Component {
 
     const nodeFromCache = NodeService.getNodeInfo();
 
-    if(nodeFromCache.chainsObject !== undefined) {
+    if (nodeFromCache.chainsObject !== undefined) {
       chains = nodeFromCache.chainsObject;
     }
 
@@ -292,12 +292,12 @@ class NodeDetail extends Component {
       <>
         {/* eslint-disable-next-line react/prop-types */}
         <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
-                      breadcrumbs={breadcrumbs}
-                      address={address} handleAfterValidate={handleFunc}>
+          breadcrumbs={breadcrumbs}
+          address={address} handleAfterValidate={handleFunc}>
           <h1>Verify private key</h1>
           <p className="validate-text">
             Please import your account credentials before sending the Transaction.
-            Be aware that this Transaction has a 0.1 POKT fee cost.
+            Be aware that this Transaction has a 0.01 POKT fee cost.
           </p>
         </ValidateKeys>
       </>
@@ -316,7 +316,7 @@ class NodeDetail extends Component {
     }
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     if (!exists) {
@@ -329,7 +329,7 @@ class NodeDetail extends Component {
         </h3>
       );
 
-      return <AppAlert variant="danger" title={message}/>;
+      return <AppAlert variant="danger" title={message} />;
     }
 
     if (deleted) {
@@ -338,7 +338,7 @@ class NodeDetail extends Component {
           text={
             <p>
               Your node
-              <br/>
+              <br />
               was successfully removed
             </p>
           }
@@ -361,7 +361,7 @@ class NodeDetail extends Component {
               />
             )}
             <div className="head">
-              <img className="account-icon" src={icon} alt="node-icon"/>
+              <img className="account-icon" src={icon} alt="node-icon" />
               <div className="info">
                 <h1 className="name d-flex align-items-center">{name}</h1>
                 <h3 className="owner">{operator}</h3>
@@ -376,16 +376,16 @@ class NodeDetail extends Component {
           </Col>
           <Col sm="1" md="1" lg="1">
             {status !== STAKE_STATUS.Unstaking &&
-            <Button
-              className="float-right cta"
-              onClick={() => {
-                this.setState({ctaButtonPressed: true});
+              <Button
+                className="float-right cta"
+                onClick={() => {
+                  this.setState({ctaButtonPressed: true});
 
-                isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
-              }}
-              variant="primary">
-              <span>{isStaked ? "Unstake" : "Stake"}</span>
-            </Button>
+                  isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
+                }}
+                variant="primary">
+                <span>{isStaked ? "Unstake" : "Stake"}</span>
+              </Button>
             }
           </Col>
         </Row>
@@ -435,7 +435,7 @@ class NodeDetail extends Component {
                 subtitle={card.subtitle}
                 flexAlign="left"
               >
-                <span/>
+                <span />
               </InfoCard>
             </Col>
           ))}
@@ -443,7 +443,7 @@ class NodeDetail extends Component {
         <Row className="action-buttons">
           <Col>
             <span className="option">
-              <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
+              <img src={"/assets/edit.svg"} alt="edit-action-icon" />
               <p>
                 <Link
                   to={() => {
@@ -458,7 +458,7 @@ class NodeDetail extends Component {
               </p>
             </span>
             <span className="option">
-              <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
+              <img src={"/assets/trash.svg"} alt="trash-action-icon" />
               <p>
                 <span
                   className="link"
