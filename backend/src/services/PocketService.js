@@ -188,7 +188,7 @@ export default class PocketService {
       throw account;
     }
 
-    return await this.__pocket.withImportedAccount(account.address, passphrase);
+    return await this.__pocket.withImportedAccount(account.addressHex, passphrase);
   }
 
   /**
@@ -484,39 +484,26 @@ export default class PocketService {
    * @throws {PocketNetworkError}
    */
   async transferFromMainFund(amount, customerAddress) {
-    console.log("transferFromMainFund() ++++++++++++");
-    const {transaction_fee: transactionFee, chain_id: chainID} = POCKET_NETWORK_CONFIGURATION;
 
-    console.log("transactionFee = "+ transactionFee);
-    console.log("chainID= "+ chainID);
-    console.log("amount= "+ amount);
-    console.log("customerAddress= "+ customerAddress);
+    const {transaction_fee: transactionFee, chain_id: chainID} = POCKET_NETWORK_CONFIGURATION;
 
     if (transactionFee && chainID && amount && customerAddress) {
       // Include transaction fee for the stake transaction
       const totalAmount = BigInt(Number(amount) + Number(transactionFee));
-      
-      console.log("totalAmount= "+ totalAmount);
 
       if (totalAmount) {
-        try {
-          const pocketRpcProvider = await getRPCProvider();
+        const pocketRpcProvider = await getRPCProvider();
 
-          this.__pocket.rpc(pocketRpcProvider);
-    
-          const rawTxResponse = await this.__pocket.withPrivateKey(POCKET_MAIN_FUND_ACCOUNT).send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
-            .submit(chainID, transactionFee);
-          console.log("rawTxResponse");
-          console.log(rawTxResponse);
-          if (typeGuard(rawTxResponse, RpcError)) {
-            throw new PocketNetworkError(rawTxResponse.message);
-          }
-    
-          return rawTxResponse.hash;
-        } catch (error) {
-          console.error(error);
+        this.__pocket.rpc(pocketRpcProvider);
+
+        const rawTxResponse = await this.__pocket.withPrivateKey(POCKET_MAIN_FUND_ACCOUNT).send(POCKET_MAIN_FUND_ADDRESS, customerAddress, totalAmount.toString())
+          .submit(chainID, transactionFee);
+
+        if (typeGuard(rawTxResponse, RpcError)) {
+          throw new PocketNetworkError(rawTxResponse.message);
         }
 
+        return rawTxResponse.hash;
       } else {
         throw new PocketNetworkError("totalAmount is undefined, failed to tansfer funds for free tier staking.");
       }

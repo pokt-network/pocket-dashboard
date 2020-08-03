@@ -414,15 +414,11 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async stakeFreeTierApplication(application, stakeInformation, emailData) {
-    console.log("===stakeFreeTierApplication()===");
     const {
       main_fund_address: mainFundAccount,
       aat_version: aatVersion,
       free_tier: {stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount}
     } = Configurations.pocket_network;
-    console.log("aatVersion = "+ aatVersion);
-    console.log("upoktToStake = "+ upoktToStake);
-    console.log("maxRelayPerDayAmount = "+ maxRelayPerDayAmount);
     
     if (aatVersion === undefined || upoktToStake === undefined || maxRelayPerDayAmount === undefined) {
       throw new Error("Couldn't retrieve aatVersion and/or upoktToStake and/or maxRelayPerDayAmount values for free tier stake.");
@@ -437,8 +433,7 @@ export default class ApplicationService extends BasePocketService {
     if (!typeGuard(appAccount, UnlockedAccount)) {
       throw appAccount;
     }
-    console.log("appAccount.publicKey = "+ appAccount.publicKey);
-    console.log("appAccount.privateKey = "+ appAccount.privateKey);
+
     const appAccountPublicKeyHex = appAccount.publicKey.toString("hex");
     const appAccountPrivateKeyHex = appAccount.privateKey.toString("hex");
 
