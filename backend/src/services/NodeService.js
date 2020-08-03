@@ -290,16 +290,18 @@ export default class NodeService extends BasePocketService {
     try {
       const stakedNodes = await this.pocketService.getNodes(StakingStatus.Staked);
 
-      const averageStaked = this._getAverageNetworkData(stakedNodes.map(node => bigInt(node.stakedTokens.toString())));
+      const averageStaked = this._getAverageNetworkData(stakedNodes.map(node => Number(node.stakedTokens.toString())));
 
       // 1 VP = 1 POKT, so, the validator power value is the same for staked token.
       const averageValidatorPower = this._getAverageNetworkData(stakedNodes.map(node => bigInt(node.stakedTokens.toString())));
+      const averageStakedResult = averageStaked / stakedNodes.length;
 
-      return new StakedNodeSummary(stakedNodes.length.toString(), averageStaked.toString(), averageValidatorPower.toString());
+      return new StakedNodeSummary(stakedNodes.length.toString(), averageStakedResult.toString(), averageValidatorPower.toString());
     } catch (e) {
       return new StakedNodeSummary("0", "0", "0");
     }
   }
+
 
   /**
    * Get all nodes on network that belongs to user.

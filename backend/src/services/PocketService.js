@@ -70,18 +70,18 @@ async function getPocketRPCProvider() {
   const clientAccountOrError = await pocket.keybase.importAccount(Buffer.from(clientPrivateKey, "hex"), clientPassphrase);
 
   if (typeGuard(clientAccountOrError, Error)) {
-      throw clientAccountOrError;
+    throw clientAccountOrError;
   }
   // Unlock the client account
   const unlockOrError = await pocket.keybase.unlockAccount(clientAccountOrError.addressHex, clientPassphrase, 0);
 
   if (typeGuard(unlockOrError, Error)) {
-      throw clientAccountOrError;
+    throw clientAccountOrError;
   }
 
   // Generate the AAT
   const aat = new PocketAAT(
-      POCKET_NETWORK_CONFIGURATION.aat_version, clientPubKeyHex, appPublicKey, appSignature
+    POCKET_NETWORK_CONFIGURATION.aat_version, clientPubKeyHex, appPublicKey, appSignature
   );
   // Pocket Rpc Instance
   const pocketRpcProvider = new PocketRpcProvider(pocket, aat, chain, POCKET_NETWORK_CONFIGURATION.enable_consensus_relay);
@@ -209,9 +209,9 @@ export default class PocketService {
     const {unlockedAccount: account} = transactionSender;
 
     return await transactionSender
-       .appStake(
-         account.publicKey.toString("hex"), chains, stakeAmount
-       )
+      .appStake(
+        account.publicKey.toString("hex"), chains, stakeAmount
+      )
       .createTransaction(chainID, transactionFee);
   }
 
@@ -390,11 +390,39 @@ export default class PocketService {
    * @async
    */
   async getNodes(status) {
+    let page = 1;
+    let nodeList = [];
+
+    const perPage = 100;
     const pocketRpcProvider = await getRPCProvider();
-    const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status);
+    const nodesResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status, undefined, BigInt(0), undefined, page, perPage);
 
     if (nodesResponse instanceof RpcError) {
       return [];
+    }
+
+    const totalPages = nodesResponse.totalPages;
+
+    nodesResponse.nodes.forEach(node => {
+      nodeList.push(node);
+    });
+
+    page++;
+
+    while (page <= totalPages) {
+      const response = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status, undefined, BigInt(0), undefined, page, perPage);
+
+      // Increment page variable
+      page++;
+
+      if (response instanceof RpcError) {
+        page = totalPages;
+        return;
+      }
+
+      response.nodes.forEach(node => {
+        nodeList.push(node);
+      });
     }
 
     return nodesResponse.nodes;
