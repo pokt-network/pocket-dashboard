@@ -107,7 +107,7 @@ jobs:
         envkey_POCKET_NETWORK_SERVICE_WORKER_ATTEMPTS: 15
         envkey_POCKET_FREE_TIER_STAKE_AMOUNT: 25950100000
         envkey_POCKET_NETWORK_DISPATCHERS: https://node1.testnet.pokt.network:443,https://node2.testnet.pokt.network:443,https://node3.testnet.pokt.network:443,https://node4.testnet.pokt.network:443,https://node5.testnet.pokt.network:443,https://node6.testnet.pokt.network:443,https://node7.testnet.pokt.network:443
-        envkey_POCKET_NETWORK_CHAIN_HASH: 0002
+        envkey_POCKET_NETWORK_CHAIN_HASH: "0002"
         envkey_POCKET_NETWORK_CHAIN_ID: testnet-r2
         envkey_POCKET_NETWORK_AAT_VERSION: 0.0.1
         envkey_POCKET_NETWORK_TRANSACTION_FEE: 10000000
