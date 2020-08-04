@@ -37,6 +37,7 @@ class AppDetail extends Component {
       unstake: false,
       stake: false,
       ctaButtonPressed: false,
+      isFreeTier: false,
       freeTierMsg: false,
       error: {show: false, message: ""}
     };
@@ -59,6 +60,7 @@ class AppDetail extends Component {
 }
 
   async componentDidMount() {
+    // eslint-disable-next-line 
     let freeTierMsg = false;
     let hasError = false;
     let errorType = "";
@@ -121,6 +123,7 @@ class AppDetail extends Component {
       chains,
       aat,
       accountBalance,
+      isFreeTier: freeTier,
       freeTierMsg,
       loading: false,
     });
@@ -136,16 +139,19 @@ class AppDetail extends Component {
       DASHBOARD_PATHS.apps
     )}`;
     const userEmail = PocketUserService.getUserInfo().email;
+      try {
+        const success = await ApplicationService.deleteAppFromDashboard(
+          id, userEmail, appsLink
+        );
 
-    const success = await ApplicationService.deleteAppFromDashboard(
-      id, userEmail, appsLink
-    );
-
-    if (success) {
-      this.setState({deleted: true});
-      // eslint-disable-next-line react/prop-types
-      this.props.onBreadCrumbChange(["Apps", "App Detail", "App Removed"]);
-    }
+        if (success) {
+          this.setState({deleted: true});
+          // eslint-disable-next-line react/prop-types
+          this.props.onBreadCrumbChange(["Apps", "App Detail", "App Removed"]);
+        }
+      } catch (error) {
+        this.setState({deleteModal: false, error: {show: true, message: "Free tier apps can't be deleted."}})
+      }
   }
 
   async unstakeApplication({ppk, passphrase}) {
@@ -244,7 +250,8 @@ class AppDetail extends Component {
       stake,
       ctaButtonPressed,
       accountBalance,
-      freeTierMsg
+      freeTierMsg,
+      isFreeTier
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
@@ -380,7 +387,7 @@ class AppDetail extends Component {
                   {name}
                   {freeTier && (
                     <Badge variant="light">
-                      Free Tier
+                      Launch Offering Plan
                     </Badge>
                   )}
                 </h1>
@@ -395,7 +402,7 @@ class AppDetail extends Component {
             <h1>App Detail</h1>
           </Col>
           <Col sm="1" md="1" lg="1">
-            {status !== STAKE_STATUS.Unstaking &&
+            {status !== STAKE_STATUS.Unstaking && freeTier === false &&
               <Button
                 className="float-right cta"
                 onClick={() => {
@@ -505,7 +512,7 @@ class AppDetail extends Component {
                   to change your app description.
                 </p>
               </span>
-            <span className="option">
+            <span style={{display: isFreeTier ? "none" : "inline-block" }} className="option">
                 <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
                 <p>
                   <span
