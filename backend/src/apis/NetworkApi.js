@@ -22,9 +22,21 @@ router.post("/chains", apiAsyncWrapper(async (req, res) => {
   /** @type {{networkHashes: string[]}} */
   const data = req.body;
 
-  const chains = await networkService.getNetworkChains(data.networkHashes);
+  const chains = await networkService.getAvailableNetworkChains();
 
-  res.json(chains);
+  let results = [];
+  
+  // Filter the results
+  data.networkHashes.forEach(hash => {
+
+    const chain = chains.find(chain => chain._id === hash);
+
+    if (chain) {
+      results.push(chain);
+    }
+  });
+
+  res.json(results);
 }));
 
 /**

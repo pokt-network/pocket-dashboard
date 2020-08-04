@@ -25,8 +25,12 @@ const POCKET_CONFIGURATION = new Configuration(
   POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout, undefined, undefined, POCKET_NETWORK_CONFIGURATION.block_time, undefined, undefined, POCKET_NETWORK_CONFIGURATION.reject_self_signed_certificates
 );
 
+// Main
 const POCKET_MAIN_FUND_ACCOUNT = POCKET_NETWORK_CONFIGURATION.main_fund_account;
 const POCKET_MAIN_FUND_ADDRESS = POCKET_NETWORK_CONFIGURATION.main_fund_address;
+// Free tier
+const POCKET_FREE_TIER_FUND_ACCOUNT = POCKET_NETWORK_CONFIGURATION.free_tier.fund_account ;
+const POCKET_FREE_TIER_FUND_ADDRESS = POCKET_NETWORK_CONFIGURATION.free_tier.fund_address;
 
 export const POKT_DENOMINATIONS = {
   pokt: 0,
@@ -501,7 +505,43 @@ export default class PocketService {
 
     return rawTxResponse.hash;
   }
+  /**
+   * Transfer funds from the Free tier Fund Account to the private pocket Account.
+   *
+   * @param {string} amount Amount to transfer in uPOKT denomination.
+   * @param {string} customerAddress Recipient address.
+   *
+   * @returns {Promise<string>} The transaction hash.
+   * @throws {PocketNetworkError}
+   */
+  async transferFromFreeTierFund(amount, customerAddress) {
 
+    const {transaction_fee: transactionFee, chain_id: chainID} = POCKET_NETWORK_CONFIGURATION;
+
+    if (transactionFee && chainID && amount && customerAddress) {
+      // Include transaction fee for the stake transaction
+      const totalAmount = BigInt(Number(amount) + Number(transactionFee));
+
+      if (totalAmount) {
+        const pocketRpcProvider = await getRPCProvider();
+
+        this.__pocket.rpc(pocketRpcProvider);
+
+        const rawTxResponse = await this.__pocket.withPrivateKey(POCKET_FREE_TIER_FUND_ACCOUNT).send(POCKET_FREE_TIER_FUND_ADDRESS, customerAddress, totalAmount.toString())
+          .submit(chainID, transactionFee);
+
+        if (typeGuard(rawTxResponse, RpcError)) {
+          throw new PocketNetworkError(rawTxResponse.message);
+        }
+
+        return rawTxResponse.hash;
+      } else {
+        throw new PocketNetworkError("totalAmount is undefined, failed to tansfer funds for free tier staking.");
+      }
+    } else {
+      throw new PocketNetworkError("Failed to retrieve transactionFee and/or chainID and/or amount and/or customerAddress values.");
+    }
+  }
   /**
    * Transfer funds from the Main Fund Account to the customer's Account.
    *
@@ -538,7 +578,6 @@ export default class PocketService {
     } else {
       throw new PocketNetworkError("Failed to retrieve transactionFee and/or chainID and/or amount and/or customerAddress values.");
     }
-
   }
 
   /**

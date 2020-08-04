@@ -34,11 +34,17 @@ export default class NetworkService extends BasePocketService {
    * @async
    */
   async getNetworkChains(networkHashes) {
+
     if(networkHashes === undefined) {
       return [];
     } else {
       const filter = {active: true, _id: networkHashes};
+
       const networkChainData = await this.persistenceService.getEntities(NETWORK_COLLECTION_NAME, filter, 1000, 0);
+
+      if (networkChainData) {
+        networkHashes.push(networkChainData);
+      }
 
       if (networkChainData.length > 0) {
         return networkChainData;

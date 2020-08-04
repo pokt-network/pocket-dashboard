@@ -23,17 +23,6 @@ services:
           - REDIS_REPLICATION_MODE=master
         networks:
           - pocket
-    gateway:
-        image: "gateway:latest"
-        ports:
-          - "3000:3000"
-        depends_on:
-          - "mongodb"
-          - "redis"
-        volumes:
-          - ./env-gateway-dev:/home/node/app/.env
-        networks:
-          - pocket
 networks:
     pocket:
         driver: bridge

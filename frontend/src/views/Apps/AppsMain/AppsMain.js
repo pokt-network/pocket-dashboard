@@ -63,7 +63,7 @@ class AppsMain extends Main {
     ApplicationService.getStakedApplicationSummary()
       .then(
         ({totalApplications,
-          averageRelays,
+          totalStaked,
           averageStaked,
           error,
           name,
@@ -76,7 +76,7 @@ class AppsMain extends Main {
           if (!error) {
             this.setState({
               total: totalApplications,
-              averageRelays,
+              totalStaked,
               averageStaked,
               loading: false,
             });
@@ -149,7 +149,7 @@ class AppsMain extends Main {
       filteredItems,
       total,
       averageStaked,
-      averageRelays,
+      totalStaked,
       registeredItems: allRegisteredItems,
       loading,
       allItemsTableLoading,
@@ -168,11 +168,11 @@ class AppsMain extends Main {
       {title: formatNumbers(total), subtitle: "Total of Apps"},
       {
         title: formatNetworkData(averageStaked, false),
-        subtitle: "Average Staked",
+        subtitle: "Average POKT Staked",
       },
       {
-        title: formatNetworkData(averageRelays, false),
-        subtitle: "Average Relays Per Application",
+        title: formatNetworkData(totalStaked, false),
+        subtitle: "Apps Total POKT Staked",
       },
     ];
 

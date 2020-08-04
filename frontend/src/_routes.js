@@ -108,7 +108,7 @@ export const breadcrumbsRoutes = () => {
     [DASHBOARD_PATHS.createAppInfo]: ["Apps", action, "App Information"],
     [DASHBOARD_PATHS.appPassphrase]: ["Apps", action, "Create Passphrase"],
     [DASHBOARD_PATHS.applicationChainsList]: ["Apps", action, "Choose Chains"],
-    [DASHBOARD_PATHS.tierSelection]: ["Apps", action, "Choose tier"],
+    [DASHBOARD_PATHS.tierSelection]: ["Apps", action, "Choose Plan"],
     [DASHBOARD_PATHS.selectRelays]: ["Apps", action, "Checkout"],
 
     // Nodes

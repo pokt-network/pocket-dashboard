@@ -177,13 +177,14 @@ class OrderSummary extends Component {
 
       // Stake application
       const {
+        id,
         passphrase,
         chains,
         address,
       } = ApplicationService.getApplicationInfo();
 
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
-      const detail = url.replace(":address", address);
+      const detail = url.replace(":id", id);
       const applicationLink = `${window.location.origin}${detail}`;
 
       this.setState({loading: true});
@@ -191,10 +192,15 @@ class OrderSummary extends Component {
       const appStakeTransaction = await PocketClientService.appStakeRequest(
         address, passphrase, chains, pokt.cost.toString());
 
-      // TODO: Add error handling
-      ApplicationService.stakeApplication(
-        appStakeTransaction, result.paymentIntent.id, applicationLink
-      ).then(() => {});
+      const stakeInformation = {
+        applicationId: id,
+        appStakeTransaction,
+        paymentId: result.paymentIntent.id,
+        applicationLink
+      };
+
+      await ApplicationService.stakeApplication(stakeInformation);
+
     } else {
       const pokt = await PocketCheckoutService.getNodePoktToStake(total);
 

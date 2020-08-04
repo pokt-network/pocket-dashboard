@@ -36,7 +36,7 @@ class PocketClientService {
    * @returns {Object} Transaction sender.
    */
   async _getTransactionSender(address, passphrase) {
-    const account = await this.getUnlockedAccount(address);
+    const account = await this.getUnlockedAccount(address, passphrase);
 
     if (account instanceof Error) {
       throw account;
@@ -151,7 +151,7 @@ class PocketClientService {
 
       return await transactionSender
         .appStake(
-          account.publicKey.toString("hex"), chains, Number(stakeAmount).toString()
+          account.publicKey.toString("hex"), chains, stakeAmount
         )
         .createTransaction(chainID, transactionFee);
 

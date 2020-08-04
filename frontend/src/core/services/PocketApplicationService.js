@@ -442,21 +442,14 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Stake a custom tier application.
    *
-   * @param {object} appStakeTransaction Transaction.
-   * @param {string} paymentId payment's stripe confirmation id.
-   * @param {string} applicationLink Link to detail for email.
+   * @param {{applicationId: string, appStakeTransaction: {address: string, raw_hex_bytes: string}, paymentId: string, applicationLink: string}} stakeInformation Stake information object..
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeApplication(appStakeTransaction, paymentId, applicationLink) {
-    const data = {
-      appStakeTransaction,
-      payment: {id: paymentId},
-      applicationLink,
-    };
+  stakeApplication(stakeInformation) {
 
     return axios
-      .post(this._getURL("custom/stake"), data)
+      .post(this._getURL("custom/stake"), stakeInformation)
       .then((response) => {
         return {success: true, data: response.data};
       })

@@ -134,7 +134,7 @@ export default class ApplicationService extends BasePocketService {
     } catch (e) {
       networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
     }
-
+    
     return ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
   }
 
@@ -357,15 +357,17 @@ export default class ApplicationService extends BasePocketService {
     try {
       const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
 
-      const averageStaked = this._getAverageNetworkData(stakedApplications.map(app => bigInt(app.stakedTokens.toString())));
-      const averageRelays = this._getAverageNetworkData(stakedApplications.map(app => bigInt(app.maxRelays.toString())));
+      const averageStaked = this._getAverageNetworkData(stakedApplications.map(app => Number(app.stakedTokens.toString())));
+      const totalStaked = this._getAverageNetworkData(stakedApplications.map(app => bigInt(app.stakedTokens.toString())));
 
-      return new StakedApplicationSummary(stakedApplications.length.toString(), averageStaked.toString(), averageRelays.toString());
+      const averageStakedResult = averageStaked / stakedApplications.length;
+
+      return new StakedApplicationSummary(stakedApplications.length.toString(), averageStakedResult.toString(), totalStaked.toString());
     } catch (e) {
       return new StakedApplicationSummary("0", "0", "0");
     }
   }
-
+ 
   /**
    * Get AAT using Free tier account.
    *
@@ -425,7 +427,7 @@ export default class ApplicationService extends BasePocketService {
     }
 
     // Generate a passphrase for the app account
-    const passphrase = mainFundAccount;
+    const passphrase = Math.floor(Math.random() * 9999999999999).toString(16);
 
     // Create Application credentials.
     const appAccount = await this.pocketService.createUnlockedAccount(passphrase);
@@ -494,7 +496,7 @@ export default class ApplicationService extends BasePocketService {
     const freeTierApplicationAccount = application.pocketApplication.freeTierApplicationAccount;
 
     // Generate a passphrase for the app account
-    const passphrase = Math.random().toString(36).substr(2, 8);
+    const passphrase = Math.floor(Math.random() * 9999999999999).toString(16);
 
     // Import the application to the keybase
     const pocketAccount = await this.pocketService.importAccountFromPrivateKey(freeTierApplicationAccount.privateKey, passphrase);
@@ -675,9 +677,13 @@ export default class ApplicationService extends BasePocketService {
 
     const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
-    await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
+    if (applicationDB.freeTier === false) {
+      await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
 
-    return PocketApplication.createPocketApplication(applicationDB);
+      return PocketApplication.createPocketApplication(applicationDB);
+    } else {
+      throw new DashboardError("Free tier apps can't be deleted.");
+    }
   }
 
   /**

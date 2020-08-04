@@ -209,16 +209,16 @@ router.post("/freetier/unstake", apiAsyncWrapper(async (req, res) => {
  * Stake an application.
  */
 router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{appStakeTransaction: {address: string, raw_hex_bytes: string}, payment:{id: string}, applicationLink: string}} */
+  /** @type {{applicationId: string, appStakeTransaction: {address: string, raw_hex_bytes: string}, paymentId: string, applicationLink: string}} */
   const data = req.body;
-  const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
+  const paymentHistory = await paymentService.getPaymentFromHistory(data.paymentId);
 
   if (
     paymentHistory.isSuccessPayment(true) &&
     paymentHistory.isApplicationPaymentItem(true)
   ) {
     const appStakeTransaction = data.appStakeTransaction;
-    const application = await applicationService.getApplication(appStakeTransaction.address);
+    const application = await applicationService.getClientApplication(data.applicationId);
 
     const item = paymentHistory.getItem();
     const amountToSpent = applicationCheckoutService.getMoneyToSpent(parseInt(item.maxRelays));

@@ -17,14 +17,14 @@ class CustomTierModal extends Component {
       >
         <Modal.Header closeButton></Modal.Header>
         <Modal.Body>
-          <h4>How the custom tier works?</h4>
+          <h4>HOW IT WORKS? - STAKE AND SCALE</h4>
           <p>
-            The custom tier is a plan for the apps to be able to purchase the
+            The Stake and Scale is a plan for the apps to be able to purchase the
             desired amount of throughput and scale up the application as it
             grows without overpaying for infrastructure.
           </p>
           <p>
-            In the custom tier, the staked POKT is completely owned and managed
+            In the Stake and Scale plan, the staked POKT is completely owned and managed
             by the user as well as the AAT (Application Authentication Token).
             The Pocket protocol uses a staking mechanism, which lets individuals
             access a daily allocated API throughput in perpetuity in relation to
@@ -42,7 +42,7 @@ class CustomTierModal extends Component {
           </p>
           <p>
             If you still have questions please take a look at our{" "}
-            <a href="/todo">FAQ.</a>
+            <a style={{fontWeight: "300", textDecoration: "none"}} href="https://dashboard.docs.pokt.network/docs/faq">FAQ</a>
           </p>
           <p className="subtitle">
             <b>Pocket Network</b>
@@ -59,7 +59,7 @@ class CustomTierModal extends Component {
             of POKT tokens for both applications and nodes is a 21 day minimum.
           </p>
 
-          <a href="/todo">Please see our FAQ for additional information.</a>
+          <a style={{fontWeight: "300", textDecoration: "none"}} href="https://dashboard.docs.pokt.network/docs/faq">Please see our FAQ for additional information.</a>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={() => onHide(CUSTOM_TIER_MODAL)}>

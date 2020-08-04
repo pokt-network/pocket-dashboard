@@ -3,10 +3,7 @@ import cls from "classnames";
 import "./AppPassphrase.scss";
 import {Button, Col, Form, Row} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
-import AppTable from "../../../core/components/AppTable";
-import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import {
-  TABLE_COLUMNS,
   VALIDATION_MESSAGES,
   PASSPHRASE_REGEX,
 } from "../../../_constants";
@@ -17,10 +14,8 @@ import {createAndDownloadJSONFile, scrollToId, validateYup} from "../../../_help
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import Segment from "../../../core/components/Segment/Segment";
 import LoadingButton from "../../../core/components/LoadingButton";
 import PocketClientService from "../../../core/services/PocketClientService";
-import {Configurations} from "../../../_configuration";
 import {Account} from "@pokt-network/pocket-js";
 
 class AppPassphrase extends Component {
@@ -194,12 +189,6 @@ class AppPassphrase extends Component {
       loading,
     } = this.state;
 
-    const generalInfo = [
-      {title: "0 POKT", subtitle: "Staked tokens"},
-      {title: "0 POKT", subtitle: "Balance"},
-      {title: Configurations.stakeDefaultStatus, subtitle: "Stake status"},
-      {title: 0, subtitle: "Max Relay Per Day"},
-    ];
 
     return (
       <div id="app-passphrase">
@@ -342,31 +331,6 @@ class AppPassphrase extends Component {
               application.
               </p>
             </AppAlert>
-          </Col>
-        </Row>
-        <Row>
-          <Col className="page-title">
-            <h1>General information</h1>
-          </Col>
-        </Row>
-        <Row className="stats">
-          {generalInfo.map((card, idx) => (
-            <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle}/>
-            </Col>
-          ))}
-        </Row>
-        <Row className="mb-5 app-networks">
-          <Col>
-            <Segment label="Networks">
-              <AppTable
-                scroll
-                keyField="hash"
-                data={[]}
-                columns={TABLE_COLUMNS.NETWORK_CHAINS}
-                bordered={false}
-              />
-            </Segment>
           </Col>
         </Row>
         <Row>
