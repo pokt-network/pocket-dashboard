@@ -42,7 +42,7 @@ class CustomTierModal extends Component {
           </p>
           <p>
             If you still have questions please take a look at our{" "}
-            <a style={{fontWeight: "300", textDecoration: "none"}} href="https://dashboard.docs.pokt.network/docs/faq">FAQ</a>
+            <a style={{fontWeight: "300", textDecoration: "none"}} rel="noopener noreferrer" target="_blank" href="https://dashboard.docs.pokt.network/docs/faq">FAQ</a>
           </p>
           <p className="subtitle">
             <b>Pocket Network</b>
@@ -59,7 +59,7 @@ class CustomTierModal extends Component {
             of POKT tokens for both applications and nodes is a 21 day minimum.
           </p>
 
-          <a style={{fontWeight: "300", textDecoration: "none"}} href="https://dashboard.docs.pokt.network/docs/faq">Please see our FAQ for additional information.</a>
+          <a style={{fontWeight: "300", textDecoration: "none"}} rel="noopener noreferrer" target="_blank" href="https://dashboard.docs.pokt.network/docs/faq">Please see our FAQ for additional information.</a>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={() => onHide(CUSTOM_TIER_MODAL)}>
