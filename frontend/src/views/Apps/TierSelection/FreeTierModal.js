@@ -24,12 +24,12 @@ class FreeTierModal extends Component {
         <h4>HOW IT WORKS? - LAUNCH OFFERING</h4>
           <p>
             In the Mainnet Launch Offering, Pocket Network Inc stakes on behalf of the customer and manages
-            the staked POKT as well as the AAT(Application Authentication Token). This will allow any app to access
+            the staked POKT as well as the AAT (Application Authentication Token). This will allow any app to access
             the network and connect to any of the available chains for free.
           </p>
           <p>
             Once your app scales up you can unstake and transition to the Stake and Scale plan to get the exact amount of
-            throughput you need. If you still have questions take a loot at our <a style={{fontWeight: "300", textDecoration: "none"}} href="https://dashboard.docs.pokt.network/docs/faq">FAQ</a>.
+            throughput you need. If you still have questions take a look at our <a style={{fontWeight: "300", textDecoration: "none"}} href="https://dashboard.docs.pokt.network/docs/faq">FAQ</a>.
           </p>
           <p className="subtitle">
             <b>Pocket Network</b>
@@ -38,19 +38,19 @@ class FreeTierModal extends Component {
             In the Mainnet Launch Offering, Pocket Network Inc stakes on behalf of the app and manages the staked POKT and Application
             Authentication Token (AAT). PNI reserves the right to revoke throughput at any time for violation of the <Link style={{fontWeight: "300", textDecoration: "none"}} to={ROUTE_PATHS.termsOfService}>Terms of Use</Link>.
           </p>
+          <p>Cases that may result in revocation of AAT include:</p>
           <ul className="violation-list">
-            <li>Cases that may result in revocation of AAT include.</li>
             <li>Usage falls below 50,000 daily relays for over 3 months.</li>
             <li>User is deemed to be using a fraudulent application or attacking the network.</li>
             <li>User is exploiting the offering to run multiple free accounts.</li>
-            <li>After 1 Year of service, PNI will revisit continuning this service for all.</li>
           </ul>
           <p>
+            After one year of service, PNI will revisit continuning this service for all.<br/>
             PNI is not responsible for damage resulting from managing AATs or POKT.
           </p>
           <p>
-            If you need additional bandwidth, you will always have the option to upgrade to a paid tier with additional control over your AAT and POKT.
-             It is recommended that you prepare for a surge by leveraging both this free and paid tiers in the event in order to not lose out on growth.
+            If you need additional bandwidth, you will always have the option to upgrade to a paid tier with additional control over your AAT and POKT.<br/>
+            If you are expecting rapid growth of your application, we suggest preparing for the surge by setting up the Stake and Scale paid tier so you don't experience downtime due to exhausting your available relays.
           </p>
           <a style={{fontWeight: "300", textDecoration: "none"}}  href="https://dashboard.docs.pokt.network/docs/faq">Please see our FAQ for additional information.</a>
         </Modal.Body>

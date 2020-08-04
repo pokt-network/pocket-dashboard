@@ -682,7 +682,7 @@ export default class ApplicationService extends BasePocketService {
 
       return PocketApplication.createPocketApplication(applicationDB);
     } else {
-      throw new DashboardError("Free tier accounts can't be deleted.");
+      throw new DashboardError("Free tier apps can't be deleted.");
     }
   }
 
