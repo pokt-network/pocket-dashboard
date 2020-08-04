@@ -171,7 +171,6 @@ class OrderSummary extends Component {
       return;
     }
 
-
     if (type === ITEM_TYPES.APPLICATION) {
       const pokt = await PocketCheckoutService.getApplicationPoktToStake(total);
 
@@ -192,11 +191,16 @@ class OrderSummary extends Component {
       const appStakeTransaction = await PocketClientService.appStakeRequest(
         address, passphrase, chains, pokt.cost.toString());
 
+      // Sign an AAT for the Gateway service using the Gateway's client pub key and app private key
+      const gatewayAATSignature = await PocketClientService.signGatewayAAT(
+        address, passphrase);
+
       const stakeInformation = {
         applicationId: id,
         appStakeTransaction,
         paymentId: result.paymentIntent.id,
-        applicationLink
+        applicationLink,
+        gatewayAATSignature,
       };
 
       await ApplicationService.stakeApplication(stakeInformation);

@@ -21,8 +21,10 @@ export const Configurations = {
     dispatchers: process.env.REACT_APP_POCKET_NETWORK_DISPATCHERS,
     transaction_fee: process.env.REACT_APP_POCKET_NETWORK_TX_FEE,
     chain_id: process.env.REACT_APP_POCKET_NETWORK_CHAIN_ID,
+    gateway_client_pub_key: process.env.REACT_APP_POCKET_NETWORK_GATEWAY_CLIENT_PUB_KEY,
+    aat_version: process.env.REACT_APP_POCKET_NETWORK_AAT_VERSION,
     free_tier: {
-      stake_amount: process.env.REACT_APP_POCKET_FREE_TIER_STAKE_AMOUNT,
+      stake_amount: process.env.REACT_APP_POCKET_FREE_TIER_STAKE_AMOUNT
     }
   },
   stakeDefaultStatus: process.env.REACT_APP_STAKE_DEFAULT_STATUS,

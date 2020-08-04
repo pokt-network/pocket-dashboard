@@ -1,5 +1,5 @@
 import {Configurations} from "../../_configuration";
-import {Configuration, Pocket} from "@pokt-network/pocket-js";
+import {Configuration, Pocket, PocketAAT, typeGuard} from "@pokt-network/pocket-js";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 const POCKET_CONFIGURATION = new Configuration(POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
@@ -155,6 +155,33 @@ class PocketClientService {
         )
         .createTransaction(chainID, transactionFee);
 
+    } catch (e) {
+      return e.toString();
+    }
+  }
+
+  /**
+   * Signs an AAT using the Gateway client pub key
+   * \
+   * @param {string} address - Application address.
+   * @param {string} passphrase - Application passphrase.
+   * @param {string} ppk - Application ppk
+   *
+   * @returns {Promise<{string>} - The AAT Signature
+   */
+  async signGatewayAAT(address, passphrase) {
+    try {
+      const {aat_version: aatVersion, gateway_client_pub_key: gatewayClientPubKey} = POCKET_NETWORK_CONFIGURATION;
+
+      const transactionSender = await this._getTransactionSender(address, passphrase);
+      const {unlockedAccount: account} = transactionSender;
+      const gatewayAAT = await PocketAAT.from(aatVersion, gatewayClientPubKey, account.publicKey.toString("hex"), account.privateKey.toString("hex"));
+
+      if (typeGuard(gatewayAAT, PocketAAT)) {
+        return gatewayAAT.applicationSignature;
+      } else {
+        throw new Error("Failed to generate the gateway AAT.");
+      }
     } catch (e) {
       return e.toString();
     }
