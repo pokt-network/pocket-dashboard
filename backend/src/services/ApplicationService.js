@@ -66,8 +66,6 @@ export default class ApplicationService extends BasePocketService {
         "_id": ObjectID(application.id)
       };
 
-      delete application.id;
-
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
       
@@ -419,7 +417,7 @@ export default class ApplicationService extends BasePocketService {
     const {
       main_fund_address: mainFundAccount,
       aat_version: aatVersion,
-      free_tier: {stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount}
+      free_tier: {client_pub_key: clientPublicKey, stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount}
     } = Configurations.pocket_network;
     
     if (aatVersion === undefined || upoktToStake === undefined || maxRelayPerDayAmount === undefined) {
@@ -472,9 +470,16 @@ export default class ApplicationService extends BasePocketService {
     // Update application.
     await this.__updatePersistedApplication(application.pocketApplication);
     
-    const aat = await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+    const aat = await PocketAAT.from(aatVersion, clientPublicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
 
     if (typeGuard(aat, PocketAAT)) {
+      application.pocketApplication.aat = {
+        version: aat.version,
+        clientPublicKey: aat.clientPublicKey,
+        applicationPublicKey: aat.applicationPublicKey,
+        applicationSignature: aat.applicationSignature
+      };
+      await this.__updatePersistedApplication(application.pocketApplication);
       return aat;
     } else {
       throw new Error("Failed to generate the AAT.");
