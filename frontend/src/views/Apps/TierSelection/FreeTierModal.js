@@ -50,7 +50,7 @@ class FreeTierModal extends Component {
           </p>
           <p>
             If you need additional bandwidth, you will always have the option to upgrade to a paid tier with additional control over your AAT and POKT.<br/>
-            If you are expecting rapid growth of your application, we suggest preparing for the surge by setting up the Stake and Scale paid tier so you don't experience downtime due to exhausting your available relays.
+            If you are expecting rapid growth of your application, we suggest preparing for the surge by setting up the Stake and Scale paid tier so you don&apos;t experience downtime due to exhausting your available relays.
           </p>
           <a style={{fontWeight: "300", textDecoration: "none"}}  href="https://dashboard.docs.pokt.network/docs/faq">Please see our FAQ for additional information.</a>
         </Modal.Body>
