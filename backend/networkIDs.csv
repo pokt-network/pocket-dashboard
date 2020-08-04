@@ -29,10 +29,10 @@
 001D,EOS,jungle,EOS-jungle,,29,eos-jungle,1
 001E,ETC,61,ETC-61,Mainnet,30,etc-mainnet,1
 001F,ETC,6,ETC-6,Kotti,31,etc-kotti,1
-0020,ETH,5,ETH-5,,32,eth-goerli,1
-0021,ETH,1,ETH-1,,33,eth-mainnet,1
-0022,ETH,4,ETH-4,,34,eth-rinkeby,1
-0023,ETH,3,ETH-3,,35,eth-ropsten,1
+0020,ETH,5,ETH-5,Goerli,32,eth-goerli,1
+0021,ETH,1,ETH-1,Mainnet,33,eth-mainnet,1
+0022,ETH,4,ETH-4,Rinkeby,34,eth-rinkeby,1
+0023,ETH,3,ETH-3,Ropsten,35,eth-ropsten,1
 0024,FIL,mainnet,FIL-mainnet,Filecoin Mainnet,36,fil-mainnet,1
 0025,FIL,testnet,FIL-testnet,Filecoin Testnet,37,fil-testnet,1
 0026,FLOW,mainnet,FLOW-mainnet,Flow,38,flow-mainnet,1
