@@ -25,8 +25,10 @@ router.post("/chains", apiAsyncWrapper(async (req, res) => {
   const chains = await networkService.getAvailableNetworkChains();
 
   let results = [];
+  
   // Filter the results
   data.networkHashes.forEach(hash => {
+
     const chain = chains.find(chain => chain._id === hash);
 
     if (chain) {

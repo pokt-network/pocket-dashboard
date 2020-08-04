@@ -297,7 +297,7 @@ class SelectRelays extends Component {
               </p>
               <br/>
               <p className="alert-max">
-                *Need More Relays per Day? If you're interested in more relays beyond the maximum on the dashboard, <br/>
+                *Need More Relays per Day? If you&apos;re interested in more relays beyond the maximum on the dashboard, <br/>
                 please <a href="mailto:dashboard@pokt.network">contact us</a> to find a solution specially designed for your app.
               </p>
             </AppAlert>

@@ -139,6 +139,7 @@ class AppDetail extends Component {
       DASHBOARD_PATHS.apps
     )}`;
     const userEmail = PocketUserService.getUserInfo().email;
+
       try {
         const success = await ApplicationService.deleteAppFromDashboard(
           id, userEmail, appsLink
@@ -150,7 +151,7 @@ class AppDetail extends Component {
           this.props.onBreadCrumbChange(["Apps", "App Detail", "App Removed"]);
         }
       } catch (error) {
-        this.setState({deleteModal: false, error: {show: true, message: "Free tier apps can't be deleted."}})
+        this.setState({deleteModal: false, error: {show: true, message: "Free tier apps can't be deleted."}});
       }
   }
 
@@ -512,7 +513,7 @@ class AppDetail extends Component {
                   to change your app description.
                 </p>
               </span>
-            <span style={{display: isFreeTier ? "none" : "inline-block" }} className="option">
+            <span style={{display: isFreeTier ? "none" : "inline-block"}} className="option">
                 <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
                 <p>
                   <span

@@ -197,7 +197,7 @@ class OrderSummary extends Component {
         appStakeTransaction,
         paymentId: result.paymentIntent.id,
         applicationLink
-      }
+      };
 
       await ApplicationService.stakeApplication(stakeInformation);
 
