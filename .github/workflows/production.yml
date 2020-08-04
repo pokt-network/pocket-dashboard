@@ -80,7 +80,7 @@ jobs:
     - name: Make envfile
       uses: SpicyPizza/create-envfile@v1
       with:
-        envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        envkey_DATABASE_URL: ${{ secrets.MONGO_PRODUCTION_DATABASE_URL }}
         envkey_POCKET_NETWORK_MAIN_FUND_ACCOUNT: ${{ secrets.POCKET_NETWORK_PRODUCTION_MAIN_FUND_ACCOUNT }}
         envkey_POCKET_NETWORK_MAIN_FUND_ADDRESS: ${{ secrets.POCKET_NETWORK_PRODUCTION_MAIN_FUND_ADDRESS }}
         envkey_POCKET_NETWORK_FREE_TIER_FUND_ACCOUNT: ${{ secrets.POCKET_NETWORK_PRODUCTION_FREE_TIER_FUND_ACCOUNT }}
