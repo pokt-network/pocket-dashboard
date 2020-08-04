@@ -40,6 +40,7 @@
     "react-bootstrap-table2-overlay": "^2.0.0",
     "react-bootstrap-table2-paginator": "^2.1.2",
     "react-datepicker": "^2.14.1",
+    "react-device-detect": "^1.13.1",
     "react-dom": "^16.13.0",
     "react-dropzone": "10.2.2",
     "react-google-recaptcha": "^2.0.1",
@@ -132,7 +133,7 @@
   "scripts": {
     "start": "PORT=80 BROWSER=none node_modules/.bin/react-scripts --max_old_space_size=8192 start",
     "build": "node_modules/.bin/react-scripts build",
-    "build:prod": "GENERATE_SOURCEMAP=false NODE_OPTIONS=--max_old_space_size=4096 node_modules/.bin/react-scripts build --prod",
+    "build:prod": "GENERATE_SOURCEMAP=false NODE_OPTIONS=--max_old_space_size=8192 node_modules/.bin/react-scripts build --prod",
     "test": "node_modules/.bin/react-scripts test",
     "eject": "node_modules/.bin/react-scripts eject",
     "lint": "eslint src/"
