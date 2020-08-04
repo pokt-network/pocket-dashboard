@@ -19,9 +19,9 @@ export default class NetworkService extends BasePocketService {
     const networkChainData = await this.persistenceService.getEntities(NETWORK_COLLECTION_NAME, filter, 1000, 0);
 
     if (networkChainData.length > 0) {
-      return networkChainData.sort(function(a, b) {
- return parseInt(a._id, 16) - parseInt(b._id, 16);
-});
+      return networkChainData.sort(function(a, b) { 
+        return parseInt(a._id, 16) - parseInt(b._id, 16);
+      });
     }
 
     return [];

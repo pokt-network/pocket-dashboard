@@ -479,7 +479,7 @@ class OrderSummary extends Component {
                       className="terms-link"
                       target="_blank"
                       style={{marginLeft: "0px"}}
-                      to={ROUTE_PATHS.termsOfService}>
+                      to={ROUTE_PATHS.purchaseTerms}>
                       Purchase Terms and conditions.
                       </Link>
                   </span>

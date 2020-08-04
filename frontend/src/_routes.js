@@ -29,6 +29,7 @@ import NodeDetail from "./views/Nodes/NodeDetail/NodeDetail";
 import EditNode from "./views/Nodes/EditNode/EditNode";
 import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
 import OrderSummary from "./views/Payment/OrderSummary/OrderSummary";
+import SecondPage from "./views/Payment/PrintableInvoice/SecondPage";
 import ResetPassword from "./views/Auth/ResetPassword/ResetPassword";
 import AppPassphrase from "./views/Apps/AppPassphrase/AppPassphrase";
 import TermsOfService from "./views/Support/TermsOfService";
@@ -56,6 +57,7 @@ export const ROUTE_PATHS = {
   termsOfService: "/support/terms-of-service",
   privacyPolicy: "/support/privacy-policy",
   unsubscribe: "/support/unsubscribe",
+  purchaseTerms: "/support/purchase-terms"
 };
 
 export const DASHBOARD_PATHS = {
@@ -192,6 +194,12 @@ const pageRoutes = [
     exact: true,
     name: "Terms of Service",
     component: TermsOfService,
+  },
+  {
+    path: ROUTE_PATHS.purchaseTerms,
+    exact: true,
+    name: "Purchase Terms and Conditions",
+    component: SecondPage,
   },
   {
     path: ROUTE_PATHS.verify_changed_email,

@@ -10,42 +10,40 @@ class SecondPage extends React.Component {
     return (
       <div
         className="token-purchase-agreement"
-        style={{pageBreakAfter: "always"}}
+        style={{pageBreakAfter: "always", maxWidth: "80%", margin: "auto"}}
       >
         <Logo />
-        <h3>pocket network, inc</h3>
+        <h3>POCKET NETWORK, INC</h3>
         <h3 className="mb-5">
           <u>pokt token purchase agreement</u>
         </h3>
         <p className="mb-5">
-          <b>NOTICE:</b> THE TERMS OF THIS AGREEMENT FORM A BINDING LEGAL
-          CONTRACT BETWEEN YOU AND POCKET NETWORK, INC (THE “COMPANY”).
-          CAREFULLY READ ALL OF THE TERMS OF THIS AGREEMENT BEFORE CLICKING THE
-          “I AGREE” BUTTON. BY CLICKING THE “I AGREE” BUTTON YOU ACKNOWLEDGE
-          YOUR CONSENT AND AGREEMENT TO ALL THE TERMS AND CONDITIONS SET FORTH
-          IN THIS AGREEMENT. IF YOU DO NOT AGREE TO ALL THE TERMS OF THIS
-          AGREEMENT, DO NOT CLICK “I AGREE.” IF YOU HAVE ANY QUESTIONS REGARDING
-          THE EFFECT OF THE TERMS AND CONDITIONS IN THIS AGREEMENT, YOU ARE
-          ADVISED TO CONSULT INDEPENDENT LEGAL COUNSEL.
+          <b>NOTICE:</b> THE TERMS OF THIS AGREEMENT FORM A BINDING LEGAL CONTRACT BETWEEN YOU AND POCKET NETWORK, 
+          INC (THE “COMPANY”). CAREFULLY READ ALL OF THE TERMS OF THIS AGREEMENT BEFORE CLICKING THE “I AGREE” BUTTON. 
+          BY CLICKING THE “I AGREE” BUTTON YOU ACKNOWLEDGE YOUR CONSENT AND AGREEMENT TO ALL THE TERMS AND CONDITIONS SET 
+          FORTH IN THIS AGREEMENT. IF YOU DO NOT AGREE TO ALL THE TERMS OF THIS AGREEMENT, DO NOT CLICK “I AGREE.” IF YOU 
+          HAVE ANY QUESTIONS REGARDING THE EFFECT OF THE TERMS AND CONDITIONS IN THIS AGREEMENT, YOU ARE ADVISED TO CONSULT 
+          INDEPENDENT LEGAL COUNSEL.
         </p>
         <h6 className="mb-3">
-          <u>summary</u>
+          <u>SUMMARY</u>
         </h6>
         <p>
-          Review this POKT Token Purchase Agreement following your completion of
-          certain questions on our online website platform{" "}
+          Review this POKT Token Purchase Agreement following your completion of certain questions on our online website platform
+          {" "}
           <a
+            target= "_blank"
+            rel="noopener noreferrer"
             href="https://dashboard.pokt.network/"
             style={{textDecoration: "none"}}
           >
-            pokt.dashboard.network
+            https://dashboard.pokt.network/
           </a>{" "}
-          (the “Purchasing Site”). If your responses remain accurate and
-          correct, click the check box and the “I AGREE” button to indicate your
-          agreement.
+          (the “Purchasing Site”). If your responses remain accurate and correct, 
+          click the checkbox and the “I AGREE” button to indicate your agreement.
         </p>
         <h6 className="mb-3">
-          <u>preamble</u>
+          <u>PREAMBLE</u>
         </h6>
         <p>
           This Token Purchase Agreement (this “Agreement”) contains the terms
@@ -59,34 +57,34 @@ class SecondPage extends React.Component {
           <u>Parties.</u>”
         </p>
         <p>
-          <b className="text-uppercase">whereas</b>, the Company created and
+          <b className="text-uppercase">WHEREAS</b>, the Company created and
           minted the Tokens, which are a native digital asset intended to
           interact with and enable use of the Company’s blockchain application,
           the Pocket Network (the “<u>Network</u>”);
         </p>
         <p>
-          <b className="text-uppercase">whereas</b>, the Company is
+          <b className="text-uppercase">WHEREAS</b>, the Company is
           collaborating with Pocket Network Foundation, an ownerless foundation
           company organized under the laws of the Cayman Islands, to develop and
           manage the Network;
         </p>
         <p>
-          <b className="text-uppercase">whereas</b>, Purchaser desires to
+          <b className="text-uppercase">WHEREAS</b>, Purchaser desires to
           participate in the Network either as an application developer (“
           <u>Developer</u>”) or as a Pocket node (“<u>Node</u>”);
         </p>
         <p>
-          <b className="text-uppercase">whereas</b>, in order to participate in
+          <b className="text-uppercase">WHEREAS</b>, in order to participate in
           the Network as a Developer or Node, Purchaser must acquire Tokens; and
         </p>
         <p>
-          <b className="text-uppercase">whereas</b>, Purchaser desires to
+          <b className="text-uppercase">WHEREAS</b>, Purchaser desires to
           purchase from the Company, and the Company desires to issue and sell
           to Purchaser, Tokens in an amount and for the consideration set forth
           on the Purchasing Site.
         </p>
         <p>
-          <b className="text-uppercase">now, therefore</b>, for good and
+          <b className="text-uppercase">NOW, THEREFORE</b>, for good and
           valuable consideration, the receipt and sufficiency of which are
           hereby acknowledged, the Parties hereby agree as follows:
         </p>

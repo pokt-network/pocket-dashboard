@@ -13,11 +13,6 @@ class TermsOfService extends Component {
       <Container fluid id="terms-of-use">
         <Navbar />
         <div className="wrapper">
-            {/* eslint-disable-next-line react/prop-types */}
-            <span className="go" onClick={this.props.history.goBack}>
-              <img src="/assets/arrow-left.svg" alt="" className="icon" />
-              <span className="text">Go back</span>
-          </span>
           <br />
           <Row>
             <div className="title">
