@@ -50,7 +50,7 @@ class AppDetail extends Component {
 
   copyAAT(){
     const aatInput = document.getElementById("aat-value");
-
+    
     if (aatInput) {
         aatInput.select();
         aatInput.setSelectionRange(0, 99999); /*For mobile devices*/
@@ -461,9 +461,9 @@ class AppDetail extends Component {
                   <h2>AAT</h2>
                 </div>
                 <Alert variant="light" className="aat-code">
-                <span id="aat-copy"className="copy-button" onClick={this.copyAAT}> <img src={"/assets/edit.svg"} alt="copy" /></span>
+                <span id="aat-copy"className="copy-button" onClick={this.copyAAT}> <img src={"/assets/copy.png"} alt="copy" /></span>
                 <pre>
-                  <input id="aat-value" style={{display: "none"}}></input>
+                  <input id="aat-value" style={{position: "absolute", left: "-9999px"}}></input>
                   <code className="language-html" data-lang="html">
                     {"# Returns\n"}
                     <span id="aat" >{aatStr}</span>
