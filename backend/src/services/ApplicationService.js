@@ -438,7 +438,7 @@ export default class ApplicationService extends BasePocketService {
     const appAccountPrivateKeyHex = appAccount.privateKey.toString("hex");
 
     // First transfer funds from the main fund to the new Application account.
-    const fundingTransactionHash = await this.pocketService.transferFromMainFund(upoktToStake, appAccount.addressHex);
+    const fundingTransactionHash = await this.pocketService.transferFromFreeTierFund(upoktToStake, appAccount.addressHex);
 
     // Create the stake transaction object
     const appStakeTransaction = await this.pocketService.appStakeRequest(appAccount.addressHex, passphrase, stakeInformation.chains, stakeInformation.stake_amount);
