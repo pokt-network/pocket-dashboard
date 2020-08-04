@@ -182,8 +182,8 @@ class SelectRelays extends Component {
       this.validate(currency);
 
       // Avoiding floating point precision errors.
-      const subTotalAmount = parseFloat(numeral(subTotal).format("0.000")).toFixed(3);
-      const totalAmount = parseFloat(numeral(total).format("0.000")).toFixed(3);
+      const subTotalAmount = parseFloat(numeral(subTotal).format("0.00")).toFixed(2);
+      const totalAmount = parseFloat(numeral(total).format("0.00")).toFixed(2);
 
       const {data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, totalAmount);
 
@@ -231,8 +231,8 @@ class SelectRelays extends Component {
 
     // At the moment the only available currency is USD.
     const currency = currencies[0];
-    const subTotalFixed = numeral(subTotal).format("$0,0.000");
-    const totalFixed = numeral(total).format("$0,0.000");
+    const subTotalFixed = numeral(subTotal).format("$0,0.00");
+    const totalFixed = numeral(total).format("$0,0.00");
 
     if (loading) {
       return <Loader />;

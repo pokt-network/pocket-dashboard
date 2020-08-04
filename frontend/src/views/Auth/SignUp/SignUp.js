@@ -227,12 +227,14 @@ class SignUp extends Component {
                           <span className="agreement-label">
                             I agree to Pocket Dashboard{" "}
                             <Link
+                              target="_blank"
                               to={ROUTE_PATHS.privacyPolicy}
                             >
                               Privacy Policy
                             </Link>
                             &nbsp;and&nbsp;
                             <Link
+                              target="_blank"
                               to={ROUTE_PATHS.termsOfService}
                             >
                               Terms of Use
