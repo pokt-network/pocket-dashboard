@@ -34,6 +34,7 @@ class NodeDetail extends Component {
       message: "",
       purchase: true,
       hideTable: false,
+      unjailAlert: false,
       exists: true,
       unstake: false,
       unjail: false,
@@ -98,6 +99,7 @@ class NodeDetail extends Component {
       accountBalance,
       serviceUrl: nodeFromCache.serviceURL,
       loading: false,
+      unjailAlert: networkData.jailed
     });
 
     // eslint-disable-next-line react/prop-types
@@ -195,9 +197,12 @@ class NodeDetail extends Component {
     } = this.state.networkData;
 
     const serviceURL = this.state.serviceUrl;
-    const status = getStakeStatus(parseInt(stakeStatus));
+
+    const copyStakeStatus = jailed ? "0" : stakeStatus;
+
+    const status = getStakeStatus(parseInt(copyStakeStatus));
     const isStaked =
-      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
+      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking && !jailed;
 
     let address;
     let publicKey;
@@ -217,6 +222,7 @@ class NodeDetail extends Component {
       unstake,
       unjail,
       stake,
+      unjailAlert,
       ctaButtonPressed,
       accountBalance,
     } = this.state;
@@ -350,6 +356,33 @@ class NodeDetail extends Component {
 
     return (
       <div className="detail">
+        {unjailAlert && (
+          <AppAlert
+            className="pb-4 pt-4"
+            variant="primary"
+            onClose={() => {
+              this.setState({unjailAlert: false});
+            }}
+            dismissible
+            title={
+              <>
+                <h4 className="text-uppercase" style={{paddingLeft: "15px"}}>
+                  ATTENTION!{" "}
+                </h4>
+                <p className="ml-2">
+                </p>
+              </>
+            }
+          >
+            <p ref={(el) => {
+              if (el) {
+                el.style.setProperty("font-size", "14px", "important");
+              }
+            }}>
+              This unjail transaction will be marked complete when the next block is generated. You will receive an email notification when your node is out of jail and ready to use.
+              </p>
+          </AppAlert>
+        )}
         <Row>
           <Col>
             {error.show && (

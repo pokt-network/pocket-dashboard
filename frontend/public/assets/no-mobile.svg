@@ -1,0 +1,13 @@
+<svg width="88px" height="66px" viewBox="0 0 88 66" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g id="UI" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="iPhone-11-Pro-Max" transform="translate(-170.000000, -287.000000)" stroke="#27A9E0">
+            <g id="Group-2" transform="translate(172.000000, 289.000000)">
+                <polygon id="Line" stroke-width="3" stroke-linecap="square" stroke-linejoin="round" points="46.2134638 42 46.2134638 55.0372419 32 62 70 62 54.8833061 55.0372419 54.8833061 42"></polygon>
+                <path d="M24.8934323,27.8325159 L24.8934323,57.9354839 C24.8934323,60.1802541 23.0861076,62 20.8566595,62 L4.03677281,62 C1.80732475,62 0,60.1802541 0,57.9354839 L0,24.0645161 C0,21.8197459 1.80732475,20 4.03677281,20 L20.4730842,20 L34,20" id="Path" stroke-width="3" stroke-linecap="round"></path>
+                <polyline id="Line-2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="36 15 40 19.4443895 36 23"></polyline>
+                <path d="M44.880088,54 L34.0645161,54 C31.8197459,54 30,52.172214 30,49.9175258 L30,-7.91752577 C30,-10.172214 31.8197459,-12 34.0645161,-12 L67.9354839,-12 C70.1802541,-12 72,-10.172214 72,-7.91752577 C72,16.1274079 72,34.1611082 72,46.1835751" id="Path" stroke-width="3" stroke-linecap="round" transform="translate(51.000000, 21.000000) rotate(-270.000000) translate(-51.000000, -21.000000) "></path>
+                <rect id="Rectangle" fill="#27A9E0" x="9" y="55" width="8" height="2" rx="1"></rect>
+            </g>
+        </g>
+    </g>
+</svg>
