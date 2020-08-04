@@ -198,7 +198,7 @@ class NodeDetail extends Component {
 
     const serviceURL = this.state.serviceUrl;
 
-    const copyStakeStatus = jailed ? "0" : stakeStatus
+    const copyStakeStatus = jailed ? "0" : stakeStatus;
 
     const status = getStakeStatus(parseInt(copyStakeStatus));
     const isStaked =
