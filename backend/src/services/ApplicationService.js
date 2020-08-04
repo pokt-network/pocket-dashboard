@@ -470,6 +470,7 @@ export default class ApplicationService extends BasePocketService {
 
     // Generate signed AAT for use on the Gateway that uses our pubkey
     const gatewayAAT = await PocketAAT.from(aatVersion, clientPublicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+
     if (typeGuard(gatewayAAT, PocketAAT)) {
       application.pocketApplication.aat = {
         version: gatewayAAT.version,
@@ -484,6 +485,7 @@ export default class ApplicationService extends BasePocketService {
 
     // Generate app signed AAT for their use
     const aat = await PocketAAT.from(aatVersion, appAccountPublicKeyHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+
     if (typeGuard(aat, PocketAAT)) {
       return aat;
     } else {
