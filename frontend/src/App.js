@@ -24,7 +24,7 @@ class App extends Component {
               <div className="vertical-center">
                 <img src="/assets/no-mobile.svg" alt="" className="indicator" />
                 <p className="title">Your Screen is <br /> too small</p>
-                <p className="sub-title">Please acceess to the<br /> Pocket Dashboard from a <br /> desktop device. </p>
+                <p className="sub-title">Please acceess the<br /> Pocket Dashboard from a <br /> desktop device. </p>
               </div>
             </center>
           </div>
