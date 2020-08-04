@@ -27,10 +27,10 @@ jobs:
         PUBLIC_URL: https://dashboard.testnet.pokt.network
         REACT_APP_BACKEND_URL: https://api-testnet.dashboard.pokt.network:4200
         REACT_APP_POCKET_NETWORK_MAX_DISPATCHER: 10
-        REACT_APP_POCKET_NETWORK_MAX_SESSIONS: 100
+        REACT_APP_POCKET_NETWORK_MAX_SESSIONS: 24
         REACT_APP_POCKET_NETWORK_REQUEST_TIMEOUT: 60000
         REACT_APP_POCKET_NETWORK_DISPATCHERS: https://node1.testnet.pokt.network:443
-        REACT_APP_POCKET_NETWORK_TX_FEE: 100000
+        REACT_APP_POCKET_NETWORK_TX_FEE: 10000
         REACT_APP_POCKET_NETWORK_CHAIN_ID: testnet-r2
         REACT_APP_POCKET_FREE_TIER_STAKE_AMOUNT: 25950100000
         REACT_APP_STAKE_DEFAULT_STATUS: Unstaked
@@ -121,13 +121,13 @@ jobs:
         envkey_EMAIL_FROM: dashboard@pokt.network
         envkey_CHECKOUT_DEFAULT_CURRENCY: USD
         envkey_CHECKOUT_MIN_RELAYS_PER_DAY: 433
-        envkey_CHECKOUT_MAX_RELAYS_PER_DAY: 6912000
+        envkey_CHECKOUT_MAX_RELAYS_PER_DAY: 5000000
         envkey_CHECKOUT_MIN_VALIDATOR_POWER: 15500
         envkey_CHECKOUT_MAX_VALIDATOR_POWER: 125000
-        envkey_CHECKOUT_BASE_RELAY_PER_POKT: 0.12
+        envkey_CHECKOUT_BASE_RELAY_PER_POKT: 1.67
         envkey_CHECKOUT_STABILITY: 0
-        envkey_CHECKOUT_SESSIONS_PER_DAY: 3456
-        envkey_CHECKOUT_P_RATE: 0.1
+        envkey_CHECKOUT_SESSIONS_PER_DAY: 24
+        envkey_CHECKOUT_P_RATE: 1
         file_name: backend/.env
 
     - name: Build, tag, and push image to Amazon ECR
