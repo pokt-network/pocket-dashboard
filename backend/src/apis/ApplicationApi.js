@@ -209,7 +209,7 @@ router.post("/freetier/unstake", apiAsyncWrapper(async (req, res) => {
  * Stake an application.
  */
 router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{applicationId: string, appStakeTransaction: {address: string, raw_hex_bytes: string}, paymentId: string, applicationLink: string}} */
+  /** @type {{applicationId: string, appStakeTransaction: {address: string, raw_hex_bytes: string}, paymentId: string, applicationLink: string, gatewayAATSignature: string}} */
   const data = req.body;
   const paymentHistory = await paymentService.getPaymentFromHistory(data.paymentId);
 
@@ -236,7 +236,8 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
       poktStaked: poktStaked
     };
 
-    await applicationService.stakeApplication(appStakeTransaction.address, uPoktStaked, appStakeTransaction, application, applicationEmailData, paymentEmailData);
+    await applicationService.stakeApplication(appStakeTransaction.address, uPoktStaked, appStakeTransaction, application, applicationEmailData, paymentEmailData, data.gatewayAATSignature);
+
     res.send(true);
   } else {
     // Return error if payment was unsuccessful

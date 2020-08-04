@@ -547,10 +547,11 @@ export default class ApplicationService extends BasePocketService {
    * @param {ExtendedPocketApplication} application Application to stake.
    * @param {{name: string, link: string}} emailData Email data.
    * @param {object} paymentEmailData Payment email data.
+   * @param {string} gatewayAATSignature Signature created by signing an AAT with gateway client pub key
    *
    * @throws {Error}
    */
-  async stakeApplication(appAddress, upoktToStake, appStakeTransaction, application, emailData, paymentEmailData) {
+  async stakeApplication(appAddress, upoktToStake, appStakeTransaction, application, emailData, paymentEmailData, gatewayAATSignature) {
     // First transfer funds from the main fund
     const fundingTransactionHash = await this.pocketService.transferFromMainFund(upoktToStake, appAddress);
 
@@ -569,7 +570,21 @@ export default class ApplicationService extends BasePocketService {
     if (!result) {
       throw new Error("Couldn't add funding transaction for processing");
     }
+    
+    // Create Gateway AAT using our client pub key and passed in signature
+    const {
+      aat_version: aatVersion,
+      free_tier: {client_pub_key: clientPublicKey}
+    } = Configurations.pocket_network;
 
+    application.pocketApplication.aat = {
+      version: aatVersion,
+      clientPublicKey: clientPublicKey,
+      applicationPublicKey: application.pocketApplication.publicPocketAccount.publicKey,
+      applicationSignature: gatewayAATSignature
+    };
+
+    await this.__updatePersistedApplication(application.pocketApplication);
     await this.__markApplicationAsFreeTier(application.pocketApplication, false);
   }
 
