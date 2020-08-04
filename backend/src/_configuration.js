@@ -115,7 +115,9 @@ export const Configurations = {
            },
            free_tier: {
              stake_amount: process.env.POCKET_FREE_TIER_STAKE_AMOUNT,
-             max_relay_per_day_amount: process.env.POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT
+             max_relay_per_day_amount: process.env.POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT,
+             fund_account: process.env.POCKET_NETWORK_FREE_TIER_FUND_ACCOUNT,
+             fund_address: process.env.POCKET_NETWORK_FREE_TIER_FUND_ADDRESS
            },
            dispatchers: process.env.POCKET_NETWORK_DISPATCHERS,
            chain_hash: process.env.POCKET_NETWORK_CHAIN_HASH,
