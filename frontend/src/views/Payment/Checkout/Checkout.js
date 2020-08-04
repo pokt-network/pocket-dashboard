@@ -183,11 +183,10 @@ class Checkout extends Component {
           <Row className="mb-4">
             <AppAlert
               className="pb-3 pt-3"
-              title={"This transaction may take some time to be completed."}
+              title={"ATTENTION!"}
             >
               <p>
-                On the next block generated your {isApp ? "app" : "node"} will
-                be staked, also we will notify you by email.
+                This staking transaction will be marked complete when the next block is generated. You will receive an email notification when your {isApp ? "app" : "node"} is ready to use.
               </p>
             </AppAlert>
           </Row>

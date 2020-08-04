@@ -169,7 +169,7 @@ class Login extends Component {
                       >
                         Log in
                       </Button>
-                      <div className="containerDiv">
+                      <div className="containerDiv" style={{display: "none"}}>
                         <div className="divider mt-3 mb-3">Or</div>
                         <div id={"provider-buttons"}>
                           <AuthProviderButton
