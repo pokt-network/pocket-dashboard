@@ -66,8 +66,6 @@ export default class ApplicationService extends BasePocketService {
         "_id": ObjectID(application.id)
       };
 
-      delete application.id;
-
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
       
@@ -419,7 +417,7 @@ export default class ApplicationService extends BasePocketService {
     const {
       main_fund_address: mainFundAccount,
       aat_version: aatVersion,
-      free_tier: {stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount}
+      free_tier: {client_pub_key: clientPublicKey, stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount}
     } = Configurations.pocket_network;
     
     if (aatVersion === undefined || upoktToStake === undefined || maxRelayPerDayAmount === undefined) {
@@ -469,15 +467,29 @@ export default class ApplicationService extends BasePocketService {
     // Set the free tier credentials.
     application.pocketApplication.freeTierApplicationAccount = new PrivatePocketAccount(appAccount.addressHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
     application.pocketApplication.freeTier = true;
-    // Update application.
-    await this.__updatePersistedApplication(application.pocketApplication);
-    
-    const aat = await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+
+    // Generate signed AAT for use on the Gateway that uses our pubkey
+    const gatewayAAT = await PocketAAT.from(aatVersion, clientPublicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+
+    if (typeGuard(gatewayAAT, PocketAAT)) {
+      application.pocketApplication.aat = {
+        version: gatewayAAT.version,
+        clientPublicKey: gatewayAAT.clientPublicKey,
+        applicationPublicKey: gatewayAAT.applicationPublicKey,
+        applicationSignature: gatewayAAT.applicationSignature
+      };
+      await this.__updatePersistedApplication(application.pocketApplication);
+    } else {
+      throw new Error("Failed to generate the gateway AAT.");
+    }
+
+    // Generate app signed AAT for their use
+    const aat = await PocketAAT.from(aatVersion, appAccountPublicKeyHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
 
     if (typeGuard(aat, PocketAAT)) {
       return aat;
     } else {
-      throw new Error("Failed to generate the AAT.");
+      throw new Error("Failed to generate the app AAT.");
     }
   }
 
