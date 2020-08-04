@@ -132,7 +132,7 @@
   "scripts": {
     "start": "PORT=80 BROWSER=none node_modules/.bin/react-scripts --max_old_space_size=8192 start",
     "build": "node_modules/.bin/react-scripts build",
-    "build:prod": "GENERATE_SOURCEMAP=false NODE_OPTIONS=--max_old_space_size=4096 node_modules/.bin/react-scripts build --prod",
+    "build:prod": "GENERATE_SOURCEMAP=false NODE_OPTIONS=--max_old_space_size=8192 node_modules/.bin/react-scripts build --prod",
     "test": "node_modules/.bin/react-scripts test",
     "eject": "node_modules/.bin/react-scripts eject",
     "lint": "eslint src/"
