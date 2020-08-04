@@ -158,7 +158,7 @@ class Import extends Component {
 
         // Retrieve the application information if available
         const application = await ApplicationService.getNetworkApplication(data.address);
-
+        
         if (application.error === undefined) {
           // Add the chains value
           chains = application.chains;
@@ -176,7 +176,10 @@ class Import extends Component {
         } else {
           this.setState({
             accountData: {
-              balance: balance
+              tokens: 0,
+              balance: balance,
+              status: getStakeStatus("0"),
+              amount: 0
             }
           });
         }

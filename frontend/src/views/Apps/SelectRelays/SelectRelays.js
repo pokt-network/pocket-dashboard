@@ -252,7 +252,7 @@ class SelectRelays extends Component {
             )}
             <h1>Stake and scale</h1>
             <p className="subtitle">
-              With the custom tier, you only need to pay for the API throughput
+              With the Stake and Scale, you only need to pay for the API throughput
               you application needs. If you expect your application to grow in
               the short term, we recommend giving it a buffer.
             </p>
@@ -263,39 +263,42 @@ class SelectRelays extends Component {
             <h2>
               Slide to select how many relays per day to purchase
             </h2>
-            <div className="slider-wrapper">
-              <AppSlider
-                defaultValue={minRelays}
-                onChange={this.onSliderChange}
-                type={PURCHASE_ITEM_NAME.APPS}
-                marks={{
-                  [minRelays]: `${formatNumbers(minRelays)} RPD`,
-                  // [maxRelays / 2]: {
-                  //   label: (
-                  //     <div className="average-stake-wrapper">
-                  //       <FontAwesomeIcon
-                  //         style={{color: STYLING.primaryColor}}
-                  //         icon={faCaretUp}
-                  //       />
-                  //       <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
-                  //     </div>
-                  //   ),
-                  // },
-                  [maxRelays]: `*${formatNumbers(maxRelays)} RPD`,
-                }}
-                min={minRelays}
-                max={maxRelays}
-              />
-            </div>
+              <div className="slider-wrapper">
+                <AppSlider
+                  defaultValue={minRelays}
+                  onChange={this.onSliderChange}
+                  type={PURCHASE_ITEM_NAME.APPS}
+                  marks={{
+                    [minRelays]: `${formatNumbers(minRelays)} RPD`,
+                    // [maxRelays / 2]: {
+                    //   label: (
+                    //     <div className="average-stake-wrapper">
+                    //       <FontAwesomeIcon
+                    //         style={{color: STYLING.primaryColor}}
+                    //         icon={faCaretUp}
+                    //       />
+                    //       <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
+                    //     </div>
+                    //   ),
+                    // },
+                    [maxRelays]: `*${formatNumbers(maxRelays)} RPD*`,
+                  }}
+                  min={minRelays}
+                  max={maxRelays}
+                />
+              </div>
             <AppAlert
               className="max-alert"
               variant="primary"
-              title={<h4 className="alert-max">*More relays?</h4>}
+              title={<h4 className="alert-max">About RPD, Relays per day:</h4>}
             >
               <p className="alert-max">
-                If your app requires more than {formatNumbers(maxRelays)} Relays
-                per Day please <a href="mailto:dashboard@pokt.network">contact us</a> directly to find a
-                solution specially designed for your app.
+                Each RPD purchased on the Pocket Dashboard has a representation as a POKT token on the Pocket Network. Approx. 40 RPD=  1POKT.
+              </p>
+              <br/>
+              <p className="alert-max">
+                *Need More Relays per Day? If you're interested in more relays beyond the maximum on the dashboard, <br/>
+                please <a href="mailto:dashboard@pokt.network">contact us</a> to find a solution specially designed for your app.
               </p>
             </AppAlert>
           </Col>
