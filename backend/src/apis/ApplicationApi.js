@@ -275,4 +275,14 @@ router.get("/freetier/aat/:applicationAccountAddress", apiAsyncWrapper(async (re
   res.json(aat);
 }));
 
+
+router.post("/update/gateway/settings", apiAsyncWrapper(async (req, res) => {
+  const data = req.body;
+  const applicationId = data.id;
+
+  const updated = await applicationService.updateApplication(applicationId, data);
+
+  res.send(updated);
+}));
+
 export default router;
