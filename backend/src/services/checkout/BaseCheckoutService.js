@@ -43,10 +43,14 @@ export class BaseCheckoutService extends BaseService {
   getPoktToStake(moneySpent, poktDenomination = CoinDenom.Upokt) {
     const {transaction_fee: transactionFee} = Configurations.pocket_network;
 
-    const pokt = ((moneySpent / this.poktMarketPrice) + (parseInt(transactionFee) / 1000000));
-    const poktWithDenomination = pokt * Math.pow(10, POKT_DENOMINATIONS[poktDenomination]);
+    const pokt = Math.round(((moneySpent / this.poktMarketPrice) + (parseInt(transactionFee) / 1000000)));
+    let poktWithDenomination = pokt * Math.pow(10, POKT_DENOMINATIONS[poktDenomination]);
 
-    return Math.round(poktWithDenomination);
+    if (poktDenomination === CoinDenom.Upokt) {
+      poktWithDenomination = Math.trunc(poktWithDenomination);
+    }
+
+    return poktWithDenomination;
   }
 
   /**
