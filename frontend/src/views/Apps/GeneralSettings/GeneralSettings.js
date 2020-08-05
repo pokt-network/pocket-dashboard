@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, {Component} from "react";
 import {Alert, Form, Col, Row, Modal, Button, Dropdown} from "react-bootstrap";
 import {Formik} from "formik";
@@ -30,11 +31,11 @@ class GeneralSettings extends Component {
   async addWhitelistUserAgents() {
     const data = this.state;
     const application = this.state.pocketApplication;
-    const agents = data.useragents.split(',').map(function (item) {
+    const agents = data.useragents.split(",").map(function (item) {
       return item.trim();
     });
 
-    application.gatewaySettings.whiltelistUserAgents = agents
+    application.gatewaySettings.whiltelistUserAgents = agents;
 
     await ApplicationService.updateGatewaySettings(application);
   }
@@ -42,20 +43,19 @@ class GeneralSettings extends Component {
   async addWhitelistOrigins() {
     const data = this.state;
     const application = this.state.pocketApplication;
-    const origins = data.origins.split(',').map(function (item) {
+    const origins = data.origins.split(",").map(function (item) {
       return item.trim();
     });
 
-    application.gatewaySettings.whiltelistOrigins = origins
+    application.gatewaySettings.whiltelistOrigins = origins;
 
     await ApplicationService.updateGatewaySettings(application);
   }
 
   async toggleSecretKeyRequired(value) {
-    const data = this.state;
     const application = this.state.pocketApplication;
 
-    application.gatewaySettings.secretKeyRequired = value
+    application.gatewaySettings.secretKeyRequired = value;
 
     await ApplicationService.updateGatewaySettings(application);
   }
@@ -110,8 +110,8 @@ class GeneralSettings extends Component {
     } = this.state;
 
     const chainsDropdown = chains.map(function (chain) {
-      return <Dropdown.Item>{chain.network}</Dropdown.Item>
-    })
+      return <Dropdown.Item>{chain.network}</Dropdown.Item>;
+    });
 
     return (
       <div className="general-settings">
