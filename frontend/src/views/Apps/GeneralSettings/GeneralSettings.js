@@ -110,7 +110,7 @@ class GeneralSettings extends Component {
     } = this.state;
 
     const chainsDropdown = chains.map(function (chain) {
-      return <Dropdown.Item>{chain.network}</Dropdown.Item>;
+      return <Dropdown.Item key={chain._id}>{chain.network}</Dropdown.Item>;
     });
 
     return (
