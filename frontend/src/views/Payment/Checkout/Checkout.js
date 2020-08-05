@@ -236,7 +236,7 @@ class Checkout extends Component {
           purchaseDetails={items}
           cardHolderName={owner}
           poktPrice={poktPrice}
-          purchasedTokens={purchasedTokens}
+          purchasedTokens={type === ITEM_TYPES.APPLICATION ? purchasedTokens : purchasedTokens - 10000000}
           total={totalAmount}
         />
       </>
