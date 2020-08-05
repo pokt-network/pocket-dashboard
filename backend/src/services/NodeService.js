@@ -375,6 +375,10 @@ export default class NodeService extends BasePocketService {
     if (!result) {
       throw new Error("Couldn't add funding transaction for processing");
     }
+
+    node.pocketNode.updatingStatus = true;
+
+    await this.__updatePersistedNode(node.pocketNode);
   }
 
   /**
@@ -413,6 +417,10 @@ export default class NodeService extends BasePocketService {
     if (!result) {
       throw new Error("Couldn't register app unstake transaction for email notification");
     }
+
+    node.pocketNode.updatingStatus = false;
+
+    await this.__updatePersistedNode(node.pocketNode);
   }
 
   /**

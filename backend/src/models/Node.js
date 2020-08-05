@@ -38,9 +38,10 @@ export class PocketNode {
    * @param {string} [operator] Operator.
    * @param {string} [description] Description.
    * @param {string} [icon] Icon.
+   * @param {boolean} [updatingStatus] If is on staking status.
    */
-  constructor(name, contactEmail, user, operator, description, icon) {
-    Object.assign(this, {name, contactEmail, user, operator, description, icon});
+  constructor(name, contactEmail, user, operator, description, icon, updatingStatus) {
+    Object.assign(this, {name, contactEmail, user, operator, description, icon, updatingStatus});
 
     this.id = "";
     this.publicPocketAccount = new PublicPocketAccount("", "");
@@ -103,8 +104,8 @@ export class PocketNode {
    * @static
    */
   static createPocketNode(nodeData) {
-    const {name, contactEmail, user, operator, description, icon, publicPocketAccount} = nodeData;
-    const pocketNode = new PocketNode(name, contactEmail, user, operator, description, icon);
+    const {name, contactEmail, user, operator, description, icon, publicPocketAccount, updatingStatus} = nodeData;
+    const pocketNode = new PocketNode(name, contactEmail, user, operator, description, icon, updatingStatus);
 
     pocketNode.id = nodeData._id ?? "";
     pocketNode.publicPocketAccount = publicPocketAccount ?? new PublicPocketAccount("", "");
