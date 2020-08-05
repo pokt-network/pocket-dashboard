@@ -108,14 +108,14 @@ jobs:
         envkey_POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME: 60000
         envkey_POCKET_NETWORK_SERVICE_WORKER_ATTEMPTS: 15
         envkey_POCKET_FREE_TIER_STAKE_AMOUNT: 25950100000
-        envkey_POCKET_NETWORK_DISPATCHERS: https://node1.mainnet.pokt.network:443,https://node2.mainnet.pokt.network:443,https://node3.mainnet.pokt.network:443,https://node4.mainnet.pokt.network:443,https://node5.mainnet.pokt.network:443,https://node6.mainnet.pokt.network:443,https://node7.mainnet.pokt.network:443
+        envkey_POCKET_NETWORK_DISPATCHERS: https://node1.dashboard.mainnet.pokt.network
         envkey_POCKET_NETWORK_CHAIN_HASH: "0001"
         envkey_POCKET_NETWORK_CHAIN_ID: mainnet
         envkey_POCKET_NETWORK_AAT_VERSION: 0.0.1
         envkey_POCKET_NETWORK_TRANSACTION_FEE: 10000
         envkey_POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT: 10000000
         envkey_POCKET_NETWORK_PROVIDER_TYPE: HTTP
-        envkey_POCKET_NETWORK_HTTP_PROVIDER_NODE: https://node1.mainnet.pokt.network:443
+        envkey_POCKET_NETWORK_HTTP_PROVIDER_NODE: https://node1.dashboard.mainnet.pokt.network
         envkey_AUTH_PROVIDER_GITHUB_CALLBACK_URL: https://dashboard.pokt.network/api/auth/provider/github
         envkey_AUTH_PROVIDER_GOOGLE_CALLBACK_URL: https://dashboard.pokt.network/api/auth/provider/google
         envkey_EMAIL_FROM: dashboard@pokt.network
