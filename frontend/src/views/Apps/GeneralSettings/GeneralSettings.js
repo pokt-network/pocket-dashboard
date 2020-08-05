@@ -33,6 +33,11 @@ class GeneralSettings extends Component {
     this.handleUserChange = this.handleUserChange.bind(this);
     this.chainSelect = this.chainSelect.bind(this);
     this.saveChanges = this.saveChanges.bind(this);
+    this.copy = this.copy.bind(this);
+  }
+
+  copy(property) {
+    navigator.clipboard.writeText(this.state[property]);
   }
 
   async saveChanges() {
@@ -105,7 +110,7 @@ class GeneralSettings extends Component {
 
   chainSelect(blockchain) {
     const endpoint = "https://{0}.gateway.pokt.network/v1/{1}".replace("{0}", blockchain).replace("{1}", this.state.appId);
-    
+
     this.setState({
       endpoint: endpoint
     });
@@ -197,17 +202,17 @@ class GeneralSettings extends Component {
           </Col>
         </Row>
         <Row className="mt-5 mb-2 page-title">
-          <Col sm="8" md="8" lg="8" className="pl-0">
+          <Col sm="11" md="11" lg="11" className="pr-0 pl-0">
             <h2 className="mb-0 pt-2">General settings</h2>
           </Col>
-          <Col sm="4" md="4" lg="4" className="btn-sc pr-0">
+          <Col sm="1" md="1" lg="1" className="btn-sc pr-0">
             <Button
               variant="primary" onClick={this.saveChanges}>
               <span>Save Changes</span>
             </Button>
           </Col>
           <p className="mt-2">
-            Set up the app setting to access the provider of blockchain data that allows easy connections to the decentralized network of Pocket Network blockchain nodes. For more information take a look <a href="http://example.com"> Pocket Gateway Docs. </a>
+            Set up the app setting to access the provider of blockchain data that allows easy connections to the decentralized network of Pocket Network blockchain nodes. For more information take a look <a rel="noopener noreferrer" href="https://dashboard.docs.pokt.network/docs/gateway-overview" target="_blank"> Pocket Gateway Docs. </a>
           </p>
         </Row>
         <Row className="gateway-data">
@@ -215,7 +220,7 @@ class GeneralSettings extends Component {
             <div className="page-title">
               <h3 className="pl-4">Application ID</h3>
               <Alert variant="light">{appId}
-                <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon" /></div>
+                <div className="copy-icon" onClick={() => this.copy("appId")}><img src={"/assets/copy.png"} alt="copy-icon" /></div>
               </Alert>
             </div>
           </Col>
@@ -223,7 +228,7 @@ class GeneralSettings extends Component {
             <div className="page-title">
               <h3 className="pl-4">Application Secret Key</h3>
               <Alert variant="light">{appSecretKey}
-                <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon" /></div>
+                <div className="copy-icon" onClick={() => this.copy("appSecretKey")}><img src={"/assets/copy.png"} alt="copy-icon" /></div>
               </Alert>
             </div>
           </Col>
@@ -248,7 +253,7 @@ class GeneralSettings extends Component {
         <Row className="alert-endpoint mb-4">
           <Col sm="12" md="12" lg="12" className="pl-0 pr-0">
             <Alert variant="light">{endpoint}
-              <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon" /></div>
+              <div className="copy-icon" onClick={() => this.copy("endpoint")} ><img src={"/assets/copy.png"} alt="copy-icon" /></div>
             </Alert>
           </Col>
         </Row>
@@ -333,7 +338,7 @@ class GeneralSettings extends Component {
             </Formik>
           </Col>
         </Row>
-        <Row className="remove-app">
+        <Row className="remove-app" style={{display: "none"}}>
           <Col sm="12" md="12" lg="12" className="pl-0">
             <span className="option">
               <img src={"/assets/trash.svg"} alt="trash-action-icon" />
