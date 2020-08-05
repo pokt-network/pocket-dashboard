@@ -577,6 +577,8 @@ export default class ApplicationService extends BasePocketService {
       free_tier: {client_pub_key: clientPublicKey}
     } = Configurations.pocket_network;
 
+    application.pocketApplication.updatingStatus = true;
+
     application.pocketApplication.aat = {
       version: aatVersion,
       clientPublicKey: clientPublicKey,
@@ -624,6 +626,8 @@ export default class ApplicationService extends BasePocketService {
     if (!result) {
       throw new Error("Couldn't register app unstake transaction for email notification");
     }
+
+    application.pocketApplication.updatingStatus = false;
 
     await this.__markApplicationAsFreeTier(application.pocketApplication, false);
   }
