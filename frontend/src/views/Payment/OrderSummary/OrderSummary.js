@@ -16,7 +16,6 @@ import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCardNoAddressForm";
 import AppAlert from "../../../core/components/AppAlert";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
-import {Link} from "react-router-dom";
 import {formatCurrency, formatNumbers, scrollToId} from "../../../_helpers";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import LoadingButton from "../../../core/components/LoadingButton";
@@ -24,7 +23,6 @@ import {ITEM_TYPES} from "../../../_constants";
 import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
-import {ROUTE_PATHS} from "../../../_routes";
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -475,13 +473,14 @@ class OrderSummary extends Component {
                 label={
                   <span className="agree">
                     I agree to{" "}
-                    <Link
+                    <a
                       className="terms-link"
                       target="_blank"
+                      rel="noopener noreferrer"
                       style={{marginLeft: "0px"}}
-                      to={ROUTE_PATHS.purchaseTerms}>
+                      href="http://www.pokt.network/pokt-token-purchase-agreement/">
                       Purchase Terms and conditions.
-                      </Link>
+                      </a>
                   </span>
                 }
               />
