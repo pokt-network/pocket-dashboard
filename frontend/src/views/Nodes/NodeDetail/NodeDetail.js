@@ -41,6 +41,7 @@ class NodeDetail extends Component {
       stake: false,
       ctaButtonPressed: false,
       serviceUrl: "",
+      updatingAlert: false,
       error: {show: false, message: ""}
     };
 
@@ -92,6 +93,9 @@ class NodeDetail extends Component {
       chains = nodeFromCache.chainsObject;
     }
 
+    const status = getStakeStatus(parseInt(networkData.status));
+    const updatingAlert = pocketNode.updatingStatus && status === STAKE_STATUS.Unstaked;
+
     this.setState({
       pocketNode,
       networkData,
@@ -99,6 +103,7 @@ class NodeDetail extends Component {
       accountBalance,
       serviceUrl: nodeFromCache.serviceURL,
       loading: false,
+      updatingAlert,
       unjailAlert: networkData.jailed
     });
 
@@ -225,6 +230,8 @@ class NodeDetail extends Component {
       unjailAlert,
       ctaButtonPressed,
       accountBalance,
+      updatingAlert,
+      pocketNode
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
@@ -385,6 +392,20 @@ class NodeDetail extends Component {
         )}
         <Row>
           <Col>
+            {updatingAlert && (
+              <AppAlert
+                className="pb-3 pt-3 mb-4"
+                title={
+                  <h4 className="ml-3">
+                    ATTENTION!
+                  </h4>
+                }
+              >
+                <p>
+                  This staking transaction will be marked complete when the next block is generated. You will receive an email notification when your app is ready to use.
+                </p>
+              </AppAlert>
+            )}
             {error.show && (
               <AppAlert
                 variant="danger"
@@ -408,7 +429,7 @@ class NodeDetail extends Component {
             <h1>Node Detail</h1>
           </Col>
           <Col sm="1" md="1" lg="1">
-            {status !== STAKE_STATUS.Unstaking &&
+            {status !== STAKE_STATUS.Unstaking && pocketNode.updatingStatus !== true &&
               <Button
                 className="float-right cta"
                 onClick={() => {

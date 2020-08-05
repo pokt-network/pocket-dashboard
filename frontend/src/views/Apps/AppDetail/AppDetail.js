@@ -39,6 +39,7 @@ class AppDetail extends Component {
       ctaButtonPressed: false,
       isFreeTier: false,
       freeTierMsg: false,
+      updatingAlert: false,
       error: {show: false, message: ""}
     };
 
@@ -120,6 +121,10 @@ class AppDetail extends Component {
       }
     }
 
+    const status = getStakeStatus(parseInt(networkData.status));
+    const updatingAlert = pocketApplication.updatingStatus && status === STAKE_STATUS.Unstaked;
+
+
     this.setState({
       pocketApplication,
       networkData,
@@ -128,6 +133,7 @@ class AppDetail extends Component {
       accountBalance,
       isFreeTier: freeTier,
       freeTierMsg,
+      updatingAlert,
       loading: false,
     });
 
@@ -255,7 +261,9 @@ class AppDetail extends Component {
       ctaButtonPressed,
       accountBalance,
       freeTierMsg,
-      isFreeTier
+      isFreeTier,
+      updatingAlert,
+      pocketApplication
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
@@ -362,18 +370,17 @@ class AppDetail extends Component {
       <div className="detail">
         <Row>
           <Col>
-            {freeTierMsg && (
+            {(freeTierMsg || updatingAlert) && (
               <AppAlert
                 className="pb-3 pt-3 mb-4"
                 title={
                   <h4 className="ml-3">
-                    This transaction may take some time to be completed.
+                    ATTENTION!
                   </h4>
                 }
               >
                 <p>
-                  On the next block generated your app will be staked, also we
-                  will notify you by email.
+                  This staking transaction will be marked complete when the next block is generated. You will receive an email notification when your app is ready to use.
                 </p>
               </AppAlert>
             )}
@@ -421,7 +428,7 @@ class AppDetail extends Component {
                 </Button>
               </Link>
             }
-            {status !== STAKE_STATUS.Unstaking && freeTier === false &&
+            {status !== STAKE_STATUS.Unstaking && freeTier === false && pocketApplication.updatingStatus !== true &&
               <Button
                 className="float-right cta"
                 onClick={() => {
