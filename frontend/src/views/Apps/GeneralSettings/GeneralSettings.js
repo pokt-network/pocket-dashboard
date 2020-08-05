@@ -5,6 +5,7 @@ import {Formik} from "formik";
 import LabelToggle from "../../../core/components/LabelToggle";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
+import AppAlert from "../../../core/components/AppAlert";
 import "./GeneralSettings.scss";
 
 class GeneralSettings extends Component {
@@ -18,7 +19,11 @@ class GeneralSettings extends Component {
       pocketApplication: {},
       useragents: "",
       origins: "",
-      secretKey: false
+      appSecretKey: "",
+      secretKey: false,
+      appId: "",
+      endpoint: "",
+      showAlert: false
     };
 
     this.addWhitelistUserAgents = this.addWhitelistUserAgents.bind(this);
@@ -26,6 +31,17 @@ class GeneralSettings extends Component {
     this.toggleSecretKeyRequired = this.toggleSecretKeyRequired.bind(this);
     this.handleOriginChange = this.handleOriginChange.bind(this);
     this.handleUserChange = this.handleUserChange.bind(this);
+    this.chainSelect = this.chainSelect.bind(this);
+    this.saveChanges = this.saveChanges.bind(this);
+  }
+
+  async saveChanges() {
+    const application = this.state.pocketApplication;
+    await ApplicationService.updateGatewaySettings(application);
+
+    this.setState({
+      showAlert: true
+    })
   }
 
   async addWhitelistUserAgents() {
@@ -38,6 +54,10 @@ class GeneralSettings extends Component {
     application.gatewaySettings.whiltelistUserAgents = agents;
 
     await ApplicationService.updateGatewaySettings(application);
+
+    this.setState({
+      showAlert: true
+    })
   }
 
   async addWhitelistOrigins() {
@@ -50,6 +70,10 @@ class GeneralSettings extends Component {
     application.gatewaySettings.whiltelistOrigins = origins;
 
     await ApplicationService.updateGatewaySettings(application);
+
+    this.setState({
+      showAlert: true
+    })
   }
 
   async toggleSecretKeyRequired(value) {
@@ -76,8 +100,13 @@ class GeneralSettings extends Component {
     this.setState({
       useragents: data[input.name]
     });
+  }
 
-
+  chainSelect(blockchain) {
+    const endpoint = "https://{0}.gateway.pokt.network/v1/{1}".replace("{0}", blockchain).replace("{1}", this.state.appId);
+    this.setState({
+      endpoint: endpoint
+    })
   }
 
   async componentDidMount() {
@@ -89,6 +118,7 @@ class GeneralSettings extends Component {
     } = await ApplicationService.getClientApplication(id) || {};
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
+    const endpoint = "https://{0}.gateway.pokt.network/v1/{1}".replace("{0}", chains[0].blockchain).replace("{1}", id);
 
     this.setState({
       chains,
@@ -96,6 +126,9 @@ class GeneralSettings extends Component {
       secretKey: pocketApplication.gatewaySettings.secretKeyRequired,
       useragents: pocketApplication.gatewaySettings.whiltelistUserAgents.join(),
       origins: pocketApplication.gatewaySettings.whiltelistOrigins.join(),
+      appSecretKey: pocketApplication.gatewaySettings.secretKey,
+      appId: pocketApplication.id,
+      endpoint: endpoint,
     });
   }
 
@@ -106,24 +139,57 @@ class GeneralSettings extends Component {
       chains,
       secretKey,
       useragents,
-      origins
+      origins,
+      appSecretKey,
+      appId,
+      pocketApplication,
+      endpoint,
+      showAlert
     } = this.state;
 
     const chainsDropdown = chains.map(function (chain) {
-      return <Dropdown.Item key={chain._id}>{chain.network}</Dropdown.Item>;
+      return <Dropdown.Item key={chain.blockchain} eventKey={chain.blockchain}>{chain.network}</Dropdown.Item>;
     });
 
     return (
       <div className="general-settings">
+        {showAlert && (
+          <AppAlert
+            className="pb-4 pt-4"
+            style={{height: "100px"}}
+            variant="primary"
+            onClose={() => {
+              this.setState({showAlert: false});
+            }}
+            dismissible
+            title={
+              <>
+                <h4 className="text-uppercase" style={{paddingLeft: "15px"}}>
+                  APPLICATION SAVED{" "}
+                </h4>
+                <p className="ml-2">
+                </p>
+              </>
+            }
+          >
+            <p ref={(el) => {
+              if (el) {
+                el.style.setProperty("font-size", "14px", "important");
+              }
+            }}>
+              Your information has been updated.
+              </p>
+          </AppAlert>
+        )}
         <Row>
           <Col>
             <div className="head">
               <img src={"/assets/gateway.png"} alt="gateway" />
               <div className="info">
                 <h1 className="name d-flex align-items-center">
-                  EXAMPLE NAME APP&nbsp;<span>- GATEWAY </span>
+                  {pocketApplication.name}&nbsp;<span>- GATEWAY </span>
                 </h1>
-                <h3 className="owner">COMPANY NAME</h3>
+                <h3 className="owner">{pocketApplication.owner}</h3>
               </div>
             </div>
           </Col>
@@ -134,7 +200,7 @@ class GeneralSettings extends Component {
           </Col>
           <Col sm="4" md="4" lg="4" className="btn-sc pr-0">
             <Button
-              variant="primary">
+              variant="primary" onClick={this.saveChanges}>
               <span>Save Changes</span>
             </Button>
           </Col>
@@ -146,7 +212,7 @@ class GeneralSettings extends Component {
           <Col sm="6" md="6" lg="6" className="pl-0">
             <div className="page-title">
               <h3 className="pl-4">Application ID</h3>
-              <Alert variant="light">a969144c864bd87a92e9a969144c864bd87a92e9
+              <Alert variant="light">{appId}
                 <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon" /></div>
               </Alert>
             </div>
@@ -154,7 +220,7 @@ class GeneralSettings extends Component {
           <Col sm="6" md="6" lg="6" className="pr-0">
             <div className="page-title">
               <h3 className="pl-4">Application Secret Key</h3>
-              <Alert variant="light">a969144c864bd87a92e9a969144c864bd87a92e9
+              <Alert variant="light">{appSecretKey}
                 <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon" /></div>
               </Alert>
             </div>
@@ -167,7 +233,7 @@ class GeneralSettings extends Component {
             </div>
           </Col>
           <Col sm="3" md="3" lg="3" className="pr-0">
-            <Dropdown className="staked-networks">
+            <Dropdown className="staked-networks" onSelect={this.chainSelect}>
               <Dropdown.Toggle as={LabelToggle} id="dropdown-basic">
                 {"Staked Networks"}
               </Dropdown.Toggle>
@@ -179,7 +245,7 @@ class GeneralSettings extends Component {
         </Row>
         <Row className="alert-endpoint mb-4">
           <Col sm="12" md="12" lg="12" className="pl-0 pr-0">
-            <Alert variant="light">https://mainnet.pocket.ifsiodhfsoifhiefwef/efwieoh8r13nno9e90-sdfsdf/008889f008309/e9a969144c864bd87a94
+            <Alert variant="light">{endpoint}
               <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon" /></div>
             </Alert>
           </Col>
