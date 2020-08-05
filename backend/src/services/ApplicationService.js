@@ -68,7 +68,7 @@ export default class ApplicationService extends BasePocketService {
 
       /** @type {{result: {n:number, ok: number}}} */
       const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
-      
+
       return result.result.ok === 1;
     }
 
@@ -132,7 +132,7 @@ export default class ApplicationService extends BasePocketService {
     } catch (e) {
       networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
     }
-    
+
     return ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
   }
 
@@ -153,7 +153,7 @@ export default class ApplicationService extends BasePocketService {
     application.freeTier = freeTier;
     /** @type {{result: {n:number, ok: number}}} */
     const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
-    
+
     return result.result.ok === 1;
   }
 
@@ -365,7 +365,7 @@ export default class ApplicationService extends BasePocketService {
       return new StakedApplicationSummary("0", "0", "0");
     }
   }
- 
+
   /**
    * Get AAT using Free tier account.
    *
@@ -419,7 +419,7 @@ export default class ApplicationService extends BasePocketService {
       aat_version: aatVersion,
       free_tier: {client_pub_key: clientPublicKey, stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount}
     } = Configurations.pocket_network;
-    
+
     if (aatVersion === undefined || upoktToStake === undefined || maxRelayPerDayAmount === undefined) {
       throw new Error("Couldn't retrieve aatVersion and/or upoktToStake and/or maxRelayPerDayAmount values for free tier stake.");
     }
@@ -570,7 +570,7 @@ export default class ApplicationService extends BasePocketService {
     if (!result) {
       throw new Error("Couldn't add funding transaction for processing");
     }
-    
+
     // Create Gateway AAT using our client pub key and passed in signature
     const {
       aat_version: aatVersion,
@@ -751,6 +751,8 @@ export default class ApplicationService extends BasePocketService {
         ...application,
         publicPocketAccount: applicationDB.publicPocketAccount
       };
+
+      applicationToEdit.id = applicationId;
 
       return this.__updatePersistedApplication(applicationToEdit);
     }

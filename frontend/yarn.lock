@@ -1490,10 +1490,10 @@
     "@tendermint/belt" "0.2.1"
     "@tendermint/types" "0.1.1"
 
-"@pokt-network/pocket-js@0.5.4-rc":
-  version "0.5.4-rc"
-  resolved "https://registry.yarnpkg.com/@pokt-network/pocket-js/-/pocket-js-0.5.4-rc.tgz#6515b6249a498c0af4b0030b93707df8469a00df"
-  integrity sha512-RFsmHZ9pT7ar5CXp/q6bayazq72J3kEsTk2jzKkNUNcHJHf/r2bDZGSfNnAjSs57/jZ2nEKgyVlcZkA+FJs+IA==
+"@pokt-network/pocket-js@0.5.8-rc":
+  version "0.5.8-rc"
+  resolved "https://registry.yarnpkg.com/@pokt-network/pocket-js/-/pocket-js-0.5.8-rc.tgz#2df44d0239b479ab3d437f3b74e6d1fe6169ea2f"
+  integrity sha512-L6Aab3cYfRY/DOWAb4W1HJZtY9T/cUgKuVh7cVnwhuL+DNoMVIdl+onwrBGlyGdM91HMU8QO+MfMkTbCK+9uGA==
   dependencies:
     "@pokt-network/aat-js" "0.1.1-rc"
     "@pokt-network/amino-js" "0.7.5-alpha.1"
@@ -10071,6 +10071,13 @@ react-dev-utils@^10.2.0:
     strip-ansi "6.0.0"
     text-table "0.2.0"
 
+react-device-detect@^1.13.1:
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/react-device-detect/-/react-device-detect-1.13.1.tgz#27ac0e86a03969e440e973d179aaa19e80a5ba66"
+  integrity sha512-XTPgAMsUVHC5lMNUGiAeO2UfAfhMfjq0CBUM67eHnc9XfO7iESh6h/cffKV8VGgrZBX+dyuqJl23bLLHoav5Ig==
+  dependencies:
+    ua-parser-js "^0.7.21"
+
 react-dom@^16.13.0:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-16.13.1.tgz#c1bd37331a0486c078ee54c4740720993b2e0e7f"
@@ -12085,6 +12092,11 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+
+ua-parser-js@^0.7.21:
+  version "0.7.21"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.21.tgz#853cf9ce93f642f67174273cc34565ae6f308777"
+  integrity sha512-+O8/qh/Qj8CgC6eYBVBykMrNtp5Gebn4dlGD/kKXVkJNDwyrAwSIqwz8CDf+tsAIWVycKcku6gIXJ0qwx/ZXaQ==
 
 uglify-js@^2.6.1:
   version "2.8.29"
