@@ -48,16 +48,16 @@ class AppDetail extends Component {
     this.copyAAT = this.copyAAT.bind(this);
   }
 
-  copyAAT(){
+  copyAAT() {
     const aatInput = document.getElementById("aat-value");
-    
-    if (aatInput) {
-        aatInput.select();
-        aatInput.setSelectionRange(0, 99999); /*For mobile devices*/
 
-        document.execCommand("copy");
+    if (aatInput) {
+      aatInput.select();
+      aatInput.setSelectionRange(0, 99999); /*For mobile devices*/
+
+      document.execCommand("copy");
     }
-}
+  }
 
   async componentDidMount() {
     // eslint-disable-next-line 
@@ -81,10 +81,13 @@ class AppDetail extends Component {
     hasError = error ? error : hasError;
     errorType = error ? name : errorType;
 
-    if (hasError || pocketApplication === undefined ) {
+    if (hasError || pocketApplication === undefined) {
       if (errorType === BACKEND_ERRORS.NETWORK) {
-        this.setState({loading: false, error: {
-          show: true, message: DEFAULT_NETWORK_ERROR_MESSAGE}});
+        this.setState({
+          loading: false, error: {
+            show: true, message: DEFAULT_NETWORK_ERROR_MESSAGE
+          }
+        });
       } else {
         this.setState({loading: false, exists: false});
       }
@@ -102,7 +105,7 @@ class AppDetail extends Component {
       accountBalance = 0;
     }
 
-    
+
     const chains = await NetworkService.getNetworkChains(networkData.chains);
     const {freeTier} = pocketApplication;
 
@@ -134,25 +137,25 @@ class AppDetail extends Component {
 
   async deleteApplication() {
     const {id} = this.state.pocketApplication;
-    
+
     const appsLink = `${window.location.origin}${_getDashboardPath(
       DASHBOARD_PATHS.apps
     )}`;
     const userEmail = PocketUserService.getUserInfo().email;
 
-      try {
-        const success = await ApplicationService.deleteAppFromDashboard(
-          id, userEmail, appsLink
-        );
+    try {
+      const success = await ApplicationService.deleteAppFromDashboard(
+        id, userEmail, appsLink
+      );
 
-        if (success) {
-          this.setState({deleted: true});
-          // eslint-disable-next-line react/prop-types
-          this.props.onBreadCrumbChange(["Apps", "App Detail", "App Removed"]);
-        }
-      } catch (error) {
-        this.setState({deleteModal: false, error: {show: true, message: "Free tier apps can't be deleted."}});
+      if (success) {
+        this.setState({deleted: true});
+        // eslint-disable-next-line react/prop-types
+        this.props.onBreadCrumbChange(["Apps", "App Detail", "App Removed"]);
       }
+    } catch (error) {
+      this.setState({deleteModal: false, error: {show: true, message: "Free tier apps can't be deleted."}});
+    }
   }
 
   async unstakeApplication({ppk, passphrase}) {
@@ -294,16 +297,16 @@ class AppDetail extends Component {
 
     const renderValidation = (handleFunc, breadcrumbs) => (
       <>
-      {/* eslint-disable-next-line react/prop-types */}
-      <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
-      breadcrumbs={breadcrumbs}
-      address={address} handleAfterValidate={handleFunc}>
-        <h1>Confirm private key</h1>
-        <p>
-          Import to the dashboard a pocket account previously created as an app
-          in the network. If your account is not an app go to create.
+        {/* eslint-disable-next-line react/prop-types */}
+        <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
+          breadcrumbs={breadcrumbs}
+          address={address} handleAfterValidate={handleFunc}>
+          <h1>Confirm private key</h1>
+          <p>
+            Import to the dashboard a pocket account previously created as an app
+            in the network. If your account is not an app go to create.
         </p>
-      </ValidateKeys>
+        </ValidateKeys>
       </>
     );
 
@@ -325,7 +328,7 @@ class AppDetail extends Component {
     }
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     if (!exists) {
@@ -338,7 +341,7 @@ class AppDetail extends Component {
         </h3>
       );
 
-      return <AppAlert variant="danger" title={message}/>;
+      return <AppAlert variant="danger" title={message} />;
     }
 
     if (deleted) {
@@ -348,7 +351,7 @@ class AppDetail extends Component {
             position: "absolute",
             top: "40%",
             left: "42.3%"
-          }}>Your application<br/>was successfully removed</p>}
+          }}>Your application<br />was successfully removed</p>}
           buttonText="Go to App List"
           buttonLink={_getDashboardPath(DASHBOARD_PATHS.apps)}
         />
@@ -359,7 +362,7 @@ class AppDetail extends Component {
       <div className="detail">
         <Row>
           <Col>
-          {freeTierMsg && (
+            {freeTierMsg && (
               <AppAlert
                 className="pb-3 pt-3 mb-4"
                 title={
@@ -379,10 +382,10 @@ class AppDetail extends Component {
                 variant="danger"
                 title={error.message}
                 onClose={() => this.setState({error: {show: false}})}
-                dismissible/>
+                dismissible />
             )}
             <div className="head">
-              <img className="account-icon" src={icon} alt="app-icon"/>
+              <img className="account-icon" src={icon} alt="app-icon" />
               <div className="info">
                 <h1 className="name d-flex align-items-center">
                   {name}
@@ -399,20 +402,34 @@ class AppDetail extends Component {
           </Col>
         </Row>
         <Row>
-          <Col sm="11" md="11" lg="11" className="general-header page-title">
+          <Col sm="8" md="8" lg="8" className="general-header page-title">
             <h1>App Detail</h1>
           </Col>
-          <Col sm="1" md="1" lg="1">
+          <Col
+            sm="4"
+            className="d-flex align-items-center justify-content-end cta-buttons"
+          >
+            {status === STAKE_STATUS.Staked &&
+              <Link
+                to={() => {
+                  const url = _getDashboardPath(DASHBOARD_PATHS.generalSettings);
+
+                  return url.replace(":id", id);
+                }}>
+                <Button className="ml-5 mr-4" variant="dark" style={{width: "120px"}}>
+                  <span>Gateway Settings</span>
+                </Button>
+              </Link>
+            }
             {status !== STAKE_STATUS.Unstaking && freeTier === false &&
               <Button
                 className="float-right cta"
                 onClick={() => {
                   this.setState({ctaButtonPressed: true});
-
                   isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
                 }}
                 variant="primary">
-                  <span>{isStaked ? "Unstake" : "Stake"}</span>
+                <span>{isStaked ? "Unstake" : "Stake"}</span>
               </Button>
             }
           </Col>
@@ -455,13 +472,13 @@ class AppDetail extends Component {
           </Col>
         </Row>
         {freeTier ? (
-            <Row>
-              <Col sm="6" md="6" lg="6">
-                <div id="aat-info" className="page-title">
-                  <h2>AAT</h2>
-                </div>
-                <Alert variant="light" className="aat-code">
-                <span id="aat-copy"className="copy-button" onClick={this.copyAAT}> <img src={"/assets/copy.png"} alt="copy" /></span>
+          <Row>
+            <Col sm="6" md="6" lg="6">
+              <div id="aat-info" className="page-title">
+                <h2>AAT</h2>
+              </div>
+              <Alert variant="light" className="aat-code">
+                <span id="aat-copy" className="copy-button" onClick={this.copyAAT}> <img src={"/assets/copy.png"} alt="copy" /></span>
                 <pre>
                   <input id="aat-value" style={{position: "absolute", left: "-9999px"}}></input>
                   <code className="language-html" data-lang="html">
@@ -469,20 +486,20 @@ class AppDetail extends Component {
                     <span id="aat" >{aatStr}</span>
                   </code>
                 </pre>
-                </Alert>
-              </Col>
-              <Col sm="6" md="6" lg="6">
-                <div className="free-tier-contact-info">
-                  {contactInfo.map((card, idx) => (
-                    <div key={idx}>
-                      <h3>{card.title}</h3>
-                      <span>{card.subtitle}</span>
-                    </div>
-                  ))}
-                </div>
-              </Col>
-            </Row>
-          ) :
+              </Alert>
+            </Col>
+            <Col sm="6" md="6" lg="6">
+              <div className="free-tier-contact-info">
+                {contactInfo.map((card, idx) => (
+                  <div key={idx}>
+                    <h3>{card.title}</h3>
+                    <span>{card.subtitle}</span>
+                  </div>
+                ))}
+              </div>
+            </Col>
+          </Row>
+        ) :
           <Row className="contact-info">
             {contactInfo.map((card, idx) => (
               <Col key={idx} sm="6" md="6" lg="6">
@@ -491,35 +508,35 @@ class AppDetail extends Component {
                   title={card.title}
                   subtitle={card.subtitle}
                   flexAlign="flex-start"
-                  >
-                  <span/>
+                >
+                  <span />
                 </InfoCard>
               </Col>
             ))}
           </Row>}
         <Row className="action-buttons">
           <Col>
-             <span className="option">
-                <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
-                <p>
-                  <Link
-                    to={() => {
-                      const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
+            <span className="option">
+              <img src={"/assets/edit.svg"} alt="edit-action-icon" />
+              <p>
+                <Link
+                  to={() => {
+                    const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
 
-                      return url.replace(":id", id);
-                    }}>
-                    Edit
+                    return url.replace(":id", id);
+                  }}>
+                  Edit
                   </Link>{" "}
                   to change your app description.
                 </p>
-              </span>
+            </span>
             <span style={{display: isFreeTier ? "none" : "inline-block"}} className="option">
-                <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
-                <p>
-                  <span
-                    className="link"
-                    onClick={() => this.setState({deleteModal: true})}>
-                    Remove
+              <img src={"/assets/trash.svg"} alt="trash-action-icon" />
+              <p>
+                <span
+                  className="link"
+                  onClick={() => this.setState({deleteModal: true})}>
+                  Remove
                   </span>{" "}
                   this App from the Dashboard.
                 </p>
@@ -532,7 +549,7 @@ class AppDetail extends Component {
           animation={false}
           centered
           dialogClassName="app-modal"
-          >
+        >
           <Modal.Header closeButton>
           </Modal.Header>
           <Modal.Body>
