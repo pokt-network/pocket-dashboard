@@ -1,8 +1,6 @@
 import BasePaymentProvider, {CardPaymentMethod, PaymentResult} from "./BasePaymentProvider";
 import Stripe from "stripe";
 
-const AMOUNT_CONVERT_NUMBER = 1000;
-
 class StripePaymentProvider extends BasePaymentProvider {
 
   constructor(paymentProviderConfiguration) {
@@ -18,7 +16,7 @@ class StripePaymentProvider extends BasePaymentProvider {
   async createPaymentIntent(userCustomerID, type, currency, item, amount, description = "") {
 
     let paymentData = {
-      amount: amount * AMOUNT_CONVERT_NUMBER,
+      amount: amount,
       payment_method_types: [type],
       currency,
       metadata: {
@@ -34,11 +32,11 @@ class StripePaymentProvider extends BasePaymentProvider {
     if (description) {
       paymentData["description"] = description;
     }
-
+    
     const paymentResultData = await this._stripeAPIClient.paymentIntents.create(paymentData);
 
     const date = new Date(paymentResultData.created * 1000);
-    const resultAmount = paymentResultData.amount / AMOUNT_CONVERT_NUMBER;
+    const resultAmount = paymentResultData.amount;
 
     return new PaymentResult(paymentResultData.id, date, paymentResultData.client_secret, paymentResultData.currency, resultAmount);
   }
