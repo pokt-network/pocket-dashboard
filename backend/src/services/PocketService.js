@@ -557,7 +557,8 @@ export default class PocketService {
 
     if (transactionFee && chainID && amount && customerAddress) {
       // Include transaction fee for the stake transaction
-      const totalAmount = BigInt(Number(amount) + Number(transactionFee));
+      // Include 1 additional POKT
+      const totalAmount = BigInt(Number(amount) + Number(transactionFee) + Number(1000000));
 
       if (totalAmount) {
         const pocketRpcProvider = await getRPCProvider();
