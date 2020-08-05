@@ -282,8 +282,8 @@ class AppDetail extends Component {
           ) : undefined,
       },
       {
-        title: formatNumbers(maxRelays),
-        titleAttrs: {title: maxRelays ? formatNumbers(maxRelays) : undefined},
+        title: formatNumbers(maxRelays * 24),
+        titleAttrs: {title: maxRelays * 24 ? formatNumbers(maxRelays * 24) : undefined},
         subtitle: "Max Relays Per Day"
       },
     ];
