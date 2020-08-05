@@ -37,11 +37,12 @@ class GeneralSettings extends Component {
 
   async saveChanges() {
     const application = this.state.pocketApplication;
+
     await ApplicationService.updateGatewaySettings(application);
 
     this.setState({
       showAlert: true
-    })
+    });
   }
 
   async addWhitelistUserAgents() {
@@ -57,7 +58,7 @@ class GeneralSettings extends Component {
 
     this.setState({
       showAlert: true
-    })
+    });
   }
 
   async addWhitelistOrigins() {
@@ -73,7 +74,7 @@ class GeneralSettings extends Component {
 
     this.setState({
       showAlert: true
-    })
+    });
   }
 
   async toggleSecretKeyRequired(value) {
@@ -104,9 +105,10 @@ class GeneralSettings extends Component {
 
   chainSelect(blockchain) {
     const endpoint = "https://{0}.gateway.pokt.network/v1/{1}".replace("{0}", blockchain).replace("{1}", this.state.appId);
+    
     this.setState({
       endpoint: endpoint
-    })
+    });
   }
 
   async componentDidMount() {
