@@ -39,8 +39,8 @@ export class PocketApplication {
    * @param {string} user User that belong the application.
    * @param {string} [description] Description.
    * @param {string} [icon] Icon.
-   * @param {boolean} [freeTier] If is on free tier or not.
    * @param {boolean} [updatingStatus] If is on staking status.
+   * @param {boolean} [freeTier] If is on free tier or not.
    * @param {string} freeTierAppAddress Internal application address for free tier accounts.
    * @param {object} freeTierPrivateApp Internal private app object.
    * @param {object} aat PocketAAT used for Gateway access, signed by our client pub key
