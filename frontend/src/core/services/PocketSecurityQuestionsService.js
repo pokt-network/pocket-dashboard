@@ -65,6 +65,57 @@ class PocketSecurityQuestionsService extends PocketBaseService {
         return {success: false, data: err.response};
       });
   }
+
+  /**
+   * Get all the user security questions.
+   *
+   * @param {string} email Email of user.
+   *
+   * @return {Promise|Promise<{success:boolean, [data]: *}>}
+   */
+  async getUserSecurityQuestions(email) {
+    const data = {
+      email
+    };
+
+    return axios.post(this._getURL("user/all"), data)
+      .then(response => {
+        if (response.status === 200) {
+          return {success: true, data: response.data};
+        }
+        return {success: false};
+      }).catch(err => {
+        return {success: false, data: err.response};
+      });
+  }
+
+  /**
+   * Validate all the user security questions.
+   *
+   * @param {string} email Email of user.
+   * @param {[question: string, answer: string]} answeredQuestions User input answers.
+   *
+   * @return {Promise|Promise<{success:boolean}>}
+   */
+  async validateUserSecurityQuestions(email, answeredQuestions) {
+    const data = {
+      email,
+      answeredQuestions
+    };
+
+    return axios.post(this._getURL("user/validate-answers"), data)
+      .then(response => {
+        if (response.status === 200) {
+          return {success: true, data: response.data};
+        }
+        return {success: false};
+      }).catch(err => {
+        return {success: false, data: err.response};
+      });
+  }
+
 }
+
+
 
 export default new PocketSecurityQuestionsService();

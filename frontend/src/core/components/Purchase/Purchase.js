@@ -51,11 +51,11 @@ class Purchase extends Component {
       );
     }
 
-    if (subTotal <= 0 || isNaN(subTotal)) {
+    if (subTotal < 0 || isNaN(subTotal)) {
       throw new Error(`${purchaseType} must be a positive value.`);
     }
 
-    if (total <= 0 || isNaN(total)) {
+    if (total < 0 || isNaN(total)) {
       throw new Error("Total Cost must be a positive value.");
     }
 

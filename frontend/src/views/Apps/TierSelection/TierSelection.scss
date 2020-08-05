@@ -1,5 +1,8 @@
 @import "../../../scss/Core.scss";
 
+.spaced-li li {
+  margin-bottom: 1em;
+}
 .modal-dialog {
   &.tier-modal {
     max-width: 950px;
@@ -95,11 +98,11 @@
       height: 448px;
       border-radius: 12px;
       box-shadow: $default-box-shadow;
-      padding: 30px 20px 0 20px;
+      padding: 36px 20px 0 20px;
       margin-right: 14px;
 
       .tier-title {
-        margin-left: 18px;
+        margin-left: 0px;
 
         h2 {
           text-transform: uppercase;
@@ -120,6 +123,7 @@
         margin-top: 25px;
         margin-bottom: 0;
         padding-inline-start: 20px;
+        padding-left: 42px;
 
         li {
           list-style-type: none;
@@ -127,7 +131,7 @@
           color: $secondary-color;
           font-size: 14px;
           font-weight: 300;
-          margin-bottom: 20px;
+          margin-bottom: 30px;
         }
 
         li:before {
@@ -150,17 +154,16 @@
         font-style: normal;
         line-height: normal;
         letter-spacing: -0.38px;
-        margin-left: 8px;
+        margin-left: 10px;
       }
 
-      .terms-checkbox {
-        margin-top: 25px;
-        margin-bottom: 26px;
-
+        span {
+          color: $primary-color;
+        }
         span,
         a {
           font-family: $primary-font-family;
-          font-size: 14px;
+          font-size: 12px;
           font-weight: 300;
           font-stretch: normal;
           font-style: normal;
@@ -172,11 +175,11 @@
         a {
           color: $primary-color;
         }
-      }
+
 
       button:not(.cta) {
-        margin-top: 10px;
-        margin-left: 20px;
+        margin-top: 22px;
+        margin-left: 18px;
         background-color: $dark-gray;
         border-color: $dark-gray;
         width: 130px;
@@ -197,7 +200,6 @@
       button:not(.cta) {
         position: relative;
         left: 0;
-        top: 67px;
         background-color: $primary-color;
         border-color: $primary-color;
       }
@@ -214,4 +216,14 @@
       }
     }
   }
+}
+
+
+.violation-list li {
+  font-family: Lato, san-serif;
+  font-size: 16px;
+  font-weight: 300;
+  font-stretch: normal;
+  font-style: normal;
+  color: white;
 }

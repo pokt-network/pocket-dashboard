@@ -65,6 +65,7 @@ export const Configurations = {
              StakeApp: "d-524c799dd69741d08da0b461193f8f56",
              UnstakeApp: "d-43a51e9535a94c8c96a8546212115c3b",
              PaymentDeclined: "d-dd1a7b11445f471184beb8024f637d75",
+             PasswordReset: "d-4e4ea689c9d1446581aa086bbc409fdd"
            },
          },
          persistence: {
@@ -87,9 +88,8 @@ export const Configurations = {
            jobs: {
              database_url:
              process.env.POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL,
-             delayed_time:
-             process.env.POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME,
-             attempts: process.env.POCKET_NETWORK_SERVICE_WORKER_ATEMPTS,
+             delayed_time: process.env.POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME,
+             attempts: process.env.POCKET_NETWORK_SERVICE_WORKER_ATTEMPTS,
            },
            aat_version: process.env.POCKET_NETWORK_AAT_VERSION,
            transaction_fee: process.env.POCKET_NETWORK_TRANSACTION_FEE,
@@ -97,7 +97,7 @@ export const Configurations = {
            max_dispatchers: process.env.POCKET_NETWORK_MAX_DISPATCHER,
            request_timeout: process.env.POCKET_NETWORK_REQUEST_TIMEOUT,
            max_sessions: process.env.POCKET_NETWORK_MAX_SESSIONS,
-           pokt_market_price: process.env.POKT_MARKET_PRICE,
+           pokt_market_price: process.env.POKT_USD_MARKET_PRICE,
            checkout: {
              default_currency: process.env.CHECKOUT_DEFAULT_CURRENCY,
              relays_per_day: {
@@ -115,7 +115,10 @@ export const Configurations = {
            },
            free_tier: {
              stake_amount: process.env.POCKET_FREE_TIER_STAKE_AMOUNT,
-             max_relay_per_day_amount: process.env.POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT
+             max_relay_per_day_amount: process.env.POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT,
+             fund_account: process.env.POCKET_NETWORK_FREE_TIER_FUND_ACCOUNT,
+             fund_address: process.env.POCKET_NETWORK_FREE_TIER_FUND_ADDRESS,
+             client_pub_key: process.env.POCKET_NETWORK_CLIENT_PUB_KEY,
            },
            dispatchers: process.env.POCKET_NETWORK_DISPATCHERS,
            chain_hash: process.env.POCKET_NETWORK_CHAIN_HASH,

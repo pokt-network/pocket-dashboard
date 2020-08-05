@@ -71,7 +71,7 @@ class ForgotPassword extends Component {
             <PocketBox iconUrl={"/assets/circle.png"}>
               <h1 className="forgotPassword">Forgot your password?</h1>
               <p className="passwordLabel">
-                Write your email to reset your password.
+                Enter your email to reset your password.
               </p>
               <Form id={"main-form"} onSubmit={this.handleSubmit}>
                 <Form.Group className="mb-4">

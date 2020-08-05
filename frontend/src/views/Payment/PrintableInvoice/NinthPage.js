@@ -41,19 +41,6 @@ class NinthPage extends React.Component {
                 src={"/assets/MS.jpg"}
               />
             </div>
-            <div
-              style={{
-                maxWidth: "300px",
-                borderBottom: "1px solid black",
-                marginLeft: "40px",
-              }}
-            />
-          </div>
-          <div
-            className="text-center"
-            style={{maxWidth: "300px", marginLeft: "40px"}}
-          >
-            (Signature)
           </div>
           <div className="mt-5">Name: Michael O&quot;Rourke</div>
           <div>Title: President</div>

@@ -228,8 +228,16 @@ class SignUp extends Component {
                             I agree to Pocket Dashboard{" "}
                             <Link
                               to={ROUTE_PATHS.privacyPolicy}
+                              target={"_blank"}
                             >
-                              Privacy Policy.
+                              Privacy Policy
+                            </Link>
+                            &nbsp;and&nbsp;
+                            <Link
+                              to={ROUTE_PATHS.termsOfService}
+                              target={"_blank"}
+                            >
+                              Terms of Use
                             </Link>
                           </span>
                         }
@@ -246,8 +254,8 @@ class SignUp extends Component {
                       >
                         Sign up
                       </Button>
-                      <div className="divider mt-4 mb-3">Or</div>
-                      <div id={"provider-buttons"}>
+                      <div className="divider mt-4 mb-3" style={{display: "none"}} >Or</div>
+                      <div id={"provider-buttons"} style={{display: "none"}}>
                         <AuthProviderButton
                           block={true}
                           className="brand pl-4 pr-4 mr-3"

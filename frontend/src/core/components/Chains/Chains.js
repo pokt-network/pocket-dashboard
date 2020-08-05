@@ -33,7 +33,7 @@ class Chains extends Component {
     const {searchChainQuery} = this.state.data;
 
     const filteredChains = chains.filter((c) =>
-      c.name.toLowerCase().includes(searchChainQuery.toLowerCase())
+      c.network.toLowerCase().includes(searchChainQuery.toLowerCase())
     );
 
     this.setState({filteredChains});
@@ -52,7 +52,7 @@ class Chains extends Component {
     if (isSelect) {
       chosenChains = [...chosenChains, row];
     } else {
-      chosenChains = chosenChains.filter((chain) => chain.hash !== row.hash);
+      chosenChains = chosenChains.filter((chain) => chain._id !== row._id);
     }
 
     this.setState({chosenChains});

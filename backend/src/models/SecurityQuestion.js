@@ -18,25 +18,25 @@ export const SECURITY_QUESTIONS = [
   "What is the name of the place your wedding reception was held?"
 ];
 
-export class AnsweredSecurityQuestion {
+export class SecurityQuestion {
 
   /**
    * @param {string} question Question data.
-   * @param {string} answer Answer data.
    */
-  constructor(question, answer) {
-    Object.assign(this, {question, answer});
+  constructor(question) {
+    Object.assign(this, {question});
   }
 
   /**
    * Factory type to create security questions.
    *
-   * @param {Array<{question:string, answer:string}>} questions List of questions.
+   * @param {Array<{question:string}>} questions List of questions.
    *
-   * @returns {Array<AnsweredSecurityQuestion>} A list of security questions answered.
+   * @returns {Array<SecurityQuestion>} A list of security questions.
    * @static
    */
-  static createAnsweredSecurityQuestions(questions) {
-    return questions.map(data => new AnsweredSecurityQuestion(data.question, data.answer));
+  static createSecurityQuestions(questions) {
+    return questions.map(data => new SecurityQuestion(data.question));
   }
+
 }

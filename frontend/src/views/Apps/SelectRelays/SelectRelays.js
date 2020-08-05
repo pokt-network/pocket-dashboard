@@ -1,15 +1,16 @@
 import React, {Component} from "react";
 import "../../../core/components/Purchase/Purchase.scss";
 import {Col, Row} from "react-bootstrap";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+//import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {ITEM_TYPES, PURCHASE_ITEM_NAME, STYLING} from "../../../_constants";
+import {ITEM_TYPES, PURCHASE_ITEM_NAME} from "../../../_constants";
+//import {STYLING} from "../../../_constants";
 import {formatNumbers, scrollToId} from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import PocketPaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
-import {faCaretUp} from "@fortawesome/free-solid-svg-icons";
+//import {faCaretUp} from "@fortawesome/free-solid-svg-icons";
 import AppAlert from "../../../core/components/AppAlert";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
 import Loader from "../../../core/components/Loader";
@@ -132,12 +133,12 @@ class SelectRelays extends Component {
       throw new Error(`Current balance cannot be greater than ${originalAccountBalance} ${currency}.`);
     }
 
-    if (subTotal <= 0 || isNaN(subTotal)) {
+    if (subTotal < 0 || isNaN(subTotal)) {
       throw new Error("Relays per day cost must be a positive value.");
     }
 
-    if (total <= 0 || isNaN(total)) {
-      throw new Error("Total Cost must be a positive value.");
+    if (total < 0 || isNaN(total)) {
+      throw new Error("Total cost must be a positive value.");
     }
 
     return true;
@@ -181,8 +182,8 @@ class SelectRelays extends Component {
       this.validate(currency);
 
       // Avoiding floating point precision errors.
-      const subTotalAmount = parseFloat(numeral(subTotal).format("0.000")).toFixed(3);
-      const totalAmount = parseFloat(numeral(total).format("0.000")).toFixed(3);
+      const subTotalAmount = parseFloat(numeral(subTotal).format("0.00")).toFixed(2);
+      const totalAmount = parseFloat(numeral(total).format("0.00")).toFixed(2);
 
       const {data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, totalAmount);
 
@@ -230,8 +231,8 @@ class SelectRelays extends Component {
 
     // At the moment the only available currency is USD.
     const currency = currencies[0];
-    const subTotalFixed = numeral(subTotal).format("$0,0.000");
-    const totalFixed = numeral(total).format("$0,0.000");
+    const subTotalFixed = numeral(subTotal).format("$0,0.00");
+    const totalFixed = numeral(total).format("$0,0.00");
 
     if (loading) {
       return <Loader />;
@@ -249,9 +250,9 @@ class SelectRelays extends Component {
                 onClose={() => this.setState({error: false})}
               />
             )}
-            <h1>Custom tier</h1>
+            <h1>Stake and scale</h1>
             <p className="subtitle">
-              With the custom tier, you only need to pay for the API throughput
+              With the Stake and Scale, you only need to pay for the API throughput
               you application needs. If you expect your application to grow in
               the short term, we recommend giving it a buffer.
             </p>
@@ -260,7 +261,7 @@ class SelectRelays extends Component {
         <Row>
           <Col sm="7" className="relays-column">
             <h2>
-              Slide to Select how much relays per day you want to buy
+              Slide to select how many relays per day to purchase
             </h2>
               <div className="slider-wrapper">
                 <AppSlider
@@ -269,18 +270,18 @@ class SelectRelays extends Component {
                   type={PURCHASE_ITEM_NAME.APPS}
                   marks={{
                     [minRelays]: `${formatNumbers(minRelays)} RPD`,
-                    [maxRelays / 2]: {
-                      label: (
-                        <div className="average-stake-wrapper">
-                          <FontAwesomeIcon
-                            style={{color: STYLING.primaryColor}}
-                            icon={faCaretUp}
-                          />
-                          <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
-                        </div>
-                      ),
-                    },
-                    [maxRelays]: `*${formatNumbers(maxRelays)} RPD`,
+                    // [maxRelays / 2]: {
+                    //   label: (
+                    //     <div className="average-stake-wrapper">
+                    //       <FontAwesomeIcon
+                    //         style={{color: STYLING.primaryColor}}
+                    //         icon={faCaretUp}
+                    //       />
+                    //       <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
+                    //     </div>
+                    //   ),
+                    // },
+                    [maxRelays]: `*${formatNumbers(maxRelays)} RPD*`,
                   }}
                   min={minRelays}
                   max={maxRelays}
@@ -289,12 +290,15 @@ class SelectRelays extends Component {
             <AppAlert
               className="max-alert"
               variant="primary"
-              title={<h4 className="alert-max">*More relays?</h4>}
+              title={<h4 className="alert-max">About RPD, Relays per day:</h4>}
             >
               <p className="alert-max">
-                If your app requires more than {formatNumbers(maxRelays)} Relays
-                per Day please <a href="mailto:dashboard@pokt.network">contact us</a> directly to find a
-                solution specially designed for your app.
+                Each RPD purchased on the Pocket Dashboard has a representation as a POKT token on the Pocket Network. Approx. 40 RPD = 1 POKT.
+              </p>
+              <br/>
+              <p className="alert-max">
+                *Need More Relays per Day? If you&apos;re interested in more relays beyond the maximum on the dashboard, <br/>
+                please <a href="mailto:dashboard@pokt.network">contact us</a> to find a solution specially designed for your app.
               </p>
             </AppAlert>
           </Col>

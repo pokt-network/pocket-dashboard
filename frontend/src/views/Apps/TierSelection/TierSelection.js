@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import {Button, Col, Row} from "react-bootstrap";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import "./TierSelection.scss";
 import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../_routes";
@@ -23,7 +23,6 @@ class TierSelection extends Component {
     this.state = {
       [FREE_TIER_MODAL]: false,
       [CUSTOM_TIER_MODAL]: false,
-      agreeTerms: false,
       creatingFreeTier: false,
       errorMessage: "",
     };
@@ -31,33 +30,37 @@ class TierSelection extends Component {
 
   async createFreeTierItem() {
     const {
+      id,
       address,
       chains,
       passphrase
     } = ApplicationService.getApplicationInfo();
 
-    const unlockedAccount = await PocketClientService.getUnlockedAccount(address);
+    const unlockedAccount = await PocketClientService.getUnlockedAccount(address, passphrase);
     const clientAddressHex = unlockedAccount.addressHex;
 
     const url = _getDashboardPath(
       DASHBOARD_PATHS.appDetail
     );
 
-    const detail = url.replace(":address", address);
+    const detail = url.replace(":id", id);
     const applicationLink = `${window.location.origin}${detail}`;
-
 
     const stakeAmount = Configurations.pocket_network.free_tier.stake_amount.toString();
 
-    const appStakeTransaction = await PocketClientService.appStakeRequest(clientAddressHex, passphrase, chains, stakeAmount);
+    const stakeInformation = {
+      client_address: clientAddressHex,
+      chains: chains,
+      stake_amount: stakeAmount
+    };
 
     this.setState({creatingFreeTier: true});
 
-    const {success, name: errorType} = await ApplicationService.stakeFreeTierApplication(appStakeTransaction, applicationLink);
+    const {success, name: errorType} = await ApplicationService.stakeFreeTierApplication(stakeInformation, applicationLink);
 
     if (success !== false) {
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
-      const path = url.replace(":address", address);
+      const path = url.replace(":id", id);
 
       ApplicationService.removeAppInfoFromCache();
 
@@ -85,7 +88,6 @@ class TierSelection extends Component {
     const {
       freeTierModal,
       customTierModal,
-      agreeTerms,
       creatingFreeTier,
       errorMessage,
     } = this.state;
@@ -114,63 +116,55 @@ class TierSelection extends Component {
             <p className="info">
               Don&#39;t overpay for the infrastructure your app needs. Stake,
               and scale as your user base grows. Or start connecting to any
-              blockchain with our free tier capped at 1 Million Relays per day.
+              blockchain with our Launch Offering plan capped at 1 Million Relays per day.
             </p>
           </Col>
         </Row>
         <Row className="tiers justify-content-center">
           <div className="tier">
-            <div className="tier-title">
-              <h2>Free</h2>
-              <h2 className="subtitle">tier</h2>
+            <div className="tier-title" style={{textAlign: "center"}}>
+              <h2>LAUNCH OFFERING</h2>
+              <h5 style={{fontSize: "16px", color: "black", fontWeight: "bold"}}>Get started for free</h5>
             </div>
             <ul>
-              <li>Limited to 1 Million Relays per Day</li>
-              <li>Access to Application Authentication Token (AAT), but not 
-                ownership of the AAT</li>
-              <li>Staked POKT is managed by Pocket Network Inc.</li>
-              <li>POKT balance unavailable for transfers</li>
+              <li>Limited to the first 100 Apps to register</li>
+              <li>Up to 1 Million relays per day</li>
+              <li>Access AAT, but not ownership</li>
+              <li>POKT stake is unavailable for transfers</li>
             </ul>
             {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
             <Button
               onClick={() => this.setState({freeTierModal: true})}
               variant="link"
               className="cta"
+              style={{display: "inline-block"}}
             >
               How it works
             </Button>
-            <Form.Check
-              checked={agreeTerms}
-              onChange={() => this.setState({agreeTerms: !agreeTerms})}
-              className="terms-checkbox"
-              type="checkbox"
-              label={
-                <span>
-                  I agree to the Pocket Dashboard{" "}
-                  <Link target="_blank" to={ROUTE_PATHS.termsOfService}>
-                    Terms and Conditions.
-                  </Link>
-                </span>
-              }
-            />
+            <span>
+              Subject of Pocket {" "}
+              <Link target="_blank" to={ROUTE_PATHS.termsOfService}>
+                Terms and Conditions.
+              </Link>
+            </span>
             <Button
               onClick={() => this.createFreeTierItem()}
-              disabled={!agreeTerms}
+              disabled={false}
             >
-              <span>Get Free Tier</span>
+              <span style={{color: "white", fontWeight: "normal"}}>Join now</span>
             </Button>
           </div>
           <div className="tier custom-tier">
             <div>
-              <div className="tier-title">
-                <h2>Custom</h2>
-                <h2 className="subtitle">tier</h2>
+              <div className="tier-title" style={{textAlign: "center"}}>
+                <h2>STAKE AND SCALE</h2>
+                <h5 className="subtitle" style={{fontSize: "16px", fontWeight: "bold"}}>Custom amount of relays</h5>
               </div>
               <ul>
-                <li>Custom Relays per Day</li>
                 <li>AAT ownership</li>
                 <li>Unstaked balance available for transfers</li>
                 <li>Staked POKT is own by the user</li>
+                <li>Scale-up as your application grows</li>
               </ul>
               {/*eslint-disable-next-line jsx-a11y/anchor-is-valid*/}
               <Button
@@ -180,9 +174,9 @@ class TierSelection extends Component {
               >
                 How it works
               </Button>
-              <Link to={_getDashboardPath(DASHBOARD_PATHS.selectRelays)}>
+              <Link to={_getDashboardPath(DASHBOARD_PATHS.selectRelays)} style={{marginTop: "10px"}} >
                 <Button>
-                  <span>Get Custom Tier</span>
+                  <span style={{color: "white", fontWeight: "normal"}}>Stake</span>
                 </Button>
               </Link>
             </div>

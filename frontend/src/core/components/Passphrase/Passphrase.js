@@ -1,14 +1,10 @@
 import React, {Component} from "react";
 import "./Passphrase.scss";
-import {Col, Form, Row, Button} from "react-bootstrap";
+import {Button, Col, Form, Row} from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
 import AppTable from "../../../core/components/AppTable";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {
-  TABLE_COLUMNS,
-  VALIDATION_MESSAGES,
-  PASSPHRASE_REGEX,
-} from "../../../_constants";
+import {PASSPHRASE_REGEX, TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
 import {Formik} from "formik";
 import * as yup from "yup";
 import {createAndDownloadJSONFile, validateYup} from "../../../_helpers";
@@ -122,7 +118,8 @@ class Passphrase extends Component {
    * Handles account creation and next steps
    * @abstract
    */
-  async createAccount() {}
+  async createAccount() {
+  }
 
   downloadKeyFile() {
     const {ppkData, address} = this.state;
@@ -179,7 +176,7 @@ class Passphrase extends Component {
             <h2>Protect your private key with a passphrase</h2>
             <p>
               Write down a Passphrase to protect your key file. This should
-              have: minimum of 15 alphanumeric symbols with one capital letter, 
+              have: minimum of 15 alphanumeric symbols with one capital letter,
               one lowercase letter, one special character and one number.
             </p>
             <Formik
@@ -275,7 +272,7 @@ class Passphrase extends Component {
           </Col>
           <Col sm="6">
             <h3>Address</h3>
-            <Form.Control readOnly value={address} />
+            <Form.Control readOnly value={address}/>
           </Col>
         </Row>
         <Row className="mt-5">
@@ -296,37 +293,39 @@ class Passphrase extends Component {
             >
               <p>
                 The key file by itself is useless without the passphrase.
-                You&#39;ll need the key file in order to import or set up 
+                You&#39;ll need the key file in order to import or set up
                 your node.
               </p>
             </AppAlert>
           </Col>
         </Row>
-        <Row>
-          <Col className="page-title">
-            <h1>General information</h1>
-          </Col>
-        </Row>
-        <Row className="stats">
-          {generalInfo.map((card, idx) => (
-            <Col key={idx}>
-              <InfoCard title={card.title} subtitle={card.subtitle} />
+        <div style={{display: "none"}}>
+          <Row>
+            <Col className="page-title">
+              <h1>General information</h1>
             </Col>
-          ))}
-        </Row>
-        <Row className="mb-5 app-networks">
-          <Col>
-            <Segment label="Networks">
-              <AppTable
-                scroll
-                keyField="hash"
-                data={[]}
-                columns={TABLE_COLUMNS.NETWORK_CHAINS}
-                bordered={false}
-              />
-            </Segment>
-          </Col>
-        </Row>
+          </Row>
+          <Row className="stats">
+            {generalInfo.map((card, idx) => (
+              <Col key={idx}>
+                <InfoCard title={card.title} subtitle={card.subtitle}/>
+              </Col>
+            ))}
+          </Row>
+          <Row className="mb-5 app-networks">
+            <Col>
+              <Segment label="Networks">
+                <AppTable
+                  scroll
+                  keyField="hash"
+                  data={[]}
+                  columns={TABLE_COLUMNS.NETWORK_CHAINS}
+                  bordered={false}
+                />
+              </Segment>
+            </Col>
+          </Row>
+        </div>
         <Row>
           <Col>
             <Button

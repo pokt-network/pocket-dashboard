@@ -107,7 +107,6 @@ router.get("/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
 
   res.json(node);
 }));
-
 /**
  * Get node that is on network by address.
  */
@@ -193,6 +192,10 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
     };
 
     await nodeService.stakeNode(nodeAddress, uPoktStaked, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
+
+    await EmailService
+      .to(node.pocketNode.contactEmail)
+      .sendStakeNodeEmail(node.pocketNode.contactEmail, nodeEmailData, paymentEmailData);
 
     res.send(true);
   } else {

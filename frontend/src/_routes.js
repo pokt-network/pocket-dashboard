@@ -5,6 +5,7 @@ import GoogleAuthProviderHook from "./core/components/Providers/Auth/GoogleAuthP
 import SecurityQuestions from "./views/Auth/SecurityQuestions/SecurityQuestions";
 import SignUp from "./views/Auth/SignUp/SignUp";
 import VerifyEMail from "./views/Auth/VerifyEmail/VerifyEmail";
+import ResetPasswordEmail from "./views/Auth/ResetPasswordEmail/ResetPasswordEmail";
 import DefaultLayout from "./core/components/DefaultLayout/DefaultLayout";
 import Dashboard from "./views/Dashboard/Dashboard";
 import AppsMain from "./views/Apps/AppsMain/AppsMain";
@@ -28,6 +29,7 @@ import NodeDetail from "./views/Nodes/NodeDetail/NodeDetail";
 import EditNode from "./views/Nodes/EditNode/EditNode";
 import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
 import OrderSummary from "./views/Payment/OrderSummary/OrderSummary";
+import SecondPage from "./views/Payment/PrintableInvoice/SecondPage";
 import ResetPassword from "./views/Auth/ResetPassword/ResetPassword";
 import AppPassphrase from "./views/Apps/AppPassphrase/AppPassphrase";
 import TermsOfService from "./views/Support/TermsOfService";
@@ -50,17 +52,19 @@ export const ROUTE_PATHS = {
   answer_security_questions: "/answer-security-questions",
   verify_email: "/verify-email",
   verify_changed_email: "/verify-email-changed",
+  reset_password_email: "/reset-password-email",
   reset_password: "/reset-password",
   termsOfService: "/support/terms-of-service",
   privacyPolicy: "/support/privacy-policy",
   unsubscribe: "/support/unsubscribe",
+  purchaseTerms: "/support/purchase-terms"
 };
 
 export const DASHBOARD_PATHS = {
   home: "",
   apps: "/apps",
-  appDetail: "/apps/detail/:address",
-  editApp: "/apps/edit/:address",
+  appDetail: "/apps/detail/:id",
+  editApp: "/apps/edit/:id",
   importApp: "/apps/import",
   createAppInfo: "/apps/new",
   appPassphrase: "/apps/new/passphrase",
@@ -106,7 +110,7 @@ export const breadcrumbsRoutes = () => {
     [DASHBOARD_PATHS.createAppInfo]: ["Apps", action, "App Information"],
     [DASHBOARD_PATHS.appPassphrase]: ["Apps", action, "Create Passphrase"],
     [DASHBOARD_PATHS.applicationChainsList]: ["Apps", action, "Choose Chains"],
-    [DASHBOARD_PATHS.tierSelection]: ["Apps", action, "Choose tier"],
+    [DASHBOARD_PATHS.tierSelection]: ["Apps", action, "Choose Plan"],
     [DASHBOARD_PATHS.selectRelays]: ["Apps", action, "Checkout"],
 
     // Nodes
@@ -192,10 +196,22 @@ const pageRoutes = [
     component: TermsOfService,
   },
   {
+    path: ROUTE_PATHS.purchaseTerms,
+    exact: true,
+    name: "Purchase Terms and Conditions",
+    component: SecondPage,
+  },
+  {
     path: ROUTE_PATHS.verify_changed_email,
     exact: true,
     name: "Verify Changed Email",
     component: VerifyChangedEmail,
+  },
+  {
+    path: ROUTE_PATHS.reset_password_email,
+    exact: true,
+    name: "Reset Password Email",
+    component: ResetPasswordEmail,
   },
   {
     path: ROUTE_PATHS.home,

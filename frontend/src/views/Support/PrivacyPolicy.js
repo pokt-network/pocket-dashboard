@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import "../Support/SupportPages.scss";
+import "./PrivacyPolicy.scss";
 import {withRouter} from "react-router-dom";
 import {Container, Row} from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";
@@ -13,11 +13,6 @@ class PrivacyPolicy extends Component {
         <Navbar />
 
         <div className="wrapper">
-          {/* eslint-disable-next-line react/prop-types */}
-          <span className="go" onClick={this.props.history.goBack}>
-            <img src="/assets/arrow-left.svg" alt="" className="icon" />
-            <span className="text">Go back</span>
-          </span>
           <br />
           <Row>
             <div className="address center-header">

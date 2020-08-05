@@ -37,6 +37,7 @@ class AppDetail extends Component {
       unstake: false,
       stake: false,
       ctaButtonPressed: false,
+      isFreeTier: false,
       freeTierMsg: false,
       error: {show: false, message: ""}
     };
@@ -44,9 +45,22 @@ class AppDetail extends Component {
     this.deleteApplication = this.deleteApplication.bind(this);
     this.unstakeApplication = this.unstakeApplication.bind(this);
     this.stakeApplication = this.stakeApplication.bind(this);
+    this.copyAAT = this.copyAAT.bind(this);
   }
 
+  copyAAT(){
+    const aatInput = document.getElementById("aat-value");
+    
+    if (aatInput) {
+        aatInput.select();
+        aatInput.setSelectionRange(0, 99999); /*For mobile devices*/
+
+        document.execCommand("copy");
+    }
+}
+
   async componentDidMount() {
+    // eslint-disable-next-line 
     let freeTierMsg = false;
     let hasError = false;
     let errorType = "";
@@ -55,14 +69,14 @@ class AppDetail extends Component {
       freeTierMsg = this.props.location.state.freeTierMsg;
     }
 
-    const {address} = this.props.match.params;
+    const {id} = this.props.match.params;
 
     const {
       pocketApplication,
       networkData,
       error,
       name,
-    } = await ApplicationService.getApplication(address) || {};
+    } = await ApplicationService.getClientApplication(id) || {};
 
     hasError = error ? error : hasError;
     errorType = error ? name : errorType;
@@ -77,7 +91,18 @@ class AppDetail extends Component {
       return;
     }
 
-    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(address);
+    const clientAddress = pocketApplication.publicPocketAccount.address;
+    let accountBalance;
+
+    if (clientAddress) {
+      const {balance} = await PocketAccountService.getPoktBalance(clientAddress);
+
+      accountBalance = balance;
+    } else {
+      accountBalance = 0;
+    }
+
+    
     const chains = await NetworkService.getNetworkChains(networkData.chains);
     const {freeTier} = pocketApplication;
 
@@ -85,7 +110,7 @@ class AppDetail extends Component {
 
     if (freeTier) {
       const {success, data} = await ApplicationService.getFreeTierAppAAT(
-        address);
+        clientAddress);
 
       if (success) {
         aat = data;
@@ -98,6 +123,7 @@ class AppDetail extends Component {
       chains,
       aat,
       accountBalance,
+      isFreeTier: freeTier,
       freeTierMsg,
       loading: false,
     });
@@ -107,48 +133,69 @@ class AppDetail extends Component {
   }
 
   async deleteApplication() {
-    const {address} = this.state.pocketApplication.publicPocketAccount;
+    const {id} = this.state.pocketApplication;
+    
     const appsLink = `${window.location.origin}${_getDashboardPath(
       DASHBOARD_PATHS.apps
     )}`;
     const userEmail = PocketUserService.getUserInfo().email;
 
-    const success = await ApplicationService.deleteAppFromDashboard(
-      address, userEmail, appsLink
-    );
+      try {
+        const success = await ApplicationService.deleteAppFromDashboard(
+          id, userEmail, appsLink
+        );
 
-    if (success) {
-      this.setState({deleted: true});
-      // eslint-disable-next-line react/prop-types
-      this.props.onBreadCrumbChange(["Apps", "App Detail", "App Removed"]);
-    }
+        if (success) {
+          this.setState({deleted: true});
+          // eslint-disable-next-line react/prop-types
+          this.props.onBreadCrumbChange(["Apps", "App Detail", "App Removed"]);
+        }
+      } catch (error) {
+        this.setState({deleteModal: false, error: {show: true, message: "Free tier apps can't be deleted."}});
+      }
   }
 
-  async unstakeApplication({ppk, passphrase, address}) {
-    const {freeTier} = this.state.pocketApplication;
+  async unstakeApplication({ppk, passphrase}) {
+    const {freeTier, id} = this.state.pocketApplication;
+    const {address} = this.state.pocketApplication.publicPocketAccount;
 
     const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
-    const detail = url.replace(":address", address);
+    const detail = url.replace(":id", id);
     const link = `${window.location.origin}${detail}`;
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
-    const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
+    const unstakeInformation = {
+      application_id: id
+    };
 
-    const {success, data} = freeTier
-      ? await ApplicationService.unstakeFreeTierApplication(appUnstakeTransaction, link)
-      : await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
+    if (freeTier) {
+      // Create unstake transaction
+      const {success, data} = await ApplicationService.unstakeFreeTierApplication(unstakeInformation, link);
 
-    if (success) {
-      window.location.reload(false);
+      if (success) {
+        window.location.reload(false);
+      } else {
+        this.setState({unstake: false, ctaButtonPressed: false, message: data});
+      }
     } else {
-      this.setState({unstake: false, ctaButtonPressed: false, message: data});
+      const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
+
+      const {success, data} = await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
+
+      if (success) {
+        window.location.reload(false);
+      } else {
+        this.setState({unstake: false, ctaButtonPressed: false, message: data});
+      }
     }
   }
 
   async stakeApplication({ppk, passphrase, address}) {
+    const {id} = this.state.pocketApplication;
+
     ApplicationService.removeAppInfoFromCache();
-    ApplicationService.saveAppInfoInCache({address, passphrase});
+    ApplicationService.saveAppInfoInCache({id, address, passphrase});
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
@@ -162,6 +209,7 @@ class AppDetail extends Component {
 
   render() {
     const {
+      id,
       name,
       url,
       contactEmail,
@@ -203,7 +251,8 @@ class AppDetail extends Component {
       stake,
       ctaButtonPressed,
       accountBalance,
-      freeTierMsg
+      freeTierMsg,
+      isFreeTier
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
@@ -230,7 +279,7 @@ class AppDetail extends Component {
           ) : undefined,
       },
       {
-        title: formatNetworkData(maxRelays), 
+        title: formatNumbers(maxRelays),
         titleAttrs: {title: maxRelays ? formatNumbers(maxRelays) : undefined},
         subtitle: "Max Relays Per Day"
       },
@@ -259,6 +308,11 @@ class AppDetail extends Component {
     );
 
     if (freeTier && aat) {
+      const aatInput = document.getElementById("aat-value");
+
+      if (aatInput) {
+        aatInput.value = JSON.stringify(aat);
+      }
       aatStr = PocketApplicationService.parseAAT(aat);
     }
 
@@ -290,7 +344,11 @@ class AppDetail extends Component {
     if (deleted) {
       return (
         <DeletedOverlay
-          text={<p>Your application<br/>was successfully removed</p>}
+          text={<p style={{
+            position: "absolute",
+            top: "40%",
+            left: "42.3%"
+          }}>Your application<br/>was successfully removed</p>}
           buttonText="Go to App List"
           buttonLink={_getDashboardPath(DASHBOARD_PATHS.apps)}
         />
@@ -330,7 +388,7 @@ class AppDetail extends Component {
                   {name}
                   {freeTier && (
                     <Badge variant="light">
-                      Free Tier
+                      Launch Offering Plan
                     </Badge>
                   )}
                 </h1>
@@ -345,7 +403,7 @@ class AppDetail extends Component {
             <h1>App Detail</h1>
           </Col>
           <Col sm="1" md="1" lg="1">
-            {status !== STAKE_STATUS.Unstaking &&
+            {status !== STAKE_STATUS.Unstaking && freeTier === false &&
               <Button
                 className="float-right cta"
                 onClick={() => {
@@ -403,10 +461,12 @@ class AppDetail extends Component {
                   <h2>AAT</h2>
                 </div>
                 <Alert variant="light" className="aat-code">
+                <span id="aat-copy"className="copy-button" onClick={this.copyAAT}> <img src={"/assets/copy.png"} alt="copy" /></span>
                 <pre>
+                  <input id="aat-value" style={{position: "absolute", left: "-9999px"}}></input>
                   <code className="language-html" data-lang="html">
                     {"# Returns\n"}
-                    <span id="aat">{aatStr}</span>
+                    <span id="aat" >{aatStr}</span>
                   </code>
                 </pre>
                 </Alert>
@@ -446,14 +506,14 @@ class AppDetail extends Component {
                     to={() => {
                       const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
 
-                      return url.replace(":address", address);
+                      return url.replace(":id", id);
                     }}>
                     Edit
                   </Link>{" "}
                   to change your app description.
                 </p>
               </span>
-            <span className="option">
+            <span style={{display: isFreeTier ? "none" : "inline-block"}} className="option">
                 <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
                 <p>
                   <span
@@ -478,8 +538,8 @@ class AppDetail extends Component {
           <Modal.Body>
             <h4>Are you sure you want to remove this App?</h4>
             Your application will be removed from the Pocket Dashboard.
-            However, you will still be able to access it through the Command 
-            Line Interface (CLI) or import it back into Pocket Dashboard with 
+            However, you will still be able to access it through the Command
+            Line Interface (CLI) or import it back into Pocket Dashboard with
             the private key assigned to it.
           </Modal.Body>
           <Modal.Footer>

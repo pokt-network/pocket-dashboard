@@ -1,952 +1,1175 @@
 import React, {Component} from "react";
-import "../Support/SupportPages.scss";
+import "./SupportPages.scss";
 import {withRouter} from "react-router-dom";
 import {Container, Row} from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";
 import {scrollToId} from "../../_helpers";
-import PocketNetworkService from "../../core/services/PocketNetworkService.js";
 
 class TermsOfService extends Component {
-  constructor(props, context) {
-    super(props, context);
-    this.state = {poktPrice: ""};
-  }
-  async componentDidMount() {
-    const price = await PocketNetworkService.getNetworkSummaryData();
-
-    this.setState(
-      price.poktPrice > 0
-        ? {poktPrice: price.poktPrice}
-        : {
-            poktPrice:
-              "Error: Unable to retrieve Pokt price at the moment, please try again later.",
-          }
-    );
-  }
-
+  state = {};
   function;
   render() {
     return (
-      <Container fluid id="privacy-policy">
+      <Container fluid id="terms-of-use">
         <Navbar />
-
         <div className="wrapper">
+          <br />
           <Row>
-            <div className="address">
-              <p className="">POCKET NETWORK, INC. </p>
-              <p>POKT TOKEN PURCHASE AGREEMENT</p>
+            <div className="title">
+              <p style={{fontWeight: "700"}}>Site Terms Of Use<br/></p>
             </div>
+            <br></br>
+
+          </Row>
+          <Row>
+          <h2>
+              <strong>
+                POCKET NETWORK, INC. and POCKET NETWORK FOUNDATION
+              </strong>
+            </h2>
+          </Row>
+          <Row>
+          <p>
+              <strong>Date of Last Update:&nbsp;July 2, 2020</strong>
+            </p>
           </Row>
           <Row>
             <div className="secondary-font-family mt-5">
-              NOTICE: ​THE TERMS OF THIS AGREEMENT FORM A BINDING LEGAL CONTRACT
-              BETWEEN YOU AND POCKET NETWORK, INC (THE “COMPANY”). CAREFULLY
-              READ ALL OF THE TERMS OF THIS AGREEMENT BEFORE CLICKING THE “I
-              AGREE” BUTTON. BY CLICKING THE “I AGREE” BUTTON YOU ACKNOWLEDGE
-              YOUR CONSENT AND AGREEMENT TO ALL THE TERMS AND CONDITIONS SET
-              FORTH IN THIS AGREEMENT. IF YOU DO NOT AGREE TO ALL THE TERMS OF
-              THIS AGREEMENT, DO NOT CLICK “I AGREE.” IF YOU HAVE ANY QUESTIONS
-              REGARDING THE EFFECT OF THE TERMS AND CONDITIONS IN THIS
-              AGREEMENT, YOU ARE ADVISED TO CONSULT INDEPENDENT LEGAL COUNSEL.
+              These Terms of Use (“<strong>Terms</strong>”) are entered into
+              between you and Pocket Network Inc., a Delaware Corporation, and
+              Pocket Network Foundation, a Cayman Islands Foundation Company
+              (Pocket Network Inc. and Pocket Network Foundation are referred to
+              as “<strong>we</strong>,” “<strong>us</strong>,” or “
+              <strong>our”</strong>). All references to “<strong>you</strong>”
+              or “<strong>your</strong>” (as applicable) mean the person or the
+              organization who accesses or uses the Websites and Services (as
+              defined below) in any manner.
             </div>
             <br />
           </Row>
           <Row>
-            <div className="mt-5">
-              <span className="secondary-font-family bold">SUMMARY</span>
-              <p className="justify secondary-font-family">
-                Review this POKT Token Purchase Agreement following your
-                completion of certain questions on our online website platform
-                http://dashboard.pokt.network/ (the “Purchasing Site”). If your
-                responses remain accurate and correct, click the check box and
-                the “I AGREE” button to indicate your agreement. <br />
-                Purchase Price (USD): {this.state.poktPrice}
-                <br />
-                Number of POKT Tokens (Purchased Tokens): [____]
-              </p>
+            <div className="secondary-font-family mt-5">
+              By accessing or using the Websites and Services, you agree to be
+              bound by these Terms and any other rules or policies that we adopt
+              and publish from time to time, which are incorporated herein by
+              reference (which collectively constitute the “
+              <strong>Agreement</strong>“). This Agreement govern your access to
+              and use of the website (URL:{" "}
+              <a href="https://www.pokt.network/">https://www.pokt.network/</a>)
+              and its subdomains (the “<strong>Websites</strong>”) and any
+              products, software, services, accounts, and tools provided by us
+              through the Websites (the “<strong>Services</strong>”). Your use
+              of any Services is also subject to additional terms notified to
+              you as being applicable to such Services, which also form part of
+              this Agreement. Please do not use the Websites or Services if you
+              do not agree to be bound by this Agreement.
             </div>
           </Row>
           <Row>
             <div className="mt-5">
-              <span className="secondary-font-family bold">PREAMBLE</span>
-              <p className="justify secondary-font-family">
-                This Token Purchase Agreement (this “Agreement”) contains the
-                terms and conditions that govern your purchase of the POKT
-                Tokens (the “Tokens” or “POKT Tokens”), and it defines your
-                rights and obligations with respect to the purchased Tokens.
-                This is an agreement between you (“Purchaser” or “you”) and
-                Pocket Network, Inc, a Delaware corporation (the “Company”).
-                Purchaser and the Company are herein referred to individually as
-                a “Party” and collectively as the “Parties.”
-              </p>
-              <p className="justify secondary-font-family mt-1">
-                <span className="secondary-font-family bold">WHEREAS​,</span>​
-                the Company created and minted the Tokens, which are a native
-                digital asset intended to interact with and enable use of the
-                Company’s blockchain application, the Pocket Network (the
-                “Network”);
-              </p>
-              <p className="justify secondary-font-family">
-                <span className="secondary-font-family bold">WHEREAS​,</span>​
-                the Company is collaborating with Pocket Network Foundation, an
-                ownerless foundation company organized under the laws of the
-                Cayman Islands, to develop and manage the Network;
-              </p>
-              <p className="justify secondary-font-family">
-                <span className="secondary-font-family bold">WHEREAS​,</span>{" "}
-                Purchaser desires to participate in the Network either as an
-                application developer (“Developer”) or as a Pocket node
-                (“Node”);
-              </p>
-              <p className="justify secondary-font-family">
-                <span className="secondary-font-family bold">WHEREAS​,</span> in
-                order to participate in the Network as a Developer or Node,
-                Purchaser must acquire Tokens;
-              </p>
-              <p className="justify secondary-font-family">
-                <span className="secondary-font-family bold">WHEREAS​,</span>{" "}
-                the Company desires to issue and sell Tokens to select Network
-                Developers and Nodes subject to purchase quantity maximums and
-                use restrictions, requiring Purchaser to use Tokens in a
-                specified way; and
-              </p>
-              <p className="justify secondary-font-family">
-                <span className="secondary-font-family bold">WHEREAS​,</span>{" "}
-                Purchaser desires to purchase from the Company, and the Company
-                desires to issue and sell to Purchaser, Tokens in an amount and
-                for the consideration set forth below.
-              </p>
-              <p className="justify secondary-font-family">
-                <span className="secondary-font-family bold">
-                  NOW, THEREFORE​,
-                </span>
-                ​ for good and valuable consideration, the receipt and
-                sufficiency of which are hereby acknowledged, the Parties hereby
-                agree as follows:
-              </p>
-            </div>
-          </Row>
-          <Row>
-            <div className="mt-5">
-              <span className="secondary-font-family bold">
-                1. Purchase of Tokens.
-              </span>
-              <ul>
-                <li className="no-bullet">
-                  1.1. Subject to the Purchasing Site Terms of Use and the terms
-                  and conditions set forth herein, Purchaser, intending to be
-                  legally bound, hereby irrevocably agrees to purchase from the
-                  Company no more than 1,666,667 Tokens (the “Purchased Tokens”)
-                  at a purchase price of [$USD 0.0X] per token (the “Purchase
-                  Price), payable by fiat or cryptocurrency pursuant to the
-                  procedures set forth in this Agreement and via the Purchasing
-                  Site.{" "}
-                </li>
-
-                <li className="no-bullet">
-                  1.2. This Agreement shall be effective and binding when
-                  Purchaser has entered the amount of Tokens Purchaser desires
-                  to purchase at the Purchase Price, clicks the check box and
-                  the “I AGREE” button on the Purchasing Site to indicate that
-                  Purchaser has read, acknowledges and agrees to the terms of
-                  this Agreement, executes this Agreement and submits this
-                  Agreement to the Company, and completes payment to the Company
-                  of the Purchase Price. Purchaser agrees to be bound on this
-                  basis and confirms that Purchaser has read in full and
-                  acknowledges this Agreement and the terms on which Purchaser
-                  is bound.{" "}
-                </li>
-                <li className="no-bullet">
-                  1.3. Purchaser acknowledges and agrees that this agreement to
-                  purchase cannot be withdrawn, terminated, or revoked. This
-                  agreement to purchase shall be binding on the heirs,
-                  executors, administrators, successors and assigns of
-                  Purchaser. This agreement to purchase is not transferable or
-                  assignable by Purchaser, except as expressly provided in the
-                  terms and conditions of this Agreement.{" "}
-                </li>
-                <li className="no-bullet">
-                  1.4. The Company has provided specific procedures on how
-                  Purchaser may seek to purchase Tokens through the Purchasing
-                  Site. By purchasing Tokens, Purchaser acknowledges, agrees to,
-                  and has no objection to such procedures and specifications.
-                  Purchaser further acknowledges and agrees that failure to
-                  properly use the Purchasing Site and follow such procedures,
-                  including the submission of all required documentation, may
-                  result in a rejection of Purchaser’s agreement to purchase and
-                  Purchaser not receiving any Tokens. Unauthorized access or use
-                  of the Purchasing Site or the receipt or purchase of Tokens
-                  pursuant to this Agreement through any other means are not
-                  sanctioned or agreed to in any way by the Company. Purchaser
-                  should take great care to verify the accuracy of the universal
-                  resource locator for the Purchasing Site used to purchase
-                  Tokens.
-                </li>
-                <li className="no-bullet">
-                  1.5. Upon the basis of the representations and warranties, and
-                  subject to the terms and conditions, set forth herein, the
-                  Company agrees to issue and sell the Purchased Tokens to
-                  Purchaser on the Closing (as defined below) for the Purchase
-                  Price. 1.6. The Company shall consider Purchaser’s offer to
-                  purchase the Tokens upon the completion of the following:{" "}
-                </li>
-                <li className="no-bullet">
-                  1.6.1 Purchaser creates an account via the Purchasing Site;
-                  and{" "}
-                </li>
-                <li className="no-bullet">
-                  1.6.2. (i) Purchaser transfers funds in an amount equal to the
-                  Purchase Price from Purchaser’s bank account into the
-                  Company’s bank account, or (ii) Purchaser transfers
-                  cryptocurrency, including but not limited to bitcoin (BTC) or
-                  ether (ETH), in an amount equal to the Purchase Price from
-                  Purchaser’s digital wallet into the Company’s digital wallet,
-                  as provided by the Purchasing Site.{" "}
-                </li>
-              </ul>
-            </div>
-          </Row>
-          <Row>
-            <div className="mt-5">
-              <span className="secondary-font-family bold">
-                2. Termination or Rejection of Token Purchase Agreement.
-              </span>
-              <p className="justify secondary-font-family">
-                Purchaser acknowledges and agrees that the Company, in its sole
-                discretion, reserves the right to accept or reject this or any
-                other agreement to purchase Tokens, in whole or in part, and for
-                any reason or no reason, notwithstanding prior receipt by
-                Purchaser of notice of acceptance of this Agreement. If the
-                Company rejects a purchase, either in whole or in part (which
-                decision is in its sole discretion), the Company shall cause its
-                payment services provider, as applicable, to return promptly the
-                rejected Purchase Price or the rejected portion thereof to
-                Purchaser without deduction, offset or interest accrued thereon.
-                If this offer is rejected in whole this Agreement shall
-                thereafter be of no further force or effect. If this offer is
-                rejected in part, this Agreement will continue in full force and
-                effect to the extent this subscription was accepted.
-              </p>
-            </div>
-          </Row>
-          <Row>
-            <div className="mt-4">
-              <span className="secondary-font-family bold">
-                3. Acceptance of Purchase.
-              </span>{" "}
-              <span className="not-bold">
-                Upon the consummation of the purchase and sale of the Purchased
-                Tokens and the other transactions contemplated hereby (the
-                “Closing”), if the Company accepts this Agreement in whole or in
-                part, the Company shall execute and deliver to Purchaser a
-                counterpart executed copy of this Agreement dated as of the date
-                the Company accepts Purchaser’s offer (the “Effective Date”).
-              </span>
-              <ul>
-                <li className="no-bullet">
-                  3.1. The Company shall have no obligation hereunder until (i)
-                  Purchaser has executed and delivered to the Company this
-                  Agreement, (ii) Purchaser has deposited the Purchase Price in
-                  accordance with this Agreement, (iii) the Company has executed
-                  and delivered to Purchaser an executed copy of this Agreement,
-                  and (iv) all other conditions to Closing have been satisfied
-                  and the Closing has occurred.
-                </li>
-                <li className="no-bullet">
-                  3.2. In the event that the Closing does not take place for any
-                  reason with respect to all or some of the Tokens within thirty
-                  (30) days of the Purchaser’s offer to buy Tokens, as
-                  determined in the sole discretion of the Company, the Company
-                  shall be deemed to have rejected this purchaser, either in
-                  whole or in part, in accordance with Section 2 hereof and the
-                  Company shall cause its payment services provider, to return
-                  promptly the rejected Purchase Price or the rejected portion
-                  thereof to Purchaser without deduction, offset or interest
-                  accrued thereon.
-                </li>
-              </ul>
-            </div>
-          </Row>
-          <Row>
-            <div div className="mt-5">
-              <span className="secondary-font-family bold">
-                4. Purchase Maximum​.
-              </span>
-              <span className="not-bold">
-                Purchaser shall be entitled to purchase a quantity of Tokens not
-                to exceed the equivalent of (i) USD $50,000 divided by the
-                Purchase Price for such Purchasers that have demonstrated their
-                intent to become Developers, as indicated on the Purchasing
-                Site, or (ii) USD $100,000 divided by the Purchase Price for
-                such Purchasers that have demonstrated their intent to operate a
-                Node, as indicated on the Purchasing Site.
-              </span>
-            </div>
-          </Row>
-          <Row>
-            <div div className="mt-4">
-              <span className="secondary-font-family bold">
-                5. Use Restriction and Restricted Period​.
-              </span>
-              <span className="not-bold">
-                {" "}
-                Purchaser acknowledges that the Tokens purchased herein shall be
-                subject to the Use Restriction (defined below) for the
-                Restricted Period (defined below). Following the expiration of
-                the Restricted Period and satisfaction of the Use Restriction,
-                all Tokens purchased herein shall cease to be subject to the
-                Restricted Period and Use Restriction.
-              </span>
-              <ul>
-                <li className="no-bullet">
-                  5.1. <b>“Use Restriction”</b> means the requirement that
-                  Purchaser use all Tokens purchased, as appropriate to
-                  Purchaser’s intended participation in the Network. If
-                  Purchaser is a Developer, Purchaser’s Use Restriction requires
-                  staking Tokens, connecting the Purchaser’s application to the
-                  Network and requesting data from the Nodes on the Network
-                  using the Tokens. If Purchaser is a Node, Purchaser must use
-                  Tokens by staking Tokens and operating a Network node.
-                </li>
-
-                <li className="no-bullet">
-                  {" "}
-                  5.1.1. In order to enforce the Use Restriction during the
-                  Restricted Period, upon purchase of the Tokens in accordance
-                  with Section 1.1, the Tokens shall be transferred to a digital
-                  asset wallet, to which the Purchaser maintains the sole
-                  private key (the “Restricted Wallet”). During the Restricted
-                  Period, the Company shall place restrictions on the Restricted
-                  Wallet to prevent Purchaser from transferring Tokens from the
-                  Restricted Wallet (the “Transfer Restrictions”). Upon the
-                  expiration of the Restricted Period, the Company shall remove
-                  the Transfer Restrictions from the Restricted Wallet.
-                </li>
-                <li className="no-bullet">
-                  5.2. <b>“Restricted Period”</b> the general prohibition on the
-                  Purchaser’s ability to offer, sell, contract to sale, assign,
-                  transfer, spend, exchange, grant any option to purchase, or
-                  otherwise dispose of the Tokens for the period of one staking
-                  period from the Effective Date.
-                </li>
-              </ul>
-            </div>
-          </Row>
-          <Row>
-            <div className="mt-5">
-              <span className="secondary-font-family bold">
-                6. No Claim, Loan or Ownership Interest.{" "}
-              </span>
-              <span className="not-bold">
-                Except as otherwise expressly set forth herein, the purchase of
-                Tokens: (i) does not provide Purchaser with rights of any form
-                with respect to the Company or its revenues or assets,
-                including, without limitation, any voting, distribution,
-                redemption, liquidation, proprietary (including all forms of
-                intellectual property) or other financial or legal rights; (ii)
-                is not a loan to Company; and (iii) does not provide Purchaser
-                with any ownership, equity, or other interest in the Company.
-              </span>
-            </div>
-          </Row>
-          <Row>
-            <div className="mt-5">
-              <span className="secondary-font-family bold">
-                7. Intellectual Property.{" "}
-              </span>{" "}
-              <span className="not-bold">
-                Purchaser acknowledges and agrees that the Company retains all
-                right, title and interest in all of the Company’s intellectual
-                property contained in the Tokens, including, without limitation,
-                inventions, ideas, concepts, code, discoveries, processes,
-                marks, methods, software, compositions, formulae, techniques,
-                information and data, whether or not patentable, copyrightable
-                or protectable in trademark, and any trademarks, copyright or
-                patents based thereon. Purchaser agrees not to use, reverse
-                engineer, modify, or alter any of the Company’s intellectual
-                property for any reason without the Company’s prior written
-                consent.
-              </span>
-            </div>
-          </Row>
-          <Row>
-            <div className="mt-5">
-              <span className="secondary-font-family bold">
-                8. Representations and Warranties of Purchaser.{" "}
-              </span>{" "}
-              <span className="not-bold">
-                {" "}
-                In connection with the issuance and sale of the Tokens
-                hereunder, Purchaser hereby represents and warrants to the
-                Company that on the date hereof and as of the Effective Date:
-              </span>
-              <ul className="mt-3">
-                <li className="no-bullet">
-                  8.1 Purchaser has all requisite power and authority to execute
-                  and deliver this Agreement, to purchase the Purchased Tokens,
-                  and to carry out and perform its obligations under this
-                  Agreement. All action on Purchaser’s part required for the
-                  lawful execution and delivery of this Agreement and other
-                  agreements required hereunder have been or will be effectively
-                  taken prior to the Effective Date. This Agreement has been
-                  duly executed by Purchaser. The Agreement constitutes a legal,
-                  valid and binding obligation of Purchaser enforceable against
-                  Purchaser in accordance with its terms, except that such
-                  enforceability may be limited by applicable bankruptcy,
-                  insolvency, reorganization, moratorium and similar laws of
-                  general application relating to or affecting creditors’ rights
-                  generally and by equitable principles (regardless of whether
-                  enforcement is sought in a proceeding in equity or at law).
-                </li>
-                <li className="no-bullet">
-                  8.2. The Company’s dealings with Purchaser and others who may
-                  receive Tokens from the Company need not be uniform, and,
-                  without limiting the foregoing, the Company shall be entitled,
-                  among other things, to enter into agreements with such other
-                  recipients (and/or other persons) on terms different than
-                  those set forth herein.
-                </li>
-                <li className="no-bullet">
-                  8.3. Purchaser is acquiring the Tokens with the primary
-                  intention to use the Tokens as either (i) a developer of an
-                  application that will run on the Network, or (ii) an operator
-                  of a node on the Network, and Purchaser represents and
-                  warrants that Purchaser has no current intent to resell the
-                  Tokens.
-                </li>
-                <li className="no-bullet">
-                  8.4. Purchaser is fully aware of the risks associated with
-                  owning and using Tokens, including the inherent risk of the
-                  potential for Tokens, and/or the private keys to Tokens, to be
-                  lost, stolen, or hacked. By acquiring Tokens, Purchaser
-                  expressly acknowledges and assumes these risks.
-                </li>
-                <li className="no-bullet">
-                  8.5. Purchaser has sufficient understanding of technical
-                  matters relating to Tokens, the Network, digital asset storage
-                  mechanisms (such as digital asset wallets), and blockchain
-                  technology, to understand how to acquire, store, and use
-                  Tokens, and to appreciate the risks and implications of
-                  acquiring Tokens.
-                </li>
-                <li className="no-bullet">
-                  8.6. Purchaser understands that the Tokens confer no ownership
-                  or property rights of any form with respect to the Company,
-                  including, but not limited to, any ownership, distribution,
-                  redemption, liquidation, proprietary, governance, or other
-                  financial or legal rights.
-                </li>
-                <li className="no-bullet">
-                  8.7. Purchaser acknowledges that the Company has made no
-                  representations or warranties whatsoever regarding the Tokens
-                  and their functionality, or the assets, business, financial
-                  condition or prospects of the Company.
-                </li>
-                <li className="no-bullet">
-                  8.8. Purchaser shall execute such other documents as
-                  reasonably requested by the Company as necessary to comply
-                  with all applicable law.
-                </li>
-                <li className="no-bullet">
-                  8.9. Purchaser acknowledges that the Company has made no
-                  representations or warranties whatsoever regarding the income
-                  tax consequences regarding the receipt or ownership of the
-                  Tokens.
-                </li>
-                <li className="no-bullet">
-                  8.10. Purchaser represents that he or she has consulted with
-                  his or her advisors regarding the consequences, including the
-                  tax consequences, of acquiring Tokens.
-                </li>
-                <li className="no-bullet">
-                  8.11. The execution, delivery and performance of this
-                  Agreement will not result in (i) any violation of, be in
-                  conflict with or constitute a material default under, with or
-                  without the passage of time or the giving of notice of, (A)
-                  any provision of Purchaser’s organizational documents, if
-                  applicable, (B) any provision of any judgment, decree or order
-                  to which Purchaser is a party, by which it is bound, or to
-                  which any of its assets are subject, (C) any agreement,
-                  obligation, duty or commitment to which Purchaser is a party
-                  or by which it is bound, or (D) any laws, statutes,
-                  ordinances, rules, regulations, judgments, injunctions,
-                  administrative interpretations, orders and decrees of any
-                  Governmental Authority, including amendments thereto
-                  (collectively, “Laws”); or (ii) the creation of any lien,
-                  charge or encumbrance upon any assets of Purchaser.
-                  “Governmental Authority” shall mean any nation or government,
-                  any state or other political subdivision thereof, any entity
-                  exercising legislative, executive, judicial or administrative
-                  functions of or pertaining to government, including without
-                  limitation any government authority, agency, department,
-                  board, commission or instrumentality and any court, tribunal
-                  or arbitrator(s) of competent jurisdiction and any
-                  self-regulatory organization. For the avoidance of doubt,
-                  Governmental Authority may include private bodies exercising
-                  quasi-governmental, regulatory or judicial-like functions to
-                  the extent they relate to either Parties or the Tokens.
-                </li>
-                <li className="no-bullet">
-                  8.12. The execution and delivery of and performance under this
-                  Agreement require no approval or other action from any
-                  Governmental Authority or person or entity other than the
-                  Company, except for such consents, approvals, authorizations,
-                  orders, filings, registrations or qualifications as have
-                  already been obtained or made and are still in full force and
-                  effect.{" "}
-                </li>
-                <li className="no-bullet">
-                  <b>8.13. Purchasing Site.</b>
-                  <ul>
-                    <li className="no-bullet">
-                      8.13.1. Purchaser acknowledges that the Company has
-                      established Terms of Use for the Purchasing Site, which
-                      Terms of Use may be amended from time to time. Purchaser
-                      has read and has complied with and agrees to continue to
-                      comply with the Terms of Use for the Purchasing Site.
-                      Purchaser has verified the accuracy of the universal
-                      resource locator for the Purchasing Site used to purchase
-                      Tokens.{" "}
-                    </li>
-                    <li className="no-bullet">
-                      8.13.2. Purchaser acknowledges that Purchaser shall be
-                      solely responsible for inputting and transmitting all
-                      required documentation correctly and accurately.
-                    </li>
-                    <li className="no-bullet">
-                      8.13.3. Purchaser acknowledges access to the Purchasing
-                      Site may be limited, unavailable or interrupted at any
-                      time, including, but not limited to, during periods of
-                      peak demand, system upgrades, maintenance, or during any
-                      other events impacting Purchaser, Company or third party
-                      providers providing systems or services necessary for the
-                      Purchasing Site to be available and that the Company will
-                      not be liable, and Purchaser will not attempt to hold the
-                      Company liable, for any losses arising out of or relating
-                      to any inaccuracies, duplications or errors in any
-                      purchase placed on the Purchasing Site or resulting
-                      transactions.
-                    </li>
-                  </ul>
-                </li>{" "}
-                <li className="no-bullet">
-                  8.14.{" "}
-                  <b>
-                    Sanctions Compliance; Anti-Money Laundering; Funds and
-                    Payments.
-                  </b>
-                  <ul>
-                    <li className="no-bullet">
-                      8.14.1. <b>Sanctions Compliance.</b> Neither Purchaser,
-                      nor any person having a direct or indirect beneficial
-                      interest in Purchaser or Tokens being acquired by
-                      Purchaser, or any person for whom Purchaser is acting as
-                      agent or nominee in connection with Tokens, has been or is
-                      (i) the subject of sanctions administered or enforced by
-                      the United States (including without limitation the U.S.
-                      Department of the Treasury’s Office of Foreign Asset
-                      Control), the United Kingdom, the European Union or any
-                      other Governmental Authority (collectively, “Sanctions”),
-                      (ii) organized or resident in a country or territory that
-                      is the subject of country-wide or territory-wide
-                      Sanctions, or (iii) otherwise a party with which the
-                      Company is prohibited from dealing with under applicable
-                      laws.
-                    </li>
-                    <li className="no-bullet">
-                      8.14.2.{" "}
-                      <b>Anti-money Laundering; Counter-Terrorism Financing.</b>{" "}
-                      To the extent required by applicable laws, Purchaser has
-                      complied and will continue to comply with all anti-money
-                      laundering and counter-terrorism financing requirements.
-                    </li>
-                    <li className="no-bullet">
-                      8.14.3. <b>Funds and Payments.</b> The funds, including
-                      any fiat, virtual currency or cryptocurrency, Purchaser
-                      uses to purchase Tokens are not derived from or related to
-                      any unlawful activities, including but not limited to
-                      money laundering or terrorist financing, and Purchaser
-                      will not use, or permit the use of, Tokens to finance,
-                      engage in or otherwise support any unlawful activities.
-                      All payments by or on behalf of Purchaser under this
-                      Agreement will be made only in Purchaser’s name, from a
-                      digital wallet or bank account not located in a country or
-                      territory that has been designated as a “non-cooperative
-                      country or territory” by the Financial Action Task Force,
-                      and is not a “foreign shell bank” within the meaning of
-                      the U.S. Bank Secrecy Act (31 U.S.C. § 5311 et seq.), as
-                      amended, and the regulations promulgated thereunder by the
-                      Financial Crimes Enforcement Network, as such regulations
-                      may be amended from time to time.
-                    </li>
-                  </ul>
-                </li>
-              </ul>
-            </div>
-          </Row>
-          <Row>
-            <div className="mt-5">
-              <span className="secondary-font-family bold">
-                9. Representations and Warranties of the Company​.{" "}
-              </span>
-              <span className="not-bold">
-                In connection with the issuance and sale of the Tokens
-                hereunder, the Company hereby represents and warrants to
-                Purchaser that as of the date hereof and as of the Effective
-                Date:
-              </span>
               <p>
-                <ul>
-                  <li className="no-bullet">
-                    9.1. The Company is a Delaware corporation, validly existing
-                    and in good standing under the laws of the state of Delaware
-                    and has all requisite corporate power and authority to carry
-                    on its business as now conducted.
-                  </li>
-                  <li className="no-bullet">
-                    9.2. The Company has all requisite power and authority to
-                    execute and deliver this Agreement and sell Tokens to
-                    Purchaser and to carry out and perform its obligations under
-                    this Agreement, in each case subject to the terms hereof.
-                    The Agreement constitutes a legal, valid and binding
-                    obligation of the Company enforceable against Company in
-                    accordance with its terms.
-                  </li>
-                  <li className="no-bullet">
-                    9.3. This Agreement has been duly executed and delivered by
-                    the Company, and, upon the Closing, the Tokens will have
-                    been validly issued to Purchaser in accordance with the
-                    terms hereof. This Agreement constitutes the legal, valid
-                    and binding obligation of the Company, enforceable against
-                    the Company in accordance with its terms (except as such
-                    enforceability may be limited by applicable bankruptcy,
-                    insolvency, reorganization, moratorium or similar Laws
-                    affecting creditors’ rights generally and by general
-                    principles of equity (whether considered in a proceeding at
-                    law or equity)).
-                  </li>
-                  <li className="no-bullet">
-                    9.4. The execution, delivery and performance of this
-                    Agreement will not result in: (i) any violation of, be in
-                    conflict with in any material respect, or constitute a
-                    material default under, with or without the passage of time
-                    or the giving of notice (A) any provision of the Company’s
-                    bylaws, (B) any provision of any judgment, decree or order
-                    to which the Company is a party, by which it is bound, or to
-                    which any of its material assets are subject, (C) any
-                    material contract, obligation or commitment to which the
-                    Company is a party or by which it is bound, or (D) any
-                    applicable laws; or (ii) the creation of any material lien,
-                    charge or encumbrance upon any material assets of the
-                    Company.
-                  </li>
-                  <li className="no-bullet">
-                    9.5. The execution and delivery of and performance under
-                    this Agreement require no approval or other action from any
-                    Governmental Authority or person or entity other than the
-                    Company, except for such consents, approvals,
-                    authorizations, orders, filings, registrations or
-                    qualifications as have already been obtained or made and are
-                    still in full force and effect.
-                  </li>
-                </ul>
+                <u>Access and Availability</u>
               </p>
+              <br></br>
+              <ol>
+                <li>
+                  <strong>Conditions of Use. </strong>Your access and use of the
+                  Websites and Services are conditional upon your acceptance of
+                  and compliance with this Agreement.
+                </li>
+                <li>
+                  <strong>Access and Use by Organization. </strong>If you access
+                  or use the Website and Services on behalf of an organization,
+                  you represent and warrant that you have the authority to enter
+                  into this Agreement on behalf of that organization and to bind
+                  that organization to such terms (and references to “you” in
+                  this Agreement refer to that organization).
+                </li>
+                <li>
+                  <strong>Services not offered to Sanctioned Persons. </strong>
+                  The Websites and Services are not offered to, or intended to
+                  be used by, any person or entity that is the subject of
+                  sanctions administered or enforced by any country or
+                  government or otherwise designated on any list of prohibited
+                  or restricted parties (including but not limited to the lists
+                  maintained by the United Nations Security Council, the U.S.
+                  Government, the European Union or its Member States, or other
+                  applicable government authority) or organized or resident in a
+                  country or territory that is the subject of country-wide or
+                  territory-wide sanctions. You represent and warrant that
+                  neither you nor any party having a direct or indirect
+                  beneficial interest in you or on whose behalf you are acting
+                  as agent or nominee is such a person or entity and you will
+                  comply with all applicable import, re-import, sanctions,
+                  anti-boycott, export, and re-export control laws and
+                  regulations. If this is not accurate or you do not agree, then
+                  you must immediately cease accessing our Websites and
+                  Services.
+                </li>
+                <li>
+                  <strong>Availability. </strong>We do not guarantee that the
+                  Websites and Services will always be available or
+                  uninterrupted. From time to time we may decide to temporarily
+                  restrict or block access to, or use of, all or part of the
+                  Websites and Services without notice and reserve the right to
+                  do so for business or operational reasons.
+                </li>
+                <li>
+                  <strong>Withdrawal and Amendments. </strong>We reserve the
+                  right to withdraw and/or amend any features of the Websites
+                  and Services without notice (save to the extent otherwise set
+                  out in these Terms) and we accept no liability, no matter how
+                  that may be caused, arising from us doing so.
+                </li>
+              </ol>
             </div>
           </Row>
           <Row>
-            <div className="mt-5 mb-5">
-              <span className="secondary-font-family bold">
-                10. Termination.{" "}
-              </span>
+            <div className="mt-5">
               <p>
-                <ul>
-                  <li className="no-bullet">
-                    10.1. <b>General Termination Right.</b> This Agreement may
-                    be terminated by the Company by written (including
-                    electronic) notice to Purchaser at any time prior to the
-                    Effective Date, and any such termination shall be without
-                    liability on the part of the Company (or any of its
-                    affiliates, and its and their respective owners, directors,
-                    officers, employees, agents, advisors, or other
-                    representatives) to Purchaser. In the event of a termination
-                    pursuant to this Section 9.1 (i) the Company shall cause its
-                    payment services provider, to return promptly the Purchase
-                    Price to Purchaser without deduction, offset or interest
-                    accrued thereon, and (ii) this Agreement, and all of
-                    Purchaser’s rights under this Agreement, shall immediately
-                    terminate and shall thereafter be of no further force or
-                    effect.
-                  </li>
-                  <li className="no-bullet">
-                    10.2. <b>Termination Upon Purchaser’s Breach.</b> In
-                    addition to the rights in Section 9.1, the Company reserves
-                    the right to terminate this Agreement, in its sole
-                    discretion, in the event that Purchaser is in breach of any
-                    term of this Agreement. In the event of a termination
-                    pursuant to this Section 9.2 (i) all of Purchaser’s rights
-                    in Tokens shall become immediately void and of no further
-                    force and effect, (ii) all of Purchaser’s rights under this
-                    Agreement shall immediately terminate, and (iii) Purchaser
-                    shall not be entitled to any other recourse (including any
-                    refund for any amounts paid to the Company in connection
-                    with this Agreement).
-                  </li>
-                </ul>
+                <u>Accounts and Security Information</u>
               </p>
+              <br></br>
+              <ol>
+                <li>
+                  <strong>Account Registration. </strong>You may be required to
+                  register an account with us to have access or use some of our
+                  Services. Your registration for and use of our accounts are
+                  subject to the additional terms of use notified to you at the
+                  time of your account registration, which form part of this
+                  Agreement.
+                </li>
+                <li>
+                  <strong>Security Information. </strong>To use our Website and
+                  Services, you may be required to choose, or be provided with,
+                  a user identification code, password or any other piece of
+                  information as part of the Websites’ security procedures (the
+                  “<strong>Security Information</strong>”). You shall treat such
+                  Security Information as confidential and you must not disclose
+                  it to any third party.
+                </li>
+                <li>
+                  <strong>Liability. </strong>We are not liable for any loss or
+                  damage that you may incur as a result of someone else using or
+                  accessing your Security Information to access or use the
+                  Websites and Services, either with or without your knowledge.
+                  However, you could be held liable for losses incurred by us or
+                  another party due to someone else’s access to or use of the
+                  Websites and Services via the use of your Security
+                  Information.
+                </li>
+              </ol>
             </div>
           </Row>
           <Row>
-            <div className="mt-5 mb-5">
-              <span className="secondary-font-family bold">
-                11. Indemnification​.{" "}
-              </span>
-              <span className="not-bold">
-                Purchaser hereby agrees to indemnify the Company, any of its
-                affiliates, and its and their respective owners, directors,
-                officers, employees, representatives and advisors, and to hold
-                each of them harmless, from and against any loss, damage,
-                liability, cost or expense, including reasonable attorneys’ fees
-                and costs of investigation, to which they may be put or which
-                they may reasonably incur or sustain due to or arising out of
-                (i) any inaccuracy in or breach of any representation or
-                warranty of Purchaser or its affiliates or agents, whether
-                contained in this Agreement or any other document provided by
-                Purchaser to the Company in connection with Purchaser’s purchase
-                and use of the Tokens, or (ii) any nonfulfillment or breach of
-                any covenant, agreement, or other provision by Purchaser or its
-                affiliates or agents, whether contained in this Agreement or any
-                other document provided by Purchaser to the Company in
-                connection with Purchaser’s purchase and use the Tokens. All
-                indemnification provisions shall survive the termination of this
-                Agreement.
-              </span>
-            </div>
-          </Row>
-          <Row>
-            <div className="mt-5 mb-5">
-              <span className="secondary-font-family bold">
-                12. Limitation of Liability; No Warranties.{" "}
-              </span>
-              <ul>
-                <li className="no-bullet">
-                  12.1. Except as expressly provided by this agreement and
-                  applicable laws, the Company shall not be responsible or
-                  liable for any losses resulting directly or indirectly from
-                  (i) any act or omission of Purchaser or agent of Purchaser or
-                  any error, negligence, or misconduct of Purchaser, (ii)
-                  failure of transmission or communication facilities, (iii) any
-                  other cause or causes beyond the Company’s control, including,
-                  without limitation, for reasons such as acts of God, fire,
-                  flood, strikes, work stoppages, acts of terrorism,
-                  governmental or regulatory action, delays of suppliers or
-                  subcontractors, war or civil disturbance, self-regulatory
-                  organization actions, telecommunication line or computer
-                  hardware failures and any other telecommunication failures,
-                  (iv) the Company’s reliance on any instructions, notices, or
-                  communications that it believes to be from an individual
-                  authorized to act on behalf of Purchaser, and Purchaser hereby
-                  waives any and all defenses that any such individual was not
-                  authorized to act on behalf of Purchaser, (v) government
-                  restrictions, exchange, regulatory, or market rulings,
-                  suspension of trading, military operations, terrorist
-                  activity, strikes, or any other condition beyond the Company’s
-                  control, including without limitation extreme market
-                  volatility or trading volume, or (vi) any action taken by
-                  Company to comply with applicable laws or this Agreement.
-                </li>
-                <li className="no-bullet">
-                  12.2. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAWS AND
-                  RULES, THE COMPANY, ITS AFFILIATES, AND ITS CONTROLLING
-                  PERSONS, SHAREHOLDERS, DIRECTORS, OFFICERS, EMPLOYEES AND
-                  AGENTS WILL NOT BE RESPONSIBLE FOR ANY LOSSES EXCEPT THAT THE
-                  COMPANY SHALL BE RESPONSIBLE FOR ANY LOSSES TO THE EXTENT THAT
-                  SUCH LOSSES ARISE FROM THE COMPANY’S GROSS NEGLIGENCE, FRAUD
-                  OR WILLFUL MISCONDUCT. IN NO EVENT SHALL THE COMPANY, ITS
-                  AFFILIATES, CONTROLLING PERSONS, SHAREHOLDERS, DIRECTORS,
-                  OFFICERS, EMPLOYEES AND AGENTS BE LIABLE TO PURCHASER OR ANY
-                  THIRD PARTY FOR ANY INDIRECT, SPECIAL, INCIDENTAL,
-                  CONSEQUENTIAL, EXEMPLARY OR PUNITIVE DAMAGES, OR DAMAGES OF
-                  ANY KIND FOR LOST PROFITS OR REVENUES, TRADING LOSSES,
-                  INACCURATE DISTRIBUTIONS, LOSS OF BUSINESS OR DATA, EVEN IF
-                  ADVISED OF THE POSSIBILITY OF ANY SUCH DAMAGES AND REGARDLESS
-                  OF WHETHER SUCH LIABILITY IS ASSERTED ON THE BASIS OF
-                  CONTRACT, TORT OR OTHERWISE. FOR THE AVOIDANCE OF DOUBT, THIS
-                  PROVISION DOES NOT ACT AS A WAIVER OF ANY RIGHTS OF A
-                  PURCHASER UNDER THE FEDERAL SECURITIES LAWS, INCLUDING ANY
-                  RIGHTS UNDER THE SECURITIES ACT OF 1933, TO THE EXTENT SUCH A
-                  WAIVER IS AGAINST PUBLIC POLICY AS EXPRESSED IN THE ACT OR IS
-                  OTHERWISE UNENFORCEABLE.
-                </li>
-                <li className="no-bullet">
-                  12.3. THE COMPANY AND ITS AFFILIATES MAKE NO REPRESENTATION OR
-                  WARRANTY, EXPRESS OR IMPLIED, AS TO THE SERVICES TO BE
-                  PROVIDED IN ACCORDANCE WITH THIS AGREEMENT, INCLUDING THE
-                  PURCHASING SITE, OR THE RESULTS TO BE ACHIEVED BY THE USE
-                  THEREOF. THE COMPANY AND ITS AFFILIATES DISCLAIM ALL EXPRESS,
-                  IMPLIED AND STATUTORY WARRANTIES INCLUDING, WITHOUT
-                  LIMITATION, INCLUDING WARRANTIES OF QUALITY, PERFORMANCE, NON
-                  INFRINGEMENT, MERCHANTABILITY, OR FITNESS FOR A PARTICULAR
-                  PURPOSE, NOR ARE THERE ANY WARRANTIES CREATED BY COURSE OF
-                  DEALING, COURSE OF PERFORMANCE OR TRADE USAGE. THE COMPANY AND
-                  AFFILIATES DO NOT GUARANTEE THE ACCURACY, QUALITY, SEQUENCE,
-                  TIMELINESS, RELIABILITY, PERFORMANCE, COMPLETENESS, CONTINUED
-                  AVAILABILITY, TITLE OR NON-INFRINGEMENT OF ANY DATA OR THIRD
-                  PARTY PROVIDER SERVICES USED IN RELATION TO THE AGREEMENT AND
-                  EACH DISCLAIMS ANY EXPRESS OR IMPLIED WARRANTIES. THE SERVICES
-                  TO BE PROVIDED BY THE COMPANY (INCLUDING THE PURCHASING SITE)
-                  ARE PROVIDED ON AN “AS-IS”, “AS AVAILABLE” BASIS WITHOUT
-                  WARRANTY OF ANY KIND TO THE MAXIMUM EXTENT PERMITTED BY
-                  APPLICABLE LAWS AND RULES. FOR THE AVOIDANCE OF DOUBT, THIS
-                  PROVISION DOES NOT ACT AS A WAIVER OF ANY RIGHTS OF A
-                  PURCHASER UNDER THE FEDERAL SECURITIES LAWS, INCLUDING ANY
-                  RIGHTS UNDER THE SECURITIES ACT OF 1933, TO THE EXTENT SUCH A
-                  WAIVER IS AGAINST PUBLIC POLICY AS EXPRESSED IN THE ACT OR IS
-                  OTHERWISE UNENFORCEABLE.
-                </li>
-              </ul>
-            </div>
-          </Row>
-          <Row>
-            <div className="mt-5 mb-3">
-              <span className="secondary-font-family bold">
-                13. Miscellaneous.
-              </span>
+            <div className="mt-5">
               <p>
-                <ul>
-                  <li className="no-bullet">
-                    13.1. <b>Survival.</b> Notwithstanding anything to the
-                    contrary herein, the provisions of Sections 4, 5, 6, 7, 8,
-                    10, and 11 shall survive the termination of this Agreement.
-                  </li>
-                  <li className="no-bullet">
-                    13.2. <b>Counterparts.</b> This Agreement may be executed in
-                    any number of counterparts (including by means of facsimile
-                    and electronic mail (including portable document format
-                    (pdf) or any electronic signature complying with the U.S.
-                    federal ESIGN Act of 2000, e.g., www.docusign.com)), each of
-                    which shall be an original but all of which together shall
-                    constitute one and the same instrument.
-                  </li>
-                  <li className="no-bullet">
-                    13.3. <b>No Assignment.</b> This Agreement shall be binding
-                    upon and inure to the benefit of the Parties. Further, (i)
-                    POKT Tokens acquired pursuant to this Agreement may be
-                    transferred only as set forth in herein, (ii) the Company
-                    may assign or transfer this Agreement without Purchaser’s
-                    consent to its successors and assigns, including an
-                    affiliate of the Company, and (iii) Purchaser may not assign
-                    this Agreement without the prior written consent of the
-                    Company. Any purported assignment in violation of this
-                    provision shall be a breach of this Agreement and void ab
-                    initio.
-                  </li>
-                  <li className="no-bullet">
-                    13.4. <b>Governing Law; Venue.</b> This Agreement shall be
-                    governed by and construed in accordance with the domestic
-                    Laws of the state of Delaware without giving effect to any
-                    choice or conflict of laws provision or rule (whether of the
-                    state of Delaware or any other jurisdiction) that would
-                    cause the application of the Laws of any jurisdiction other
-                    than the state of Delaware. EACH PARTY HEREBY IRREVOCABLY
-                    AND UNCONDITIONALLY CONSENTS TO SUBMIT TO THE EXCLUSIVE
-                    JURISDICTION OF ANY STATE AND FEDERAL COURTS LOCATED WITHIN
-                    DELAWARE FOR ANY ACTION, PROCEEDING OR INVESTIGATION
-                    (“LITIGATION”) ARISING OUT OF OR RELATING TO THIS AGREEMENT
-                    AND THE TRANSACTIONS CONTEMPLATED HEREBY (AND AGREES NOT TO
-                    COMMENCE ANY LITIGATION RELATING THERETO EXCEPT IN SUCH
-                    VENUES).
-                  </li>
-                  <li className="no-bullet">
-                    13.5. <b>Amendment.</b> No amendment of any provision of
-                    this Agreement shall be valid unless the same shall be in
-                    writing and signed by the Company and Purchaser.
-                  </li>
-                  <li className="no-bullet">
-                    13.6. <b>Entire Agreement.</b> his Agreement constitutes the
-                    entire agreement among the Parties and supersedes any prior
-                    understandings, agreements, or representations by or among
-                    the Parties, written or oral, to the extent they relate in
-                    any way to the subject matter hereof.
-                  </li>
-                  <li className="no-bullet">
-                    13.7. <b>Notices.</b> All notices, requests, demands and
-                    other communications hereunder shall be in writing and shall
-                    be deemed to have been duly given to any Party when
-                    delivered by hand, when delivered by electronic mail, or
-                    when mailed, first-class postage prepaid (i) if to
-                    Purchaser, at the electronic mail address set forth below
-                    Purchaser’s signature, or to such other electronic mail
-                    address as Purchaser shall have furnished to the Company in
-                    writing, and (ii) if to the Company, to it at 4465 West
-                    Gandy Boulevard, Tampa, FL 33611, or to such other address
-                    or addresses or electronic mail address or addresses, as the
-                    Company shall have furnished to Purchaser in writing
-                    (provided that notice by electronic mail to the Company
-                    shall not be deemed given unless the Company has
-                    affirmatively acknowledged receipt of such notice).
-                  </li>
-                  <li className="no-bullet">
-                    13.8. <b>Severability.</b> If any provision of this
-                    Agreement is determined by a court of competent jurisdiction
-                    to be invalid, illegal, inoperative or unenforceable for any
-                    reason, this Agreement shall continue in full force and
-                    effect, it being intended that all rights and obligations of
-                    the Parties hereunder shall be enforceable to the fullest
-                    extent permitted by law, and the Parties shall negotiate in
-                    good faith to modify this Agreement so as to effect the
-                    original intent of the Parties as closely as possible in an
-                    acceptable manner in order that the transactions
-                    contemplated hereby be consummated as originally
-                    contemplated to the fullest extent possible.
-                  </li>
-                  <li className="no-bullet">
-                    13.9. <b>Termination Upon Purchaser’s Breach.</b> No
-                    Third-Party Beneficiaries. The terms and provisions of this
-                    Agreement are intended solely for the benefit of each Party
-                    and their respective successors and assigns, and it is not
-                    the intention of the Parties to confer, and no provision
-                    hereof shall confer, third-party beneficiary rights upon any
-                    other person.
-                  </li>
-                  <li className="no-bullet">
-                    13.10. <b>Electronic Communications.</b> Purchaser agrees
-                    and acknowledges that all agreements, notices, disclosures
-                    and other communications that the Company may provide to
-                    Purchaser pursuant to this Agreement or in connection with
-                    or related to Purchaser’s purchase or ownership of Tokens,
-                    including this Agreement, may be provided by the Company, in
-                    its sole discretion, to Purchaser in electronic form.
-                  </li>
-                  <li className="no-bullet">
-                    13.11. <b>Headings.</b> The headings used in this Agreement
-                    have been inserted for convenience of reference only and do
-                    not define or limit the provisions hereof.
-                  </li>
-                  <li className="no-bullet">
-                    13.12. <b>Construction.</b> The Parties acknowledge that
-                    each of them has had the benefit of legal counsel of its own
-                    choice and has been afforded an opportunity to review this
-                    Agreement with its legal counsel and that this Agreement
-                    shall be construed as if jointly drafted by the Parties.
-                  </li>
-                  <li className="no-bullet">
-                    13.13. <b>Available Rights and Waivers.</b> No failure or
-                    delay by any Party in exercising any right, power or
-                    privilege under this Agreement shall operate as a waiver
-                    thereof nor shall any single or partial exercise thereof
-                    preclude any other or further exercise thereof or the
-                    exercise of any other right, power or privilege. The rights
-                    and remedies herein provided shall be cumulative and not
-                    exclusive of any rights or remedies provided by law.
-                  </li>
-                </ul>
+                <u>Data Privacy</u>
               </p>
+              <br></br>
+              <ol>
+                <li>
+                  <strong>Privacy Policy </strong>We are committed to protecting
+                  the privacy of your information. Please review our Privacy
+                  Policy for details about how we process your personal data in
+                  connection with your access and use of the Websites and
+                  Services. The Privacy Policy is available here.
+                </li>
+                <li>
+                  <strong>Cookies</strong>. We use necessary cookies to make the
+                  Websites and Services work. We may also use optional cookies
+                  to improve our Websites and Services, but you will only get
+                  the benefit of such improvements if you enable cookies through
+                  your browser settings. For more information about how we use
+                  cookies, please read our Privacy Policy.
+                </li>
+              </ol>
             </div>
           </Row>
+          <Row>
+            <div className="mt-5">
+              <p>
+                <u>Open Source Software</u>
+              </p>
+              <br></br>
+              <ol>
+                <li>
+                  <strong>Download and Availability. </strong>We may make the
+                  source code for certain software we develop available for
+                  download as open source software on the Websites or on{" "}
+                  <a href="https://github.com/pokt-network">
+                    https://github.com/pokt-network
+                  </a>
+                  . If you use any such open source software, you agree to be
+                  bound by and comply with the license terms that apply to such
+                  open source software. You will not indicate that you are
+                  associated with us in connection with your use, modifications
+                  or distributions of such open source software.
+                </li>
+                <li>
+                  <strong>License Terms. </strong>If we host any proprietary
+                  software and enable you to access and use such software
+                  through the Websites and Services, then this Agreement will
+                  apply to such access and use, in addition to any license
+                  agreements that we may enter into with you.
+                </li>
+              </ol>
+            </div>
+          </Row>
+          <Row>
+            <div className="mt-5">
+              <p>
+                <u>Intellectual Property</u>
+              </p>
+              <br></br>
+              <ol>
+                <li>
+                  <strong>Ownership.&nbsp;</strong>The Websites and Services are
+                  owned by us and protected by copyright, trademark, and other
+                  intellectual property rights and laws of applicable countries,
+                  unless otherwise specifically indicated. You agree to abide by
+                  all applicable proprietary rights and laws, as well as any
+                  trademark or copyright notices or restrictions contained in
+                  this Agreement. The trademarks, service marks, slogans, logos,
+                  trade dress and other identifiers (“<strong>Marks</strong>”)
+                  displayed on the Websites and Services are our property,
+                  unless otherwise stated.
+                </li>
+                <li>
+                  <strong>Prohibitions. </strong>You are prohibited from
+                  modifying, copying, displaying, distributing, transmitting,
+                  publishing, selling, licensing, creating derivative works
+                  from, or using any portions of the Websites and Services for
+                  commercial or public purposes without our express
+                  authorization or as expressly permitted by applicable
+                  copyright or trademark law. You may not copy any part of the
+                  materials on the Websites and Services without our express
+                  prior written authorization and subject to our copyright
+                  notice being affixed to the copied material. Nothing contained
+                  herein shall be construed as conferring by implication,
+                  estoppel, or otherwise any license or right under any of our
+                  patent, trademark, copyright or other proprietary rights for
+                  any purpose not expressly set out in this Agreement.
+                </li>
+                <li>
+                  <strong>No Transfer.&nbsp;</strong>By using the Services, no
+                  right, title, or interest in or to the Websites and Services
+                  is transferred to you. All rights are reserved by us.
+                </li>
+                <li>
+                  <strong>Use of Materials. </strong>Except as otherwise
+                  indicated elsewhere on the Websites, you may view, download
+                  and print the materials available on the Websites subject to
+                  the following conditions:
+                </li>
+              </ol>
+              <div>
+                <ol>
+                  <li>
+                    the materials must be used solely for personal,
+                    informational, internal, non-commercial purposes;
+                  </li>
+                  <li>
+                    the materials must not be modified or altered in any way;
+                  </li>
+                  <li>the materials must not be distributed;</li>
+                  <li>
+                    you must not remove any copyright or other proprietary
+                    notices contained in the materials;
+                  </li>
+                  <li>
+                    we reserve the right to revoke the authorization to view,
+                    download, and print the materials available on the Websites
+                    at any time, and any such use shall be discontinued
+                    immediately upon written notice from us; and
+                  </li>
+                  <li>
+                    the rights granted to you constitute a non-exclusive license
+                    and not a transfer of title.
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </Row>
+          <Row>
+            <p>
+              <u>Third-Party Resources</u>
+            </p>
+            <br></br>
+            <ol>
+              <li>
+                <strong>Third-Party Resources. </strong>We may display
+                information, links and other material on our Websites relating
+                to third-party software, hardware, services, networks,
+                blockchains (whether public or private), websites or other
+                resources (collectively, the “
+                <strong>Third-Party Resources</strong>”) for your convenience
+                only. Your use of any Third-Party Resources, and any third party
+                that provides any Third-Party Resources, are solely between you
+                and such third parties and is governed by such licenses and
+                terms of use as specified by such third parties, and we are not
+                responsible or liable in any manner for such use or
+                interactions.
+              </li>
+              <li>
+                <strong>Availability; Disclaimer. </strong>We are not
+                responsible for any Third-Party Resources and all materials
+                about them are provided on an “as-is” and “as available” basis.
+                Any copyright or other intellectual property rights in the
+                Third-Party Resources remain the property of their respective
+                authors and owners. The inclusion of any materials does not
+                constitute approval, endorsement or recommendation by us of any
+                Third-Party Resources or any third party, and we disclaim all
+                responsibility and liability for your use of any Third-Party
+                Resources.
+              </li>
+              <li>
+                <strong>No Warranty. </strong>No information obtained by you
+                from our Websites shall create any warranty in respect of any
+                Third-Party Resources. We make no representation, warranty,
+                guarantee or undertaking of any kind in respect of any
+                Third-Party Resources, including without limitation as to the
+                effectiveness, security, functionality, operation, reliability,
+                quality, accuracy, validity, legality or intellectual property
+                rights compliance of any Third-Party Resources.
+              </li>
+              <li>
+                <strong>Updates and Amendments. </strong>Third-Party Resources
+                may be updated, changed or terminated at any time, and any
+                materials provided on our Websites may be or become out of date
+                or inaccurate.
+              </li>
+              <li>
+                <strong>Third-Party Blockchain Services. </strong>Our Services
+                may contain or require the use of third-party blockchain
+                services or technologies, including blockchains created and
+                maintained by others (“
+                <strong>Third-Party Blockchain Services</strong>”). We make no
+                representation or warranty as to the accuracy, completeness,
+                reliability, merchantability, or fitness for a particular
+                purpose of Third-Party Blockchain Services accessed through our
+                Services nor any commitment. Usage of and reliance on such
+                Third-Party Services are entirely at your own risk.
+              </li>
+              <li>
+                <strong>Protection and Back-up. </strong>You are solely
+                responsible for adequate protection and backup of the data and
+                equipment used in connection with any Third-Party Blockchain
+                Services. We are not liable for any damages that you suffer in
+                connection with any Third-Party Blockchain Services, including
+                without limitation in connection with accessing, relying on,
+                downloading, installing, using, modifying or distributing any
+                Third-Party Blockchain Services.
+              </li>
+            </ol>
+          </Row>
+          <Row>
+            <p>
+              <u>Warranties and Disclaimers</u>
+            </p>
+            <br></br>
+            <ol>
+              <li>
+                <strong>‘As is’ / ‘as available’. </strong>The Websites and
+                Services are provided on the “as is” and “as available” basis
+                without warranty or condition of any kind, either express or
+                implied, including, but not limited to, the implied terms of
+                satisfactory quality, merchantability or fitness for a
+                particular purpose.<strong>No Warranty. </strong>We make no
+                representation or warranty nor accept any obligation to ensure
+                that:
+                <ol>
+                  <li>
+                    the Websites and Services will meet your requirements;
+                  </li>
+                  <li>
+                    the Websites and Services will be uninterrupted, timely,
+                    secure, or error-free;
+                  </li>
+                  <li>
+                    the results that may be obtained from the use of the
+                    Websites and Services will be effective, accurate or
+                    reliable; and
+                  </li>
+                  <li>
+                    the quality of any Websites or Services will meet your
+                    expectations.
+                  </li>
+                </ol>
+              </li>
+              <li>
+                <strong>.Survival. </strong>The disclaimers and exclusions set
+                out in this Agreement survive any termination or expiration of
+                your access to or use of the Websites and Services and any
+                termination or expiry of this Agreement.
+              </li>
+            </ol>
+          </Row>
+          <Row>
+            <p>
+              <u>Limitation of Liability and Indemnification</u>
+            </p>
+            <ol>
+              <li>
+                <strong>Limitation of Liability. </strong>In no event shall we
+                be liable for damages of any kind (including any direct,
+                indirect, special, incidental, consequential, or punitive
+                damages) arising out of or in connection with your access to,
+                use of, or inability to use, the Website and Services. In
+                addition, we are not liable for any errors, omissions,
+                misstatements, or misrepresentations (whether express or
+                implied) concerning any information on the Websites or Services.
+              </li>
+              <li>
+                <strong>Indemnification</strong>. You shall indemnify, defend,
+                and hold us, and our directors, officers, agents,
+                representatives, co-branders or other partners, and employees,
+                harmless from and against any claim, demand, suit, proceeding,
+                cause of action, including all reasonable attorneys’ fees and
+                expenses, made by any third party or suffered or incurred by us
+                or them as a result of, arising out of or in connection with:
+              </li>
+            </ol>
+              <div>
+                <ol>
+                  <li>
+                    the content you submit, transmit, store or process through
+                    the Websites and Services;
+                  </li>
+                  <li>
+                    your conduct in connection with the Websites or Services;
+                  </li>
+                  <li>your access to or use of the Websites and Services;</li>
+                  <li>
+                    your violation of this Agreement (inclusive of all terms
+                    relating to any Services); or
+                  </li>
+                  <li>
+                    your violation of any rights of another person or entity.
+                  </li>
+                </ol>
+              </div>
+          </Row>
+          <Row>
+            <p>
+              <u>Acceptable Use Policy</u>
+            </p>
+            <ol>
+              <li>
+                <strong>Acceptable Use.</strong>&nbsp;You must only use the
+                Website and Services for their stated or intended purpose and in
+                accordance with this Agreement and all applicable laws and
+                regulations. If you acquire POKT tokens (“<strong>POKT</strong>
+                ”) through the Website and Services, you agree to acquire POKT
+                subject to the Company’s POKT purchase terms and conditions.
+              </li>
+              <li>
+                <strong>Unacceptable Use. </strong>You must not, and must not
+                permit any person to:
+              </li>
+            </ol>
+            <div>
+                <ol style={{marginLeft: "30px"}}>
+                  <li>
+                    interfere or violate the legal rights (such as rights of
+                    privacy and publicity) of others or violate others’ use or
+                    enjoyment of the Websites and Services;
+                  </li>
+                  <li>
+                    attempt to do anything that does or could interfere with,
+                    disrupt, negatively affect or inhibit other users from using
+                    the Website and Services or links on the Websites or that
+                    could damage, disable, overburden or impair the functioning
+                    of the Websites, Services or our servers or any networks
+                    connected to any of our servers in any manner;
+                  </li>
+                  <li>
+                    create a false identity for the purpose of misleading or
+                    deceiving us or others or fraudulently or otherwise
+                    misrepresent yourself to be another person or a
+                    representative of another entity including, but not limited
+                    to, an authorized user of the Websites or our
+                    representatives, or fraudulently or otherwise misrepresent
+                    that you have an affiliation with a person, entity or group;
+                  </li>
+                  <li>
+                    mislead or deceive us, our representatives and any third
+                    parties who may rely on the information provided by you, by
+                    providing inaccurate or false information, which includes
+                    omissions of information;
+                  </li>
+                  <li>
+                    disguise the origin of any material transmitted via the
+                    Websites and Services (whether by forging message/packet
+                    headers or otherwise manipulating normal identification
+                    information);
+                  </li>
+                  <li>
+                    violate, infringe or misappropriate any intellectual
+                    property right of any person (such as copyright, trademarks,
+                    patents, or trade secrets, or other proprietary rights of
+                    any party) or commit a tort;
+                  </li>
+                  <li>
+                    upload files that contain viruses, Trojan horses, worms,
+                    time bombs, cancelbots, corrupted files, or any other
+                    similar software or programs that may damage the operation
+                    of another’s computer or property;
+                  </li>
+                  <li>
+                    access any content, area or functionality of the Websites
+                    and Services that you are prohibited or restricted from
+                    accessing or attempt to bypass or circumvent measures
+                    employed to prevent or limit your access to any content,
+                    area or functionality of the Websites or Services;
+                  </li>
+                  <li>
+                    obtain unauthorized access to or interfere with the
+                    performance of the servers which host the Websites and
+                    Services or any servers on any associated networks or
+                    otherwise fail to comply with any policies or procedures
+                    relating to the use of those servers;
+                  </li>
+                  <li>
+                    gain unauthorized access to any services or products, other
+                    accounts, computer systems, or networks connected to any of
+                    our servers through hacking, password mining, or any other
+                    means;
+                  </li>
+                  <li>
+                    obtain any materials or information through any means not
+                    intentionally made available through the Websites and
+                    Services;
+                  </li>
+                  <li>
+                    harvest or otherwise collect, whether aggregated or
+                    otherwise, data about others including email addresses
+                    and/or distribute or sell such data in any manner;
+                  </li>
+                  <li>
+                    use any part of the Websites and Services other than for its
+                    intended purpose;
+                  </li>
+                  <li>
+                    use any automated means or form of scraping or extracting
+                    any data, content or information on the Websites and
+                    Services unless it is expressly authorized by us;
+                  </li>
+                  <li>
+                    engage in any act that undermines or compromises the
+                    security and integrity of the computer, communication
+                    systems, networks, software application, or other computing
+                    devices used in connection with the Websites and Services;
+                  </li>
+                  <li>
+                    monitor traffic on the Websites and Services, or permit
+                    anyone to do so;
+                  </li>
+                  <li>
+                    engage in or promote any activity that violates this
+                    Agreement; and
+                  </li>
+                  <li>attempt to do any of the foregoing.</li>
+                </ol>
+              </div>
+          </Row>
+          <Row>
+            <p>
+              <u>No Solicitation or Advice</u>
+            </p>
+            <ol>
+              <li>
+                <strong>No Offer; No Solicitation.</strong>&nbsp;The information
+                and any materials contained in the Websites or Services should
+                not be considered as an offer or solicitation to buy or sell
+                POKT, provide financial advice, create a trading platform,
+                facilitate or take deposits or provide any other financial
+                services of any kind in any jurisdiction. Specifically, we
+                provide a “Free Tier” wherein users are given limited network
+                capacity at no cost. The availability of this service does not
+                entitle users to POKT and does not constitute an offer or
+                solicitation to purchase POKT.
+              </li>
+              <li>
+                <strong>No Advice.</strong>&nbsp;The information contained on or
+                in the Websites and Services is not intended to provide and
+                should not be construed as advice of any kind. You shall not use
+                the Websites and Services as a substitute for independent and
+                competent financial judgement and you should obtain appropriate
+                professional advice when necessary.
+              </li>
+            </ol>
+          </Row>
+          <Row>
+            <p>
+              <u>General Release</u>
+            </p>
+            <p>
+              To the fullest extent permitted by applicable laws and
+              regulations, you release us and our directors, officers, agents,
+              representatives, co-branders or other partners, and employees from
+              responsibility, liability, claims, demands, and/or damages (actual
+              and consequential) of every kind and nature, known and unknown
+              (including, but not limited to, claims of negligence), arising out
+              of or related to disputes between users and the acts or omissions
+              of third parties.
+            </p>
+            <br></br>
+            <p>
+              IF YOU ARE A CALIFORNIA RESIDENT, YOU HEREBY WAIVE ANY RIGHTS YOU
+              MAY HAVE UNDER CALIFORNIA CIVIL CODE § 1542 WHICH PROVIDES THAT “A
+              GENERAL RELEASE DOES NOT EXTEND TO CLAIMS THAT THE CREDITOR OR
+              RELEASING PARTY DOES NOT KNOW OR SUSPECT TO EXIST IN HIS OR HER
+              FAVOR AT THE TIME OF EXECUTING THE RELEASE AND THAT, IF KNOWN BY
+              HIM OR HER, WOULD HAVE MATERIALLY AFFECTED HIS OR HER SETTLEMENT
+              WITH THE DEBTOR OR RELEASED PARTY,” AS WELL AS ANY OTHER STATE OR
+              FEDERAL STATUTE OR COMMON LAW PRINCIPLES THAT WOULD OTHERWISE
+              LIMIT THE COVERAGE OF THIS RELEASE TO INCLUDE ONLY THOSE CLAIMS
+              WHICH YOU MAY KNOW OR SUSPECT TO EXIST IN YOUR FAVOR AT THE TIME
+              OF AGREEING TO THIS RELEASE.
+            </p>
+          </Row>
+          <Row>
+            <p>
+              <u>Miscellaneous</u>
+            </p>
+            <ol>
+              <li>
+                <strong>Governing Law.&nbsp;</strong>The validity,
+                interpretation, construction and performance of this Agreement,
+                and all acts and transactions pursuant hereto and the rights and
+                obligations of the parties hereto shall be governed, construed
+                and interpreted in accordance with the laws of the state of
+                Delaware, without giving effect to principles of conflicts of
+                law.
+              </li>
+              <li>
+                <strong>Dispute Resolution Forum.&nbsp;</strong>The courts of
+                the state of California, or the federal courts of the United
+                States located in California, shall have exclusive jurisdiction
+                in the event of any dispute between you and us that arise out of
+                or in connection with your access or use of the Website and
+                Services.
+              </li>
+              <li>
+                <strong>Right of Modification</strong>. We reserve the right to
+                amend this Agreement at any time. You will know if this
+                Agreement have changed since the last time you reviewed it by
+                checking the “Date of Last Update” section below or in the
+                relevant terms of use for any Service. BY CONTINUING TO USE OUR
+                WEBSITES AND SERVICES AFTER CHANGES HAVE BEEN POSTED, YOU ARE
+                CONFIRMING THAT YOU HAVE READ, UNDERSTOOD AND AGREE TO THE
+                LATEST VERSION OF THIS AGREEMENT.
+              </li>
+              <li>
+                <strong>Termination Without Notice.&nbsp;</strong>We may
+                terminate this Agreement at any time without notice to you if we
+                believe, in our sole discretion, that you have breached, or may
+                breach, any term or condition of this Agreement, or for our
+                convenience. Termination of this Agreement does not affect
+                rights or liabilities, which may have accrued or become due
+                prior to the date of termination or the coming into, or
+                continuance in, force of any provision which is expressly or by
+                implication intended to come into or continue to be in force on
+                or after termination.
+              </li>
+              <li>
+                <strong>Rights in General.</strong> We reserve the right,
+                without notice and for any reason, to remove any materials from
+                the Websites, correct any errors, inaccuracies, or omissions in
+                any materials on the Websites, change or update any materials on
+                the Websites. We may deny access to, or suspend or terminate use
+                of, all or any part of the Website and Services for any user(s)
+                at any time and without prior notice, and we reserve the right
+                at any time and from time to time to modify or discontinue,
+                temporarily or permanently, the Website or Services (or any part
+                thereof) with or without notice, unless otherwise indicated in
+                an express agreement between you and us. We are not liable to
+                you or to any third party for any modification, suspension or
+                discontinuance of the Websites or Services.
+              </li>
+              <li>
+                <strong>Suspension.&nbsp;</strong>We may suspend your use of the
+                Websites and Services at any time and for any reason, including
+                if we have reason to believe that there is likely to be any
+                breach of security, or misuse of the Websites or Services, or if
+                you breach any of your obligations under this Agreement or the
+                Privacy Policy, or for no reason whatsoever.
+              </li>
+              <li>
+                <strong>Severability. </strong>In the event that any provision
+                of this Agreement is determined to be unlawful, void or
+                unenforceable, such provision shall nonetheless be enforceable
+                to the fullest extent permitted by applicable laws and
+                regulations, and the unenforceable portion shall be deemed to be
+                severed from this Agreement, such determination shall not affect
+                the validity and enforceability of any other remaining
+                provisions.
+              </li>
+              <li>
+                <strong>No Waiver. </strong>The failure by us to exercise or
+                enforce any right or provision of this Agreement does not
+                constitute a waiver of our rights, at law or in equity, or a
+                waiver of any other provisions or subsequent default by you in
+                the performance or compliance with any of this Agreement.
+              </li>
+              <li>
+                <strong>Entire Agreement. </strong>This Agreement and any other
+                policies or rules posted by us on the Websites constitute the
+                entire agreement and understanding between you and us and govern
+                your access and use of the Websites and Services, superseding
+                any prior or contemporaneous agreements, communications and
+                proposals, whether oral or written, between you and us
+                (including, but not limited to, any prior versions of this
+                Agreement).
+              </li>
+              <li>
+                <strong>Assignment. </strong>All of our rights and obligations
+                under this Agreement are freely assignable by us in connection
+                with a merger, acquisition or sale of assets, or by operation of
+                law, contract, or otherwise.
+              </li>
+            </ol>
+          </Row>
+          <Row>
+            <p>
+              <u>Contact</u>
+            </p>
+            <p>
+              If you have any questions or feedback about this Agreement, please
+              contact us at:
+            </p>
+            <p>
+              Pocket Network, Inc.<br/>
+              802 E Whiting St<br/>
+              Tampa, FL 33602<br/>
+              hola@pokt.network<br/>
+              <br/>
+              Date of Last Update:&nbsp;July 2, 2020
+            </p>
+            <h1>Testnet Terms of Service</h1>
+            <p>
+              These Testnet Terms of Service (“<strong>Service Terms</strong>”)
+              apply to and govern permitted users’ access to and use of the
+              Pocket Core testnet release, services, and tools described
+              at&nbsp;
+              <a href="https://pokt.network/testnet/">
+                https://pokt.network/testnet/
+              </a>{" "}
+              (the “<strong>Services</strong>” or “<strong>Testnet</strong>”).
+              These Service Terms are additional terms that, when you accept,
+              form part of the Agreement as defined in the Terms of Use
+              published on the Pocket Website (the “
+              <strong>Site Terms of Use</strong>”). All terms used herein have
+              the meanings defined for them in the Site Terms of Use unless
+              otherwise defined herein.
+            </p>
+          </Row>
+          <Row>
+            <p>
+              <u>Acceptance of Service Terms</u>
+            </p>
+            <p>
+              By using the Testnet, you agree to be bound by these Service Terms
+              and the Site Terms of Use. If you do not agree to these Service
+              Terms, you shall not access or use the Testnet.
+            </p>
+          </Row>
+          <Row>
+            <p>
+              <u>General Service Terms</u>
+            </p>
+            <ol>
+              <li>
+                <strong>Eligibility.</strong>&nbsp;You must be invited by the
+                Company to participate in the Testnet. We limit Testnet
+                participation to future application developers and persons
+                operating nodes on the Company’s blockchain protocol (the “
+                <strong>Pocket Network</strong>”) nodes. We may, at our
+                discretion, impose any other eligibility criteria or conditions
+                for any Service or any user as we deem appropriate.
+                <ol>
+                  <li>
+                    <strong>License.</strong>&nbsp;You hereby grant us a
+                    non-exclusive, royalty-free, worldwide, irrevocable,
+                    sub-licensable, and transferrable license to use and display
+                    any content, data, information, or materials that you upload
+                    or submit to us or to Testnet.
+                  </li>
+                  <li>
+                    <strong>Equipment</strong>. You shall procure your own
+                    hardware, software and other resources for accessing and
+                    using Testnet. You are responsible for ensuring that your
+                    hardware, software and other resources are compatible with
+                    the system or software requirements of Testnet and you shall
+                    ensure that such equipment will not cause any harm, damage,
+                    or threat to the systems, security, and resources of
+                    Testnet.
+                  </li>
+                </ol>
+              </li>
+              <li>
+                <strong>Restrictions.</strong> We reserve the right, in our sole
+                discretion and without notice, to block, prevent, or restrict
+                any user from using any Service as we deem appropriate. In
+                particular, we may block, prevent, suspend, or restrict access
+                to and use of any Service by any known or suspected criminals or
+                any person from any country that is involved or implicated in
+                any sanctions program in any jurisdiction. To the extent
+                permitted by laws, we may also adopt any access blocking or
+                access restriction mechanisms, such as IP address geo-blocking,
+                for any Service as we deem fit or as law requires.
+              </li>
+              <li>
+                <strong>User Identity Verification.</strong> Before we enable
+                any user to access or use any Service or as a condition to
+                continue use of any Service, we may require any person or
+                corporate entity to provide any supporting documents, including
+                but not limited to national ID card, passport, and business
+                registration certificates. We may also require any person or
+                corporate entity to go through such identity authentication,
+                verification, or due diligence processes as we deem appropriate.
+              </li>
+              <li>
+                <strong>Warranties</strong>. As the term suggests, the Testnet
+                is a network under test and is not the final, mainnet version of
+                the Pocket Network. The Testnet is provided to you on an “as is”
+                and “as available” basis and all warranties, express, implied,
+                statutory or otherwise, with respect to the Service are hereby
+                excluded. You understand and acknowledge that the Testnet is in
+                test form, may not operate properly, and may contain errors,
+                design flaws or other issues. Your use of the Testnet remains at
+                your own risk and discretion.
+              </li>
+              <li>
+                <strong>Updates.</strong>&nbsp;We may make any improvement,
+                modifications or updates to our Testnet, including but not
+                limited to changes and updates to the underlying software,
+                infrastructure, security protocols, technical configurations or
+                service features (the “<strong>Updates</strong>”) from time to
+                time. Your continued access and use of our Testnet are subject
+                to such Updates and you shall accept any patches, system
+                upgrades, bug fixes, feature modifications, or other maintenance
+                work that arise out of such Updates. We are not liable for any
+                failure by you to accept and use such Updates in the manner
+                specified or required by us.
+              </li>
+              <li>
+                <strong>Termination.</strong>&nbsp;We may suspend or terminate
+                the operation of Testnet at any time for any reason. We may also
+                wipe, delete or reset the Testnet blockchain or launch a new
+                Testnet blockchain any time as we deem appropriate, without
+                notice to you. Termination of the Testnet does not affect our
+                rights which may have accrued prior to the date of termination
+                or the coming into, or continuance in, force of any provision
+                which is expressly or by implication intended to come into or
+                continue to be in force on or after termination.
+              </li>
+            </ol>
+          </Row>
+          <Row>
+            <p>
+              <u>Incentivized Testnet and Rewards</u>
+            </p>
+            <ol>
+              <li>
+                <strong>Incentivized Testnet</strong>. We are testing the Pocket
+                Network blockchain and making available to Testnet users a
+                rewards and incentivization mechanism which mimics the planned
+                rewards and incentivization mechanism in the future mainnet
+                release (the “<strong>Incentivized Testnet</strong>“). To
+                participate in the Incentivized Testnet, you must first obtain
+                Testnet tokens (“<strong>Testnet Tokens</strong>”) from the{" "}
+                <a href="https://faucet.pokt.network/">faucet</a>, stake Testnet
+                Tokens, and connect a Pocket{" "}
+                <a href="https://docs.pokt.network/docs/pocket-node-overview">
+                  node
+                </a>
+                &nbsp;or&nbsp;
+                <a href="https://docs.pokt.network/docs/developers-overview">
+                  application
+                </a>{" "}
+                (dApp) to the Testnet.
+              </li>
+              <div>
+                <ol style={{marginLeft: "30px"}}>
+                  <li>
+                    <strong>Temporary in nature.</strong>&nbsp;Testnet Tokens
+                    are temporary in nature. Testnet Tokens have no monetary
+                    value and cannot be exchanged for cash, cash equivalent, or
+                    other tokens or cryptocurrencies.&nbsp;You shall not attach
+                    any value to any Testnet Token and you are prohibited from
+                    using any Testnet Tokens for any purposes other than to
+                    access and use the Testnet.
+                  </li>
+                  <li>
+                    <strong>Cannot trade or sell.</strong> Without limitation,
+                    you must not, and must not permit any person to, trade
+                    Testnet Tokens with any third party for any purpose, make
+                    Testnet Tokens available for trade on any cryptocurrency
+                    exchange, offer Testnet Tokens for rent, lease, sale, or
+                    trade in any manner, or attempt to do any of the foregoing.
+                  </li>
+                  <li>
+                    <strong>Modification.</strong>&nbsp;We may from time to time
+                    add, modify, or remove any feature, functionality, or
+                    usability of any Testnet Token. We reserve the right to
+                    restart the Testnet and reverse all or some rewards issued,
+                    in the case of errors and/or malicious behavior in the
+                    system.
+                  </li>
+                  <li>
+                    <strong>Rewards Tokens</strong>. Participants in the
+                    Incentivized Testnet will have the opportunity to earn
+                    Pocket’s mainnet protocol token, POKT, after mainnet is
+                    launched, subject to the conditions below (“
+                    <strong>Rewards Tokens</strong>”)
+                  </li>
+                  <li>
+                    <strong>Use Requirement</strong>. All participants who
+                    receive Rewards Tokens must use Rewards Tokens on the
+                    mainnet Pocket Network as application developers or Pocket
+                    Network nodes before they are transferred.
+                  </li>
+                  <li>
+                    <strong>Restricted Wallets</strong>. Rewards Tokens must be
+                    used for a minimum of five staking periods following mainnet
+                    Pocket Network launch. To enforce this use requirement, the
+                    Company will issue Rewards Tokens to restricted digital
+                    asset wallets, from which the Company shall not allow
+                    transfers until one staking period has elapsed. When Rewards
+                    Tokens are released from the restrictions, the digital asset
+                    wallets will immediately be fully functional and not subject
+                    to any further restrictions.
+                  </li>
+                </ol>
+              </div>
+            </ol>
+          </Row>
+          <Row>
+            <p>Date of Last Update:&nbsp;July 8, 2020</p>
+          </Row>
+          <Row>
+            <h1>Boostrap Program Terms of service</h1>
+            <p>
+              These Infrastructure Bootstrap Program Terms of Service (“
+              <strong>Bootstrap Terms</strong>”) apply to and govern permitted
+              users’ access to the Website and Services in connection with the
+              Company’s Infrastructure Bootstrap Program (as defined below).
+              These Bootstrap Terms are additional terms that, when you accept,
+              form part of the Agreement as defined in the Terms of Use
+              published on the Pocket Website (the “
+              <strong>Site Terms of Use</strong>”). All terms used herein have
+              the meanings defined for them in the Site Terms of Use unless
+              otherwise defined herein.
+            </p>
+          </Row>
+          <Row>
+            <p>
+              <u>Bootstrap Program</u>
+            </p>
+            <p>
+              The “<strong>Infrastructure Bootstrap Program</strong>” means the
+              Company’s program wherein it shall grant POKT tokens (“
+              <strong>POKT</strong>”) to certain node operators for the purpose
+              of incentivizing early adoption of the Company’s website (URL:
+              https://www.pokt.network/) and its subdomains (the “
+              <strong>Websites</strong>”) and any products, software, services,
+              accounts, and tools provided by us through the Websites (the “
+              <strong>Services</strong>”).
+            </p>
+          </Row>
+          <Row>
+            <p>
+              <u>Acceptance of Bootstrap Terms</u>
+            </p>
+            <p>
+              By accepting, you agree to be bound by these Bootstrap Terms and
+              the Site Terms of Use. If you do not agree to these Bootstrap
+              Terms, you shall not receive POKT pursuant to the Infrastructure
+              Bootstrap Program.
+            </p>
+          </Row>
+          <Row>
+            <p>
+              <u>General Bootstrap Terms</u>
+            </p>
+            <ol>
+              <li>
+                <strong>Eligibility.</strong> You must be invited by the Company
+                to participate in the Infrastructure Bootstrap Program. We limit
+                Infrastructure Bootstrap Program participation to Pocket Network
+                node operators. We may, at our discretion, impose any other
+                eligibility criteria or conditions for any Service or any user
+                as we deem appropriate.
+                <ol>
+                  <li>
+                    <strong>License.</strong> You hereby grant us a
+                    non-exclusive, royalty-free, worldwide, irrevocable,
+                    sub-licensable, and transferrable license to use and display
+                    any content, data, information, or materials that you upload
+                    or submit to us in connection with the Infrastructure
+                    Bootstrap Program.
+                  </li>
+                  <li>
+                    <strong>Equipment</strong>. You shall procure your own
+                    hardware, software and other resources for accessing and
+                    using the Services. You are responsible for ensuring that
+                    your hardware, software and other resources are compatible
+                    with the system or software requirements of Infrastructure
+                    Bootstrap Program and you shall ensure that such equipment
+                    will not cause any harm, damage, or threat to the systems,
+                    security, and resources of the Services.
+                  </li>
+                </ol>
+              </li>
+              <li>
+                <strong>Restrictions.</strong>&nbsp;We reserve the right, in our
+                sole discretion and without notice, to block, prevent, or
+                restrict any user from using any Service as we deem appropriate.
+                In particular, we may block, prevent, suspend, or restrict
+                access to and use of any Service by any known or suspected
+                criminals or any person from any country that is involved or
+                implicated in any sanctions program in any jurisdiction. To the
+                extent permitted by applicable law, we may also adopt any access
+                blocking or access restriction mechanisms, such as IP address
+                geo-blocking, for any Service as we deem fit or as applicable
+                law requires.
+              </li>
+              <li>
+                <strong>User Identity Verification.</strong>&nbsp;Before we
+                enable any user to access or use any Service or as a condition
+                to continue use of any Service, we may require any person or
+                corporate entity to provide any supporting documents, including
+                but not limited to national ID card, passport, and business
+                registration certificates. We may also require any person or
+                corporate entity to go through such identity authentication,
+                verification, or due diligence processes as we deem appropriate.
+              </li>
+              <li>
+                <strong>Updates.</strong>&nbsp;We may make any modifications or
+                updates to our Infrastructure Bootstrap Program, including but
+                not limited to changes and updates to the terms hereof (the “
+                <strong>Updates</strong>”) from time to time. Your continued
+                involvement with our Infrastructure Bootstrap Program is subject
+                to such Updates and you shall accept any modifications to our
+                Infrastructure Bootstrap Program. We are not liable for any
+                failure by you to accept and use such Updates in the manner
+                specified or required by us.
+              </li>
+              <li>
+                <strong>Termination.</strong>&nbsp;We may suspend or terminate
+                the operation of Infrastructure Bootstrap Program at any time
+                for any reason, with or without notice. Termination of the
+                Infrastructure Bootstrap Program does not affect our rights
+                which may have accrued prior to the date of termination or the
+                coming into, or continuance in, force of any provision which is
+                expressly or by implication intended to come into or continue to
+                be in force on or after termination.
+              </li>
+            </ol>
+          </Row>
+          <Row>
+            <p>
+              <u>Infrastructure Bootstrap Program and Rewards</u>
+            </p>
+            <ol>
+              <li>
+                <strong>Grant of POKT</strong>. We will grant POKT in increments
+                of 15,000 POKT for the sole purpose of operating nodes, and we
+                will grant up to an aggregate of 150,000 POKT per each
+                applicant, in our sole discretion. For the avoidance of doubt,
+                any affiliates shall be deemed the same applicant for purposes
+                of the Infrastructure Bootstrap Program. In no event shall any
+                applicant be granted more than 150,000 POKT in connection with
+                the Infrastructure Bootstrap Program.
+              </li>
+              <li>
+                <strong>Participation Procedures</strong>. To participate in the
+                Infrastructure Bootstrap Program, you must first apply online.
+                We reserve the right to review your application and conduct due
+                diligence, in our sole discretion, including but not limited to
+                (i) verifying your technical expertise to connect to and connect
+                to and run a Pocket{" "}
+                <a href="https://docs.pokt.network/docs/pocket-node-overview">
+                  node
+                </a>
+                , (ii) verify your identity, and (iii) verify your physical
+                systems to ensure that such systems are able to connect to and
+                run a Pocket{" "}
+                <a href="https://docs.pokt.network/docs/pocket-node-overview">
+                  node
+                </a>
+                . Upon completion of our review and approval, we will provide
+                you with a digital wallet containing the requisite number of
+                POKT as approved by us in our sole discretion.
+                <ol>
+                  <li>
+                    <strong>Cannot trade or sell.</strong> Without limitation,
+                    you must not, and must not permit any person to, trade the
+                    POKT received in connection with the Infrastructure
+                    Bootstrap Program (the “<strong>Bootstrap Tokens</strong>”)
+                    with any third party for any purpose, make Bootstrap Tokens
+                    available for trade on any cryptocurrency exchange, offer
+                    Bootstrap Tokens for rent, lease, sale, or trade in any
+                    manner, or attempt to do any of the foregoing.
+                  </li>
+                  <li>
+                    <strong>Restricted Wallets</strong>. To prevent
+                    circumvention of the terms of the preceding paragraph, we
+                    will issue Bootstrap Tokens to restricted digital asset
+                    wallets, from which the we will not allow transfers unless
+                    only to a Company owned digital asset wallet for the purpose
+                    of returning the Bootstrap Tokens.
+                  </li>
+                  <li>
+                    <strong>Modification.</strong>&nbsp;We may from time to
+                    time, in our sole discretion and without notice, add,
+                    modify, or remove any feature, functionality, or usability
+                    of any Bootstrap Token. We reserve the right to restart the
+                    Infrastructure Bootstrap Program and reverse all or some
+                    rewards issued, in the case of errors and/or malicious
+                    behavior in the system.
+                  </li>
+                </ol>
+              </li>
+              <li>
+                <strong>Term and Termination</strong>. The Infrastructure
+                Bootstrap Program is temporary in nature and intended to last
+                only until the Company, in its sole discretion, determines it is
+                no longer necessary.
+                <ol>
+                  <li>
+                    <strong>Return of Bootstrap Tokens</strong>. Upon the
+                    18-month anniversary of the day we accept your application
+                    and provide you the Bootstrap Tokens (the “
+                    <strong>Expiration Date</strong>”), you must return the
+                    Bootstrap Tokens to a Company digital asset wallet as
+                    provided by the Company (the “<strong>Return Wallet</strong>
+                    ”). The Bootstrap Tokens will only be permitted to be
+                    transferred to a Return Wallet and will otherwise not be
+                    transferable to any other digital asset wallet. Should you
+                    fail to return your Bootstrap Tokens upon the Expiration
+                    Date, we may block, prevent, or restrict you from using any
+                    Service as we deem appropriate in our sole discretion.
+                  </li>
+                </ol>
+              </li>
+              <li>
+                <strong>Rewards Tokens</strong>. By virtue of operating nodes
+                using the Bootstrap Tokens, participants in the Infrastructure
+                Bootstrap Program will earn POKT (“
+                <strong>Earned Tokens</strong>”). The use of the Earned Tokens
+                shall not be subject Bootstrap Terms and shall only be subject
+                to the Site Terms of Use.
+              </li>
+            </ol>
+          </Row>
+          <p>Date of Last Update:&nbsp;July 2, 2020</p>
           <br />
           <span
             className="go top mb-5"
-            onClick={() => scrollToId("privacy-policy")}
+            onClick={() => scrollToId("terms-of-use")}
           >
             <img src="/assets/arrow-up.svg" alt="" className="icon" />
             <span className="text">Go to Top</span>

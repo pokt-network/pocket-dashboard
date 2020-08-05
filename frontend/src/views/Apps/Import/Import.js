@@ -148,8 +148,6 @@ class Import extends Component {
       let chains;
       const {balance} = await AccountService.getPoktBalance(data.address);
 
-      // Have to save ppk on cache as ppk generated from saved account is not
-      // the same as one uploaded (even for the same account)
       if (type === ITEM_TYPES.APPLICATION) {
         ApplicationService.saveAppInfoInCache({
           imported: true,
@@ -158,47 +156,68 @@ class Import extends Component {
           ppk,
         });
 
-        const {
-          staked_tokens: tokens,
-          max_relays: amount,
-          chains: networkChains,
-          status,
-        } = await ApplicationService.getNetworkApplication(data.address);
-
-        chains = networkChains;
-        this.setState({
-          accountData: {
-            balance,
-            tokens,
-            amount,
-            status: getStakeStatus(status),
-          },
-        });
+        // Retrieve the application information if available
+        const application = await ApplicationService.getNetworkApplication(data.address);
+        
+        if (application.error === undefined) {
+          // Add the chains value
+          chains = application.chains;
+          // Update the state
+          this.setState({
+            accountData: {
+              tokens: application.staked_tokens,
+              balance: balance,
+              status: getStakeStatus(application.status.toString()),
+              amount: application.max_relays
+            },
+            // App Staked chains
+            chains: application.chains
+          });
+        } else {
+          this.setState({
+            accountData: {
+              tokens: 0,
+              balance: balance,
+              status: getStakeStatus("0"),
+              amount: 0
+            }
+          });
+        }
       } else {
         NodeService.saveNodeInfoInCache({
           passphrase,
           address: data.address,
           ppk,
         });
+        const node = await NodeService.getNetworkNode(data.address);
 
-        const {
-          tokens,
-          chains: networkChains,
-          status,
-        } = await NodeService.getNetworkNode(data.address);
-
-        chains = networkChains;
-        this.setState({
-          accountData: {
-            balance,
-            tokens,
-            amount: tokens,
-            status: getStakeStatus(status),
-          },
-        });
+        if (node.error === undefined) {
+          // Add the chains value
+          chains = node.chains;
+          // Update the state
+          this.setState({
+            accountData: {
+              tokens: node.staked_tokens,
+              balance: balance,
+              status: getStakeStatus(node.status.toString()),
+              amount: node.max_relays
+            },
+            // Node Staked chains
+            chains: node.chains
+          });
+        } else {
+          this.setState({
+            accountData: {
+              balance: balance
+            }
+          });
+        }
       }
+      let accountChains = [];
 
-      const accountChains = await PocketNetworkService.getNetworkChains(chains);
+      if (chains !== undefined && chains.length > 0) {
+        accountChains = await PocketNetworkService.getNetworkChains(chains);
+      }
 
       this.setState({
         chains: accountChains,
@@ -233,9 +252,9 @@ class Import extends Component {
     const {passphrase, privateKey} = this.state.data;
 
     const generalInfo = [
-      {title: formatNumbers(accountData.tokens), subtitle: "Staked tokens"},
+      {title: formatNumbers(accountData.tokens / 1000000), subtitle: "Staked tokens"},
       {
-        title: `${formatNumbers(accountData.balance)} POKT`,
+        title: `${formatNumbers(accountData.balance / 1000000)} POKT`,
         subtitle: "Balance",
       },
       {title: accountData.status, subtitle: "Stake status"},
@@ -269,7 +288,7 @@ class Import extends Component {
                     : DASHBOARD_PATHS.createNodeForm
                 )}
               >
-                Create. Set one up
+                Create Node.
               </Link>
             </p>
           </Col>
@@ -340,38 +359,38 @@ class Import extends Component {
                       </Form.Group>
                     </>
                   ) : (
-                    <>
-                      <h2>Passphrase</h2>
-                      <Form.Group className="d-flex">
-                        <Form.Control
-                          placeholder="*****************"
-                          value={passphrase}
-                          required
-                          onChange={this.handleChange}
-                          type={inputType}
-                          name="passphrase"
-                          className={error.show ? "is-invalid" : ""}
-                        />
-                        <Form.Control.Feedback
-                          className="invalid-account"
-                          type="invalid"
-                        >
-                          {error.show ? error.message : ""}
-                        </Form.Control.Feedback>
-                        <img
-                          className="eye-icon"
-                          onClick={this.changeInputType}
-                          src={showPassphraseIconURL}
-                          alt=""
-                        />
-                        <LoadingButton
-                          loading={importing}
-                          buttonProps={{
-                            variant: "dark",
-                            type: "submit",
-                            onClick: !imported
-                              ? this.importAccount
-                              : () => {
+                      <>
+                        <h2>Passphrase</h2>
+                        <Form.Group className="d-flex">
+                          <Form.Control
+                            placeholder="*****************"
+                            value={passphrase}
+                            required
+                            onChange={this.handleChange}
+                            type={inputType}
+                            name="passphrase"
+                            className={error.show ? "is-invalid" : ""}
+                          />
+                          <Form.Control.Feedback
+                            className="invalid-account"
+                            type="invalid"
+                          >
+                            {error.show ? error.message : ""}
+                          </Form.Control.Feedback>
+                          <img
+                            className="eye-icon"
+                            onClick={this.changeInputType}
+                            src={showPassphraseIconURL}
+                            alt=""
+                          />
+                          <LoadingButton
+                            loading={importing}
+                            buttonProps={{
+                              variant: "dark",
+                              type: "submit",
+                              onClick: !imported
+                                ? this.importAccount
+                                : () => {
                                   // eslint-disable-next-line react/prop-types
                                   this.props.history.push({
                                     pathname: _getDashboardPath(
@@ -382,13 +401,13 @@ class Import extends Component {
                                     state: {imported: true},
                                   });
                                 },
-                          }}
-                        >
-                          <span>{!imported ? "Import" : "Continue"}</span>
-                        </LoadingButton>
-                      </Form.Group>
-                    </>
-                  )}
+                            }}
+                          >
+                            <span>{!imported ? "Import" : "Continue"}</span>
+                          </LoadingButton>
+                        </Form.Group>
+                      </>
+                    )}
                 </Col>
               </Form.Row>
             </Form>

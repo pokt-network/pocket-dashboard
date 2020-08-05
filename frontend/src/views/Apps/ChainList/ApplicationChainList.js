@@ -16,7 +16,7 @@ class ApplicationChainList extends Chains {
 
   handleChains() {
     const {chosenChains} = this.state;
-    const chainsHashes = chosenChains.map((ch) => ch.hash);
+    const chainsHashes = chosenChains.map((ch) => ch._id);
 
     PocketApplicationService.saveAppInfoInCache({chains: chainsHashes});
 
@@ -92,7 +92,7 @@ class ApplicationChainList extends Chains {
             <AppTable
               scroll
               toggle={chains.length > 0}
-              keyField="hash"
+              keyField="_id"
               data={chains}
               height={454}
               columns={TABLE_COLUMNS.NETWORK_CHAINS}

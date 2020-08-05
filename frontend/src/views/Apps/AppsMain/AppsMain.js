@@ -8,8 +8,8 @@ import PocketElementCard from "../../../core/components/PocketElementCard/Pocket
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import UserService from "../../../core/services/PocketUserService";
 import {
-  APPLICATIONS_LIMIT, 
-  TABLE_COLUMNS, 
+  APPLICATIONS_LIMIT,
+  TABLE_COLUMNS,
   STYLING,
   BACKEND_ERRORS,
   DEFAULT_NETWORK_ERROR_MESSAGE} from "../../../_constants";
@@ -50,33 +50,33 @@ class AppsMain extends Main {
         hasError = userItems.error ? userItems.error : hasError;
         errorMessage = userItems.error ? userItems.message : errorMessage;
         errorType = userItems.error ? userItems.name : errorType;
-  
+
         if (!userItems.error) {
           this.setState({
             userItems,
             filteredItems: userItems,
             hasApps: userItems.length > 0,
           });
-        } 
+        }
       });
 
     ApplicationService.getStakedApplicationSummary()
       .then(
-        ({totalApplications, 
-          averageRelays, 
-          averageStaked, 
-          error, 
+        ({totalApplications,
+          totalStaked,
+          averageStaked,
+          error,
           name,
           message}) => {
 
           hasError = error ? error : hasError;
           errorMessage = error ? message : errorMessage;
           errorType = error ? name : errorType;
-          
+
           if (!error) {
             this.setState({
               total: totalApplications,
-              averageRelays,
+              totalStaked,
               averageStaked,
               loading: false,
             });
@@ -149,7 +149,7 @@ class AppsMain extends Main {
       filteredItems,
       total,
       averageStaked,
-      averageRelays,
+      totalStaked,
       registeredItems: allRegisteredItems,
       loading,
       allItemsTableLoading,
@@ -168,11 +168,11 @@ class AppsMain extends Main {
       {title: formatNumbers(total), subtitle: "Total of Apps"},
       {
         title: formatNetworkData(averageStaked, false),
-        subtitle: "Average Staked",
+        subtitle: "Average POKT Staked",
       },
       {
-        title: formatNetworkData(averageRelays, false),
-        subtitle: "Average Relays Per Application",
+        title: formatNetworkData(totalStaked, false),
+        subtitle: "Apps Total POKT Staked",
       },
     ];
 
@@ -271,13 +271,13 @@ class AppsMain extends Main {
                 <LoadingOverlay active={userItemsTableLoading} spinner>
                   {hasApps ? (
                     filteredItems.map((app, idx) => {
-                      const {id: applicationID, name, address, stakedPOKT, status, icon} = app;
+                      const {id: applicationID, name, stakedPOKT, status, icon} = app;
 
                       return (
                         <Link
                           key={idx}
                           to={() => {
-                            if (!address) {
+                            if (!applicationID) {
                                 ApplicationService.saveAppInfoInCache({
                                   applicationID,
                                 });
@@ -289,7 +289,7 @@ class AppsMain extends Main {
                                 DASHBOARD_PATHS.appDetail
                               );
 
-                              return url.replace(":address", address);
+                              return url.replace(":id", applicationID);
                             }}
                           >
                             <PocketElementCard
@@ -306,13 +306,13 @@ class AppsMain extends Main {
                         );
                       })
                     ) : (
-                      <div className="empty-overlay">
+                      <div className="app-empty-overlay">
                         <img
-                          src={"/assets/empty-box.svg"}
+                          src={"/assets/triangle-gray.svg"}
                           alt="apps-empty-box"
                         />
                         <p>
-                          You have not created <br/> or imported any apps yet
+                          You don&apos;t have any apps yet.
                         </p>
 
                       </div>

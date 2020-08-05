@@ -6,7 +6,7 @@ import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatDaysCountdown, formatNumbers, getStakeStatus, formatNetworkData} from "../../../_helpers";
+import {formatDaysCountdown, formatNetworkData, formatNumbers, getStakeStatus} from "../../../_helpers";
 import {Link} from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -34,11 +34,13 @@ class NodeDetail extends Component {
       message: "",
       purchase: true,
       hideTable: false,
+      unjailAlert: false,
       exists: true,
       unstake: false,
       unjail: false,
       stake: false,
       ctaButtonPressed: false,
+      serviceUrl: "",
       error: {show: false, message: ""}
     };
 
@@ -59,33 +61,45 @@ class NodeDetail extends Component {
       pocketNode,
       networkData,
       error,
-      name} = await NodeService.getNode(address) || {};
+      name
+    } = await NodeService.getNode(address) || {};
 
-      hasError = error ? error : hasError;
-      errorType = error ? name : errorType;
+    hasError = error ? error : hasError;
+    errorType = error ? name : errorType;
 
-      if (hasError || pocketNode === undefined ) {
-        if (errorType === BACKEND_ERRORS.NETWORK) {
-          this.setState({loading: false, error: {
-            show: true, message: DEFAULT_NETWORK_ERROR_MESSAGE}});
-        } else {
-          this.setState({loading: false, exists: false});
-        }
-        return;
+    if (hasError || pocketNode === undefined) {
+      if (errorType === BACKEND_ERRORS.NETWORK) {
+        this.setState({
+          loading: false, error: {
+            show: true, message: DEFAULT_NETWORK_ERROR_MESSAGE
+          }
+        });
+      } else {
+        this.setState({loading: false, exists: false});
       }
+      return;
+    }
 
-    const chains = await NetworkService.getNetworkChains(networkData.chains);
+    let chains = await NetworkService.getNetworkChains(networkData.chains);
 
     const {balance: accountBalance} = await PocketAccountService.getPoktBalance(
       address
     );
+
+    const nodeFromCache = NodeService.getNodeInfo();
+
+    if (nodeFromCache.chainsObject !== undefined) {
+      chains = nodeFromCache.chainsObject;
+    }
 
     this.setState({
       pocketNode,
       networkData,
       chains,
       accountBalance,
+      serviceUrl: nodeFromCache.serviceURL,
       loading: false,
+      unjailAlert: networkData.jailed
     });
 
     // eslint-disable-next-line react/prop-types
@@ -180,11 +194,15 @@ class NodeDetail extends Component {
       tokens: stakedTokens,
       status: stakeStatus,
       unstaking_time: unstakingCompletionTime,
-      service_url: serviceURL,
     } = this.state.networkData;
-    const status = getStakeStatus(parseInt(stakeStatus));
+
+    const serviceURL = this.state.serviceUrl;
+
+    const copyStakeStatus = jailed ? "0" : stakeStatus;
+
+    const status = getStakeStatus(parseInt(copyStakeStatus));
     const isStaked =
-      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
+      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking && !jailed;
 
     let address;
     let publicKey;
@@ -204,6 +222,7 @@ class NodeDetail extends Component {
       unstake,
       unjail,
       stake,
+      unjailAlert,
       ctaButtonPressed,
       accountBalance,
     } = this.state;
@@ -263,8 +282,8 @@ class NodeDetail extends Component {
         subtitle: "Jailed",
         children: jailActionItem,
       },
-      { 
-        title: formatNetworkData(stakedTokens), 
+      {
+        title: formatNetworkData(stakedTokens),
         titleAttrs: {title: stakedTokens ? formatNumbers(stakedTokens) : undefined},
         subtitle: "Validator Power"
       },
@@ -277,16 +296,16 @@ class NodeDetail extends Component {
 
     const renderValidation = (handleFunc, breadcrumbs) => (
       <>
-      {/* eslint-disable-next-line react/prop-types */}
-      <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
-      breadcrumbs={breadcrumbs}
-      address={address} handleAfterValidate={handleFunc}>
-        <h1>Verify private key</h1>
-        <p className="validate-text">
-          Please import your account credentials before sending the Transaction.
-          Be aware that this Transaction has a 0,1 POKT fee cost.
-        </p>
-      </ValidateKeys>
+        {/* eslint-disable-next-line react/prop-types */}
+        <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
+          breadcrumbs={breadcrumbs}
+          address={address} handleAfterValidate={handleFunc}>
+          <h1>Verify private key</h1>
+          <p className="validate-text">
+            Please import your account credentials before sending the Transaction.
+            Be aware that this Transaction has a 0.01 POKT fee cost.
+          </p>
+        </ValidateKeys>
       </>
     );
 
@@ -303,7 +322,7 @@ class NodeDetail extends Component {
     }
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     if (!exists) {
@@ -316,7 +335,7 @@ class NodeDetail extends Component {
         </h3>
       );
 
-      return <AppAlert variant="danger" title={message}/>;
+      return <AppAlert variant="danger" title={message} />;
     }
 
     if (deleted) {
@@ -325,7 +344,7 @@ class NodeDetail extends Component {
           text={
             <p>
               Your node
-              <br/>
+              <br />
               was successfully removed
             </p>
           }
@@ -337,6 +356,33 @@ class NodeDetail extends Component {
 
     return (
       <div className="detail">
+        {unjailAlert && (
+          <AppAlert
+            className="pb-4 pt-4"
+            variant="primary"
+            onClose={() => {
+              this.setState({unjailAlert: false});
+            }}
+            dismissible
+            title={
+              <>
+                <h4 className="text-uppercase" style={{paddingLeft: "15px"}}>
+                  ATTENTION!{" "}
+                </h4>
+                <p className="ml-2">
+                </p>
+              </>
+            }
+          >
+            <p ref={(el) => {
+              if (el) {
+                el.style.setProperty("font-size", "14px", "important");
+              }
+            }}>
+              This unjail transaction will be marked complete when the next block is generated. You will receive an email notification when your node is out of jail and ready to use.
+              </p>
+          </AppAlert>
+        )}
         <Row>
           <Col>
             {error.show && (
@@ -348,7 +394,7 @@ class NodeDetail extends Component {
               />
             )}
             <div className="head">
-              <img className="account-icon" src={icon} alt="node-icon"/>
+              <img className="account-icon" src={icon} alt="node-icon" />
               <div className="info">
                 <h1 className="name d-flex align-items-center">{name}</h1>
                 <h3 className="owner">{operator}</h3>
@@ -363,23 +409,23 @@ class NodeDetail extends Component {
           </Col>
           <Col sm="1" md="1" lg="1">
             {status !== STAKE_STATUS.Unstaking &&
-            <Button
-              className="float-right cta"
-              onClick={() => {
-                this.setState({ctaButtonPressed: true});
+              <Button
+                className="float-right cta"
+                onClick={() => {
+                  this.setState({ctaButtonPressed: true});
 
-                isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
-              }}
-              variant="primary">
-              <span>{isStaked ? "Unstake" : "Stake"}</span>
-            </Button>
+                  isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
+                }}
+                variant="primary">
+                <span>{isStaked ? "Unstake" : "Stake"}</span>
+              </Button>
             }
           </Col>
         </Row>
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-                <InfoCard titleAttrs={card.titleAttrs} title={card.title} subtitle={card.subtitle}>
+              <InfoCard titleAttrs={card.titleAttrs} title={card.title} subtitle={card.subtitle}>
                 {card.children || <></>}
               </InfoCard>
             </Col>
@@ -422,7 +468,7 @@ class NodeDetail extends Component {
                 subtitle={card.subtitle}
                 flexAlign="left"
               >
-                <span/>
+                <span />
               </InfoCard>
             </Col>
           ))}
@@ -430,7 +476,7 @@ class NodeDetail extends Component {
         <Row className="action-buttons">
           <Col>
             <span className="option">
-              <img src={"/assets/edit.svg"} alt="edit-action-icon"/>
+              <img src={"/assets/edit.svg"} alt="edit-action-icon" />
               <p>
                 <Link
                   to={() => {
@@ -445,7 +491,7 @@ class NodeDetail extends Component {
               </p>
             </span>
             <span className="option">
-              <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
+              <img src={"/assets/trash.svg"} alt="trash-action-icon" />
               <p>
                 <span
                   className="link"
@@ -469,8 +515,8 @@ class NodeDetail extends Component {
           <Modal.Body>
             <h4> Are you sure you want to remove this Node?</h4>
             Your Node will be removed from the Pocket Dashboard. However, you
-            will still be able to access it through the Command Line Interface  
-            (CLI) or import it back into Pocket Dashboard with the private key 
+            will still be able to access it through the Command Line Interface
+            (CLI) or import it back into Pocket Dashboard with the private key
             associated to the node
           </Modal.Body>
           <Modal.Footer>

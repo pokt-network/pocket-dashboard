@@ -21,18 +21,12 @@ class AppOrderSummary extends Component {
   handleChange({currentTarget: input}) {
     // let value = input.value;
 
-    const {maxBalance} = this.state;
     const data = {...this.state.data};
 
     // if (input.value.length === 0)
 
     data[input.name] = input.value;
-    if (input.value >= 0 && input.value <= maxBalance) {
-      this.setState({data});
-    } else if (input.value.length === 0) {
-      data[input.name] = 0;
-      this.setState({data});
-    }
+    this.setState({data});
   }
 
   componentDidMount() {
@@ -64,11 +58,12 @@ class AppOrderSummary extends Component {
           </div>
         ))}
         <div className="item current-balance">
-          <span>Current balance</span>
+          <span>Use My Balance</span>
           <span className="currency-wrapper">
             <span className="currency">{currency}</span>
+            <span className="minus">-</span>
             <Form.Control
-              disabled={maxBalance === 0}
+              style={{width: "150px"}}
               type="number"
               min={0}
               max={maxBalance}

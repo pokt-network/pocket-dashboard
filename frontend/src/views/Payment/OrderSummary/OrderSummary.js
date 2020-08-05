@@ -106,13 +106,13 @@ class OrderSummary extends Component {
       });
 
 
-    const action = UserService.getUserAction();
-    const appBreadcrumbs = ["Apps", action, "Checkout", "Payment"];
-    const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Payment"];
+      const action = UserService.getUserAction();
+      const appBreadcrumbs = ["Apps", action, "Checkout", "Payment"];
+      const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Payment"];
 
-    type === ITEM_TYPES.APPLICATION ?
-      this.props.onBreadCrumbChange(appBreadcrumbs) :
-      this.props.onBreadCrumbChange(nodeBreadcrumbs);
+      type === ITEM_TYPES.APPLICATION ?
+        this.props.onBreadCrumbChange(appBreadcrumbs) :
+        this.props.onBreadCrumbChange(nodeBreadcrumbs);
     });
   }
 
@@ -152,6 +152,7 @@ class OrderSummary extends Component {
 
     const {paymentIntent, selectedPaymentMethod, type} = this.state;
 
+
     const result = await StripePaymentService.confirmPaymentWithSavedCard(
       stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails
     );
@@ -164,6 +165,7 @@ class OrderSummary extends Component {
           variant: "warning",
           message: <h4>{result.error.message}</h4>,
         },
+
       });
       scrollToId("alert");
       return;
@@ -174,13 +176,14 @@ class OrderSummary extends Component {
 
       // Stake application
       const {
+        id,
         passphrase,
         chains,
         address,
       } = ApplicationService.getApplicationInfo();
 
       const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
-      const detail = url.replace(":address", address);
+      const detail = url.replace(":id", id);
       const applicationLink = `${window.location.origin}${detail}`;
 
       this.setState({loading: true});
@@ -188,10 +191,20 @@ class OrderSummary extends Component {
       const appStakeTransaction = await PocketClientService.appStakeRequest(
         address, passphrase, chains, pokt.cost.toString());
 
-      // TODO: Add error handling
-      ApplicationService.stakeApplication(
-        appStakeTransaction, result.paymentIntent.id, applicationLink
-      ).then(() => {});
+      // Sign an AAT for the Gateway service using the Gateway's client pub key and app private key
+      const gatewayAATSignature = await PocketClientService.signGatewayAAT(
+        address, passphrase);
+
+      const stakeInformation = {
+        applicationId: id,
+        appStakeTransaction,
+        paymentId: result.paymentIntent.id,
+        applicationLink,
+        gatewayAATSignature,
+      };
+
+      await ApplicationService.stakeApplication(stakeInformation);
+
     } else {
       const pokt = await PocketCheckoutService.getNodePoktToStake(total);
 
@@ -394,12 +407,22 @@ class OrderSummary extends Component {
                 })}
               </Form>
               <Button
+                style={{display: "inline-block"}}
                 className="new-card-btn mb-3"
                 onClick={() => this.setState({isFormVisible: !isFormVisible})}
                 disabled={isAddNewDisabled}
               >
                 Add a New Card
               </Button>
+
+              <img style={{
+                height: "88px",
+                width: "88px",
+                display: "inline-block",
+                float: "right",
+                marginTop: "-7px"
+              }}
+                src="/assets/stripe-payment_3.svg" alt="stripe"></img>
 
               {isFormVisible && (
                 <>
@@ -435,6 +458,14 @@ class OrderSummary extends Component {
                 subtitle={"Total cost"}
               />
               <hr />
+              <p style={{fontSize: "12px"}}>
+                Purchasers are not buying POKT as an investment with the expectation of profit or appreciation. <b>Purchasers are buying POKT to use it.</b><br /> <br />
+
+                  To ensure purchasers are bona fide users and not investors, the Company has set a purchase maximum per user and requires users must hold POKT for <b>21 days</b> and <b>stake</b> it before transferring to another wallet or selling.<br /> <br />
+
+                  Purchasers are acquiring POKT for their own account and use, and not with an intention to re-sell or distribute POKT to others. <br /> <br />
+                  Pocket Network is governed according to the Pocket Network Constitution. For more more information please read the <a target="_blank" rel="noopener noreferrer" href="https://github.com/pokt-network/governance/blob/master/constitution/constitution.md">Constitution.</a>
+              </p>
               <Form.Check
                 checked={agreeTerms}
                 onChange={() => this.setState({agreeTerms: !agreeTerms})}
@@ -443,17 +474,17 @@ class OrderSummary extends Component {
                 type="checkbox"
                 label={
                   <span className="agree">
-                    I agree to Pocket Network&#39;s Purchase <br />
+                    I agree to{" "}
+                    <Link
+                      className="terms-link"
+                      target="_blank"
+                      style={{marginLeft: "0px"}}
+                      to={ROUTE_PATHS.purchaseTerms}>
+                      Purchase Terms and conditions.
+                      </Link>
                   </span>
                 }
               />
-              <Link
-                className="terms-link"
-                target="_blank"
-                to={ROUTE_PATHS.termsOfService}
-              >
-                Terms and conditions.
-              </Link>
               <PaymentContainer>
                 <ElementsConsumer>
                   {({_, stripe}) => (
@@ -480,8 +511,8 @@ class OrderSummary extends Component {
               </PaymentContainer>
             </div>
           </Col>
-        </Row>
-      </div>
+        </Row >
+      </div >
     );
   }
 }

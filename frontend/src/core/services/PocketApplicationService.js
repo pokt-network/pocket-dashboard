@@ -15,10 +15,15 @@ export class PocketApplicationService extends PocketBaseService {
       version: aat.version,
     };
 
-    delete aat.version;
+    // delete aat.version;
 
     for (let [key, value] of Object.entries(aat)) {
-      aatParsed[key] = `${value.slice(0, 15)}...`;
+      if (key !== "version") {
+        aatParsed[key] = `${value.slice(0, 15)}...`;
+      } else {
+        aatParsed[key] = value;
+      }
+
     }
     return JSON.stringify(aatParsed, null, 2);
   }
@@ -104,6 +109,26 @@ export class PocketApplicationService extends PocketBaseService {
   getApplication(applicationAddress) {
     return axios
       .get(this._getURL(`${applicationAddress}`))
+      .then((response) => response.data)
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
+  }
+
+    /**
+   * Get application by using the Application id.
+   *
+   * @param {string} applicationId Application's id.
+   *
+   * @returns {Promise|Promise<*>}
+   */
+  getClientApplication(applicationId) {
+    return axios
+      .get(this._getURL(`client/${applicationId}`))
       .then((response) => response.data)
       .catch((err) => {
         return {
@@ -291,7 +316,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Edit application.
    *
-   * @param {string} applicationAccountAddress Application address.
+   * @param {string} applicationId Application Id.
    * @param {Object} applicationData Application data.
    * @param {string} applicationData.name Name.
    * @param {string} applicationData.owner Owner.
@@ -304,11 +329,11 @@ export class PocketApplicationService extends PocketBaseService {
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async editApplication(applicationAccountAddress, applicationData) {
+  async editApplication(applicationId, applicationData) {
     const data = {...applicationData};
 
     return axios
-      .put(this._getURL(`${applicationAccountAddress}`), data)
+      .put(this._getURL(`${applicationId}`), data)
       .then((response) => {
         if (response.status === 200) {
           return {
@@ -353,37 +378,37 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Delete an application from dashboard (but not from the network).
    *
-   * @param {string} applicationAccountAddress Application account address.
+   * @param {string} applicationId Application Id.
    * @param {string} userEmail User email address.
    * @param {string} appsLink Applications links.
    *
    * @returns {Promise|Promise<*>}
    */
-  deleteAppFromDashboard(applicationAccountAddress, userEmail, appsLink) {
+  deleteAppFromDashboard(applicationId, userEmail, appsLink) {
     const data = {user: userEmail, appsLink};
 
     return axios
-      .post(this._getURL(`${applicationAccountAddress}`), data)
+      .post(this._getURL(`${applicationId}`), data)
       .then((response) => response.data);
   }
 
   /**
    * Create free tier application.
    *
-   * @param {object} appStakeTransaction Transaction.
+   * @param {object} stakeInformation Stake information.
    * @param {string} applicationLink Application link.
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeFreeTierApplication(appStakeTransaction, applicationLink) {
+  stakeFreeTierApplication(stakeInformation, applicationLink) {
     return axios
-      .post(this._getURL("freetier/stake"), {appStakeTransaction, applicationLink})
+      .post(this._getURL("freetier/stake"), {stakeInformation, applicationLink})
       .then((response) => {
         return {
           success: true,
           data: response.data,
         };
-      })     
+      })
       .catch((err) => {
         return {
           success: false,
@@ -396,15 +421,13 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a free tier application.
    *
-   * @param {object} appUnstakeTransaction Transaction hash.
-   * @param {string} appUnstakeTransaction.address Sender address
-   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {object} unstakeInformation Object holding the unstake information.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}
    */
-  unstakeFreeTierApplication(appUnstakeTransaction, applicationLink) {
-    const data = {appUnstakeTransaction, applicationLink};
+  unstakeFreeTierApplication(unstakeInformation, applicationLink) {
+    const data = {unstakeInformation, applicationLink};
 
     return axios
       .post(this._getURL("freetier/unstake"), data)
@@ -419,21 +442,14 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Stake a custom tier application.
    *
-   * @param {object} appStakeTransaction Transaction.
-   * @param {string} paymentId payment's stripe confirmation id.
-   * @param {string} applicationLink Link to detail for email.
+   * @param {{applicationId: string, appStakeTransaction: {address: string, raw_hex_bytes: string}, paymentId: string, applicationLink: string, gatewayAATSignature: string}} stakeInformation Stake information object..
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeApplication(appStakeTransaction, paymentId, applicationLink) {
-    const data = {
-      appStakeTransaction,
-      payment: {id: paymentId},
-      applicationLink,
-    };
+  stakeApplication(stakeInformation) {
 
     return axios
-      .post(this._getURL("custom/stake"), data)
+      .post(this._getURL("custom/stake"), stakeInformation)
       .then((response) => {
         return {success: true, data: response.data};
       })
@@ -445,9 +461,7 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Unstake a custom tier application.
    *
-   * @param {{address: string}} appUnstakeTransaction Transaction hash.
-   * @param {string} appUnstakeTransaction.address Sender address
-   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {{address: string}} unstakeInformation Transaction hash.
    * @param {string} applicationLink Link to detail for email.
    *
    * @returns {Promise|Promise<*>}

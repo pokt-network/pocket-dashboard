@@ -37,7 +37,7 @@ function ImageFileUpload(props) {
   const thumbs = files.map((file, idx) => (
     <React.Fragment key={idx}>
       {/*eslint-disable-next-line jsx-a11y/alt-text*/}
-      <img src={file.preview} className="drop-border"/>
+      <img src={file.preview} className="drop-border" />
     </React.Fragment>
   ));
 
@@ -53,13 +53,7 @@ function ImageFileUpload(props) {
     } else {
       return (
         <>
-          <img src="/assets/upload_icon.svg" className="icon" alt=""/>
-          <p>
-            Drag and drop an icon{" "}
-            <span className="alt">
-              <br></br>or upload from your computer
-            </span>
-          </p>
+          <img src="/assets/upload_icon.svg" className="icon" alt="" />
         </>
       );
     }

@@ -104,7 +104,7 @@ class NewCardForm extends Component {
                     <Col sm="6" md="6" lg="6">
                       <Form.Group>
                         <Form.Label>Credit card number*</Form.Label>
-                        <CardNumberInput/>
+                        <CardNumberInput />
                       </Form.Group>
                     </Col>
                     <Col sm="6" md="6" lg="6">
@@ -123,14 +123,14 @@ class NewCardForm extends Component {
                   <Row>
                     <Col sm="6" md="6" lg="6">
                       <Form.Group>
-                        <Form.Label>Expiration Date*</Form.Label>
-                        <CardExpirationDateInput/>
+                        <Form.Label>Exp. Date*</Form.Label>
+                        <CardExpirationDateInput />
                       </Form.Group>
                     </Col>
                     <Col sm="6" md="6" lg="6">
                       <Form.Group>
-                        <Form.Label>CVC/CVC2*</Form.Label>
-                        <CardCVCNumberInput/>
+                        <Form.Label>CVC*</Form.Label>
+                        <CardCVCNumberInput />
                       </Form.Group>
                     </Col>
                   </Row>
@@ -169,7 +169,7 @@ class NewCardForm extends Component {
                           as="select"
                           onChange={this.handleChange}
                         >
-                          <option/>
+                          <option />
                           {
                             PAYMENT_REGION_OR_COUNTRY.map(country => (
                               <option key={country.code} value={country.code}>{country.name}</option>

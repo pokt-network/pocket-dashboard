@@ -33,6 +33,7 @@ class Checkout extends Component {
         date: "",
         card: "",
       },
+      applicationId: "",
       details: [],
       total: 0,
       currentAccountBalance: 0,
@@ -63,6 +64,11 @@ class Checkout extends Component {
         ? ApplicationService.getApplicationInfo().address
         : NodeService.getNodeInfo().address;
 
+    const applicationId =
+      type === ITEM_TYPES.APPLICATION
+        ? ApplicationService.getApplicationInfo().id
+        : NodeService.getNodeInfo().address;
+
     const purchasedTokens =
       type === ITEM_TYPES.APPLICATION
         ? await CheckoutService.getApplicationPoktToStake(total)
@@ -85,6 +91,7 @@ class Checkout extends Component {
     };
 
     this.setState({
+      applicationId,
       loading: false,
       type,
       address,
@@ -108,10 +115,10 @@ class Checkout extends Component {
   render() {
     const {owner, id, date, card, poktPrice} = this.state.invoice;
     const {
+      applicationId,
       details,
       total,
       type,
-      address,
       loading,
       unauthorized,
       currentAccountBalance,
@@ -154,7 +161,11 @@ class Checkout extends Component {
             : DASHBOARD_PATHS.nodeDetail;
           const url = _getDashboardPath(route);
 
-          return url.replace(":address", address);
+          if (isApp) {
+            return url.replace(":id", applicationId);
+          } else {
+            return url.replace(":address", applicationId);
+          }
         }}
       >
         <Button variant="primary" className="mt-1 float-right cta">
@@ -172,11 +183,10 @@ class Checkout extends Component {
           <Row className="mb-4">
             <AppAlert
               className="pb-3 pt-3"
-              title={"This transaction may take some time to be completed."}
+              title={"ATTENTION!"}
             >
               <p>
-                On the next block generated your {isApp ? "app" : "node"} will
-                be staked, also we will notify you by email.
+                This staking transaction will be marked complete when the next block is generated. You will receive an email notification when your {isApp ? "app" : "node"} is ready to use.
               </p>
             </AppAlert>
           </Row>

@@ -19,7 +19,7 @@
       border-radius: 25px;
       background-color: $white-smoke;
 
-      width: 80px;
+      width: 125px;
       height: 26px;
 
       margin-left: 12px;
@@ -89,7 +89,17 @@
       color: $secondary-color;
     }
   }
-
+  .copy-button {
+    background-color: #F5F5F5;
+    margin-top: 0px;
+    float: right;
+    cursor: pointer;
+    img {
+      display: inline-block;
+      height: 22px;
+      width: 22px;
+    }
+  }
   .stats {
     margin-top: 25px;
     margin-left: -30px;

@@ -17,7 +17,7 @@
     span {
       color: $light-gray;
       font-weight: 800;
-      font-size: 18px;
+      font-size: 16px;
     }
 
     span.currency-wrapper {
@@ -26,6 +26,17 @@
       .currency {
         position: absolute;
         right: 45px;
+        margin-top: 6px;
+        text-transform: uppercase;
+        font-weight: 300;
+        font-size: 14px;
+        color: $dark-gray;
+        font-family: $primary-font-family;
+      }
+
+      .minus {
+        position: absolute;
+        right: 155px;
         margin-top: 6px;
         text-transform: uppercase;
         font-weight: 300;

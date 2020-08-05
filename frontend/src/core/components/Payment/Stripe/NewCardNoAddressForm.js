@@ -109,14 +109,14 @@ class NewCardNoAddressForm extends Component {
                   <Col md="2">
                     <Form.Group>
                       <Form.Label className="text-nowrap">
-                        Expiration Date*
+                        Exp. Date*
                       </Form.Label>
                       <CardExpirationDateInput />
                     </Form.Group>
                   </Col>
                   <Col md="2">
                     <Form.Group>
-                      <Form.Label>CVC/CVC2*</Form.Label>
+                      <Form.Label>CVC*</Form.Label>
                       <CardCVCNumberInput />
                     </Form.Group>
                   </Col>

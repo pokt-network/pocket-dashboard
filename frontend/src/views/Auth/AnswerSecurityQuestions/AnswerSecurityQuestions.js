@@ -3,9 +3,9 @@ import {Button, Container, Form, Row} from "react-bootstrap";
 import "./AnswerSecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
-//import UserService from "../../../core/services/PocketUserService";
 import SecurityQuestionService from "../../../core/services/PocketSecurityQuestionsService";
 import {ROUTE_PATHS} from "../../../_routes";
+import PocketUserService from "../../../core/services/PocketUserService";
 
 class AnswerSecurityQuestions extends Component {
   constructor(props, context) {
@@ -18,7 +18,11 @@ class AnswerSecurityQuestions extends Component {
       data: {
         email: "",
       },
-      question: "",
+      questions: [
+        {question: ""},
+        {question: ""},
+        {question: ""},
+      ],
       answer: "",
       userInput: "",
       error: "",
@@ -32,19 +36,16 @@ class AnswerSecurityQuestions extends Component {
       : undefined;
 
     if (email !== undefined) {
-      const questions = await SecurityQuestionService.getUserRandomSecurityQuestion(
+      const questions = await SecurityQuestionService.getUserSecurityQuestions(
         email
       );
 
-      if (questions.success !== undefined) {
+      if (questions.success) {
         this.setState({
-          question: questions.success.question,
-          answer: questions.success.answer.toLowerCase(),
+          questions: questions.data
         });
       }
     }
-
-    // eslint-disable-next-line react/prop-types
   }
 
   handleChange({currentTarget: input}) {
@@ -54,25 +55,50 @@ class AnswerSecurityQuestions extends Component {
     this.setState({data});
   }
 
-  handleSubmit(e) {
+  async handleSubmit(e) {
     e.preventDefault();
-    // eslint-disable-next-line react/prop-types
-    const email = this.props.location.state.email;
-    const userInput = this.state.data.answer.toLocaleLowerCase();
+    // Retrieve the answers
+    const answer1 = e.target.elements.answer1.value;
+    const answer2 = e.target.elements.answer2.value;
+    const answer3 = e.target.elements.answer3.value;
 
-    if (userInput === this.state.answer) {
+    if (answer1.length > 0 && answer2.length > 0 && answer3.length > 0) {
+      const answeredQuestions = [
+        {question: this.state.questions[0].question, answer: answer1},
+        {question: this.state.questions[1].question, answer: answer2},
+        {question: this.state.questions[2].question, answer: answer3}
+      ];
+
       // eslint-disable-next-line react/prop-types
-      this.props.history.push({
-        pathname: ROUTE_PATHS.reset_password,
-        state: {email},
-      });
-    } else {
-      this.setState({error: "Incorrect answer"});
+      const email = this.props.location.state.email;
+
+      // Validate answers
+      const isValid = await SecurityQuestionService.validateUserSecurityQuestions(email, answeredQuestions);
+
+      // Password reset link page
+      const passwordResetLinkPage = `${window.location.origin}${ROUTE_PATHS.reset_password}`;
+
+      if (isValid.success === true && isValid.data === true) {
+        // Send password reset email
+        const result = await PocketUserService.sendResetPasswordEmail(email, passwordResetLinkPage);
+
+        if (result.success) {
+          // eslint-disable-next-line react/prop-types
+          this.props.history.push({
+            pathname: ROUTE_PATHS.reset_password_email,
+            state: {email},
+          });
+        } else {
+          this.setState({error: "Failed to send the reset password email."});
+        }
+      } else {
+        this.setState({error: "Incorrect answer"});
+      }
     }
   }
 
   render() {
-    const {question, error} = this.state;
+    const {questions, error} = this.state;
 
     return (
       <Container fluid id={"answer-security-questions-page"}>
@@ -84,12 +110,39 @@ class AnswerSecurityQuestions extends Component {
                 Answer this question before continuing.
               </h1>
 
-              <Form id={"main-form"} onSubmit={this.handleSubmit}>
+              <Form autoComplete="off" id={"main-form"} onSubmit={this.handleSubmit}>
                 <Form.Group className="mb-4">
-                  <Form.Label id="email-label">{question}</Form.Label>
+                  <Form.Label id="question-label-1">{questions[0].question}</Form.Label>
                   <Form.Control
+                    id="answer-label-1"
                     onChange={this.handleChange}
-                    name="answer"
+                    name="answer1"
+                    type="input"
+                    className={error ? "is-invalid emailInput" : "emailInput"}
+                  />{" "}
+                  <Form.Control.Feedback className="feedback" type="invalid">
+                    {error ? error : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group className="mb-4">
+                  <Form.Label id="question-label-2">{questions[1].question}</Form.Label>
+                  <Form.Control
+                    id="answer-label-2"
+                    onChange={this.handleChange}
+                    name="answer2"
+                    type="input"
+                    className={error ? "is-invalid emailInput" : "emailInput"}
+                  />{" "}
+                  <Form.Control.Feedback className="feedback" type="invalid">
+                    {error ? error : ""}
+                  </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group className="mb-4">
+                  <Form.Label id="question-label-3">{questions[2].question}</Form.Label>
+                  <Form.Control
+                    id="answer-label-3"
+                    onChange={this.handleChange}
+                    name="answer3"
                     type="input"
                     className={error ? "is-invalid emailInput" : "emailInput"}
                   />{" "}
