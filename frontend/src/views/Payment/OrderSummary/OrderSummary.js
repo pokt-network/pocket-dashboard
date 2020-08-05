@@ -454,7 +454,7 @@ class OrderSummary extends Component {
               </div>
               <InfoCard
                 className="text-center"
-                title={`${numeral(total).format("$0,0.000")} USD`}
+                title={`${numeral(total).format("$0,0.00")} USD`}
                 subtitle={"Total cost"}
               />
               <hr />
