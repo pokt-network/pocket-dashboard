@@ -2,6 +2,7 @@ import {Application, ApplicationParams, StakingStatus} from "@pokt-network/pocke
 import {PrivatePocketAccount, PublicPocketAccount} from "./Account";
 import {EMAIL_REGEX, URL_REGEX} from "./Regex";
 import {DashboardValidationError} from "./Exceptions";
+const crypto = require("crypto");
 
 export class RegisteredPocketApplication {
   /**
@@ -43,7 +44,6 @@ export class PocketApplication {
    * @param {object} freeTierPrivateApp Internal private app object.
    * @param {object} aat PocketAAT used for Gateway access, signed by our client pub key
    * @param {object} gatewaySettings Whitelists and keys and settings for the Gateway
-   * @param 
    */
   constructor(name, owner, url, contactEmail, user, description, icon, freeTier, freeTierAppAddress, freeTierPrivateApp, aat, gatewaySettings) {
     Object.assign(this, {name, owner, url, contactEmail, user, description, icon});
@@ -56,8 +56,18 @@ export class PocketApplication {
     } else {
       this.freeTierApplicationAccount = new PrivatePocketAccount(freeTierAppAddress, "", "");
     }
-    this.aat = aat || {};
-    this.gatewaySettings = gatewaySettings || {};
+    this.aat = aat || {
+      version: "",
+      clientPubKey: "",
+      applicationPublicKey: "",
+      applicationSignature: ""
+    };
+    this.gatewaySettings = gatewaySettings || {
+      secretKey: crypto.randomBytes(16).toString("hex"),
+      secretKeyRequired: false,
+      whiltelistOrigins: [],
+      whiltelistUserAgents: []
+    };
   }
 
   /**
@@ -122,8 +132,8 @@ export class PocketApplication {
    * @param {string} [applicationData.icon] Icon.
    * @param {boolean} [applicationData.freeTier] Free tier status.
    * @param {PublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
-   * @param {object} [applicationdata.aat] Gateway PocketAAT
-   * @param {object} [applicationdata.gatewaySettings] Gateway settings for whitelists and security
+   * @param {object} [applicationData.aat] Gateway PocketAAT
+   * @param {object} [applicationData.gatewaySettings] Gateway settings for whitelists and security
    * @param {string} [applicationData._id] Application ID.
    *
    * @returns {PocketApplication} A new Pocket application.
@@ -158,8 +168,8 @@ export class PocketApplication {
    * @param {string} [applicationData.icon] Icon.
    * @param {boolean} [applicationData.freeTier] Free tier status.
    * @param {PublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
-   * @param {object} [applicationdata.aat] Gateway PocketAAT
-   * @param {object} [applicationdata.gatewaySettings] Gateway settings for whitelists and security
+   * @param {object} [applicationData.aat] Gateway PocketAAT
+   * @param {object} [applicationData.gatewaySettings] Gateway settings for whitelists and security
    * @param {string} [applicationData._id] Application ID.
    *
    * @returns {PocketApplication} A new Pocket application.
