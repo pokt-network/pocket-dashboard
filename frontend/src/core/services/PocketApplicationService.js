@@ -75,7 +75,7 @@ export class PocketApplicationService extends PocketBaseService {
     chains,
     data,
     imported
-    }) {
+  }) {
     if (applicationID) {
       this.ls.set("app_id", {data: applicationID});
     }
@@ -119,13 +119,13 @@ export class PocketApplicationService extends PocketBaseService {
       });
   }
 
-    /**
-   * Get application by using the Application id.
-   *
-   * @param {string} applicationId Application's id.
-   *
-   * @returns {Promise|Promise<*>}
-   */
+  /**
+ * Get application by using the Application id.
+ *
+ * @param {string} applicationId Application's id.
+ *
+ * @returns {Promise|Promise<*>}
+ */
   getClientApplication(applicationId) {
     return axios
       .get(this._getURL(`client/${applicationId}`))
@@ -476,6 +476,17 @@ export class PocketApplicationService extends PocketBaseService {
       })
       .catch((err) => {
         return {success: false, data: err.response};
+      });
+  }
+
+  updateGatewaySettings(application) {
+    return axios
+      .post(this._getURL("update/gateway/settings"), application)
+      .then(() => {
+        return {success: true};
+      })
+      .catch((err) => {
+        return {success: false};
       });
   }
 }

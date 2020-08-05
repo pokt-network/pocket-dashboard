@@ -1,10 +1,10 @@
+/* eslint-disable react/prop-types */
 import React, {Component} from "react";
 import {Alert, Form, Col, Row, Modal, Button, Dropdown} from "react-bootstrap";
 import {Formik} from "formik";
 import LabelToggle from "../../../core/components/LabelToggle";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
-import {STYLING} from "../../../_constants";
+import ApplicationService from "../../../core/services/PocketApplicationService";
+import NetworkService from "../../../core/services/PocketNetworkService";
 import "./GeneralSettings.scss";
 
 class GeneralSettings extends Component {
@@ -14,21 +14,111 @@ class GeneralSettings extends Component {
 
     this.state = {
       deleteModal: false,
+      chains: [],
+      pocketApplication: {},
+      useragents: "",
+      origins: "",
+      secretKey: false
     };
+
+    this.addWhitelistUserAgents = this.addWhitelistUserAgents.bind(this);
+    this.addWhitelistOrigins = this.addWhitelistOrigins.bind(this);
+    this.toggleSecretKeyRequired = this.toggleSecretKeyRequired.bind(this);
+    this.handleOriginChange = this.handleOriginChange.bind(this);
+    this.handleUserChange = this.handleUserChange.bind(this);
+  }
+
+  async addWhitelistUserAgents() {
+    const data = this.state;
+    const application = this.state.pocketApplication;
+    const agents = data.useragents.split(",").map(function (item) {
+      return item.trim();
+    });
+
+    application.gatewaySettings.whiltelistUserAgents = agents;
+
+    await ApplicationService.updateGatewaySettings(application);
+  }
+
+  async addWhitelistOrigins() {
+    const data = this.state;
+    const application = this.state.pocketApplication;
+    const origins = data.origins.split(",").map(function (item) {
+      return item.trim();
+    });
+
+    application.gatewaySettings.whiltelistOrigins = origins;
+
+    await ApplicationService.updateGatewaySettings(application);
+  }
+
+  async toggleSecretKeyRequired(value) {
+    const application = this.state.pocketApplication;
+
+    application.gatewaySettings.secretKeyRequired = value;
+
+    await ApplicationService.updateGatewaySettings(application);
+  }
+
+  handleOriginChange({currentTarget: input}) {
+    const data = {...this.state.data};
+
+    data[input.name] = input.value;
+    this.setState({
+      origins: data[input.name]
+    });
+  }
+
+  handleUserChange({currentTarget: input}) {
+    const data = {...this.state.data};
+
+    data[input.name] = input.value;
+    this.setState({
+      useragents: data[input.name]
+    });
+
+
+  }
+
+  async componentDidMount() {
+    const {id} = this.props.match.params;
+
+    const {
+      pocketApplication,
+      networkData
+    } = await ApplicationService.getClientApplication(id) || {};
+
+    const chains = await NetworkService.getNetworkChains(networkData.chains);
+
+    this.setState({
+      chains,
+      pocketApplication,
+      secretKey: pocketApplication.gatewaySettings.secretKeyRequired,
+      useragents: pocketApplication.gatewaySettings.whiltelistUserAgents.join(),
+      origins: pocketApplication.gatewaySettings.whiltelistOrigins.join(),
+    });
   }
 
   render() {
 
     const {
       deleteModal,
+      chains,
+      secretKey,
+      useragents,
+      origins
     } = this.state;
+
+    const chainsDropdown = chains.map(function (chain) {
+      return <Dropdown.Item key={chain._id}>{chain.network}</Dropdown.Item>;
+    });
 
     return (
       <div className="general-settings">
         <Row>
           <Col>
             <div className="head">
-              <img src={"/assets/gateway.png"} alt="gateway"/>
+              <img src={"/assets/gateway.png"} alt="gateway" />
               <div className="info">
                 <h1 className="name d-flex align-items-center">
                   EXAMPLE NAME APP&nbsp;<span>- GATEWAY </span>
@@ -45,7 +135,7 @@ class GeneralSettings extends Component {
           <Col sm="4" md="4" lg="4" className="btn-sc pr-0">
             <Button
               variant="primary">
-                <span>Save Changes</span>
+              <span>Save Changes</span>
             </Button>
           </Col>
           <p className="mt-2">
@@ -55,9 +145,9 @@ class GeneralSettings extends Component {
         <Row className="gateway-data">
           <Col sm="6" md="6" lg="6" className="pl-0">
             <div className="page-title">
-              <h3 className="pl-4">Gateway</h3>
-              <Alert variant="light">a969144c864bd87a92e9a969144c864bd87a92e9 
-                <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon"/></div> 
+              <h3 className="pl-4">Application ID</h3>
+              <Alert variant="light">a969144c864bd87a92e9a969144c864bd87a92e9
+                <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon" /></div>
               </Alert>
             </div>
           </Col>
@@ -65,7 +155,7 @@ class GeneralSettings extends Component {
             <div className="page-title">
               <h3 className="pl-4">Application Secret Key</h3>
               <Alert variant="light">a969144c864bd87a92e9a969144c864bd87a92e9
-                <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon"/></div> 
+                <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon" /></div>
               </Alert>
             </div>
           </Col>
@@ -82,20 +172,7 @@ class GeneralSettings extends Component {
                 {"Staked Networks"}
               </Dropdown.Toggle>
               <Dropdown.Menu>
-                <Dropdown.Item>
-                  Pocket Network
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  Aion
-                </Dropdown.Item>
-                <Dropdown.Item>
-                  Ethereum
-                </Dropdown.Item>
-                <FontAwesomeIcon
-                  className="icon"
-                  icon={faAngleDown}
-                  color={STYLING.primaryColor}
-                />
+                {chainsDropdown}
               </Dropdown.Menu>
             </Dropdown>
           </Col>
@@ -103,7 +180,7 @@ class GeneralSettings extends Component {
         <Row className="alert-endpoint mb-4">
           <Col sm="12" md="12" lg="12" className="pl-0 pr-0">
             <Alert variant="light">https://mainnet.pocket.ifsiodhfsoifhiefwef/efwieoh8r13nno9e90-sdfsdf/008889f008309/e9a969144c864bd87a94
-              <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon"/></div> 
+              <div className="copy-icon"><img src={"/assets/copy.png"} alt="copy-icon" /></div>
             </Alert>
           </Col>
         </Row>
@@ -122,6 +199,11 @@ class GeneralSettings extends Component {
               <Form.Check
                 className="secret-checkbox"
                 type="checkbox"
+                checked={secretKey}
+                onChange={() => {
+                  this.setState({secretKey: !secretKey});
+                  this.toggleSecretKeyRequired(!secretKey);
+                }}
                 label={
                   <p>Required project secret for all requests</p>
                 }
@@ -138,34 +220,26 @@ class GeneralSettings extends Component {
                   <Row>
                     <Col sm="11" md="11" lg="11" className="pl-0">
                       <Form.Control
-                        name="whitelist"
+                        name="agents"
+                        value={useragents}
                         placeholder="Whitelist user agents"
+                        onChange={this.handleUserChange}
                       />
                     </Col>
                     <Col sm="1" md="1" lg="1" className="pr-0">
                       <Button
-                        variant="primary gray">
-                          <span>Add</span>
+                        variant="primary gray" onClick={this.addWhitelistUserAgents}>
+                        <span>Add</span>
                       </Button>
                     </Col>
                   </Row>
                 </Form.Group>
-                <div className="mt-4">
-                  <Alert variant="light">https://mainnet.pocket.ifsiodhfsoifhiefwef/efwieoh8r13nno9e90-sdfsdf/008889f008309/e9a969144c864bd87a94
-                    <div className="exit-icon"><img src={"/assets/exit.png"} alt="exit-icon"/></div> 
-                  </Alert>
-                </div>
-                <div className="mt-4">
-                  <Alert variant="light">https://mainnet.pocket.ifsiodhfsoifhiefwef/efwieoh8r13nno9e90-sdfsdf/008889f008309/e9a969144c864bd87a94
-                    <div className="exit-icon"><img src={"/assets/exit.png"} alt="exit-icon"/></div> 
-                  </Alert>
-                </div>
               </Form>
             </Formik>
           </Col>
         </Row>
         <Row className="whitelist mt-3">
-          <Col sm="12" md="12" lg="12" className="pl-0">
+          <Col sm="12" md="12" lg="12" className="pl-0 pr-0">
             <Formik>
               <Form>
                 <Form.Group>
@@ -173,21 +247,20 @@ class GeneralSettings extends Component {
                   <Row>
                     <Col sm="11" md="11" lg="11" className="pl-0">
                       <Form.Control
-                        name="whitelist"
+                        name="origins"
+                        value={origins}
                         placeholder="Whitelist Origins"
+                        onChange={this.handleOriginChange}
                       />
                     </Col>
                     <Col sm="1" md="1" lg="1" className="pr-0">
                       <Button
-                        variant="primary gray">
-                          <span>Add</span>
+                        variant="primary gray" onClick={this.addWhitelistOrigins}>
+                        <span>Add</span>
                       </Button>
                     </Col>
                   </Row>
                 </Form.Group>
-                <Alert variant="light">https://mainnet.pocket.ifsiodhfsoifhiefwef/efwieoh8r13nno9e90-sdfsdf/008889f008309/e9a969144c864bd87a94
-                  <div className="exit-icon"><img src={"/assets/exit.png"} alt="exit-icon"/></div> 
-                </Alert>
               </Form>
             </Formik>
           </Col>
@@ -195,12 +268,12 @@ class GeneralSettings extends Component {
         <Row className="remove-app">
           <Col sm="12" md="12" lg="12" className="pl-0">
             <span className="option">
-                <img src={"/assets/trash.svg"} alt="trash-action-icon"/>
-                <p>
-                  <span
-                    className="link"
-                    onClick={() => this.setState({deleteModal: true})}>
-                    Remove
+              <img src={"/assets/trash.svg"} alt="trash-action-icon" />
+              <p>
+                <span
+                  className="link"
+                  onClick={() => this.setState({deleteModal: true})}>
+                  Remove
                   </span>{" "}
                   this App from the Dashboard.
                 </p>

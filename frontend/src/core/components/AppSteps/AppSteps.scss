@@ -50,7 +50,8 @@
   }
 
   .rc-steps-item-finish .rc-steps-item-tail:after {
-    background-color: $primary-color;
+    background: linear-gradient(0.25turn, #27a9e0, #06202e);
+
   }
 
   .rc-steps-item-title {
