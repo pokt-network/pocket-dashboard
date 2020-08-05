@@ -71,7 +71,7 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
         base_relay_per_pokt: baseRelayPerPOKT
       }
     } = this.options;
-
+    
     let {
       p_rate: pRate
     } = this.options;
@@ -91,7 +91,9 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
     if (!isNumericOptionValid(this.poktMarketPrice) || isNumericOptionNegative(this.poktMarketPrice)) {
       throw new DashboardValidationError("Invalid POKT Market Price " + this.poktMarketPrice);
     }
+    
+    const result = (((((relaysPerDay / sessionsInADay) - stability) / pRate)) / baseRelayPerPOKT) * this.poktMarketPrice;
 
-    return (((((relaysPerDay / sessionsInADay) - stability) / pRate)) / baseRelayPerPOKT) * this.poktMarketPrice;
+    return result.toFixed(2);
   }
 }
