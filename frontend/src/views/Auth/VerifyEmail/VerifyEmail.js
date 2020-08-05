@@ -88,7 +88,7 @@ class VerifyEmail extends Component {
               </Col>
             </Row>
             <Row className="content justify-content-center">
-              <div id="main">
+              <div id="main" style={{padding: "40px"}}>
                 {resentEmail && (
                   <AppAlert
                     variant={alert.variant}
@@ -100,7 +100,7 @@ class VerifyEmail extends Component {
                   />
                 )}
                 <h1>
-                  We sent an email to this address <br />
+                  WE SENT AN EMAIL TO THIS ADDRESS <br />
                 </h1>
                 <h2 className="email-address mt-4">{email}</h2>
                 <p>
@@ -113,11 +113,10 @@ class VerifyEmail extends Component {
                 </p>
 
                 <p className="p-style-lg">
-                  Please check your junk folder. Be sure to mark it as not spam
-                  to avoid any problems with notifications from the Pocket
-                  Dashboard.
+                  Check your junk folder, be sure to mark it as not spam
+                  to avoid any problems with notifications from dashboard.
                 </p>
-                <p className="p-style-md">Did you not receive our email?</p>
+                <p className="p-style-md">Did you not receive it?</p>
                 <Button
                   className="button"
                   variant="primary"
@@ -130,12 +129,12 @@ class VerifyEmail extends Component {
             </Row>
           </>
         ) : (
-          <Row>
-            <Col>
-              <UnauthorizedAlert />
-            </Col>
-          </Row>
-        )}
+            <Row>
+              <Col>
+                <UnauthorizedAlert />
+              </Col>
+            </Row>
+          )}
       </Container>
     );
   }

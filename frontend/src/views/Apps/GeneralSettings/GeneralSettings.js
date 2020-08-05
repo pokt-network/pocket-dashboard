@@ -13,14 +13,78 @@ class GeneralSettings extends Component {
 
     this.state = {
       deleteModal: false,
-      chains: []
+      chains: [],
+      pocketApplication: {},
+      useragents: "",
+      origins: "",
+      secretKey: false
     };
+
+    this.addWhitelistUserAgents = this.addWhitelistUserAgents.bind(this);
+    this.addWhitelistOrigins = this.addWhitelistOrigins.bind(this);
+    this.toggleSecretKeyRequired = this.toggleSecretKeyRequired.bind(this);
+    this.handleOriginChange = this.handleOriginChange.bind(this);
+    this.handleUserChange = this.handleUserChange.bind(this);
+  }
+
+  async addWhitelistUserAgents() {
+    const data = this.state;
+    const application = this.state.pocketApplication;
+    const agents = data.useragents.split(',').map(function (item) {
+      return item.trim();
+    });
+
+    application.gatewaySettings.whiltelistUserAgents = agents
+
+    await ApplicationService.updateGatewaySettings(application);
+  }
+
+  async addWhitelistOrigins() {
+    const data = this.state;
+    const application = this.state.pocketApplication;
+    const origins = data.origins.split(',').map(function (item) {
+      return item.trim();
+    });
+
+    application.gatewaySettings.whiltelistOrigins = origins
+
+    await ApplicationService.updateGatewaySettings(application);
+  }
+
+  async toggleSecretKeyRequired(value) {
+    const data = this.state;
+    const application = this.state.pocketApplication;
+
+    application.gatewaySettings.secretKeyRequired = value
+
+    await ApplicationService.updateGatewaySettings(application);
+  }
+
+  handleOriginChange({currentTarget: input}) {
+    const data = {...this.state.data};
+
+    data[input.name] = input.value;
+    this.setState({
+      origins: data[input.name]
+    });
+  }
+
+  handleUserChange({currentTarget: input}) {
+    const data = {...this.state.data};
+
+    data[input.name] = input.value;
+    this.setState({
+      useragents: data[input.name]
+    });
+
+
   }
 
   async componentDidMount() {
     const {id} = this.props.match.params;
 
     const {
+      pocketApplication,
       networkData
     } = await ApplicationService.getClientApplication(id) || {};
 
@@ -28,6 +92,10 @@ class GeneralSettings extends Component {
 
     this.setState({
       chains,
+      pocketApplication,
+      secretKey: pocketApplication.gatewaySettings.secretKeyRequired,
+      useragents: pocketApplication.gatewaySettings.whiltelistUserAgents.join(),
+      origins: pocketApplication.gatewaySettings.whiltelistOrigins.join(),
     });
   }
 
@@ -35,7 +103,10 @@ class GeneralSettings extends Component {
 
     const {
       deleteModal,
-      chains
+      chains,
+      secretKey,
+      useragents,
+      origins
     } = this.state;
 
     const chainsDropdown = chains.map(function (chain) {
@@ -128,6 +199,11 @@ class GeneralSettings extends Component {
               <Form.Check
                 className="secret-checkbox"
                 type="checkbox"
+                checked={secretKey}
+                onChange={() => {
+                  this.setState({secretKey: !secretKey});
+                  this.toggleSecretKeyRequired(!secretKey);
+                }}
                 label={
                   <p>Required project secret for all requests</p>
                 }
@@ -144,34 +220,26 @@ class GeneralSettings extends Component {
                   <Row>
                     <Col sm="11" md="11" lg="11" className="pl-0">
                       <Form.Control
-                        name="whitelist"
+                        name="agents"
+                        value={useragents}
                         placeholder="Whitelist user agents"
+                        onChange={this.handleUserChange}
                       />
                     </Col>
                     <Col sm="1" md="1" lg="1" className="pr-0">
                       <Button
-                        variant="primary gray">
+                        variant="primary gray" onClick={this.addWhitelistUserAgents}>
                         <span>Add</span>
                       </Button>
                     </Col>
                   </Row>
                 </Form.Group>
-                <div className="mt-4">
-                  <Alert variant="light">https://mainnet.pocket.ifsiodhfsoifhiefwef/efwieoh8r13nno9e90-sdfsdf/008889f008309/e9a969144c864bd87a94
-                    <div className="exit-icon"><img src={"/assets/exit.png"} alt="exit-icon" /></div>
-                  </Alert>
-                </div>
-                <div className="mt-4">
-                  <Alert variant="light">https://mainnet.pocket.ifsiodhfsoifhiefwef/efwieoh8r13nno9e90-sdfsdf/008889f008309/e9a969144c864bd87a94
-                    <div className="exit-icon"><img src={"/assets/exit.png"} alt="exit-icon" /></div>
-                  </Alert>
-                </div>
               </Form>
             </Formik>
           </Col>
         </Row>
         <Row className="whitelist mt-3">
-          <Col sm="12" md="12" lg="12" className="pl-0">
+          <Col sm="12" md="12" lg="12" className="pl-0 pr-0">
             <Formik>
               <Form>
                 <Form.Group>
@@ -179,21 +247,20 @@ class GeneralSettings extends Component {
                   <Row>
                     <Col sm="11" md="11" lg="11" className="pl-0">
                       <Form.Control
-                        name="whitelist"
+                        name="origins"
+                        value={origins}
                         placeholder="Whitelist Origins"
+                        onChange={this.handleOriginChange}
                       />
                     </Col>
                     <Col sm="1" md="1" lg="1" className="pr-0">
                       <Button
-                        variant="primary gray">
+                        variant="primary gray" onClick={this.addWhitelistOrigins}>
                         <span>Add</span>
                       </Button>
                     </Col>
                   </Row>
                 </Form.Group>
-                <Alert variant="light">https://mainnet.pocket.ifsiodhfsoifhiefwef/efwieoh8r13nno9e90-sdfsdf/008889f008309/e9a969144c864bd87a94
-                  <div className="exit-icon"><img src={"/assets/exit.png"} alt="exit-icon" /></div>
-                </Alert>
               </Form>
             </Formik>
           </Col>
