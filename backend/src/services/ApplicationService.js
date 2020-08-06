@@ -20,6 +20,7 @@ import {ObjectID} from "mongodb";
 const crypto = require("crypto");
 
 const APPLICATION_COLLECTION_NAME = "Applications";
+const aws = require("aws-sdk");
 
 export default class ApplicationService extends BasePocketService {
 
@@ -468,6 +469,34 @@ export default class ApplicationService extends BasePocketService {
     // Set the free tier credentials.
     application.pocketApplication.freeTierApplicationAccount = new PrivatePocketAccount(appAccount.addressHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
     application.pocketApplication.freeTier = true;
+
+    // Backup Free Tier private keys to encrypted S3 bucket
+    const {
+      access_key_id: awsAccessKeyID,
+      secret_access_key: awsSecretAccessKey,
+      region: awsRegion, 
+      s3_fts_bucket: awsS3FTSBucket 
+    } = Configurations.aws;
+
+    const s3 = new aws.S3({
+      accessKeyId: awsAccessKeyID,
+      secretAccessKey: awsSecretAccessKey,
+      region: awsRegion
+    });
+
+    const s3UploadParams = {
+      Bucket: awsS3FTSBucket,
+      Key: appAccount.addressHex,
+      Body: JSON.stringify(application.pocketApplication.freeTierApplicationAccount),
+    };
+
+    try {
+      const s3Response = await s3.upload(s3UploadParams).promise();
+
+      console.log("Free Tier account backup: "+s3Response.Location);
+    } catch (err) {
+      console.log(err);
+    }
 
     // Generate app signed AAT for the free tier
     const aat = await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
