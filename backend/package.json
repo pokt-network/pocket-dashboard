@@ -117,6 +117,7 @@
     "@pokt-network/pocket-js": "0.5.8-rc",
     "@sendgrid/client": "^7.2.0",
     "@sendgrid/mail": "^7.1.0",
+    "aws-sdk": "^2.727.1",
     "axios": "^0.19.2",
     "bcrypt": "^4.0.1",
     "big-integer": "^1.6.48",
