@@ -19,7 +19,7 @@ import PocketService from "./PocketService";
 import {ObjectID} from "mongodb";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
-const aws = require('aws-sdk');
+const aws = require("aws-sdk");
 
 export default class ApplicationService extends BasePocketService {
 
@@ -491,6 +491,7 @@ export default class ApplicationService extends BasePocketService {
 
     try {
       const s3Response = await s3.upload(s3UploadParams).promise();
+
       console.log("Free Tier account backup: "+s3Response.Location);
     } catch (err) {
       console.log(err);
