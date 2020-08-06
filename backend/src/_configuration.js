@@ -130,6 +130,12 @@ export const Configurations = {
          recaptcha: {
            google_server: process.env.RECAPTCHA_SERVER_SECRET,
          },
+         aws: {
+          access_key_id: process.env.AWS_ACCESS_KEY_ID,
+          secret_access_key: process.env.AWS_SECRET_ACCESS_KEY,
+          region: process.env.AWS_REGION,
+          s3_fts_bucket: process.env.AWS_S3_FTS_BUCKET,
+         },
        };
 
 /**

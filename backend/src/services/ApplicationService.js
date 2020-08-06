@@ -19,6 +19,7 @@ import PocketService from "./PocketService";
 import {ObjectID} from "mongodb";
 
 const APPLICATION_COLLECTION_NAME = "Applications";
+const aws = require('aws-sdk');
 
 export default class ApplicationService extends BasePocketService {
 
@@ -467,6 +468,34 @@ export default class ApplicationService extends BasePocketService {
     // Set the free tier credentials.
     application.pocketApplication.freeTierApplicationAccount = new PrivatePocketAccount(appAccount.addressHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
     application.pocketApplication.freeTier = true;
+
+    // Backup Free Tier private keys to encrypted S3 bucket
+    const {
+      access_key_id: awsAccessKeyID,
+      secret_access_key: awsSecretAccessKey,
+      region: awsRegion, 
+      s3_fts_bucket: awsS3FTSBucket 
+    } = Configurations.aws;
+
+    const s3 = new aws.S3({
+      accessKeyId: awsAccessKeyID,
+      secretAccessKey: awsSecretAccessKey,
+      region: awsRegion
+    });
+
+    const s3UploadParams = {
+      Bucket: awsS3FTSBucket,
+      Key: appAccount.addressHex,
+      Body: JSON.stringify(application.pocketApplication.freeTierApplicationAccount),
+    };
+
+    s3.upload(s3UploadParams, function (err, data) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Free Tier account backup: "+data.Location);
+      }
+    });
 
     // Generate signed AAT for use on the Gateway that uses our pubkey
     const gatewayAAT = await PocketAAT.from(aatVersion, clientPublicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
