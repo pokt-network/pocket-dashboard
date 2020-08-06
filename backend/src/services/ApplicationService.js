@@ -489,13 +489,12 @@ export default class ApplicationService extends BasePocketService {
       Body: JSON.stringify(application.pocketApplication.freeTierApplicationAccount),
     };
 
-    s3.upload(s3UploadParams, function (err, data) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log("Free Tier account backup: "+data.Location);
-      }
-    });
+    try {
+      const s3Response = await s3.upload(s3UploadParams).promise();
+      console.log("Free Tier account backup: "+s3Response.Location);
+    } catch (err) {
+      console.log(err);
+    }
 
     // Generate signed AAT for use on the Gateway that uses our pubkey
     const gatewayAAT = await PocketAAT.from(aatVersion, clientPublicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
