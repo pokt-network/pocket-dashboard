@@ -57,7 +57,7 @@
         "error",
         "double"
       ],
-      "no-unused-vars": "error",
+      "no-unused-vars": "off",
       "eqeqeq": "error",
       "no-alert": "error",
       "curly": "error",
