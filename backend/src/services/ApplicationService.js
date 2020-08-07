@@ -499,7 +499,7 @@ export default class ApplicationService extends BasePocketService {
     }
 
     // Generate app signed AAT for the free tier
-    const aat = await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+    const freeTierAAT = await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
 
     // Generate signed AAT for use on the Gateway that uses our pubkey
     const gatewayAAT = await PocketAAT.from(aatVersion, clientPublicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
@@ -515,10 +515,10 @@ export default class ApplicationService extends BasePocketService {
 
       // Add the free tier aat
       application.pocketApplication.freeTierAAT = {
-        version: gatewayAAT.version,
-        clientPublicKey: gatewayAAT.clientPublicKey,
-        applicationPublicKey: gatewayAAT.applicationPublicKey,
-        applicationSignature: gatewayAAT.applicationSignature
+        version: freeTierAAT.version,
+        clientPublicKey: freeTierAAT.clientPublicKey,
+        applicationPublicKey: freeTierAAT.applicationPublicKey,
+        applicationSignature: freeTierAAT.applicationSignature
       };
 
       await this.__updatePersistedApplication(application.pocketApplication);
