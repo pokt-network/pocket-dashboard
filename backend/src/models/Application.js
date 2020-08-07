@@ -41,29 +41,38 @@ export class PocketApplication {
    * @param {string} [icon] Icon.
    * @param {boolean} [updatingStatus] If is on staking status.
    * @param {boolean} [freeTier] If is on free tier or not.
-   * @param {string} freeTierAppAddress Internal application address for free tier accounts.
-   * @param {object} freeTierPrivateApp Internal private app object.
-   * @param {object} aat PocketAAT used for Gateway access, signed by our client pub key
+   * @param {string} publicPocketAccount Public pocket account information.
+   * @param {object} freeTierApplicationAccount Internal private app object.
+   * @param {object} freeTierAAT Internal private app object.
+   * @param {object} gatewayAAT PocketAAT used for Gateway access, signed by our client pub key
    * @param {object} gatewaySettings Whitelists and keys and settings for the Gateway
    */
-  constructor(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, freeTierAppAddress, freeTierPrivateApp, aat, gatewaySettings) {
+  constructor(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings) {
     Object.assign(this, {name, owner, url, contactEmail, user, description, icon});
 
     this.id = "";
-    this.publicPocketAccount = new PublicPocketAccount("", "");
+    this.publicPocketAccount = publicPocketAccount !== undefined ? publicPocketAccount : new PublicPocketAccount("", "");
+    this.freeTierApplicationAccount = freeTierApplicationAccount !== undefined ? new PrivatePocketAccount(freeTierApplicationAccount.address, freeTierApplicationAccount.publicKey, freeTierApplicationAccount.privateKey) : new PrivatePocketAccount("", "", "");
     this.freeTier = freeTier || false;
     this.updatingStatus = updatingStatus || false;
-    if (freeTierPrivateApp) {
-      this.freeTierApplicationAccount = new PrivatePocketAccount(freeTierPrivateApp.address, freeTierPrivateApp.publicKey, freeTierPrivateApp.privateKey);
-    } else {
-      this.freeTierApplicationAccount = new PrivatePocketAccount(freeTierAppAddress, "", "");
-    }
-    this.aat = aat || {
+
+    // Free tier AAT
+    this.freeTierAAT = freeTierAAT || {
       version: "",
       clientPubKey: "",
       applicationPublicKey: "",
       applicationSignature: ""
     };
+
+    // Gateway AAT
+    this.gatewayAAT = gatewayAAT || {
+      version: "",
+      clientPubKey: "",
+      applicationPublicKey: "",
+      applicationSignature: ""
+    };
+
+    // Gateway Settings
     this.gatewaySettings = gatewaySettings || {
       secretKey: crypto.randomBytes(16).toString("hex"),
       secretKeyRequired: false,
@@ -134,7 +143,9 @@ export class PocketApplication {
    * @param {string} [applicationData.icon] Icon.
    * @param {boolean} [applicationData.freeTier] Free tier status.
    * @param {PublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
-   * @param {object} [applicationData.aat] Gateway PocketAAT
+   * @param {object} [applicationData.freeTierApplicationAccount] Internal private app object.
+   * @param {object} [applicationData.freeTierAAT] Free tier PocketAAT
+   * @param {object} [applicationData.gatewayAAT] Gateway PocketAAT
    * @param {object} [applicationData.gatewaySettings] Gateway settings for whitelists and security
    * @param {string} [applicationData._id] Application ID.
    *
@@ -142,21 +153,53 @@ export class PocketApplication {
    * @static
    */
   static createPocketApplication(applicationData) {
-    const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount, freeTier, updatingStatus, aat, gatewaySettings} = applicationData;
-    let {freeTierApplicationAccount} = applicationData;
+    const {name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings} = applicationData;
 
-    if (freeTierApplicationAccount === undefined) {
-      freeTierApplicationAccount = {address: ""};
-    }
-
-    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, freeTierApplicationAccount.address, undefined, aat, gatewaySettings);
+    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings);
 
     pocketApplication.id = applicationData._id ?? "";
-    pocketApplication.publicPocketAccount = publicPocketAccount ?? new PublicPocketAccount("", "");
 
     return pocketApplication;
   }
 
+  /**
+   * Convenient Factory method to create a Pocket Public application.
+   * NOTE: This function is only used to return the application information to the user for read only purposes.
+   *
+   * @param {object} applicationData Application to create.
+   * @param {string} applicationData.name Name.
+   * @param {string} applicationData.owner Owner.
+   * @param {string} applicationData.url URL.
+   * @param {string} applicationData.contactEmail E-mail.
+   * @param {string} applicationData.user User.
+   * @param {string} [applicationData.description] Description.
+   * @param {string} [applicationData.icon] Icon.
+   * @param {boolean} [applicationData.freeTier] Free tier status.
+   * @param {PublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
+   * @param {object} [applicationData.freeTierApplicationAccount] Internal private app object.
+   * @param {object} [applicationData.freeTierAAT] Free tier PocketAAT
+   * @param {object} [applicationData.gatewayAAT] Gateway PocketAAT
+   * @param {object} [applicationData.gatewaySettings] Gateway settings for whitelists and security
+   * @param {string} [applicationData._id] Application ID.
+   *
+   * @returns {PocketApplication} A new Pocket application.
+   * @static
+   */
+  static createPublicPocketApplication(applicationData) {
+    const {name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings} = applicationData;
+
+    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings);
+    
+    // Clean sensitive data before returning the PocketApplication object
+    pocketApplication.freeTierApplicationAccount.publicKey = "";
+    pocketApplication.freeTierApplicationAccount.privateKey = "";
+    pocketApplication.id = applicationData._id ?? "";
+    // Remove gateway aat
+    pocketApplication.gatewayAAT = "";
+
+    return pocketApplication;
+  }
+  
   /**
    * Convenient Factory method to create a Pocket Private application.
    *
@@ -170,7 +213,8 @@ export class PocketApplication {
    * @param {string} [applicationData.icon] Icon.
    * @param {boolean} [applicationData.freeTier] Free tier status.
    * @param {PublicPocketAccount} [applicationData.publicPocketAccount] Public account data.
-   * @param {object} [applicationData.aat] Gateway PocketAAT
+   * @param {object} [applicationData.freeTierAAT] Free tier PocketAAT
+   * @param {object} [applicationData.gatewayAAT] Gateway PocketAAT
    * @param {object} [applicationData.gatewaySettings] Gateway settings for whitelists and security
    * @param {string} [applicationData._id] Application ID.
    *
@@ -178,11 +222,10 @@ export class PocketApplication {
    * @static
    */
   static createPocketPrivateApplication(applicationData) {
-    const {name, owner, url, contactEmail, user, description, icon, publicPocketAccount, updatingStatus, freeTier, freeTierApplicationAccount, aat, gatewaySettings} = applicationData;
-    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, freeTierApplicationAccount.address, freeTierApplicationAccount, aat, gatewaySettings);
+    const {name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings} = applicationData;
+    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings);
 
     pocketApplication.id = applicationData._id ?? "";
-    pocketApplication.publicPocketAccount = publicPocketAccount ?? new PublicPocketAccount("", "");
 
     return pocketApplication;
   }

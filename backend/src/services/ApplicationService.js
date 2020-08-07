@@ -17,6 +17,7 @@ import {Configurations} from "../_configuration";
 import {POKT_DENOMINATIONS} from "./PocketService";
 import PocketService from "./PocketService";
 import {ObjectID} from "mongodb";
+const crypto = require("crypto");
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 const aws = require("aws-sdk");
@@ -223,7 +224,7 @@ export default class ApplicationService extends BasePocketService {
     const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
     if (applicationDB) {
-      const application = PocketApplication.createPocketApplication(applicationDB);
+      const application = PocketApplication.createPublicPocketApplication(applicationDB);
 
       return this.__getExtendedPocketClientApplication(application);
     }
@@ -370,15 +371,15 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Get AAT using Free tier account.
    *
-   * @param {string} clientAccountAddress The client account address(In this case is the account of application).
+   * @param {string} applicationId The application Identifier.
    *
    * @returns {Promise<PocketAAT | boolean>} AAT for application.
    * @async
    */
-  async getFreeTierAAT(clientAccountAddress) {
+  async getFreeTierAAT(applicationId) {
 
     const filter = {
-      "publicPocketAccount.address": clientAccountAddress
+      "_id": ObjectID(applicationId)
     };
 
     const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
@@ -426,7 +427,7 @@ export default class ApplicationService extends BasePocketService {
     }
 
     // Generate a passphrase for the app account
-    const passphrase = Math.floor(Math.random() * 9999999999999).toString(16);
+    const passphrase = crypto.randomBytes(16).toString("hex");
 
     // Create Application credentials.
     const appAccount = await this.pocketService.createUnlockedAccount(passphrase);
@@ -497,29 +498,36 @@ export default class ApplicationService extends BasePocketService {
       console.log(err);
     }
 
+    // Generate app signed AAT for the free tier
+    const freeTierAAT = await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+
     // Generate signed AAT for use on the Gateway that uses our pubkey
     const gatewayAAT = await PocketAAT.from(aatVersion, clientPublicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
 
-    if (typeGuard(gatewayAAT, PocketAAT)) {
-      application.pocketApplication.aat = {
+    if (typeGuard(gatewayAAT, PocketAAT) && typeGuard(freeTierAAT, PocketAAT)) {
+      // Add the gateway aat
+      application.pocketApplication.gatewayAAT = {
         version: gatewayAAT.version,
         clientPublicKey: gatewayAAT.clientPublicKey,
         applicationPublicKey: gatewayAAT.applicationPublicKey,
         applicationSignature: gatewayAAT.applicationSignature
       };
+
+      // Add the free tier aat
+      application.pocketApplication.freeTierAAT = {
+        version: freeTierAAT.version,
+        clientPublicKey: freeTierAAT.clientPublicKey,
+        applicationPublicKey: freeTierAAT.applicationPublicKey,
+        applicationSignature: freeTierAAT.applicationSignature
+      };
+
       await this.__updatePersistedApplication(application.pocketApplication);
+
+      return freeTierAAT;
     } else {
-      throw new Error("Failed to generate the gateway AAT.");
+      throw new Error("Failed to generate AAT information.");
     }
 
-    // Generate app signed AAT for their use
-    const aat = await PocketAAT.from(aatVersion, appAccountPublicKeyHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
-
-    if (typeGuard(aat, PocketAAT)) {
-      return aat;
-    } else {
-      throw new Error("Failed to generate the app AAT.");
-    }
   }
 
   /**
@@ -537,7 +545,7 @@ export default class ApplicationService extends BasePocketService {
     const freeTierApplicationAccount = application.pocketApplication.freeTierApplicationAccount;
 
     // Generate a passphrase for the app account
-    const passphrase = Math.floor(Math.random() * 9999999999999).toString(16);
+    const passphrase = crypto.randomBytes(16).toString("hex");
 
     // Import the application to the keybase
     const pocketAccount = await this.pocketService.importAccountFromPrivateKey(freeTierApplicationAccount.privateKey, passphrase);
@@ -608,7 +616,7 @@ export default class ApplicationService extends BasePocketService {
 
     application.pocketApplication.updatingStatus = true;
 
-    application.pocketApplication.aat = {
+    application.pocketApplication.gatewayAAT = {
       version: aatVersion,
       clientPublicKey: clientPublicKey,
       applicationPublicKey: application.pocketApplication.publicPocketAccount.publicKey,
