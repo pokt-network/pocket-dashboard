@@ -17,7 +17,12 @@ import {Configurations} from "../_configuration";
 import {POKT_DENOMINATIONS} from "./PocketService";
 import PocketService from "./PocketService";
 import {ObjectID} from "mongodb";
+import {Encryptor, Decryptor} from "strong-cryptor";
+
 const crypto = require("crypto");
+const cryptoKey = Configurations.persistence.default.db_encryption_key;
+const encryptor = new Encryptor({key: cryptoKey});
+const decryptor = new Decryptor({key: cryptoKey});
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 const aws = require("aws-sdk");
@@ -33,6 +38,36 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
+   * Encrypt necessary application fields before persisting
+   * 
+   * @param {PocketApplication} application Application to encrypt necessary fields
+   */
+  async __encryptApplicationFields(application) {
+    if (application.freeTierApplicationAccount && application.freeTierApplicationAccount.privateKey && application.freeTierApplicationAccount.privateKey.length === 128) {
+      application.freeTierApplicationAccount.privateKey = encryptor.encrypt(application.freeTierApplicationAccount.privateKey);
+    }
+    if (application.gatewaySettings && application.gatewaySettings.secretKey && application.gatewaySettings.secretKey === 32) {
+      application.gatewaySettings.secretKey = encryptor.encrypt(application.gatewaySettings.secretKey);
+    }
+    return application;
+  }
+
+  /**
+   * Decrypt application fields before persisting
+   * 
+   * @param {PocketApplication} application Application to decrypt necessary fields
+   */
+  async __decryptApplicationFields(application) {
+    if (application.freeTierApplicationAccount && application.freeTierApplicationAccount.privateKey && application.freeTierApplicationAccount.privateKey.length !== 128) {
+      application.freeTierApplicationAccount.privateKey = decryptor.decrypt(application.freeTierApplicationAccount.privateKey);
+    }
+    if (application.gatewaySettings && application.gatewaySettings.secretKey && application.gatewaySettings.secretKey !== 32) {
+      application.gatewaySettings.secretKey = decryptor.decrypt(application.gatewaySettings.secretKey);
+    }
+    return application;
+  }
+
+  /**
    * Persist application on db if not exists.
    *
    * @param {PocketApplication} application Application to persist.
@@ -44,7 +79,8 @@ export default class ApplicationService extends BasePocketService {
   async __persistApplicationIfNotExists(application) {
     if (!await this.applicationExists(application)) {
       /** @type {{insertedId: string, result: {n:number, ok: number}}} */
-      const result = await this.persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, application);
+      const applicationEncrypted = await this.__encryptApplicationFields(application);
+      const result = await this.persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, applicationEncrypted);
 
       return result.result.ok === 1 ? result.insertedId : "0";
     }
@@ -69,7 +105,8 @@ export default class ApplicationService extends BasePocketService {
       };
 
       /** @type {{result: {n:number, ok: number}}} */
-      const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
+      const applicationEncrypted = await this.__encryptApplicationFields(application);
+      const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, applicationEncrypted);
 
       return result.result.ok === 1;
     }
@@ -81,15 +118,16 @@ export default class ApplicationService extends BasePocketService {
    * Update application on db by ID.
    *
    * @param {string} applicationID Application ID.
-   * @param {PocketApplication} applicationData Application data.
+   * @param {PocketApplication} application Application to update
    *
    * @returns {Promise<boolean>} If application was updated or not.
    * @private
    * @async
    */
-  async __updateApplicationByID(applicationID, applicationData) {
+  async __updateApplicationByID(applicationID, application) {
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.updateEntityByID(APPLICATION_COLLECTION_NAME, applicationID, applicationData);
+    const applicationEncrypted = await this.__encryptApplicationFields(application);
+    const result = await this.persistenceService.updateEntityByID(APPLICATION_COLLECTION_NAME, applicationID, applicationEncrypted);
 
     return result.result.ok === 1;
   }
@@ -107,7 +145,7 @@ export default class ApplicationService extends BasePocketService {
     const appParameters = await this.pocketService.getApplicationParameters();
 
     try {
-      networkApplication = await this.pocketService.getApplication(application.publicPocketAccount.address);
+      networkApplication = await this.__decryptApplicationFields(this.pocketService.getApplication(application.publicPocketAccount.address));
     } catch (e) {
       networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
     }
@@ -130,7 +168,7 @@ export default class ApplicationService extends BasePocketService {
     const address = application.freeTierApplicationAccount.address || application.publicPocketAccount.address;
 
     try {
-      networkApplication = await this.pocketService.getApplication(address);
+      networkApplication = await this.__decryptApplicationFields(this.pocketService.getApplication(address));
     } catch (e) {
       networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
     }
@@ -154,7 +192,8 @@ export default class ApplicationService extends BasePocketService {
 
     application.freeTier = freeTier;
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, application);
+    const applicationEncrypted = await this.__encryptApplicationFields(application);
+    const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, applicationEncrypted);
 
     return result.result.ok === 1;
   }
@@ -195,7 +234,7 @@ export default class ApplicationService extends BasePocketService {
       "publicPocketAccount.address": applicationAddress
     };
 
-    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
 
     if (applicationDB) {
       throw new DashboardValidationError("Application already exists in dashboard");
@@ -221,7 +260,7 @@ export default class ApplicationService extends BasePocketService {
       "_id": ObjectID(applicationId)
     };
 
-    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
 
     if (applicationDB) {
       const application = PocketApplication.createPublicPocketApplication(applicationDB);
@@ -246,7 +285,7 @@ export default class ApplicationService extends BasePocketService {
       "publicPocketAccount.address": applicationAddress
     };
 
-    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
 
     if (applicationDB) {
       const application = PocketApplication.createPocketApplication(applicationDB);
@@ -270,7 +309,7 @@ export default class ApplicationService extends BasePocketService {
       "_id": ObjectID(applicationId)
     };
 
-    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
 
     if (applicationDB) {
       const application = PocketApplication.createPocketPrivateApplication(applicationDB);
@@ -321,7 +360,7 @@ export default class ApplicationService extends BasePocketService {
   async getUserApplications(userEmail, limit, offset = 0) {
     const filter = {user: userEmail};
 
-    const dashboardApplicationData = (await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset))
+    const dashboardApplicationData = (await this.__decryptApplicationFields(await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset)))
       .map(PocketApplication.createPocketApplication)
       .map(app => {
         return {
@@ -382,7 +421,7 @@ export default class ApplicationService extends BasePocketService {
       "_id": ObjectID(applicationId)
     };
 
-    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
 
     if (!applicationDB) {
       return false;
@@ -713,7 +752,7 @@ export default class ApplicationService extends BasePocketService {
    */
   async saveApplicationAccount(applicationID, accountData) {
 
-    const applicationDB = await this.persistenceService.getEntityByID(APPLICATION_COLLECTION_NAME, applicationID);
+    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByID(APPLICATION_COLLECTION_NAME, applicationID));
 
     if (!applicationDB) {
       throw new Error("Application does not exists");
@@ -743,7 +782,7 @@ export default class ApplicationService extends BasePocketService {
       user
     };
 
-    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
 
     if (applicationDB.freeTier === false) {
       await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
@@ -782,7 +821,7 @@ export default class ApplicationService extends BasePocketService {
         "_id": ObjectID(applicationId)
       };
 
-      const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+      const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
 
       if (!applicationDB) {
         throw new DashboardError("Application does not exists");

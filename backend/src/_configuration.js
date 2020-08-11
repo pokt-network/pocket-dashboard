@@ -72,6 +72,7 @@ export const Configurations = {
            default: {
              url: process.env.DATABASE_URL,
              db_name: process.env.DATABASE_NAME,
+             db_encryption_key: process.env.DATABASE_ENCRYPTION_KEY,
              options: {
                useUnifiedTopology: true,
              },
@@ -79,6 +80,7 @@ export const Configurations = {
            test: {
              url: "mongodb://localhost:27017",
              db_name: "pocket_dashboard_test",
+             db_encryption_key: process.env.DATABASE_ENCRYPTION_KEY,
              options: {
                useUnifiedTopology: true,
              },

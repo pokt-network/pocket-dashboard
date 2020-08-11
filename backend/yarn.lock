@@ -7414,6 +7414,11 @@ stripe@^8.33.0:
     "@types/node" ">=8.1.0"
     qs "^6.6.0"
 
+strong-cryptor@^2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/strong-cryptor/-/strong-cryptor-2.2.0.tgz#232a3ec7dace2b08794c06e49778f4544dfd1092"
+  integrity sha512-Vz8mKsb1w4t2p8GuVtDoCpr7UA2BIylLiQC7Zg9y6Iy1VB8hdwauaoQHad8H7c0OYmgdjCnc5h0OG3RZynxQsQ==
+
 subarg@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/subarg/-/subarg-1.0.0.tgz#f62cf17581e996b48fc965699f54c06ae268b8d2"
