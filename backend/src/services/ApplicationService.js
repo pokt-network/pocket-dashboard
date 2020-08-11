@@ -79,7 +79,8 @@ export default class ApplicationService extends BasePocketService {
   async __persistApplicationIfNotExists(application) {
     if (!await this.applicationExists(application)) {
       /** @type {{insertedId: string, result: {n:number, ok: number}}} */
-      const result = await this.persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, await this.__encryptApplicationFields(application));
+      const applicationEncrypted = await this.__encryptApplicationFields(application);
+      const result = await this.persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, applicationEncrypted);
 
       return result.result.ok === 1 ? result.insertedId : "0";
     }
@@ -104,7 +105,8 @@ export default class ApplicationService extends BasePocketService {
       };
 
       /** @type {{result: {n:number, ok: number}}} */
-      const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, await this.__encryptApplicationFields(application));
+      const applicationEncrypted = await this.__encryptApplicationFields(application);
+      const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, applicationEncrypted);
 
       return result.result.ok === 1;
     }
@@ -124,7 +126,8 @@ export default class ApplicationService extends BasePocketService {
    */
   async __updateApplicationByID(applicationID, application) {
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.updateEntityByID(APPLICATION_COLLECTION_NAME, applicationID, await this.__encryptApplicationFields(application));
+    const applicationEncrypted = await this.__encryptApplicationFields(application);
+    const result = await this.persistenceService.updateEntityByID(APPLICATION_COLLECTION_NAME, applicationID, applicationEncrypted);
 
     return result.result.ok === 1;
   }
@@ -189,7 +192,8 @@ export default class ApplicationService extends BasePocketService {
 
     application.freeTier = freeTier;
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, await this.__encryptApplicationFields(application));
+    const applicationEncrypted = await this.__encryptApplicationFields(application);
+    const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, applicationEncrypted);
 
     return result.result.ok === 1;
   }
