@@ -814,7 +814,7 @@ export default class ApplicationService extends BasePocketService {
 
     if (PocketApplication.validate(applicationData)) {
       if (!await this.userService.userExists(applicationData.user)) {
-        throw new DashboardError("User does not exists");
+        throw new DashboardError("User does not exist");
       }
 
       const filter = {
@@ -824,7 +824,7 @@ export default class ApplicationService extends BasePocketService {
       const application = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
 
       if (!application) {
-        throw new DashboardError("Application does not exists");
+        throw new DashboardError("Application does not exist");
       }
 
       const applicationToEdit = application;
@@ -836,7 +836,6 @@ export default class ApplicationService extends BasePocketService {
       applicationToEdit.owner = application.owner;
       applicationToEdit.url = application.url;
       applicationToEdit.icon = application.icon;
-      applicationToEdit.user = application.user;
       applicationToEdit.id = application._id;
 
       return this.__updatePersistedApplication(applicationToEdit);
