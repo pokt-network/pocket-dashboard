@@ -58,10 +58,10 @@ export default class ApplicationService extends BasePocketService {
    * @param {PocketApplication} application Application to decrypt necessary fields
    */
   async __decryptApplicationFields(application) {
-    if (application.freeTierApplicationAccount && application.freeTierApplicationAccount.privateKey && application.freeTierApplicationAccount.privateKey.length !== 128) {
+    if (application.freeTierApplicationAccount && application.freeTierApplicationAccount.privateKey && application.freeTierApplicationAccount.privateKey.length > 128) {
       application.freeTierApplicationAccount.privateKey = decryptor.decrypt(application.freeTierApplicationAccount.privateKey);
     }
-    if (application.gatewaySettings && application.gatewaySettings.secretKey && application.gatewaySettings.secretKey !== 32) {
+    if (application.gatewaySettings && application.gatewaySettings.secretKey && application.gatewaySettings.secretKey > 32) {
       application.gatewaySettings.secretKey = decryptor.decrypt(application.gatewaySettings.secretKey);
     }
     return application;
