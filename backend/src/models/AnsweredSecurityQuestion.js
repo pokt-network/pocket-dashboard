@@ -1,5 +1,3 @@
-import {PocketUser} from "./User";
-
 export class AnsweredSecurityQuestion {
 
   /**

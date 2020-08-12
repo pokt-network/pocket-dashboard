@@ -95,7 +95,7 @@ class AppDetail extends Component {
       return;
     }
 
-    const clientAddress = pocketApplication.publicPocketAccount.address;
+    const clientAddress = pocketApplication.freeTierApplicationAccount.address !== "" && pocketApplication.freeTierApplicationAccount.address !== undefined ? pocketApplication.freeTierApplicationAccount.address : pocketApplication.publicPocketAccount.address;
     let accountBalance;
 
     if (clientAddress) {
@@ -108,18 +108,10 @@ class AppDetail extends Component {
 
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
-    const {freeTier} = pocketApplication;
+    const {freeTier, freeTierAAT} = pocketApplication;
 
-    let aat;
-
-    if (freeTier) {
-      const {success, data} = await ApplicationService.getFreeTierAppAAT(
-        clientAddress);
-
-      if (success) {
-        aat = data;
-      }
-    }
+    const status = getStakeStatus(parseInt(networkData.status));
+    const updatingAlert = pocketApplication.updatingStatus && status === STAKE_STATUS.Unstaked;
 
     const status = getStakeStatus(parseInt(networkData.status));
     const updatingAlert = pocketApplication.updatingStatus && status === STAKE_STATUS.Unstaked;
@@ -129,7 +121,7 @@ class AppDetail extends Component {
       pocketApplication,
       networkData,
       chains,
-      aat,
+      aat: freeTierAAT,
       accountBalance,
       isFreeTier: freeTier,
       freeTierMsg,
