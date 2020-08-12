@@ -828,6 +828,7 @@ export default class ApplicationService extends BasePocketService {
       }
 
       const applicationToEdit = application;
+
       // Update the new fields
       applicationToEdit.name = application.name;
       applicationToEdit.contactEmail = application.contactEmail;
