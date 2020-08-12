@@ -39,7 +39,7 @@ export default class ApplicationService extends BasePocketService {
 
   /**
    * Encrypt necessary application fields before persisting
-   * 
+   *
    * @param {PocketApplication} application Application to encrypt necessary fields
    */
   async __encryptApplicationFields(application) {
@@ -54,7 +54,7 @@ export default class ApplicationService extends BasePocketService {
 
   /**
    * Decrypt application fields before persisting
-   * 
+   *
    * @param {PocketApplication} application Application to decrypt necessary fields
    */
   async __decryptApplicationFields(application) {
@@ -513,8 +513,8 @@ export default class ApplicationService extends BasePocketService {
     const {
       access_key_id: awsAccessKeyID,
       secret_access_key: awsSecretAccessKey,
-      region: awsRegion, 
-      s3_fts_bucket: awsS3FTSBucket 
+      region: awsRegion,
+      s3_fts_bucket: awsS3FTSBucket
     } = Configurations.aws;
 
     const s3 = new aws.S3({
@@ -811,28 +811,32 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async updateApplication(applicationId, applicationData) {
+
     if (PocketApplication.validate(applicationData)) {
       if (!await this.userService.userExists(applicationData.user)) {
         throw new DashboardError("User does not exists");
       }
 
-      const application = PocketApplication.createPocketApplication(applicationData);
       const filter = {
         "_id": ObjectID(applicationId)
       };
 
-      const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
+      const application = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
 
-      if (!applicationDB) {
+      if (!application) {
         throw new DashboardError("Application does not exists");
       }
 
-      const applicationToEdit = {
-        ...application,
-        publicPocketAccount: applicationDB.publicPocketAccount
-      };
-
-      applicationToEdit.id = applicationId;
+      const applicationToEdit = application;
+      // Update the new fields
+      applicationToEdit.name = application.name;
+      applicationToEdit.contactEmail = application.contactEmail;
+      applicationToEdit.description = application.description;
+      applicationToEdit.owner = application.owner;
+      applicationToEdit.url = application.url;
+      applicationToEdit.icon = application.icon;
+      applicationToEdit.user = application.user;
+      applicationToEdit.id = application._id;
 
       return this.__updatePersistedApplication(applicationToEdit);
     }
