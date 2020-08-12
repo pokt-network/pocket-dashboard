@@ -113,6 +113,10 @@ class AppDetail extends Component {
     const status = getStakeStatus(parseInt(networkData.status));
     const updatingAlert = pocketApplication.updatingStatus && status === STAKE_STATUS.Unstaked;
 
+    const status = getStakeStatus(parseInt(networkData.status));
+    const updatingAlert = pocketApplication.updatingStatus && status === STAKE_STATUS.Unstaked;
+
+
     this.setState({
       pocketApplication,
       networkData,
