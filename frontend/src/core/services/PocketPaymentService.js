@@ -173,10 +173,10 @@ class PocketPaymentService extends PocketBaseService {
    */
   async createNewPaymentIntent(type, item, currency, amount, tokens) {
     let convertedAmount = amount * 100;
-    let paymentType = 'card';
+    let paymentType = "card";
 
     if (amount === 0) {
-      paymentType = 'token';
+      paymentType = "token";
     }
 
     const user = PocketUserService.getUserInfo().email;

@@ -156,6 +156,7 @@ class SelectValidatorPower extends Purchase {
       if (total === 0) {
         const user = UserService.getUserInfo().email;
 
+        // eslint-disable-next-line react/prop-types
         this.props.history.replace({
           pathname: _getDashboardPath(DASHBOARD_PATHS.invoice),
           state: {

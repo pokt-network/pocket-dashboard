@@ -18,6 +18,7 @@ import PocketAccountService from "../../../core/services/PocketAccountService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {isNaN} from "formik";
 import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
+import UserService from "../../../core/services/PocketUserService";
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -192,6 +193,7 @@ class SelectRelays extends Component {
       if (total === 0) {
         const user = UserService.getUserInfo().email;
 
+        // eslint-disable-next-line react/prop-types
         this.props.history.replace({
           pathname: _getDashboardPath(DASHBOARD_PATHS.invoice),
           state: {
@@ -202,8 +204,8 @@ class SelectRelays extends Component {
               method: "POKT Tokens"
             },
             details: [
-              {value: selected, text: PURCHASE_ITEM_NAME.NODES, format: false},
-              {value: subTotalAmount, text: `${PURCHASE_ITEM_NAME.NODES} cost`, format: true},
+              {value: relaysSelected, text: PURCHASE_ITEM_NAME.APPS, format: false},
+              {value: subTotalAmount, text: `${PURCHASE_ITEM_NAME.APPS} cost`, format: true},
             ],
             total,
             currentAccountBalance,
