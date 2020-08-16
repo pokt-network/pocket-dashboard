@@ -72,6 +72,7 @@ export const Configurations = {
            default: {
              url: process.env.DATABASE_URL,
              db_name: process.env.DATABASE_NAME,
+             db_encryption_key: process.env.DATABASE_ENCRYPTION_KEY,
              options: {
                useUnifiedTopology: true,
              },
@@ -79,6 +80,7 @@ export const Configurations = {
            test: {
              url: "mongodb://localhost:27017",
              db_name: "pocket_dashboard_test",
+             db_encryption_key: process.env.DATABASE_ENCRYPTION_KEY,
              options: {
                useUnifiedTopology: true,
              },
@@ -129,6 +131,12 @@ export const Configurations = {
          },
          recaptcha: {
            google_server: process.env.RECAPTCHA_SERVER_SECRET,
+         },
+         aws: {
+          access_key_id: process.env.AWS_ACCESS_KEY_ID,
+          secret_access_key: process.env.AWS_SECRET_ACCESS_KEY,
+          region: process.env.AWS_REGION,
+          s3_fts_bucket: process.env.AWS_S3_FTS_BUCKET,
          },
        };
 
