@@ -68,6 +68,28 @@ Scenario: Registered Nodes verification
     ]
     And each {name}, {address}, {status} matches the information displayed in the UI.
 
+Scenario: Registered Nodes verification - pocket CLI side
+    Given that the user is in the Pocket Dashboard and has the Pocket Core CLI running locally. Example: 
+    |https://dashboard.testnet.pokt.network/dashboard| pocket start - in testnet/mainnet | 
+    When the page is fully loaded.
+    And the pocket CLI is synced at the current network's height.
+    Then find the Registered Nodes table.
+    And pick one node address.
+    And execute via terminal, the following CLI command: "pocket query node <address>"
+    Then response should be accurate and matching the information in the table, with status and node address matching. Example:
+    {
+        "address": "5bfe661adc7bd1ccc637c83ecf5eb3594ae3bed0",
+        "chains": [
+            "0002"
+        ],
+        "jailed": true,
+        "public_key": "1a536e47a17ea2d41e4233884bb41cc8b181c0c686e8278c0d47547f2c97db0c",
+        "service_url": "https://pocket1.pathrocknetwork.org:8082",
+        "status": 2,
+        "tokens": "199999400002",
+        "unstaking_time": "0001-01-01T00:00:00Z"
+    }
+
 Scenario: Registered Apps visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
