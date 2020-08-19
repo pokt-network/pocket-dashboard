@@ -11,7 +11,7 @@ Scenario: Network main information verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
-    And the descripbed main network information is present.
+    And the described main network information is present.
     Then execute the following GET call: Example: 
     |https://api-testnet.dashboard.pokt.network:4200/api/network/summary|
     And receive the following response, that should have all of the information displayed in the UI:
@@ -28,7 +28,7 @@ Scenario: Registered Nodes visual verification
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
     Then make sure to check the Registered Nodes list, being present.
-    And scroll all the way doen the list.
+    And scroll all the way down the list.
     And notice that the Address, Name and status information are present. Example: 
     | 6925c38c9303a7a1864e9dfcc85b86f9c150519a | N/A | Staked|
 
@@ -95,7 +95,7 @@ Scenario: Registered Apps visual verification
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
     Then make sure to check the Registered Apps list, being present.
-    And scroll all the way doen the list.
+    And scroll all the way down the list.
     And notice that the Address, Name and status information are present. Example: 
     | 6925c38c9303a7a1864e9dfcc85b86f9c150519a | N/A | Staked|
 
@@ -120,7 +120,7 @@ Scenario: Supported Blockchains visual verification
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
     Then make sure to check the Supported Blockchains list, being present.
-    And scroll all the way doen the list.
+    And scroll all the way down the list.
     And notice that the Network, Network ID, Hash, Description, Ticket and Index information are present. Example: 
     | POKT-mainnet | mainnet | 0001|   | POKT | 1 |
 
@@ -1210,7 +1210,7 @@ Scenario: Most Popular Chains visual verification
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
     Then make sure to check the Most Popular Chains list, being present.
-    And scroll all the way doen the list.
+    And scroll all the way down the list.
     And notice that the Network, Network ID, Hash, Description, Ticket and Index information are present. Example: 
     | POKT-mainnet | mainnet | 0001|   | POKT | 1 |
 
