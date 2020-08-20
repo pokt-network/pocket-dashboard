@@ -21,6 +21,15 @@ app.use(webpackDevMiddleware(webPackCompiler, {
   publicPath: webPackConfig.output.publicPath
 }));
 
+//
+app.use(function(req, res, next) {
+  if (!req.headers.authorization) {
+    return res.status(403).json({ error: 'No authorization header is present!' });
+  }
+
+  next();
+});
+
 const PORT = process.env.PORT || 4200;
 
 app.listen(PORT, () => {
