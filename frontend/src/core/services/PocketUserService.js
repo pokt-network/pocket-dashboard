@@ -1,7 +1,8 @@
 import PocketBaseService from "./PocketBaseService";
 import SecureLS from "secure-ls";
-import axios from "axios";
 import {Configurations} from "../../_configuration";
+import axiosInstance from "./_serviceHelper";
+const axios = axiosInstance();
 
 export const AUTH_PROVIDERS = {
   email: "email",
@@ -13,7 +14,6 @@ class PocketUserService extends PocketBaseService {
 
   constructor() {
     super("api/users");
-
     this.ls = new SecureLS(Configurations.secureLS);
   }
 
@@ -21,15 +21,17 @@ class PocketUserService extends PocketBaseService {
    * Save user data in local storage.
    *
    * @param {{username:string,email:string,provider:string}} user Pocket User to save.
+   * @param {{token: string, refreshToken: string}} session User session and refresh token.
    * @param {boolean} loggedIn If user is logged in.
    */
-  saveUserInCache(user, loggedIn) {
+  saveUserInCache(user, session, loggedIn) {
     this.ls.set("is_logged_in", {data: loggedIn});
     this.ls.set("user_name", {data: user.username});
     this.ls.set("user_email", {data: user.email});
     this.ls.set("user_provider", {data: user.provider});
+    this.ls.set("access_token", {data: session.token});
+    this.ls.set("refresh_token", {data: session.refreshToken});
   }
-
 
   /**
    * Save wether show message or not.
@@ -51,7 +53,8 @@ class PocketUserService extends PocketBaseService {
     this.ls.remove("user_name");
     this.ls.remove("user_email");
     this.ls.remove("user_provider");
-
+    this.ls.remove("access_token");
+    this.ls.remove("refresh_token");
     this.ls.remove("is_logged_in");
   }
 
@@ -72,13 +75,17 @@ class PocketUserService extends PocketBaseService {
       return {
         name: this.ls.get("user_name").data,
         email: this.ls.get("user_email").data,
-        provider: this.ls.get("user_provider").data
+        provider: this.ls.get("user_provider").data,
+        token: this.ls.get("access_token").data,
+        refreshToken: this.ls.get("refresh_token").data,
       };
     } else {
       return {
         name: "",
         email: "",
-        provider: ""
+        provider: "",
+        token: "",
+        refreshToken: ""
       };
     }
   }
@@ -361,7 +368,7 @@ class PocketUserService extends PocketBaseService {
    * @return {Promise<*>} If password was changed returns true, otherwise false.
    */
   changePassword(userEmail, oldPassword, password1, password2) {
-    const data = {      
+    const data = {
       email: userEmail,
       oldPassword,
       password1,
