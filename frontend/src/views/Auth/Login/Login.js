@@ -85,7 +85,10 @@ class Login extends Component {
         errors.email = "Invalid email.";
       }
     } else {
-      this.setState({user: data});
+      this.setState({
+        user: data.user,
+        session: data.session
+      });
     }
 
     return errors;
@@ -117,7 +120,7 @@ class Login extends Component {
                   validate={this.validate}
                   // validationSchema={this.schema}
                   onSubmit={() => {
-                    UserService.saveUserInCache(this.state.user, true);
+                    UserService.saveUserInCache(this.state.user, this.state.session, true);
                     UserService.showWelcomeMessage(true);
                     this.setState({loggedIn: true});
                   }}
