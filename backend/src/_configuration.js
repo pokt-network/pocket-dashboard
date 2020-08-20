@@ -24,6 +24,8 @@ export const Configurations = {
          auth: {
            jwt: {
              secret_key: process.env.JWT_SECRET_KEY,
+             expiration: process.env.JWT_EXPIRATION,
+             refresh_expiration: process.env.JWT_REFRESH_EXPIRATION,
            },
            providers: {
              google: {
