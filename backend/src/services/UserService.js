@@ -150,7 +150,7 @@ export default class UserService extends BaseService {
     const filter = {email};
     const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
-    return PocketUser.createPocketUserFromDB(dbUser);
+    return PocketUser.removeSensitiveFields(PocketUser.createPocketUserFromDB(dbUser));
   }
 
   /**
@@ -240,23 +240,37 @@ export default class UserService extends BaseService {
     if (!userDB) {
       throw new DashboardError("Invalid username.");
     }
-
+    // Retrieve the user from the db
     const pocketUser = PocketUser.createPocketUserFromDB(userDB);
 
     if (!pocketUser.password) {
-      throw new DashboardValidationError("Passwords do not match.");
+      throw new DashboardValidationError("Password is invalid.");
     }
 
+    // Check if password is correct
     const passwordValidated = await EmailUser.validatePassword(password, pocketUser.password);
 
     if (!passwordValidated) {
       throw new DashboardValidationError("Passwords do not match.");
     }
 
+    // Access token
+    const accessToken = await this.generateAccessToken(pocketUser._id , pocketUser.email);
+    // Refresh token
+    const refreshToken = await this.generateRefreshToken(accessToken);
+
     // Update last login of user on DB.
     await this.__updateLastLogin(pocketUser);
 
-    return PocketUser.removeSensitiveFields(pocketUser);
+    const user = PocketUser.removeSensitiveFields(pocketUser);
+
+    return {
+      user: user,
+      session: {
+        token: accessToken,
+        refreshToken: refreshToken
+      }
+    }
   }
 
   /**
@@ -612,6 +626,45 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * Generate access token.
+   *
+   * @param {string} userId User identifier.
+   * @param {string} userEmail User Email.
+   *
+   * @returns {Promise<string>} The token generated.
+   * @async
+   */
+  async generateAccessToken(userId, userEmail) {
+    const payload = {id: userId, email: userEmail};
+
+    return jwt.sign({
+      data: payload
+    }, Configurations.auth.jwt.secret_key, { expiresIn: Configurations.auth.jwt.expiration });
+  }
+
+    /**
+   * Generate refresh token.
+   *
+   * @param {string} token Session token.
+   *
+   * @returns {Promise<string>} The token generated.
+   * @async
+   */
+  async generateRefreshToken(token) {
+    const payload = this.decodeToken(token);
+
+    if (payload instanceof DashboardValidationError) {
+      throw payload;
+    }
+
+    const token = jwt.sign({
+      data: payload
+    }, Configurations.auth.jwt.secret_key, { expiresIn: Configurations.auth.jwt.refresh_expiration });
+
+    return token;
+  }
+
+  /**
    * Generate token encapsulating the user email.
    *
    * @param {string} userEmail User email to encapsulate.
@@ -634,7 +687,25 @@ export default class UserService extends BaseService {
    * @async
    */
   decodeToken(token) {
-    return jwt.verify(token, Configurations.auth.jwt.secret_key);
+
+    jwt.verify(token, Configurations.auth.jwt.secret_key, function(err, decoded){
+
+      if (err) {
+        switch (err.name) {
+          case "TokenExpiredError":
+            const newToken = this.generateAccessToken
+            return new DashboardValidationError("Session validation token is expired.");
+          case "JsonWebTokenError":
+            return new DashboardValidationError("Session validation token malformed or signature invalid.");
+          case "NotBeforeError":
+            return new DashboardValidationError("Session validation token not active.");
+          default:
+            return new DashboardValidationError("Session validation token is not valid.");
+        }
+      } else {
+        return decoded;
+      }
+    });
   }
 
   /**

@@ -43,9 +43,9 @@ router.post("/auth/provider/login", apiAsyncWrapper(async (req, res) => {
 router.post("/auth/login", apiAsyncWrapper(async (req, res) => {
   /** @type {{username:string, password:string}} */
   const data = req.body;
-  const user = await userService.authenticateUser(data.username, data.password);
+  const userSession = await userService.authenticateUser(data.username, data.password);
 
-  res.json(user);
+  res.json(userSession);
 }));
 
 /**
@@ -174,7 +174,7 @@ router.put("/auth/send-reset-password-email", apiAsyncWrapper(async (req, res) =
       .to(data.email)
       .sendResetPasswordEmail(data.email, token, data.passwordResetLinkPage);
   }
-   
+
   res.send(true);
 }));
 
