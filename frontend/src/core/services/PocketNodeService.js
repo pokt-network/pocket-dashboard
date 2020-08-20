@@ -1,7 +1,8 @@
 import PocketBaseService from "./PocketBaseService";
-import axios from "axios";
 import SecureLS from "secure-ls";
 import {Configurations} from "../../_configuration";
+import axiosInstance from "./_serviceHelper";
+const axios = axiosInstance();
 
 class PocketNodeService extends PocketBaseService {
   constructor() {
