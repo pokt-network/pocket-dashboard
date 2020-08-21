@@ -39,23 +39,44 @@ Scenario: Registered Nodes visual verification
     And notice that the Address, Name and status information are present. Example: 
     | 6925c38c9303a7a1864e9dfcc85b86f9c150519a | N/A | Staked|
 
-Scenario: My node balance and details verfication - CLI integration
+Scenario: Registered Nodes verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
-    And the pocket-core CLI is running at its latest version.
     And user clicks on "Nodes" from the left pannel.
     And user is redirected to the nodes section:
     |https://dashboard.testnet.pokt.network/dashboard/nodes|
-    And user clicks on one of his nodes from the "My nodes" section.
-    Then user is taken to the node details:
-    |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/f0a30e7ae08115068104219f349f55affb4179b0|
-    And user sees the balance.
-    Then the user starts pocket-core CLI: "pocket start"
-    And after syncing up to the latest height.
-    Then user queries his node's balance: "pocket query balance <address>"
-    |29424000000|
-    And that value matches the one in the node's detail section.
+    Then execute the following GET call: Example: 
+    |https://api-testnet.dashboard.pokt.network:4200/api/nodes/?limit=10&offset=0|
+    And receive the following response, that should have all of the information displayed in the UI:
+    [
+        {
+            "name":"N/A",
+            "address":"6925c38c9303a7a1864e9dfcc85b86f9c150519a",
+            "status":2
+        },
+        {
+            "name":"N/A",
+            "address":"7674a47cc977326f1df6cb92c7b5a2ad36557ea2",
+            "status":2
+        },
+        {
+            "name":"N/A",
+            "address":"77e608d8ae4cd7b812f122dc82537e79dd3565cb",
+            "status":2
+        },
+        {
+            "name":"N/A",
+            "address":"c7b7b7665d20a7172d0c0aa58237e425f333560a",
+            "status":2
+        },
+        {
+            "name":"N/A",
+            "address":"e6946760d9833f49da39aae9500537bef6f33a7a",
+            "status":2
+        }
+    ]
+    And each {name}, {address}, {status} matches the information displayed in the UI.
 
 Scenario: Registered Nodes verification - pocket CLI side
     Given that the user is in the Pocket Dashboard. Example: 
