@@ -176,6 +176,7 @@ Scenario: Create a New Node
     And user can see the "edit" or "remove option"
     Then user goes back to the Nodes section.
     And can see the created node in "My Nodes" section.
+    And after <blockTime> has passed, then the Node Detail should be available.
     
 Scenario: Import a Node
     Scenario: My nodes verification visual verification
@@ -356,6 +357,7 @@ Scenario: Create a New Node - Verify node via the CLI
     And user can see the "edit" or "remove option"
     Then user goes back to the Nodes section.
     And can see the created node in "My Nodes" section.
+    And after <blockTime> has passed, then the Node Detail should be available.
     Then the user should be able to query the nodes address via the CLI:
     |pocket query node <address>|
     Then receive all of the node's information as follows:
