@@ -565,3 +565,20 @@ Scenario: Remove Existing Node.
     And can click on "Go to details" button.
     And user is taken to:
     |https://dashboard.testnet.pokt.network/dashboard/nodes|
+
+Scenario: Remove Existing Node - Cancel the confirmation.
+    Scenario: My nodes verification visual verification
+    Given that the user is in the Pocket Dashboard. Example: 
+    |https://dashboard.testnet.pokt.network/dashboard|
+    When the page is fully loaded.
+    And user clicks on "Nodes" from the left pannel.
+    And user is redirected to the nodes section:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes|
+    And user see "My Nodes" list.
+    Then user clicks on the desired node to be edited.
+    And user is taken to the node's details page:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/d04a90f1d9b17f120474bf7274547139b1608dec|
+    And user clicks on "Remove"
+    Then user receives a confirmation message: "Are you sure you want to remove this node?"
+    And user clicks "Cancel"
+    And popup disappear.
