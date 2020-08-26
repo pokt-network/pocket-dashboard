@@ -113,7 +113,6 @@ Scenario: My nodes verification visual verification
     And user can see a section called "My Nodes", that at a first login/signUp must be empty with message "You don't have any nodes yet"
 
 Scenario: Create a New Node
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -124,6 +123,8 @@ Scenario: Create a New Node
     Then the user should be taken to the node's creation form:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new|
     And provide a "Node Name", "Node operator or Company Name" and "Contact Email", notice that these fiels are required.
+    And as optional, the user provides a node icon and description.
+    And icon picture must be less than 100KB. If picture exceeds 100KB, then validation is triggered.
     And click on "continue".
     Then user shuld be takent to the passphrase creation step:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/passphrase|
@@ -147,8 +148,6 @@ Scenario: Create a New Node
         publicKey: "5017c0ec4c077e3ac74af9bc7792930827629b6968a6dc231bbb3e0ce896d8ad"
         updatingStatus: null
         user: "emanuel@pokt.network"
-    And receive a notification email, which template looks like: "Your node has been successfully created" with your node details
-    |https://mail.google.com/mail/u/1?ui=2&ik=23126de247&view=lg&permmsgid=msg-f%3A1675629210662511838&ser=1|
     And Private Key and Address must be autopopulated.
     And user can click on the "eye" icon to unmask the password and private key.
     Then user clicks "Download Key File".
@@ -158,13 +157,14 @@ Scenario: Create a New Node
     Then the user should be taken to the "Supported Blockchains" section:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/chains|
     And check the desired networks to be served.
-    And provide the Service URL.
+    And user types in his network to be served, filtered by: Network, Hash.
+    And provide the Service URL. Notice that if not valid (not “https”), then validation is triggered.
     And see the "Warning, before you continue!" message, with the click here link: 
     |https://docs.pokt.network/docs/testing-your-node|
     And click on "Continue".
     Then the user should be taken to the validator-power screen:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/validator-power|
-    And see the VP explanation message.
+    And see the VP explanation message. Having in consideration that minimum is 15,500 and maximum equivalent to US$10,000.
     And select the Validator Power by sliding the bar.
     And when selected, the order summary must be updated accordingly.
     And "about VP, validator power:" banner message is present (findElement.by(id), "alert")
@@ -190,6 +190,7 @@ Scenario: Create a New Node
     And Purchase Terms and conditions link is present:
     |http://www.pokt.network/pokt-token-purchase-agreement/|
     And user clicks on "Continue".
+    And the notification email should be sent as "Payment Completed or Payment Declined."
     Then user is taken to the "Invoice" section and can see the invoice details:
     |https://dashboard.testnet.pokt.network/dashboard/payment/invoice|
     And see a successfull POST (200 - OK) call to:
@@ -201,6 +202,7 @@ Scenario: Create a New Node
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes/custom/stake|
     And can see the "Attention" banner message.
     And can print your invoice by clicking on "Print".
+    And make sure that the POKT and USD, and values are matching the invoice presented.
     Then user can click on the "Go to node's detail" button:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/f0a30e7ae08115068104219f349f55affb4179b0|
     And user can see all of its nodes details, such as "Name, Company Name, Description, POKT staked, POKT balance, Stake Status, Jailed, Validator Power, Networks served, Address, Public Key, Service URL and Contact Email"
@@ -208,9 +210,10 @@ Scenario: Create a New Node
     Then user goes back to the Nodes section.
     And can see the created node in "My Nodes" section.
     And after <blockTime> has passed, then the Node Detail should be available.
+    And the "ATTENTION! This staking transaction will be marked complete when the next block is generated. You will receive an email notification when your node is ready to use." banner disappear.
+    And the user receives an email notification when his node is staked after the block has passed.
 
 Scenario: Create a New Node - No Service URL
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -244,8 +247,6 @@ Scenario: Create a New Node - No Service URL
         publicKey: "5017c0ec4c077e3ac74af9bc7792930827629b6968a6dc231bbb3e0ce896d8ad"
         updatingStatus: null
         user: "emanuel@pokt.network"
-    And receive a notification email, which template looks like: "Your node has been successfully created" with your node details
-    |https://mail.google.com/mail/u/1?ui=2&ik=23126de247&view=lg&permmsgid=msg-f%3A1675629210662511838&ser=1|
     And Private Key and Address must be autopopulated.
     And user can click on the "eye" icon to unmask the password and private key.
     Then user clicks "Download Key File".
@@ -255,11 +256,11 @@ Scenario: Create a New Node - No Service URL
     Then the user should be taken to the "Supported Blockchains" section:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/chains|
     And check the desired networks to be served.
+    And user types in his network to be served, filtered by: Network, Hash.
     And leave the Service URL blank.
     Then the user should receive a validation error message.
 
 Scenario: Create a New Node - Wrong Service URL
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -293,8 +294,6 @@ Scenario: Create a New Node - Wrong Service URL
         publicKey: "5017c0ec4c077e3ac74af9bc7792930827629b6968a6dc231bbb3e0ce896d8ad"
         updatingStatus: null
         user: "emanuel@pokt.network"
-    And receive a notification email, which template looks like: "Your node has been successfully created" with your node details
-    |https://mail.google.com/mail/u/1?ui=2&ik=23126de247&view=lg&permmsgid=msg-f%3A1675629210662511838&ser=1|
     And Private Key and Address must be autopopulated.
     And user can click on the "eye" icon to unmask the password and private key.
     Then user clicks "Download Key File".
@@ -304,6 +303,7 @@ Scenario: Create a New Node - Wrong Service URL
     Then the user should be taken to the "Supported Blockchains" section:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/chains|
     And check the desired networks to be served.
+    And user types in his network to be served, filtered by: Network, Hash.
     And provide the invalid Service URL:
     |foo.com|
     Then the user should receive a validation error message.
@@ -315,7 +315,6 @@ Scenario: Create a New Node - Wrong Service URL
     Then the user should receive a validation error message.
 
 Scenario: Import a Node
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -329,6 +328,7 @@ Scenario: Import a Node
     And user should be able to upload the node's key file.
     And when downloaded, provides the passphrase.
     And clicks on "Import".
+    And received a "Node Create/Import" notification email.
     Then the general information, address and networks are autopopulated.
     And user is taken to the Node Information form, so to provide information to be showed in the dashboard:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new|
@@ -339,7 +339,6 @@ Scenario: Import a Node
     And see the imported node within the list.
 
 Scenario: Import an existing Node
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -353,6 +352,7 @@ Scenario: Import an existing Node
     And user should be able to upload the node's key file.
     And when downloaded, provides the passphrase.
     And clicks on "Import".
+    And received a “Node Create/Import” notification email.
     Then the general information, address and networks are autopopulated.
     And user is taken to the Node Information form, so to provide information to be showed in the dashboard:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new|
@@ -360,8 +360,31 @@ Scenario: Import an existing Node
     And user clicks on "Continue".
     Then user received an alert banner message, stating that the node exists.
 
+Scenario: Import a Node - using rap PK
+    Given that the user is in the Pocket Dashboard. Example: 
+    |https://dashboard.testnet.pokt.network/dashboard|
+    When the page is fully loaded.
+    And user clicks on "Nodes" from the left pannel.
+    And user is redirected to the nodes section:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes|
+    And user clicks on "import", top right.
+    Then the user should be taken to:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes/import|
+    And see all of the information empty.
+    And user should be able to upload the node's rap PK.
+    And when downloaded, provides the passphrase.
+    And clicks on "Import".
+    And received a "Node Create/Import" notification email.
+    Then the general information, address and networks are autopopulated.
+    And user is taken to the Node Information form, so to provide information to be showed in the dashboard:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes/new|
+    And user provides Node Name, Node operator or Company name and Contact Email.
+    And user clicks on "Continue".
+    Then user is taken back to the General Nodes Information:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes|
+    And see the imported node within the list.
+
 Scenario: Create a New Node - Creation form required fields validation
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -376,7 +399,6 @@ Scenario: Create a New Node - Creation form required fields validation
     Then the user should see the required fields validation next to each field, in red colored fonts.
 
 Scenario: Create a New Node - Wrong payment details
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -394,8 +416,6 @@ Scenario: Create a New Node - Wrong payment details
     And check the "Don't forget to save your passphrase banner" (findElement.by(id), "alert").
     And clicks on "create".
     Then the user is able to see the "Download Key File" button.
-    And receive a notification email, which template looks like: "Your node has been successfully created" with your node details
-    |https://mail.google.com/mail/u/1?ui=2&ik=23126de247&view=lg&permmsgid=msg-f%3A1675629210662511838&ser=1|
     And Private Key and Address must be autopopulated.
     And user can click on the "eye" icon to unmask the password and private key.
     Then user clicks "Download Key File".
@@ -405,13 +425,14 @@ Scenario: Create a New Node - Wrong payment details
     Then the user should be taken to the "Supported Blockchains" section:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/chains|
     And check the desired networks to be served.
-    And provide the Service URL.
+    And user types in his network to be served, filtered by: Network, Hash.
+    And provide the Service URL. Notice that if not valid (not “https”), then validation is triggered.
     And see the "Warning, before you continue!" message, with the click here link: 
     |https://docs.pokt.network/docs/testing-your-node|
     And click on "Continue".
     Then the user should be taken to the validator-power screen:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/validator-power|
-    And see the VP explanation message.
+    And see the VP explanation message. Having in consideration that minimum is 15,500 and maximum equivalent to US$10,000.
     And select the Validator Power by sliding the bar.
     And when selected, the order summary must be updated accordingly.
     And "about VP, validator power:" banner message is present (findElement.by(id), "alert")
@@ -429,7 +450,6 @@ Scenario: Create a New Node - Wrong payment details
     Then the user received a validation message.
 
 Scenario: Create a New Node - Verify node via the CLI
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -448,8 +468,6 @@ Scenario: Create a New Node - Verify node via the CLI
     And check the "Don't forget to save your passphrase banner" (findElement.by(id), "alert").
     And clicks on "create".
     Then the user is able to see the "Download Key File" button.
-    And receive a notification email, which template looks like: "Your node has been successfully created" with your node details
-    |https://mail.google.com/mail/u/1?ui=2&ik=23126de247&view=lg&permmsgid=msg-f%3A1675629210662511838&ser=1|
     And Private Key and Address must be autopopulated.
     And user can click on the "eye" icon to unmask the password and private key.
     Then user clicks "Download Key File".
@@ -459,13 +477,14 @@ Scenario: Create a New Node - Verify node via the CLI
     Then the user should be taken to the "Supported Blockchains" section:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/chains|
     And check the desired networks to be served.
-    And provide the Service URL.
+    And user types in his network to be served, filtered by: Network, Hash.
+    And provide the Service URL. Notice that if not valid (not "https"), then validation is triggered.
     And see the "Warning, before you continue!" message, with the click here link: 
     |https://docs.pokt.network/docs/testing-your-node|
     And click on "Continue".
     Then the user should be taken to the validator-power screen:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/validator-power|
-    And see the VP explanation message.
+    And see the VP explanation message. Having in consideration that minimum is 15,500 and maximum equivalent to US$10,000.
     And select the Validator Power by sliding the bar.
     And when selected, the order summary must be updated accordingly.
     And "about VP, validator power:" banner message is present (findElement.by(id), "alert")
@@ -483,10 +502,12 @@ Scenario: Create a New Node - Verify node via the CLI
     And Purchase Terms and conditions link is present:
     |http://www.pokt.network/pokt-token-purchase-agreement/|
     And user clicks on "Continue".
+    And the notification email should be sent as “Payment Completed or Payment Declined.”
     Then user is taken to the "Invoice" section and can see the invoice details:
     |https://dashboard.testnet.pokt.network/dashboard/payment/invoice|
     And can see the "Attention" banner message.
     And can print your invoice by clicking on "Print".
+    And make sure that the POKT and USD, and values are matching the invoice presented.
     Then user can click on the "Go to node's detail" button:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/f0a30e7ae08115068104219f349f55affb4179b0|
     And user can see all of its nodes details, such as "Name, Company Name, Description, POKT staked, POKT balance, Stake Status, Jailed, Validator Power, Networks served, Address, Public Key, Service URL and Contact Email"
@@ -494,6 +515,8 @@ Scenario: Create a New Node - Verify node via the CLI
     Then user goes back to the Nodes section.
     And can see the created node in "My Nodes" section.
     And after <blockTime> has passed, then the Node Detail should be available.
+    And the “ATTENTION! This staking transaction will be marked complete when the next block is generated. You will receive an email notification when your node is ready to use.” banner disappear.
+    And the user receives an email notification when his node is staked after the block has passed.
     Then the user should be able to query the nodes address via the CLI:
     |pocket query node <address>|
     Then receive all of the node's information as follows:
@@ -511,7 +534,6 @@ Scenario: Create a New Node - Verify node via the CLI
     }
 
 Scenario: My nodes - Search existing nodes.
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -524,7 +546,6 @@ Scenario: My nodes - Search existing nodes.
     Then the search/query will apply the criteria as a filter.
 
 Scenario: Edit Existing Node.
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -542,9 +563,9 @@ Scenario: Edit Existing Node.
     And clicks "Save".
     Then user sees a PUT successfull (200 - true) call to:
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes//d04a90f1d9b17f120474bf7274547139b1608dec|
+    And user is taken back to the Node Detail page.
 
 Scenario: Remove Existing Node.
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -562,12 +583,12 @@ Scenario: Remove Existing Node.
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes//d04a90f1d9b17f120474bf7274547139b1608dec|
     And see a "Your node was successfully removed" message on:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/d04a90f1d9b17f120474bf7274547139b1608dec|
+    And the user receives a notification email, stating that his Node have been deleted.
     And can click on "Go to details" button.
     And user is taken to:
     |https://dashboard.testnet.pokt.network/dashboard/nodes|
 
 Scenario: Remove Existing Node - Cancel the confirmation.
-    Scenario: My nodes verification visual verification
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
@@ -582,3 +603,80 @@ Scenario: Remove Existing Node - Cancel the confirmation.
     Then user receives a confirmation message: "Are you sure you want to remove this node?"
     And user clicks "Cancel"
     And popup disappear.
+
+Scenario: Existing Node Unstake
+    Given that the user is in the Pocket Dashboard. Example: 
+    |https://dashboard.testnet.pokt.network/dashboard|
+    When the page is fully loaded.
+    And user clicks on "Nodes" from the left pannel.
+    And user is redirected to the nodes section:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes|
+    And user see "My Nodes" list.
+    Then user clicks on the desired unstake node to be displayed.
+    And user is taken to the node's details page:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/d04a90f1d9b17f120474bf7274547139b1608dec|
+    And user sees the "Unstake" button next to the Node details and clicks it.
+    And user enters in the private key or upload the private key file from when it was created/imported your account and click "Continue"
+    And user enters the passphrase and click on "Verify".
+    And user is taken back to the Node's Detail page:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/d04a90f1d9b17f120474bf7274547139b1608dec|
+    And the node status is now as "Unstaking"
+
+Scenario: Existing Node Unjailing
+    Given that the user is in the Pocket Dashboard. Example: 
+    |https://dashboard.testnet.pokt.network/dashboard|
+    When the page is fully loaded.
+    And user clicks on "Nodes" from the left pannel.
+    And user is redirected to the nodes section:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes|
+    And user see "My Nodes" list.
+    Then user clicks on the desired unjail node to be displayed. The node should be as "Jailed = YES".
+    And user is taken to the node's details page:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/d04a90f1d9b17f120474bf7274547139b1608dec|
+    And user sees the "Jailed = YES" button next to the Node details and clicks it.
+    And user sees the "Unjail" button under the "Jailed" status and clicks it.
+    Then the user should wait for the next block to be unjailed, and "Jailed = NO".
+
+Scenario: Node Staking with existing balance and USD
+    Given that the user is in the Pocket Dashboard. Example: 
+    |https://dashboard.testnet.pokt.network/dashboard|
+    When the page is fully loaded.
+    And user clicks on "Nodes" from the left pannel.
+    And user is redirected to the nodes section:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes|
+    And user see "My Nodes" list.
+    Then user clicks on the desired unstaked node to be displayed, making sure that the node has balance.
+    And user is taken to the node's details page:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/d04a90f1d9b17f120474bf7274547139b1608dec|
+    And user clicks on the "stake" button.
+    Then user gets redirected to the "Verify Private Key" page.
+    And user provides the Key File and Private Key.
+    And user provides the passphrase.
+    And user at this point, run the risk of slashing and jailing his node, due to node not running.
+    Then user is taken to the Supported Blockchains page.
+    And user selects its blockchains to be supported and provides the Service URL.
+    Then user is taken to the Validation Power screen.
+    And user selected the VP to be staked.
+    And user sees the equivalent of his balance in USD, DEDUCTED to the TOTAL COST. 1POKT = 0.08USD. Meaning that the TOTAL COST = Validator Power COST - (Balance x 0.08USD).
+
+Scenario: Node Staking with existing balance
+    Given that the user is in the Pocket Dashboard. Example: 
+    |https://dashboard.testnet.pokt.network/dashboard|
+    When the page is fully loaded.
+    And user clicks on "Nodes" from the left pannel.
+    And user is redirected to the nodes section:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes|
+    And user see "My Nodes" list.
+    Then user clicks on the desired unstaked node to be displayed, making sure that the node has balance.
+    And user is taken to the node's details page:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/d04a90f1d9b17f120474bf7274547139b1608dec|
+    And user clicks on the "stake" button.
+    Then user gets redirected to the "Verify Private Key" page.
+    And user provides the Key File and Private Key.
+    And user provides the passphrase.
+    And user at this point, run the risk of slashing and jailing his node, due to node not running.
+    Then user is taken to the Supported Blockchains page.
+    And user selects its blockchains to be supported and provides the Service URL.
+    Then user is taken to the Validation Power screen.
+    And user selected the VP to be staked.
+    And user sees the equivalent of his balance in USD, and the TOTAL COST should be 0, since the balance is enough to cover the VP.
