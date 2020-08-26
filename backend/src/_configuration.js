@@ -4,6 +4,9 @@ import logger from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
 import {errorsHandler} from "./apis/_helpers";
+import jwt from "express-jwt";
+import UserService from "./services/UserService";
+import {DashboardValidationError} from "./models/Exceptions";
 
 // Configure Environment Variables: Now .env files can be loaded and used in process.env.
 dotenv.config();
@@ -146,11 +149,59 @@ export const Configurations = {
  * @param {object} expressApp Express application object.
  */
 export function configureExpress(expressApp) {
+  const userService = new UserService();
+
   expressApp.use(express.json());
   expressApp.use(express.urlencoded({extended: false}));
   expressApp.use(cookieParser());
   expressApp.use(logger("dev"));
   expressApp.use(cors());
+  //
+  expressApp.use(jwt({
+    secret: Configurations.auth.jwt.secret_key,
+    algorithms: ["HS256"],
+    getToken: function fromHeader (req) {
+      if (req.headers.authorization) {
+        let accessToken;
+
+        if (req.headers.authorization.split(", ")[0].split(" ")[0] === "Token") {
+          accessToken = req.headers.authorization.split(", ")[0].split(" ")[1];
+        }
+
+        return accessToken;
+      }
+
+      return null;
+    }
+  }).unless(
+    {// TODO: Add a list of endpoints that doesn't need auth
+      path: [
+        "/api/users/auth/login",
+        "login"
+      ]
+    }
+  ));
+
+  expressApp.use(async function (err, req, res, next) {
+
+    if (err.message === "jwt expired") {
+      // Try to get a new access token using the refresh token
+      if (req.headers.authorization.split(", ")[1].split(" ")[0] === "Refresh") {
+        const refreshToken = req.headers.authorization.split(", ")[1].split(" ")[1];
+
+        if (refreshToken) {
+          const newSessionTokens = await userService.renewSessionTokens(refreshToken);
+
+          if (newSessionTokens instanceof DashboardValidationError) {
+            throw newSessionTokens;
+          }
+          // Update the auth headers with the new tokens
+          res.set("Authorization", `Token ${newSessionTokens.accessToken}+=+=+${newSessionTokens.refreshToken}`);
+        }
+      }
+      res.status(401).send("Token expired, please sign in again.");
+    }
+  });
 }
 
 /**
