@@ -254,10 +254,8 @@ export default class UserService extends BaseService {
       throw new DashboardValidationError("Passwords do not match.");
     }
 
-    // Access token
-    const accessToken = await this.generateAccessToken(pocketUser._id , pocketUser.email);
-    // Refresh token
-    const refreshToken = await this.generateRefreshToken(accessToken);
+    // Access and refresh tokens generation
+    const tokens = await this.generateNewSessionTokens(userDB._id, userDB.email);
 
     // Update last login of user on DB.
     await this.__updateLastLogin(pocketUser);
@@ -266,11 +264,8 @@ export default class UserService extends BaseService {
 
     return {
       user: user,
-      session: {
-        token: accessToken,
-        refreshToken: refreshToken
-      }
-    }
+      session: tokens
+    };
   }
 
   /**
@@ -626,42 +621,62 @@ export default class UserService extends BaseService {
   }
 
   /**
-   * Generate access token.
+   * Renew Session tokens using a valid refresh token.
+   *
+   * @param {string} token Refresh token.
+   *
+   * @returns {Promise<{token: string, refreshToken: string}>} The Session tokens generated.
+   * @async
+   */
+  async renewSessionTokens(token) {
+
+    const payload = await this.decodeToken(token, true);
+
+    if (payload instanceof DashboardValidationError) {
+      return payload;
+    }
+
+    // Check if the user exists in the DB
+    const userDB = await this.__getUser(payload.data.email | "");
+
+    if (userDB) {
+
+      if (userDB.id === payload.data.id) {
+        // Return the new session tokens
+
+        return await this.generateNewSessionTokens(payload.data.id, payload.data.email);
+      }
+
+    }
+    return new DashboardValidationError("Token is invalid.");
+  }
+
+  /**
+   * Generate Session tokens.
    *
    * @param {string} userId User identifier.
    * @param {string} userEmail User Email.
    *
-   * @returns {Promise<string>} The token generated.
+   * @returns {Promise<{token: string, refreshToken: string}>} Sessions generated tokens.
    * @async
    */
-  async generateAccessToken(userId, userEmail) {
+  async generateNewSessionTokens(userId, userEmail) {
     const payload = {id: userId, email: userEmail};
 
-    return jwt.sign({
+    // Access token
+    const accessToken = jwt.sign({
       data: payload
-    }, Configurations.auth.jwt.secret_key, { expiresIn: Configurations.auth.jwt.expiration });
-  }
+    }, Configurations.auth.jwt.secret_key, {expiresIn: Configurations.auth.jwt.expiration});
 
-    /**
-   * Generate refresh token.
-   *
-   * @param {string} token Session token.
-   *
-   * @returns {Promise<string>} The token generated.
-   * @async
-   */
-  async generateRefreshToken(token) {
-    const payload = this.decodeToken(token);
-
-    if (payload instanceof DashboardValidationError) {
-      throw payload;
-    }
-
-    const token = jwt.sign({
+    // Refresh token
+    const refreshToken = jwt.sign({
       data: payload
-    }, Configurations.auth.jwt.secret_key, { expiresIn: Configurations.auth.jwt.refresh_expiration });
+    }, Configurations.auth.jwt.secret_key, {expiresIn: Configurations.auth.jwt.refresh_expiration});
 
-    return token;
+    return {
+      token: accessToken,
+      refreshToken: refreshToken
+    };
   }
 
   /**
@@ -683,29 +698,26 @@ export default class UserService extends BaseService {
    *
    * @param {string} token Token to decode.
    *
-   * @returns {Promise<*>} The token payload.
+   * @returns {object | DashboardValidationError} The token payload.
    * @async
    */
-  decodeToken(token) {
+  async decodeToken(token, isRefreshToken = false) {
+    const payload = jwt.verify(token, Configurations.auth.jwt.secret_key, {ignoreExpiration: isRefreshToken});
 
-    jwt.verify(token, Configurations.auth.jwt.secret_key, function(err, decoded){
-
-      if (err) {
-        switch (err.name) {
-          case "TokenExpiredError":
-            const newToken = this.generateAccessToken
-            return new DashboardValidationError("Session validation token is expired.");
-          case "JsonWebTokenError":
-            return new DashboardValidationError("Session validation token malformed or signature invalid.");
-          case "NotBeforeError":
-            return new DashboardValidationError("Session validation token not active.");
-          default:
-            return new DashboardValidationError("Session validation token is not valid.");
-        }
-      } else {
-        return decoded;
+    if (payload.data) {
+      return payload.data;
+    } else {
+      switch (payload.name) {
+        case "TokenExpiredError":
+          return await this.renewSessionTokens(token);
+        case "JsonWebTokenError":
+          return new DashboardValidationError("Token malformed or signature invalid.");
+        case "NotBeforeError":
+          return new DashboardValidationError("Token not active.");
+        default:
+          return new DashboardValidationError("Token is not valid.");
       }
-    });
+    }
   }
 
   /**

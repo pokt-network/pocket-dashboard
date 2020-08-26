@@ -1,24 +1,23 @@
 import axios from "axios";
 import UserService from "./PocketUserService";
 
-export const axiosInstance = () => {
+const axiosInstance = () => {
 
   axios.interceptors.request.use(
     async config => {
-      const {accesstoken, refreshToken} = UserService.getUserInfo();
+      const {token, refreshToken} = UserService.getUserInfo();
 
     config.headers = {
-      'Authorization': `AccessToken ${accesstoken}, RefreshToken ${refreshToken}`,
-      'Accept': 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+      "Authorization": `Token ${token}, Refresh ${refreshToken}`,
+      "Accept": "application/json",
+    };
     return config;
-  },
-  error => {
+  }, error => {
     throw error;
   });
 
   return axios;
 };
 
+export default axiosInstance;
 
