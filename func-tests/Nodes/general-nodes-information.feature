@@ -39,44 +39,23 @@ Scenario: Registered Nodes visual verification
     And notice that the Address, Name and status information are present. Example: 
     | 6925c38c9303a7a1864e9dfcc85b86f9c150519a | N/A | Staked|
 
-Scenario: Registered Nodes verification
+Scenario: My node balance and details verfication - CLI integration
     Given that the user is in the Pocket Dashboard. Example: 
     |https://dashboard.testnet.pokt.network/dashboard|
     When the page is fully loaded.
+    And the pocket-core CLI is running at its latest version.
     And user clicks on "Nodes" from the left pannel.
     And user is redirected to the nodes section:
     |https://dashboard.testnet.pokt.network/dashboard/nodes|
-    Then execute the following GET call: Example: 
-    |https://api-testnet.dashboard.pokt.network:4200/api/nodes/?limit=10&offset=0|
-    And receive the following response, that should have all of the information displayed in the UI:
-    [
-        {
-            "name":"N/A",
-            "address":"6925c38c9303a7a1864e9dfcc85b86f9c150519a",
-            "status":2
-        },
-        {
-            "name":"N/A",
-            "address":"7674a47cc977326f1df6cb92c7b5a2ad36557ea2",
-            "status":2
-        },
-        {
-            "name":"N/A",
-            "address":"77e608d8ae4cd7b812f122dc82537e79dd3565cb",
-            "status":2
-        },
-        {
-            "name":"N/A",
-            "address":"c7b7b7665d20a7172d0c0aa58237e425f333560a",
-            "status":2
-        },
-        {
-            "name":"N/A",
-            "address":"e6946760d9833f49da39aae9500537bef6f33a7a",
-            "status":2
-        }
-    ]
-    And each {name}, {address}, {status} matches the information displayed in the UI.
+    And user clicks on one of his nodes from the "My nodes" section.
+    Then user is taken to the node details:
+    |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/f0a30e7ae08115068104219f349f55affb4179b0|
+    And user sees the balance.
+    Then the user starts pocket-core CLI: "pocket start"
+    And after syncing up to the latest height.
+    Then user queries his node's balance: "pocket query balance <address>"
+    |29424000000|
+    And that value matches the one in the node's detail section.
 
 Scenario: Registered Nodes verification - pocket CLI side
     Given that the user is in the Pocket Dashboard. Example: 
@@ -126,15 +105,15 @@ Scenario: Create a New Node
     And as optional, the user provides a node icon and description.
     And icon picture must be less than 100KB. If picture exceeds 100KB, then validation is triggered.
     And click on "continue".
-    Then user shuld be takent to the passphrase creation step:
+    Then user should be taken to the passphrase creation step:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/passphrase|
-    And see a successfull POST (200 - true) to:
+    And see a successful POST (200 - true) to:
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes/|
     And provide the desired passphrase, having in consideration the suggestion "Write down a Passphrase to protect your key file. This should have: minimum of 15 alphanumeric symbols with one capital letter, one lowercase letter, one special character and one number."
     And check the "Don't forget to save your passphrase banner" (findElement.by(id), "alert").
     And clicks on "create".
     Then the user is able to see the "Download Key File" button.
-    And see a successfull POST (200 - account details) to:
+    And see a successful POST (200 - account details) to:
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes/account|
         {name: "Test 3", contactEmail: "emanuel+1@pokt.network", user: "emanuel@pokt.network",…}
         contactEmail: "emanuel+1@pokt.network"
@@ -171,7 +150,7 @@ Scenario: Create a New Node
     And click on "checkout".
     Then the user is taken to the Payment Summary section:
     |https://dashboard.testnet.pokt.network/dashboard/payment/summary|
-    And should see a successfull POST (200 - amount details) call to:
+    And should see a successful POST (200 - amount details) call to:
     |https://api-testnet.dashboard.pokt.network:4200/api/payments/new_intent/nodes|
         {id: "pi_1HIYRDFF1uO1aFOlxunIqGtP", createdDate: "2020-08-21T11:29:39.000Z", amount: 743232,…}
         amount: 743232
@@ -193,11 +172,11 @@ Scenario: Create a New Node
     And the notification email should be sent as "Payment Completed or Payment Declined."
     Then user is taken to the "Invoice" section and can see the invoice details:
     |https://dashboard.testnet.pokt.network/dashboard/payment/invoice|
-    And see a successfull POST (200 - OK) call to:
+    And see a successful POST (200 - OK) call to:
     |https://api.stripe.com/v1/payment_intents/pi_1HIYRDFF1uO1aFOlxunIqGtP/confirm|
-    And see a successfull PUT (200 - OK) call to:
+    And see a successful PUT (200 - OK) call to:
     |https://api-testnet.dashboard.pokt.network:4200/api/payments/history|
-    And see a successfull POST (200 - OK) calls to:
+    And see a successful POST (200 - OK) calls to:
     |https://api-testnet.dashboard.pokt.network:4200/api/checkout/nodes/pokt|
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes/custom/stake|
     And can see the "Attention" banner message.
@@ -223,17 +202,17 @@ Scenario: Create a New Node - No Service URL
     And the user clicks on "create" top-right.
     Then the user should be taken to the node's creation form:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new|
-    And provide a "Node Name", "Node operator or Company Name" and "Contact Email", notice that these fiels are required.
+    And provide a "Node Name", "Node operator or Company Name" and "Contact Email", notice that these fields are required.
     And click on "continue".
-    Then user shuld be takent to the passphrase creation step:
+    Then user should be taken to the passphrase creation step:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/passphrase|
-    And see a successfull POST (200 - true) to:
+    And see a successful POST (200 - true) to:
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes/|
     And provide the desired passphrase, having in consideration the suggestion "Write down a Passphrase to protect your key file. This should have: minimum of 15 alphanumeric symbols with one capital letter, one lowercase letter, one special character and one number."
     And check the "Don't forget to save your passphrase banner" (findElement.by(id), "alert").
     And clicks on "create".
     Then the user is able to see the "Download Key File" button.
-    And see a successfull POST (200 - account details) to:
+    And see a successful POST (200 - account details) to:
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes/account|
         {name: "Test 3", contactEmail: "emanuel+1@pokt.network", user: "emanuel@pokt.network",…}
         contactEmail: "emanuel+1@pokt.network"
@@ -270,17 +249,17 @@ Scenario: Create a New Node - Wrong Service URL
     And the user clicks on "create" top-right.
     Then the user should be taken to the node's creation form:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new|
-    And provide a "Node Name", "Node operator or Company Name" and "Contact Email", notice that these fiels are required.
+    And provide a "Node Name", "Node operator or Company Name" and "Contact Email", notice that these fields are required.
     And click on "continue".
-    Then user shuld be takent to the passphrase creation step:
+    Then user should be taken to the passphrase creation step:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/passphrase|
-    And see a successfull POST (200 - true) to:
+    And see a successful POST (200 - true) to:
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes/|
     And provide the desired passphrase, having in consideration the suggestion "Write down a Passphrase to protect your key file. This should have: minimum of 15 alphanumeric symbols with one capital letter, one lowercase letter, one special character and one number."
     And check the "Don't forget to save your passphrase banner" (findElement.by(id), "alert").
     And clicks on "create".
     Then the user is able to see the "Download Key File" button.
-    And see a successfull POST (200 - account details) to:
+    And see a successful POST (200 - account details) to:
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes/account|
         {name: "Test 3", contactEmail: "emanuel+1@pokt.network", user: "emanuel@pokt.network",…}
         contactEmail: "emanuel+1@pokt.network"
@@ -394,7 +373,7 @@ Scenario: Create a New Node - Creation form required fields validation
     And the user clicks on "create" top-right.
     Then the user should be taken to the node's creation form:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new|
-    And leave the following empty: "Node Name", "Node operator or Company Name" and "Contact Email", notice that these fiels are required.
+    And leave the following empty: "Node Name", "Node operator or Company Name" and "Contact Email", notice that these fields are required.
     And click on "continue".
     Then the user should see the required fields validation next to each field, in red colored fonts.
 
@@ -408,9 +387,9 @@ Scenario: Create a New Node - Wrong payment details
     And the user clicks on "create" top-right.
     Then the user should be taken to the node's creation form:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new|
-    And provide a "Node Name", "Node operator or Company Name" and "Contact Email", notice that these fiels are required.
+    And provide a "Node Name", "Node operator or Company Name" and "Contact Email", notice that these fields are required.
     And click on "continue".
-    Then user shuld be takent to the passphrase creation step:
+    Then user should be taken to the passphrase creation step:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/passphrase|
     And provide the desired passphrase, having in consideration the suggestion "Write down a Passphrase to protect your key file. This should have: minimum of 15 alphanumeric symbols with one capital letter, one lowercase letter, one special character and one number."
     And check the "Don't forget to save your passphrase banner" (findElement.by(id), "alert").
@@ -460,9 +439,9 @@ Scenario: Create a New Node - Verify node via the CLI
     And the user clicks on "create" top-right.
     Then the user should be taken to the node's creation form:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new|
-    And provide a "Node Name", "Node operator or Company Name" and "Contact Email", notice that these fiels are required.
+    And provide a "Node Name", "Node operator or Company Name" and "Contact Email", notice that these fields are required.
     And click on "continue".
-    Then user shuld be takent to the passphrase creation step:
+    Then user should be taken to the passphrase creation step:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/new/passphrase|
     And provide the desired passphrase, having in consideration the suggestion "Write down a Passphrase to protect your key file. This should have: minimum of 15 alphanumeric symbols with one capital letter, one lowercase letter, one special character and one number."
     And check the "Don't forget to save your passphrase banner" (findElement.by(id), "alert").
@@ -561,7 +540,7 @@ Scenario: Edit Existing Node.
     |https://dashboard.testnet.pokt.network/dashboard/nodes/edit/d04a90f1d9b17f120474bf7274547139b1608dec|
     And should be able to change any node's dashboard detail, such as: "Node Name", "Node operator or Company name", "Contact Email".
     And clicks "Save".
-    Then user sees a PUT successfull (200 - true) call to:
+    Then user sees a PUT successful (200 - true) call to:
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes//d04a90f1d9b17f120474bf7274547139b1608dec|
     And user is taken back to the Node Detail page.
 
@@ -579,7 +558,7 @@ Scenario: Remove Existing Node.
     And user clicks on "Remove"
     Then user receives a confirmation message: "Are you sure you want to remove this node?"
     And user clicks "Remove"
-    Then user should see a successfull POST (200 - true) call to:
+    Then user should see a successful POST (200 - true) call to:
     |https://api-testnet.dashboard.pokt.network:4200/api/nodes//d04a90f1d9b17f120474bf7274547139b1608dec|
     And see a "Your node was successfully removed" message on:
     |https://dashboard.testnet.pokt.network/dashboard/nodes/detail/d04a90f1d9b17f120474bf7274547139b1608dec|
