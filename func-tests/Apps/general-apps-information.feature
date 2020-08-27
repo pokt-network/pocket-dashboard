@@ -114,6 +114,11 @@ Scenario: Create a New App - Free Tier (Launch Offering Plan)
     Then the user should be taken to the APP's creation form:
     |https://dashboard.testnet.pokt.network/dashboard/apps/new|
     And provide a "Application Name", "Application Developer or Company Name", "Contact Email", "Website", and an "optional description", notice that these fiels are required.
+    And user provides more than 20 characters to the "Application Name" and "Application Developer or Company Name".
+    And user receives the validation messages when characters are exceeded.
+    Then user provides a file to the icon upload, exceeding 100KBs.
+    And user received the error validation message.
+    Then user meets the validation.
     And click on "continue".
     Then user shuld be takent to the passphrase creation step:
     |https://dashboard.testnet.pokt.network/dashboard/apps/new/passphrase|
@@ -168,8 +173,6 @@ Scenario: Create a New App - Free Tier (Launch Offering Plan)
             ]
         }
     }
-    And receive a notification email, which template looks like: "Your APP has been successfully created" with your APP details
-    |https://mail.google.com/mail/u/1?ui=2&ik=23126de247&view=lg&permmsgid=msg-f%3A1675629210662511838&ser=1|
     And Private Key and Address must be autopopulated.
     And user can click on the "eye" icon to unmask the password and private key.
     Then user clicks "Download Key File".
@@ -178,10 +181,8 @@ Scenario: Create a New App - Free Tier (Launch Offering Plan)
     And click on "Continue"
     Then the user should be taken to the "Supported Blockchains" section:
     |https://dashboard.testnet.pokt.network/dashboard/apps/new/chains|
-    And check the desired networks to be served.
-    And provide the Service URL.
-    And see the "Warning, before you continue!" message, with the click here link: 
-    |https://docs.pokt.network/docs/testing-your-app|
+    And user types in the desired networks to relay data for.
+    And check the desired networks to relay data for.
     And click on "Continue".
     Then the user should be taken to the "Choose your plan" screen:
     |https://dashboard.testnet.pokt.network/dashboard/apps/new/tiers|
@@ -189,6 +190,8 @@ Scenario: Create a New App - Free Tier (Launch Offering Plan)
     And clicks on "How it works".
     Then a popup appears showing the user the Launch Offering plan information.
     And user clicks on "continue" or "x" to return to the plan information.
+    And user clicks on the FAQs, which opens in a separate tab.
+    And user clicks on the Terms and Conditions, which open in a separate tab.
     And user clicks on "Join now"
     Then user is taken to the APP's details screen:
     |https://dashboard.testnet.pokt.network/dashboard/apps/detail/5f43aff7d2cd7c002e4da0e2|
@@ -202,7 +205,11 @@ Scenario: Create a New App - Free Tier (Launch Offering Plan)
     And should've seen a successfull POST transaction (200 - OK) to:
     |https://api-testnet.dashboard.pokt.network:4200/api/applications/freetier/stake|
     And next to the application's name at the top, user should see a "launch offering plan" tag.
-    And after <blockTime> has passed, then the APP Detail should be available.
+    And user verify the present of the alert box, stating the in the next block the notification on the APP ready to be used.
+    And after 2 <blockTime> has passed, then the APP Detail should be available.
+    And the alert box disappeared.
+    And the Unstake button have disappeared.
+    And the user receives the APP Staked notification email.
 
 Scenario: Create a New App - Free Tier (Launch Offering Plan) - Verify via the CLI
     Given that the user is in the Pocket Dashboard. Example: 
@@ -280,7 +287,6 @@ Scenario: Create a New App - Free Tier (Launch Offering Plan) - Verify via the C
     Then the user should be taken to the "Supported Blockchains" section:
     |https://dashboard.testnet.pokt.network/dashboard/apps/new/chains|
     And check the desired networks to be served.
-    And provide the Service URL.
     And see the "Warning, before you continue!" message, with the click here link: 
     |https://docs.pokt.network/docs/testing-your-app|
     And click on "Continue".
@@ -395,10 +401,7 @@ Scenario: Create a New App - Stake and Scale
     And click on "Continue"
     Then the user should be taken to the "Supported Blockchains" section:
     |https://dashboard.testnet.pokt.network/dashboard/apps/new/chains|
-    And check the desired networks to be served.
-    And provide the Service URL.
-    And see the "Warning, before you continue!" message, with the click here link: 
-    |https://docs.pokt.network/docs/testing-your-app|
+    And check the desired networks to serve relays to.
     And click on "Continue".
     Then the user should be taken to the "Choose your plan" screen:
     |https://dashboard.testnet.pokt.network/dashboard/apps/new/tiers|
@@ -410,9 +413,11 @@ Scenario: Create a New App - Stake and Scale
     Then the user is taken to the "Checkout" page:
     |https://dashboard.testnet.pokt.network/dashboard/apps/new/relays|
     And the user slides to select how many relays per day will be purchased.
-    And user notices that the minimum is 433RPD and the maximum is 5,000,000
+    And user notices that the minimum is 433RPD and the maximum is 5,000,000.
+    And user verifies that the minimum is equivalent to 1USD and the maximum is equivalent to 10,000USD.
     And each time the user slides to select a quantity, the cost is calculated and the following GET call is OK:
     |https://api-testnet.dashboard.pokt.network:4200/api/checkout/applications/cost?rpd=955443|
+    And user references the relays calculation formula to confirm information.
     Then the user clicks on "Checkout".
     And the user is taken to the "Order Summary Screen".
     |https://dashboard.testnet.pokt.network/dashboard/payment/summary|
@@ -431,7 +436,8 @@ Scenario: Create a New App - Stake and Scale
     Then the card should be added successfully.
     And user could "add a new card" if desired.
     And see the banner: "Your payment method was successfully added".
-    And click on "I agree to Purchase Terms and Conditions"
+    And click on "I agree to Purchase Terms and Conditions".
+    And the document opens in a new tab, alongside the constitution document.
     And Purchase Terms and conditions link is present:
     |http://www.pokt.network/pokt-token-purchase-agreement/|
     And user clicks on "Continue".
@@ -444,8 +450,10 @@ Scenario: Create a New App - Stake and Scale
     And see a successful POST (200 - OK) calls to:
     |https://api-testnet.dashboard.pokt.network:4200/api/checkout/apps/pokt|
     |https://api-testnet.dashboard.pokt.network:4200/api/apps/custom/stake|
+    And user receives a notification email of: "Payment Completed APP/Payment Declined".
     And can see the "Attention" banner message.
     And can print your invoice by clicking on "Print".
+    And user confirms in the printing invoice, the values in the previous invoice section matching the following: "Purchased Tokens, Token Price, Date, Michael's Signature"
     Then user can click on the "Go to App detail" button:
     |https://dashboard.testnet.pokt.network/dashboard/apps/detail/5f43b665d2cd7c002e4da0e6|
     And user can see all of its apps details, such as "Name, Company Name, Description, POKT staked, POKT balance, Stake Status, Max Relays Per Day, Networks, Address, Public Key, Web Site and Contact Email"
@@ -531,7 +539,6 @@ Scenario: Create a New App - Stake and Scale, verify via the CLI
     Then the user should be taken to the "Supported Blockchains" section:
     |https://dashboard.testnet.pokt.network/dashboard/apps/new/chains|
     And check the desired networks to be served.
-    And provide the Service URL.
     And see the "Warning, before you continue!" message, with the click here link: 
     |https://docs.pokt.network/docs/testing-your-app|
     And click on "Continue".
@@ -680,7 +687,6 @@ Scenario: Create a New App - Stake and Scale - Wrong Payment Details
     Then the user should be taken to the "Supported Blockchains" section:
     |https://dashboard.testnet.pokt.network/dashboard/apps/new/chains|
     And check the desired networks to be served.
-    And provide the Service URL.
     And see the "Warning, before you continue!" message, with the click here link: 
     |https://docs.pokt.network/docs/testing-your-app|
     And click on "Continue".
@@ -749,13 +755,15 @@ Scenario: Import an APP - Stake and Scale
     Then the user should be taken to:
     |https://dashboard.testnet.pokt.network/dashboard/apps/import|
     And see all of the information empty.
-    And user should be able to upload the APP's key file.
-    And when downloaded, provides the passphrase.
+    And user should be able to upload the APP's key file or the Raw PK.
+    And when uploaded, provides the passphrase.
+    Then the user see all the data autopopulated.
     And clicks on "Continue".
     Then the user is taken to the APP Information screen:
     |https://dashboard.testnet.pokt.network/dashboard/apps/new|
     And user provides the APP's information as follows: "Application Name", "Application Developer or Company Name", "Contact Email", "Website" and "Description". Notice that Website nor Description, are required fields.
     And user clicks on "Continue"
+    And a noticiation email is received by the user as Create/Import APP.
     Then the user follows the exact same flow for APPs creation using Stake and Scale.
 
 Scenario: Import an APP - Wrong file
