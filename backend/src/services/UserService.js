@@ -634,21 +634,27 @@ export default class UserService extends BaseService {
 
     if (payload instanceof DashboardValidationError) {
       return payload;
+
     }
 
     // Check if the user exists in the DB
-    const userDB = await this.__getUser(payload.data.email | "");
+    const userDB = await this.__getUser(payload.email);
 
     if (userDB) {
+      const userId = userDB._id.toString();
+      const id = payload.id.toString();
 
-      if (userDB.id === payload.data.id) {
+      if (userId === id ) {
         // Return the new session tokens
-
-        return await this.generateNewSessionTokens(payload.data.id, payload.data.email);
+        return await this.generateNewSessionTokens(id, payload.email);
+      } else {
+        return new DashboardValidationError("Failed to renew session, provided information doesn't match database.");
       }
 
+    } else {
+      return new DashboardValidationError("Failed to renew session, no user exists for the provided email.");
     }
-    return new DashboardValidationError("Token is invalid.");
+
   }
 
   /**
@@ -674,7 +680,7 @@ export default class UserService extends BaseService {
     }, Configurations.auth.jwt.secret_key, {expiresIn: Configurations.auth.jwt.refresh_expiration});
 
     return {
-      token: accessToken,
+      accessToken: accessToken,
       refreshToken: refreshToken
     };
   }
@@ -709,7 +715,7 @@ export default class UserService extends BaseService {
     } else {
       switch (payload.name) {
         case "TokenExpiredError":
-          return await this.renewSessionTokens(token);
+          return new DashboardValidationError("Token is expired.");
         case "JsonWebTokenError":
           return new DashboardValidationError("Token malformed or signature invalid.");
         case "NotBeforeError":
