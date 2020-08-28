@@ -5,10 +5,10 @@ const axiosInstance = () => {
 
   axios.interceptors.request.use(
     async config => {
-      const {token, refreshToken} = UserService.getUserInfo();
+      const {accessToken, refreshToken} = UserService.getUserInfo();
 
     config.headers = {
-      "Authorization": `Token ${token}, Refresh ${refreshToken}`,
+      "Authorization": `Token ${accessToken}, Refresh ${refreshToken}`,
       "Accept": "application/json",
     };
     return config;
@@ -16,8 +16,24 @@ const axiosInstance = () => {
     throw error;
   });
 
+  axios.interceptors.response.use(function (response) {
+    // TODO: Intercept every response and update session tokens if available
+    // TODO: Parse Authorization headers to retrieve both tokens
+    if (response.headers.Authorization) {
+      // Save the new session tokens into the user cache
+      UserService.saveUserSessionInCache(response.session);
+    }
+
+    return response;
+  }, function (error) {
+    // Do something with response error
+    return Promise.reject(error);
+  });
+
   return axios;
 };
+
+
 
 export default axiosInstance;
 

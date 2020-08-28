@@ -21,7 +21,7 @@ class PocketUserService extends PocketBaseService {
    * Save user data in local storage.
    *
    * @param {{username:string,email:string,provider:string}} user Pocket User to save.
-   * @param {{token: string, refreshToken: string}} session User session and refresh token.
+   * @param {{accessToken: string, refreshToken: string}} session User session and refresh token.
    * @param {boolean} loggedIn If user is logged in.
    */
   saveUserInCache(user, session, loggedIn) {
@@ -29,7 +29,19 @@ class PocketUserService extends PocketBaseService {
     this.ls.set("user_name", {data: user.username});
     this.ls.set("user_email", {data: user.email});
     this.ls.set("user_provider", {data: user.provider});
-    this.ls.set("access_token", {data: session.token});
+    this.ls.set("access_token", {data: session.accessToken});
+    this.ls.set("refresh_token", {data: session.refreshToken});
+  }
+
+  /**
+   * Update the user session information in local storage.
+   *
+   * @param {{username:string,email:string,provider:string}} user Pocket User to save.
+   * @param {{accessToken: string, refreshToken: string}} session User session and refresh token.
+   * @param {boolean} loggedIn If user is logged in.
+   */
+  saveUserSessionInCache(session) {
+    this.ls.set("access_token", {data: session.accessToken});
     this.ls.set("refresh_token", {data: session.refreshToken});
   }
 
@@ -76,7 +88,7 @@ class PocketUserService extends PocketBaseService {
         name: this.ls.get("user_name").data,
         email: this.ls.get("user_email").data,
         provider: this.ls.get("user_provider").data,
-        token: this.ls.get("access_token").data,
+        accessToken: this.ls.get("access_token").data,
         refreshToken: this.ls.get("refresh_token").data,
       };
     } else {
@@ -84,7 +96,7 @@ class PocketUserService extends PocketBaseService {
         name: "",
         email: "",
         provider: "",
-        token: "",
+        accessToken: "",
         refreshToken: ""
       };
     }
