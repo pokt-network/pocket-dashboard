@@ -160,7 +160,9 @@ export function configureExpress(expressApp) {
   }));
   expressApp.use(cookieParser());
   expressApp.use(logger("dev"));
-  expressApp.use(cors());
+  expressApp.use(cors({
+    exposedHeaders: ["Authorization"],
+  }));
   //
   expressApp.use(jwt({
     secret: Configurations.auth.jwt.secret_key,

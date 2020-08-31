@@ -17,8 +17,6 @@ const axiosInstance = () => {
   });
 
   axios.interceptors.response.use(function (response) {
-    // TODO: Intercept every response and update session tokens if available
-    // TODO: Parse Authorization headers to retrieve both tokens
     if (response.headers.Authorization) {
       // Save the new session tokens into the user cache
       UserService.saveUserSessionInCache(response.session);
