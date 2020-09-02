@@ -5,10 +5,10 @@ const axiosInstance = () => {
 
   axios.interceptors.request.use(
     async config => {
-      const {accessToken, refreshToken} = UserService.getUserInfo();
+      const {accessToken, refreshToken, email} = UserService.getUserInfo();
 
     config.headers = {
-      "Authorization": `Token ${accessToken}, Refresh ${refreshToken}`,
+      "Authorization": `Token ${accessToken}, Refresh ${refreshToken}, Email ${email}`,
       "Accept": "application/json",
     };
     return config;
@@ -17,9 +17,17 @@ const axiosInstance = () => {
   });
 
   axios.interceptors.response.use(function (response) {
-    if (response.headers.Authorization) {
+    if (response.status === 401) {
+      // Clear user cache and return to the login page
+      UserService.removeUserFromCached();
+    } else if (response.headers.authorization) {
       // Save the new session tokens into the user cache
-      UserService.saveUserSessionInCache(response.session);
+      if (response.headers.authorization.split(", ")[0].split(" ")[0] === "Token" && response.headers.authorization.split(", ")[1].split(" ")[0] === "Refresh") {
+        const accessToken = response.headers.authorization.split(", ")[0].split(" ")[1];
+        const refreshToken = response.headers.authorization.split(", ")[1].split(" ")[1];
+
+        UserService.saveUserSessionInCache({accessToken, refreshToken});
+      }
     }
 
     return response;
