@@ -153,6 +153,34 @@ export const Configurations = {
  */
 export function configureExpress(expressApp) {
   const userService = new UserService();
+  const excludedPathList = [
+    "/api/users/validate-token",
+    "/api/users/auth/login",
+    "/api/users/auth/signup",
+    "/api/users/auth/providers",
+    "/api/users/auth/providers/login",
+    "/api/users/auth/resend-signup-email",
+    "/api/users/auth/is-validated",
+    "/api/users/auth/reset-password",
+    "/api/users/auth/send-reset-password-email",
+    "/api/users/auth/verify-captcha",
+    "/api/users/auth/send-reset-password-email",
+    "/api/users/auth/unsubscribe",
+    "/api/users/auth/subscribe",
+    "/api/security_questions/*",
+    "/api/security_questions/answered",
+    "/api/applications/relays-per-day",
+    "/api/nodes/validator-power",
+    "/api/checkout/applications/cost",
+    "/api/checkout/applications/pokt",
+    "/api/checkout/nodes/cost",
+    "/api/checkout/nodes/pokt",
+    "/api/network/chains",
+    "/api/network/chains",
+    "/api/network/chains",
+    "/api/network/chains",
+    "login"
+  ];
 
   expressApp.use(express.json());
   expressApp.use(express.urlencoded({
@@ -163,7 +191,7 @@ export function configureExpress(expressApp) {
   expressApp.use(cors({
     exposedHeaders: ["Authorization"],
   }));
-  //
+  // JWT getToken for custom auth headers
   expressApp.use(jwt({
     secret: Configurations.auth.jwt.secret_key,
     algorithms: ["HS256"],
@@ -180,30 +208,37 @@ export function configureExpress(expressApp) {
 
       return null;
     }
-  }).unless({ // TODO: Add a list of endpoints that doesn't need auth
-    path: [
-      "/api/users/auth/login",
-      "login"
-    ]
+  }).unless({
+    path: excludedPathList
   }));
 
   expressApp.use(async function (err, req, res, next) {
+    // Try to renew the session if expired
     if (err.message === "jwt expired") {
       // Try to get new session tokens using the refresh token
-      if (req.headers.authorization.split(", ")[1].split(" ")[0] === "Refresh") {
+      if (req.headers.authorization.split(", ")[1].split(" ")[0] === "Refresh" && req.headers.authorization.split(", ")[2].split(" ")[0] === "Email") {
         const refreshToken = req.headers.authorization.split(", ")[1].split(" ")[1];
+        const userEmail = req.headers.authorization.split(", ")[2].split(" ")[1];
 
-        if (refreshToken) {
-          const newSessionTokens = await userService.renewSessionTokens(refreshToken);
+        if (refreshToken && userEmail) {
+          const newSessionTokens = await userService.renewSessionTokens(refreshToken, userEmail);
 
           if (newSessionTokens instanceof DashboardValidationError) {
             throw newSessionTokens;
           }
+
           // Update the auth headers with the new tokens
           res.set("Authorization", `Token ${newSessionTokens.accessToken}, Refresh ${newSessionTokens.refreshToken}`);
         }
       } else {
         res.status(401).send("Token expired, please sign in again.");
+      }
+    }
+
+    // Check if the request contains an email, meaning a change or private data is being requested
+    if (req.body && req.body.email && !excludedPathList.includes(req.path)) {
+      if (!await userService.verifySessionForClient(req.headers.authorization, req.body.email)) {
+        res.send({success: false, data: "Account doesn't belong to the client."});
       }
     }
     next();
