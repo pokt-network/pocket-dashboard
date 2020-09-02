@@ -76,8 +76,8 @@ export class PocketApplication {
     this.gatewaySettings = gatewaySettings || {
       secretKey: crypto.randomBytes(16).toString("hex"),
       secretKeyRequired: false,
-      whiltelistOrigins: [],
-      whiltelistUserAgents: []
+      whitelistOrigins: [],
+      whitelistUserAgents: []
     };
   }
 
