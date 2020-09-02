@@ -57,7 +57,7 @@ class GeneralSettings extends Component {
       return item.trim();
     });
 
-    application.gatewaySettings.whiltelistUserAgents = agents;
+    application.gatewaySettings.whitelistUserAgents = agents;
 
     await ApplicationService.updateGatewaySettings(application);
 
@@ -73,7 +73,7 @@ class GeneralSettings extends Component {
       return item.trim();
     });
 
-    application.gatewaySettings.whiltelistOrigins = origins;
+    application.gatewaySettings.whitelistOrigins = origins;
 
     await ApplicationService.updateGatewaySettings(application);
 
@@ -131,8 +131,8 @@ class GeneralSettings extends Component {
       chains,
       pocketApplication,
       secretKey: pocketApplication.gatewaySettings.secretKeyRequired,
-      useragents: pocketApplication.gatewaySettings.whiltelistUserAgents.join(),
-      origins: pocketApplication.gatewaySettings.whiltelistOrigins.join(),
+      useragents: pocketApplication.gatewaySettings.whitelistUserAgents.join(),
+      origins: pocketApplication.gatewaySettings.whitelistOrigins.join(),
       appSecretKey: pocketApplication.gatewaySettings.secretKey,
       appId: pocketApplication.id,
       endpoint: endpoint,
