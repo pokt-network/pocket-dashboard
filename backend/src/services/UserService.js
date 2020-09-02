@@ -624,17 +624,22 @@ export default class UserService extends BaseService {
    * Renew Session tokens using a valid refresh token.
    *
    * @param {string} token Refresh token.
+   * @param {string} userEmail User email.
    *
    * @returns {Promise<{token: string, refreshToken: string}>} The Session tokens generated.
    * @async
    */
-  async renewSessionTokens(token) {
+  async renewSessionTokens(token, userEmail) {
 
     const payload = await this.decodeToken(token, true);
 
     if (payload instanceof DashboardValidationError) {
       return payload;
 
+    }
+    // Validate if the account belongs to the client
+    if (payload.email !== userEmail) {
+      return new DashboardValidationError("Failed to renew session, client email doesn't match the token payload email.");
     }
 
     // Check if the user exists in the DB
@@ -700,19 +705,45 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * Verify if the session token belongs to the client email account.
+   *
+   * @param {object} authHeader Authorization header object.
+   * @param {string} userEmail Email provided by the client.
+   *
+   * @returns {Promise<boolean>} True or false.
+   * @async
+   */
+  async verifySessionForClient(authHeader, userEmail) {
+    const accessToken = authHeader.split(", ")[0].split(" ")[1];
+    const email = authHeader.split(", ")[2].split(" ")[1];
+    const clientEmail = userEmail || email;
+
+    const payload = await this.decodeToken(accessToken, true);
+
+    if (payload instanceof DashboardValidationError) {
+      return false;
+    }
+
+    if (payload.email === email && clientEmail === email) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * Decode a token.
    *
    * @param {string} token Token to decode.
+   * @param {boolean} ignoreExpiration True if the expiration date should be ignored or false if not.
    *
    * @returns {object | DashboardValidationError} The token payload.
    * @async
    */
-  async decodeToken(token, isRefreshToken = false) {
-    const payload = jwt.verify(token, Configurations.auth.jwt.secret_key, {ignoreExpiration: isRefreshToken});
+  async decodeToken(token, ignoreExpiration = false) {
+    const payload = jwt.verify(token, Configurations.auth.jwt.secret_key, {ignoreExpiration: ignoreExpiration});
 
-    if (payload.data) {
-      return payload.data;
-    } else {
+    if (payload.name) {
       switch (payload.name) {
         case "TokenExpiredError":
           return new DashboardValidationError("Token is expired.");
@@ -723,6 +754,8 @@ export default class UserService extends BaseService {
         default:
           return new DashboardValidationError("Token is not valid.");
       }
+    } else {
+      return payload.data !== undefined ? payload.data : payload;
     }
   }
 
