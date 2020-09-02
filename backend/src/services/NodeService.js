@@ -266,6 +266,50 @@ export default class NodeService extends BasePocketService {
   }
 
   /**
+   * Verify if the node belongs to the client's account using an node information
+   *
+   * @param {string} nodeAddress Node Address.
+   * @param {string} authHeader Authorization header.
+   *
+   * @returns {Promise<boolean>} True if the node belongs to the client account or false otherwise.
+   * @async
+   */
+  async verifyNodeBelongsToClient(nodeAddress, authHeader) {
+    // Retrieve the session tokens from the auth headers
+    const accessToken = authHeader.split(", ")[0].split(" ")[1];
+    const userEmail = authHeader.split(", ")[2].split(" ")[1];
+
+    if (accessToken && userEmail) {
+      const payload = await this.userService.decodeToken(accessToken, true);
+
+      if (payload instanceof DashboardValidationError) {
+        throw payload;
+      }
+      // Use token email to retrieve the node
+      const node = await this.getNode(nodeAddress);
+
+      if (node.user.toString() === userEmail.toString()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Verify if the session token belongs to the client email account.
+   *
+   * @param {object} authHeader Authorization header object.
+   * @param {string} userEmail Email provided by the client.
+   *
+   * @returns {Promise<boolean>} True or false.
+   * @async
+   */
+  async verifySessionForClient(authHeader, userEmail) {
+    return await this.userService.verifySessionForClient(authHeader, userEmail);
+  }
+
+  /**
    * Get all nodes on network.
    *
    * @param {number} limit Limit of query.
@@ -388,39 +432,47 @@ export default class NodeService extends BasePocketService {
    * @param {string} nodeUnstakeTransaction.address Sender address
    * @param {string} nodeUnstakeTransaction.raw_hex_bytes Raw transaction bytes
    * @param {string} nodeLink Link to detail for email.
+   * @param {string} authHeader Auth header.
    *
    * @async
    */
-  async unstakeNode(nodeUnstakeTransaction, nodeLink) {
+  async unstakeNode(nodeUnstakeTransaction, nodeLink, authHeader) {
     const {
       address,
       raw_hex_bytes: rawHexBytes
     } = nodeUnstakeTransaction;
 
-    // Submit transaction
-    const nodeUnstakedHash = await this.pocketService.submitRawTransaction(address, rawHexBytes);
-
-    // Gather email data
+    // Retrieve the node information
     const node = await this.getNode(address);
-    const emailData = {
-      userName: node.pocketNode.user,
-      contactEmail: node.pocketNode.contactEmail,
-      nodeData: {
-        name: node.pocketNode.name,
-        link: nodeLink
+
+    // Check if the node belogns to the client
+    if (await this.verifyNodeBelongsToClient(node.id, authHeader)) {
+      // Submit transaction
+      const nodeUnstakedHash = await this.pocketService.submitRawTransaction(address, rawHexBytes);
+
+      // Gather email data
+      const emailData = {
+        userName: node.pocketNode.user,
+        contactEmail: node.pocketNode.contactEmail,
+        nodeData: {
+          name: node.pocketNode.name,
+          link: nodeLink
+        }
+      };
+
+      // Add transaction to queue
+      const result = await this.transactionService.addNodeUnstakeTransaction(nodeUnstakedHash, emailData);
+
+      if (!result) {
+        throw new Error("Couldn't register app unstake transaction for email notification");
       }
-    };
 
-    // Add transaction to queue
-    const result = await this.transactionService.addNodeUnstakeTransaction(nodeUnstakedHash, emailData);
+      node.pocketNode.updatingStatus = false;
 
-    if (!result) {
-      throw new Error("Couldn't register app unstake transaction for email notification");
+      await this.__updatePersistedNode(node.pocketNode);
+    } else {
+      throw new Error("Node doesn't belong to the provided client account.");
     }
-
-    node.pocketNode.updatingStatus = false;
-
-    await this.__updatePersistedNode(node.pocketNode);
   }
 
   /**
