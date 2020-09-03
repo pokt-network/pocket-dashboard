@@ -169,18 +169,35 @@ export default class PaymentService extends BaseService {
   /**
    * Delete a payment method from DB.
    *
-   * @param {string} paymentMethodID Payment method ID
+   * @param {string} paymentMethodID Payment method ID.
+   * @param {string} authHeader Authorization header.
    *
    * @returns {Promise<boolean>} If was deleted or not.
    * @async
    */
-  async deletePaymentMethod(paymentMethodID) {
+  async deletePaymentMethod(paymentMethodID, authHeader) {
     const filter = {id: paymentMethodID};
+    const userEmail = authHeader.split(", ")[2].split(" ")[1];
+    let belongsToClient = false;
 
-    /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.deleteEntities(PAYMENT_METHOD_COLLECTION_NAME, filter);
+    if (userEmail) {
+      const paymentMethods = await this.getUserPaymentMethods(userEmail);
 
-    return result.result.ok === 1;
+      paymentMethods.forEach(method => {
+
+        if (method.id.toString() === paymentMethodID.toString()) {
+          belongsToClient = true;
+        }
+      });
+
+      if (belongsToClient) {
+        /** @type {{result: {n:number, ok: number}}} */
+        const result = await this.persistenceService.deleteEntities(PAYMENT_METHOD_COLLECTION_NAME, filter);
+
+        return result.result.ok === 1;
+      }
+    }
+    return belongsToClient;
   }
 
   /**
@@ -354,16 +371,22 @@ export default class PaymentService extends BaseService {
    * Get Payment data from history.
    *
    * @param {string} paymentID Payment ID.
+   * @param {string} authHeader Auth header.
    *
    * @returns {Promise<PaymentHistory>} Payment data of the payment id.
    * @async
    */
-  async getPaymentFromHistory(paymentID) {
+  async getPaymentFromHistory(paymentID, authHeader) {
     const filter = {paymentID};
     const dbPaymentHistory = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
 
     if (dbPaymentHistory) {
-      return PaymentHistory.createPaymentHistory(dbPaymentHistory);
+      const paymentHistory = PaymentHistory.createPaymentHistory(dbPaymentHistory);
+      const userEmail = authHeader.split(", ")[2].split(" ")[1];
+
+      if (paymentHistory && userEmail && userEmail.toString() === paymentHistory.user.toString()) {
+        return paymentHistory;
+      }
     }
 
     return null;

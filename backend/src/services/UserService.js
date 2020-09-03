@@ -150,7 +150,7 @@ export default class UserService extends BaseService {
     const filter = {email};
     const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
-    return PocketUser.createPocketUserFromDB(dbUser);
+    return PocketUser.removeSensitiveFields(PocketUser.createPocketUserFromDB(dbUser));
   }
 
   /**
@@ -240,23 +240,32 @@ export default class UserService extends BaseService {
     if (!userDB) {
       throw new DashboardError("Invalid username.");
     }
-
+    // Retrieve the user from the db
     const pocketUser = PocketUser.createPocketUserFromDB(userDB);
 
     if (!pocketUser.password) {
-      throw new DashboardValidationError("Passwords do not match.");
+      throw new DashboardValidationError("Password is invalid.");
     }
 
+    // Check if password is correct
     const passwordValidated = await EmailUser.validatePassword(password, pocketUser.password);
 
     if (!passwordValidated) {
       throw new DashboardValidationError("Passwords do not match.");
     }
 
+    // Access and refresh tokens generation
+    const tokens = await this.generateNewSessionTokens(userDB._id, userDB.email);
+
     // Update last login of user on DB.
     await this.__updateLastLogin(pocketUser);
 
-    return PocketUser.removeSensitiveFields(pocketUser);
+    const user = PocketUser.removeSensitiveFields(pocketUser);
+
+    return {
+      user: user,
+      session: tokens
+    };
   }
 
   /**
@@ -612,6 +621,76 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * Renew Session tokens using a valid refresh token.
+   *
+   * @param {string} token Refresh token.
+   * @param {string} userEmail User email.
+   *
+   * @returns {Promise<{token: string, refreshToken: string}>} The Session tokens generated.
+   * @async
+   */
+  async renewSessionTokens(token, userEmail) {
+
+    const payload = await this.decodeToken(token, true);
+
+    if (payload instanceof DashboardValidationError) {
+      return payload;
+
+    }
+    // Validate if the account belongs to the client
+    if (payload.email !== userEmail) {
+      return new DashboardValidationError("Failed to renew session, client email doesn't match the token payload email.");
+    }
+
+    // Check if the user exists in the DB
+    const userDB = await this.__getUser(payload.email);
+
+    if (userDB) {
+      const userId = userDB._id.toString();
+      const id = payload.id.toString();
+
+      if (userId === id ) {
+        // Return the new session tokens
+        return await this.generateNewSessionTokens(id, payload.email);
+      } else {
+        return new DashboardValidationError("Failed to renew session, provided information doesn't match database.");
+      }
+
+    } else {
+      return new DashboardValidationError("Failed to renew session, no user exists for the provided email.");
+    }
+
+  }
+
+  /**
+   * Generate Session tokens.
+   *
+   * @param {string} userId User identifier.
+   * @param {string} userEmail User Email.
+   *
+   * @returns {Promise<{token: string, refreshToken: string}>} Sessions generated tokens.
+   * @async
+   */
+  async generateNewSessionTokens(userId, userEmail) {
+    const payload = {id: userId, email: userEmail};
+
+    // Access token
+    const accessToken = jwt.sign({
+      data: payload
+    }, Configurations.auth.jwt.secret_key, {expiresIn: Configurations.auth.jwt.expiration});
+
+    // Refresh token
+    const refreshToken = jwt.sign({
+      data: payload
+    }, Configurations.auth.jwt.secret_key, {expiresIn: Configurations.auth.jwt.refresh_expiration});
+
+    return {
+      accessToken: accessToken,
+      refreshToken: refreshToken
+    };
+  }
+
+  /**
    * Generate token encapsulating the user email.
    *
    * @param {string} userEmail User email to encapsulate.
@@ -626,15 +705,58 @@ export default class UserService extends BaseService {
   }
 
   /**
+   * Verify if the session token belongs to the client email account.
+   *
+   * @param {object} authHeader Authorization header object.
+   * @param {string} userEmail Email provided by the client.
+   *
+   * @returns {Promise<boolean>} True or false.
+   * @async
+   */
+  async verifySessionForClient(authHeader, userEmail) {
+    const accessToken = authHeader.split(", ")[0].split(" ")[1];
+    const email = authHeader.split(", ")[2].split(" ")[1];
+    const clientEmail = userEmail || email;
+
+    const payload = await this.decodeToken(accessToken, true);
+
+    if (payload instanceof DashboardValidationError) {
+      return false;
+    }
+
+    if (payload.email === email && clientEmail === email) {
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
    * Decode a token.
    *
    * @param {string} token Token to decode.
+   * @param {boolean} ignoreExpiration True if the expiration date should be ignored or false if not.
    *
-   * @returns {Promise<*>} The token payload.
+   * @returns {object | DashboardValidationError} The token payload.
    * @async
    */
-  decodeToken(token) {
-    return jwt.verify(token, Configurations.auth.jwt.secret_key);
+  async decodeToken(token, ignoreExpiration = false) {
+    const payload = jwt.verify(token, Configurations.auth.jwt.secret_key, {ignoreExpiration: ignoreExpiration});
+
+    if (payload.name) {
+      switch (payload.name) {
+        case "TokenExpiredError":
+          return new DashboardValidationError("Token is expired.");
+        case "JsonWebTokenError":
+          return new DashboardValidationError("Token malformed or signature invalid.");
+        case "NotBeforeError":
+          return new DashboardValidationError("Token not active.");
+        default:
+          return new DashboardValidationError("Token is not valid.");
+      }
+    } else {
+      return payload.data !== undefined ? payload.data : payload;
+    }
   }
 
   /**

@@ -1,9 +1,10 @@
 import PocketBaseService from "./PocketBaseService";
-import axios from "axios";
 import PocketUserService from "./PocketUserService";
 import {ITEM_TYPES} from "../../_constants";
 import SecureLS from "secure-ls";
 import {Configurations} from "../../_configuration";
+import axiosInstance from "./_serviceHelper";
+const axios = axiosInstance();
 
 class PocketPaymentService extends PocketBaseService {
   constructor() {

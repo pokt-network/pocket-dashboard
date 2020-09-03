@@ -248,6 +248,37 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
+   * Verify if the application belongs to the client's account using an application id
+   *
+   * @param {string} applicationId Application Identifier.
+   * @param {string} authHeader Authorization header.
+   *
+   * @returns {Promise<boolean>} True if the app belongs to the client account or false otherwise.
+   * @async
+   */
+  async verifyApplicationBelongsToClient(applicationId, authHeader) {
+    // Retrieve the session tokens from the auth headers
+    const accessToken = authHeader.split(", ")[0].split(" ")[1];
+    const userEmail = authHeader.split(", ")[2].split(" ")[1];
+
+    if (accessToken && userEmail) {
+      const payload = await this.userService.decodeToken(accessToken, true);
+
+      if (payload instanceof DashboardValidationError) {
+        throw payload;
+      }
+      // Use token email to retrieve a list of the apps
+      const application = await this.getClientApplication(applicationId);
+
+      if (application.pocketApplication.user.toString() === userEmail.toString()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Get client's application account data.
    *
    * @param {string} applicationId Application address.
@@ -669,43 +700,49 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Unstake application.
    *
-   * @param {object} appUnstakeTransaction Transaction object.
-   * @param {string} appUnstakeTransaction.address Sender address
-   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {{address: string, raw_hex_bytes: string}} appUnstakeTransaction Transaction object.
    * @param {string} applicationLink Link to detail for email.
+   * @param {string} authHeader Auth header.
    *
    * @async
    */
-  async unstakeApplication(appUnstakeTransaction, applicationLink) {
+  async unstakeApplication(appUnstakeTransaction, applicationLink, authHeader) {
     const {
       address,
       raw_hex_bytes
     } = appUnstakeTransaction;
 
-    // Submit transaction
-    const appUnstakedHash = await this.pocketService.submitRawTransaction(address, raw_hex_bytes);
-
-    // Gather email data
+    // Retrieve app
     const application = await this.getApplication(address);
-    const emailData = {
-      userName: application.pocketApplication.user,
-      contactEmail: application.pocketApplication.contactEmail,
-      applicationData: {
-        name: application.pocketApplication.name,
-        link: applicationLink
+
+    // Check if the app belogns to the client
+    if (await this.verifyApplicationBelongsToClient(application.id, authHeader)) {
+      // Submit transaction
+      const appUnstakedHash = await this.pocketService.submitRawTransaction(address, raw_hex_bytes);
+
+      // Gather email data
+      const emailData = {
+        userName: application.pocketApplication.user,
+        contactEmail: application.pocketApplication.contactEmail,
+        applicationData: {
+          name: application.pocketApplication.name,
+          link: applicationLink
+        }
+      };
+
+      // Add transaction to queue
+      const result = await this.transactionService.addAppUnstakeTransaction(appUnstakedHash, emailData);
+
+      if (!result) {
+        throw new Error("Couldn't register app unstake transaction for email notification");
       }
-    };
 
-    // Add transaction to queue
-    const result = await this.transactionService.addAppUnstakeTransaction(appUnstakedHash, emailData);
+      application.pocketApplication.updatingStatus = false;
 
-    if (!result) {
-      throw new Error("Couldn't register app unstake transaction for email notification");
+      await this.__markApplicationAsFreeTier(application.pocketApplication, false);
+    } else {
+      throw new Error("Application doesn't belong to the provided client account.");
     }
-
-    application.pocketApplication.updatingStatus = false;
-
-    await this.__markApplicationAsFreeTier(application.pocketApplication, false);
   }
 
   /**
