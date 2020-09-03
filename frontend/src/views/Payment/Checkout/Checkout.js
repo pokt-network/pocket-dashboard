@@ -5,7 +5,7 @@ import {Button, Col, Row} from "react-bootstrap";
 import ReactToPrint from "react-to-print";
 import has from "lodash/has";
 import Invoice from "../../../core/components/Payment/Invoice";
-import {capitalize, formatCurrency} from "../../../_helpers";
+import {formatCurrency} from "../../../_helpers";
 import moment from "moment";
 import {ITEM_TYPES} from "../../../_constants";
 import ApplicationService from "../../../core/services/PocketApplicationService";
@@ -31,7 +31,7 @@ class Checkout extends Component {
         owner: "",
         id: "",
         date: "",
-        card: "",
+        method: "",
       },
       applicationId: "",
       details: [],
@@ -80,13 +80,11 @@ class Checkout extends Component {
       poktPrice,
     } = await PaymentService.getPaymentDetail(paymentId);
 
-    const {brand, lastDigits} = paymentMethod;
-
     const invoice = {
       id: id.replace("pi_", "").toLowerCase(),
       date: moment(date).format("DD MM YYYY"),
       owner: paymentMethod.holder,
-      card: `${capitalize(brand)} **** **** **** ${lastDigits}`,
+      method: paymentMethod.method,
       poktPrice,
     };
 
@@ -113,7 +111,7 @@ class Checkout extends Component {
   }
 
   render() {
-    const {owner, id, date, card, poktPrice} = this.state.invoice;
+    const {owner, id, date, method, poktPrice} = this.state.invoice;
     const {
       applicationId,
       details,
@@ -130,7 +128,7 @@ class Checkout extends Component {
       {text: "Date", value: date},
       {text: "Bill to", value: owner},
       {text: "Invoice", value: id},
-      {text: "Card Detail", value: card},
+      {text: "Payment Method", value: method},
     ];
 
     const items = [
@@ -231,7 +229,7 @@ class Checkout extends Component {
             {text: "invoice", value: id},
             {text: "bill to", value: owner},
             {text: "date", value: date},
-            {text: "card detail", value: card},
+            {text: "payment method", value: method},
           ]}
           purchaseDetails={items}
           cardHolderName={owner}

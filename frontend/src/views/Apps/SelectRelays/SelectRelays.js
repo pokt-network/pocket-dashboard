@@ -18,6 +18,7 @@ import PocketAccountService from "../../../core/services/PocketAccountService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {isNaN} from "formik";
 import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
+import UserService from "../../../core/services/PocketUserService";
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -144,7 +145,7 @@ class SelectRelays extends Component {
     return true;
   }
 
-  async createPaymentIntent(relays, currency, amount) {
+  async createPaymentIntent(relays, currency, amount, tokens) {
     const {address} = PocketApplicationService.getApplicationInfo();
     const {pocketApplication} = await PocketApplicationService.getApplication(address);
 
@@ -155,7 +156,7 @@ class SelectRelays extends Component {
     };
 
     const {success, data: paymentIntentData} = await PocketPaymentService
-      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, parseFloat(amount));
+      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, parseFloat(amount), tokens);
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);
@@ -185,28 +186,51 @@ class SelectRelays extends Component {
       const subTotalAmount = parseFloat(numeral(subTotal).format("0.00")).toFixed(2);
       const totalAmount = parseFloat(numeral(total).format("0.00")).toFixed(2);
 
-      const {data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, totalAmount);
+      const {data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, totalAmount, currentAccountBalance);
 
       PaymentService.savePurchaseInfoInCache({relays: parseInt(relaysSelected), costPerRelay: parseFloat(totalAmount)});
 
-      // eslint-disable-next-line react/prop-types
-      this.props.history.push({
-        pathname: _getDashboardPath(DASHBOARD_PATHS.orderSummary),
-        state: {
-          type: ITEM_TYPES.APPLICATION,
-          paymentIntent: paymentIntentData,
-          quantity: {
-            number: relaysSelected,
-            description: PURCHASE_ITEM_NAME.APPS,
+      if (total === 0) {
+        const user = UserService.getUserInfo().email;
+
+        // eslint-disable-next-line react/prop-types
+        this.props.history.replace({
+          pathname: _getDashboardPath(DASHBOARD_PATHS.invoice),
+          state: {
+            type: ITEM_TYPES.NODE,
+            paymentId: paymentIntentData.id,
+            paymentMethod: {
+              holder: user,
+              method: "POKT Tokens"
+            },
+            details: [
+              {value: relaysSelected, text: PURCHASE_ITEM_NAME.APPS, format: false},
+              {value: subTotalAmount, text: `${PURCHASE_ITEM_NAME.APPS} cost`, format: true},
+            ],
+            total,
+            currentAccountBalance,
           },
-          cost: {
-            number: subTotalAmount,
-            description: `${PURCHASE_ITEM_NAME.APPS} cost`,
+        });
+      } else {
+        // eslint-disable-next-line react/prop-types
+        this.props.history.push({
+          pathname: _getDashboardPath(DASHBOARD_PATHS.orderSummary),
+          state: {
+            type: ITEM_TYPES.APPLICATION,
+            paymentIntent: paymentIntentData,
+            quantity: {
+              number: relaysSelected,
+              description: PURCHASE_ITEM_NAME.APPS,
+            },
+            cost: {
+              number: subTotalAmount,
+              description: `${PURCHASE_ITEM_NAME.APPS} cost`,
+            },
+            total: totalAmount,
+            currentAccountBalance
           },
-          total: totalAmount,
-          currentAccountBalance
-        },
-      });
+        });
+      }
     } catch (e) {
       this.setState({
         error: {show: true, message: <h4>{e.toString()}</h4>},
@@ -263,30 +287,30 @@ class SelectRelays extends Component {
             <h2>
               Slide to select how many relays per day to purchase
             </h2>
-              <div className="slider-wrapper">
-                <AppSlider
-                  defaultValue={minRelays}
-                  onChange={this.onSliderChange}
-                  type={PURCHASE_ITEM_NAME.APPS}
-                  marks={{
-                    [minRelays]: `${formatNumbers(minRelays)} RPD`,
-                    // [maxRelays / 2]: {
-                    //   label: (
-                    //     <div className="average-stake-wrapper">
-                    //       <FontAwesomeIcon
-                    //         style={{color: STYLING.primaryColor}}
-                    //         icon={faCaretUp}
-                    //       />
-                    //       <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
-                    //     </div>
-                    //   ),
-                    // },
-                    [maxRelays]: `*${formatNumbers(maxRelays)} RPD*`,
-                  }}
-                  min={minRelays}
-                  max={maxRelays}
-                />
-              </div>
+            <div className="slider-wrapper">
+              <AppSlider
+                defaultValue={minRelays}
+                onChange={this.onSliderChange}
+                type={PURCHASE_ITEM_NAME.APPS}
+                marks={{
+                  [minRelays]: `${formatNumbers(minRelays)} RPD`,
+                  // [maxRelays / 2]: {
+                  //   label: (
+                  //     <div className="average-stake-wrapper">
+                  //       <FontAwesomeIcon
+                  //         style={{color: STYLING.primaryColor}}
+                  //         icon={faCaretUp}
+                  //       />
+                  //       <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
+                  //     </div>
+                  //   ),
+                  // },
+                  [maxRelays]: `*${formatNumbers(maxRelays)} RPD*`,
+                }}
+                min={minRelays}
+                max={maxRelays}
+              />
+            </div>
             <AppAlert
               className="max-alert"
               variant="primary"
@@ -295,9 +319,9 @@ class SelectRelays extends Component {
               <p className="alert-max">
                 Each RPD purchased on the Pocket Dashboard has a representation as a POKT token on the Pocket Network. Approx. 40 RPD = 1 POKT.
               </p>
-              <br/>
+              <br />
               <p className="alert-max">
-                *Need More Relays per Day? If you&apos;re interested in more relays beyond the maximum on the dashboard, <br/>
+                *Need More Relays per Day? If you&apos;re interested in more relays beyond the maximum on the dashboard, <br />
                 please <a href="mailto:dashboard@pokt.network">contact us</a> to find a solution specially designed for your app.
               </p>
             </AppAlert>
