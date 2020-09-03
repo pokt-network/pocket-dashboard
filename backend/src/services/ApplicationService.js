@@ -867,13 +867,12 @@ export default class ApplicationService extends BasePocketService {
       const applicationToEdit = application;
 
       // Update the new fields
-      applicationToEdit.name = application.name;
-      applicationToEdit.contactEmail = application.contactEmail;
-      applicationToEdit.description = application.description;
-      applicationToEdit.owner = application.owner;
-      applicationToEdit.url = application.url;
-      applicationToEdit.icon = application.icon;
-      applicationToEdit.id = application._id;
+      applicationToEdit.name = applicationData.name;
+      applicationToEdit.contactEmail = applicationData.contactEmail;
+      applicationToEdit.description = applicationData.description;
+      applicationToEdit.owner = applicationData.owner;
+      applicationToEdit.url = applicationData.url;
+      applicationToEdit.icon = applicationData.icon;
 
       return this.__updatePersistedApplication(applicationToEdit);
     }
