@@ -288,7 +288,7 @@ export default class NodeService extends BasePocketService {
       // Use token email to retrieve the node
       const node = await this.getNode(nodeAddress);
 
-      if (node.user.toString() === userEmail.toString()) {
+      if (node.pocketNode.user.toString() === userEmail.toString()) {
         return true;
       }
     }
