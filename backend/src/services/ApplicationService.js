@@ -270,7 +270,7 @@ export default class ApplicationService extends BasePocketService {
       // Use token email to retrieve a list of the apps
       const application = await this.getClientApplication(applicationId);
 
-      if (application.user.toString() === userEmail.toString()) {
+      if (application.pocketApplication.user.toString() === userEmail.toString()) {
         return true;
       }
     }

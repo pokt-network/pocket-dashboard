@@ -164,21 +164,8 @@ export function configureExpress(expressApp) {
     "/api/users/auth/reset-password",
     "/api/users/auth/send-reset-password-email",
     "/api/users/auth/verify-captcha",
-    "/api/users/auth/send-reset-password-email",
-    "/api/users/auth/unsubscribe",
-    "/api/users/auth/subscribe",
     "/api/security_questions/*",
     "/api/security_questions/answered",
-    "/api/applications/relays-per-day",
-    "/api/nodes/validator-power",
-    "/api/checkout/applications/cost",
-    "/api/checkout/applications/pokt",
-    "/api/checkout/nodes/cost",
-    "/api/checkout/nodes/pokt",
-    "/api/network/chains",
-    "/api/network/chains",
-    "/api/network/chains",
-    "/api/network/chains",
     "login"
   ];
 
