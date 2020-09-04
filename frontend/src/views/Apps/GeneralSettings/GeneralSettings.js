@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React, {Component} from "react";
-import {Alert, Form, Col, Row, Modal, Button, Dropdown} from "react-bootstrap";
+import {Alert, Form, Col, Row, Modal, Button, Dropdown, OverlayTrigger, Tooltip} from "react-bootstrap";
 import {Formik} from "formik";
 import LabelToggle from "../../../core/components/LabelToggle";
 import ApplicationService from "../../../core/services/PocketApplicationService";
@@ -158,6 +158,14 @@ class GeneralSettings extends Component {
       return <Dropdown.Item key={chain.blockchain} eventKey={chain.blockchain}>{chain.network}</Dropdown.Item>;
     });
 
+    const renderTooltipWhitelistUserAgents = props => (
+      <Tooltip {...props}>Add a list of user-agents allowed, seperated by commas. User-agents are matched by substring.</Tooltip>
+    );
+
+    const renderTooltipWhitelistOrigins = props => (
+      <Tooltip {...props}>Add a list of HTTP Origin Headers that will be allowed, seperated by commas. Origins are matched using exact-match.</Tooltip>
+    );
+
     return (
       <div className="general-settings">
         {showAlert && (
@@ -203,7 +211,7 @@ class GeneralSettings extends Component {
         </Row>
         <Row className="mt-5 mb-2 page-title">
           <Col sm="11" md="11" lg="11" className="pr-0 pl-0">
-            <h2 className="mb-0 pt-2">General settings</h2>
+            <h2 className="mb-0 pt-2">Gateway Keys</h2>
           </Col>
           <Col sm="1" md="1" lg="1" className="btn-sc pr-0">
             <Button
@@ -212,7 +220,7 @@ class GeneralSettings extends Component {
             </Button>
           </Col>
           <p className="mt-2">
-            Set up the app setting to access the provider of blockchain data that allows easy connections to the decentralized network of Pocket Network blockchain nodes. For more information take a look <a rel="noopener noreferrer" href="https://dashboard.docs.pokt.network/docs/gateway-overview" target="_blank"> Pocket Gateway Docs. </a>
+            For information on setting up your application, please see the <a rel="noopener noreferrer" href="https://dashboard.docs.pokt.network/docs/gateway-overview" target="_blank">Gateway Documentation.</a>
           </p>
         </Row>
         <Row className="gateway-data">
@@ -236,7 +244,7 @@ class GeneralSettings extends Component {
         <Row className="endpoint">
           <Col sm="9" md="9" lg="9" className="pl-0">
             <div className="page-title">
-              <h2>Endpoint</h2>
+              <h2>Endpoints</h2>
             </div>
           </Col>
           <Col sm="3" md="3" lg="3" className="pr-0">
@@ -261,7 +269,7 @@ class GeneralSettings extends Component {
           <Col className="page-title pl-0">
             <h2>Security</h2>
             <p>
-              To maximize security for your application, you may add an additional private secret key or whitelist user agents and origins. For more information take a look Pocket Gateway Docs.
+              To maximize security for your application, you can set the secret key to required or whitelist user-agents and origins.
             </p>
           </Col>
         </Row>
@@ -278,7 +286,7 @@ class GeneralSettings extends Component {
                   this.toggleSecretKeyRequired(!secretKey);
                 }}
                 label={
-                  <p>Required project secret for all requests</p>
+                  <p>Require application secret for all requests</p>
                 }
               />
             </div>
@@ -289,13 +297,18 @@ class GeneralSettings extends Component {
             <Formik>
               <Form>
                 <Form.Group>
-                  <Form.Label className="pl-4">Whitelist User agents</Form.Label>
+                  <Form.Label className="pl-4">
+                    Whitelist User-Agents
+                    <OverlayTrigger placement="top" overlay={renderTooltipWhitelistUserAgents}>
+                      <img class="tooltip-i" src={"/assets/i-circle.svg"} alt="info-action-icon" />
+                    </OverlayTrigger>
+                  </Form.Label>
                   <Row>
                     <Col sm="11" md="11" lg="11" className="pl-0">
                       <Form.Control
                         name="agents"
                         value={useragents}
-                        placeholder="Whitelist user agents"
+                        placeholder="firefox, chrome, custombrowser"
                         onChange={this.handleUserChange}
                       />
                     </Col>
@@ -316,13 +329,18 @@ class GeneralSettings extends Component {
             <Formik>
               <Form>
                 <Form.Group>
-                  <Form.Label className="pl-4">Whitelist Origins</Form.Label>
+                  <Form.Label className="pl-4">
+                    Whitelist Origins
+                    <OverlayTrigger placement="top" overlay={renderTooltipWhitelistOrigins}>
+                      <img class="tooltip-i" src={"/assets/i-circle.svg"} alt="info-action-icon" />
+                    </OverlayTrigger>
+                  </Form.Label>
                   <Row>
                     <Col sm="11" md="11" lg="11" className="pl-0">
                       <Form.Control
                         name="origins"
                         value={origins}
-                        placeholder="Whitelist Origins"
+                        placeholder="example.com, example.org"
                         onChange={this.handleOriginChange}
                       />
                     </Col>
