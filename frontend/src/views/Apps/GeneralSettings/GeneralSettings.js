@@ -300,7 +300,7 @@ class GeneralSettings extends Component {
                   <Form.Label className="pl-4">
                     Whitelist User-Agents
                     <OverlayTrigger placement="top" overlay={renderTooltipWhitelistUserAgents}>
-                      <img class="tooltip-i" src={"/assets/i-circle.svg"} alt="info-action-icon" />
+                      <img className="tooltip-i" src={"/assets/i-circle.svg"} alt="info-action-icon" />
                     </OverlayTrigger>
                   </Form.Label>
                   <Row>
@@ -332,7 +332,7 @@ class GeneralSettings extends Component {
                   <Form.Label className="pl-4">
                     Whitelist Origins
                     <OverlayTrigger placement="top" overlay={renderTooltipWhitelistOrigins}>
-                      <img class="tooltip-i" src={"/assets/i-circle.svg"} alt="info-action-icon" />
+                      <img className="tooltip-i" src={"/assets/i-circle.svg"} alt="info-action-icon" />
                     </OverlayTrigger>
                   </Form.Label>
                   <Row>
