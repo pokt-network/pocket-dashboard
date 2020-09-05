@@ -1,5 +1,5 @@
 import BaseService from "./BaseService";
-import { get_default_payment_provider, getTokenPaymentProvider, providerType} from "../providers/payment/Index";
+import {get_default_payment_provider, getTokenPaymentProvider, providerType} from "../providers/payment/Index";
 import {CardPaymentMethod, Payment, PaymentCurrencies, PaymentResult} from "../providers/payment/BasePaymentProvider";
 import {BillingDetails, PaymentHistory, PaymentMethod} from "../models/Payment";
 import UserService from "./UserService";
@@ -73,6 +73,7 @@ export default class PaymentService extends BaseService {
 
     // Getting user customer from user, a customer is required by stripe.
     let userCustomerID = await this.userService.getUserCustomerID(userEmail);
+
     if (!userCustomerID) {
       const userCustomer = await this.__getPaymentProvider(provType).createCustomer(userEmail);
 
@@ -376,16 +377,16 @@ export default class PaymentService extends BaseService {
 
     if (dbPaymentHistory) {
       const paymentHistory = PaymentHistory.createPaymentHistory(dbPaymentHistory);
-      if(authHeader != undefined) {
+
+      if(authHeader !== undefined) {
         const userEmail = authHeader.split(", ")[2].split(" ")[1];
 
         if (paymentHistory && userEmail && userEmail.toString() === paymentHistory.user.toString()) {
           return paymentHistory;
         }
-      } else {
-        if (paymentHistory) {
+
+      } else if (paymentHistory) {
           return paymentHistory;
-        }
       }
     }
 

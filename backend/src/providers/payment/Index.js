@@ -25,4 +25,4 @@ export function getTokenPaymentProvider() {
 export const providerType = {
   stripe: "stripe",
   token: "token"
-} 
+};

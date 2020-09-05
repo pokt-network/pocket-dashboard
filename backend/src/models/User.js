@@ -77,6 +77,7 @@ export class PocketUser {
    */
   static removeSensitiveFields(pocketUser) {
     let user = new PocketUser(pocketUser.provider, pocketUser.email, pocketUser.username);
+
     user.customerID = pocketUser.customerID;
     
     return user;
