@@ -1,5 +1,5 @@
 import BaseService from "./BaseService";
-import {get_default_payment_provider, getTokenPaymentProvider} from "../providers/payment/Index";
+import { get_default_payment_provider, getTokenPaymentProvider, providerType} from "../providers/payment/Index";
 import {CardPaymentMethod, Payment, PaymentCurrencies, PaymentResult} from "../providers/payment/BasePaymentProvider";
 import {BillingDetails, PaymentHistory, PaymentMethod} from "../models/Payment";
 import UserService from "./UserService";
@@ -36,14 +36,14 @@ export default class PaymentService extends BaseService {
     const description = `Acquiring ${to.toLowerCase() === "application" ? "Max Relays Per Day" : "Validator Power"} for ${to}`;
 
     if (amount === 0) {
-      return this.__getPaymentProvider("token").createPaymentIntent(userCustomerID, type, currency, item, amount, description, tokens);
+      return this.__getPaymentProvider(providerType.token).createPaymentIntent(userCustomerID, type, currency, item, amount, description, tokens);
     } else {
-      return this.__getPaymentProvider("stripe").createPaymentIntent(userCustomerID, type, currency, item, amount, description, tokens);
+      return this.__getPaymentProvider(providerType.stripe).createPaymentIntent(userCustomerID, type, currency, item, amount, description, tokens);
     }
   }
 
   __getPaymentProvider(type) {
-    if (type === "token") {
+    if (type === providerType.token) {
       return getTokenPaymentProvider();
     } else {
       return get_default_payment_provider();
@@ -69,13 +69,12 @@ export default class PaymentService extends BaseService {
     if (!Payment.validate({type, currency, item, amount})) {
       return false;
     }
-    const providerType = amount === 0 ? "token" : "stripe";
+    const provType = amount === 0 ? providerType.token : providerType.stripe;
 
     // Getting user customer from user, a customer is required by stripe.
     let userCustomerID = await this.userService.getUserCustomerID(userEmail);
-
     if (!userCustomerID) {
-      const userCustomer = await this.__getPaymentProvider(providerType).createCustomer(userEmail);
+      const userCustomer = await this.__getPaymentProvider(provType).createCustomer(userEmail);
 
       userCustomerID = userCustomer.id;
       await this.userService.saveCustomerID(userEmail, userCustomerID);
@@ -289,11 +288,6 @@ export default class PaymentService extends BaseService {
     const {pokt_market_price: poktPrice} = Configurations.pocket_network;
     const token = tokens === undefined ? 0 : tokens;
 
-    console.log(token);
-    console.log(token);
-    console.log(token);
-    console.log(token);
-
     const paymentHistory = PaymentHistory.createPaymentHistory({
       createdDate,
       paymentID,
@@ -359,7 +353,7 @@ export default class PaymentService extends BaseService {
 
     if (dbPaymentMethods) {
       const paymentMethodIds = dbPaymentMethods.map(_ => _.paymentMethod.id);
-      const paymentMethods = await this.__getPaymentProvider("stripe").retrieveCardPaymentMethods(paymentMethodIds);
+      const paymentMethods = await this.__getPaymentProvider(providerType.stripe).retrieveCardPaymentMethods(paymentMethodIds);
 
       return Promise.all(paymentMethods);
     }
@@ -382,10 +376,16 @@ export default class PaymentService extends BaseService {
 
     if (dbPaymentHistory) {
       const paymentHistory = PaymentHistory.createPaymentHistory(dbPaymentHistory);
-      const userEmail = authHeader.split(", ")[2].split(" ")[1];
+      if(authHeader != undefined) {
+        const userEmail = authHeader.split(", ")[2].split(" ")[1];
 
-      if (paymentHistory && userEmail && userEmail.toString() === paymentHistory.user.toString()) {
-        return paymentHistory;
+        if (paymentHistory && userEmail && userEmail.toString() === paymentHistory.user.toString()) {
+          return paymentHistory;
+        }
+      } else {
+        if (paymentHistory) {
+          return paymentHistory;
+        }
       }
     }
 

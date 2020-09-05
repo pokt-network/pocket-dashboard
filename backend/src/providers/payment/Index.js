@@ -21,3 +21,8 @@ export function get_default_payment_provider() {
 export function getTokenPaymentProvider() {
   return TOKEN_PAYMENT_PROVIDER;
 }
+
+export const providerType = {
+  stripe: "stripe",
+  token: "token"
+} 
