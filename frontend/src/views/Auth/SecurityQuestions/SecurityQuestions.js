@@ -141,9 +141,8 @@ class SecurityQuestions extends Component {
       chosenQuestions[0] === chosenQuestions[1] || 
       chosenQuestions[0] === chosenQuestions[2] ||
       chosenQuestions[1] === chosenQuestions[2]
-      )
-    {
-      validationMsg = 'You cannot use the same question more than once.';
+      ) {
+      validationMsg = "You cannot use the same question more than once.";
     }
 
     if (validationMsg !== "") {
