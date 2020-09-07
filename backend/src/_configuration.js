@@ -155,6 +155,7 @@ export function configureExpress(expressApp) {
   const userService = new UserService();
   const excludedPathList = [
     "/api/users/validate-token",
+    "/api/users/exists",
     "/api/users/auth/login",
     "/api/users/auth/signup",
     "/api/users/auth/providers",
@@ -164,8 +165,8 @@ export function configureExpress(expressApp) {
     "/api/users/auth/reset-password",
     "/api/users/auth/send-reset-password-email",
     "/api/users/auth/verify-captcha",
-    "/api/security_questions/*",
-    "/api/security_questions/answered",
+    "/api/security_questions/user/validate-answers",
+    "/api/security_questions/user/all",
     "login"
   ];
 
@@ -215,7 +216,7 @@ export function configureExpress(expressApp) {
           }
 
           // Update the auth headers with the new tokens
-          res.set("Authorization", `Token ${newSessionTokens.accessToken}, Refresh ${newSessionTokens.refreshToken}`);
+          res.set("Authorization", `Token ${newSessionTokens.accessToken}, Refresh ${newSessionTokens.refreshToken}, Email ${userEmail}`);
         }
       } else {
         res.status(401).send("Token expired, please sign in again.");
