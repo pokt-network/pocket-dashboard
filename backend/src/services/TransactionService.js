@@ -36,11 +36,15 @@ export default class TransactionService extends BaseService {
       hash: pocketTransaction.hash
     };
 
-    let transaction = await this.persistenceService.getEntityByFilter(PENDING_TRANSACTION_COLLECTION_NAME, filter);
+    const transaction = await this.persistenceService.getEntityByFilter(PENDING_TRANSACTION_COLLECTION_NAME, filter);
 
-    transaction.completed = true;
+    if (transaction) {
+      // Update the only editable field for the pending transactions.
+      transaction.completed = pocketTransaction.completed;
+      return this.persistenceService.updateEntity(PENDING_TRANSACTION_COLLECTION_NAME, filter, transaction);
+    }
 
-    return this.persistenceService.updateEntity(PENDING_TRANSACTION_COLLECTION_NAME, filter, transaction);
+    return false;
   }
 
   /**
@@ -188,6 +192,9 @@ export default class TransactionService extends BaseService {
    * @param {PocketTransaction} transaction transaction.
    */
   async markTransactionSuccess(transaction) {
+    //
+    transaction.completed = true;
+
     await this.__updateTransaction(transaction);
   }
 }

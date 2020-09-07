@@ -89,6 +89,8 @@ class Login extends Component {
         user: data.user,
         session: data.session
       });
+      // Save session
+      UserService.saveUserInCache(this.state.user, this.state.session, true);
     }
 
     return errors;
@@ -120,7 +122,6 @@ class Login extends Component {
                   validate={this.validate}
                   // validationSchema={this.schema}
                   onSubmit={() => {
-                    UserService.saveUserInCache(this.state.user, this.state.session, true);
                     UserService.showWelcomeMessage(true);
                     this.setState({loggedIn: true});
                   }}
