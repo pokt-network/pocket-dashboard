@@ -138,6 +138,7 @@ class SecurityQuestions extends Component {
     let validationMsg = this.validateQuestions(questions);
 
     const distinctQuestions = [...new Set(chosenQuestions)];
+
     if (distinctQuestions.length < 3) {
       validationMsg = "You cannot use the same question more than once.";
     }
