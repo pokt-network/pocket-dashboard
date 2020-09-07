@@ -48,6 +48,7 @@ function getPocketDispatchers() {
   if (dispatchersStr === "") {
     return [];
   }
+  
   return dispatchersStr.split(",").map(function (dispatcherURLStr) {
     return new URL(dispatcherURLStr);
   });
