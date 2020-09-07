@@ -31,11 +31,16 @@ export default class TransactionService extends BaseService {
    * @private
    */
   async __updateTransaction(pocketTransaction) {
+
     const filter = {
       hash: pocketTransaction.hash
     };
 
-    await this.persistenceService.deleteEntities(PENDING_TRANSACTION_COLLECTION_NAME, filter);
+    let transaction = await this.persistenceService.getEntityByFilter(PENDING_TRANSACTION_COLLECTION_NAME, filter);
+
+    transaction.completed = true;
+
+    return this.persistenceService.updateEntity(PENDING_TRANSACTION_COLLECTION_NAME, filter, transaction);
   }
 
   /**
