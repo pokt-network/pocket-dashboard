@@ -53,7 +53,7 @@ class SecurityQuestions extends Component {
       });
       return;
     }
-    
+
     PocketUserService.validateToken(queryParam.d).then((result) => {
       if (result.success) {
         this.setState({user: result.data});
@@ -137,11 +137,8 @@ class SecurityQuestions extends Component {
 
     let validationMsg = this.validateQuestions(questions);
 
-    if (
-      chosenQuestions[0] === chosenQuestions[1] || 
-      chosenQuestions[0] === chosenQuestions[2] ||
-      chosenQuestions[1] === chosenQuestions[2]
-      ) {
+    const distinctQuestions = [...new Set(chosenQuestions)];
+    if (distinctQuestions.length < 3) {
       validationMsg = "You cannot use the same question more than once.";
     }
 
