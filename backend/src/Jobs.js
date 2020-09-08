@@ -236,33 +236,37 @@ POST_TRANSFER_QUEUE.process(async (job, done) => {
     // Verify
     if (transaction.hash === hash) {
       // Mark the funding transaction as done
-      await TRANSACTION_SERVICE.markTransactionSuccess(pocketTransaction);
+      const markedTransactionSuccess = await TRANSACTION_SERVICE.markTransactionSuccess(pocketTransaction);
 
-      // Execute the post action
-      if (pocketTransaction.postAction && pocketTransaction.postAction !== {}) {
-        const postAction = pocketTransaction.postAction;
+      if (markedTransactionSuccess) {
+        // Execute the post action
+        if (pocketTransaction.postAction && pocketTransaction.postAction !== {}) {
+          const postAction = pocketTransaction.postAction;
 
-        switch (postAction.type) {
-          case POST_ACTION_TYPE.stakeApplication: {
-            const appStakeTransaction = postAction.data.appStakeTransaction;
-            const stakeAppPostActionHash = await POCKET_SERVICE.submitRawTransaction(appStakeTransaction.address, appStakeTransaction.raw_hex_bytes);
+          switch (postAction.type) {
+            case POST_ACTION_TYPE.stakeApplication: {
+              const appStakeTransaction = postAction.data.appStakeTransaction;
+              const stakeAppPostActionHash = await POCKET_SERVICE.submitRawTransaction(appStakeTransaction.address, appStakeTransaction.raw_hex_bytes);
 
-            await TRANSACTION_SERVICE.addAppStakeTransaction(stakeAppPostActionHash, postAction.data);
-            break;
+              await TRANSACTION_SERVICE.addAppStakeTransaction(stakeAppPostActionHash, postAction.data);
+              break;
+            }
+            case POST_ACTION_TYPE.stakeNode: {
+              const nodeStakeTransaction = postAction.data.nodeStakeTransaction;
+              const stakeNodePostActionHash = await POCKET_SERVICE.submitRawTransaction(nodeStakeTransaction.address, nodeStakeTransaction.raw_hex_bytes);
+
+              await TRANSACTION_SERVICE.addNodeStakeTransaction(stakeNodePostActionHash, postAction.data);
+              break;
+            }
+            default:
+              done(new Error(`Invalid Post Action: ${JSON.stringify(postAction)}`));
+              break;
           }
-          case POST_ACTION_TYPE.stakeNode: {
-            const nodeStakeTransaction = postAction.data.nodeStakeTransaction;
-            const stakeNodePostActionHash = await POCKET_SERVICE.submitRawTransaction(nodeStakeTransaction.address, nodeStakeTransaction.raw_hex_bytes);
-
-            await TRANSACTION_SERVICE.addNodeStakeTransaction(stakeNodePostActionHash, postAction.data);
-            break;
-          }
-          default:
-            done(new Error(`Invalid Post Action: ${JSON.stringify(postAction)}`));
-            break;
         }
+        done();
+      } else {
+        done(new Error("Failed to mark transaction as success/completed."));
       }
-      done();
     }
   } catch (e) {
     done(e);
