@@ -254,7 +254,7 @@ class NodeDetail extends Component {
           onClick={() => this.setState({ctaButtonPressed: true, unjail: true})}
           className="unjail"
         >
-          Take out of jail
+          Unjail this node
         </p>
       );
     } else if (!jailed) {
