@@ -307,7 +307,7 @@ router.post("/update/gateway/settings", apiAsyncWrapper(async (req, res) => {
   const data = req.body;
   const applicationId = data.id;
 
-  if (await applicationService.verifyApplicationBelongsToClient(data.applicationId, req.headers.authorization)) {
+  if (await applicationService.verifyApplicationBelongsToClient(applicationId, req.headers.authorization)) {
     const updated = await applicationService.updateApplication(applicationId, data);
 
     res.send(updated);
