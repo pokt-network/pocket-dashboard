@@ -297,6 +297,35 @@ export default class NodeService extends BasePocketService {
   }
 
   /**
+   * Verify if the node belongs to the client's account using an node information
+   *
+   * @param {string} node Node Object.
+   * @param {string} authHeader Authorization header.
+   *
+   * @returns {Promise<boolean>} True if the node belongs to the client account or false otherwise.
+   * @async
+   */
+  async verifyNodeObjectBelongsToClient(node, authHeader) {
+    // Retrieve the session tokens from the auth headers
+    const accessToken = authHeader.split(", ")[0].split(" ")[1];
+    const userEmail = authHeader.split(", ")[2].split(" ")[1];
+
+    if (accessToken && userEmail) {
+      const payload = await this.userService.decodeToken(accessToken, true);
+
+      if (payload instanceof DashboardValidationError) {
+        throw payload;
+      }
+      
+      if (node.pocketNode.user.toString() === userEmail.toString()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Verify if the session token belongs to the client email account.
    *
    * @param {object} authHeader Authorization header object.
@@ -450,7 +479,7 @@ export default class NodeService extends BasePocketService {
     }
 
     // Check if the node belogns to the client
-    if (await this.verifyNodeBelongsToClient(node.id, authHeader)) {
+    if (await this.verifyNodeObjectBelongsToClient(node, authHeader)) {
       // Submit transaction
       const nodeUnstakedHash = await this.pocketService.submitRawTransaction(address, rawHexBytes);
 
