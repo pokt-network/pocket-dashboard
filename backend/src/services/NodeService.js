@@ -445,6 +445,10 @@ export default class NodeService extends BasePocketService {
     // Retrieve the node information
     const node = await this.getNode(address);
 
+    if(node === undefined || node === null) {
+      throw new Error(`Couldn't find a node with this address: ${address}`);
+    }
+
     // Check if the node belogns to the client
     if (await this.verifyNodeBelongsToClient(node.id, authHeader)) {
       // Submit transaction
