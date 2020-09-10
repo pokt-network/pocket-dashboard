@@ -317,7 +317,7 @@ export default class NodeService extends BasePocketService {
         throw payload;
       }
       
-      if (node.pocketNode.user.toString() === userEmail.toString()) {
+      if (node.pocketNode.user.toString() === userEmail.toString() && payload.email === userEmail.toString()) {
         return true;
       }
     }
