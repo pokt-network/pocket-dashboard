@@ -284,7 +284,6 @@ class Import extends Component {
       ppkFileName,
       accountData,
       chains,
-      created,
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
