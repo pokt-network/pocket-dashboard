@@ -122,18 +122,19 @@ class Import extends Component {
     } = this.state;
 
     if(!created) {
+      // eslint-disable-next-line react/prop-types
       this.props.history.push({
         pathname: _getDashboardPath(
           type === ITEM_TYPES.APPLICATION
             ? DASHBOARD_PATHS.createAppInfo
             : DASHBOARD_PATHS.createNodeForm
         ),
-        state: { imported: true },
+        state: {imported: true},
       });
     } else {
       this.setState({
         importing: false,
-        error: { show: true, message: "Node already exists" },
+        error: {show: true, message: "Node already exists"},
       });
     }
   }
