@@ -25,6 +25,7 @@
     "bootstrap": "^4.4.1",
     "classnames": "^2.2.6",
     "formik": "^2.1.4",
+    "husky": "^4.3.0",
     "identicon.js": "^2.3.3",
     "lodash": "^4.17.19",
     "moment": "^2.25.3",
@@ -52,6 +53,11 @@
     "react-to-print": "^2.9.0",
     "secure-ls": "^1.2.6",
     "yup": "^0.28.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
   },
   "eslintConfig": {
     "env": {

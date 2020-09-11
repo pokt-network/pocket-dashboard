@@ -23,6 +23,11 @@
     "test:models": "mocha test/models",
     "lint": "eslint ."
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
   "babel": {
     "presets": [
       "@babel/preset-env"
@@ -128,6 +133,7 @@
     "express": "^4.16.1",
     "express-jwt": "^6.0.0",
     "googleapis": "^48.0.0",
+    "husky": "^4.3.0",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.5.4",
     "morgan": "^1.9.1",
@@ -135,8 +141,8 @@
     "pm2": "^4.3.1",
     "query-string": "^6.11.1",
     "stripe": "^8.33.0",
-    "uuid": "^8.3.0",
-    "strong-cryptor": "^2.2.0"
+    "strong-cryptor": "^2.2.0",
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
