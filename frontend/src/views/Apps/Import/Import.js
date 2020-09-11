@@ -23,6 +23,7 @@ class Import extends Component {
     this.importAccount = this.importAccount.bind(this);
     this.changeInputType = this.changeInputType.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.continue = this.continue.bind(this);
 
     this.iconUrl = {
       open: "/assets/open_eye.svg",
@@ -112,6 +113,31 @@ class Import extends Component {
     reader.readAsText(e.target.files[0], "utf8");
   };
 
+  async continue(e) {
+    e.preventDefault();
+
+    const {
+      type,
+      created,
+    } = this.state;
+
+    if(!created) {
+      this.props.history.push({
+        pathname: _getDashboardPath(
+          type === ITEM_TYPES.APPLICATION
+            ? DASHBOARD_PATHS.createAppInfo
+            : DASHBOARD_PATHS.createNodeForm
+        ),
+        state: { imported: true },
+      });
+    } else {
+      this.setState({
+        importing: false,
+        error: { show: true, message: "Node already exists" },
+      });
+    }
+  }
+
   async importAccount(e) {
     e.preventDefault();
 
@@ -190,6 +216,11 @@ class Import extends Component {
           ppk,
         });
         const node = await NodeService.getNetworkNode(data.address);
+        const nodeInDB = await NodeService.getNode(data.address);
+
+        this.setState({
+          created: nodeInDB.pocketNode !== undefined
+        });
 
         if (node.error === undefined) {
           // Add the chains value
@@ -247,9 +278,12 @@ class Import extends Component {
       ppkFileName,
       accountData,
       chains,
+      created,
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
+
+    console.log(created);
 
     const generalInfo = [
       {title: formatNumbers(accountData.tokens / 1000000), subtitle: "Staked tokens"},
@@ -390,17 +424,7 @@ class Import extends Component {
                               type: "submit",
                               onClick: !imported
                                 ? this.importAccount
-                                : () => {
-                                  // eslint-disable-next-line react/prop-types
-                                  this.props.history.push({
-                                    pathname: _getDashboardPath(
-                                      type === ITEM_TYPES.APPLICATION
-                                        ? DASHBOARD_PATHS.createAppInfo
-                                        : DASHBOARD_PATHS.createNodeForm
-                                    ),
-                                    state: {imported: true},
-                                  });
-                                },
+                                : this.continue,
                             }}
                           >
                             <span>{!imported ? "Import" : "Continue"}</span>
