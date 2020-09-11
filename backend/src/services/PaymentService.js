@@ -176,7 +176,7 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async deletePaymentMethod(paymentMethodID, authHeader) {
-    const filter = {id: paymentMethodID};
+    const filter = {"paymentMethod.id": paymentMethodID};
     const userEmail = authHeader.split(", ")[2].split(" ")[1];
     let belongsToClient = false;
 

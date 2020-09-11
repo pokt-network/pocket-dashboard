@@ -236,7 +236,7 @@ class ValidateKeys extends Component {
                     </>
                   ) : (
                     <>
-                      <h2>Passphrase {privateKey ? "(Optional)" : ""}</h2>
+                      <h2>Passphrase</h2>
                       <Form.Group className="d-flex">
                         <Form.Control
                           placeholder="*****************"
