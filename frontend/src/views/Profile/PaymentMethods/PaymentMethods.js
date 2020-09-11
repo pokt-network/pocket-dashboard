@@ -147,7 +147,7 @@ class PaymentMethods extends Component {
               variant={alert.variant}
               title={alert.text}
               dismissible
-              onClose={() => this.setState({ alert: { show: false } })}
+              onClose={() => this.setState({alert: {show: false}})}
             />
           )}
           <div className="wrapper">
