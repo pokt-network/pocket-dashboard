@@ -40,7 +40,7 @@ router.post("/account", apiAsyncWrapper(async (req, res) => {
     link: `${data.applicationBaseLink}/${data.applicationData.address}`
   };
 
-  if (emailAction === "imported") {
+  if (emailAction) {
     await EmailService
       .to(application.contactEmail)
       .sendCreateOrImportAppEmail(emailAction, application.contactEmail, applicationEmailData);
