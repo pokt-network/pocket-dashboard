@@ -185,6 +185,11 @@ class Import extends Component {
 
         // Retrieve the application information if available
         const application = await ApplicationService.getNetworkApplication(data.address);
+        const appInDB = await ApplicationService.getApplication(data.address);
+
+        this.setState({
+          created: appInDB.name !== undefined
+        });
         
         if (application.error === undefined) {
           // Add the chains value
@@ -283,8 +288,6 @@ class Import extends Component {
     } = this.state;
 
     const {passphrase, privateKey} = this.state.data;
-
-    console.log(created);
 
     const generalInfo = [
       {title: formatNumbers(accountData.tokens / 1000000), subtitle: "Staked tokens"},
