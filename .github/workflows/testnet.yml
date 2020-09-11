@@ -40,6 +40,7 @@ jobs:
         REACT_APP_RECAPTCHA_CLIENT_KEY: ${{ secrets.REACT_APP_RECAPTCHA_CLIENT_KEY }}
         REACT_APP_POCKET_NETWORK_GATEWAY_CLIENT_PUB_KEY: ${{ secrets.POCKET_NETWORK_TESTNET_CLIENT_PUB_KEY }}
         REACT_APP_POCKET_NETWORK_AAT_VERSION: 0.0.1
+        REACT_APP_SESSION_LENGTH: 600
       run: yarn build:prod
     - name: Deploy to S3
       uses: jakejarvis/s3-sync-action@master

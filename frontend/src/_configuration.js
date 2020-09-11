@@ -28,5 +28,6 @@ export const Configurations = {
     }
   },
   stakeDefaultStatus: process.env.REACT_APP_STAKE_DEFAULT_STATUS,
-  defaultMaxRelaysPerDay: process.env.REACT_APP_DEFAULT_MAX_RELAYS_PER_DAY
+  defaultMaxRelaysPerDay: process.env.REACT_APP_DEFAULT_MAX_RELAYS_PER_DAY,
+  sessionLength: process.env.REACT_APP_SESSION_LENGTH
 };

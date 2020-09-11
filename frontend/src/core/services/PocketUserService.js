@@ -31,6 +31,7 @@ class PocketUserService extends PocketBaseService {
     this.ls.set("user_provider", {data: user.provider});
     this.ls.set("access_token", {data: session.accessToken});
     this.ls.set("refresh_token", {data: session.refreshToken});
+    this.ls.set("session_expiry", {data: Math.floor(+new Date() / 1000) + parseInt(Configurations.sessionLength)});
   }
 
   /**
@@ -46,7 +47,7 @@ class PocketUserService extends PocketBaseService {
   }
 
   /**
-   * Save wether show message or not.
+   * Save whether show message or not.
    *
    * @param {boolean} show status of show.
    */
@@ -67,6 +68,7 @@ class PocketUserService extends PocketBaseService {
     this.ls.remove("user_provider");
     this.ls.remove("access_token");
     this.ls.remove("refresh_token");
+    this.ls.remove("session_expiry");
     this.ls.remove("is_logged_in");
   }
 
@@ -74,7 +76,16 @@ class PocketUserService extends PocketBaseService {
    * @return {boolean}
    */
   isLoggedIn() {
-    return this.ls.getAllKeys().includes("is_logged_in") && this.ls.get("is_logged_in").data === true;
+    if (  this.ls.getAllKeys().includes("is_logged_in") && 
+          this.ls.get("is_logged_in").data === true &&
+          this.ls.getAllKeys().includes("session_expiry") && 
+          parseInt(this.ls.get("session_expiry").data) > Math.floor(+new Date() / 1000)
+    ) {
+      // Update session expiry to keep user logged in
+      this.ls.set("session_expiry", {data: Math.floor(+new Date() / 1000) + parseInt(Configurations.sessionLength)});
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -90,6 +101,7 @@ class PocketUserService extends PocketBaseService {
         provider: this.ls.get("user_provider").data,
         accessToken: this.ls.get("access_token").data,
         refreshToken: this.ls.get("refresh_token").data,
+        sessionExpiry: this.ls.get("session_expiry").data,
       };
     } else {
       return {
