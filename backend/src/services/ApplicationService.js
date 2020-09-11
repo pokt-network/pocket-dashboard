@@ -873,9 +873,12 @@ export default class ApplicationService extends BasePocketService {
       applicationToEdit.owner = applicationData.owner;
       applicationToEdit.url = applicationData.url;
       applicationToEdit.icon = applicationData.icon;
-      applicationToEdit.gatewaySettings.secretKeyRequired = applicationData.gatewaySettings.secretKeyRequired;
-      applicationToEdit.gatewaySettings.whitelistOrigins = applicationData.gatewaySettings.whitelistOrigins;
-      applicationToEdit.gatewaySettings.whitelistUserAgents = applicationData.gatewaySettings.whitelistUserAgents;
+
+      if (applicationData.gatewaySettings) {
+        applicationToEdit.gatewaySettings.secretKeyRequired = applicationData.gatewaySettings.secretKeyRequired;
+        applicationToEdit.gatewaySettings.whitelistOrigins = applicationData.gatewaySettings.whitelistOrigins;
+        applicationToEdit.gatewaySettings.whitelistUserAgents = applicationData.gatewaySettings.whitelistUserAgents;
+      }
 
       return this.__updatePersistedApplication(applicationToEdit);
     }
