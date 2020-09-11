@@ -11,7 +11,14 @@ class AppNavbar extends Component {
     return (
       <Row className="app-navbar" noGutters>
         <div id="main-logo">
-          <img src="/assets/logo-dashboard-color.svg" alt="logo"/>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{marginLeft: "0px", cursor: "pointer"}}
+            href="http://www.pokt.network"
+          >
+            <img src="/assets/logo-dashboard-color.svg" alt="logo" />
+          </a>
         </div>
         <div className="items">
           {/* TODO: Uncomment when second release*/}
@@ -19,7 +26,7 @@ class AppNavbar extends Component {
           {/*  <NotificationIcon/>*/}
           {/*  <HelpLink link={helpLink}/>*/}
           {/*</div>*/}
-          <LoginStatus/>
+          <LoginStatus />
         </div>
       </Row>
     );
