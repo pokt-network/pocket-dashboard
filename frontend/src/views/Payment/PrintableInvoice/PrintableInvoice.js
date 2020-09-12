@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Component} from "react";
 import PropTypes from "prop-types";
 import "./PrintableInvoice.scss";
 import FirstPage from "./FirstPage";
@@ -11,7 +11,8 @@ import SeventhPage from "./SeventhPage";
 import EigthPage from "./EigthPage";
 import NinthPage from "./NinthPage";
 
-class PrintableInvoice extends React.Component {
+class PrintableInvoice extends Component {
+
   render() {
     const {
       invoiceItems,

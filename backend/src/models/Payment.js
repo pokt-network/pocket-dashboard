@@ -188,7 +188,8 @@ export class PaymentHistory {
   static createPaymentHistory(paymentHistoryData) {
     const {
       createdDate, paymentID, currency, amount, item,
-      user, paymentMethodID, billingDetails, status, poktPrice, tokens
+      user, paymentMethodID, billingDetails, status, poktPrice, tokens,
+      printableData
     } = paymentHistoryData;
 
     const paymentHistory = new PaymentHistory(createdDate, paymentID, currency, amount, item, user, tokens);
@@ -197,6 +198,7 @@ export class PaymentHistory {
     paymentHistory.paymentMethodID = paymentMethodID;
     paymentHistory.billingDetails = billingDetails;
     paymentHistory.status = status ?? "pending";
+    paymentHistory.printableData = printableData;
 
     return paymentHistory;
   }

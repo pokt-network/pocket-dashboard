@@ -1,6 +1,37 @@
 @import "../../../scss/Core";
 
 .payment-history {
+  .download-invoice {
+    width: 100%;
+    height: 100%;
+  }
+  .link {
+    max-width: 35px;
+    background-color: transparent;
+    border-color: transparent;
+    font-weight: 300;
+    color: $primary-color;
+    cursor: pointer;
+    margin-right: 5px;
+
+    &:hover {
+      background-color: transparent;
+      border-color: transparent;
+      color: $primary-color;
+    }
+
+    &:focus {
+      background-color: transparent;
+      border-color: transparent;
+      color: $primary-color;
+    }
+
+    &:not(:disabled):not(.disabled):active {
+      background-color: transparent;
+      border-color: transparent;
+      color: $primary-color;
+    }
+  }
   .filters {
     display: flex;
     justify-content: space-around;
@@ -44,6 +75,10 @@
 
   .app-table {
     box-shadow: none;
+  }
+
+  .app-table tbody tr td div {
+    height: inherit;
   }
 
   .react-bootstrap-table-pagination {
