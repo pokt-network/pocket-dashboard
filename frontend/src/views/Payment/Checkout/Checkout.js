@@ -132,10 +132,9 @@ class Checkout extends Component {
       ],
       items: items,
       total: formatCurrency(total)
-    }
+    };
 
-    const result = await PocketPaymentService.updatePaymentIntent(type, paymentId, printableData);
-    console.log(result);
+    await PocketPaymentService.updatePaymentIntent(type, paymentId, printableData);
   }
 
   render() {
@@ -161,7 +160,7 @@ class Checkout extends Component {
 
     const items = [
       ...details,
-      {text: "Current balance", value: `US ${formatCurrency(currentAccountBalance)} = POKT ${upoktToPOKT(currentAccountBalance)}` },
+      {text: "Current balance", value: `US ${formatCurrency(currentAccountBalance)} = POKT ${upoktToPOKT(currentAccountBalance)}`},
     ].map((it) => {
       if (!it.format) {
         return it;

@@ -17,7 +17,7 @@ export const formatNumbers = (num) => numeral(num).format("0,0");
 
 export const upoktToPOKT = (upokt) => {
   return upokt / Math.pow(10, DEFAULT_POKT_DENOMINATION_BASE);
-}
+};
 
 export const formatNetworkData = (
   pokt,

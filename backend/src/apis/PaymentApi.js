@@ -88,11 +88,12 @@ router.post("/new_intent/apps", apiAsyncWrapper(async (req, res) => {
  * Update an existing intent of payment for apps.
  */
 router.put("/intent/apps", apiAsyncWrapper(async (req, res) => {
-  /** @type {{userEmail:string, type:string, paymentId: string, printableData: {information:[{text: string, value: string}], items: [{text: string, value: string}, total: string]}}} */
+  /** @type {{userEmail: string, type: string, paymentId: string, total: string, printableData: {information:[], items: [] }}} */
   const data = req.body;
 
   if (await paymentService.verifyPaymentBelongsToClient(data.paymentId, req.headers.authorization)) {
     const result = await paymentService.updatePaymentWithPrintableData(data.paymentId, data.userEmail, data.printableData);
+
     res.json(result);
   } else {
     res.status(400).send("Intent of payment doesn't belong to the client.");
@@ -152,6 +153,7 @@ router.post("/history", apiAsyncWrapper(async (req, res) => {
 router.get("/history/:paymentID", apiAsyncWrapper(async (req, res) => {
   /** @type {{paymentID:string}} */
   const data = req.params;
+
   if (await paymentService.verifyPaymentBelongsToClient(data.paymentID, req.headers.authorization)) {
     const paymentHistory = await paymentService.getPaymentFromHistory(data.paymentID, req.headers.authorization);
 

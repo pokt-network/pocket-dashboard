@@ -49,7 +49,7 @@ class PaymentHistory extends Component {
   renderExport(cell, row) {
 
     if (row.printableData) {
-      this.setState({})
+      this.setState({});
       return (
         <div className="print" style={{
           display: row.printableData !== undefined ? "block" : "none",
@@ -138,6 +138,7 @@ class PaymentHistory extends Component {
     const pageListRenderer = ({pages, onPageChange}) => {
       // Only include < > when there are pages available
       let {history} = this.state;
+
       history.forEach(obj => {
         obj.formatedAmount = obj.amount / 100;
       });
