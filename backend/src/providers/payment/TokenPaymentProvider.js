@@ -1,10 +1,8 @@
-import BasePaymentProvider, {CardPaymentMethod, PaymentResult} from "./BasePaymentProvider";
+import BasePaymentProvider, {ITEM_TYPES, PaymentResult} from "./BasePaymentProvider";
 import PocketService from "../../services/PocketService";
 import {v4 as uuidv4} from "uuid";
 import {Configurations} from "../../_configuration";
 import {CoinDenom} from "@pokt-network/pocket-js";
-
-const crypto = require("crypto");
 
 class TokenPaymentProvider extends BasePaymentProvider {
 
@@ -14,7 +12,7 @@ class TokenPaymentProvider extends BasePaymentProvider {
         this.pocketService = new PocketService();
     }
 
-    async createPaymentIntent(address, passphrase, userCustomerID, type, currency, item, amount, description = "", tokens) {
+    async createPaymentIntent(address, passphrase, metadata, userCustomerID, type, currency, item, amount, description = "", tokens) {
 
         let paymentData = {
             amount: amount,
@@ -37,12 +35,25 @@ class TokenPaymentProvider extends BasePaymentProvider {
             paymentData["description"] = description;
         }
 
-        const {chain_id: chainID, transaction_fee: transactionFee} = Configurations.pocket_network;
+        const { chain_id: chainID, transaction_fee: transactionFee, main_fund_address: fromAddress} = Configurations.pocket_network;
 
         const transactionSender = await this.pocketService._getTransactionSender(address, passphrase);
+        const { unlockedAccount: account } = transactionSender;
 
-        await transactionSender.send(address, "", tokens).submit(chainID, transactionFee, CoinDenom.Upokt);
-
+        if (type === ITEM_TYPES.NODE) {
+            await transactionSender
+                .nodeStake(
+                    account.publicKey.toString("hex"), metadata.chains, tokens, new URL(metadata.serviceURL)
+                )
+                .createTransaction(chainID, transactionFee);
+        } else {
+            await transactionSender
+                .appStake(
+                    account.publicKey.toString("hex"), metadata.chainID, tokens
+                )
+                .createTransaction(chainID, transactionFee);
+        }
+        
         return new PaymentResult(uuidv4(), new Date(), "", "pokt", tokens);
     }
 

@@ -97,7 +97,7 @@ class SelectValidatorPower extends Purchase {
   }
 
   async createPaymentIntent(validatorPower, currency, amount, tokens) {
-    const {address, passphrase} = NodeService.getNodeInfo();
+    const {address, passphrase, serviceURL, chainsObject} = NodeService.getNodeInfo();
     const {pocketNode} = await NodeService.getNode(address);
 
     const item = {
@@ -109,7 +109,7 @@ class SelectValidatorPower extends Purchase {
     const {
       success,
       data: paymentIntentData,
-    } = await PocketPaymentService.createNewPaymentIntent(address, passphrase, ITEM_TYPES.NODE, item, currency, parseFloat(amount), tokens);
+    } = await PocketPaymentService.createNewPaymentIntent(address, passphrase, {chains: chainsObject, serviceURL: serviceURL}, ITEM_TYPES.NODE, item, currency, parseFloat(amount), tokens);
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);

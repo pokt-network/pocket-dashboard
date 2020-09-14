@@ -32,13 +32,13 @@ export default class PaymentService extends BaseService {
    * @private
    * @async
    */
-  async __createPocketPaymentIntent(address, passphrase, userCustomerID, type, currency, item, amount, to, tokens) {
+  async __createPocketPaymentIntent(address, passphrase, metadata, userCustomerID, type, currency, item, amount, to, tokens) {
     const description = `Acquiring ${to.toLowerCase() === "application" ? "Max Relays Per Day" : "Validator Power"} for ${to}`;
 
     if (amount === 0) {
-      return this.__getPaymentProvider(providerType.token).createPaymentIntent(address, passphrase, userCustomerID, type, currency, item, amount, description, tokens);
+      return this.__getPaymentProvider(providerType.token).createPaymentIntent(address, passphrase, metadata, userCustomerID, type, currency, item, amount, description, tokens);
     } else {
-      return this.__getPaymentProvider(providerType.stripe).createPaymentIntent(address, passphrase, userCustomerID, type, currency, item, amount, description, tokens);
+      return this.__getPaymentProvider(providerType.stripe).createPaymentIntent(address, passphrase, metadata, userCustomerID, type, currency, item, amount, description, tokens);
     }
   }
 
@@ -65,7 +65,7 @@ export default class PaymentService extends BaseService {
    * @throws {DashboardValidationError} if validation fails.
    * @async
    */
-  async __createPocketPaymentForItem(address, passphrase, userEmail, type, currency, item, amount, itemType, tokens) {
+  async __createPocketPaymentForItem(address, passphrase, metadata, userEmail, type, currency, item, amount, itemType, tokens) {
     if (!Payment.validate({type, currency, item, amount})) {
       return false;
     }
@@ -87,7 +87,7 @@ export default class PaymentService extends BaseService {
       type: itemType
     };
 
-    return this.__createPocketPaymentIntent(address, passphrase, userCustomerID, type, currency, paymentItem, amountFixed, itemType, tokens);
+    return this.__createPocketPaymentIntent(address, passphrase, metadata, userCustomerID, type, currency, paymentItem, amountFixed, itemType, tokens);
   }
 
   /**
@@ -214,9 +214,9 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async createPocketPaymentIntentForApps(paymentIntentData) {
-    const {address, passphrase, user, type, currency, item, amount, tokens} = paymentIntentData;
+    const {address, passphrase, metadata, user, type, currency, item, amount, tokens} = paymentIntentData;
 
-    return this.__createPocketPaymentForItem(address, passphrase, user, type, currency, item, amount, "Application", tokens);
+    return this.__createPocketPaymentForItem(address, passphrase, metadata, user, type, currency, item, amount, "Application", tokens);
   }
 
   /**
@@ -233,9 +233,9 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async createPocketPaymentIntentForNodes(paymentIntentData) {
-    const {address, passphrase, user, type, currency, item, amount, tokens} = paymentIntentData;
+    const {address, passphrase, metadata, user, type, currency, item, amount, tokens} = paymentIntentData;
 
-    return this.__createPocketPaymentForItem(address, passphrase, user, type, currency, item, amount, "Node", tokens);
+    return this.__createPocketPaymentForItem(address, passphrase, metadata, user, type, currency, item, amount, "Node", tokens);
   }
 
   /**

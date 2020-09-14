@@ -6,6 +6,11 @@ export const PaymentTypes = {
   card: "card"
 };
 
+const ITEM_TYPES = {
+  APPLICATION: "application",
+  NODE: "node",
+};
+
 export class CardPaymentMethod {
 
   /**
@@ -110,7 +115,7 @@ export default class BasePaymentProvider {
    * @async
    * @abstract
    */
-  async createPaymentIntent(address, passphrase, userCustomerID, type, currency, item, amount, description = "", tokens) {
+  async createPaymentIntent(address, passphrase, metadata, userCustomerID, type, currency, item, amount, description = "", tokens) {
   }
 
   /**
@@ -160,4 +165,5 @@ export default class BasePaymentProvider {
    */
   async getCustomerCardPaymentMethods(customerID) {
   }
+  
 }
