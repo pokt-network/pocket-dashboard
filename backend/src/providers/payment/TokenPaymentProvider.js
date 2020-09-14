@@ -35,10 +35,10 @@ class TokenPaymentProvider extends BasePaymentProvider {
             paymentData["description"] = description;
         }
 
-        const { chain_id: chainID, transaction_fee: transactionFee, main_fund_address: fromAddress} = Configurations.pocket_network;
+        const {chain_id: chainID, transaction_fee: transactionFee} = Configurations.pocket_network;
 
         const transactionSender = await this.pocketService._getTransactionSender(address, passphrase);
-        const { unlockedAccount: account } = transactionSender;
+        const {unlockedAccount: account} = transactionSender;
 
         if (type === ITEM_TYPES.NODE) {
             await transactionSender

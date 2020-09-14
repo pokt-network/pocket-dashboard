@@ -181,7 +181,7 @@ class PocketPaymentService extends PocketBaseService {
     }
 
     const user = PocketUserService.getUserInfo().email;
-    const data = { address, passphrase, metadata, type: paymentType, user, item, currency, amount: convertedAmount, tokens};
+    const data = {address, passphrase, metadata, type: paymentType, user, item, currency, amount: convertedAmount, tokens};
 
     let path;
 
