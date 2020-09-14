@@ -13,7 +13,7 @@ class StripePaymentProvider extends BasePaymentProvider {
     this.createPaymentIntent = this.createPaymentIntent.bind(this);
   }
 
-  async createPaymentIntent(userCustomerID, type, currency, item, amount, description = "", tokens) {
+  async createPaymentIntent(address, passphrase, userCustomerID, type, currency, item, amount, description = "", tokens) {
 
     let paymentData = {
       amount: amount,
@@ -24,7 +24,9 @@ class StripePaymentProvider extends BasePaymentProvider {
         name: item.name,
         type: item.type,
         pokt: item.pokt,
-        tokens: tokens
+        tokens: tokens,
+        address: address,
+        passphrase: passphrase,
       },
       setup_future_usage: "on_session",
       customer: userCustomerID

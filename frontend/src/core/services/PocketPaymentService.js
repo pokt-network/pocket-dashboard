@@ -172,7 +172,7 @@ class PocketPaymentService extends PocketBaseService {
    * @return {Promise<*>}
    * @async
    */
-  async createNewPaymentIntent(type, item, currency, amount, tokens) {
+  async createNewPaymentIntent(address, passphrase, type, item, currency, amount, tokens) {
     let convertedAmount = amount * 100;
     let paymentType = "card";
 
@@ -181,7 +181,7 @@ class PocketPaymentService extends PocketBaseService {
     }
 
     const user = PocketUserService.getUserInfo().email;
-    const data = {type: paymentType, user, item, currency, amount: convertedAmount, tokens};
+    const data = {address, passphrase, type: paymentType, user, item, currency, amount: convertedAmount, tokens};
 
     let path;
 

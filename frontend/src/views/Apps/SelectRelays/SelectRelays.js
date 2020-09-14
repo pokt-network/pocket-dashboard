@@ -146,7 +146,7 @@ class SelectRelays extends Component {
   }
 
   async createPaymentIntent(relays, currency, amount, tokens) {
-    const {address} = PocketApplicationService.getApplicationInfo();
+    const {address, passphrase} = PocketApplicationService.getApplicationInfo();
     const {pocketApplication} = await PocketApplicationService.getApplication(address);
 
     const item = {
@@ -156,7 +156,7 @@ class SelectRelays extends Component {
     };
 
     const {success, data: paymentIntentData} = await PocketPaymentService
-      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, parseFloat(amount), tokens);
+      .createNewPaymentIntent(address, passphrase, ITEM_TYPES.APPLICATION, item, currency, parseFloat(amount), tokens);
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);

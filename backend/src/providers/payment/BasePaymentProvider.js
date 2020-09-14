@@ -96,6 +96,8 @@ export default class BasePaymentProvider {
   /**
    * Create an intent of payment.
    *
+   * @param {string} address The address.
+   * * @param {string} passphrase The passphrase.
    * @param {string} userCustomerID User customer ID.
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
@@ -108,7 +110,7 @@ export default class BasePaymentProvider {
    * @async
    * @abstract
    */
-  async createPaymentIntent(userCustomerID, type, currency, item, amount, description = "", tokens) {
+  async createPaymentIntent(address, passphrase, userCustomerID, type, currency, item, amount, description = "", tokens) {
   }
 
   /**
