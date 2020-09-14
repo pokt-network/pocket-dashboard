@@ -37,12 +37,13 @@ class TokenPaymentProvider extends BasePaymentProvider {
             paymentData["description"] = description;
         }
 
-        const { chain_id: chainID, transaction_fee: transactionFee } = Configurations.pocket_network;
+        const {chain_id: chainID, transaction_fee: transactionFee} = Configurations.pocket_network;
 
         const transactionSender = await this.pocketService._getTransactionSender(address, passphrase);
-        await transactionSender.send(address, '', tokens).submit(chainID, transactionFee, CoinDenom.Upokt)
 
-        return new PaymentResult(uuidv4(), date, "", "pokt", tokens);
+        await transactionSender.send(address, "", tokens).submit(chainID, transactionFee, CoinDenom.Upokt);
+
+        return new PaymentResult(uuidv4(), new Date(), "", "pokt", tokens);
     }
 
     async createCustomer(user) {

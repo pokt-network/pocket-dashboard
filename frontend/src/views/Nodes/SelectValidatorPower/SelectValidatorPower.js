@@ -109,9 +109,7 @@ class SelectValidatorPower extends Purchase {
     const {
       success,
       data: paymentIntentData,
-    } = await PocketPaymentService.createNewPaymentIntent(address, passphrase,
-      ITEM_TYPES.NODE, item, currency, parseFloat(amount), tokens
-    );
+    } = await PocketPaymentService.createNewPaymentIntent(address, passphrase, ITEM_TYPES.NODE, item, currency, parseFloat(amount), tokens);
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);

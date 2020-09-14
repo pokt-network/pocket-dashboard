@@ -36,9 +36,9 @@ export default class PaymentService extends BaseService {
     const description = `Acquiring ${to.toLowerCase() === "application" ? "Max Relays Per Day" : "Validator Power"} for ${to}`;
 
     if (amount === 0) {
-      return this.__getPaymentProvider(providerType.token).createPaymentIntent(userCustomerID, type, currency, item, amount, description, tokens);
+      return this.__getPaymentProvider(providerType.token).createPaymentIntent(address, passphrase, userCustomerID, type, currency, item, amount, description, tokens);
     } else {
-      return this.__getPaymentProvider(providerType.stripe).createPaymentIntent(userCustomerID, type, currency, item, amount, description, tokens);
+      return this.__getPaymentProvider(providerType.stripe).createPaymentIntent(address, passphrase, userCustomerID, type, currency, item, amount, description, tokens);
     }
   }
 
