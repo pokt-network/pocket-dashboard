@@ -19,6 +19,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {isNaN} from "formik";
 import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
 import UserService from "../../../core/services/PocketUserService";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -155,8 +156,10 @@ class SelectRelays extends Component {
       maxRelays: relays
     };
 
+    const transactionSender = await PocketClientService._getTransactionSender(address, passphrase);
+
     const {success, data: paymentIntentData} = await PocketPaymentService
-      .createNewPaymentIntent(address, passphrase, {chains: chains}, ITEM_TYPES.APPLICATION, item, currency, parseFloat(amount), tokens);
+      .createNewPaymentIntent(address, passphrase, {txSender: transactionSender, chains: chains}, ITEM_TYPES.APPLICATION, item, currency, parseFloat(amount), tokens);
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);

@@ -16,6 +16,7 @@ import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSu
 import Purchase from "../../../core/components/Purchase/Purchase";
 import NodeService from "../../../core/services/PocketNodeService";
 import UserService from "../../../core/services/PocketUserService";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class SelectValidatorPower extends Purchase {
   // TODO: On a later release, find a way to simplify the code and reduce
@@ -106,10 +107,13 @@ class SelectValidatorPower extends Purchase {
       validatorPower,
     };
 
+    
+    const transactionSender = await PocketClientService._getTransactionSender(address, passphrase);
+
     const {
       success,
       data: paymentIntentData,
-    } = await PocketPaymentService.createNewPaymentIntent(address, passphrase, {chains: chainsObject, serviceURL: serviceURL}, ITEM_TYPES.NODE, item, currency, parseFloat(amount), tokens);
+    } = await PocketPaymentService.createNewPaymentIntent(address, passphrase, {txSender: transactionSender, chains: chainsObject, serviceURL: serviceURL}, ITEM_TYPES.NODE, item, currency, parseFloat(amount), tokens);
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);

@@ -12,7 +12,7 @@ class TokenPaymentProvider extends BasePaymentProvider {
         this.pocketService = new PocketService();
     }
 
-    async createPaymentIntent(address, passphrase, metadata, userCustomerID, type, currency, item, amount, description = "", tokens) {
+    async createPaymentIntent(metadata, userCustomerID, type, currency, item, amount, description = "", tokens) {
 
         let paymentData = {
             amount: amount,
@@ -24,8 +24,6 @@ class TokenPaymentProvider extends BasePaymentProvider {
                 type: item.type,
                 pokt: item.pokt,
                 tokens: tokens,
-                address: address,
-                passphrase: passphrase,
             },
             setup_future_usage: "on_session",
             customer: userCustomerID
@@ -37,7 +35,7 @@ class TokenPaymentProvider extends BasePaymentProvider {
 
         const {chain_id: chainID, transaction_fee: transactionFee} = Configurations.pocket_network;
 
-        const transactionSender = await this.pocketService._getTransactionSender(address, passphrase);
+        const transactionSender = metadata.txSender;
         const {unlockedAccount: account} = transactionSender;
 
         if (type === ITEM_TYPES.NODE) {
