@@ -5,7 +5,7 @@ import {Button, Col, Row} from "react-bootstrap";
 import ReactToPrint from "react-to-print";
 import has from "lodash/has";
 import Invoice from "../../../core/components/Payment/Invoice";
-import {formatCurrency} from "../../../_helpers";
+import {formatCurrency, upoktToPOKT} from "../../../_helpers";
 import moment from "moment";
 import {ITEM_TYPES} from "../../../_constants";
 import ApplicationService from "../../../core/services/PocketApplicationService";
@@ -19,6 +19,7 @@ import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import Loader from "../../../core/components/Loader";
 import AppAlert from "../../../core/components/AppAlert";
 import PrintableInvoice from "../PrintableInvoice/PrintableInvoice";
+import PocketPaymentService from "../../../core/services/PocketPaymentService";
 
 class Checkout extends Component {
   constructor(props, context) {
@@ -35,7 +36,7 @@ class Checkout extends Component {
       },
       applicationId: "",
       details: [],
-      total: 0,
+      total: 0.00,
       currentAccountBalance: 0,
       purchasedTokens: 0,
       address: "",
@@ -56,7 +57,7 @@ class Checkout extends Component {
       paymentMethod,
       details,
       total,
-      currentAccountBalance,
+      currentAccountBalance
     } = this.props.location.state;
 
     const address =
@@ -101,6 +102,8 @@ class Checkout extends Component {
       paymentMethod,
     });
 
+    const {owner, method} = this.state.invoice;
+
     const action = UserService.getUserAction();
     const appBreadcrumbs = ["Apps", action, "Checkout", "Invoice"];
     const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Invoice"];
@@ -108,6 +111,30 @@ class Checkout extends Component {
     type === ITEM_TYPES.APPLICATION
       ? this.props.onBreadCrumbChange(appBreadcrumbs)
       : this.props.onBreadCrumbChange(nodeBreadcrumbs);
+
+    // Save printable invoice to the DB
+    const items = [
+      ...details,
+      {text: "Current balance", value: `US ${formatCurrency(currentAccountBalance)} = POKT ${upoktToPOKT(currentAccountBalance)}`},
+    ].map((it) => {
+      if (!it.format) {
+        return it;
+      }
+      return {text: it.text, value: `US${formatCurrency(it.value)}`};
+    });
+
+    const printableData = {
+      information: [
+        {text: "Date", value: date},
+        {text: "Bill to", value: owner},
+        {text: "Invoice", value: id},
+        {text: "Payment Method", value: method},
+      ],
+      items: items,
+      total: formatCurrency(total)
+    };
+
+    await PocketPaymentService.updatePaymentIntent(type, paymentId, printableData);
   }
 
   render() {
@@ -133,7 +160,7 @@ class Checkout extends Component {
 
     const items = [
       ...details,
-      {text: "Current balance", value: currentAccountBalance, format: true},
+      {text: "Current balance", value: `US ${formatCurrency(currentAccountBalance)} = POKT ${upoktToPOKT(currentAccountBalance)}`},
     ].map((it) => {
       if (!it.format) {
         return it;

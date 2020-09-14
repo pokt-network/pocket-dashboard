@@ -205,6 +205,49 @@ class PocketPaymentService extends PocketBaseService {
         return {success: false, data: err.response};
       });
   }
+  /**
+   * Update payment intent for purchase with after purchase invoice data.
+   *
+   * @param {string} paymentId Type of item (e.x. application, node).
+   * @param {object} printableData Item data to purchase.
+   *
+   * @return {Promise<*>}
+   * @async
+   */
+  async updatePaymentIntent(type, paymentId, printableData) {
+
+    const user = PocketUserService.getUserInfo().email;
+
+    let path;
+
+    switch (type) {
+      case ITEM_TYPES.APPLICATION:
+        path = "apps";
+        break;
+      case ITEM_TYPES.NODE:
+        path = "nodes";
+        break;
+      default:
+        throw new Error("Invalid item type");
+    }
+
+    const data = {
+      userEmail: user,
+      type,
+      paymentId,
+      printableData
+    };
+
+    return axios
+      .put(this._getURL(`intent/${path}`), data)
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {success: false, data: err.response};
+      });
+  }
+
 }
 
 export default new PocketPaymentService();

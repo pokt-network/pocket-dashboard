@@ -1,10 +1,12 @@
 import express from "express";
 import PaymentService from "../services/PaymentService";
 import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helpers";
+import UserService from "../services/UserService";
 
 const router = express.Router();
 
 const paymentService = new PaymentService();
+const userService = new UserService();
 
 /**
  * Get all available currencies.
@@ -83,6 +85,22 @@ router.post("/new_intent/apps", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
+ * Update an existing intent of payment for apps.
+ */
+router.put("/intent/apps", apiAsyncWrapper(async (req, res) => {
+  /** @type {{userEmail: string, type: string, paymentId: string, total: string, printableData: {information:[], items: [] }}} */
+  const data = req.body;
+
+  if (await paymentService.verifyPaymentBelongsToClient(data.paymentId, req.headers.authorization)) {
+    const result = await paymentService.updatePaymentWithPrintableData(data.paymentId, data.userEmail, data.printableData);
+
+    res.json(result);
+  } else {
+    res.status(400).send("Intent of payment doesn't belong to the client.");
+  }
+}));
+
+/**
  * Create a new intent of payment for nodes.
  */
 router.post("/new_intent/nodes", apiAsyncWrapper(async (req, res) => {
@@ -136,9 +154,13 @@ router.get("/history/:paymentID", apiAsyncWrapper(async (req, res) => {
   /** @type {{paymentID:string}} */
   const data = req.params;
 
-  const paymentHistory = await paymentService.getPaymentFromHistory(data.paymentID, req.headers.authorization);
+  if (await paymentService.verifyPaymentBelongsToClient(data.paymentID, req.headers.authorization)) {
+    const paymentHistory = await paymentService.getPaymentFromHistory(data.paymentID, req.headers.authorization);
 
-  res.json(paymentHistory);
+    res.json(paymentHistory);
+  } else {
+    res.status(400).send("Payment history doesn't belong to the client.");
+  }
 }));
 
 /**

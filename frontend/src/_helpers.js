@@ -15,12 +15,15 @@ export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
 export const formatNumbers = (num) => numeral(num).format("0,0");
 
+export const upoktToPOKT = (upokt) => {
+  return upokt / Math.pow(10, DEFAULT_POKT_DENOMINATION_BASE);
+};
+
 export const formatNetworkData = (
   pokt,
-  fixed = true,
-  poktDenominationBase = DEFAULT_POKT_DENOMINATION_BASE
+  fixed = true
 ) => {
-  const poktNumber = pokt / Math.pow(10, poktDenominationBase);
+  const poktNumber = upoktToPOKT(pokt);
 
   return fixed
     ? formatNumbers(poktNumber)

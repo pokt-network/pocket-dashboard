@@ -66,9 +66,11 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async __createPocketPaymentForItem(userEmail, type, currency, item, amount, itemType, tokens) {
+
     if (!Payment.validate({type, currency, item, amount})) {
       return false;
     }
+
     const provType = amount === 0 ? providerType.token : providerType.stripe;
 
     // Getting user customer from user, a customer is required by stripe.
@@ -265,9 +267,39 @@ export default class PaymentService extends BaseService {
       filter["createdDate"] = dateFilter;
     }
 
-
     return (await this.persistenceService.getEntities(PAYMENT_HISTORY_COLLECTION_NAME, filter, limit, offset))
       .map(PaymentHistory.createPaymentHistory);
+  }
+
+  /**
+   * Verify if the payment belongs to the client's account using an payment id
+   *
+   * @param {string} paymentId Application Identifier.
+   * @param {string} authHeader Authorization header.
+   *
+   * @returns {Promise<boolean>} True if the payment belongs to the client account or false otherwise.
+   * @async
+   */
+  async verifyPaymentBelongsToClient(paymentId, authHeader) {
+    // Retrieve the session tokens from the auth headers
+    const accessToken = authHeader.split(", ")[0].split(" ")[1];
+    const userEmail = authHeader.split(", ")[2].split(" ")[1];
+
+    if (accessToken && userEmail) {
+      const payload = await this.userService.decodeToken(accessToken, true);
+
+      if (payload instanceof DashboardValidationError) {
+        throw payload;
+      }
+      // Use token email to retrieve a list of the payments
+      const paymentHistory = await this.getPaymentFromHistory(paymentId);
+
+      if (paymentHistory.user.toString() === userEmail.toString() && userEmail.toString() === payload.email.toString()) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -310,6 +342,32 @@ export default class PaymentService extends BaseService {
     return result.result.ok === 1;
   }
 
+  /**
+   * Update payment history record with the printable data object.
+   *
+   * @param {string} paymentId Payment Identifier.
+   * @param {string} userEmail User email.
+   * @param {object} printableData Payment invoice printable data.
+   *
+   * @returns {Promise<boolean>} If payment was marked or not.
+   * @async
+   */
+  async updatePaymentWithPrintableData(paymentId, userEmail, printableData) {
+    const filter = {paymentID: paymentId, user: userEmail};
+
+    const paymentHistoryDB = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
+
+    if (!paymentHistoryDB) {
+      return false;
+    }
+
+    paymentHistoryDB.printableData = printableData;
+
+    /** @type {{result: {n:number, ok: number}}} */
+    const result = await this.persistenceService.updateEntity(PAYMENT_HISTORY_COLLECTION_NAME, filter, paymentHistoryDB);
+
+    return result.result.ok === 1;
+  }
 
   /**
    * Mark payment as success on history.
@@ -366,29 +424,21 @@ export default class PaymentService extends BaseService {
    * Get Payment data from history.
    *
    * @param {string} paymentID Payment ID.
-   * @param {string} authHeader Auth header.
    *
    * @returns {Promise<PaymentHistory>} Payment data of the payment id.
    * @async
    */
-  async getPaymentFromHistory(paymentID, authHeader) {
+  async getPaymentFromHistory(paymentID) {
     const filter = {paymentID};
     const dbPaymentHistory = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
 
     if (dbPaymentHistory) {
       const paymentHistory = PaymentHistory.createPaymentHistory(dbPaymentHistory);
 
-      if(authHeader !== undefined) {
-        const userEmail = authHeader.split(", ")[2].split(" ")[1];
-
-        if (paymentHistory && userEmail && userEmail.toString() === paymentHistory.user.toString()) {
-          return paymentHistory;
-        }
-
-      } else if (paymentHistory) {
-          return paymentHistory;
+      if (paymentHistory) {
+        return paymentHistory;
       }
-    }
+  }
 
     return null;
   }

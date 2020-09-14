@@ -12,6 +12,8 @@ import {PAYMENT_HISTORY_LIMIT} from "../../../_constants";
 import {formatCurrency} from "../../../_helpers";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import moment from "moment";
+import PrintableInvoice from "../../Payment/PrintableInvoice/PrintableInvoice";
+import ReactToPrint from "react-to-print";
 
 class PaymentHistory extends Component {
   constructor(props, context) {
@@ -19,7 +21,6 @@ class PaymentHistory extends Component {
 
     this.handleDateChange = this.handleDateChange.bind(this);
     this.renderExport = this.renderExport.bind(this);
-    this.handleExport = this.handleExport.bind(this);
     this.onTablePagination = this.onTablePagination.bind(this);
     this.paginateAfterDateChange = this.paginateAfterDateChange.bind(this);
 
@@ -34,24 +35,51 @@ class PaymentHistory extends Component {
 
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
-    const history = await PaymentService.getPaymentHistory(
+    let history = await PaymentService.getPaymentHistory(
       userEmail, PAYMENT_HISTORY_LIMIT
     );
+
+    history.forEach(obj => {
+      obj.formatedAmount = obj.amount / 100;
+    });
 
     this.setState({history});
   }
 
-  handleExport(data) {
-    // TODO: Add export to downloadable file functionality
-    // console.log(data);
-  }
-
   renderExport(cell, row) {
-    return (
-      <span className="export" onClick={() => this.handleExport(row)}>
-        <img src="/assets/download_invoice.svg" alt="" />
-      </span>
-    );
+
+    if (row.printableData) {
+      this.setState({});
+      return (
+        <div className="print" style={{
+          display: row.printableData !== undefined ? "block" : "none",
+          height: "32px"
+          }}>
+
+          <ReactToPrint
+            trigger={() => (
+              <Button className="link">
+                <img className="download-invoice" src="/assets/download_invoice.svg" alt="" />
+              </Button>
+            )}
+            content={() => this.componentRef}
+            bodyClass="printable-invoice"
+            copyStyles={true}
+          />
+          <PrintableInvoice
+          ref={(el) => (this.componentRef = el)}
+          invoiceItems={row.printableData.information}
+          purchaseDetails={row.printableData.items}
+          cardHolderName={row.billingDetails.name}
+          poktPrice={row.poktPrice}
+          purchasedTokens={row.amount}
+          total={row.printableData.total}
+        />
+        </div>
+      );
+    }
+
+
   }
 
   handleDateChange(date, name) {
@@ -77,20 +105,28 @@ class PaymentHistory extends Component {
     const userEmail = UserService.getUserInfo().email;
     const offset = (page - 1) * sizePerPage + 1;
 
-    const history = await PaymentService.getPaymentHistory(
+    let history = await PaymentService.getPaymentHistory(
       userEmail, PAYMENT_HISTORY_LIMIT, offset, fromDate, toDate
     );
+
+    history.forEach(obj => {
+      obj.formatedAmount = obj.amount / 100;
+    });
 
     this.setState({page, history, offset});
   }
 
   render() {
-    const {history, page, offset} = this.state;
+    let {history, page, offset} = this.state;
+
+    history.forEach(obj => {
+      obj.formatedAmount = obj.amount / 100;
+    });
 
     const columns = [
       {dataField: "item.name", text: "App/Node name"},
       {
-        dataField: "amount",
+        dataField: "formatedAmount",
         text: "Amount",
         formatter: (cell) => formatCurrency(cell),
       },
@@ -101,7 +137,11 @@ class PaymentHistory extends Component {
 
     const pageListRenderer = ({pages, onPageChange}) => {
       // Only include < > when there are pages available
-      const {history} = this.state;
+      let {history} = this.state;
+
+      history.forEach(obj => {
+        obj.formatedAmount = obj.amount / 100;
+      });
 
       const hasPagesAvailable = history.length === PAYMENT_HISTORY_LIMIT;
       const isAnIcon = (p) =>
@@ -146,7 +186,7 @@ class PaymentHistory extends Component {
     // TODO: Add table date filtering
 
     return (
-      <Row id="general" className="payment-history">
+      <Row id="general" className="payment-history" style={{zIndex: "11111"}}>
         <Col lg={{span: 10, offset: 1}} className="title-page">
           <div className="wrapper">
             <h1>Payment history</h1>
