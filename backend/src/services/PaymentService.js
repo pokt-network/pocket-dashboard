@@ -56,6 +56,9 @@ export default class PaymentService extends BaseService {
   /**
    * Create an payment intent for item.
    *
+   * @param {string} address The address.
+   * @param {string} passphrase The passphrase.
+   * @param {object} metadata The metadata.
    * @param {string} userEmail User of payment intent.
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
