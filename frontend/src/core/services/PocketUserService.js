@@ -25,13 +25,18 @@ class PocketUserService extends PocketBaseService {
    * @param {boolean} loggedIn If user is logged in.
    */
   saveUserInCache(user, session, loggedIn) {
-    this.ls.set("is_logged_in", {data: loggedIn});
-    this.ls.set("user_name", {data: user.username});
-    this.ls.set("user_email", {data: user.email});
-    this.ls.set("user_provider", {data: user.provider});
-    this.ls.set("access_token", {data: session.accessToken});
-    this.ls.set("refresh_token", {data: session.refreshToken});
-    this.ls.set("session_expiry", {data: Math.floor(+new Date() / 1000) + parseInt(Configurations.sessionLength)});
+    try {
+      this.ls.set("is_logged_in", {data: loggedIn});
+      this.ls.set("user_name", {data: user.username});
+      this.ls.set("user_email", {data: user.email});
+      this.ls.set("user_provider", {data: user.provider});
+      this.ls.set("access_token", {data: session.accessToken});
+      this.ls.set("refresh_token", {data: session.refreshToken});
+      this.ls.set("session_expiry", {data: Math.floor(+new Date() / 1000) + parseInt(Configurations.sessionLength)});
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.log(error);
+    }
   }
 
   /**
@@ -76,9 +81,9 @@ class PocketUserService extends PocketBaseService {
    * @return {boolean}
    */
   isLoggedIn() {
-    if (  this.ls.getAllKeys().includes("is_logged_in") && 
+    if (  this.ls.getAllKeys().includes("is_logged_in") &&
           this.ls.get("is_logged_in").data === true &&
-          this.ls.getAllKeys().includes("session_expiry") && 
+          this.ls.getAllKeys().includes("session_expiry") &&
           parseInt(this.ls.get("session_expiry").data) > Math.floor(+new Date() / 1000)
     ) {
       // Update session expiry to keep user logged in

@@ -61,9 +61,9 @@ class SignUp extends Component {
   }
 
   componentDidMount() {
-    PocketUserService.getAuthProviders().then((providers) => {
-      this.setState({authProviders: providers});
-    });
+    // PocketUserService.getAuthProviders().then((providers) => {
+    //   this.setState({authProviders: providers});
+    // });
   }
 
   async validate(values) {
