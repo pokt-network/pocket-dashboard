@@ -112,7 +112,7 @@ class SelectValidatorPower extends Purchase {
       validatorPower,
     };
 
-    const amountNumber = parseFloat(amount)
+    const amountNumber = parseFloat(amount);
 
     const {
       success,
