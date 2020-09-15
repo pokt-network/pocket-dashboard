@@ -12,10 +12,9 @@ class AppNavbar extends Component {
       <Row className="app-navbar" noGutters>
         <div id="main-logo">
           <a
-            target="_blank"
             rel="noopener noreferrer"
             style={{marginLeft: "0px", cursor: "pointer"}}
-            href="http://www.pokt.network"
+            href={`${window.location.origin}/dashboard`}
           >
             <img src="/assets/logo-dashboard-color.svg" alt="logo" />
           </a>
