@@ -161,7 +161,7 @@ class SelectRelays extends Component {
       maxRelays: relays
     };
 
-    const amountNumber = parseFloat(amount)
+    const amountNumber = parseFloat(amount);
 
     const {success, data: paymentIntentData} = await PocketPaymentService
       .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, amountNumber, tokens);
