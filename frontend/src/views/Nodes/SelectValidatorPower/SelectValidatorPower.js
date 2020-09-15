@@ -16,6 +16,7 @@ import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSu
 import Purchase from "../../../core/components/Purchase/Purchase";
 import NodeService from "../../../core/services/PocketNodeService";
 import UserService from "../../../core/services/PocketUserService";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class SelectValidatorPower extends Purchase {
   // TODO: On a later release, find a way to simplify the code and reduce
@@ -97,7 +98,12 @@ class SelectValidatorPower extends Purchase {
   }
 
   async createPaymentIntent(validatorPower, currency, amount, tokens) {
-    const {address} = NodeService.getNodeInfo();
+    const {
+      passphrase,
+      chains,
+      address,
+      serviceURL,
+    } = NodeService.getNodeInfo();
     const {pocketNode} = await NodeService.getNode(address);
 
     const item = {
@@ -106,15 +112,30 @@ class SelectValidatorPower extends Purchase {
       validatorPower,
     };
 
+    const amountNumber = parseFloat(amount)
+
     const {
       success,
       data: paymentIntentData,
     } = await PocketPaymentService.createNewPaymentIntent(
-      ITEM_TYPES.NODE, item, currency, parseFloat(amount), tokens
+      ITEM_TYPES.NODE, item, currency, amountNumber, tokens
     );
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);
+    }
+
+    if(amountNumber === 0) {
+      const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
+      const detail = url.replace(":address", address);
+      const nodeLink = `${window.location.origin}${detail}`;
+
+      const nodeStakeRequest = await PocketClientService.nodeStakeRequest(
+        address, passphrase, chains, tokens, serviceURL);
+
+      NodeService.stakeNode(
+        nodeStakeRequest, paymentIntentData.id, nodeLink
+      ).then(() => { });
     }
 
     return {success, data: paymentIntentData};
