@@ -259,9 +259,10 @@ class SelectValidatorPower extends Purchase {
                 onClose={() => this.setState({error: false})}
               />
             )}
-            <h1>Run actually decentralized infrastructure</h1>
+            <h1>Run truly decentralized infrastructure</h1>
             <p className="subtitle">
-              15,500 POKT is the minimum stake to run a node. By increasing the Validator Power (VP) beyond the minimum stake, odds are increased that a node will be selected to produce blocks and receive the block reward. <b>Best Practices:</b> If a node stake at any time falls below the minimum stake for any reason, the stake will be burned by the protocol. For this reason, we recommend staking at least 10% beyond the minimum stake to account for any accidental or unforeseen slashing due to misconfiguration.
+              15,500 POKT is the minimum stake to run a node. By increasing the Validator Power (VP) beyond the minimum stake, odds are increased that a node will be selected to produce blocks and receive the block reward.
+              <p><br /><b>Best Practices:</b> If a node stake at any time falls below the minimum stake for any reason, the stake will be burned by the protocol. For this reason, we recommend staking at least 10% beyond the minimum stake to account for any accidental or unforeseen slashing due to misconfiguration.</p>
             </p>
           </Col>
         </Row>
