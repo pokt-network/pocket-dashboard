@@ -269,7 +269,7 @@ export default class PaymentService extends BaseService {
     }
 
     if (paymentID) {
-      filter["paymentID"] = paymentID
+      filter["paymentID"] = paymentID;
     }
 
     return (await this.persistenceService.getEntities(PAYMENT_HISTORY_COLLECTION_NAME, filter, limit, offset))

@@ -23,8 +23,8 @@ class PaymentHistory extends Component {
     this.renderExport = this.renderExport.bind(this);
     this.onTablePagination = this.onTablePagination.bind(this);
     this.paginateAfterDateChange = this.paginateAfterDateChange.bind(this);
-    this.handleSearch = this.handleSearch.bind(this)
-    this.searchChange = this.searchChange.bind(this)
+    this.handleSearch = this.handleSearch.bind(this);
+    this.searchChange = this.searchChange.bind(this);
 
     this.state = {
       fromDate: "",
@@ -94,7 +94,7 @@ class PaymentHistory extends Component {
     );
   }
 
-  searchChange({ currentTarget: input }) {
+  searchChange({currentTarget: input}) {
     this.setState(
       {
         input: input.value
@@ -103,7 +103,6 @@ class PaymentHistory extends Component {
   }
 
   handleSearch() {
-    console.log(this.state.input)
     this.setState(
       {
         paymentID: this.state.input,
