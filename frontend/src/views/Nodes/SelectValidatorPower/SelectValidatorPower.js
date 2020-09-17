@@ -125,7 +125,7 @@ class SelectValidatorPower extends Purchase {
       throw new Error(paymentIntentData.data.message);
     }
 
-    if(amountNumber === 0) {
+    if (paymentIntentData.provider === "token") {
       const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
       const detail = url.replace(":address", address);
       const nodeLink = `${window.location.origin}${detail}`;

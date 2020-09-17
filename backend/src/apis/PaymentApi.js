@@ -125,6 +125,22 @@ router.post("/new_intent/nodes", apiAsyncWrapper(async (req, res) => {
 }));
 
 /**
+ * Update an existing intent of payment for apps.
+ */
+router.put("/intent/nodes", apiAsyncWrapper(async (req, res) => {
+  /** @type {{userEmail: string, type: string, paymentId: string, total: string, printableData: {information:[], items: [] }}} */
+  const data = req.body;
+
+  if (await paymentService.verifyPaymentBelongsToClient(data.paymentId, req.headers.authorization)) {
+    const result = await paymentService.updatePaymentWithPrintableData(data.paymentId, data.userEmail, data.printableData);
+
+    res.json(result);
+  } else {
+    res.status(400).send("Intent of payment doesn't belong to the client.");
+  }
+}));
+
+/**
  * Retrieve history information about payments.
  */
 router.post("/history", apiAsyncWrapper(async (req, res) => {

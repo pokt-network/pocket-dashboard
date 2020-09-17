@@ -1,5 +1,6 @@
 import BasePaymentProvider, {CardPaymentMethod, PaymentResult} from "./BasePaymentProvider";
 import Stripe from "stripe";
+import {providerType} from "./Index";
 
 class StripePaymentProvider extends BasePaymentProvider {
 
@@ -39,7 +40,7 @@ class StripePaymentProvider extends BasePaymentProvider {
     const date = new Date(paymentResultData.created * 1000);
     const resultAmount = paymentResultData.amount;
 
-    return new PaymentResult(paymentResultData.id, date, paymentResultData.client_secret, paymentResultData.currency, resultAmount);
+    return new PaymentResult(paymentResultData.id, date, paymentResultData.client_secret, paymentResultData.currency, resultAmount, providerType.stripe);
   }
 
   async retrieveCardPaymentMethod(paymentMethodID) {
