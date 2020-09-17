@@ -12,6 +12,7 @@
   height: 80px;
 
   #main-logo {
+    position: absolute;
     img {
       width: map_get($main-logo-size, width);
       height: map_get($main-logo-size, height);
