@@ -133,13 +133,13 @@ router.post("/history", apiAsyncWrapper(async (req, res) => {
   const offsetData = getOptionalQueryOption(req, "offset");
   const offset = offsetData !== "" ? parseInt(offsetData) : 0;
 
-  /** @type {{user:string, fromDate: string, toDate: string}} */
+  /** @type {{user:string, fromDate: string, toDate: string, paymentID: string}} */
   const data = req.body;
   const userEmail = req.headers.authorization.split(", ")[2].split(" ")[1];
 
   if (data && userEmail && userEmail.toString() === data.user.toString()) {
     const paymentHistory = await paymentService
-    .getPaymentHistory(data.user, limit, offset, data.fromDate, data.toDate);
+      .getPaymentHistory(data.user, limit, offset, data.fromDate, data.toDate, data.paymentID);
 
     res.json(paymentHistory);
   } else {

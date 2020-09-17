@@ -23,10 +23,14 @@ class PaymentHistory extends Component {
     this.renderExport = this.renderExport.bind(this);
     this.onTablePagination = this.onTablePagination.bind(this);
     this.paginateAfterDateChange = this.paginateAfterDateChange.bind(this);
+    this.handleSearch = this.handleSearch.bind(this)
+    this.searchChange = this.searchChange.bind(this)
 
     this.state = {
       fromDate: "",
       toDate: "",
+      paymentID: "",
+      input: "",
       history: [],
       offset: 0,
       page: 1,
@@ -78,14 +82,31 @@ class PaymentHistory extends Component {
         </div>
       );
     }
-
-
   }
 
   handleDateChange(date, name) {
     this.setState(
       {
         [name]: moment(date).format("YYYY-MM-DD"),
+        offset: 0,
+        page: 1,
+      }, this.paginateAfterDateChange
+    );
+  }
+
+  searchChange({ currentTarget: input }) {
+    this.setState(
+      {
+        input: input.value
+      }
+    );
+  }
+
+  handleSearch() {
+    console.log(this.state.input)
+    this.setState(
+      {
+        paymentID: this.state.input,
         offset: 0,
         page: 1,
       }, this.paginateAfterDateChange
@@ -100,13 +121,13 @@ class PaymentHistory extends Component {
   }
 
   async onTablePagination(_, {page, sizePerPage}) {
-    const {fromDate, toDate} = this.state;
+    const {fromDate, toDate, paymentID} = this.state;
 
     const userEmail = UserService.getUserInfo().email;
     const offset = (page - 1) * sizePerPage + 1;
 
     let history = await PaymentService.getPaymentHistory(
-      userEmail, PAYMENT_HISTORY_LIMIT, offset, fromDate, toDate
+      userEmail, PAYMENT_HISTORY_LIMIT, offset, fromDate, toDate, paymentID
     );
 
     history.forEach(obj => {
@@ -207,7 +228,9 @@ class PaymentHistory extends Component {
                   <FormControl
                     placeholder="Search invoice"
                     name="searchQuery"
-                    onChange={this.handleChange}
+                    onChange={(e) => {
+                      this.searchChange(e);
+                    }}
                     onKeyPress={({key}) => {
                       if (key === "Enter") {
                         this.handleSearch();
