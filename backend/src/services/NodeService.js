@@ -6,7 +6,7 @@ import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
 import {DashboardError, DashboardValidationError} from "../models/Exceptions";
 import {POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
-import EmailService from "../services/EmailService"
+import EmailService from "../services/EmailService";
 
 const NODE_COLLECTION_NAME = "Nodes";
 
@@ -451,7 +451,7 @@ export default class NodeService extends BasePocketService {
     }
 
     node.pocketNode.updatingStatus = true;
-    await EmailService.to(contactEmail).sendPaymentCompletedNodeEmail(contactEmail, emailData, paymentEmailData)
+    await EmailService.to(contactEmail).sendPaymentCompletedNodeEmail(contactEmail, emailData, paymentEmailData);
 
     await this.__updatePersistedNode(node.pocketNode);
   }
