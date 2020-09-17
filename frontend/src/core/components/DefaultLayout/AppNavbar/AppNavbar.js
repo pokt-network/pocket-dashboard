@@ -15,7 +15,7 @@ class AppNavbar extends Component {
           <area shape="rect" coords="120,14,225,65" alt="Dashboard" href={`${window.location.origin}/dashboard`} />
         </map>
         <div id="main-logo">
-          <img src="/assets/logo-dashboard-color.svg" alt="logo" usemap="#workmap"/>
+          <img src="/assets/logo-dashboard-color.svg" alt="logo" useMap="#workmap"/>
         </div>
         <div className="items">
           {/* TODO: Uncomment when second release*/}
