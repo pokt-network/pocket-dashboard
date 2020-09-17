@@ -1,5 +1,6 @@
 import BasePaymentProvider, {CardPaymentMethod, PaymentResult} from "./BasePaymentProvider";
 import {v4 as uuidv4} from "uuid";
+import {providerType} from "./Index";
 
 class TokenPaymentProvider extends BasePaymentProvider {
 
@@ -30,7 +31,7 @@ class TokenPaymentProvider extends BasePaymentProvider {
 
         const date = new Date();
 
-        return new PaymentResult(uuidv4(), date, "", "pokt", tokens);
+        return new PaymentResult(uuidv4(), date, "", "pokt", tokens, providerType.token);
     }
 
     async createCustomer(user) {

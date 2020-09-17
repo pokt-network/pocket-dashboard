@@ -18,6 +18,7 @@ import {POKT_DENOMINATIONS} from "./PocketService";
 import PocketService from "./PocketService";
 import {ObjectID} from "mongodb";
 import {Encryptor, Decryptor} from "strong-cryptor";
+import EmailService from "../services/EmailService"
 
 const crypto = require("crypto");
 const cryptoKey = Configurations.persistence.default.db_encryption_key;
@@ -693,6 +694,7 @@ export default class ApplicationService extends BasePocketService {
       applicationSignature: gatewayAATSignature
     };
 
+    await EmailService.to(contactEmail).sendPaymentCompletedAppEmail(contactEmail, emailData, paymentEmailData)
     await this.__updatePersistedApplication(application.pocketApplication);
     await this.__markApplicationAsFreeTier(application.pocketApplication, false);
   }

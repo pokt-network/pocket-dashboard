@@ -30,9 +30,10 @@ export class PaymentResult {
    * @param {string} paymentNumber Confirmation number of payment.
    * @param {string} currency Currency of payment.
    * @param {number} amount Amount of payment.
+   * @param {string} provider The provider.
    */
-  constructor(id, createdDate, paymentNumber, currency, amount) {
-    Object.assign(this, {id, createdDate, amount, currency, paymentNumber});
+  constructor(id, createdDate, paymentNumber, currency, amount, provider) {
+    Object.assign(this, { id, createdDate, amount, currency, paymentNumber, provider});
   }
 }
 
