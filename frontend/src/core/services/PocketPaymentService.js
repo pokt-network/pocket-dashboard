@@ -97,17 +97,19 @@ class PocketPaymentService extends PocketBaseService {
    * @param {number} [offset] Offset of query.
    * @param {string} [fromDate] From created date.
    * @param {string} [toDate] To created date.
+   * @param {string} [paymentID] paymentID.
    *
    * @return {Promise|Promise<Array.<*>>}
    */
-  getPaymentHistory(user, limit, offset = 0, fromDate, toDate) {
+  getPaymentHistory(user, limit, offset = 0, fromDate, toDate, paymentID) {
     return axios({
       method: "post",
       url: this._getURL("history"),
       data: {
         user,
         fromDate,
-        toDate
+        toDate,
+        paymentID
       },
       params: {
         limit,
