@@ -19,6 +19,9 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {isNaN} from "formik";
 import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
 import UserService from "../../../core/services/PocketUserService";
+import {Configurations} from "../../../_configuration";
+
+const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -307,6 +310,7 @@ class SelectRelays extends Component {
                   // },
                   [maxRelays]: `*${formatNumbers(maxRelays)} RPD*`,
                 }}
+                step={POCKET_NETWORK_CONFIGURATION.max_sessions}
                 min={minRelays}
                 max={maxRelays}
               />
