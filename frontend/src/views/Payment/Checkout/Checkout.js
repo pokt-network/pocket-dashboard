@@ -39,6 +39,7 @@ class Checkout extends Component {
       total: 0.00,
       currentAccountBalance: 0,
       purchasedTokens: 0,
+      upoktToStake: 0,
       address: "",
       unauthorized: false,
     };
@@ -57,7 +58,8 @@ class Checkout extends Component {
       paymentMethod,
       details,
       total,
-      currentAccountBalance
+      currentAccountBalance,
+      upoktToStake
     } = this.props.location.state;
 
     const address =
@@ -72,7 +74,7 @@ class Checkout extends Component {
 
     const purchasedTokens =
       type === ITEM_TYPES.APPLICATION
-        ? await CheckoutService.getApplicationPoktToStake(total)
+        ? {cost: upoktToStake}
         : await CheckoutService.getNodePoktToStake(total);
 
     const {

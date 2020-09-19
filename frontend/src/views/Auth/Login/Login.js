@@ -44,9 +44,9 @@ class Login extends Component {
 
   componentDidMount() {
     /** @type {UserService} */
-    UserService.getAuthProviders().then((providers) => {
-      this.setState({authProviders: providers});
-    });
+    // UserService.getAuthProviders().then((providers) => {
+    //   this.setState({authProviders: providers});
+    // });
   }
 
   async handleLogin(e) {

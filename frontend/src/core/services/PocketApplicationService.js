@@ -443,12 +443,11 @@ export class PocketApplicationService extends PocketBaseService {
   /**
    * Stake a custom tier application.
    *
-   * @param {{applicationId: string, appStakeTransaction: {address: string, raw_hex_bytes: string}, paymentId: string, applicationLink: string, gatewayAATSignature: string}} stakeInformation Stake information object..
+   * @param {{applicationId: string, appStakeTransaction: {address: string, raw_hex_bytes: string}, paymentId: string, applicationLink: string, gatewayAATSignature: string, upoktToStake: string}} stakeInformation Stake information object..
    *
    * @returns {Promise|Promise<*>}
    */
   stakeApplication(stakeInformation) {
-
     return axios
       .post(this._getURL("custom/stake"), stakeInformation)
       .then((response) => {
