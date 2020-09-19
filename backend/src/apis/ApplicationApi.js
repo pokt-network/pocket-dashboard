@@ -4,8 +4,8 @@ import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helper
 import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
 import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
-import {CoinDenom} from "@pokt-network/pocket-js";
 import UserService from "../services/UserService";
+import {Configurations} from "../_configuration";
 
 const router = express.Router();
 
@@ -228,7 +228,7 @@ router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
  * Stake an application.
  */
 router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{applicationId: string, appStakeTransaction: {address: string, raw_hex_bytes: string}, paymentId: string, applicationLink: string, gatewayAATSignature: string}} */
+  /** @type {{applicationId: string, appStakeTransaction: {address: string, raw_hex_bytes: string}, paymentId: string, applicationLink: string, gatewayAATSignature: string, upoktToStake: string}} */
   const data = req.body;
   const paymentHistory = await paymentService.getPaymentFromHistory(data.paymentId);
 
@@ -241,9 +241,8 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
 
     if (await applicationService.verifyApplicationBelongsToClient(data.applicationId, req.headers.authorization)) {
       const item = paymentHistory.getItem();
-      const amountToSpent = applicationCheckoutService.getMoneyToSpent(parseInt(item.maxRelays));
-      const poktStaked = applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Pokt).toString();
-      const uPoktStaked = applicationCheckoutService.getPoktToStake(amountToSpent, CoinDenom.Upokt).toString();
+      // For the email, convert to pokt
+      const poktStaked = data.upoktToStake / 1000000;
 
       const applicationEmailData = {
         name: application.pocketApplication.name,
@@ -256,7 +255,7 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
         poktStaked: poktStaked
       };
 
-      await applicationService.stakeApplication(appStakeTransaction.address, uPoktStaked, appStakeTransaction, application, applicationEmailData, paymentEmailData, data.gatewayAATSignature);
+      await applicationService.stakeApplication(appStakeTransaction.address, data.upoktToStake, appStakeTransaction, application, applicationEmailData, paymentEmailData, data.gatewayAATSignature);
 
       res.send(true);
     } else {

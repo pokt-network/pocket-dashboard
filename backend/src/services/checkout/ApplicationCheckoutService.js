@@ -54,14 +54,14 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
   }
 
   /**
-   * Get money to spent.
+   * Get POKT for selected Relays per day.
    *
    * @param {number} relaysPerDay Relays per day.
    *
    * @returns {number} Money to spent.
    * @throws {DashboardValidationError} if relays per day is out of allowed range.
    */
-  getMoneyToSpent(relaysPerDay) {
+  getPOKTForRelaysPerDay(relaysPerDay) {
     const {
       sessions_per_day: sessionsInADay,
       stability,
@@ -71,7 +71,7 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
         base_relay_per_pokt: baseRelayPerPOKT
       }
     } = this.options;
-    
+
     let {
       p_rate: pRate
     } = this.options;
@@ -91,8 +91,21 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
     if (!isNumericOptionValid(this.poktMarketPrice) || isNumericOptionNegative(this.poktMarketPrice)) {
       throw new DashboardValidationError("Invalid POKT Market Price " + this.poktMarketPrice);
     }
-    
-    const result = (((((relaysPerDay / sessionsInADay) - stability) / pRate)) / baseRelayPerPOKT) * this.poktMarketPrice;
+
+    const result = ((((relaysPerDay / sessionsInADay) - stability) / pRate)) / baseRelayPerPOKT;
+
+    return result;
+  }
+
+  /**
+   * Get money to spent.
+   *
+   * @param {number} pokt POKT Value to spent.
+   *
+   * @returns {number} Money to spent.
+   */
+  getMoneyToSpent(pokt) {
+    const result = pokt * this.poktMarketPrice;
 
     return result.toFixed(2);
   }

@@ -23,10 +23,12 @@ router.get("/nodes/validator-power", apiAsyncWrapper((req, res) => {
 
 router.get("/applications/cost", apiAsyncWrapper((req, res) => {
   const relaysPerDay = parseInt(getQueryOption(req, "rpd"));
-  
-  const cost = applicationCheckoutService.getMoneyToSpent(relaysPerDay);
 
-  res.json({cost});
+  const pokt = applicationCheckoutService.getPOKTForRelaysPerDay(relaysPerDay);
+  const cost = applicationCheckoutService.getMoneyToSpent(pokt);
+  const upokt = Math.round(pokt * 1000000);
+
+  res.json({upokt, cost});
 }));
 
 router.post("/applications/pokt", apiAsyncWrapper((req, res) => {

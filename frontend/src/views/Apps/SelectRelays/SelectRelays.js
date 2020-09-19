@@ -32,6 +32,7 @@ class SelectRelays extends Component {
     this.goToSummary = this.goToSummary.bind(this);
 
     this.state = {
+      upoktToStake: 0,
       minRelays: 0,
       maxRelays: 0,
       relaysSelected: 0,
@@ -56,7 +57,7 @@ class SelectRelays extends Component {
             const minRelays = parseInt(relaysPerDay.min);
 
             PocketCheckoutService.getApplicationMoneyToSpent(minRelays)
-              .then(({cost}) => {
+              .then(({upokt, cost}) => {
 
                 PocketAccountService.getBalance(accountAddress)
                   .then(({balance}) => {
@@ -72,7 +73,8 @@ class SelectRelays extends Component {
                       loading: false,
                       relaysSelected: minRelays,
                       subTotal,
-                      total
+                      total,
+                      upoktToStake: upokt
                     });
                   });
               });
@@ -90,7 +92,7 @@ class SelectRelays extends Component {
     const currentAccountBalance = parseFloat(value);
 
     PocketCheckoutService.getApplicationMoneyToSpent(relaysSelected)
-      .then(({cost}) => {
+      .then(({upokt, cost}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
 
@@ -98,6 +100,7 @@ class SelectRelays extends Component {
           currentAccountBalance: currentAccountBalance,
           total,
           subTotal,
+          upoktToStake: upokt
         });
       });
   }
@@ -106,11 +109,16 @@ class SelectRelays extends Component {
     const {currentAccountBalance} = this.state;
 
     PocketCheckoutService.getApplicationMoneyToSpent(value)
-      .then(({cost}) => {
+      .then(({upokt, cost}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
 
-        this.setState({relaysSelected: value, subTotal, total});
+        this.setState({
+          relaysSelected: value,
+          subTotal,
+          total,
+          upoktToStake: upokt
+        });
       });
   }
 
@@ -175,6 +183,7 @@ class SelectRelays extends Component {
       subTotal,
       total,
       currentAccountBalance,
+      upoktToStake
     } = this.state;
 
     this.setState({loading: true});
@@ -212,6 +221,7 @@ class SelectRelays extends Component {
             ],
             total,
             currentAccountBalance,
+            upoktToStake
           },
         });
       } else {
@@ -230,7 +240,8 @@ class SelectRelays extends Component {
               description: `${PURCHASE_ITEM_NAME.APPS} cost`,
             },
             total: totalAmount,
-            currentAccountBalance
+            currentAccountBalance,
+            upoktToStake
           },
         });
       }
@@ -254,6 +265,7 @@ class SelectRelays extends Component {
       maxRelays,
       currentAccountBalance,
       loading,
+      upoktToStake
     } = this.state;
 
     // At the moment the only available currency is USD.
@@ -345,6 +357,7 @@ class SelectRelays extends Component {
               balanceOnChange={this.onCurrentBalanceChange}
               total={totalFixed}
               loading={loading}
+              upoktToStake={upoktToStake}
               formActionHandler={this.goToSummary}
               // At the moment, we're only using  USD
               currency={currencies[0]}

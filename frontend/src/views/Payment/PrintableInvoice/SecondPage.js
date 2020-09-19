@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {formatNetworkData} from "../../../_helpers";
 import Logo from "./Logo";
 
 class SecondPage extends React.Component {
@@ -18,11 +17,11 @@ class SecondPage extends React.Component {
           <u>pokt token purchase agreement</u>
         </h3>
         <p className="mb-5">
-          <b>NOTICE:</b> THE TERMS OF THIS AGREEMENT FORM A BINDING LEGAL CONTRACT BETWEEN YOU AND POCKET NETWORK, 
-          INC (THE “COMPANY”). CAREFULLY READ ALL OF THE TERMS OF THIS AGREEMENT BEFORE CLICKING THE “I AGREE” BUTTON. 
-          BY CLICKING THE “I AGREE” BUTTON YOU ACKNOWLEDGE YOUR CONSENT AND AGREEMENT TO ALL THE TERMS AND CONDITIONS SET 
-          FORTH IN THIS AGREEMENT. IF YOU DO NOT AGREE TO ALL THE TERMS OF THIS AGREEMENT, DO NOT CLICK “I AGREE.” IF YOU 
-          HAVE ANY QUESTIONS REGARDING THE EFFECT OF THE TERMS AND CONDITIONS IN THIS AGREEMENT, YOU ARE ADVISED TO CONSULT 
+          <b>NOTICE:</b> THE TERMS OF THIS AGREEMENT FORM A BINDING LEGAL CONTRACT BETWEEN YOU AND POCKET NETWORK,
+          INC (THE “COMPANY”). CAREFULLY READ ALL OF THE TERMS OF THIS AGREEMENT BEFORE CLICKING THE “I AGREE” BUTTON.
+          BY CLICKING THE “I AGREE” BUTTON YOU ACKNOWLEDGE YOUR CONSENT AND AGREEMENT TO ALL THE TERMS AND CONDITIONS SET
+          FORTH IN THIS AGREEMENT. IF YOU DO NOT AGREE TO ALL THE TERMS OF THIS AGREEMENT, DO NOT CLICK “I AGREE.” IF YOU
+          HAVE ANY QUESTIONS REGARDING THE EFFECT OF THE TERMS AND CONDITIONS IN THIS AGREEMENT, YOU ARE ADVISED TO CONSULT
           INDEPENDENT LEGAL COUNSEL.
         </p>
         <h6 className="mb-3">
@@ -39,7 +38,7 @@ class SecondPage extends React.Component {
           >
             https://dashboard.pokt.network/
           </a>{" "}
-          (the “Purchasing Site”). If your responses remain accurate and correct, 
+          (the “Purchasing Site”). If your responses remain accurate and correct,
           click the checkbox and the “I AGREE” button to indicate your agreement.
         </p>
         <h6 className="mb-3">
@@ -100,7 +99,7 @@ class SecondPage extends React.Component {
                 Subject to the Purchasing Site Terms of Use and the terms and
                 conditions set forth herein, Purchaser, intending to be legally
                 bound, hereby irrevocably agrees to purchase from the Company{" "}
-                {formatNetworkData(purchasedTokens)} Tokens (the “
+                {(purchasedTokens / 1000000).toFixed(2)} Tokens (the “
                 <u>Purchased Tokens</u>”) at a purchase price of $USD{" "}
                 {poktPrice} per token (the &quot;
                 <u>Purchase Price</u>&quot;), payable by [ETH, USD, BTC]

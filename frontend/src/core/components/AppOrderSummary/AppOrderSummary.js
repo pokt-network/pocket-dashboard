@@ -46,7 +46,7 @@ class AppOrderSummary extends Component {
       balanceOnChange,
       loading,
       total,
-      currency,
+      currency
     } = this.props;
 
     return (

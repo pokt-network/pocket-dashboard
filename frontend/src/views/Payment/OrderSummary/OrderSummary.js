@@ -24,6 +24,7 @@ import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
 
+
 class OrderSummary extends Component {
   constructor(props, context) {
     super(props, context);
@@ -33,6 +34,7 @@ class OrderSummary extends Component {
     this.goToInvoice = this.goToInvoice.bind(this);
 
     this.state = {
+      upoktToStake: 0,
       setMethodDefault: false,
       type: "",
       paymentIntent: {},
@@ -77,6 +79,7 @@ class OrderSummary extends Component {
       cost,
       total,
       currentAccountBalance,
+      upoktToStake
     } = this.props.location.state;
 
     const user = UserService.getUserInfo().email;
@@ -98,6 +101,7 @@ class OrderSummary extends Component {
         quantity,
         cost,
         total,
+        upoktToStake,
         currentAccountBalance,
         isFormVisible: !hasPaymentMethods,
         isAddNewDisabled: !hasPaymentMethods,
@@ -123,6 +127,7 @@ class OrderSummary extends Component {
       cost,
       total,
       currentAccountBalance,
+      upoktToStake
     } = this.state;
 
     return this.props.history.replace({
@@ -141,6 +146,7 @@ class OrderSummary extends Component {
         ],
         total,
         currentAccountBalance,
+        upoktToStake
       },
     });
   }
@@ -148,7 +154,7 @@ class OrderSummary extends Component {
   async makePurchaseWithSavedCard(e, stripe) {
     e.preventDefault();
 
-    const {total} = this.state;
+    const {total, upoktToStake} = this.state;
 
     this.setState({purchasing: true});
 
@@ -174,8 +180,6 @@ class OrderSummary extends Component {
     }
 
     if (type === ITEM_TYPES.APPLICATION) {
-      const pokt = await PocketCheckoutService.getApplicationPoktToStake(total);
-
       // Stake application
       const {
         id,
@@ -191,7 +195,7 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       const appStakeTransaction = await PocketClientService.appStakeRequest(
-        address, passphrase, chains, pokt.cost.toString());
+        address, passphrase, chains, upoktToStake.toString());
 
       // Sign an AAT for the Gateway service using the Gateway's client pub key and app private key
       const gatewayAATSignature = await PocketClientService.signGatewayAAT(
@@ -203,6 +207,7 @@ class OrderSummary extends Component {
         paymentId: result.paymentIntent.id,
         applicationLink,
         gatewayAATSignature,
+        upoktToStake
       };
 
       await ApplicationService.stakeApplication(stakeInformation);
