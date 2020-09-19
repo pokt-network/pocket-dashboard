@@ -11,7 +11,7 @@ import Loader from "../../../core/components/Loader";
 import {ElementsConsumer} from "@stripe/react-stripe-js";
 import PaymentContainer from "../../../core/components/Payment/Stripe/PaymentContainer";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import {_getDashboardPath, ROUTE_PATHS, DASHBOARD_PATHS} from "../../../_routes";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCardNoAddressForm";
 import AppAlert from "../../../core/components/AppAlert";
@@ -488,8 +488,8 @@ class OrderSummary extends Component {
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{marginLeft: "0px"}}
-                      href="http://www.pokt.network/pokt-token-purchase-agreement/">
-                      Purchase Terms and conditions.
+                      href={ROUTE_PATHS.purchaseTerms}>
+                      Purchase Terms and Conditions.
                       </a>
                   </span>
                 }

@@ -14,7 +14,7 @@ class SecondPage extends React.Component {
         <Logo />
         <h3>POCKET NETWORK, INC</h3>
         <h3 className="mb-5">
-          <u>pokt token purchase agreement</u>
+          <u>POKT Token Purchase Agreement</u>
         </h3>
         <p className="mb-5">
           <b>NOTICE:</b> THE TERMS OF THIS AGREEMENT FORM A BINDING LEGAL CONTRACT BETWEEN YOU AND POCKET NETWORK,

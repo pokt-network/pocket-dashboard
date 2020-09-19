@@ -16,6 +16,7 @@ import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSu
 import Purchase from "../../../core/components/Purchase/Purchase";
 import NodeService from "../../../core/services/PocketNodeService";
 import UserService from "../../../core/services/PocketUserService";
+import PocketClientService from "../../../core/services/PocketClientService";
 
 class SelectValidatorPower extends Purchase {
   // TODO: On a later release, find a way to simplify the code and reduce
@@ -97,7 +98,12 @@ class SelectValidatorPower extends Purchase {
   }
 
   async createPaymentIntent(validatorPower, currency, amount, tokens) {
-    const {address} = NodeService.getNodeInfo();
+    const {
+      passphrase,
+      chains,
+      address,
+      serviceURL,
+    } = NodeService.getNodeInfo();
     const {pocketNode} = await NodeService.getNode(address);
 
     const item = {
@@ -106,15 +112,30 @@ class SelectValidatorPower extends Purchase {
       validatorPower,
     };
 
+    const amountNumber = parseFloat(amount);
+
     const {
       success,
       data: paymentIntentData,
     } = await PocketPaymentService.createNewPaymentIntent(
-      ITEM_TYPES.NODE, item, currency, parseFloat(amount), tokens
+      ITEM_TYPES.NODE, item, currency, amountNumber, tokens
     );
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);
+    }
+
+    if (paymentIntentData.provider === "token") {
+      const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
+      const detail = url.replace(":address", address);
+      const nodeLink = `${window.location.origin}${detail}`;
+
+      const nodeStakeRequest = await PocketClientService.nodeStakeRequest(
+        address, passphrase, chains, tokens, serviceURL);
+
+      NodeService.stakeNode(
+        nodeStakeRequest, paymentIntentData.id, nodeLink
+      ).then(() => { });
     }
 
     return {success, data: paymentIntentData};
@@ -238,9 +259,10 @@ class SelectValidatorPower extends Purchase {
                 onClose={() => this.setState({error: false})}
               />
             )}
-            <h1>Run actually decentralized infrastructure</h1>
+            <h1>Run truly decentralized infrastructure</h1>
             <p className="subtitle">
-              15,500 POKT is the minimum stake to run a node. By increasing the Validator Power (VP) beyond the minimum stake, odds are increased that a node will be selected to produce blocks and receive the block reward. <b>Best Practices:</b> If a node stake at any time falls below the minimum stake for any reason, the stake will be burned by the protocol. For this reason, we recommend staking at least 10% beyond the minimum stake to account for any accidental or unforeseen slashing due to misconfiguration.
+              15,500 POKT is the minimum stake to run a node. By increasing the Validator Power (VP) beyond the minimum stake, odds are increased that a node will be selected to produce blocks and receive the block reward.
+              <p><br /><b>Best Practices:</b> If a node stake at any time falls below the minimum stake for any reason, the stake will be burned by the protocol. For this reason, we recommend staking at least 10% beyond the minimum stake to account for any accidental or unforeseen slashing due to misconfiguration.</p>
             </p>
           </Col>
         </Row>

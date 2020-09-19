@@ -248,10 +248,11 @@ export default class PaymentService extends BaseService {
    * @param {number} [offset] Offset of query.
    * @param {string} [fromDate] From created date.
    * @param {string} [toDate] To created date.
+   * @param {string} [paymentID] Payment ID.
    *
    * @returns {Promise<PaymentHistory[]>} List of Payment history.
    */
-  async getPaymentHistory(user, limit, offset = 0, fromDate = "", toDate = "") {
+  async getPaymentHistory(user, limit, offset = 0, fromDate = "", toDate = "", paymentID = "") {
     let filter = {user};
     let dateFilter = {};
 
@@ -265,6 +266,10 @@ export default class PaymentService extends BaseService {
 
     if (fromDate || toDate) {
       filter["createdDate"] = dateFilter;
+    }
+
+    if (paymentID) {
+      filter["paymentID"] = paymentID;
     }
 
     return (await this.persistenceService.getEntities(PAYMENT_HISTORY_COLLECTION_NAME, filter, limit, offset))

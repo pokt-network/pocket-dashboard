@@ -19,9 +19,11 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {isNaN} from "formik";
 import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
 import UserService from "../../../core/services/PocketUserService";
+import PocketClientService from "../../../core/services/PocketClientService";
 import {Configurations} from "../../../_configuration";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
+
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -157,7 +159,12 @@ class SelectRelays extends Component {
   }
 
   async createPaymentIntent(relays, currency, amount, tokens) {
-    const {address} = PocketApplicationService.getApplicationInfo();
+    const {
+      id,
+      passphrase,
+      chains,
+      address,
+    } = PocketApplicationService.getApplicationInfo();
     const {pocketApplication} = await PocketApplicationService.getApplication(address);
 
     const item = {
@@ -166,11 +173,35 @@ class SelectRelays extends Component {
       maxRelays: relays
     };
 
+    const amountNumber = parseFloat(amount);
+
     const {success, data: paymentIntentData} = await PocketPaymentService
-      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, parseFloat(amount), tokens);
+      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, amountNumber, tokens);
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);
+    }
+
+    if (paymentIntentData.provider === "token") {
+      const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
+      const detail = url.replace(":id", id);
+      const applicationLink = `${window.location.origin}${detail}`;
+
+      const appStakeTransaction = await PocketClientService.appStakeRequest(
+        address, passphrase, chains, tokens);
+
+      const gatewayAATSignature = await PocketClientService.signGatewayAAT(
+        address, passphrase);
+
+      const stakeInformation = {
+        applicationId: id,
+        appStakeTransaction,
+        paymentId: paymentIntentData.id,
+        applicationLink,
+        gatewayAATSignature,
+      };
+
+      await PocketApplicationService.stakeApplication(stakeInformation);
     }
 
     return {success, data: paymentIntentData};
