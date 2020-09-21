@@ -29,11 +29,11 @@ export default class AuthSidebar extends Component {
           <Row>
             <p>
               {/* eslint-disable-next-line react/no-unescaped-entities */}
-              In a market over-reliant on expensive single-service
+              This tool provides a simple way to interact, purchase,
               <br />
-              providers, Pocket Network offers a decentralized
+              and stake with Pocket Network, using real-time network
               <br />
-              alternative that&#39;s much more cost-effective and resilient.
+              information to manage app and nodes.
             </p>
           </Row>
         </div>

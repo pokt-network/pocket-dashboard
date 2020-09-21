@@ -135,9 +135,6 @@ class Dashboard extends Component {
             <h4 className="font-weight-bold">
               WELCOME BACK {UserService.getUserInfo().name.toUpperCase()}!
             </h4>
-            <h4 style={{lineHeight: "140%", marginBottom: "11px"}}>
-              This tool provides a simple way to interact, purchase, and stake with Pocket Network, using real-time network information to manage app and nodes.
-            </h4>
           </Alert>
         )}
         {error.show && (
