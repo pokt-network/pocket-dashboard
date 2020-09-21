@@ -295,8 +295,7 @@ class AppsMain extends Main {
                             <PocketElementCard
                               title={name}
                               subtitle={`Staked POKT: ${formatNetworkData(
-                                stakedPOKT
-                              , false)} POKT`}
+                                stakedPOKT, false)} POKT`}
                               status={getStakeStatus(
                                 _.isNumber(status) ? status : parseInt(status)
                               )}
