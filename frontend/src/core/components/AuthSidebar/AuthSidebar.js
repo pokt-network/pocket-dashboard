@@ -7,11 +7,16 @@ export default class AuthSidebar extends Component {
   render() {
     return (
       <Sidebar sm={3}>
+        <map name="workmap">
+          <area target="_blank" shape="rect" coords="0,0,115,45" alt="Pocket" href="http://pokt.network" />
+          <area shape="rect" coords="125,0,238,43" alt="Dashboard" href={`${window.location.origin}/login`} />
+        </map>
         <img
-          src="/assets/logo-dashboard-white.svg"
           id="logo-white"
-          alt=""
           className="white"
+          src="/assets/logo-dashboard-white.svg"
+          alt="logo"
+          useMap="#workmap"
         />
         <div id="auth-sidebar">
           <Row>
