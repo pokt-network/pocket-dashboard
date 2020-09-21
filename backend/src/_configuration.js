@@ -169,6 +169,7 @@ export function configureExpress(expressApp) {
     "/api/users/auth/verify-captcha",
     "/api/security_questions/user/validate-answers",
     "/api/security_questions/user/all",
+    "/api/security_questions/answered",
     "login"
   ];
 

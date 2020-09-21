@@ -336,7 +336,7 @@ class OrderSummary extends Component {
     const cards = [
       {title: formatNumbers(quantity.number), subtitle: quantity.description},
       {
-        title: `${numeral(cost.number).format("$0,0.000")} USD`,
+        title: `${numeral(cost.number).format("$0,0.00")} USD`,
         subtitle: cost.description,
       },
       {
