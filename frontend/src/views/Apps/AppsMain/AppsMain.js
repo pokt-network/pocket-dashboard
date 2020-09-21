@@ -296,7 +296,7 @@ class AppsMain extends Main {
                               title={name}
                               subtitle={`Staked POKT: ${formatNetworkData(
                                 stakedPOKT
-                              )} POKT`}
+                              , false)} POKT`}
                               status={getStakeStatus(
                                 _.isNumber(status) ? status : parseInt(status)
                               )}

@@ -61,7 +61,7 @@ class AppDetail extends Component {
   }
 
   async componentDidMount() {
-    // eslint-disable-next-line 
+    // eslint-disable-next-line
     let freeTierMsg = false;
     let hasError = false;
     let errorType = "";
@@ -105,7 +105,6 @@ class AppDetail extends Component {
     } else {
       accountBalance = 0;
     }
-
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
     const {freeTier, freeTierAAT} = pocketApplication;
@@ -192,7 +191,7 @@ class AppDetail extends Component {
     const {id} = this.state.pocketApplication;
 
     ApplicationService.removeAppInfoFromCache();
-    ApplicationService.saveAppInfoInCache({id, address, passphrase});
+    ApplicationService.saveAppInfoInCache({applicationID: id, address, passphrase});
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
@@ -260,7 +259,7 @@ class AppDetail extends Component {
 
     const generalInfo = [
       {
-        title: `${formatNetworkData(stakedTokens)} POKT`,
+        title: `${formatNetworkData(stakedTokens, false)} POKT`,
         titleAttrs: {title: stakedTokens ? formatNumbers(stakedTokens) : undefined},
         subtitle: "Staked tokens",
       },

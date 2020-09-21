@@ -240,7 +240,7 @@ class SelectRelays extends Component {
         this.props.history.replace({
           pathname: _getDashboardPath(DASHBOARD_PATHS.invoice),
           state: {
-            type: ITEM_TYPES.NODE,
+            type: ITEM_TYPES.APPLICATION,
             paymentId: paymentIntentData.id,
             paymentMethod: {
               holder: user,
