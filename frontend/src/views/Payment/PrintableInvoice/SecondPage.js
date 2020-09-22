@@ -99,7 +99,7 @@ class SecondPage extends React.Component {
                 Subject to the Purchasing Site Terms of Use and the terms and
                 conditions set forth herein, Purchaser, intending to be legally
                 bound, hereby irrevocably agrees to purchase from the Company{" "}
-                {(purchasedTokens / 1000000).toFixed(2)} Tokens (the “
+                {(purchasedTokens / 1000000).toFixed(6)} Tokens (the “
                 <u>Purchased Tokens</u>”) at a purchase price of $USD{" "}
                 {poktPrice} per token (the &quot;
                 <u>Purchase Price</u>&quot;), payable by [ETH, USD, BTC]
