@@ -85,12 +85,17 @@ class Login extends Component {
         errors.email = "Invalid email.";
       }
     } else {
-      this.setState({
-        user: data.user,
-        session: data.session
-      });
-      // Save session
-      UserService.saveUserInCache(this.state.user, this.state.session, true);
+
+      if (data === "User is not validated.") {
+        errors.email = data;
+      }else {
+        this.setState({
+          user: data.user,
+          session: data.session
+        });
+        // Save session
+        UserService.saveUserInCache(this.state.user, this.state.session, true);
+      }
     }
 
     return errors;

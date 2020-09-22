@@ -29,7 +29,7 @@ class Invoice extends Component {
           <hr />
           <div className="label field mt-4 total">
             <span> Total Cost:</span>
-            <span>{`US${total}`}</span>
+            <span>{`${total} USD`}</span>
           </div>
         </div>
       </Col>
