@@ -5,6 +5,7 @@ import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
 import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
 import {CoinDenom} from "@pokt-network/pocket-js";
+import numeral from "numeral";
 
 const router = express.Router();
 
@@ -204,9 +205,9 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
 
     if (await nodeService.verifyNodeBelongsToClient(nodeAddress, req.headers.authorization)) {
       const paymentEmailData = {
-        amountPaid: paymentHistory.amount,
-        validatorPowerAmount: item.validatorPower,
-        poktStaked: poktStaked
+        amountPaid: numeral(paymentHistory.amount / 100).format("0,0.00"),
+        validatorPowerAmount: numeral(item.validatorPower).format("0,0.00"),
+        poktStaked: numeral(poktStaked).format("0,0.000000")
       };
 
       await nodeService.stakeNode(nodeAddress, uPoktStaked, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
