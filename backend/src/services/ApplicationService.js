@@ -898,13 +898,13 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
- * Update an App status.
- *
- * @param {string} address App account address.
- * @param {boolean} status App updatingStatus.
- *
- * @async
- */
+   * Update an App status.
+   *
+   * @param {string} address App account address.
+   * @param {boolean} status App updatingStatus.
+   *
+   * @async
+   */
   async changeUpdatingStatus(address, status) {
     // Retrieve app
     const application = await this.getApplication(address);
