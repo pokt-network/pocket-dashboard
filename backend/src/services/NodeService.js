@@ -438,6 +438,7 @@ export default class NodeService extends BasePocketService {
     const contactEmail = node.pocketNode.contactEmail;
     const nodeStakeAction = new TransactionPostAction(POST_ACTION_TYPE.stakeNode, {
       nodeStakeTransaction,
+      address: nodeAddress,
       contactEmail,
       emailData,
       paymentEmailData
@@ -487,6 +488,7 @@ export default class NodeService extends BasePocketService {
 
       // Gather email data
       const emailData = {
+        address: address,
         userName: node.pocketNode.user,
         contactEmail: node.pocketNode.contactEmail,
         nodeData: {
@@ -502,7 +504,7 @@ export default class NodeService extends BasePocketService {
         throw new Error("Couldn't register app unstake transaction for email notification");
       }
 
-      node.pocketNode.updatingStatus = false;
+      node.pocketNode.updatingStatus = true;
 
       await this.__updatePersistedNode(node.pocketNode);
     } else {
@@ -598,5 +600,25 @@ export default class NodeService extends BasePocketService {
       return this.__updatePersistedNode(nodeToEdit);
     }
     return false;
+  }
+
+/**
+ * Update a node status.
+ *
+ * @param {string} address Node account address.
+ * @param {boolean} status Node updatingStatus.
+ *
+ * @async
+ */
+  async changeUpdatingStatus(address, status) {
+    // Retrieve the node information
+    const node = await this.getNode(address);
+
+    if (node === undefined || node === null) {
+      throw new Error(`Couldn't find a node with this address: ${address}`);
+    }
+
+    node.pocketNode.updatingStatus = status;
+    await this.__updatePersistedNode(node.pocketNode);
   }
 }

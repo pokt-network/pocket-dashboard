@@ -523,6 +523,7 @@ export default class ApplicationService extends BasePocketService {
       appStakeTransaction,
       contactEmail,
       emailData,
+      address: stakeInformation.app_address,
       paymentEmailData: {
         amountPaid: 0,
         poktStaked: upoktToStake / Math.pow(10, POKT_DENOMINATIONS.upokt),
@@ -628,6 +629,7 @@ export default class ApplicationService extends BasePocketService {
     const appUnstakedTransaction = await this.pocketService.submitRawTransaction(appUnstakeRequest.address, appUnstakeRequest.txHex);
 
     const emailData = {
+      address: application.pocketApplication.address,
       userName: application.pocketApplication.user,
       contactEmail: application.pocketApplication.contactEmail,
       applicationData: {
@@ -667,6 +669,7 @@ export default class ApplicationService extends BasePocketService {
     const contactEmail = application.pocketApplication.contactEmail;
     const appStakeAction = new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, {
       appStakeTransaction,
+      address: appAddress,
       contactEmail,
       emailData,
       paymentEmailData
@@ -724,6 +727,7 @@ export default class ApplicationService extends BasePocketService {
 
       // Gather email data
       const emailData = {
+        address: address,
         userName: application.pocketApplication.user,
         contactEmail: application.pocketApplication.contactEmail,
         applicationData: {
@@ -739,7 +743,7 @@ export default class ApplicationService extends BasePocketService {
         throw new Error("Couldn't register app unstake transaction for email notification");
       }
 
-      application.pocketApplication.updatingStatus = false;
+      application.pocketApplication.updatingStatus = true;
 
       await this.__markApplicationAsFreeTier(application.pocketApplication, false);
     } else {
@@ -886,5 +890,25 @@ export default class ApplicationService extends BasePocketService {
     }
 
     return false;
+  }
+
+  /**
+ * Update an App status.
+ *
+ * @param {string} address App account address.
+ * @param {boolean} status App updatingStatus.
+ *
+ * @async
+ */
+  async changeUpdatingStatus(address, status) {
+    // Retrieve app
+    const application = await this.getApplication(address);
+
+    if (application === undefined || application === null) {
+      throw new Error(`Couldn't find an app with this address: ${address}`);
+    }
+
+    application.pocketApplication.updatingStatus = status;
+    await this.__updatePersistedApplication(application.pocketApplication);
   }
 }

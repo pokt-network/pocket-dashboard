@@ -78,7 +78,7 @@ export default class TransactionService extends BaseService {
    * Add stake transaction.
    *
    * @param {string} appStakeTxHash The transaction hash for the submitted app stake transaction
-   * @param {{appStakeTransaction: object, contactEmail: string, emailData: object, paymentEmailData: object}} appStakeData App Stake Data
+   * @param {{appStakeTransaction: object, contactEmail: string, emailData: object, paymentEmailData: object, address: string}} appStakeData App Stake Data
    * @returns {Promise<boolean>} if was added or not.
    */
   async addAppStakeTransaction(appStakeTxHash, appStakeData) {
