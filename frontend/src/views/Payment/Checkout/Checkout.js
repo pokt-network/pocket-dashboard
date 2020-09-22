@@ -5,7 +5,7 @@ import {Button, Col, Row} from "react-bootstrap";
 import ReactToPrint from "react-to-print";
 import has from "lodash/has";
 import Invoice from "../../../core/components/Payment/Invoice";
-import {formatCurrency, upoktToPOKT} from "../../../_helpers";
+import {formatCurrency, usdToPOKT} from "../../../_helpers";
 import moment from "moment";
 import {ITEM_TYPES} from "../../../_constants";
 import ApplicationService from "../../../core/services/PocketApplicationService";
@@ -117,12 +117,12 @@ class Checkout extends Component {
     // Save printable invoice to the DB
     const items = [
       ...details,
-      {text: "Current balance", value: `US ${formatCurrency(currentAccountBalance)} = POKT ${upoktToPOKT(currentAccountBalance)}`},
+      {text: "Used balance", value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(currentAccountBalance)} POKT`},
     ].map((it) => {
       if (!it.format) {
         return it;
       }
-      return {text: it.text, value: `US${formatCurrency(it.value)}`};
+      return {text: it.text, value: `${formatCurrency(it.value)} USD`};
     });
 
     const printableData = {
@@ -162,12 +162,12 @@ class Checkout extends Component {
 
     const items = [
       ...details,
-      {text: "Current balance", value: `US ${formatCurrency(currentAccountBalance)} = POKT ${upoktToPOKT(currentAccountBalance)}`},
+      {text: "Used balance", value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(currentAccountBalance)} POKT`},
     ].map((it) => {
       if (!it.format) {
         return it;
       }
-      return {text: it.text, value: `US${formatCurrency(it.value)}`};
+      return {text: it.text, value: `${formatCurrency(it.value)} USD`};
     });
 
     const totalAmount = formatCurrency(total);
