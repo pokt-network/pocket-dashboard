@@ -188,7 +188,7 @@ class Import extends Component {
         const appInDB = await ApplicationService.getApplication(data.address);
 
         this.setState({
-          created: appInDB.name !== undefined
+          created: !(appInDB.error === true)
         });
         
         if (application.error === undefined) {
