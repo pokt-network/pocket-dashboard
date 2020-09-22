@@ -364,7 +364,7 @@ class SelectRelays extends Component {
               title={<h4 className="alert-max">About RPD, Relays per day:</h4>}
             >
               <p className="alert-max">
-                Each RPD purchased on the Pocket Dashboard has a representation as a POKT token on the Pocket Network. Approx. 40 RPD = 1 POKT.
+                Each RPD purchased on the Pocket Dashboard has a representation as a POKT token on the Pocket Network. Approx. 504 RPD = 1 POKT.
               </p>
               <br />
               <p className="alert-max">
