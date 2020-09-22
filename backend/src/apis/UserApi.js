@@ -44,9 +44,16 @@ router.post("/auth/provider/login", apiAsyncWrapper(async (req, res) => {
 router.post("/auth/login", apiAsyncWrapper(async (req, res) => {
   /** @type {{username:string, password:string}} */
   const data = req.body;
-  const userSession = await userService.authenticateUser(data.username, data.password);
 
-  res.json(userSession);
+  const isValidated = await userService.isUserValidated(data.username);
+
+  if (isValidated) {
+    const userSession = await userService.authenticateUser(data.username, data.password);
+
+    res.json(userSession);
+  } else {
+    res.json("User is not validated.");
+  }
 }));
 
 /**

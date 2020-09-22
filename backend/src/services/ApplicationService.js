@@ -317,12 +317,17 @@ export default class ApplicationService extends BasePocketService {
       "publicPocketAccount.address": applicationAddress
     };
 
-    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
     if (applicationDB) {
-      const application = PocketApplication.createPocketApplication(applicationDB);
+      const decryptedFields = await this.__decryptApplicationFields(applicationDB);
 
-      return this.__getExtendedPocketApplication(application);
+      if (decryptedFields) {
+        const application = PocketApplication.createPocketApplication(decryptedFields);
+
+        return this.__getExtendedPocketApplication(application);
+      }
+
     }
 
     return null;
@@ -893,13 +898,13 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
- * Update an App status.
- *
- * @param {string} address App account address.
- * @param {boolean} status App updatingStatus.
- *
- * @async
- */
+   * Update an App status.
+   *
+   * @param {string} address App account address.
+   * @param {boolean} status App updatingStatus.
+   *
+   * @async
+   */
   async changeUpdatingStatus(address, status) {
     // Retrieve app
     const application = await this.getApplication(address);

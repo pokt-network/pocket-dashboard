@@ -5,7 +5,7 @@ import EmailService from "../services/EmailService";
 import PaymentService from "../services/PaymentService";
 import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
 import UserService from "../services/UserService";
-import {Configurations} from "../_configuration";
+import numeral from "numeral";
 
 const router = express.Router();
 
@@ -250,9 +250,9 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
       };
 
       const paymentEmailData = {
-        amountPaid: paymentHistory.amount,
-        maxRelayPerDayAmount: item.maxRelays,
-        poktStaked: poktStaked
+        amountPaid: numeral(paymentHistory.amount / 100).format("0,0.00"),
+        maxRelayPerDayAmount: numeral(item.maxRelays).format("0,0.00"),
+        poktStaked: numeral(poktStaked).format("0,0.000000")
       };
 
       await applicationService.stakeApplication(appStakeTransaction.address, data.upoktToStake, appStakeTransaction, application, applicationEmailData, paymentEmailData, data.gatewayAATSignature);

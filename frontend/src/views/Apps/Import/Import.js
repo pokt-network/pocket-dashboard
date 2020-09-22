@@ -134,7 +134,7 @@ class Import extends Component {
     } else {
       this.setState({
         importing: false,
-        error: {show: true, message: "Node already exists"},
+        error: {show: true, message: "App already exists"},
       });
     }
   }
@@ -188,9 +188,9 @@ class Import extends Component {
         const appInDB = await ApplicationService.getApplication(data.address);
 
         this.setState({
-          created: !(appInDB.error === true)
+          created: appInDB !== undefined && appInDB !== null
         });
-        
+
         if (application.error === undefined) {
           // Add the chains value
           chains = application.chains;

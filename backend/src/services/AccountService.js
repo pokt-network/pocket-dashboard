@@ -42,7 +42,7 @@ export default class AccountService extends BasePocketService {
   }
 
   /**
-   * Get balance of account
+   * Get the usd balance of an account
    *
    * @param {string} accountAddress Account address to get balance.
    * @param {CoinDenom} pocketDenomination Pocket denomination.
