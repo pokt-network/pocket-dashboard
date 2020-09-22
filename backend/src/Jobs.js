@@ -4,7 +4,7 @@ import JobsProvider from "./providers/data/JobsProvider";
 import {RpcError, typeGuard} from "@pokt-network/pocket-js";
 import EmailService from "./services/EmailService";
 import NodeService from "./services/NodeService";
-import ApplicationService from "./services/ApplicationService"
+import ApplicationService from "./services/ApplicationService";
 import {POST_ACTION_TYPE} from "./models/Transaction";
 
 const TRANSACTION_SERVICE = new TransactionService();
@@ -56,7 +56,7 @@ NODE_STAKE_QUEUE.process(async (job, done) => {
       .sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
 
     if (address !== null && address !== undefined) {
-      NODE_SERVICE.changeUpdatingStatus(address, false)
+      NODE_SERVICE.changeUpdatingStatus(address, false);
     }
 
     // Finish the job OK
@@ -98,7 +98,7 @@ NODE_UNSTAKE_QUEUE.process(async (job, done) => {
       .sendUnstakeNodeEmail(userName, nodeData);
 
     if (address !== null && address !== undefined) {
-      NODE_SERVICE.changeUpdatingStatus(address, false)
+      NODE_SERVICE.changeUpdatingStatus(address, false);
     }
     // Finish the job OK
     done();
@@ -182,7 +182,7 @@ APP_STAKE_QUEUE.process(async (job, done) => {
       .sendStakeAppEmail(contactEmail, emailData, paymentEmailData);
 
     if(address !== null && address !== undefined) {
-      APPLICATION_SERVICE.changeUpdatingStatus(address, false)
+      APPLICATION_SERVICE.changeUpdatingStatus(address, false);
     }
 
     // Finish the job OK
@@ -224,7 +224,7 @@ APP_UNSTAKE_QUEUE.process(async (job, done) => {
       .sendUnstakeAppEmail(userName, applicationData);
 
     if (address !== null && address !== undefined) {
-      APPLICATION_SERVICE.changeUpdatingStatus(address, false)
+      APPLICATION_SERVICE.changeUpdatingStatus(address, false);
     }
 
     // Finish the job OK
