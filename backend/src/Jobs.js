@@ -3,10 +3,14 @@ import PocketService from "./services/PocketService";
 import JobsProvider from "./providers/data/JobsProvider";
 import {RpcError, typeGuard} from "@pokt-network/pocket-js";
 import EmailService from "./services/EmailService";
+import NodeService from "./services/NodeService";
+import ApplicationService from "./services/ApplicationService"
 import {POST_ACTION_TYPE} from "./models/Transaction";
 
 const TRANSACTION_SERVICE = new TransactionService();
 const POCKET_SERVICE = new PocketService();
+const APPLICATION_SERVICE = new ApplicationService();
+const NODE_SERVICE = new NodeService();
 
 const POST_TRANSFER_QUEUE = JobsProvider.getPostTransferJobQueue();
 const APP_STAKE_QUEUE = JobsProvider.getAppStakeJobQueue();
@@ -41,6 +45,7 @@ NODE_STAKE_QUEUE.process(async (job, done) => {
     }
 
     const {
+      address,
       contactEmail,
       emailData,
       paymentEmailData
@@ -49,6 +54,10 @@ NODE_STAKE_QUEUE.process(async (job, done) => {
     await EmailService
       .to(contactEmail)
       .sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
+
+    if (address !== null && address !== undefined) {
+      NODE_SERVICE.changeUpdatingStatus(address, false)
+    }
 
     // Finish the job OK
     done();
@@ -82,12 +91,15 @@ NODE_UNSTAKE_QUEUE.process(async (job, done) => {
       return;
     }
 
-    const {contactEmail, userName, nodeData} = postAction.data;
+    const {contactEmail, userName, nodeData, address} = postAction.data;
 
     await EmailService
       .to(contactEmail)
       .sendUnstakeNodeEmail(userName, nodeData);
 
+    if (address !== null && address !== undefined) {
+      NODE_SERVICE.changeUpdatingStatus(address, false)
+    }
     // Finish the job OK
     done();
   } catch (error) {
@@ -159,6 +171,7 @@ APP_STAKE_QUEUE.process(async (job, done) => {
     }
 
     const {
+      address,
       contactEmail,
       emailData,
       paymentEmailData
@@ -167,6 +180,10 @@ APP_STAKE_QUEUE.process(async (job, done) => {
     await EmailService
       .to(contactEmail)
       .sendStakeAppEmail(contactEmail, emailData, paymentEmailData);
+
+    if(address !== null && address !== undefined) {
+      APPLICATION_SERVICE.changeUpdatingStatus(address, false)
+    }
 
     // Finish the job OK
     done();
@@ -200,11 +217,15 @@ APP_UNSTAKE_QUEUE.process(async (job, done) => {
       return;
     }
 
-    const {contactEmail, userName, applicationData} = postAction.data;
+    const {contactEmail, userName, applicationData, address} = postAction.data;
 
     await EmailService
       .to(contactEmail)
       .sendUnstakeAppEmail(userName, applicationData);
+
+    if (address !== null && address !== undefined) {
+      APPLICATION_SERVICE.changeUpdatingStatus(address, false)
+    }
 
     // Finish the job OK
     done();
