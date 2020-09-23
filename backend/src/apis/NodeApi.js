@@ -250,7 +250,7 @@ router.post("/node/unjail", apiAsyncWrapper(async (req, res) => {
   const node = await nodeService.getNode(data.nodeUnJailTransaction.address);
   const userEmail = req.headers.authorization.split(", ")[2].split(" ")[1];
 
-  if (userEmail && node.user.toString() === userEmail.toString()) {
+  if (userEmail && node.pocketNode.user.toString() === userEmail.toString()) {
     const nodeEmailData = {
       userName: node.pocketNode.user,
       contactEmail: node.pocketNode.contactEmail,
