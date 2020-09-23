@@ -34,6 +34,7 @@ class OrderSummary extends Component {
     this.goToInvoice = this.goToInvoice.bind(this);
 
     this.state = {
+      upoktTotal: 0,
       upoktToStake: 0,
       setMethodDefault: false,
       type: "",
@@ -79,7 +80,8 @@ class OrderSummary extends Component {
       cost,
       total,
       currentAccountBalance,
-      upoktToStake
+      upoktToStake,
+      upoktTotal
     } = this.props.location.state;
 
     const user = UserService.getUserInfo().email;
@@ -102,6 +104,7 @@ class OrderSummary extends Component {
         cost,
         total,
         upoktToStake,
+        upoktTotal,
         currentAccountBalance,
         isFormVisible: !hasPaymentMethods,
         isAddNewDisabled: !hasPaymentMethods,
@@ -127,7 +130,8 @@ class OrderSummary extends Component {
       cost,
       total,
       currentAccountBalance,
-      upoktToStake
+      upoktToStake,
+      upoktTotal
     } = this.state;
 
     return this.props.history.replace({
@@ -146,7 +150,8 @@ class OrderSummary extends Component {
         ],
         total,
         currentAccountBalance,
-        upoktToStake
+        upoktToStake,
+        upoktTotal
       },
     });
   }

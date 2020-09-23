@@ -34,12 +34,14 @@ class SelectRelays extends Component {
     this.goToSummary = this.goToSummary.bind(this);
 
     this.state = {
-      upoktToStake: 0,
       minRelays: 0,
       maxRelays: 0,
       relaysSelected: 0,
+      upoktSubTotal: 0,
+      upoktTotal: 0,
       total: 0,
       subTotal: 0,
+      upoktToStake: 0,
       originalAccountBalance: 0,
       currentAccountBalance: 0,
       currencies: [],
@@ -63,9 +65,13 @@ class SelectRelays extends Component {
 
                 PocketAccountService.getBalance(accountAddress)
                   .then(({balance}) => {
-                    const currentAccountBalance = parseFloat(balance);
+                    // Usd value
+                    const currentAccountBalance = parseFloat(balance.usd);
                     const subTotal = parseFloat(cost);
                     const total = subTotal - currentAccountBalance;
+                    // Pokt value
+                    const upoktSubTotal = balance.upokt;
+                    const upoktTotal = upokt - upoktSubTotal;
 
                     this.setState({
                       currentAccountBalance: currentAccountBalance,
@@ -76,6 +82,8 @@ class SelectRelays extends Component {
                       relaysSelected: minRelays,
                       subTotal,
                       total,
+                      upoktSubTotal,
+                      upoktTotal,
                       upoktToStake: upokt
                     });
                   });
@@ -87,7 +95,7 @@ class SelectRelays extends Component {
   }
 
   onCurrentBalanceChange(e) {
-    let {relaysSelected} = this.state;
+    let {relaysSelected, upoktSubTotal} = this.state;
     const {
       target: {value},
     } = e;
@@ -97,9 +105,11 @@ class SelectRelays extends Component {
       .then(({upokt, cost}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
+        const upoktTotal = upokt - upoktSubTotal;
 
         this.setState({
           currentAccountBalance: currentAccountBalance,
+          upoktTotal,
           total,
           subTotal,
           upoktToStake: upokt
@@ -108,15 +118,17 @@ class SelectRelays extends Component {
   }
 
   onSliderChange(value) {
-    const {currentAccountBalance} = this.state;
+    const {currentAccountBalance, upoktSubTotal} = this.state;
 
     PocketCheckoutService.getApplicationMoneyToSpent(value)
       .then(({upokt, cost}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
+        const upoktTotal = upokt - upoktSubTotal;
 
         this.setState({
           relaysSelected: value,
+          upoktTotal,
           subTotal,
           total,
           upoktToStake: upokt
@@ -211,6 +223,7 @@ class SelectRelays extends Component {
     const {
       relaysSelected,
       currencies,
+      upoktTotal,
       subTotal,
       total,
       currentAccountBalance,
@@ -252,6 +265,7 @@ class SelectRelays extends Component {
             ],
             total,
             currentAccountBalance,
+            upoktTotal,
             upoktToStake
           },
         });
@@ -272,6 +286,7 @@ class SelectRelays extends Component {
             },
             total: totalAmount,
             currentAccountBalance,
+            upoktTotal,
             upoktToStake
           },
         });
@@ -296,7 +311,6 @@ class SelectRelays extends Component {
       maxRelays,
       currentAccountBalance,
       loading,
-      upoktToStake
     } = this.state;
 
     // At the moment the only available currency is USD.
@@ -388,7 +402,6 @@ class SelectRelays extends Component {
               balanceOnChange={this.onCurrentBalanceChange}
               total={totalFixed}
               loading={loading}
-              upoktToStake={upoktToStake}
               formActionHandler={this.goToSummary}
               // At the moment, we're only using  USD
               currency={currencies[0]}
