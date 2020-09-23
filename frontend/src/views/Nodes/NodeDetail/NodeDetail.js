@@ -454,7 +454,7 @@ class NodeDetail extends Component {
           ))}
         </Row>
         <Row>
-          <Col className={chains.length === 0 ? "mb-1" : ""} style={{ display: status === STAKE_STATUS.Staked ? "block" : "none"}}>
+          <Col className={chains.length === 0 ? "mb-1" : ""} style={{display: status === STAKE_STATUS.Staked ? "block" : "none"}}>
             <Segment scroll={false} label="Networks">
               <AppTable
                 scroll
