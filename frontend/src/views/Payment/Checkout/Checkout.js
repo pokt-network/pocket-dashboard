@@ -40,6 +40,7 @@ class Checkout extends Component {
       currentAccountBalance: 0,
       purchasedTokens: 0,
       upoktToStake: 0,
+      upoktTotal: 0,
       address: "",
       unauthorized: false,
     };
@@ -59,7 +60,8 @@ class Checkout extends Component {
       details,
       total,
       currentAccountBalance,
-      upoktToStake
+      upoktToStake,
+      upoktTotal
     } = this.props.location.state;
 
     const address =
@@ -99,6 +101,7 @@ class Checkout extends Component {
       invoice,
       details,
       total,
+      upoktTotal,
       currentAccountBalance,
       purchasedTokens: has(purchasedTokens, "cost") ? purchasedTokens.cost : 0,
       paymentMethod,
@@ -149,7 +152,7 @@ class Checkout extends Component {
       loading,
       unauthorized,
       currentAccountBalance,
-      purchasedTokens,
+      upoktTotal
     } = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
@@ -263,7 +266,7 @@ class Checkout extends Component {
           purchaseDetails={items}
           cardHolderName={owner}
           poktPrice={poktPrice}
-          purchasedTokens={purchasedTokens}
+          upoktTotal={upoktTotal}
           total={totalAmount}
         />
       </>

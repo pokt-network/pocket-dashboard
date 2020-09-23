@@ -20,7 +20,7 @@ class PrintableInvoice extends Component {
       total,
       cardHolderName,
       poktPrice,
-      purchasedTokens,
+      upoktTotal,
     } = this.props;
 
     return (
@@ -32,7 +32,7 @@ class PrintableInvoice extends Component {
         />
         <SecondPage
           poktPrice={poktPrice}
-          purchasedTokens={purchasedTokens}
+          purchasedTokens={upoktTotal}
         />
         <ThirdPage />
         <FourthPage />
