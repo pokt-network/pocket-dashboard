@@ -726,7 +726,7 @@ export default class ApplicationService extends BasePocketService {
     const application = await this.getApplication(address);
 
     // Check if the app belogns to the client
-    if (await this.verifyApplicationBelongsToClient(application.id, authHeader)) {
+    if (await this.verifyApplicationBelongsToClient(application.pocketApplication.id, authHeader)) {
       // Submit transaction
       const appUnstakedHash = await this.pocketService.submitRawTransaction(address, raw_hex_bytes);
 
