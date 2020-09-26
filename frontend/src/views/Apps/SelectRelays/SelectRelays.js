@@ -44,6 +44,8 @@ class SelectRelays extends Component {
       upoktToStake: 0,
       originalAccountBalance: 0,
       currentAccountBalance: 0,
+      originalAccountBalanceUpokt: 0,
+      currentAccountBalanceUpokt: 0,
       currencies: [],
       loading: true,
       error: {show: false, message: ""},
@@ -69,13 +71,16 @@ class SelectRelays extends Component {
                     const currentAccountBalance = parseFloat(balance.usd);
                     const subTotal = parseFloat(cost);
                     const total = subTotal - currentAccountBalance;
-                    // Pokt value
-                    const upoktSubTotal = balance.upokt;
-                    const upoktTotal = upokt - upoktSubTotal;
+                    // Upokt value
+                    const currentAccountBalanceUpokt = parseFloat(balance.upokt)
+                    const upoktSubTotal = parseFloat(upokt);
+                    const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 
                     this.setState({
                       currentAccountBalance: currentAccountBalance,
                       originalAccountBalance: currentAccountBalance,
+                      currentAccountBalanceUpokt: currentAccountBalanceUpokt,
+                      originalAccountBalanceUpokt: currentAccountBalanceUpokt,
                       minRelays: minRelays,
                       maxRelays: parseInt(relaysPerDay.max),
                       loading: false,
@@ -95,20 +100,25 @@ class SelectRelays extends Component {
   }
 
   onCurrentBalanceChange(e) {
-    let {relaysSelected, upoktSubTotal} = this.state;
+    let {relaysSelected} = this.state;
     const {
       target: {value},
     } = e;
     const currentAccountBalance = parseFloat(value);
+    const currentAccountBalanceUpokt = (currentAccountBalance / POCKET_NETWORK_CONFIGURATION.pokt_usd_market_price) * 1000000;
 
     PocketCheckoutService.getApplicationMoneyToSpent(relaysSelected)
       .then(({upokt, cost}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
-        const upoktTotal = upokt - upoktSubTotal;
+        // Upokt value
+        const upoktSubTotal = parseFloat(upokt);
+        const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 
         this.setState({
-          currentAccountBalance: currentAccountBalance,
+          currentAccountBalance,
+          currentAccountBalanceUpokt,
+          upoktSubTotal,
           upoktTotal,
           total,
           subTotal,
@@ -118,16 +128,19 @@ class SelectRelays extends Component {
   }
 
   onSliderChange(value) {
-    const {currentAccountBalance, upoktSubTotal} = this.state;
+    const {currentAccountBalance, currentAccountBalanceUpokt} = this.state;
 
     PocketCheckoutService.getApplicationMoneyToSpent(value)
       .then(({upokt, cost}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
-        const upoktTotal = upokt - upoktSubTotal;
+        // Upokt value
+        const upoktSubTotal = parseFloat(upokt);
+        const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 
         this.setState({
           relaysSelected: value,
+          upoktSubTotal,
           upoktTotal,
           subTotal,
           total,
@@ -170,12 +183,13 @@ class SelectRelays extends Component {
     return true;
   }
 
-  async createPaymentIntent(relays, currency, amount, tokens) {
+  async createPaymentIntent(relays, currency, amount, currentAccountBalanceUpokt) {
     const {
       id,
       passphrase,
       chains,
       address,
+      ppk
     } = PocketApplicationService.getApplicationInfo();
     const {pocketApplication} = await PocketApplicationService.getApplication(address);
 
@@ -188,7 +202,7 @@ class SelectRelays extends Component {
     const amountNumber = parseFloat(amount);
 
     const {success, data: paymentIntentData} = await PocketPaymentService
-      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, amountNumber, tokens);
+      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, amountNumber, currentAccountBalanceUpokt);
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);
@@ -199,8 +213,14 @@ class SelectRelays extends Component {
       const detail = url.replace(":id", id);
       const applicationLink = `${window.location.origin}${detail}`;
 
+      const savedAccount = await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+
+      if (savedAccount instanceof Error) {
+        throw savedAccount;
+      }
+
       const appStakeTransaction = await PocketClientService.appStakeRequest(
-        address, passphrase, chains, tokens);
+        address, passphrase, chains, this.state.upoktToStake.toString());
 
       const gatewayAATSignature = await PocketClientService.signGatewayAAT(
         address, passphrase);
@@ -211,6 +231,7 @@ class SelectRelays extends Component {
         paymentId: paymentIntentData.id,
         applicationLink,
         gatewayAATSignature,
+        upoktToStake: this.state.upoktToStake
       };
 
       await PocketApplicationService.stakeApplication(stakeInformation);
@@ -227,6 +248,7 @@ class SelectRelays extends Component {
       subTotal,
       total,
       currentAccountBalance,
+      currentAccountBalanceUpokt,
       upoktToStake
     } = this.state;
 
@@ -241,8 +263,9 @@ class SelectRelays extends Component {
       // Avoiding floating point precision errors.
       const subTotalAmount = parseFloat(numeral(subTotal).format("0.00")).toFixed(2);
       const totalAmount = parseFloat(numeral(total).format("0.00")).toFixed(2);
+      const tokens = currentAccountBalanceUpokt / 1000000;
 
-      const {data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, totalAmount, currentAccountBalance);
+      const {data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, totalAmount, tokens);
 
       PaymentService.savePurchaseInfoInCache({relays: parseInt(relaysSelected), costPerRelay: parseFloat(totalAmount)});
 
