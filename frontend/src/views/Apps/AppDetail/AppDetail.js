@@ -191,7 +191,7 @@ class AppDetail extends Component {
     const {id} = this.state.pocketApplication;
 
     ApplicationService.removeAppInfoFromCache();
-    ApplicationService.saveAppInfoInCache({applicationID: id, address, passphrase});
+    ApplicationService.saveAppInfoInCache({applicationID: id, address, passphrase, ppk});
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
@@ -437,8 +437,10 @@ class AppDetail extends Component {
             </Col>
           ))}
         </Row>
-        <Row>
-          <Col className={chains.length === 0 ? "mb-1" : ""}>
+        <Row >
+          <Col
+            style={{display: status !== STAKE_STATUS.Staked ? "none" : "block"}}
+            className={chains.length === 0 ? "mb-1" : ""}>
             <Segment scroll={false} label="Networks">
               <AppTable
                 scroll
