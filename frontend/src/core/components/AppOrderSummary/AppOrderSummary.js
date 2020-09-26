@@ -25,14 +25,14 @@ class AppOrderSummary extends Component {
 
     // if (input.value.length === 0)
 
-    data[input.name] = input.value;
+    data[input.name] = Number(input.value).toFixed(2).toString();
     this.setState({data});
   }
 
   componentDidMount() {
     const {balance} = this.props;
 
-    this.setState({maxBalance: balance, data: {balanceInput: balance}});
+    this.setState({maxBalance: balance.toFixed(2), data: {balanceInput: balance.toFixed(2)}});
   }
 
   render() {

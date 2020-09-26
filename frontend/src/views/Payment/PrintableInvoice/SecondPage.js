@@ -5,7 +5,7 @@ import Logo from "./Logo";
 class SecondPage extends React.Component {
   render() {
     const {poktPrice, purchasedTokens} = this.props;
-
+    const purchasedTokensTotal = purchasedTokens < 0 ? 0.00 : (purchasedTokens / 1000000).toFixed(6);
     return (
       <div
         className="token-purchase-agreement"
@@ -99,7 +99,7 @@ class SecondPage extends React.Component {
                 Subject to the Purchasing Site Terms of Use and the terms and
                 conditions set forth herein, Purchaser, intending to be legally
                 bound, hereby irrevocably agrees to purchase from the Company{" "}
-                {(purchasedTokens / 1000000).toFixed(6)} Tokens (the “
+                {purchasedTokensTotal} Tokens (the “
                 <u>Purchased Tokens</u>”) at a purchase price of $USD{" "}
                 {poktPrice} per token (the &quot;
                 <u>Purchase Price</u>&quot;), payable by [ETH, USD, BTC]
