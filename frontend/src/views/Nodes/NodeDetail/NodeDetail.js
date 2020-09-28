@@ -175,7 +175,7 @@ class NodeDetail extends Component {
 
   async stakeNode({ppk, passphrase, address}) {
     NodeService.removeNodeInfoFromCache();
-    NodeService.saveNodeInfoInCache({address, passphrase});
+    NodeService.saveNodeInfoInCache({address, passphrase, ppk});
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
     PocketUserService.saveUserAction("Stake Node");
@@ -544,8 +544,7 @@ class NodeDetail extends Component {
           <Modal.Footer>
             <Button
               className="dark-button"
-              onClick={() => this.setState({deleteModal: false})}
-            >
+              onClick={() => this.setState({deleteModal: false})}>
               <span>Cancel</span>
             </Button>
             <Button onClick={this.deleteNode}>
