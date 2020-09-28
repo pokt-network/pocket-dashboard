@@ -88,11 +88,11 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
     }
 
     if (!isNumericOptionValid(baseRelayPerPOKT)) {
-      throw new DashboardValidationError(`Base relays per POKT can't never be 0, currently it's ${baseRelayPerPOKT}`);
+      throw new DashboardValidationError(`Base relays per POKT can never be 0, currently it's ${baseRelayPerPOKT}`);
     }
 
     if (!isNumericOptionValid(sessionsInADay)) {
-      throw new DashboardValidationError(`Session's in a day cannot be ${sessionsInADay}`);
+      throw new DashboardValidationError(`Sessions in a day cannot be ${sessionsInADay}`);
     }
 
     if (!isNumericOptionValid(PR)) {
