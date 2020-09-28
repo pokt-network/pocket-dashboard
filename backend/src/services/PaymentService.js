@@ -83,7 +83,7 @@ export default class PaymentService extends BaseService {
       await this.userService.saveCustomerID(userEmail, userCustomerID);
     }
 
-    const amountFixed = Math.round(amount);
+    const amountFixed = Math.round(amount.toFixed(2)*100);
     const paymentItem = {
       ...item,
       type: itemType
