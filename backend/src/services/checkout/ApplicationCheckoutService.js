@@ -54,7 +54,7 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
   }
 
   /**
-   * Get UPOKT, POKT and USD values for selected Relays per day.
+   * Get UPOKT and USD values for selected Relays per day.
    *
    * @param {number} relaysPerDay Relays per day.
    *
@@ -117,12 +117,15 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
 
     if (currRPS !== expectedRPS) {
       const newUpokt = upokt + 1;
+      const newPokt = newUpokt / 1000000;
+      const newUsdValue = Number((newPokt * poktMarketPrice).toFixed(2));
 
       expectedRPS = Math.trunc(((PR * (BP * (newUpokt / 1000000))) + SA));
 
       if (currRPS !== expectedRPS) {
         throw new DashboardValidationError(`Current RPS (${currRPS}) != expected RPS (${expectedRPS})`);
       }
+      return {upokt: newUpokt, usdValue: newUsdValue};
     }
 
     if (currRPS > maxRPS) {
@@ -136,3 +139,4 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
     return {upokt, usdValue};
   }
 }
+
