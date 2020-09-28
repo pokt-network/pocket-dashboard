@@ -1,6 +1,6 @@
 import React from "react";
 import {Redirect} from "react-router-dom";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import {Col, Form, Row} from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
