@@ -54,59 +54,85 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
   }
 
   /**
-   * Get POKT for selected Relays per day.
+   * Get UPOKT, POKT and USD values for selected Relays per day.
    *
    * @param {number} relaysPerDay Relays per day.
    *
    * @returns {number} Money to spent.
    * @throws {DashboardValidationError} if relays per day is out of allowed range.
    */
-  getPOKTForRelaysPerDay(relaysPerDay) {
+  getCostForRelaysPerDay(relaysPerDay) {
     const {
+      pokt_market_price: poktMarketPrice,
+      max_usd_value: maxUsdValue,
       sessions_per_day: sessionsInADay,
-      stability,
+      stability: SA,
+      p_rate: PR,
       relays_per_day: {
         min: minRelaysPerDay,
         max: maxRelaysPerDay,
-        base_relay_per_pokt: baseRelayPerPOKT
+        base_relay_per_pokt: BP
       }
     } = this.options;
 
-    let {
-      p_rate: pRate
-    } = this.options;
+    const maxRPS = maxRelaysPerDay / sessionsInADay;
+    const minRPS = minRelaysPerDay / sessionsInADay;
+    const baseRelayPerPOKT = BP * 100;
 
     if (relaysPerDay < minRelaysPerDay && relaysPerDay > maxRelaysPerDay) {
       throw new DashboardValidationError("Relays per day is out of allowed range.");
     }
+
+    if (poktMarketPrice <= 0) {
+      throw new DashboardValidationError("Pokt market price is invalid.");
+    }
+
     if (!isNumericOptionValid(baseRelayPerPOKT)) {
-      throw new DashboardValidationError("Base relays per POKT can't never be 0, currently it's " + baseRelayPerPOKT);
+      throw new DashboardValidationError(`Base relays per POKT can't never be 0, currently it's ${baseRelayPerPOKT}`);
     }
+
     if (!isNumericOptionValid(sessionsInADay)) {
-      throw new DashboardValidationError("Session's in a day cannot be 0" + sessionsInADay);
-    }
-    if (!isNumericOptionValid(pRate)) {
-      pRate = 1;
-    }
-    if (!isNumericOptionValid(this.poktMarketPrice) || isNumericOptionNegative(this.poktMarketPrice)) {
-      throw new DashboardValidationError("Invalid POKT Market Price " + this.poktMarketPrice);
+      throw new DashboardValidationError(`Session's in a day cannot be ${sessionsInADay}`);
     }
 
-    const result = ((((relaysPerDay / sessionsInADay) - stability) / pRate)) / baseRelayPerPOKT;
+    if (!isNumericOptionValid(PR)) {
+      throw new DashboardValidationError(`Participation Rate is invalid: ${PR}`);
+    }
 
-    return result;
-  }
+    if (!isNumericOptionValid(poktMarketPrice) || isNumericOptionNegative(poktMarketPrice)) {
+      throw new DashboardValidationError(`Invalid POKT Market Price : ${poktMarketPrice}`);
+    }
 
-  /**
-   * Get money to spent.
-   *
-   * @param {number} pokt POKT Value to spent.
-   *
-   * @returns {number} Money to spent.
-   */
-  getMoneyToSpent(pokt) {
-    const result = pokt * this.poktMarketPrice;
+    const currRPS = relaysPerDay / sessionsInADay;
 
-    return result.toFixed(2);
+    const upokt = Number(((((currRPS - SA) / PR)) / BP).toFixed(6)) * 1000000;
+    const pokt = upokt / 1000000;
+    const usdValue = Number((pokt * poktMarketPrice).toFixed(2));
+
+    if (usdValue > maxUsdValue) {
+      throw new DashboardValidationError(`The USD value exceeds the maximum allowed: ${usdValue}>${maxUsdValue}`);
+    }
+
+    let expectedRPS = Math.trunc(((PR * (BP * (upokt/1000000))) + SA));
+
+    if (currRPS !== expectedRPS) {
+      const newUpokt = upokt + 1;
+
+      expectedRPS = Math.trunc(((PR * (BP * (newUpokt / 1000000))) + SA));
+
+      if (currRPS !== expectedRPS) {
+        throw new DashboardValidationError(`Current RPS (${currRPS}) != expected RPS (${expectedRPS})`);
+      }
+    }
+
+    if (currRPS > maxRPS) {
+      throw new DashboardValidationError(`Current RPS (${currRPS}) > max RPS (${maxRPS})`);
+    }
+
+    if (currRPS < minRPS) {
+      throw new DashboardValidationError(`Current RPS (${currRPS}) < max RPS (${minRPS})`);
+    }
+
+    return {upokt, usdValue};
   }
 }
