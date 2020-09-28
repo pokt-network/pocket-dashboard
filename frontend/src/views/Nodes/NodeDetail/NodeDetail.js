@@ -544,8 +544,7 @@ class NodeDetail extends Component {
           <Modal.Footer>
             <Button
               className="dark-button"
-              onClick={() => this.setState({deleteModal: false})}
-            >
+              onClick={() => this.setState({deleteModal: false})}>
               <span>Cancel</span>
             </Button>
             <Button onClick={this.deleteNode}>
