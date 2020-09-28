@@ -6,6 +6,7 @@ class SecondPage extends React.Component {
   render() {
     const {poktPrice, purchasedTokens} = this.props;
     const purchasedTokensTotal = purchasedTokens < 0 ? 0.00 : (purchasedTokens / 1000000).toFixed(6);
+
     return (
       <div
         className="token-purchase-agreement"

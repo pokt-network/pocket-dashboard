@@ -72,7 +72,7 @@ class SelectRelays extends Component {
                     const subTotal = parseFloat(cost);
                     const total = subTotal - currentAccountBalance;
                     // Upokt value
-                    const currentAccountBalanceUpokt = parseFloat(balance.upokt)
+                    const currentAccountBalanceUpokt = parseFloat(balance.upokt);
                     const upoktSubTotal = parseFloat(upokt);
                     const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 

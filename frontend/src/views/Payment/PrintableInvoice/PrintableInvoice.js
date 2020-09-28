@@ -20,7 +20,7 @@ class PrintableInvoice extends Component {
       total,
       cardHolderName,
       poktPrice,
-      upoktTotal,
+      upoktTotal
     } = this.props;
 
     return (
@@ -51,6 +51,7 @@ PrintableInvoice.defaultProps = {
   purchaseDetails: [],
   cardHolderName: "",
   poktPrice: "0",
+  upoktTotal: "0"
 };
 
 PrintableInvoice.propTypes = {
@@ -70,6 +71,7 @@ PrintableInvoice.propTypes = {
   cardHolderName: PropTypes.string,
   poktPrice: PropTypes.string,
   purchasedTokens: PropTypes.number,
+  upoktTotal: PropTypes.string
 };
 
 export default PrintableInvoice;
