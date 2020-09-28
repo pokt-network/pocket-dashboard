@@ -258,7 +258,7 @@ export class PaymentHistory {
     const succeeded = this.status === "succeeded" || this.currency === "pokt";
 
     if (throwError && !succeeded) {
-      throw new DashboardValidationError("The payment dit not succeed");
+      throw new DashboardValidationError("The payment did not succeed");
     }
 
     return succeeded;
