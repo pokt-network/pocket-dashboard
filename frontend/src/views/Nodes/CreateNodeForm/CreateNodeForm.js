@@ -13,6 +13,7 @@ import AppAlert from "../../../core/components/AppAlert";
 import {STAKE_STATUS} from "../../../_constants";
 import PocketClientService from "../../../core/services/PocketClientService";
 import Segment from "../../../core/components/Segment/Segment";
+import LoadingButton from "../../../core/components/LoadingButton";
 
 class CreateNodeForm extends CreateForm {
   constructor(props, context) {
@@ -29,6 +30,7 @@ class CreateNodeForm extends CreateForm {
       nodeData: {},
       agreeTerms: true,
       imported: false,
+      added: false,
     };
   }
 
@@ -80,7 +82,7 @@ class CreateNodeForm extends CreateForm {
       const {status} = networkData;
 
       if (getStakeStatus(status) === STAKE_STATUS.Staked) {
-        this.props.history.push(nodeDetail);
+        this.props.history.replace(nodeDetail);
       } else {
         NodeService.saveNodeInfoInCache({
           data: data,
@@ -90,7 +92,7 @@ class CreateNodeForm extends CreateForm {
         );
       }
     } else {
-      this.setState({error: {show: true, message: data}});
+      this.setState({adding: false, error: {show: true, message: data}});
       scrollToId("alert");
     }
   }
@@ -100,6 +102,8 @@ class CreateNodeForm extends CreateForm {
     const {imported} = this.state;
     const icon = this.state.icon ? this.state.icon : generateIcon();
     const user = UserService.getUserInfo().email;
+
+    this.setState({adding: true});
 
     const {success, data} = await NodeService.createNode({
       name,
@@ -124,6 +128,7 @@ class CreateNodeForm extends CreateForm {
       });
     } else {
       this.setState({
+        adding: false,
         error: {
           show: true,
           message: this.validateError(data.message)
@@ -134,7 +139,7 @@ class CreateNodeForm extends CreateForm {
   }
 
   render() {
-    const {created, agreeTerms, error, redirectPath, imgError} = this.state;
+    const {created, agreeTerms, error, redirectPath, imgError, adding} = this.state;
 
     if (created) {
       return (
@@ -258,15 +263,17 @@ class CreateNodeForm extends CreateForm {
                           {errors.description}
                         </Form.Control.Feedback>
                       </Form.Group>
-
-                      <Button
-                        className="pl-5 pr-5"
-                        disabled={!agreeTerms}
-                        variant="primary"
-                        type="submit"
-                      >
+                        <LoadingButton
+                          className="pl-5 pr-5"
+                          disabled={!agreeTerms}
+                          loading={adding}
+                          buttonProps={{
+                            variant: "primary",
+                            type: "submit"
+                          }}
+                        >
                         <span>Continue</span>
-                      </Button>
+                        </LoadingButton>
                     </Form>
                   )}
                 </Formik>
