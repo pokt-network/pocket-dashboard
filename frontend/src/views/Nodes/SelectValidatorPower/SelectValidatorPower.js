@@ -103,6 +103,7 @@ class SelectValidatorPower extends Purchase {
       chains,
       address,
       serviceURL,
+      ppk,
     } = NodeService.getNodeInfo();
     const {pocketNode} = await NodeService.getNode(address);
 
@@ -129,6 +130,12 @@ class SelectValidatorPower extends Purchase {
       const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
       const detail = url.replace(":address", address);
       const nodeLink = `${window.location.origin}${detail}`;
+
+      const savedAccount = await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+
+      if (savedAccount instanceof Error) {
+        throw savedAccount;
+      }
 
       const nodeStakeRequest = await PocketClientService.nodeStakeRequest(
         address, passphrase, chains, tokens, serviceURL);

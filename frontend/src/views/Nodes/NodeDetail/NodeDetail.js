@@ -175,7 +175,7 @@ class NodeDetail extends Component {
 
   async stakeNode({ppk, passphrase, address}) {
     NodeService.removeNodeInfoFromCache();
-    NodeService.saveNodeInfoInCache({address, passphrase});
+    NodeService.saveNodeInfoInCache({address, passphrase, ppk});
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
     PocketUserService.saveUserAction("Stake Node");
