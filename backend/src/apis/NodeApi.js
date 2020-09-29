@@ -191,26 +191,27 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
   ) {
     const item = paymentHistory.getItem();
     const amountToSpend = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
-    const poktStaked = nodeCheckoutService.getPoktToStake(amountToSpend, CoinDenom.Pokt).toString();
-    const uPoktStaked = nodeCheckoutService.getPoktToStake(amountToSpend, CoinDenom.Upokt).toString();
 
     // Call NodeService to stake the application
     const nodeStakeTransaction = data.nodeStakeTransaction;
     const nodeAddress = nodeStakeTransaction.address;
     const node = await nodeService.getNode(nodeAddress);
+
     const nodeEmailData = {
       name: node.pocketNode.name,
       link: data.nodeLink
     };
 
-    if (await nodeService.verifyNodeBelongsToClient(nodeAddress, req.headers.authorization)) {
+    if (await nodeService.verifyNodeObjectBelongsToClient(node, req.headers.authorization)) {
+      const poktStaked = data.upoktToStake / 1000000;
+      
       const paymentEmailData = {
         amountPaid: numeral(paymentHistory.amount / 100).format("0,0.00"),
         validatorPowerAmount: numeral(item.validatorPower).format("0,0.00"),
         poktStaked: numeral(poktStaked).format("0,0.000000")
       };
 
-      await nodeService.stakeNode(nodeAddress, uPoktStaked, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
+      await nodeService.stakeNode(nodeAddress, data.upoktToStake, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
 
       res.send(true);
     } else {

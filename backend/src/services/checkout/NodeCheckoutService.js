@@ -50,6 +50,11 @@ export default class NodeCheckoutService extends BaseCheckoutService {
     if (validatorPower < minValidatorPower && validatorPower > maxValidatorPower) {
       throw new DashboardValidationError("Validator power is out of allowed range.");
     }
-    return validatorPower * this.poktMarketPrice;
+
+    const upokt = validatorPower * 1000000;
+    
+    const usdValue = validatorPower * this.poktMarketPrice;
+
+    return {upokt, usdValue};
   }
 }

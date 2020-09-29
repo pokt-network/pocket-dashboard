@@ -313,11 +313,12 @@ class PocketNodeService extends PocketBaseService {
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeNode(nodeStakeTransaction, paymentId, nodeLink) {
+  stakeNode(nodeStakeTransaction, paymentId, nodeLink, upoktToStake) {
     const data = {
       nodeStakeTransaction,
       payment: {id: paymentId},
       nodeLink,
+      upoktToStake: upoktToStake,
     };
 
     return axios

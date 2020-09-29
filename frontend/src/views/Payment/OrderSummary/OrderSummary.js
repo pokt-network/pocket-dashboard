@@ -239,7 +239,7 @@ class OrderSummary extends Component {
 
       // TODO: add error handling
       NodeService.stakeNode(
-        nodeStakeRequest, result.paymentIntent.id, nodeLink
+        nodeStakeRequest, result.paymentIntent.id, nodeLink, upoktToStake
       ).then(() => {});
     }
 

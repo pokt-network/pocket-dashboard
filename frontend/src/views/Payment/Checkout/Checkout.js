@@ -74,10 +74,7 @@ class Checkout extends Component {
         ? ApplicationService.getApplicationInfo().id
         : NodeService.getNodeInfo().address;
 
-    const purchasedTokens =
-      type === ITEM_TYPES.APPLICATION
-        ? {cost: upoktToStake}
-        : await CheckoutService.getNodePoktToStake(total);
+    const purchasedTokens = { cost: upoktToStake }
 
     const {
       paymentID: id,
