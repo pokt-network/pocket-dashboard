@@ -12,7 +12,6 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import NodeService from "../../../core/services/PocketNodeService";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
-import CheckoutService from "../../../core/services/PocketCheckoutService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
@@ -74,7 +73,7 @@ class Checkout extends Component {
         ? ApplicationService.getApplicationInfo().id
         : NodeService.getNodeInfo().address;
 
-    const purchasedTokens = { cost: upoktToStake }
+    const purchasedTokens = {cost: upoktToStake};
 
     const {
       paymentID: id,

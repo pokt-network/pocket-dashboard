@@ -88,7 +88,7 @@ class SelectValidatorPower extends Purchase {
     const currentAccountBalance = parseFloat(value);
     const currentAccountBalanceUpokt = (currentAccountBalance / POCKET_NETWORK_CONFIGURATION.pokt_usd_market_price) * 1000000;
 
-    PocketCheckoutService.getNodeMoneyToSpent(selected).then(({ upokt, cost }) => {
+    PocketCheckoutService.getNodeMoneyToSpent(selected).then(({upokt, cost}) => {
       const subTotal = parseFloat(cost);
       const total = subTotal - currentAccountBalance;
       // Upokt value
@@ -108,7 +108,7 @@ class SelectValidatorPower extends Purchase {
   }
 
   onSliderChange(value) {
-    const { currentAccountBalance, currentAccountBalanceUpokt } = this.state;
+    const {currentAccountBalance, currentAccountBalanceUpokt} = this.state;
 
     PocketCheckoutService.getNodeMoneyToSpent(value).then(({upokt, cost}) => {
       const subTotal = parseFloat(cost);
@@ -205,7 +205,7 @@ class SelectValidatorPower extends Purchase {
       const totalAmount = parseFloat(numeral(total).format("0.00")).toFixed(2);
       const tokens = currentAccountBalanceUpokt / 1000000;
 
-      const { data: paymentIntentData } = await this.createPaymentIntent(selected, currency, totalAmount, tokens);
+      const {data: paymentIntentData} = await this.createPaymentIntent(selected, currency, totalAmount, tokens);
       
       PaymentService.savePurchaseInfoInCache({
         validationPower: parseInt(selected),
