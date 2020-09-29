@@ -17,6 +17,9 @@ import Purchase from "../../../core/components/Purchase/Purchase";
 import NodeService from "../../../core/services/PocketNodeService";
 import UserService from "../../../core/services/PocketUserService";
 import PocketClientService from "../../../core/services/PocketClientService";
+import {Configurations} from "../../../_configuration";
+
+const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
 class SelectValidatorPower extends Purchase {
   // TODO: On a later release, find a way to simplify the code and reduce
@@ -39,22 +42,32 @@ class SelectValidatorPower extends Purchase {
         const minPowerValidator = parseInt(validatorPower.min);
 
         PocketCheckoutService.getNodeMoneyToSpent(minPowerValidator).then(
-          ({cost}) => {
+          ({upokt, cost}) => {
             PocketAccountService.getBalance(accountAddress).then(
               ({balance}) => {
-                const currentAccountBalance = parseFloat(balance == null ? 0 : balance);
+                // Usd value
+                const currentAccountBalance = parseFloat(balance.usd);
                 const subTotal = parseFloat(cost);
                 const total = subTotal - currentAccountBalance;
+                // Upokt value
+                const currentAccountBalanceUpokt = parseFloat(balance.upokt);
+                const upoktSubTotal = parseFloat(upokt);
+                const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 
                 this.setState({
                   currentAccountBalance: currentAccountBalance,
                   originalAccountBalance: currentAccountBalance,
+                  currentAccountBalanceUpokt: currentAccountBalanceUpokt,
+                  originalAccountBalanceUpokt: currentAccountBalanceUpokt,
                   min: minPowerValidator,
                   max: parseInt(validatorPower.max),
                   loading: false,
                   selected: minPowerValidator,
                   subTotal,
                   total,
+                  upoktSubTotal,
+                  upoktTotal,
+                  upoktToStake: upokt,
                   type: ITEM_TYPES.NODE,
                 });
               }
@@ -73,27 +86,45 @@ class SelectValidatorPower extends Purchase {
       target: {value},
     } = e;
     const currentAccountBalance = parseFloat(value);
+    const currentAccountBalanceUpokt = (currentAccountBalance / POCKET_NETWORK_CONFIGURATION.pokt_usd_market_price) * 1000000;
 
-    PocketCheckoutService.getNodeMoneyToSpent(selected).then(({cost}) => {
+    PocketCheckoutService.getNodeMoneyToSpent(selected).then(({ upokt, cost }) => {
       const subTotal = parseFloat(cost);
       const total = subTotal - currentAccountBalance;
+      // Upokt value
+      const upoktSubTotal = parseFloat(upokt);
+      const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 
       this.setState({
         currentAccountBalance: currentAccountBalance,
         total,
         subTotal,
+        currentAccountBalanceUpokt,
+        upoktSubTotal,
+        upoktTotal,
+        upoktToStake: upokt
       });
     });
   }
 
   onSliderChange(value) {
-    const {currentAccountBalance} = this.state;
+    const { currentAccountBalance, currentAccountBalanceUpokt } = this.state;
 
-    PocketCheckoutService.getNodeMoneyToSpent(value).then(({cost}) => {
+    PocketCheckoutService.getNodeMoneyToSpent(value).then(({upokt, cost}) => {
       const subTotal = parseFloat(cost);
       const total = subTotal - currentAccountBalance;
+      // Upokt value
+      const upoktSubTotal = parseFloat(upokt);
+      const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 
-      this.setState({selected: value, subTotal, total});
+      this.setState({
+        relaysSelected: value,
+        upoktSubTotal,
+        upoktTotal,
+        subTotal,
+        total,
+        upoktToStake: upokt
+      });
     });
   }
 
@@ -153,9 +184,12 @@ class SelectValidatorPower extends Purchase {
     const {
       selected,
       currencies,
+      upoktTotal,
       subTotal,
       total,
       currentAccountBalance,
+      currentAccountBalanceUpokt,
+      upoktToStake
     } = this.state;
 
     this.setState({loading: true});
@@ -167,15 +201,12 @@ class SelectValidatorPower extends Purchase {
       this.validate(currency);
 
       // Avoiding floating point precision errors.
-      const subTotalAmount = parseFloat(
-        numeral(subTotal).format("0.000")
-      ).toFixed(3);
-      const totalAmount = parseFloat(numeral(total).format("0.000")).toFixed(3);
+      const subTotalAmount = parseFloat(numeral(subTotal).format("0.00")).toFixed(2);
+      const totalAmount = parseFloat(numeral(total).format("0.00")).toFixed(2);
+      const tokens = currentAccountBalanceUpokt / 1000000;
 
-      const {data: paymentIntentData} = await this.createPaymentIntent(
-        selected, currency, totalAmount, currentAccountBalance
-      );
-
+      const { data: paymentIntentData } = await this.createPaymentIntent(selected, currency, totalAmount, tokens);
+      
       PaymentService.savePurchaseInfoInCache({
         validationPower: parseInt(selected),
         validationPowerCost: parseFloat(totalAmount),
@@ -200,6 +231,8 @@ class SelectValidatorPower extends Purchase {
             ],
             total,
             currentAccountBalance,
+            upoktTotal,
+            upoktToStake
           },
         });
       } else {
@@ -220,6 +253,8 @@ class SelectValidatorPower extends Purchase {
             },
             total: totalAmount,
             currentAccountBalance,
+            upoktTotal,
+            upoktToStake
           },
         });
       }

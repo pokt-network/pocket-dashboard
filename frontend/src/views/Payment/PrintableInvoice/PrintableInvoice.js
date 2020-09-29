@@ -51,7 +51,7 @@ PrintableInvoice.defaultProps = {
   purchaseDetails: [],
   cardHolderName: "",
   poktPrice: "0",
-  upoktTotal: "0"
+  upoktTotal: 0
 };
 
 PrintableInvoice.propTypes = {
@@ -71,7 +71,7 @@ PrintableInvoice.propTypes = {
   cardHolderName: PropTypes.string,
   poktPrice: PropTypes.string,
   purchasedTokens: PropTypes.number,
-  upoktTotal: PropTypes.string
+  upoktTotal: PropTypes.number
 };
 
 export default PrintableInvoice;

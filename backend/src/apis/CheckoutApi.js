@@ -42,9 +42,9 @@ router.get("/nodes/cost", apiAsyncWrapper((req, res) => {
   const validatorPower = parseInt(getQueryOption(req, "vp"));
 
   // Add transaction fee to cost
-  const cost = nodeCheckoutService.getMoneyToSpent(validatorPower);
-
-  res.json({cost});
+  const {upokt, usdValue: cost} = nodeCheckoutService.getMoneyToSpent(validatorPower);
+  
+  res.json({upokt, cost});
 }));
 
 router.post("/nodes/pokt", apiAsyncWrapper((req, res) => {

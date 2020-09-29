@@ -68,7 +68,7 @@ class CreateNodeForm extends CreateForm {
 
     const nodeBaseLink = `${window.location.origin}${nodeDetail}`;
 
-    const {publicKey} = await PocketClientService.getUnlockedAccount(address);
+    const {publicKey} = await PocketClientService.getAccount(address);
 
     const nodeData = {address, publicKey: publicKey.toString("hex")};
 
