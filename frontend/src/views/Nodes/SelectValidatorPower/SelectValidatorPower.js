@@ -172,7 +172,7 @@ class SelectValidatorPower extends Purchase {
         address, passphrase, chains, tokens, serviceURL);
 
       NodeService.stakeNode(
-        nodeStakeRequest, paymentIntentData.id, nodeLink
+        nodeStakeRequest, paymentIntentData.id, nodeLink, (validatorPower * 1000000)
       ).then(() => { });
     }
 
