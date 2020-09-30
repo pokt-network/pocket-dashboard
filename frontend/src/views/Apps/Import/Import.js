@@ -12,7 +12,7 @@ import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
 import UserService from "../../../core/services/PocketUserService";
 import {Configurations} from "../../../_configuration";
-import {getStakeStatus, formatNumbers} from "../../../_helpers";
+import {getStakeStatus, formatNumbers, upoktToPOKT} from "../../../_helpers";
 import PocketNetworkService from "../../../core/services/PocketNetworkService";
 import LoadingButton from "../../../core/components/LoadingButton";
 
@@ -289,14 +289,17 @@ class Import extends Component {
     const {passphrase, privateKey} = this.state.data;
 
     const generalInfo = [
-      {title: formatNumbers(accountData.tokens / 1000000), subtitle: "Staked tokens"},
+      {title: upoktToPOKT(accountData.tokens).toFixed(2), subtitle: "Staked tokens"},
       {
         title: `${formatNumbers(accountData.balance / 1000000)} POKT`,
         subtitle: "Balance",
       },
       {title: accountData.status, subtitle: "Stake status"},
       {
-        title: formatNumbers(accountData.amount),
+        title:
+          type === ITEM_TYPES.APPLICATION
+          ? (formatNumbers(accountData.amount) * Configurations.pocket_network.max_sessions)
+          : formatNumbers(accountData.amount),
         subtitle:
           type === ITEM_TYPES.APPLICATION
             ? "Max Relays per Day"
