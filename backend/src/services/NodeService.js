@@ -6,6 +6,7 @@ import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
 import {DashboardError, DashboardValidationError} from "../models/Exceptions";
 import {POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
+import EmailService from "../services/EmailService";
 
 const NODE_COLLECTION_NAME = "Nodes";
 
@@ -266,6 +267,79 @@ export default class NodeService extends BasePocketService {
   }
 
   /**
+   * Verify if the node belongs to the client's account using an node information
+   *
+   * @param {string} nodeAddress Node Address.
+   * @param {string} authHeader Authorization header.
+   *
+   * @returns {Promise<boolean>} True if the node belongs to the client account or false otherwise.
+   * @async
+   */
+  async verifyNodeBelongsToClient(nodeAddress, authHeader) {
+    // Retrieve the session tokens from the auth headers
+    const accessToken = authHeader.split(", ")[0].split(" ")[1];
+    const userEmail = authHeader.split(", ")[2].split(" ")[1];
+
+    if (accessToken && userEmail) {
+      const payload = await this.userService.decodeToken(accessToken, true);
+
+      if (payload instanceof DashboardValidationError) {
+        throw payload;
+      }
+      // Use token email to retrieve the node
+      const node = await this.getNode(nodeAddress);
+
+      if (node.pocketNode.user.toString() === userEmail.toString()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Verify if the node belongs to the client's account using an node information
+   *
+   * @param {string} node Node Object.
+   * @param {string} authHeader Authorization header.
+   *
+   * @returns {Promise<boolean>} True if the node belongs to the client account or false otherwise.
+   * @async
+   */
+  async verifyNodeObjectBelongsToClient(node, authHeader) {
+    // Retrieve the session tokens from the auth headers
+    const accessToken = authHeader.split(", ")[0].split(" ")[1];
+    const userEmail = authHeader.split(", ")[2].split(" ")[1];
+
+    if (accessToken && userEmail) {
+      const payload = await this.userService.decodeToken(accessToken, true);
+
+      if (payload instanceof DashboardValidationError) {
+        throw payload;
+      }
+      
+      if (node.pocketNode.user.toString() === userEmail.toString() && payload.email === userEmail.toString()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Verify if the session token belongs to the client email account.
+   *
+   * @param {object} authHeader Authorization header object.
+   * @param {string} userEmail Email provided by the client.
+   *
+   * @returns {Promise<boolean>} True or false.
+   * @async
+   */
+  async verifySessionForClient(authHeader, userEmail) {
+    return await this.userService.verifySessionForClient(authHeader, userEmail);
+  }
+
+  /**
    * Get all nodes on network.
    *
    * @param {number} limit Limit of query.
@@ -364,6 +438,7 @@ export default class NodeService extends BasePocketService {
     const contactEmail = node.pocketNode.contactEmail;
     const nodeStakeAction = new TransactionPostAction(POST_ACTION_TYPE.stakeNode, {
       nodeStakeTransaction,
+      address: nodeAddress,
       contactEmail,
       emailData,
       paymentEmailData
@@ -377,6 +452,7 @@ export default class NodeService extends BasePocketService {
     }
 
     node.pocketNode.updatingStatus = true;
+    await EmailService.to(contactEmail).sendPaymentCompletedNodeEmail(contactEmail, emailData, paymentEmailData);
 
     await this.__updatePersistedNode(node.pocketNode);
   }
@@ -388,39 +464,52 @@ export default class NodeService extends BasePocketService {
    * @param {string} nodeUnstakeTransaction.address Sender address
    * @param {string} nodeUnstakeTransaction.raw_hex_bytes Raw transaction bytes
    * @param {string} nodeLink Link to detail for email.
+   * @param {string} authHeader Auth header.
    *
    * @async
    */
-  async unstakeNode(nodeUnstakeTransaction, nodeLink) {
+  async unstakeNode(nodeUnstakeTransaction, nodeLink, authHeader) {
     const {
       address,
       raw_hex_bytes: rawHexBytes
     } = nodeUnstakeTransaction;
 
-    // Submit transaction
-    const nodeUnstakedHash = await this.pocketService.submitRawTransaction(address, rawHexBytes);
-
-    // Gather email data
+    // Retrieve the node information
     const node = await this.getNode(address);
-    const emailData = {
-      userName: node.pocketNode.user,
-      contactEmail: node.pocketNode.contactEmail,
-      nodeData: {
-        name: node.pocketNode.name,
-        link: nodeLink
-      }
-    };
 
-    // Add transaction to queue
-    const result = await this.transactionService.addNodeUnstakeTransaction(nodeUnstakedHash, emailData);
-
-    if (!result) {
-      throw new Error("Couldn't register app unstake transaction for email notification");
+    if(node === undefined || node === null) {
+      throw new Error(`Couldn't find a node with this address: ${address}`);
     }
 
-    node.pocketNode.updatingStatus = false;
+    // Check if the node belogns to the client
+    if (await this.verifyNodeObjectBelongsToClient(node, authHeader)) {
+      // Submit transaction
+      const nodeUnstakedHash = await this.pocketService.submitRawTransaction(address, rawHexBytes);
 
-    await this.__updatePersistedNode(node.pocketNode);
+      // Gather email data
+      const emailData = {
+        address: address,
+        userName: node.pocketNode.user,
+        contactEmail: node.pocketNode.contactEmail,
+        nodeData: {
+          name: node.pocketNode.name,
+          link: nodeLink
+        }
+      };
+
+      // Add transaction to queue
+      const result = await this.transactionService.addNodeUnstakeTransaction(nodeUnstakedHash, emailData);
+
+      if (!result) {
+        throw new Error("Couldn't register app unstake transaction for email notification");
+      }
+
+      node.pocketNode.updatingStatus = true;
+
+      await this.__updatePersistedNode(node.pocketNode);
+    } else {
+      throw new Error("Node doesn't belong to the provided client account.");
+    }
   }
 
   /**
@@ -511,5 +600,25 @@ export default class NodeService extends BasePocketService {
       return this.__updatePersistedNode(nodeToEdit);
     }
     return false;
+  }
+
+/**
+ * Update a node status.
+ *
+ * @param {string} address Node account address.
+ * @param {boolean} status Node updatingStatus.
+ *
+ * @async
+ */
+  async changeUpdatingStatus(address, status) {
+    // Retrieve the node information
+    const node = await this.getNode(address);
+
+    if (node === undefined || node === null) {
+      throw new Error(`Couldn't find a node with this address: ${address}`);
+    }
+
+    node.pocketNode.updatingStatus = status;
+    await this.__updatePersistedNode(node.pocketNode);
   }
 }

@@ -81,7 +81,7 @@ class CreateAppForm extends CreateForm {
 
         const path = url.replace(":id", applicationId);
 
-        this.props.history.push(path);
+        this.props.history.replace(path);
       } else {
         ApplicationService.saveAppInfoInCache({
           applicationID: applicationId,

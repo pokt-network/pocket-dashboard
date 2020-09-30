@@ -48,6 +48,7 @@ function getPocketDispatchers() {
   if (dispatchersStr === "") {
     return [];
   }
+
   return dispatchersStr.split(",").map(function (dispatcherURLStr) {
     return new URL(dispatcherURLStr);
   });
@@ -556,9 +557,8 @@ export default class PocketService {
     const {transaction_fee: transactionFee, chain_id: chainID} = POCKET_NETWORK_CONFIGURATION;
 
     if (transactionFee && chainID && amount && customerAddress) {
-      // Include transaction fee for the stake transaction
-      // Include 1 additional POKT
-      const totalAmount = BigInt(Number(amount) + Number(transactionFee) + Number(1000000));
+      // Include both transaction fees for stake and unstake
+      const totalAmount = BigInt(Number(amount) + (Number(transactionFee) * 2));
 
       if (totalAmount) {
         const pocketRpcProvider = await getRPCProvider();

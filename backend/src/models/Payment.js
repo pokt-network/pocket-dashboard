@@ -147,9 +147,10 @@ export class PaymentHistory {
    * @param {number} amount Amount.
    * @param {*} item Item
    * @param {string} user User.
+   * @param {number} tokens Tokens used for this payment.
    */
-  constructor(createdDate, paymentID, currency, amount, item, user) {
-    Object.assign(this, {createdDate, paymentID, currency, amount, item, user});
+  constructor(createdDate, paymentID, currency, amount, item, user, tokens) {
+    Object.assign(this, {createdDate, paymentID, currency, amount, item, user, tokens});
 
     // noinspection JSUnusedGlobalSymbols
     /** @type {string} */
@@ -159,6 +160,8 @@ export class PaymentHistory {
     this.billingDetails = null;
 
     this.status = "pending";
+
+    this.tokens = tokens;
 
     /** @type {number} */
     this.poktPrice = Configurations.pocket_network.pokt_market_price;
@@ -185,15 +188,17 @@ export class PaymentHistory {
   static createPaymentHistory(paymentHistoryData) {
     const {
       createdDate, paymentID, currency, amount, item,
-      user, paymentMethodID, billingDetails, status, poktPrice
+      user, paymentMethodID, billingDetails, status, poktPrice, tokens,
+      printableData
     } = paymentHistoryData;
 
-    const paymentHistory = new PaymentHistory(createdDate, paymentID, currency, amount, item, user);
+    const paymentHistory = new PaymentHistory(createdDate, paymentID, currency, amount, item, user, tokens);
 
     paymentHistory.poktPrice = poktPrice ?? Configurations.pocket_network.pokt_market_price;
     paymentHistory.paymentMethodID = paymentMethodID;
     paymentHistory.billingDetails = billingDetails;
     paymentHistory.status = status ?? "pending";
+    paymentHistory.printableData = printableData;
 
     return paymentHistory;
   }
@@ -250,10 +255,10 @@ export class PaymentHistory {
    * @throws {DashboardValidationError} if throwError is true and payment is not success.
    */
   isSuccessPayment(throwError = false) {
-    const succeeded = this.status === "succeeded";
+    const succeeded = this.status === "succeeded" || this.currency === "pokt";
 
     if (throwError && !succeeded) {
-      throw new DashboardValidationError("The payment is not succeed");
+      throw new DashboardValidationError("The payment did not succeed");
     }
 
     return succeeded;

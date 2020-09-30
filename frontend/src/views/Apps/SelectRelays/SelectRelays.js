@@ -18,6 +18,12 @@ import PocketAccountService from "../../../core/services/PocketAccountService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {isNaN} from "formik";
 import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
+import UserService from "../../../core/services/PocketUserService";
+import PocketClientService from "../../../core/services/PocketClientService";
+import {Configurations} from "../../../_configuration";
+
+const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
+
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -31,10 +37,15 @@ class SelectRelays extends Component {
       minRelays: 0,
       maxRelays: 0,
       relaysSelected: 0,
+      upoktSubTotal: 0,
+      upoktTotal: 0,
       total: 0,
       subTotal: 0,
+      upoktToStake: 0,
       originalAccountBalance: 0,
       currentAccountBalance: 0,
+      originalAccountBalanceUpokt: 0,
+      currentAccountBalanceUpokt: 0,
       currencies: [],
       loading: true,
       error: {show: false, message: ""},
@@ -52,23 +63,33 @@ class SelectRelays extends Component {
             const minRelays = parseInt(relaysPerDay.min);
 
             PocketCheckoutService.getApplicationMoneyToSpent(minRelays)
-              .then(({cost}) => {
+              .then(({upokt, cost}) => {
 
                 PocketAccountService.getBalance(accountAddress)
                   .then(({balance}) => {
-                    const currentAccountBalance = parseFloat(balance);
+                    // Usd value
+                    const currentAccountBalance = parseFloat(balance.usd);
                     const subTotal = parseFloat(cost);
                     const total = subTotal - currentAccountBalance;
+                    // Upokt value
+                    const currentAccountBalanceUpokt = parseFloat(balance.upokt);
+                    const upoktSubTotal = parseFloat(upokt);
+                    const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 
                     this.setState({
                       currentAccountBalance: currentAccountBalance,
                       originalAccountBalance: currentAccountBalance,
+                      currentAccountBalanceUpokt: currentAccountBalanceUpokt,
+                      originalAccountBalanceUpokt: currentAccountBalanceUpokt,
                       minRelays: minRelays,
                       maxRelays: parseInt(relaysPerDay.max),
                       loading: false,
                       relaysSelected: minRelays,
                       subTotal,
-                      total
+                      total,
+                      upoktSubTotal,
+                      upoktTotal,
+                      upoktToStake: upokt
                     });
                   });
               });
@@ -84,29 +105,47 @@ class SelectRelays extends Component {
       target: {value},
     } = e;
     const currentAccountBalance = parseFloat(value);
+    const currentAccountBalanceUpokt = (currentAccountBalance / POCKET_NETWORK_CONFIGURATION.pokt_usd_market_price) * 1000000;
 
     PocketCheckoutService.getApplicationMoneyToSpent(relaysSelected)
-      .then(({cost}) => {
+      .then(({upokt, cost}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
+        // Upokt value
+        const upoktSubTotal = parseFloat(upokt);
+        const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 
         this.setState({
-          currentAccountBalance: currentAccountBalance,
+          currentAccountBalance,
+          currentAccountBalanceUpokt,
+          upoktSubTotal,
+          upoktTotal,
           total,
           subTotal,
+          upoktToStake: upokt
         });
       });
   }
 
   onSliderChange(value) {
-    const {currentAccountBalance} = this.state;
+    const {currentAccountBalance, currentAccountBalanceUpokt} = this.state;
 
     PocketCheckoutService.getApplicationMoneyToSpent(value)
-      .then(({cost}) => {
+      .then(({upokt, cost}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
+        // Upokt value
+        const upoktSubTotal = parseFloat(upokt);
+        const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 
-        this.setState({relaysSelected: value, subTotal, total});
+        this.setState({
+          relaysSelected: value,
+          upoktSubTotal,
+          upoktTotal,
+          subTotal,
+          total,
+          upoktToStake: upokt
+        });
       });
   }
 
@@ -144,8 +183,14 @@ class SelectRelays extends Component {
     return true;
   }
 
-  async createPaymentIntent(relays, currency, amount) {
-    const {address} = PocketApplicationService.getApplicationInfo();
+  async createPaymentIntent(relays, currency, amount, currentAccountBalanceUpokt) {
+    const {
+      id,
+      passphrase,
+      chains,
+      address,
+      ppk
+    } = PocketApplicationService.getApplicationInfo();
     const {pocketApplication} = await PocketApplicationService.getApplication(address);
 
     const item = {
@@ -154,11 +199,42 @@ class SelectRelays extends Component {
       maxRelays: relays
     };
 
+    const amountNumber = parseFloat(amount);
+
     const {success, data: paymentIntentData} = await PocketPaymentService
-      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, parseFloat(amount));
+      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, amountNumber, currentAccountBalanceUpokt);
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);
+    }
+
+    if (paymentIntentData.provider === "token") {
+      const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
+      const detail = url.replace(":id", id);
+      const applicationLink = `${window.location.origin}${detail}`;
+
+      const savedAccount = await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+
+      if (savedAccount instanceof Error) {
+        throw savedAccount;
+      }
+
+      const appStakeTransaction = await PocketClientService.appStakeRequest(
+        address, passphrase, chains, this.state.upoktToStake.toString());
+
+      const gatewayAATSignature = await PocketClientService.signGatewayAAT(
+        address, passphrase);
+
+      const stakeInformation = {
+        applicationId: id,
+        appStakeTransaction,
+        paymentId: paymentIntentData.id,
+        applicationLink,
+        gatewayAATSignature,
+        upoktToStake: this.state.upoktToStake
+      };
+
+      await PocketApplicationService.stakeApplication(stakeInformation);
     }
 
     return {success, data: paymentIntentData};
@@ -168,9 +244,12 @@ class SelectRelays extends Component {
     const {
       relaysSelected,
       currencies,
+      upoktTotal,
       subTotal,
       total,
       currentAccountBalance,
+      currentAccountBalanceUpokt,
+      upoktToStake
     } = this.state;
 
     this.setState({loading: true});
@@ -184,29 +263,57 @@ class SelectRelays extends Component {
       // Avoiding floating point precision errors.
       const subTotalAmount = parseFloat(numeral(subTotal).format("0.00")).toFixed(2);
       const totalAmount = parseFloat(numeral(total).format("0.00")).toFixed(2);
+      const tokens = currentAccountBalanceUpokt / 1000000;
 
-      const {data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, totalAmount);
+      const {data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, totalAmount, tokens);
 
       PaymentService.savePurchaseInfoInCache({relays: parseInt(relaysSelected), costPerRelay: parseFloat(totalAmount)});
 
-      // eslint-disable-next-line react/prop-types
-      this.props.history.push({
-        pathname: _getDashboardPath(DASHBOARD_PATHS.orderSummary),
-        state: {
-          type: ITEM_TYPES.APPLICATION,
-          paymentIntent: paymentIntentData,
-          quantity: {
-            number: relaysSelected,
-            description: PURCHASE_ITEM_NAME.APPS,
+      if (total === 0) {
+        const user = UserService.getUserInfo().email;
+
+        // eslint-disable-next-line react/prop-types
+        this.props.history.replace({
+          pathname: _getDashboardPath(DASHBOARD_PATHS.invoice),
+          state: {
+            type: ITEM_TYPES.APPLICATION,
+            paymentId: paymentIntentData.id,
+            paymentMethod: {
+              holder: user,
+              method: "POKT Tokens"
+            },
+            details: [
+              {value: relaysSelected, text: PURCHASE_ITEM_NAME.APPS, format: false},
+              {value: subTotalAmount, text: `${PURCHASE_ITEM_NAME.APPS} cost`, format: true},
+            ],
+            total,
+            currentAccountBalance,
+            upoktTotal,
+            upoktToStake
           },
-          cost: {
-            number: subTotalAmount,
-            description: `${PURCHASE_ITEM_NAME.APPS} cost`,
+        });
+      } else {
+        // eslint-disable-next-line react/prop-types
+        this.props.history.push({
+          pathname: _getDashboardPath(DASHBOARD_PATHS.orderSummary),
+          state: {
+            type: ITEM_TYPES.APPLICATION,
+            paymentIntent: paymentIntentData,
+            quantity: {
+              number: relaysSelected,
+              description: PURCHASE_ITEM_NAME.APPS,
+            },
+            cost: {
+              number: subTotalAmount,
+              description: `${PURCHASE_ITEM_NAME.APPS} cost`,
+            },
+            total: totalAmount,
+            currentAccountBalance,
+            upoktTotal,
+            upoktToStake
           },
-          total: totalAmount,
-          currentAccountBalance
-        },
-      });
+        });
+      }
     } catch (e) {
       this.setState({
         error: {show: true, message: <h4>{e.toString()}</h4>},
@@ -263,41 +370,42 @@ class SelectRelays extends Component {
             <h2>
               Slide to select how many relays per day to purchase
             </h2>
-              <div className="slider-wrapper">
-                <AppSlider
-                  defaultValue={minRelays}
-                  onChange={this.onSliderChange}
-                  type={PURCHASE_ITEM_NAME.APPS}
-                  marks={{
-                    [minRelays]: `${formatNumbers(minRelays)} RPD`,
-                    // [maxRelays / 2]: {
-                    //   label: (
-                    //     <div className="average-stake-wrapper">
-                    //       <FontAwesomeIcon
-                    //         style={{color: STYLING.primaryColor}}
-                    //         icon={faCaretUp}
-                    //       />
-                    //       <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
-                    //     </div>
-                    //   ),
-                    // },
-                    [maxRelays]: `*${formatNumbers(maxRelays)} RPD*`,
-                  }}
-                  min={minRelays}
-                  max={maxRelays}
-                />
-              </div>
+            <div className="slider-wrapper">
+              <AppSlider
+                defaultValue={minRelays}
+                onChange={this.onSliderChange}
+                type={PURCHASE_ITEM_NAME.APPS}
+                marks={{
+                  [minRelays]: `${formatNumbers(minRelays)} RPD`,
+                  // [maxRelays / 2]: {
+                  //   label: (
+                  //     <div className="average-stake-wrapper">
+                  //       <FontAwesomeIcon
+                  //         style={{color: STYLING.primaryColor}}
+                  //         icon={faCaretUp}
+                  //       />
+                  //       <span style={{fontSize: "0.75rem"}}>AVRG STAKE</span>
+                  //     </div>
+                  //   ),
+                  // },
+                  [maxRelays]: `*${formatNumbers(maxRelays)} RPD*`,
+                }}
+                step={POCKET_NETWORK_CONFIGURATION.max_sessions}
+                min={minRelays}
+                max={maxRelays}
+              />
+            </div>
             <AppAlert
               className="max-alert"
               variant="primary"
               title={<h4 className="alert-max">About RPD, Relays per day:</h4>}
             >
               <p className="alert-max">
-                Each RPD purchased on the Pocket Dashboard has a representation as a POKT token on the Pocket Network. Approx. 40 RPD = 1 POKT.
+                Each RPD purchased on the Pocket Dashboard has a representation as a POKT token on the Pocket Network. Approx. 504 RPD = 1 POKT.
               </p>
-              <br/>
+              <br />
               <p className="alert-max">
-                *Need More Relays per Day? If you&apos;re interested in more relays beyond the maximum on the dashboard, <br/>
+                *Need More Relays per Day? If you&apos;re interested in more relays beyond the maximum on the dashboard, <br />
                 please <a href="mailto:dashboard@pokt.network">contact us</a> to find a solution specially designed for your app.
               </p>
             </AppAlert>

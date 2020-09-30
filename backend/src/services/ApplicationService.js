@@ -18,6 +18,7 @@ import {POKT_DENOMINATIONS} from "./PocketService";
 import PocketService from "./PocketService";
 import {ObjectID} from "mongodb";
 import {Encryptor, Decryptor} from "strong-cryptor";
+import EmailService from "../services/EmailService";
 
 const crypto = require("crypto");
 const cryptoKey = Configurations.persistence.default.db_encryption_key;
@@ -39,7 +40,7 @@ export default class ApplicationService extends BasePocketService {
 
   /**
    * Encrypt necessary application fields before persisting
-   * 
+   *
    * @param {PocketApplication} application Application to encrypt necessary fields
    */
   async __encryptApplicationFields(application) {
@@ -54,7 +55,7 @@ export default class ApplicationService extends BasePocketService {
 
   /**
    * Decrypt application fields before persisting
-   * 
+   *
    * @param {PocketApplication} application Application to decrypt necessary fields
    */
   async __decryptApplicationFields(application) {
@@ -248,6 +249,37 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
+   * Verify if the application belongs to the client's account using an application id
+   *
+   * @param {string} applicationId Application Identifier.
+   * @param {string} authHeader Authorization header.
+   *
+   * @returns {Promise<boolean>} True if the app belongs to the client account or false otherwise.
+   * @async
+   */
+  async verifyApplicationBelongsToClient(applicationId, authHeader) {
+    // Retrieve the session tokens from the auth headers
+    const accessToken = authHeader.split(", ")[0].split(" ")[1];
+    const userEmail = authHeader.split(", ")[2].split(" ")[1];
+
+    if (accessToken && userEmail) {
+      const payload = await this.userService.decodeToken(accessToken, true);
+
+      if (payload instanceof DashboardValidationError) {
+        throw payload;
+      }
+      // Use token email to retrieve a list of the apps
+      const application = await this.getClientApplication(applicationId);
+
+      if (application.pocketApplication.user.toString() === userEmail.toString()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * Get client's application account data.
    *
    * @param {string} applicationId Application address.
@@ -285,12 +317,17 @@ export default class ApplicationService extends BasePocketService {
       "publicPocketAccount.address": applicationAddress
     };
 
-    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
+    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
     if (applicationDB) {
-      const application = PocketApplication.createPocketApplication(applicationDB);
+      const decryptedFields = await this.__decryptApplicationFields(applicationDB);
 
-      return this.__getExtendedPocketApplication(application);
+      if (decryptedFields) {
+        const application = PocketApplication.createPocketApplication(decryptedFields);
+
+        return this.__getExtendedPocketApplication(application);
+      }
+
     }
 
     return null;
@@ -491,6 +528,7 @@ export default class ApplicationService extends BasePocketService {
       appStakeTransaction,
       contactEmail,
       emailData,
+      address: stakeInformation.app_address,
       paymentEmailData: {
         amountPaid: 0,
         poktStaked: upoktToStake / Math.pow(10, POKT_DENOMINATIONS.upokt),
@@ -513,8 +551,8 @@ export default class ApplicationService extends BasePocketService {
     const {
       access_key_id: awsAccessKeyID,
       secret_access_key: awsSecretAccessKey,
-      region: awsRegion, 
-      s3_fts_bucket: awsS3FTSBucket 
+      region: awsRegion,
+      s3_fts_bucket: awsS3FTSBucket
     } = Configurations.aws;
 
     const s3 = new aws.S3({
@@ -596,6 +634,7 @@ export default class ApplicationService extends BasePocketService {
     const appUnstakedTransaction = await this.pocketService.submitRawTransaction(appUnstakeRequest.address, appUnstakeRequest.txHex);
 
     const emailData = {
+      address: application.pocketApplication.address,
       userName: application.pocketApplication.user,
       contactEmail: application.pocketApplication.contactEmail,
       applicationData: {
@@ -635,6 +674,7 @@ export default class ApplicationService extends BasePocketService {
     const contactEmail = application.pocketApplication.contactEmail;
     const appStakeAction = new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, {
       appStakeTransaction,
+      address: appAddress,
       contactEmail,
       emailData,
       paymentEmailData
@@ -662,6 +702,7 @@ export default class ApplicationService extends BasePocketService {
       applicationSignature: gatewayAATSignature
     };
 
+    await EmailService.to(contactEmail).sendPaymentCompletedAppEmail(contactEmail, emailData, paymentEmailData);
     await this.__updatePersistedApplication(application.pocketApplication);
     await this.__markApplicationAsFreeTier(application.pocketApplication, false);
   }
@@ -669,43 +710,50 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Unstake application.
    *
-   * @param {object} appUnstakeTransaction Transaction object.
-   * @param {string} appUnstakeTransaction.address Sender address
-   * @param {string} appUnstakeTransaction.raw_hex_bytes Raw transaction bytes
+   * @param {{address: string, raw_hex_bytes: string}} appUnstakeTransaction Transaction object.
    * @param {string} applicationLink Link to detail for email.
+   * @param {string} authHeader Auth header.
    *
    * @async
    */
-  async unstakeApplication(appUnstakeTransaction, applicationLink) {
+  async unstakeApplication(appUnstakeTransaction, applicationLink, authHeader) {
     const {
       address,
       raw_hex_bytes
     } = appUnstakeTransaction;
 
-    // Submit transaction
-    const appUnstakedHash = await this.pocketService.submitRawTransaction(address, raw_hex_bytes);
-
-    // Gather email data
+    // Retrieve app
     const application = await this.getApplication(address);
-    const emailData = {
-      userName: application.pocketApplication.user,
-      contactEmail: application.pocketApplication.contactEmail,
-      applicationData: {
-        name: application.pocketApplication.name,
-        link: applicationLink
+
+    // Check if the app belogns to the client
+    if (await this.verifyApplicationBelongsToClient(application.pocketApplication.id, authHeader)) {
+      // Submit transaction
+      const appUnstakedHash = await this.pocketService.submitRawTransaction(address, raw_hex_bytes);
+
+      // Gather email data
+      const emailData = {
+        address: address,
+        userName: application.pocketApplication.user,
+        contactEmail: application.pocketApplication.contactEmail,
+        applicationData: {
+          name: application.pocketApplication.name,
+          link: applicationLink
+        }
+      };
+
+      // Add transaction to queue
+      const result = await this.transactionService.addAppUnstakeTransaction(appUnstakedHash, emailData);
+
+      if (!result) {
+        throw new Error("Couldn't register app unstake transaction for email notification");
       }
-    };
 
-    // Add transaction to queue
-    const result = await this.transactionService.addAppUnstakeTransaction(appUnstakedHash, emailData);
+      application.pocketApplication.updatingStatus = true;
 
-    if (!result) {
-      throw new Error("Couldn't register app unstake transaction for email notification");
+      await this.__markApplicationAsFreeTier(application.pocketApplication, false);
+    } else {
+      throw new Error("Application doesn't belong to the provided client account.");
     }
-
-    application.pocketApplication.updatingStatus = false;
-
-    await this.__markApplicationAsFreeTier(application.pocketApplication, false);
   }
 
   /**
@@ -811,32 +859,61 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async updateApplication(applicationId, applicationData) {
+
     if (PocketApplication.validate(applicationData)) {
       if (!await this.userService.userExists(applicationData.user)) {
-        throw new DashboardError("User does not exists");
+        throw new DashboardError("User does not exist");
       }
 
-      const application = PocketApplication.createPocketApplication(applicationData);
       const filter = {
         "_id": ObjectID(applicationId)
       };
 
-      const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
+      const application = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
 
-      if (!applicationDB) {
-        throw new DashboardError("Application does not exists");
+      if (!application) {
+        throw new DashboardError("Application does not exist");
       }
 
-      const applicationToEdit = {
-        ...application,
-        publicPocketAccount: applicationDB.publicPocketAccount
-      };
+      const applicationToEdit = application;
 
-      applicationToEdit.id = applicationId;
+      // Update the new fields
+      applicationToEdit.name = applicationData.name;
+      applicationToEdit.contactEmail = applicationData.contactEmail;
+      applicationToEdit.description = applicationData.description;
+      applicationToEdit.owner = applicationData.owner;
+      applicationToEdit.url = applicationData.url;
+      applicationToEdit.icon = applicationData.icon;
+
+      if (applicationData.gatewaySettings) {
+        applicationToEdit.gatewaySettings.secretKeyRequired = applicationData.gatewaySettings.secretKeyRequired;
+        applicationToEdit.gatewaySettings.whitelistOrigins = applicationData.gatewaySettings.whitelistOrigins;
+        applicationToEdit.gatewaySettings.whitelistUserAgents = applicationData.gatewaySettings.whitelistUserAgents;
+      }
 
       return this.__updatePersistedApplication(applicationToEdit);
     }
 
     return false;
+  }
+
+  /**
+   * Update an App status.
+   *
+   * @param {string} address App account address.
+   * @param {boolean} status App updatingStatus.
+   *
+   * @async
+   */
+  async changeUpdatingStatus(address, status) {
+    // Retrieve app
+    const application = await this.getApplication(address);
+
+    if (application === undefined || application === null) {
+      throw new Error(`Couldn't find an app with this address: ${address}`);
+    }
+
+    application.pocketApplication.updatingStatus = status;
+    await this.__updatePersistedApplication(application.pocketApplication);
   }
 }

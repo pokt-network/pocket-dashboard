@@ -44,9 +44,9 @@ class Login extends Component {
 
   componentDidMount() {
     /** @type {UserService} */
-    UserService.getAuthProviders().then((providers) => {
-      this.setState({authProviders: providers});
-    });
+    // UserService.getAuthProviders().then((providers) => {
+    //   this.setState({authProviders: providers});
+    // });
   }
 
   async handleLogin(e) {
@@ -85,7 +85,17 @@ class Login extends Component {
         errors.email = "Invalid email.";
       }
     } else {
-      this.setState({user: data});
+
+      if (data === "User is not validated.") {
+        errors.email = data;
+      }else {
+        this.setState({
+          user: data.user,
+          session: data.session
+        });
+        // Save session
+        UserService.saveUserInCache(this.state.user, this.state.session, true);
+      }
     }
 
     return errors;
@@ -117,7 +127,6 @@ class Login extends Component {
                   validate={this.validate}
                   // validationSchema={this.schema}
                   onSubmit={() => {
-                    UserService.saveUserInCache(this.state.user, true);
                     UserService.showWelcomeMessage(true);
                     this.setState({loggedIn: true});
                   }}

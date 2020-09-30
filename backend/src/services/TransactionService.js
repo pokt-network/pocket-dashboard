@@ -31,11 +31,21 @@ export default class TransactionService extends BaseService {
    * @private
    */
   async __updateTransaction(pocketTransaction) {
+
     const filter = {
       hash: pocketTransaction.hash
     };
 
-    await this.persistenceService.deleteEntities(PENDING_TRANSACTION_COLLECTION_NAME, filter);
+    let transaction = await this.persistenceService.getEntityByFilter(PENDING_TRANSACTION_COLLECTION_NAME, filter);
+
+    if (transaction) {
+      // Update the only editable field for the pending transactions.
+      transaction.completed = pocketTransaction.completed;
+
+      return this.persistenceService.updateEntity(PENDING_TRANSACTION_COLLECTION_NAME, filter, transaction);
+    }
+
+    return false;
   }
 
   /**
@@ -68,7 +78,7 @@ export default class TransactionService extends BaseService {
    * Add stake transaction.
    *
    * @param {string} appStakeTxHash The transaction hash for the submitted app stake transaction
-   * @param {{appStakeTransaction: object, contactEmail: string, emailData: object, paymentEmailData: object}} appStakeData App Stake Data
+   * @param {{appStakeTransaction: object, contactEmail: string, emailData: object, paymentEmailData: object, address: string}} appStakeData App Stake Data
    * @returns {Promise<boolean>} if was added or not.
    */
   async addAppStakeTransaction(appStakeTxHash, appStakeData) {
@@ -183,6 +193,9 @@ export default class TransactionService extends BaseService {
    * @param {PocketTransaction} transaction transaction.
    */
   async markTransactionSuccess(transaction) {
-    await this.__updateTransaction(transaction);
+    //
+    transaction.completed = true;
+
+    return await this.__updateTransaction(transaction);
   }
 }

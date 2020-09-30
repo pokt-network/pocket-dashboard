@@ -634,10 +634,10 @@ button {
   justify-content: center;
   align-items: center;
   border-radius: 20px;
-
+  
   img {
-    width: 179px;
-    height: 179px;
+    width: 20vh;
+    height: 20vh;
     margin-bottom: 17px;
   }
 
@@ -647,6 +647,7 @@ button {
     font-weight: 400;
     text-align: center;
     color: #9d9d9d;
+    margin-bottom: 30px;
   }
 }
 
@@ -661,8 +662,8 @@ button {
   .node {
     
     img {
-      width: 179px !important;
-      height: 179px !important;
+      width: 20vh !important;
+      height: 20vh !important;
       display:block;
       margin:auto;
     }

@@ -77,13 +77,17 @@ class PaymentMethods extends Component {
           const user = UserService.getUserInfo().email;
           const paymentMethods = await PaymentService.getPaymentMethods(user);
 
-          this.setState({paymentMethods});
+          this.setState({
+            paymentMethods,
+            newCard: false
+          });
         } else {
           this.setState({
             alert: {
               show: true,
               variant: "danger",
               text: data.message,
+              newCard: false
             },
           });
         }

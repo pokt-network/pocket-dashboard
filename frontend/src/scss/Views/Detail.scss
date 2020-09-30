@@ -106,14 +106,14 @@
   }
 
   .unjail {
-    color: $primary-color;
+    color: #D52222;
     cursor: pointer;
     font-weight: bold !important;
-    font-size: 10px !important;
+    font-size: 12px !important;
   }
 
   .unjail:hover {
-    color: darken($color: $primary-color, $amount: 10%);
+    color: darken($color: #D52222, $amount: 10%);
   }
 
   .unjailing,

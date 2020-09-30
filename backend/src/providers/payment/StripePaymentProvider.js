@@ -1,5 +1,6 @@
 import BasePaymentProvider, {CardPaymentMethod, PaymentResult} from "./BasePaymentProvider";
 import Stripe from "stripe";
+import {providerType} from "./Index";
 
 class StripePaymentProvider extends BasePaymentProvider {
 
@@ -13,7 +14,7 @@ class StripePaymentProvider extends BasePaymentProvider {
     this.createPaymentIntent = this.createPaymentIntent.bind(this);
   }
 
-  async createPaymentIntent(userCustomerID, type, currency, item, amount, description = "") {
+  async createPaymentIntent(userCustomerID, type, currency, item, amount, description = "", tokens) {
 
     let paymentData = {
       amount: amount,
@@ -23,7 +24,8 @@ class StripePaymentProvider extends BasePaymentProvider {
         "pocket account": item.account,
         name: item.name,
         type: item.type,
-        pokt: item.pokt
+        pokt: item.pokt,
+        tokens: tokens
       },
       setup_future_usage: "on_session",
       customer: userCustomerID
@@ -32,13 +34,13 @@ class StripePaymentProvider extends BasePaymentProvider {
     if (description) {
       paymentData["description"] = description;
     }
-    
+
     const paymentResultData = await this._stripeAPIClient.paymentIntents.create(paymentData);
 
     const date = new Date(paymentResultData.created * 1000);
     const resultAmount = paymentResultData.amount;
 
-    return new PaymentResult(paymentResultData.id, date, paymentResultData.client_secret, paymentResultData.currency, resultAmount);
+    return new PaymentResult(paymentResultData.id, date, paymentResultData.client_secret, paymentResultData.currency, resultAmount, providerType.stripe);
   }
 
   async retrieveCardPaymentMethod(paymentMethodID) {

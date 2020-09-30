@@ -5,20 +5,20 @@ import {Button, Col, Row} from "react-bootstrap";
 import ReactToPrint from "react-to-print";
 import has from "lodash/has";
 import Invoice from "../../../core/components/Payment/Invoice";
-import {capitalize, formatCurrency} from "../../../_helpers";
+import {formatCurrency, usdToPOKT} from "../../../_helpers";
 import moment from "moment";
 import {ITEM_TYPES} from "../../../_constants";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import NodeService from "../../../core/services/PocketNodeService";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
-import CheckoutService from "../../../core/services/PocketCheckoutService";
 import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import {Link} from "react-router-dom";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import Loader from "../../../core/components/Loader";
 import AppAlert from "../../../core/components/AppAlert";
 import PrintableInvoice from "../PrintableInvoice/PrintableInvoice";
+import PocketPaymentService from "../../../core/services/PocketPaymentService";
 
 class Checkout extends Component {
   constructor(props, context) {
@@ -31,13 +31,15 @@ class Checkout extends Component {
         owner: "",
         id: "",
         date: "",
-        card: "",
+        method: "",
       },
       applicationId: "",
       details: [],
-      total: 0,
+      total: 0.00,
       currentAccountBalance: 0,
       purchasedTokens: 0,
+      upoktToStake: 0,
+      upoktTotal: 0,
       address: "",
       unauthorized: false,
     };
@@ -57,6 +59,8 @@ class Checkout extends Component {
       details,
       total,
       currentAccountBalance,
+      upoktToStake,
+      upoktTotal
     } = this.props.location.state;
 
     const address =
@@ -69,10 +73,7 @@ class Checkout extends Component {
         ? ApplicationService.getApplicationInfo().id
         : NodeService.getNodeInfo().address;
 
-    const purchasedTokens =
-      type === ITEM_TYPES.APPLICATION
-        ? await CheckoutService.getApplicationPoktToStake(total)
-        : await CheckoutService.getNodePoktToStake(total);
+    const purchasedTokens = {cost: upoktToStake};
 
     const {
       paymentID: id,
@@ -80,13 +81,11 @@ class Checkout extends Component {
       poktPrice,
     } = await PaymentService.getPaymentDetail(paymentId);
 
-    const {brand, lastDigits} = paymentMethod;
-
     const invoice = {
       id: id.replace("pi_", "").toLowerCase(),
       date: moment(date).format("DD MM YYYY"),
       owner: paymentMethod.holder,
-      card: `${capitalize(brand)} **** **** **** ${lastDigits}`,
+      method: paymentMethod.method,
       poktPrice,
     };
 
@@ -98,10 +97,13 @@ class Checkout extends Component {
       invoice,
       details,
       total,
+      upoktTotal,
       currentAccountBalance,
       purchasedTokens: has(purchasedTokens, "cost") ? purchasedTokens.cost : 0,
       paymentMethod,
     });
+
+    const {owner, method} = this.state.invoice;
 
     const action = UserService.getUserAction();
     const appBreadcrumbs = ["Apps", action, "Checkout", "Invoice"];
@@ -110,10 +112,34 @@ class Checkout extends Component {
     type === ITEM_TYPES.APPLICATION
       ? this.props.onBreadCrumbChange(appBreadcrumbs)
       : this.props.onBreadCrumbChange(nodeBreadcrumbs);
+
+    // Save printable invoice to the DB
+    const items = [
+      ...details,
+      {text: "Used balance", value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(currentAccountBalance)} POKT`},
+    ].map((it) => {
+      if (!it.format) {
+        return it;
+      }
+      return {text: it.text, value: `${formatCurrency(it.value)} USD`};
+    });
+
+    const printableData = {
+      information: [
+        {text: "Date", value: date},
+        {text: "Bill to", value: owner},
+        {text: "Invoice", value: id},
+        {text: "Payment Method", value: method},
+      ],
+      items: items,
+      total: formatCurrency(total)
+    };
+
+    await PocketPaymentService.updatePaymentIntent(type, paymentId, printableData);
   }
 
   render() {
-    const {owner, id, date, card, poktPrice} = this.state.invoice;
+    const {owner, id, date, method, poktPrice} = this.state.invoice;
     const {
       applicationId,
       details,
@@ -122,7 +148,7 @@ class Checkout extends Component {
       loading,
       unauthorized,
       currentAccountBalance,
-      purchasedTokens,
+      upoktTotal
     } = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
@@ -130,17 +156,17 @@ class Checkout extends Component {
       {text: "Date", value: date},
       {text: "Bill to", value: owner},
       {text: "Invoice", value: id},
-      {text: "Card Detail", value: card},
+      {text: "Payment Method", value: method},
     ];
 
     const items = [
       ...details,
-      {text: "Current balance", value: currentAccountBalance, format: true},
+      {text: "Used balance", value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(currentAccountBalance)} POKT`},
     ].map((it) => {
       if (!it.format) {
         return it;
       }
-      return {text: it.text, value: `US${formatCurrency(it.value)}`};
+      return {text: it.text, value: `${formatCurrency(it.value)} USD`};
     });
 
     const totalAmount = formatCurrency(total);
@@ -231,12 +257,12 @@ class Checkout extends Component {
             {text: "invoice", value: id},
             {text: "bill to", value: owner},
             {text: "date", value: date},
-            {text: "card detail", value: card},
+            {text: "payment method", value: method},
           ]}
           purchaseDetails={items}
           cardHolderName={owner}
           poktPrice={poktPrice}
-          purchasedTokens={purchasedTokens}
+          upoktTotal={upoktTotal}
           total={totalAmount}
         />
       </>

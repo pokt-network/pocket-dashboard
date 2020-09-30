@@ -10,17 +10,25 @@ import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
 import moment from "moment";
+import {Configurations} from "./_configuration";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
 export const formatNumbers = (num) => numeral(num).format("0,0");
 
+export const upoktToPOKT = (upokt) => {
+  return upokt / Math.pow(10, DEFAULT_POKT_DENOMINATION_BASE);
+};
+
+export const usdToPOKT = (usd) => {
+  return usd / Configurations.pocket_network.pokt_usd_market_price;
+};
+
 export const formatNetworkData = (
   pokt,
-  fixed = true,
-  poktDenominationBase = DEFAULT_POKT_DENOMINATION_BASE
+  fixed = true
 ) => {
-  const poktNumber = pokt / Math.pow(10, poktDenominationBase);
+  const poktNumber = upoktToPOKT(pokt);
 
   return fixed
     ? formatNumbers(poktNumber)

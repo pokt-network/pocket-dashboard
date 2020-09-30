@@ -12,7 +12,7 @@ import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
 import UserService from "../../../core/services/PocketUserService";
 import {Configurations} from "../../../_configuration";
-import {getStakeStatus, formatNumbers} from "../../../_helpers";
+import {getStakeStatus, formatNumbers, upoktToPOKT} from "../../../_helpers";
 import PocketNetworkService from "../../../core/services/PocketNetworkService";
 import LoadingButton from "../../../core/components/LoadingButton";
 
@@ -23,6 +23,7 @@ class Import extends Component {
     this.importAccount = this.importAccount.bind(this);
     this.changeInputType = this.changeInputType.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.continue = this.continue.bind(this);
 
     this.iconUrl = {
       open: "/assets/open_eye.svg",
@@ -112,6 +113,32 @@ class Import extends Component {
     reader.readAsText(e.target.files[0], "utf8");
   };
 
+  async continue(e) {
+    e.preventDefault();
+
+    const {
+      type,
+      created,
+    } = this.state;
+
+    if(!created) {
+      // eslint-disable-next-line react/prop-types
+      this.props.history.push({
+        pathname: _getDashboardPath(
+          type === ITEM_TYPES.APPLICATION
+            ? DASHBOARD_PATHS.createAppInfo
+            : DASHBOARD_PATHS.createNodeForm
+        ),
+        state: {imported: true},
+      });
+    } else {
+      this.setState({
+        importing: false,
+        error: {show: true, message: "App already exists"},
+      });
+    }
+  }
+
   async importAccount(e) {
     e.preventDefault();
 
@@ -158,7 +185,12 @@ class Import extends Component {
 
         // Retrieve the application information if available
         const application = await ApplicationService.getNetworkApplication(data.address);
-        
+        const appInDB = await ApplicationService.getApplication(data.address);
+
+        this.setState({
+          created: appInDB !== undefined && appInDB !== null
+        });
+
         if (application.error === undefined) {
           // Add the chains value
           chains = application.chains;
@@ -190,6 +222,11 @@ class Import extends Component {
           ppk,
         });
         const node = await NodeService.getNetworkNode(data.address);
+        const nodeInDB = await NodeService.getNode(data.address);
+
+        this.setState({
+          created: nodeInDB.pocketNode !== undefined
+        });
 
         if (node.error === undefined) {
           // Add the chains value
@@ -252,14 +289,17 @@ class Import extends Component {
     const {passphrase, privateKey} = this.state.data;
 
     const generalInfo = [
-      {title: formatNumbers(accountData.tokens / 1000000), subtitle: "Staked tokens"},
+      {title: upoktToPOKT(accountData.tokens).toFixed(2), subtitle: "Staked tokens"},
       {
         title: `${formatNumbers(accountData.balance / 1000000)} POKT`,
         subtitle: "Balance",
       },
       {title: accountData.status, subtitle: "Stake status"},
       {
-        title: formatNumbers(accountData.amount),
+        title:
+          type === ITEM_TYPES.APPLICATION
+          ? (formatNumbers(accountData.amount) * Configurations.pocket_network.max_sessions)
+          : formatNumbers(accountData.amount),
         subtitle:
           type === ITEM_TYPES.APPLICATION
             ? "Max Relays per Day"
@@ -390,17 +430,7 @@ class Import extends Component {
                               type: "submit",
                               onClick: !imported
                                 ? this.importAccount
-                                : () => {
-                                  // eslint-disable-next-line react/prop-types
-                                  this.props.history.push({
-                                    pathname: _getDashboardPath(
-                                      type === ITEM_TYPES.APPLICATION
-                                        ? DASHBOARD_PATHS.createAppInfo
-                                        : DASHBOARD_PATHS.createNodeForm
-                                    ),
-                                    state: {imported: true},
-                                  });
-                                },
+                                : this.continue,
                             }}
                           >
                             <span>{!imported ? "Import" : "Continue"}</span>

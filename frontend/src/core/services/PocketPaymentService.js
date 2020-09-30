@@ -1,9 +1,10 @@
 import PocketBaseService from "./PocketBaseService";
-import axios from "axios";
 import PocketUserService from "./PocketUserService";
 import {ITEM_TYPES} from "../../_constants";
 import SecureLS from "secure-ls";
 import {Configurations} from "../../_configuration";
+import axiosInstance from "./_serviceHelper";
+const axios = axiosInstance();
 
 class PocketPaymentService extends PocketBaseService {
   constructor() {
@@ -96,17 +97,19 @@ class PocketPaymentService extends PocketBaseService {
    * @param {number} [offset] Offset of query.
    * @param {string} [fromDate] From created date.
    * @param {string} [toDate] To created date.
+   * @param {string} [paymentID] paymentID.
    *
    * @return {Promise|Promise<Array.<*>>}
    */
-  getPaymentHistory(user, limit, offset = 0, fromDate, toDate) {
+  getPaymentHistory(user, limit, offset = 0, fromDate, toDate, paymentID) {
     return axios({
       method: "post",
       url: this._getURL("history"),
       data: {
         user,
         fromDate,
-        toDate
+        toDate,
+        paymentID
       },
       params: {
         limit,
@@ -166,14 +169,22 @@ class PocketPaymentService extends PocketBaseService {
    * @param {object} item Item data to purchase.
    * @param {string} currency Currency.
    * @param {number} amount Amount to pay.
+   * @param {number} tokens Tokens used for this payment.
    *
    * @return {Promise<*>}
    * @async
    */
-  async createNewPaymentIntent(type, item, currency, amount) {
-    let convertedAmount = amount * 100;
+  async createNewPaymentIntent(type, item, currency, amount, tokens) {
+    let paymentType = "card";
+    let currencyType = currency;
+
+    if (amount === 0) {
+      paymentType = "token";
+      currencyType = "pokt";
+    }
+
     const user = PocketUserService.getUserInfo().email;
-    const data = {type: "card", user, item, currency, amount: convertedAmount};
+    const data = {type: paymentType, user, item, currency: currencyType, amount, tokens: tokens};
 
     let path;
 
@@ -197,6 +208,49 @@ class PocketPaymentService extends PocketBaseService {
         return {success: false, data: err.response};
       });
   }
+  /**
+   * Update payment intent for purchase with after purchase invoice data.
+   *
+   * @param {string} paymentId Type of item (e.x. application, node).
+   * @param {object} printableData Item data to purchase.
+   *
+   * @return {Promise<*>}
+   * @async
+   */
+  async updatePaymentIntent(type, paymentId, printableData) {
+
+    const user = PocketUserService.getUserInfo().email;
+
+    let path;
+
+    switch (type) {
+      case ITEM_TYPES.APPLICATION:
+        path = "apps";
+        break;
+      case ITEM_TYPES.NODE:
+        path = "nodes";
+        break;
+      default:
+        throw new Error("Invalid item type");
+    }
+
+    const data = {
+      userEmail: user,
+      type,
+      paymentId,
+      printableData
+    };
+
+    return axios
+      .put(this._getURL(`intent/${path}`), data)
+      .then((response) => {
+        return {success: true, data: response.data};
+      })
+      .catch((err) => {
+        return {success: false, data: err.response};
+      });
+  }
+
 }
 
 export default new PocketPaymentService();

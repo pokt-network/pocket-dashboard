@@ -25,8 +25,10 @@ export const Configurations = {
     aat_version: process.env.REACT_APP_POCKET_NETWORK_AAT_VERSION,
     free_tier: {
       stake_amount: process.env.REACT_APP_POCKET_FREE_TIER_STAKE_AMOUNT
-    }
+    },
+    pokt_usd_market_price: process.env.REACT_APP_POKT_USD_MARKET_PRICE
   },
   stakeDefaultStatus: process.env.REACT_APP_STAKE_DEFAULT_STATUS,
-  defaultMaxRelaysPerDay: process.env.REACT_APP_DEFAULT_MAX_RELAYS_PER_DAY
+  defaultMaxRelaysPerDay: process.env.REACT_APP_DEFAULT_MAX_RELAYS_PER_DAY,
+  sessionLength: process.env.REACT_APP_SESSION_LENGTH
 };

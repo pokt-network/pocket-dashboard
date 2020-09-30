@@ -13,6 +13,7 @@ class AnswerSecurityQuestions extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.cleanFieldValues = this.cleanFieldValues.bind(this);
 
     this.state = {
       data: {
@@ -45,6 +46,20 @@ class AnswerSecurityQuestions extends Component {
           questions: questions.data
         });
       }
+    }
+  }
+
+  cleanFieldValues() {
+    // Retrieve all three answer fields
+    const answerLabel1 = document.getElementById("answer-label-1");
+    const answerLabel2 = document.getElementById("answer-label-2");
+    const answerLabel3 = document.getElementById("answer-label-3");
+
+    // Check if elements are not undefined
+    if (answerLabel1 && answerLabel2 && answerLabel3) {
+      answerLabel1.value = "";
+      answerLabel2.value = "";
+      answerLabel3.value = "";
     }
   }
 
@@ -92,6 +107,7 @@ class AnswerSecurityQuestions extends Component {
           this.setState({error: "Failed to send the reset password email."});
         }
       } else {
+        this.cleanFieldValues();
         this.setState({error: "Incorrect answer"});
       }
     }

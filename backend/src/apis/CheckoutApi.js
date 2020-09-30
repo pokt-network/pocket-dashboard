@@ -23,10 +23,10 @@ router.get("/nodes/validator-power", apiAsyncWrapper((req, res) => {
 
 router.get("/applications/cost", apiAsyncWrapper((req, res) => {
   const relaysPerDay = parseInt(getQueryOption(req, "rpd"));
-  
-  const cost = applicationCheckoutService.getMoneyToSpent(relaysPerDay);
 
-  res.json({cost});
+  const {upokt, usdValue: cost} = applicationCheckoutService.getCostForRelaysPerDay(relaysPerDay);
+
+  res.json({upokt, cost});
 }));
 
 router.post("/applications/pokt", apiAsyncWrapper((req, res) => {
@@ -42,9 +42,9 @@ router.get("/nodes/cost", apiAsyncWrapper((req, res) => {
   const validatorPower = parseInt(getQueryOption(req, "vp"));
 
   // Add transaction fee to cost
-  const cost = nodeCheckoutService.getMoneyToSpent(validatorPower);
-
-  res.json({cost});
+  const {upokt, usdValue: cost} = nodeCheckoutService.getMoneyToSpent(validatorPower);
+  
+  res.json({upokt, cost});
 }));
 
 router.post("/nodes/pokt", apiAsyncWrapper((req, res) => {

@@ -175,7 +175,7 @@ class NodeDetail extends Component {
 
   async stakeNode({ppk, passphrase, address}) {
     NodeService.removeNodeInfoFromCache();
-    NodeService.saveNodeInfoInCache({address, passphrase});
+    NodeService.saveNodeInfoInCache({address, passphrase, ppk});
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
     PocketUserService.saveUserAction("Stake Node");
@@ -254,7 +254,7 @@ class NodeDetail extends Component {
           onClick={() => this.setState({ctaButtonPressed: true, unjail: true})}
           className="unjail"
         >
-          Take out of jail
+          Unjail this node
         </p>
       );
     } else if (!jailed) {
@@ -296,8 +296,9 @@ class NodeDetail extends Component {
       },
     ];
 
+    const serviceURLValue = status === STAKE_STATUS.Staked ? serviceURL : "";
     const contactInfo = [
-      {title: "Service URL", subtitle: serviceURL || ""},
+      {title: "Service URL", subtitle: serviceURLValue || ""},
       {title: "Contact email", subtitle: contactEmail},
     ];
 
@@ -453,7 +454,7 @@ class NodeDetail extends Component {
           ))}
         </Row>
         <Row>
-          <Col className={chains.length === 0 ? "mb-1" : ""}>
+          <Col className={chains.length === 0 ? "mb-1" : ""} style={{display: status === STAKE_STATUS.Staked ? "block" : "none"}}>
             <Segment scroll={false} label="Networks">
               <AppTable
                 scroll
@@ -543,8 +544,7 @@ class NodeDetail extends Component {
           <Modal.Footer>
             <Button
               className="dark-button"
-              onClick={() => this.setState({deleteModal: false})}
-            >
+              onClick={() => this.setState({deleteModal: false})}>
               <span>Cancel</span>
             </Button>
             <Button onClick={this.deleteNode}>

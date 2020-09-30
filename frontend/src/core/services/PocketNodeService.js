@@ -1,7 +1,8 @@
 import PocketBaseService from "./PocketBaseService";
-import axios from "axios";
 import SecureLS from "secure-ls";
 import {Configurations} from "../../_configuration";
+import axiosInstance from "./_serviceHelper";
+const axios = axiosInstance();
 
 class PocketNodeService extends PocketBaseService {
   constructor() {
@@ -312,11 +313,12 @@ class PocketNodeService extends PocketBaseService {
    *
    * @returns {Promise|Promise<*>}
    */
-  stakeNode(nodeStakeTransaction, paymentId, nodeLink) {
+  stakeNode(nodeStakeTransaction, paymentId, nodeLink, upoktToStake) {
     const data = {
       nodeStakeTransaction,
       payment: {id: paymentId},
       nodeLink,
+      upoktToStake: upoktToStake,
     };
 
     return axios

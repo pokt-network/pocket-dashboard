@@ -2,6 +2,7 @@ import express from "express";
 import UserService from "../services/UserService";
 import EmailService from "../services/EmailService";
 import {apiAsyncWrapper} from "./_helpers";
+import {DashboardValidationError} from "./../models/Exceptions";
 
 const router = express.Router();
 
@@ -43,9 +44,16 @@ router.post("/auth/provider/login", apiAsyncWrapper(async (req, res) => {
 router.post("/auth/login", apiAsyncWrapper(async (req, res) => {
   /** @type {{username:string, password:string}} */
   const data = req.body;
-  const user = await userService.authenticateUser(data.username, data.password);
 
-  res.json(user);
+  const isValidated = await userService.isUserValidated(data.username);
+
+  if (isValidated) {
+    const userSession = await userService.authenticateUser(data.username, data.password);
+
+    res.json(userSession);
+  } else {
+    res.json("User is not validated.");
+  }
 }));
 
 /**
@@ -174,7 +182,7 @@ router.put("/auth/send-reset-password-email", apiAsyncWrapper(async (req, res) =
       .to(data.email)
       .sendResetPasswordEmail(data.email, token, data.passwordResetLinkPage);
   }
-   
+
   res.send(true);
 }));
 
@@ -218,9 +226,11 @@ router.post("/validate-token", apiAsyncWrapper(async (req, res) => {
   const data = req.body;
 
   /** @type {{email:string}} */
-  const tokenPayload = await userService.decodeToken(data.token);
+  const tokenPayload = await userService.decodeToken(data.token, true);
 
-  if (tokenPayload) {
+  if (tokenPayload instanceof DashboardValidationError) {
+    res.json({success: false, data: tokenPayload.message});
+  } else {
     const userEmail = tokenPayload.email;
 
     if (await userService.userExists(userEmail)) {
@@ -230,8 +240,6 @@ router.post("/validate-token", apiAsyncWrapper(async (req, res) => {
     } else {
       res.json({success: false, data: "User does not exists or is invalid."});
     }
-  } else {
-    res.json({success: false, data: "Invalid token."});
   }
 }));
 

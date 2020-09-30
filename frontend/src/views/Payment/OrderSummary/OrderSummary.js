@@ -11,18 +11,19 @@ import Loader from "../../../core/components/Loader";
 import {ElementsConsumer} from "@stripe/react-stripe-js";
 import PaymentContainer from "../../../core/components/Payment/Stripe/PaymentContainer";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import {_getDashboardPath, ROUTE_PATHS, DASHBOARD_PATHS} from "../../../_routes";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCardNoAddressForm";
 import AppAlert from "../../../core/components/AppAlert";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
-import {formatCurrency, formatNumbers, scrollToId} from "../../../_helpers";
+import {formatCurrency, formatNumbers, scrollToId, capitalize} from "../../../_helpers";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import LoadingButton from "../../../core/components/LoadingButton";
 import {ITEM_TYPES} from "../../../_constants";
 import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
+
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -33,6 +34,8 @@ class OrderSummary extends Component {
     this.goToInvoice = this.goToInvoice.bind(this);
 
     this.state = {
+      upoktTotal: 0,
+      upoktToStake: 0,
       setMethodDefault: false,
       type: "",
       paymentIntent: {},
@@ -77,6 +80,8 @@ class OrderSummary extends Component {
       cost,
       total,
       currentAccountBalance,
+      upoktToStake,
+      upoktTotal
     } = this.props.location.state;
 
     const user = UserService.getUserInfo().email;
@@ -98,6 +103,8 @@ class OrderSummary extends Component {
         quantity,
         cost,
         total,
+        upoktToStake,
+        upoktTotal,
         currentAccountBalance,
         isFormVisible: !hasPaymentMethods,
         isAddNewDisabled: !hasPaymentMethods,
@@ -123,6 +130,8 @@ class OrderSummary extends Component {
       cost,
       total,
       currentAccountBalance,
+      upoktToStake,
+      upoktTotal
     } = this.state;
 
     return this.props.history.replace({
@@ -130,13 +139,19 @@ class OrderSummary extends Component {
       state: {
         type,
         paymentId: paymentIntent.id,
-        paymentMethod: selectedPaymentMethod,
+        paymentMethod: {
+          id: selectedPaymentMethod.id,
+          method: `${capitalize(selectedPaymentMethod.brand)} **** **** **** ${selectedPaymentMethod.lastDigits}`,
+          holder: selectedPaymentMethod.billingDetails.name,
+        },
         details: [
           {value: quantity.number, text: quantity.description, format: false},
           {value: cost.number, text: cost.description, format: true},
         ],
         total,
         currentAccountBalance,
+        upoktToStake,
+        upoktTotal
       },
     });
   }
@@ -144,7 +159,7 @@ class OrderSummary extends Component {
   async makePurchaseWithSavedCard(e, stripe) {
     e.preventDefault();
 
-    const {total} = this.state;
+    const {total, upoktToStake} = this.state;
 
     this.setState({purchasing: true});
 
@@ -170,8 +185,6 @@ class OrderSummary extends Component {
     }
 
     if (type === ITEM_TYPES.APPLICATION) {
-      const pokt = await PocketCheckoutService.getApplicationPoktToStake(total);
-
       // Stake application
       const {
         id,
@@ -187,7 +200,7 @@ class OrderSummary extends Component {
       this.setState({loading: true});
 
       const appStakeTransaction = await PocketClientService.appStakeRequest(
-        address, passphrase, chains, pokt.cost.toString());
+        address, passphrase, chains, upoktToStake.toString());
 
       // Sign an AAT for the Gateway service using the Gateway's client pub key and app private key
       const gatewayAATSignature = await PocketClientService.signGatewayAAT(
@@ -199,6 +212,7 @@ class OrderSummary extends Component {
         paymentId: result.paymentIntent.id,
         applicationLink,
         gatewayAATSignature,
+        upoktToStake
       };
 
       await ApplicationService.stakeApplication(stakeInformation);
@@ -225,7 +239,7 @@ class OrderSummary extends Component {
 
       // TODO: add error handling
       NodeService.stakeNode(
-        nodeStakeRequest, result.paymentIntent.id, nodeLink
+        nodeStakeRequest, result.paymentIntent.id, nodeLink, upoktToStake
       ).then(() => {});
     }
 
@@ -327,7 +341,7 @@ class OrderSummary extends Component {
     const cards = [
       {title: formatNumbers(quantity.number), subtitle: quantity.description},
       {
-        title: `${numeral(cost.number).format("$0,0.000")} USD`,
+        title: `${numeral(cost.number).format("$0,0.00")} USD`,
         subtitle: cost.description,
       },
       {
@@ -336,12 +350,13 @@ class OrderSummary extends Component {
       },
     ];
 
-    const paymentMethods = allPaymentMethods.map((method) => {
+    const paymentMethods = allPaymentMethods.map((data) => {
       return {
-        id: method.id,
-        brand: method.brand,
-        lastDigits: method.lastDigits,
-        holder: method.billingDetails.name,
+        id: data.id,
+        method: `${capitalize(data.brand)} **** **** **** ${data.lastDigits}`,
+        brand: data.brand,
+        lastDigits: data.lastDigits,
+        holder: data.billingDetails.name,
       };
     });
 
@@ -372,7 +387,7 @@ class OrderSummary extends Component {
             <div className="cards-container">
               <Form className="cards">
                 {paymentMethods.map((card, idx) => {
-                  const {brand, lastDigits, holder} = card;
+                  const {holder, lastDigits, brand} = card;
                   const isChecked = selectedPaymentMethod
                     ? card.id === selectedPaymentMethod.id
                     : false;
@@ -478,8 +493,8 @@ class OrderSummary extends Component {
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{marginLeft: "0px"}}
-                      href="http://www.pokt.network/pokt-token-purchase-agreement/">
-                      Purchase Terms and conditions.
+                      href={ROUTE_PATHS.purchaseTerms}>
+                      Purchase Terms and Conditions.
                       </a>
                   </span>
                 }

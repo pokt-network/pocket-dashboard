@@ -5,6 +5,7 @@ import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
 import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
 import {CoinDenom} from "@pokt-network/pocket-js";
+import numeral from "numeral";
 
 const router = express.Router();
 
@@ -52,13 +53,17 @@ router.post("/account", apiAsyncWrapper(async (req, res) => {
 router.put("/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
   /** @type {{name:string, operator:string, contactEmail:string, user:string, description:string, icon:string}} */
   let data = req.body;
-
   /** @type {{nodeAccountAddress: string}} */
   const params = req.params;
 
-  const updated = await nodeService.updateNode(params.nodeAccountAddress, data);
+  if (await nodeService.verifyNodeBelongsToClient(params.nodeAccountAddress, req.headers.authorization)) {
+    const updated = await nodeService.updateNode(params.nodeAccountAddress, data);
 
-  res.send(updated);
+    res.send(updated);
+  } else {
+    res.status(400).send("Node doesn't belong to the provided client account.");
+  }
+
 }));
 
 /**
@@ -81,20 +86,24 @@ router.post("/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
   /** @type {{user:string, nodesLink:string}} */
   const bodyData = req.body;
 
-  const node = await nodeService.deleteNode(data.nodeAccountAddress, bodyData.user);
+  if (await nodeService.verifyNodeBelongsToClient(data.nodeAccountAddress, req.headers.authorization)) {
+    const node = await nodeService.deleteNode(data.nodeAccountAddress, bodyData.user);
 
-  if (node) {
-    const nodeEmailData = {
-      name: node.name,
-      nodesLink: bodyData.nodesLink
-    };
+    if (node) {
+      const nodeEmailData = {
+        name: node.name,
+        nodesLink: bodyData.nodesLink
+      };
 
-    await EmailService
-      .to(node.contactEmail)
-      .sendNodeDeletedEmail(node.contactEmail, nodeEmailData);
+      await EmailService
+        .to(node.contactEmail)
+        .sendNodeDeletedEmail(node.contactEmail, nodeEmailData);
+    }
+
+    res.send(node !== undefined);
+  } else {
+    res.status(400).send("Node doesn't belong to the provided client account.");
   }
-
-  res.send(node !== undefined);
 }));
 
 /**
@@ -103,9 +112,14 @@ router.post("/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
 router.get("/:nodeAccountAddress", apiAsyncWrapper(async (req, res) => {
   /** @type {{nodeAccountAddress:string}} */
   const data = req.params;
-  const node = await nodeService.getNode(data.nodeAccountAddress);
 
-  res.json(node);
+  if (await nodeService.verifyNodeBelongsToClient(data.nodeAccountAddress, req.headers.authorization)) {
+    const node = await nodeService.getNode(data.nodeAccountAddress);
+
+    res.json(node);
+  } else {
+    res.status(400).send("Node doesn't belong to the provided client account.");
+  }
 }));
 /**
  * Get node that is on network by address.
@@ -154,9 +168,13 @@ router.post("/user/all", apiAsyncWrapper(async (req, res) => {
   /** @type {{user: string}} */
   const data = req.body;
 
-  const nodes = await nodeService.getUserNodes(data.user, limit, offset);
+  if (await nodeService.verifySessionForClient(req.headers.authorization, data.user)) {
+    const nodes = await nodeService.getUserNodes(data.user, limit, offset);
 
-  res.json(nodes);
+    res.json(nodes);
+  } else {
+    res.status(400).send("Node list doesn't belong to the provided client account.");
+  }
 }));
 
 /**
@@ -173,31 +191,32 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
   ) {
     const item = paymentHistory.getItem();
     const amountToSpend = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
-    const poktStaked = nodeCheckoutService.getPoktToStake(amountToSpend, CoinDenom.Pokt).toString();
-    const uPoktStaked = nodeCheckoutService.getPoktToStake(amountToSpend, CoinDenom.Upokt).toString();
 
     // Call NodeService to stake the application
     const nodeStakeTransaction = data.nodeStakeTransaction;
     const nodeAddress = nodeStakeTransaction.address;
     const node = await nodeService.getNode(nodeAddress);
+
     const nodeEmailData = {
       name: node.pocketNode.name,
       link: data.nodeLink
     };
 
-    const paymentEmailData = {
-      amountPaid: paymentHistory.amount,
-      validatorPowerAmount: item.validatorPower,
-      poktStaked: poktStaked
-    };
+    if (await nodeService.verifyNodeObjectBelongsToClient(node, req.headers.authorization)) {
+      const poktStaked = data.upoktToStake / 1000000;
+      
+      const paymentEmailData = {
+        amountPaid: numeral(paymentHistory.amount / 100).format("0,0.00"),
+        validatorPowerAmount: numeral(item.validatorPower).format("0,0.00"),
+        poktStaked: numeral(poktStaked).format("0,0.000000")
+      };
 
-    await nodeService.stakeNode(nodeAddress, uPoktStaked, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
+      await nodeService.stakeNode(nodeAddress, data.upoktToStake, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
 
-    await EmailService
-      .to(node.pocketNode.contactEmail)
-      .sendStakeNodeEmail(node.pocketNode.contactEmail, nodeEmailData, paymentEmailData);
-
-    res.send(true);
+      res.send(true);
+    } else {
+      res.status(400).send("Node doesn't belong to the provided client account.");
+    }
   } else {
     // Return error if payment was unsuccessful
     throw new Error("Error processing payment, please try a different method");
@@ -216,7 +235,7 @@ router.post("/custom/unstake", apiAsyncWrapper(async (req, res) => {
   } = data;
 
   // Submit Unstake transaction to the pocket network
-  await nodeService.unstakeNode(nodeUnstakeTransaction, nodeLink);
+  await nodeService.unstakeNode(nodeUnstakeTransaction, nodeLink, req.headers.authorization);
 
   // Respond
   res.send(true);
@@ -230,19 +249,24 @@ router.post("/node/unjail", apiAsyncWrapper(async (req, res) => {
   const data = req.body;
 
   const node = await nodeService.getNode(data.nodeUnJailTransaction.address);
+  const userEmail = req.headers.authorization.split(", ")[2].split(" ")[1];
 
-  const nodeEmailData = {
-    userName: node.pocketNode.user,
-    contactEmail: node.pocketNode.contactEmail,
-    nodeData: {
-      name: node.pocketNode.name,
-      link: data.nodeLink
-    }
-  };
+  if (userEmail && node.pocketNode.user.toString() === userEmail.toString()) {
+    const nodeEmailData = {
+      userName: node.pocketNode.user,
+      contactEmail: node.pocketNode.contactEmail,
+      nodeData: {
+        name: node.pocketNode.name,
+        link: data.nodeLink
+      }
+    };
 
-  await nodeService.unJailNode(data.nodeUnJailTransaction, nodeEmailData);
+    await nodeService.unJailNode(data.nodeUnJailTransaction, nodeEmailData);
 
-  res.send(true);
+    res.send(true);
+  } else {
+    res.status(400).send("Node doesn't belong to the provided client account.");
+  }
 }));
 
 

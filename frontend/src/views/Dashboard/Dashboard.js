@@ -69,7 +69,7 @@ class Dashboard extends Component {
     hasError = networkNodes.error ? networkNodes.error : hasError;
     errorMessage = networkNodes.error ? networkNodes.message : errorMessage;
     errorType = networkNodes.error ? networkNodes.name : errorType;
-    
+
     const chains = await NetworkService.getAvailableNetworkChains();
     const welcomeAlert = UserService.getShowWelcomeMessage();
 

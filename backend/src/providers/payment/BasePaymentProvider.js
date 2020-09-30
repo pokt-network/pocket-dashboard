@@ -30,9 +30,10 @@ export class PaymentResult {
    * @param {string} paymentNumber Confirmation number of payment.
    * @param {string} currency Currency of payment.
    * @param {number} amount Amount of payment.
+   * @param {string} provider The provider.
    */
-  constructor(id, createdDate, paymentNumber, currency, amount) {
-    Object.assign(this, {id, createdDate, amount, currency, paymentNumber});
+  constructor(id, createdDate, paymentNumber, currency, amount, provider) {
+    Object.assign(this, {id, createdDate, amount, currency, paymentNumber, provider});
   }
 }
 
@@ -60,7 +61,7 @@ export class Payment {
       throw Error("Currency is required");
     }
 
-    if (paymentData.amount === 0) {
+    if (paymentData.amount === 0 && paymentData.type !== "token") {
       throw Error("Amount is invalid");
     }
 
@@ -102,12 +103,13 @@ export default class BasePaymentProvider {
    * @param {*} item Item to pay.
    * @param {number} amount Amount intended to be collected by this payment.
    * @param {string} [description] An arbitrary string attached to the object. Often useful for displaying to users.
+   * @param {number} tokens Tokens used for this payment.
    *
    * @returns {Promise<PaymentResult>} Payment result.
    * @async
    * @abstract
    */
-  async createPaymentIntent(userCustomerID, type, currency, item, amount, description = "") {
+  async createPaymentIntent(userCustomerID, type, currency, item, amount, description = "", tokens) {
   }
 
   /**

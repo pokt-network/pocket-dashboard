@@ -1,6 +1,7 @@
 import PocketBaseService from "./PocketBaseService";
 import PocketUserService from "./PocketUserService";
-import axios from "axios";
+import axiosInstance from "./_serviceHelper";
+const axios = axiosInstance();
 
 class PocketStripePaymentService extends PocketBaseService {
 

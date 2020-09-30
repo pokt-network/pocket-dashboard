@@ -19,20 +19,24 @@ class AppOrderSummary extends Component {
   }
 
   handleChange({currentTarget: input}) {
-    // let value = input.value;
+    const {data, maxBalance} = this.state;
 
-    const data = {...this.state.data};
+    if (input.value.length === 0) {
+      input.value = "0";
+    }
 
-    // if (input.value.length === 0)
+    if (parseFloat(input.value) > maxBalance) {
+      input.value = maxBalance.toString();
+    }
 
-    data[input.name] = input.value;
+    data[input.name] = parseFloat(input.value).toFixed(2).toString();
     this.setState({data});
   }
 
   componentDidMount() {
     const {balance} = this.props;
 
-    this.setState({maxBalance: balance, data: {balanceInput: balance}});
+    this.setState({maxBalance: balance.toFixed(2), data: {balanceInput: balance.toFixed(2)}});
   }
 
   render() {
@@ -46,7 +50,7 @@ class AppOrderSummary extends Component {
       balanceOnChange,
       loading,
       total,
-      currency,
+      currency
     } = this.props;
 
     return (
