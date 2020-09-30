@@ -19,13 +19,17 @@ class AppOrderSummary extends Component {
   }
 
   handleChange({currentTarget: input}) {
-    // let value = input.value;
+    const {data, maxBalance} = this.state;
 
-    const data = {...this.state.data};
+    if (input.value.length === 0) {
+      input.value = "0";
+    }
 
-    // if (input.value.length === 0)
+    if (parseFloat(input.value) > maxBalance) {
+      input.value = maxBalance.toString();
+    }
 
-    data[input.name] = Number(input.value).toFixed(2).toString();
+    data[input.name] = parseFloat(input.value).toFixed(2).toString();
     this.setState({data});
   }
 
