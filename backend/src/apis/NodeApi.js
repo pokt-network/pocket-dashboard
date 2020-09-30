@@ -203,12 +203,11 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
     };
 
     if (await nodeService.verifyNodeObjectBelongsToClient(node, req.headers.authorization)) {
-      const poktStaked = data.upoktToStake / 1000000;
       
       const paymentEmailData = {
         amountPaid: numeral(paymentHistory.amount / 100).format("0,0.00"),
         validatorPowerAmount: numeral(item.validatorPower).format("0,0.00"),
-        poktStaked: numeral(poktStaked).format("0,0.000000")
+        poktStaked: numeral(item.validatorPower).format("0,0.00")
       };
 
       await nodeService.stakeNode(nodeAddress, data.upoktToStake, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
