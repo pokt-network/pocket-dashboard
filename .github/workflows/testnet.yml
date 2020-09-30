@@ -42,6 +42,7 @@ jobs:
         REACT_APP_POCKET_NETWORK_AAT_VERSION: 0.0.1
         REACT_APP_SESSION_LENGTH: 600
         REACT_APP_POKT_USD_MARKET_PRICE: ${{ secrets.POKT_USD_MARKET_PRICE }}
+
       run: yarn build:prod
     - name: Deploy to S3
       uses: jakejarvis/s3-sync-action@master
