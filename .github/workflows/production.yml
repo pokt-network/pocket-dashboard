@@ -24,7 +24,7 @@ jobs:
       working-directory: frontend
       env:
         GENERATE_SOURCEMAP: false
-        PUBLIC_URL: https://d36dsxv45q9y0m.cloudfront.net
+        PUBLIC_URL: https://dashboard.pokt.network
         REACT_APP_BACKEND_URL: https://api.dashboard.pokt.network:4200
         REACT_APP_POCKET_NETWORK_MAX_DISPATCHER: 10
         REACT_APP_POCKET_NETWORK_MAX_SESSIONS: 24
