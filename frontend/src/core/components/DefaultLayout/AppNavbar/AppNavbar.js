@@ -18,7 +18,7 @@ class AppNavbar extends Component {
           <img src="/assets/logo-dashboard-color.svg" alt="logo" useMap="#workmap"/>
           <Button
             variant="dark" style={{marginLeft: "40px", marginTop: "20px"}}>
-            <a target="_blank" href="https://pokt.network/dashboard-beta-version-sugestion-box/" style={{color:"#FFFFFF"}}>
+            <a target="_blank" href="https://pokt.network/dashboard-beta-version-sugestion-box/" rel="noopener noreferrer" style={{color:"#FFFFFF"}}>
               BETA
               </a>
           </Button>
