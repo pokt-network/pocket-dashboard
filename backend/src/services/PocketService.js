@@ -415,7 +415,7 @@ export default class PocketService {
     page++;
 
     while (page <= totalPages) {
-      const response = await this.__pocket.rpc(pocketRpcProvider).query.getApps(status, undefined, BigInt(0), undefined, page, perPage);
+      const response = await this.__pocket.rpc(pocketRpcProvider).query.getNodes(status, undefined, BigInt(0), undefined, page, perPage);
 
       // Increment page variable
       page++;
