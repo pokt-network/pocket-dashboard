@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {Button, Row} from "react-bootstrap";
-import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import LoginStatus from "../LoginStatus/LoginStatus";
 import "./AppNavbar.scss";
@@ -19,9 +18,9 @@ class AppNavbar extends Component {
           <img src="/assets/logo-dashboard-color.svg" alt="logo" useMap="#workmap"/>
           <Button
             variant="dark" style={{marginLeft: "40px", marginTop: "20px"}}>
-            <Link target="_blank" to="https://pokt.network/dashboard-beta-version-sugestion-box/" style={{color:"#FFFFFF"}}>
+            <a target="_blank" href="https://pokt.network/dashboard-beta-version-sugestion-box/" style={{color:"#FFFFFF"}}>
               BETA
-              </Link>
+              </a>
           </Button>
         </div>
         
