@@ -232,9 +232,10 @@ class Import extends Component {
           // Add the chains value
           chains = node.chains;
           // Update the state
+
           this.setState({
             accountData: {
-              tokens: node.staked_tokens,
+              tokens: node.tokens,
               balance: balance,
               status: getStakeStatus(node.status.toString()),
               amount: node.max_relays
