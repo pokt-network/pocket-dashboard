@@ -243,6 +243,7 @@ class AppPassphrase extends Component {
                           value={values.passPhrase}
                           type={inputPassphraseType}
                           name="passPhrase"
+                          disabled={created}
                           onChange={(data) => {
                             handleChange(data);
                           }}
