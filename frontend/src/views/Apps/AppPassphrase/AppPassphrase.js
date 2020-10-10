@@ -337,7 +337,7 @@ class AppPassphrase extends Component {
         <Row>
           <Col>
             <Button
-              disabled={!validPassphrase}
+              disabled={!fileDownloaded}
               onClick={() =>
                 // eslint-disable-next-line react/prop-types
                 this.props.history.replace(redirectPath)
