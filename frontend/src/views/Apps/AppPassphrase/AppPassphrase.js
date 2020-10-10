@@ -177,7 +177,7 @@ class AppPassphrase extends Component {
   render() {
     const {
       created,
-      validPassphrase,
+      fileDownloaded,
       inputPassphraseType,
       inputPrivateKeyType,
       showPassphraseIconURL,

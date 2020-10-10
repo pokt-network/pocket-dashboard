@@ -134,7 +134,6 @@ class Passphrase extends Component {
   render() {
     const {
       created,
-      validPassphrase,
       fileDownloaded,
       inputPassphraseType,
       inputPrivateKeyType,
