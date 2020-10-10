@@ -6,6 +6,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
 import Segment from "../../../core/components/Segment/Segment";
 import AppTable from "../../../core/components/AppTable";
+import AppAlert from "../../../core/components/AppAlert";
 
 class ApplicationChainList extends Chains {
   constructor(props, context) {
@@ -38,6 +39,16 @@ class ApplicationChainList extends Chains {
 
     return (
       <div className="choose-chains">
+        <AppAlert
+          className="pb-3 pt-3 mb-4"
+          title={
+            <h4 className="ml-3">ATTENTION!</h4>
+          }
+        >
+          <p>
+            Please note that the total relays per day will be divided by the total of selected chains
+                </p>
+        </AppAlert>
         <Row>
           <Col className="page-title">
             <h1>Choose chains</h1>
