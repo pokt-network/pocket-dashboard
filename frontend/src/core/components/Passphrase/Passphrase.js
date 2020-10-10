@@ -135,6 +135,7 @@ class Passphrase extends Component {
     const {
       created,
       validPassphrase,
+      fileDownloaded,
       inputPassphraseType,
       inputPrivateKeyType,
       showPassphraseIconURL,
@@ -329,7 +330,7 @@ class Passphrase extends Component {
         <Row>
           <Col>
             <Button
-              disabled={!validPassphrase}
+              disabled={!fileDownloaded}
               onClick={() =>
                 // eslint-disable-next-line react/prop-types
                 this.props.history.replace(redirectPath)
