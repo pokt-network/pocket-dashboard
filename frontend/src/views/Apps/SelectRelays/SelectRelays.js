@@ -37,6 +37,8 @@ class SelectRelays extends Component {
       minRelays: 0,
       maxRelays: 0,
       relaysSelected: 0,
+      relaysPerChains: 0,
+      chainsLength: 0,
       upoktSubTotal: 0,
       upoktTotal: 0,
       total: 0,
@@ -53,7 +55,8 @@ class SelectRelays extends Component {
   }
 
   componentDidMount() {
-    const {address: accountAddress} = PocketApplicationService.getApplicationInfo();
+    const {address: accountAddress, chains} = PocketApplicationService.getApplicationInfo();
+    const chainsLength = chains !== undefined && chains !== null ? chains.length : 1;
 
     PaymentService.getAvailableCurrencies()
       .then(currencies => {
@@ -85,8 +88,10 @@ class SelectRelays extends Component {
                       maxRelays: parseInt(relaysPerDay.max),
                       loading: false,
                       relaysSelected: minRelays,
+                      relaysPerChains: minRelays / chainsLength,
                       subTotal,
                       total,
+                      chainsLength: chainsLength,
                       upoktSubTotal,
                       upoktTotal,
                       upoktToStake: upokt
@@ -128,7 +133,7 @@ class SelectRelays extends Component {
   }
 
   onSliderChange(value) {
-    const {currentAccountBalance, currentAccountBalanceUpokt} = this.state;
+    const {currentAccountBalance, currentAccountBalanceUpokt, chainsLength} = this.state;
 
     PocketCheckoutService.getApplicationMoneyToSpent(value)
       .then(({upokt, cost}) => {
@@ -140,6 +145,7 @@ class SelectRelays extends Component {
 
         this.setState({
           relaysSelected: value,
+          relaysPerChains: value / chainsLength,
           upoktSubTotal,
           upoktTotal,
           subTotal,
@@ -328,6 +334,7 @@ class SelectRelays extends Component {
       error,
       currencies,
       relaysSelected,
+      relaysPerChains,
       subTotal,
       total,
       minRelays,
@@ -419,6 +426,11 @@ class SelectRelays extends Component {
                 {
                   label: `${PURCHASE_ITEM_NAME.APPS} Cost`,
                   quantity: `${subTotalFixed} ${currency.toUpperCase()}`,
+                },
+
+                {
+                  label: `${PURCHASE_ITEM_NAME.APPS} per Chains`,
+                  quantity: formatNumbers(relaysPerChains),
                 },
               ]}
               balance={currentAccountBalance}

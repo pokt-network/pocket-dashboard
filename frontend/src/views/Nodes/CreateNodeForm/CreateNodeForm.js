@@ -258,6 +258,8 @@ class CreateNodeForm extends CreateForm {
                           value={values.description}
                           onChange={handleChange}
                           isInvalid={!!errors.description}
+                          style={{paddingRight: "20px;"}}
+                          className="description-node"
                         />
                         <Form.Control.Feedback type="invalid">
                           {errors.description}
