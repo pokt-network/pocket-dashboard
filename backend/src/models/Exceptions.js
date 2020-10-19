@@ -30,6 +30,7 @@ export class PocketNetworkError extends Error {
   constructor(message) {
     super(message);
     this.name = "PocketNetworkError";
+    this.error = "PocketNetworkError";
     Error.captureStackTrace(this, PocketNetworkError);
   }
 }

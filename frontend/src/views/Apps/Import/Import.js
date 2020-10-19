@@ -15,6 +15,7 @@ import {Configurations} from "../../../_configuration";
 import {getStakeStatus, formatNumbers, upoktToPOKT} from "../../../_helpers";
 import PocketNetworkService from "../../../core/services/PocketNetworkService";
 import LoadingButton from "../../../core/components/LoadingButton";
+import AppAlert from "../../../core/components/AppAlert";
 
 class Import extends Component {
   constructor(props, context) {
@@ -35,6 +36,7 @@ class Import extends Component {
       type: "",
       created: false,
       error: {show: false, message: ""},
+      errorMessage: {show: false, message: ""},
       hasPPK: false,
       inputType: "password",
       validPassphrase: false,
@@ -207,6 +209,8 @@ class Import extends Component {
           });
         } else {
           this.setState({
+            importing: false,
+            errorMessage: {show: true, message: "Import cannot be completed"},
             accountData: {
               tokens: 0,
               balance: balance,
@@ -245,8 +249,13 @@ class Import extends Component {
           });
         } else {
           this.setState({
+            importing: false,
+            errorMessage: {show: true, message: "Import cannot be completed"},
             accountData: {
-              balance: balance
+              tokens: 0,
+              balance: balance,
+              status: getStakeStatus("0"),
+              amount: 0
             }
           });
         }
@@ -280,6 +289,7 @@ class Import extends Component {
       address,
       hasPPK,
       error,
+      errorMessage,
       imported,
       type,
       ppkFileName,
@@ -311,6 +321,13 @@ class Import extends Component {
     return (
       <div id="app-passphrase" className="import">
         <Row>
+          {errorMessage.show && (
+            <AppAlert
+              variant="danger"
+              title={errorMessage.message}
+              onClose={() => this.setState({errorMessage: {show: false}})}
+              dismissible />
+          )}
           <Col className="page-title">
             <h1>Import {type === ITEM_TYPES.APPLICATION ? "App" : "Node"}</h1>
           </Col>
