@@ -309,7 +309,9 @@ export default class PocketService {
     const nodeResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNode(addressHex);
 
     if (nodeResponse instanceof RpcError) {
-      throw new PocketNetworkError(nodeResponse.message);
+      const error = new PocketNetworkError(nodeResponse.message);
+      
+      return error;
     }
 
     return nodeResponse.node;
