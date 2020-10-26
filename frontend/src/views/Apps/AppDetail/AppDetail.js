@@ -415,17 +415,16 @@ class AppDetail extends Component {
                 </Button>
               </Link>
             }
-            {status !== STAKE_STATUS.Unstaking && freeTier === false && pocketApplication.updatingStatus !== true &&
-              <Button
-                className="float-right cta"
-                onClick={() => {
-                  this.setState({ctaButtonPressed: true});
-                  isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
-                }}
-                variant="primary">
-                <span>{isStaked ? "Unstake" : "Stake"}</span>
-              </Button>
-            }
+            <Button
+              className="float-right cta"
+              disabled={status !== STAKE_STATUS.Unstaking && freeTier === false && pocketApplication.updatingStatus !== true}
+              onClick={() => {
+                this.setState({ctaButtonPressed: true});
+                isStaked ? this.setState({unstake: true}) : this.setState({stake: true});
+              }}
+              variant="primary">
+              <span>{isStaked ? "Unstake" : "Stake"}</span>
+            </Button>          
           </Col>
         </Row>
         <Row className="stats">
