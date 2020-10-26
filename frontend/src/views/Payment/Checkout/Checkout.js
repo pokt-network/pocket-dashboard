@@ -75,6 +75,27 @@ class Checkout extends Component {
 
     const purchasedTokens = {cost: upoktToStake};
 
+    this._isMounted = true;
+    window.onpopstate = () => {
+      if (this._isMounted) {
+        const isApp = type === ITEM_TYPES.APPLICATION;
+
+        const route = isApp
+          ? DASHBOARD_PATHS.appDetail
+          : DASHBOARD_PATHS.nodeDetail;
+        let url = _getDashboardPath(route);
+
+        if (isApp) {
+          url = url.replace(":id", applicationId);
+        } else {
+          url = url.replace(":address", applicationId);
+        }
+
+        // eslint-disable-next-line react/prop-types
+        this.props.history.push(url);
+      }
+    }
+
     const {
       paymentID: id,
       createdDate: date,
