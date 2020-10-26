@@ -94,7 +94,7 @@ class Checkout extends Component {
         // eslint-disable-next-line react/prop-types
         this.props.history.push(url);
       }
-    }
+    };
 
     const {
       paymentID: id,
