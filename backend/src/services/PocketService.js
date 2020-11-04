@@ -310,7 +310,7 @@ export default class PocketService {
 
     if (nodeResponse instanceof RpcError) {
       const error = new PocketNetworkError(nodeResponse.message);
-      
+
       return error;
     }
 
@@ -560,7 +560,7 @@ export default class PocketService {
 
     if (transactionFee && chainID && amount && customerAddress) {
       // Include both transaction fees for stake and unstake
-      const totalAmount = BigInt(Number(amount) + (Number(transactionFee) * 2));
+      const totalAmount = BigInt(Number(amount) + 1000000);
 
       if (totalAmount) {
         const pocketRpcProvider = await getRPCProvider();
