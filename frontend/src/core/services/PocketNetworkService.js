@@ -44,6 +44,12 @@ class PocketNetworkService extends PocketBaseService {
         return response.data.map(PocketNetworkService.addIndex);
       }
       return response.data;
+    }).catch((err) => {
+      return {
+        error: true,
+        name: err.response.data.name,
+        message: err.response.data.message,
+      };
     });
   }
 
