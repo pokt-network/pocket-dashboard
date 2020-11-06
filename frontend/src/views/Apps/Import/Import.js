@@ -193,7 +193,6 @@ class Import extends Component {
           created: appInDB !== undefined && appInDB !== null
         });
 
-        console.log(application);
         if (application.error === undefined) {
           // Add the chains value
           chains = application.chains;
@@ -210,7 +209,8 @@ class Import extends Component {
           });
         } else {
           const message = application.message.split(":")[0];
-          let errorType = message === "Failed to retrieve the app infromation" ? "warning" : "danger"
+          let errorType = message === "Failed to retrieve the app infromation" ? "warning" : "danger";
+
           this.setState({
             importing: false,
             errorMessage: {show: true, message: message, type: errorType},
@@ -253,7 +253,7 @@ class Import extends Component {
         } else {
           this.setState({
             importing: false,
-            errorMessage: { show: true, message: node.message.split(":")[0]},
+            errorMessage: {show: true, message: node.message.split(":")[0]},
             accountData: {
               tokens: 0,
               balance: balance,
