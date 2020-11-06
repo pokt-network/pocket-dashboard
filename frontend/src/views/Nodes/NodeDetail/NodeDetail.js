@@ -203,11 +203,11 @@ class NodeDetail extends Component {
 
     const serviceURL = this.state.serviceUrl;
 
-    const copyStakeStatus = jailed ? "0" : stakeStatus;
+    const copyStakeStatus = stakeStatus;
 
     const status = getStakeStatus(parseInt(copyStakeStatus));
     const isStaked =
-      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking && !jailed;
+      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
     let address;
     let publicKey;
@@ -231,7 +231,6 @@ class NodeDetail extends Component {
       ctaButtonPressed,
       accountBalance,
       updatingAlert,
-      pocketNode
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
@@ -432,7 +431,7 @@ class NodeDetail extends Component {
           <Col sm="1" md="1" lg="1">
             <Button
               className="float-right cta"
-              disabled={status !== STAKE_STATUS.Unstaking && pocketNode.updatingStatus !== true}
+              disabled={updatingAlert || status === STAKE_STATUS.Unstaking || jailed}
               onClick={() => {
                 this.setState({ctaButtonPressed: true});
                   

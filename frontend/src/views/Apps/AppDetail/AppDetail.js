@@ -250,7 +250,6 @@ class AppDetail extends Component {
       freeTierMsg,
       isFreeTier,
       updatingAlert,
-      pocketApplication
     } = this.state;
 
     const unstakingTime = status === STAKE_STATUS.Unstaking
@@ -417,7 +416,7 @@ class AppDetail extends Component {
             }
             <Button
               className="float-right cta"
-              disabled={status !== STAKE_STATUS.Unstaking && freeTier === false && pocketApplication.updatingStatus !== true}
+              disabled={freeTierMsg || updatingAlert || status === STAKE_STATUS.Unstaking}
               onClick={() => {
                 this.setState({ctaButtonPressed: true});
                 isStaked ? this.setState({unstake: true}) : this.setState({stake: true});

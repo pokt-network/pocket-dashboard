@@ -35,8 +35,8 @@ class Import extends Component {
       importing: false,
       type: "",
       created: false,
-      error: {show: false, message: ""},
-      errorMessage: {show: false, message: ""},
+      error: {show: false, message: "", type: "danger"},
+      errorMessage: {show: false, message: "", type: "danger"},
       hasPPK: false,
       inputType: "password",
       validPassphrase: false,
@@ -193,6 +193,7 @@ class Import extends Component {
           created: appInDB !== undefined && appInDB !== null
         });
 
+        console.log(application);
         if (application.error === undefined) {
           // Add the chains value
           chains = application.chains;
@@ -208,9 +209,11 @@ class Import extends Component {
             chains: application.chains
           });
         } else {
+          const message = application.message.split(":")[0];
+          let errorType = message === "Failed to retrieve the app infromation" ? "warning" : "danger"
           this.setState({
             importing: false,
-            errorMessage: {show: true, message: "Import cannot be completed"},
+            errorMessage: {show: true, message: message, type: errorType},
             accountData: {
               tokens: 0,
               balance: balance,
@@ -250,7 +253,7 @@ class Import extends Component {
         } else {
           this.setState({
             importing: false,
-            errorMessage: {show: true, message: "Import cannot be completed"},
+            errorMessage: { show: true, message: node.message.split(":")[0]},
             accountData: {
               tokens: 0,
               balance: balance,
@@ -323,7 +326,7 @@ class Import extends Component {
         <Row>
           {errorMessage.show && (
             <AppAlert
-              variant="danger"
+              variant={errorMessage.type}
               title={errorMessage.message}
               onClose={() => this.setState({errorMessage: {show: false}})}
               dismissible />
@@ -346,7 +349,7 @@ class Import extends Component {
                     : DASHBOARD_PATHS.createNodeForm
                 )}
               >
-                Create Node.
+                Create {type === ITEM_TYPES.APPLICATION ? "App" : "Node"}
               </Link>
             </p>
           </Col>
@@ -443,6 +446,7 @@ class Import extends Component {
                           />
                           <LoadingButton
                             loading={importing}
+                            disabled={errorMessage.show && errorMessage.type === "danger"}
                             buttonProps={{
                               variant: "dark",
                               type: "submit",
