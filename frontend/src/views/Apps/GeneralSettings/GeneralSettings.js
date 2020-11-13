@@ -26,8 +26,6 @@ class GeneralSettings extends Component {
       showAlert: false
     };
 
-    this.addWhitelistUserAgents = this.addWhitelistUserAgents.bind(this);
-    this.addWhitelistOrigins = this.addWhitelistOrigins.bind(this);
     this.toggleSecretKeyRequired = this.toggleSecretKeyRequired.bind(this);
     this.handleOriginChange = this.handleOriginChange.bind(this);
     this.handleUserChange = this.handleUserChange.bind(this);
@@ -42,37 +40,15 @@ class GeneralSettings extends Component {
 
   async saveChanges() {
     const application = this.state.pocketApplication;
-
-    await ApplicationService.updateGatewaySettings(application);
-
-    this.setState({
-      showAlert: true
+    
+    const agents = this.state.useragents.split(",").map(function (item) {
+      return item.trim();
     });
-  }
-
-  async addWhitelistUserAgents() {
-    const data = this.state;
-    const application = this.state.pocketApplication;
-    const agents = data.useragents.split(",").map(function (item) {
+    const origins = this.state.origins.split(",").map(function (item) {
       return item.trim();
     });
 
     application.gatewaySettings.whitelistUserAgents = agents;
-
-    await ApplicationService.updateGatewaySettings(application);
-
-    this.setState({
-      showAlert: true
-    });
-  }
-
-  async addWhitelistOrigins() {
-    const data = this.state;
-    const application = this.state.pocketApplication;
-    const origins = data.origins.split(",").map(function (item) {
-      return item.trim();
-    });
-
     application.gatewaySettings.whitelistOrigins = origins;
 
     await ApplicationService.updateGatewaySettings(application);
@@ -312,12 +288,6 @@ class GeneralSettings extends Component {
                         onChange={this.handleUserChange}
                       />
                     </Col>
-                    <Col sm="1" md="1" lg="1" className="pr-0">
-                      <Button
-                        variant="primary gray" onClick={this.addWhitelistUserAgents}>
-                        <span>Add</span>
-                      </Button>
-                    </Col>
                   </Row>
                 </Form.Group>
               </Form>
@@ -343,12 +313,6 @@ class GeneralSettings extends Component {
                         placeholder="example.com, example.org"
                         onChange={this.handleOriginChange}
                       />
-                    </Col>
-                    <Col sm="1" md="1" lg="1" className="pr-0">
-                      <Button
-                        variant="primary gray" onClick={this.addWhitelistOrigins}>
-                        <span>Add</span>
-                      </Button>
                     </Col>
                   </Row>
                 </Form.Group>
