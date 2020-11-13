@@ -39,6 +39,7 @@ class GeneralSettings extends Component {
   }
 
   async saveChanges() {
+    // TODO: Wrap in try/catch and add another alert state to inform user of errors
     const application = this.state.pocketApplication;
     
     const agents = this.state.useragents.split(",").map(function (item) {
