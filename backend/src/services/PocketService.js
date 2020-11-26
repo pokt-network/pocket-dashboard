@@ -603,4 +603,15 @@ export default class PocketService {
       throw new PocketNetworkError("Unknown error while creating an unlocked account");
     }
   }
+
+  async getBlockHeight() {
+    const pocketRpcProvider = await getRPCProvider();
+    const heightResponse = await this.__pocket.rpc(pocketRpcProvider).query.getHeight();
+
+    if (typeGuard(heightResponse, RpcError)) {
+      throw new PocketNetworkError(heightResponse.message);
+    }
+
+    return heightResponse.height;
+  }
 }

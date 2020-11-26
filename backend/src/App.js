@@ -1,11 +1,11 @@
 import express from "express";
 import {configureRoutes} from "./_routes";
 import {configureExpress, handleErrors} from "./_configuration";
+import {startCronJobs} from "./CronJob";
 
 import webpack from "webpack";
 import webPackConfig from "../webpack.config";
 import webpackDevMiddleware from "webpack-dev-middleware";
-import "./Jobs";
 
 
 const webPackCompiler = webpack(webPackConfig);
@@ -14,6 +14,7 @@ const app = express();
 configureExpress(app);
 configureRoutes(app);
 handleErrors(app);
+startCronJobs();
 
 // Tell express to use the webpack-dev-middleware and use the webpack.config.js
 // configuration file as a base.

@@ -137,13 +137,14 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.5.4",
     "morgan": "^1.9.1",
+    "node-cron": "^2.0.3",
+    "numeral": "^2.0.6",
     "nyc": "^15.0.0",
     "pm2": "^4.3.1",
     "query-string": "^6.11.1",
     "stripe": "^8.33.0",
     "strong-cryptor": "^2.2.0",
-    "uuid": "^8.3.0",
-    "numeral": "^2.0.6"
+    "uuid": "^8.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
