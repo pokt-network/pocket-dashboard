@@ -8,8 +8,12 @@ import cron from "node-cron";
 
 import {RpcError, typeGuard} from "@pokt-network/pocket-js";
 import {POST_ACTION_TYPE} from "./models/Transaction";
-import {BOND_STATUS, STAKE_STATUS} from "./models/CronJobData";
+import {BOND_STATUS, STAKE_STATUS, CronJobData} from "./models/CronJobData";
 
+/**
+ * Start the cron jobs
+ *
+ */
 export function startCronJobs() {
     const TRANSACTION_SERVICE = new TransactionService();
     const POCKET_SERVICE = new PocketService();
@@ -22,7 +26,9 @@ export function startCronJobs() {
         const cronJobData = await CRON_SERVICE.getEntity();
 
         height = Number(height);
-
+        console.log("CRON JOBS - STARTED");
+        console.log("CRON JOBS - SCHEDULE Block Height = "+height);
+        console.log("cronJobData.lastHeight = "+cronJobData.lastHeight);
         if (height !== cronJobData.lastHeight) {
             runPendingTransaction(cronJobData);
             runNodeStakeProcess(cronJobData);
@@ -37,6 +43,14 @@ export function startCronJobs() {
         }
     });
 
+    /**
+     * Run every pending transaction for each app and node
+     *
+     * @param {CronJobData} cronJobData Cron job data.
+     *
+     * @throws {Error}
+     * @async
+     */
     function runPendingTransaction(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.pendingTransactions, async (pocketTransaction) => {
@@ -84,7 +98,7 @@ export function startCronJobs() {
                         }
                     }
                 } catch (e) {
-                    throw new Error(e);
+                  throw e;
                 }
             });
         };
@@ -92,6 +106,14 @@ export function startCronJobs() {
         start();
     }
 
+    /**
+     * Runs an app stake process
+     *
+     * @param {CronJobData} cronJobData Cron job data.
+     *
+     * @throws {Error}
+     * @async
+     */
     function runAppStakeProcess(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.appStakeTransactions, async (applicationStakePocketTransaction) => {
@@ -113,17 +135,16 @@ export function startCronJobs() {
                     } = postAction.data;
 
                     const {
-                        pocketApp,
+                        pocketApplication,
                         networkData,
-                        error,
-                        name
+                        error
                     } = await APPLICATION_SERVICE.getApplication(address);
 
-                    const hasError = error ? error : false;
-                    const errorType = error ? name : "";
+                    const hasError = error ? true : false;
+                    const errorType = hasError === true ? error : "";
 
-                    if (hasError || pocketApp === undefined) {
-                        throw new Error(errorType);
+                    if (hasError || pocketApplication === undefined) {
+                        throw new Error(errorType !== "" ? errorType : "Failed to retrieve the application data from the DB.");
                     }
 
                     const status = getStakeStatus(parseInt(networkData.status));
@@ -133,19 +154,26 @@ export function startCronJobs() {
                             .to(contactEmail)
                             .sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
 
-                        APPLICATION_SERVICE.changeUpdatingStatus(address, false);
+                        await APPLICATION_SERVICE.changeUpdatingStatus(address, false);
 
                         await CRON_SERVICE.removeAppStakeTransaction(applicationStakePocketTransaction);
                     }
                 } catch (e) {
-                    throw new Error(e);
+                  throw e;
                 }
             });
         };
 
         start();
     }
-
+    /**
+     * Runs a node stake process
+     *
+     * @param {CronJobData} cronJobData Cron job data.
+     *
+     * @throws {Error}
+     * @async
+     */
     function runNodeStakeProcess(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.nodeStakeTransactions, async (nodeStakePocketTransaction) => {
@@ -169,15 +197,14 @@ export function startCronJobs() {
                     const {
                         pocketNode,
                         networkData,
-                        error,
-                        name
+                        error
                     } = await NODE_SERVICE.getNode(address);
 
-                    const hasError = error ? error : false;
-                    const errorType = error ? name : "";
+                    const hasError = error ? true : false;
+                    const errorType = hasError === true ? error : "";
 
                     if (hasError || pocketNode === undefined) {
-                        throw new Error(errorType);
+                        throw new Error(errorType !== "" ? errorType : "Failed to retrieve the node data from the DB.");
                     }
 
                     const status = getStakeStatus(parseInt(networkData.status));
@@ -187,19 +214,26 @@ export function startCronJobs() {
                             .to(contactEmail)
                             .sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
 
-                        NODE_SERVICE.changeUpdatingStatus(address, false);
+                        await NODE_SERVICE.changeUpdatingStatus(address, false);
 
                         await CRON_SERVICE.removeNodeStakeTransaction(nodeStakePocketTransaction);
                     }
                 } catch (e) {
-                    throw new Error(e);
+                  throw e;
                 }
             });
         };
 
         start();
     }
-
+    /**
+     * Runs an app unstake process
+     *
+     * @param {CronJobData} cronJobData Cron job data.
+     *
+     * @throws {Error}
+     * @async
+     */
     function runAppUnstakeProcess(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.appUnstakeTransactions, async (appUnstakePocketTransaction) => {
@@ -217,17 +251,16 @@ export function startCronJobs() {
                     const {contactEmail, userName, applicationData, address} = postAction.data;
 
                     const {
-                        pocketApp,
-                        networkData,
-                        error,
-                        name
-                    } = await APPLICATION_SERVICE.getApplication(address);
+                      pocketApplication,
+                      networkData,
+                      error
+                  } = await APPLICATION_SERVICE.getApplication(address);
 
-                    const hasError = error ? error : false;
-                    const errorType = error ? name : "";
+                  const hasError = error ? true : false;
+                  const errorType = hasError === true ? error : "";
 
-                    if (hasError || pocketApp === undefined) {
-                        throw new Error(errorType);
+                    if (hasError || pocketApplication === undefined) {
+                        throw new Error(errorType !== "" ? errorType : "Failed to retrieve the application data from the DB.");
                     }
 
                     const status = getStakeStatus(parseInt(networkData.status));
@@ -237,19 +270,26 @@ export function startCronJobs() {
                             .to(contactEmail)
                             .sendUnstakeAppEmail(userName, applicationData);
 
-                        APPLICATION_SERVICE.changeUpdatingStatus(address, false);
+                        await APPLICATION_SERVICE.changeUpdatingStatus(address, false);
 
                         await CRON_SERVICE.removeAppUnstakeTransaction(appUnstakePocketTransaction);
                     }
                 } catch (e) {
-                    throw new Error(e);
+                  throw e;;
                 }
             });
         };
 
         start();
     }
-
+    /**
+     * Runs a node unstake process
+     *
+     * @param {CronJobData} cronJobData Cron job data.
+     *
+     * @throws {Error}
+     * @async
+     */
     function runNodeUnstakeProcess(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.nodeUnstakeTransactions, async (nodeUnstakeTransaction) => {
@@ -267,15 +307,14 @@ export function startCronJobs() {
                     const {
                         pocketNode,
                         networkData,
-                        error,
-                        name
+                        error
                     } = await NODE_SERVICE.getNode(address);
 
-                    const hasError = error ? error : false;
-                    const errorType = error ? name : "";
+                    const hasError = error ? true : false;
+                    const errorType = hasError === true ? error : "";
 
                     if (hasError || pocketNode === undefined) {
-                        throw new Error(errorType);
+                        throw new Error(errorType !== "" ? errorType : "Failed to retrieve the node data from the DB.");
                     }
 
                     const status = getStakeStatus(parseInt(networkData.status));
@@ -285,19 +324,26 @@ export function startCronJobs() {
                             .to(contactEmail)
                             .sendUnstakeNodeEmail(userName, nodeData);
 
-                        NODE_SERVICE.changeUpdatingStatus(address, false);
+                        await NODE_SERVICE.changeUpdatingStatus(address, false);
 
                         await CRON_SERVICE.removeNodeUnstakeTransaction(nodeUnstakeTransaction);
                     }
                 } catch (e) {
-                    throw new Error(e);
+                  throw e;
                 }
             });
         };
 
         start();
     }
-
+    /**
+     * Runs a node unjail process
+     *
+     * @param {CronJobData} cronJobData Cron job data.
+     *
+     * @throws {Error}
+     * @async
+     */
     function runNodeUnjailProcess(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.nodeUnjailTransactions, async (nodeUnjailTransaction) => {
@@ -319,20 +365,34 @@ export function startCronJobs() {
                     await CRON_SERVICE.removeNodeUnjailTransaction(nodeUnjailTransaction);
 
                 } catch (e) {
-                    throw new Error(e);
+                    throw e;
                 }
             });
         };
 
         start();
     }
-
+    /**
+     * Runs an async call for a one or more records
+     *
+     * @param {Array} array List of async calls
+     * @param {object} callback Async callback
+     *
+     * @throws {Error}
+     * @async
+     */
     async function asyncForEach(array, callback) {
         for (let index = 0; index < array.length; index++) {
             await callback(array[index], index, array);
         }
     }
-
+    /**
+     * Return the stake status
+     *
+     * @param {string} status Staking status.
+     * @returns {string} Staking status
+     * @throws {Error}
+     */
     function getStakeStatus(status) {
         return typeof status === "string"
             ? STAKE_STATUS[status]
