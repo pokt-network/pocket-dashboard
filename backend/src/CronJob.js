@@ -54,52 +54,49 @@ export function startCronJobs() {
     function runPendingTransaction(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.pendingTransactions, async (pocketTransaction) => {
-                try {
-                    const hash = pocketTransaction.hash;
-                    const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    if (typeGuard(transactionOrError, RpcError)) {
-                        throw new Error(transactionOrError.message);
-                    }
+              const hash = pocketTransaction.hash;
+              const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    const transaction = transactionOrError;
+              if (typeGuard(transactionOrError, RpcError)) {
+                  throw new Error(transactionOrError.message);
+              }
 
-                    if (transaction.hash === hash) {
-                        const markedTransactionSuccess = await TRANSACTION_SERVICE.markTransactionSuccess(pocketTransaction);
+              const transaction = transactionOrError;
 
-                        if (markedTransactionSuccess) {
+              if (transaction.hash === hash) {
+                  const markedTransactionSuccess = await TRANSACTION_SERVICE.markTransactionSuccess(pocketTransaction);
 
-                            if (pocketTransaction.postAction && pocketTransaction.postAction !== {}) {
-                                const postAction = pocketTransaction.postAction;
+                  if (markedTransactionSuccess) {
 
-                                switch (postAction.type) {
-                                    case POST_ACTION_TYPE.stakeApplication: {
-                                        const appStakeTransaction = postAction.data.appStakeTransaction;
-                                        const stakeAppPostActionHash = await POCKET_SERVICE.submitRawTransaction(appStakeTransaction.address, appStakeTransaction.raw_hex_bytes);
+                      if (pocketTransaction.postAction && pocketTransaction.postAction !== {}) {
+                          const postAction = pocketTransaction.postAction;
 
-                                        await TRANSACTION_SERVICE.addAppStakeTransaction(stakeAppPostActionHash, postAction.data);
-                                        await CRON_SERVICE.removePendingTransaction(pocketTransaction);
-                                        break;
-                                    }
-                                    case POST_ACTION_TYPE.stakeNode: {
-                                        const nodeStakeTransaction = postAction.data.nodeStakeTransaction;
-                                        const stakeNodePostActionHash = await POCKET_SERVICE.submitRawTransaction(nodeStakeTransaction.address, nodeStakeTransaction.raw_hex_bytes);
+                          switch (postAction.type) {
+                              case POST_ACTION_TYPE.stakeApplication: {
+                                  const appStakeTransaction = postAction.data.appStakeTransaction;
+                                  const stakeAppPostActionHash = await POCKET_SERVICE.submitRawTransaction(appStakeTransaction.address, appStakeTransaction.raw_hex_bytes);
 
-                                        await TRANSACTION_SERVICE.addNodeStakeTransaction(stakeNodePostActionHash, postAction.data);
-                                        await CRON_SERVICE.removePendingTransaction(pocketTransaction);
-                                        break;
-                                    }
-                                    default:
-                                        throw new Error(`Invalid Post Action: ${JSON.stringify(postAction)}`);
-                                }
-                            }
-                        } else {
-                            throw new Error("Failed to mark transaction as success/completed.");
-                        }
-                    }
-                } catch (e) {
-                  throw e;
-                }
+                                  await TRANSACTION_SERVICE.addAppStakeTransaction(stakeAppPostActionHash, postAction.data);
+                                  await CRON_SERVICE.removePendingTransaction(pocketTransaction);
+                                  break;
+                              }
+                              case POST_ACTION_TYPE.stakeNode: {
+                                  const nodeStakeTransaction = postAction.data.nodeStakeTransaction;
+                                  const stakeNodePostActionHash = await POCKET_SERVICE.submitRawTransaction(nodeStakeTransaction.address, nodeStakeTransaction.raw_hex_bytes);
+
+                                  await TRANSACTION_SERVICE.addNodeStakeTransaction(stakeNodePostActionHash, postAction.data);
+                                  await CRON_SERVICE.removePendingTransaction(pocketTransaction);
+                                  break;
+                              }
+                              default:
+                                  throw new Error(`Invalid Post Action: ${JSON.stringify(postAction)}`);
+                          }
+                      }
+                  } else {
+                      throw new Error("Failed to mark transaction as success/completed.");
+                  }
+              }
             });
         };
 
@@ -117,50 +114,47 @@ export function startCronJobs() {
     function runAppStakeProcess(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.appStakeTransactions, async (applicationStakePocketTransaction) => {
-                try {
-                    const hash = applicationStakePocketTransaction.hash;
-                    const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    if (typeGuard(transactionOrError, RpcError)) {
-                        throw new Error(transactionOrError.message);
-                    }
+              const hash = applicationStakePocketTransaction.hash;
+              const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    const postAction = applicationStakePocketTransaction.postAction;
+              if (typeGuard(transactionOrError, RpcError)) {
+                  throw new Error(transactionOrError.message);
+              }
 
-                    const {
-                        address,
-                        contactEmail,
-                        emailData,
-                        paymentEmailData
-                    } = postAction.data;
+              const postAction = applicationStakePocketTransaction.postAction;
 
-                    const {
-                        pocketApplication,
-                        networkData,
-                        error
-                    } = await APPLICATION_SERVICE.getApplication(address);
+              const {
+                  address,
+                  contactEmail,
+                  emailData,
+                  paymentEmailData
+              } = postAction.data;
 
-                    const hasError = error ? true : false;
-                    const errorType = hasError === true ? error : "";
+              const {
+                  pocketApplication,
+                  networkData,
+                  error
+              } = await APPLICATION_SERVICE.getApplication(address);
 
-                    if (hasError || pocketApplication === undefined) {
-                        throw new Error(errorType !== "" ? errorType : "Failed to retrieve the application data from the DB.");
-                    }
+              const hasError = error ? true : false;
+              const errorType = hasError === true ? error : "";
 
-                    const status = getStakeStatus(parseInt(networkData.status));
+              if (hasError || pocketApplication === undefined) {
+                  throw new Error(errorType !== "" ? errorType : "Failed to retrieve the application data from the DB.");
+              }
 
-                    if (status === STAKE_STATUS.Staked) {
-                        await EmailService
-                            .to(contactEmail)
-                            .sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
+              const status = getStakeStatus(parseInt(networkData.status));
 
-                        await APPLICATION_SERVICE.changeUpdatingStatus(address, false);
+              if (status === STAKE_STATUS.Staked) {
+                  await EmailService
+                      .to(contactEmail)
+                      .sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
 
-                        await CRON_SERVICE.removeAppStakeTransaction(applicationStakePocketTransaction);
-                    }
-                } catch (e) {
-                  throw e;
-                }
+                  await APPLICATION_SERVICE.changeUpdatingStatus(address, false);
+
+                  await CRON_SERVICE.removeAppStakeTransaction(applicationStakePocketTransaction);
+              }
             });
         };
 
@@ -177,50 +171,47 @@ export function startCronJobs() {
     function runNodeStakeProcess(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.nodeStakeTransactions, async (nodeStakePocketTransaction) => {
-                try {
-                    const hash = nodeStakePocketTransaction.hash;
-                    const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    if (typeGuard(transactionOrError, RpcError)) {
-                        throw new Error(transactionOrError.message);
-                    }
+              const hash = nodeStakePocketTransaction.hash;
+              const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    const postAction = nodeStakePocketTransaction.postAction;
+              if (typeGuard(transactionOrError, RpcError)) {
+                  throw new Error(transactionOrError.message);
+              }
 
-                    const {
-                        address,
-                        contactEmail,
-                        emailData,
-                        paymentEmailData
-                    } = postAction.data;
+              const postAction = nodeStakePocketTransaction.postAction;
 
-                    const {
-                        pocketNode,
-                        networkData,
-                        error
-                    } = await NODE_SERVICE.getNode(address);
+              const {
+                  address,
+                  contactEmail,
+                  emailData,
+                  paymentEmailData
+              } = postAction.data;
 
-                    const hasError = error ? true : false;
-                    const errorType = hasError === true ? error : "";
+              const {
+                  pocketNode,
+                  networkData,
+                  error
+              } = await NODE_SERVICE.getNode(address);
 
-                    if (hasError || pocketNode === undefined) {
-                        throw new Error(errorType !== "" ? errorType : "Failed to retrieve the node data from the DB.");
-                    }
+              const hasError = error ? true : false;
+              const errorType = hasError === true ? error : "";
 
-                    const status = getStakeStatus(parseInt(networkData.status));
+              if (hasError || pocketNode === undefined) {
+                  throw new Error(errorType !== "" ? errorType : "Failed to retrieve the node data from the DB.");
+              }
 
-                    if (status === STAKE_STATUS.Staked) {
-                        await EmailService
-                            .to(contactEmail)
-                            .sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
+              const status = getStakeStatus(parseInt(networkData.status));
 
-                        await NODE_SERVICE.changeUpdatingStatus(address, false);
+              if (status === STAKE_STATUS.Staked) {
+                  await EmailService
+                      .to(contactEmail)
+                      .sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
 
-                        await CRON_SERVICE.removeNodeStakeTransaction(nodeStakePocketTransaction);
-                    }
-                } catch (e) {
-                  throw e;
-                }
+                  await NODE_SERVICE.changeUpdatingStatus(address, false);
+
+                  await CRON_SERVICE.removeNodeStakeTransaction(nodeStakePocketTransaction);
+              }
             });
         };
 
@@ -237,46 +228,43 @@ export function startCronJobs() {
     function runAppUnstakeProcess(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.appUnstakeTransactions, async (appUnstakePocketTransaction) => {
-                try {
-                    const hash = appUnstakePocketTransaction.hash;
-                    const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    if (typeGuard(transactionOrError, RpcError)) {
-                        throw new Error(transactionOrError.message);
-                    }
+              const hash = appUnstakePocketTransaction.hash;
+              const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    // Submit App Stake Email
-                    const postAction = appUnstakePocketTransaction.postAction;
+              if (typeGuard(transactionOrError, RpcError)) {
+                  throw new Error(transactionOrError.message);
+              }
 
-                    const {contactEmail, userName, applicationData, address} = postAction.data;
+              // Submit App Stake Email
+              const postAction = appUnstakePocketTransaction.postAction;
 
-                    const {
-                      pocketApplication,
-                      networkData,
-                      error
-                  } = await APPLICATION_SERVICE.getApplication(address);
+              const {contactEmail, userName, applicationData, address} = postAction.data;
 
-                  const hasError = error ? true : false;
-                  const errorType = hasError === true ? error : "";
+              const {
+                pocketApplication,
+                networkData,
+                error
+            } = await APPLICATION_SERVICE.getApplication(address);
 
-                    if (hasError || pocketApplication === undefined) {
-                        throw new Error(errorType !== "" ? errorType : "Failed to retrieve the application data from the DB.");
-                    }
+            const hasError = error ? true : false;
+            const errorType = hasError === true ? error : "";
 
-                    const status = getStakeStatus(parseInt(networkData.status));
+              if (hasError || pocketApplication === undefined) {
+                  throw new Error(errorType !== "" ? errorType : "Failed to retrieve the application data from the DB.");
+              }
 
-                    if (status === STAKE_STATUS.Unstaked) {
-                        await EmailService
-                            .to(contactEmail)
-                            .sendUnstakeAppEmail(userName, applicationData);
+              const status = getStakeStatus(parseInt(networkData.status));
 
-                        await APPLICATION_SERVICE.changeUpdatingStatus(address, false);
+              if (status === STAKE_STATUS.Unstaked) {
+                  await EmailService
+                      .to(contactEmail)
+                      .sendUnstakeAppEmail(userName, applicationData);
 
-                        await CRON_SERVICE.removeAppUnstakeTransaction(appUnstakePocketTransaction);
-                    }
-                } catch (e) {
-                  throw e;;
-                }
+                  await APPLICATION_SERVICE.changeUpdatingStatus(address, false);
+
+                  await CRON_SERVICE.removeAppUnstakeTransaction(appUnstakePocketTransaction);
+              }
             });
         };
 
@@ -293,44 +281,41 @@ export function startCronJobs() {
     function runNodeUnstakeProcess(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.nodeUnstakeTransactions, async (nodeUnstakeTransaction) => {
-                try {
-                    const hash = nodeUnstakeTransaction.hash;
-                    const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    if (typeGuard(transactionOrError, RpcError)) {
-                        throw new Error(transactionOrError.message);
-                    }
+              const hash = nodeUnstakeTransaction.hash;
+              const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    const postAction = nodeUnstakeTransaction.postAction;
-                    const {contactEmail, userName, nodeData, address} = postAction.data;
+              if (typeGuard(transactionOrError, RpcError)) {
+                  throw new Error(transactionOrError.message);
+              }
 
-                    const {
-                        pocketNode,
-                        networkData,
-                        error
-                    } = await NODE_SERVICE.getNode(address);
+              const postAction = nodeUnstakeTransaction.postAction;
+              const {contactEmail, userName, nodeData, address} = postAction.data;
 
-                    const hasError = error ? true : false;
-                    const errorType = hasError === true ? error : "";
+              const {
+                  pocketNode,
+                  networkData,
+                  error
+              } = await NODE_SERVICE.getNode(address);
 
-                    if (hasError || pocketNode === undefined) {
-                        throw new Error(errorType !== "" ? errorType : "Failed to retrieve the node data from the DB.");
-                    }
+              const hasError = error ? true : false;
+              const errorType = hasError === true ? error : "";
 
-                    const status = getStakeStatus(parseInt(networkData.status));
+              if (hasError || pocketNode === undefined) {
+                  throw new Error(errorType !== "" ? errorType : "Failed to retrieve the node data from the DB.");
+              }
 
-                    if (status === STAKE_STATUS.Unstaked) {
-                        await EmailService
-                            .to(contactEmail)
-                            .sendUnstakeNodeEmail(userName, nodeData);
+              const status = getStakeStatus(parseInt(networkData.status));
 
-                        await NODE_SERVICE.changeUpdatingStatus(address, false);
+              if (status === STAKE_STATUS.Unstaked) {
+                  await EmailService
+                      .to(contactEmail)
+                      .sendUnstakeNodeEmail(userName, nodeData);
 
-                        await CRON_SERVICE.removeNodeUnstakeTransaction(nodeUnstakeTransaction);
-                    }
-                } catch (e) {
-                  throw e;
-                }
+                  await NODE_SERVICE.changeUpdatingStatus(address, false);
+
+                  await CRON_SERVICE.removeNodeUnstakeTransaction(nodeUnstakeTransaction);
+              }
             });
         };
 
@@ -347,26 +332,23 @@ export function startCronJobs() {
     function runNodeUnjailProcess(cronJobData) {
         const start = async () => {
             await asyncForEach(cronJobData.nodeUnjailTransactions, async (nodeUnjailTransaction) => {
-                try {
-                    const hash = nodeUnjailTransaction.hash;
-                    const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    if (typeGuard(transactionOrError, RpcError)) {
-                        throw new Error(transactionOrError.message);
-                    }
+              const hash = nodeUnjailTransaction.hash;
+              const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
-                    const postAction = nodeUnjailTransaction.postAction;
-                    const {contactEmail, userName, nodeData} = postAction.data;
+              if (typeGuard(transactionOrError, RpcError)) {
+                  throw new Error(transactionOrError.message);
+              }
 
-                    await EmailService
-                        .to(contactEmail)
-                        .sendNodeUnJailedEmail(userName, nodeData);
+              const postAction = nodeUnjailTransaction.postAction;
+              const {contactEmail, userName, nodeData} = postAction.data;
 
-                    await CRON_SERVICE.removeNodeUnjailTransaction(nodeUnjailTransaction);
+              await EmailService
+                  .to(contactEmail)
+                  .sendNodeUnJailedEmail(userName, nodeData);
 
-                } catch (e) {
-                    throw e;
-                }
+              await CRON_SERVICE.removeNodeUnjailTransaction(nodeUnjailTransaction);
+
             });
         };
 
