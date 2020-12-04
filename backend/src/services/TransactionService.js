@@ -63,7 +63,6 @@ export default class TransactionService extends BaseService {
     let saved = await this.__addTransaction(pocketTransaction);
 
     if (saved && postAction) {
-      console.log("ADDING TO CRON-DATA");
       saved = await CRON_SERVICE.addPendingTransaction(pocketTransaction);
     }
 

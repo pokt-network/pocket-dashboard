@@ -312,25 +312,27 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async getApplication(applicationAddress) {
+    try {
+      const filter = {
+        "publicPocketAccount.address": applicationAddress
+      };
 
-    const filter = {
-      "publicPocketAccount.address": applicationAddress
-    };
+      const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
 
-    const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+      if (applicationDB) {
+        const decryptedFields = await this.__decryptApplicationFields(applicationDB);
 
-    if (applicationDB) {
-      const decryptedFields = await this.__decryptApplicationFields(applicationDB);
+        if (decryptedFields) {
+          const application = PocketApplication.createPocketApplication(decryptedFields);
 
-      if (decryptedFields) {
-        const application = PocketApplication.createPocketApplication(decryptedFields);
-
-        return this.__getExtendedPocketApplication(application);
+          return this.__getExtendedPocketApplication(application);
+        }
       }
 
+      return null;
+    } catch (error) {
+      return error;
     }
-
-    return null;
   }
 
   /**
