@@ -186,7 +186,7 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
   const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
   if (
-    paymentHistory.isSuccessPayment(true) &&
+    paymentHistory.isSuccessPayment() &&
     paymentHistory.isNodePaymentItem(true)
   ) {
     const item = paymentHistory.getItem();
@@ -204,7 +204,7 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
 
     if (await nodeService.verifyNodeObjectBelongsToClient(node, req.headers.authorization)) {
       const poktStaked = data.upoktToStake / 1000000;
-      
+
       const paymentEmailData = {
         amountPaid: numeral(paymentHistory.amount / 100).format("0,0.00"),
         validatorPowerAmount: numeral(item.validatorPower).format("0,0.00"),
