@@ -233,7 +233,7 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
   const paymentHistory = await paymentService.getPaymentFromHistory(data.paymentId);
 
   if (
-    paymentHistory.isSuccessPayment(true) &&
+    paymentHistory.isSuccessPayment() &&
     paymentHistory.isApplicationPaymentItem(true)
   ) {
     const appStakeTransaction = data.appStakeTransaction;
