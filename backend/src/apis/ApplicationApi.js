@@ -231,6 +231,8 @@ router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
   /** @type {{applicationId: string, appStakeTransaction: {address: string, raw_hex_bytes: string}, paymentId: string, applicationLink: string, gatewayAATSignature: string, upoktToStake: string}} */
   const data = req.body;
   const paymentHistory = await paymentService.getPaymentFromHistory(data.paymentId);
+  console.log("paymentHistory = ");
+  console.log(paymentHistory);
 
   if (
     paymentHistory.isSuccessPayment() &&
