@@ -149,7 +149,7 @@ export function startCronJobs() {
               if (status === STAKE_STATUS.Staked) {
                   await EmailService
                       .to(contactEmail)
-                      .sendStakeNodeEmail(contactEmail, emailData, paymentEmailData);
+                      .sendStakeAppEmail(contactEmail, emailData, paymentEmailData);
 
                   await APPLICATION_SERVICE.changeUpdatingStatus(address, false);
 
