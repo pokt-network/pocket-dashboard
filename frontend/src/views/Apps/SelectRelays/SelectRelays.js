@@ -63,18 +63,27 @@ class SelectRelays extends Component {
             const minRelays = parseInt(relaysPerDay.min);
 
             PocketCheckoutService.getApplicationMoneyToSpent(minRelays)
-              .then(({upokt, cost}) => {
+              .then(({upokt, cost, maxUsd}) => {
 
                 PocketAccountService.getBalance(accountAddress)
                   .then(({balance}) => {
                     // Usd value
                     const currentAccountBalance = parseFloat(balance.usd);
                     const subTotal = parseFloat(cost);
+                    const maxValueUsd = parseFloat(maxUsd);
                     const total = subTotal - currentAccountBalance;
                     // Upokt value
                     const currentAccountBalanceUpokt = parseFloat(balance.upokt);
                     const upoktSubTotal = parseFloat(upokt);
                     const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
+
+                    if (total > maxValueUsd) {
+                      this.setState({
+                        error: {show: true, message: "You have exceeded the limit of US" + maxValueUsd},
+                        loading: false,
+                      });
+                      return;
+                    }
 
                     this.setState({
                       currentAccountBalance: currentAccountBalance,
@@ -108,12 +117,21 @@ class SelectRelays extends Component {
     const currentAccountBalanceUpokt = (currentAccountBalance / POCKET_NETWORK_CONFIGURATION.pokt_usd_market_price) * 1000000;
 
     PocketCheckoutService.getApplicationMoneyToSpent(relaysSelected)
-      .then(({upokt, cost}) => {
+      .then(({upokt, cost, maxUsd}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
+        const maxValueUsd = parseFloat(maxUsd);
         // Upokt value
         const upoktSubTotal = parseFloat(upokt);
         const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
+
+        if (total > maxValueUsd) {
+          this.setState({
+            error: {show: true, message: "You have exceeded the limit of US" + maxValueUsd},
+            loading: false,
+          });
+          return;
+        }
 
         this.setState({
           currentAccountBalance,
@@ -131,12 +149,21 @@ class SelectRelays extends Component {
     const {currentAccountBalance, currentAccountBalanceUpokt} = this.state;
 
     PocketCheckoutService.getApplicationMoneyToSpent(value)
-      .then(({upokt, cost}) => {
+      .then(({upokt, cost, maxUsd}) => {
         const subTotal = parseFloat(cost);
         const total = subTotal - currentAccountBalance;
+        const maxValueUsd = parseFloat(maxUsd);
         // Upokt value
         const upoktSubTotal = parseFloat(upokt);
         const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
+
+        if (total > maxValueUsd) {
+          this.setState({
+            error: {show: true, message: "You have exceeded the limit of US" + maxValueUsd},
+            loading: false,
+          });
+          return;
+        }
 
         this.setState({
           relaysSelected: value,

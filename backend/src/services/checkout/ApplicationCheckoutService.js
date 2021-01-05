@@ -136,7 +136,7 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
       throw new DashboardValidationError(`Current RPS (${currRPS}) < max RPS (${minRPS})`);
     }
 
-    return {upokt, usdValue};
+    return {upokt, usdValue, maxUsdValue};
   }
 }
 

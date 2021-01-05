@@ -130,11 +130,11 @@ jobs:
         envkey_AUTH_PROVIDER_GOOGLE_CALLBACK_URL: https://dashboard.testnet.pokt.network/api/auth/provider/google
         envkey_EMAIL_FROM: dashboard@pokt.network
         envkey_CHECKOUT_DEFAULT_CURRENCY: USD
-        envkey_CHECKOUT_MAX_USD_VALUE: 10000
+        envkey_CHECKOUT_MAX_USD_VALUE: 20000
         envkey_CHECKOUT_MIN_RELAYS_PER_DAY: 504
-        envkey_CHECKOUT_MAX_RELAYS_PER_DAY: 5010024
+        envkey_CHECKOUT_MAX_RELAYS_PER_DAY: 801000
         envkey_CHECKOUT_MIN_VALIDATOR_POWER: 15500
-        envkey_CHECKOUT_MAX_VALIDATOR_POWER: 125000
+        envkey_CHECKOUT_MAX_VALIDATOR_POWER: 20000
         envkey_CHECKOUT_BASE_RELAY_PER_POKT: 1.67
         envkey_CHECKOUT_STABILITY: 0
         envkey_CHECKOUT_SESSIONS_PER_DAY: 24
