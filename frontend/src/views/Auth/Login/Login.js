@@ -116,7 +116,7 @@ class Login extends Component {
           <Col className={"content"}>
             <div className="change">
               <p>
-                New to Pocket Dashboard Master?{" "}
+                New to Pocket Dashboard?{" "}
                 <Link to={signup}>Create an account</Link>
               </p>
             </div>
