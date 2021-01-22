@@ -47,11 +47,11 @@ class NodeChainList extends Chains {
       serviceURL,
       chainsObject: chosenChains
     });
-    const {id: nodeID} = NodeService.getNodeInfo();
+    const {address} = NodeService.getNodeInfo();
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(
-      _getDashboardPath(`${DASHBOARD_PATHS.nodeDetail.replace(/:address/, nodeID)}`)
+      _getDashboardPath(`${DASHBOARD_PATHS.nodeDetail.replace(/:address/, address)}`)
     );
   }
 
