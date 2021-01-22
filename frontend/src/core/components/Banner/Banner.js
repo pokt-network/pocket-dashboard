@@ -3,9 +3,9 @@ import {animated, useTransition} from "react-spring";
 import "./Banner.scss";
 
 const BANNER_HEIGHT = 48;
-const BANNER_TIMEOUT = 15 * 1000 // 30 secs
+const BANNER_TIMEOUT = 15 * 1000;
 
-function ConvictionBanner() {
+function Banner() {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
@@ -49,4 +49,4 @@ function ConvictionBanner() {
   });
 }
 
-export default ConvictionBanner;
+export default Banner;
