@@ -224,8 +224,8 @@ class AppDetail extends Component {
     } = this.state.networkData;
 
     const status = getStakeStatus(parseInt(stakeStatus));
-    const isStaked =
-      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
+    // const isStaked =
+      // status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
     let address;
     let publicKey;
