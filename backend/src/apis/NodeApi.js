@@ -180,48 +180,48 @@ router.post("/user/all", apiAsyncWrapper(async (req, res) => {
 /**
  * Stake a node.
  */
-router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
-  /** @type {{nodeStakeTransaction: {address: string, raw_hex_bytes: string}, payment:{id: string}, nodeLink: string}} */
-  const data = req.body;
-  const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
+// router.post("/custom/stake", apiAsyncWrapper(async (req, res) => {
+  // [>* @type {{nodeStakeTransaction: {address: string, raw_hex_bytes: string}, payment:{id: string}, nodeLink: string}} <]
+  // const data = req.body;
+  // const paymentHistory = await paymentService.getPaymentFromHistory(data.payment.id);
 
-  if (
-    paymentHistory.isSuccessPayment() &&
-    paymentHistory.isNodePaymentItem(true)
-  ) {
-    const item = paymentHistory.getItem();
-    const amountToSpend = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
+  // if (
+    // paymentHistory.isSuccessPayment() &&
+    // paymentHistory.isNodePaymentItem(true)
+  // ) {
+    // const item = paymentHistory.getItem();
+    // const amountToSpend = nodeCheckoutService.getMoneyToSpent(parseInt(item.validatorPower));
 
-    // Call NodeService to stake the application
-    const nodeStakeTransaction = data.nodeStakeTransaction;
-    const nodeAddress = nodeStakeTransaction.address;
-    const node = await nodeService.getNode(nodeAddress);
+    // // Call NodeService to stake the application
+    // const nodeStakeTransaction = data.nodeStakeTransaction;
+    // const nodeAddress = nodeStakeTransaction.address;
+    // const node = await nodeService.getNode(nodeAddress);
 
-    const nodeEmailData = {
-      name: node.pocketNode.name,
-      link: data.nodeLink
-    };
+    // const nodeEmailData = {
+      // name: node.pocketNode.name,
+      // link: data.nodeLink
+    // };
 
-    if (await nodeService.verifyNodeObjectBelongsToClient(node, req.headers.authorization)) {
-      const poktStaked = data.upoktToStake / 1000000;
+    // if (await nodeService.verifyNodeObjectBelongsToClient(node, req.headers.authorization)) {
+      // const poktStaked = data.upoktToStake / 1000000;
 
-      const paymentEmailData = {
-        amountPaid: numeral(paymentHistory.amount / 100).format("0,0.00"),
-        validatorPowerAmount: numeral(item.validatorPower).format("0,0.00"),
-        poktStaked: numeral(poktStaked).format("0,0.000000")
-      };
+      // const paymentEmailData = {
+        // amountPaid: numeral(paymentHistory.amount / 100).format("0,0.00"),
+        // validatorPowerAmount: numeral(item.validatorPower).format("0,0.00"),
+        // poktStaked: numeral(poktStaked).format("0,0.000000")
+      // };
 
-      await nodeService.stakeNode(nodeAddress, data.upoktToStake, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
+      // await nodeService.stakeNode(nodeAddress, data.upoktToStake, nodeStakeTransaction, node, nodeEmailData, paymentEmailData);
 
-      res.send(true);
-    } else {
-      res.status(400).send("Node doesn't belong to the provided client account.");
-    }
-  } else {
-    // Return error if payment was unsuccessful
-    throw new Error("Error processing payment, please try a different method");
-  }
-}));
+      // res.send(true);
+    // } else {
+      // res.status(400).send("Node doesn't belong to the provided client account.");
+    // }
+  // } else {
+    // // Return error if payment was unsuccessful
+    // throw new Error("Error processing payment, please try a different method");
+  // }
+// }));
 
 /**
  * Unstake a node.

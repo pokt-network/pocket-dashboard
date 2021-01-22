@@ -429,7 +429,7 @@ class NodeDetail extends Component {
             <h1>Node Detail</h1>
           </Col>
           <Col sm="1" md="1" lg="1">
-            <Button
+            {/*<Button
               className="float-right cta"
               disabled={updatingAlert || status === STAKE_STATUS.Unstaking || jailed}
               onClick={() => {
@@ -439,7 +439,7 @@ class NodeDetail extends Component {
               }}
               variant="primary">
               <span>{isStaked ? "Unstake" : "Stake"}</span>
-            </Button>    
+            </Button>*/}
           </Col>
         </Row>
         <Row className="stats">
