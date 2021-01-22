@@ -36,7 +36,7 @@ function Banner() {
             Some features regarding node staking and app payments have been
             disabled as we work on the next version of the dashboard.{" "}
             <a
-              href="https://pokt.network"
+              href="http://bit.ly/PocketDashboardIssue"
               target="_blank"
               rel="noopener noreferrer"
             >
