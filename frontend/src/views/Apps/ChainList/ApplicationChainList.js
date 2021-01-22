@@ -20,9 +20,10 @@ class ApplicationChainList extends Chains {
     const chainsHashes = chosenChains.map((ch) => ch._id);
 
     PocketApplicationService.saveAppInfoInCache({chains: chainsHashes});
+    const {id: appId} = PocketApplicationService.getApplicationInfo();
 
     // eslint-disable-next-line react/prop-types
-    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.tierSelection));
+    this.props.history.push(_getDashboardPath(`${DASHBOARD_PATHS.appDetail.replace(":id", appId)}`));
   }
 
   render() {

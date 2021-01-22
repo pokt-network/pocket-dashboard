@@ -42,16 +42,16 @@ class NodeChainList extends Chains {
     const {serviceURL} = this.state.data;
     const chainsHashes = chosenChains.map((ch) => ch._id);
 
-
     NodeService.saveNodeInfoInCache({
       chains: chainsHashes,
       serviceURL,
       chainsObject: chosenChains
     });
+    const {address} = NodeService.getNodeInfo();
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(
-      _getDashboardPath(DASHBOARD_PATHS.selectValidatorPower)
+      _getDashboardPath(`${DASHBOARD_PATHS.nodeDetail.replace(/:address/, address)}`)
     );
   }
 

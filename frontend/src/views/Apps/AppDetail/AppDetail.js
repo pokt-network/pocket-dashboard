@@ -414,7 +414,7 @@ class AppDetail extends Component {
                 </Button>
               </Link>
             }
-            <Button
+                {/*<Button
               className="float-right cta"
               disabled={freeTierMsg || updatingAlert || status === STAKE_STATUS.Unstaking}
               onClick={() => {
@@ -423,7 +423,7 @@ class AppDetail extends Component {
               }}
               variant="primary">
               <span>{isStaked ? "Unstake" : "Stake"}</span>
-            </Button>          
+            </Button>*/}
           </Col>
         </Row>
         <Row className="stats">
