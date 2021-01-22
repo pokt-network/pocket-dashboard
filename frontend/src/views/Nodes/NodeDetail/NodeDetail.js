@@ -206,8 +206,8 @@ class NodeDetail extends Component {
     const copyStakeStatus = stakeStatus;
 
     const status = getStakeStatus(parseInt(copyStakeStatus));
-    const isStaked =
-      status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
+    // const isStaked =
+      // status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
     let address;
     let publicKey;
