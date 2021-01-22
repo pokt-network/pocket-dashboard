@@ -10,10 +10,6 @@ class AppNavbar extends Component {
 
     return (
       <Row className="app-navbar" noGutters>
-        <map name="workmap">
-          <area target="_blank" shape="rect" coords="0,11,115,65" alt="Pocket" href="https://pokt.network" />
-          <area shape="rect" coords="120,14,225,65" alt="Dashboard" href={`${window.location.origin}/dashboard`} />
-        </map>
         <div id="main-logo" style={{display: "inline-flex"}}>
           <img src="/assets/logo-dashboard-color.svg" alt="logo" useMap="#workmap"/>
           <Button

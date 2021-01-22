@@ -3,6 +3,7 @@ import {Col, Container, Row} from "react-bootstrap";
 import {Redirect, Route} from "react-router-dom";
 import AppSidebar from "./AppSidebar/AppSidebar";
 import AppNavbar from "./AppNavbar/AppNavbar";
+import Banner from "../Banner/Banner";
 import Breadcrumbs from "./BreadCrumb/Breadcrumb";
 import {dashboardRoutes, ROUTE_PATHS, breadcrumbsRoutes} from "../../../_routes";
 import UserService from "../../services/PocketUserService";
@@ -56,6 +57,7 @@ class DefaultLayout extends Component {
 
     return (
       <Container fluid>
+        <Banner />
         <Row>
           <AppNavbar />
         </Row>
