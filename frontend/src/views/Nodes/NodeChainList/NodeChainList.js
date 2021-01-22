@@ -51,7 +51,7 @@ class NodeChainList extends Chains {
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(
-      _getDashboardPath(DASHBOARD_PATHS.selectValidatorPower)
+      _getDashboardPath(DASHBOARD_PATHS.nodeDetail)
     );
   }
 

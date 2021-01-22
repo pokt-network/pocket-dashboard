@@ -22,7 +22,7 @@ class ApplicationChainList extends Chains {
     PocketApplicationService.saveAppInfoInCache({chains: chainsHashes});
 
     // eslint-disable-next-line react/prop-types
-    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.tierSelection));
+    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.appDetail));
   }
 
   render() {
