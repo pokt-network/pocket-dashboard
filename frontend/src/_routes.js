@@ -20,22 +20,22 @@ import NodesMain from "./views/Nodes/NodesMain/NodesMain";
 import General from "./views/Profile/General/General";
 import Profile from "./views/Profile/ProfileLayout/ProfileLayout";
 import ChangePassword from "./views/Profile/ChangePassword/ChangePassword";
-import PaymentHistory from "./views/Profile/PaymentHistory/PaymentHistory";
-import Checkout from "./views/Payment/Checkout/Checkout";
+// import PaymentHistory from "./views/Profile/PaymentHistory/PaymentHistory";
+// import Checkout from "./views/Payment/Checkout/Checkout";
 import CreateNodeForm from "./views/Nodes/CreateNodeForm/CreateNodeForm";
 import NodeChainList from "./views/Nodes/NodeChainList/NodeChainList";
 import EditApp from "./views/Apps/EditApp/EditApp";
 import NodeDetail from "./views/Nodes/NodeDetail/NodeDetail";
 import EditNode from "./views/Nodes/EditNode/EditNode";
-import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
-import OrderSummary from "./views/Payment/OrderSummary/OrderSummary";
+// import PaymentMethods from "./views/Profile/PaymentMethods/PaymentMethods";
+// import OrderSummary from "./views/Payment/OrderSummary/OrderSummary";
 import SecondPage from "./views/Payment/PrintableInvoice/SecondPage";
 import ResetPassword from "./views/Auth/ResetPassword/ResetPassword";
 import AppPassphrase from "./views/Apps/AppPassphrase/AppPassphrase";
 import TermsOfService from "./views/Support/TermsOfService";
 import PrivacyPolicy from "./views/Support/PrivacyPolicy";
 import AnswerSecurityQuestions from "./views/Auth/AnswerSecurityQuestions/AnswerSecurityQuestions";
-import SelectValidatorPower from "./views/Nodes/SelectValidatorPower/SelectValidatorPower";
+// import SelectValidatorPower from "./views/Nodes/SelectValidatorPower/SelectValidatorPower";
 import NodePassphrase from "./views/Nodes/NodePassphrase/NodePassphrase";
 import VerifyChangedEmail from "./views/Auth/VerifyChangedEmail/VerifyChangedEmail";
 import UserService from "./core/services/PocketUserService";
@@ -297,12 +297,12 @@ export const dashboardRoutes = [
     name: "Nodes Chain List",
     component: NodeChainList,
   },
-  {
-    path: DASHBOARD_PATHS.selectValidatorPower,
-    exact: true,
-    name: "Nodes Select Validator Power",
-    component: SelectValidatorPower,
-  },
+  // {
+    // path: DASHBOARD_PATHS.selectValidatorPower,
+    // exact: true,
+    // name: "Nodes Select Validator Power",
+    // component: SelectValidatorPower,
+  // },
   {
     path: DASHBOARD_PATHS.nodes,
     exact: true,
@@ -328,12 +328,12 @@ export const dashboardRoutes = [
     name: "Node Edit",
     component: EditNode,
   },
-  {
-    path: DASHBOARD_PATHS.invoice,
-    exact: true,
-    name: "Invoice",
-    component: Checkout,
-  },
+  // {
+    // path: DASHBOARD_PATHS.invoice,
+    // exact: true,
+    // name: "Invoice",
+    // component: Checkout,
+  // },
   {
     path: DASHBOARD_PATHS.importApp,
     exact: true,
@@ -364,12 +364,12 @@ export const dashboardRoutes = [
     name: "Relays Selection",
     component: SelectRelays,
   },
-  {
-    path: DASHBOARD_PATHS.orderSummary,
-    exact: true,
-    name: "Order Summary",
-    component: OrderSummary,
-  },
+  // {
+    // path: DASHBOARD_PATHS.orderSummary,
+    // exact: true,
+    // name: "Order Summary",
+    // component: OrderSummary,
+  // },
   {
     path: DASHBOARD_PATHS.freeTier,
     exact: true,
@@ -397,18 +397,18 @@ export const profileRoutes = [
     name: "Change password",
     component: ChangePassword,
   },
-  {
-    path: PROFILE_PATHS.paymentHistory,
-    exact: true,
-    name: "Payment history",
-    component: PaymentHistory,
-  },
-  {
-    path: PROFILE_PATHS.paymentMethods,
-    exact: true,
-    name: "Payment methods",
-    component: PaymentMethods,
-  },
+  // {
+    // path: PROFILE_PATHS.paymentHistory,
+    // exact: true,
+    // name: "Payment history",
+    // component: PaymentHistory,
+  // },
+  // {
+    // path: PROFILE_PATHS.paymentMethods,
+    // exact: true,
+    // name: "Payment methods",
+    // component: PaymentMethods,
+  // },
 ];
 
 const routes = pageRoutes.concat(authProviderRoutes);
