@@ -6,7 +6,7 @@ name: Docker CI
 on:
   push:
     branches:
-      - testnet-master
+      - staging
 
 env:
   DOCKER_REPOSITORY: poktnetwork/pocket-dashboard
