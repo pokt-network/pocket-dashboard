@@ -15,6 +15,7 @@ import {Configurations} from "../../../_configuration";
 import {getStakeStatus, formatNumbers, upoktToPOKT} from "../../../_helpers";
 import PocketNetworkService from "../../../core/services/PocketNetworkService";
 import LoadingButton from "../../../core/components/LoadingButton";
+import AppAlert from "../../../core/components/AppAlert";
 
 class Import extends Component {
   constructor(props, context) {
@@ -34,7 +35,8 @@ class Import extends Component {
       importing: false,
       type: "",
       created: false,
-      error: {show: false, message: ""},
+      error: {show: false, message: "", type: "danger"},
+      errorMessage: {show: false, message: "", type: "danger"},
       hasPPK: false,
       inputType: "password",
       validPassphrase: false,
@@ -206,7 +208,12 @@ class Import extends Component {
             chains: application.chains
           });
         } else {
+          const message = application.message.split(":")[0];
+          let errorType = message === "Failed to retrieve the app infromation" ? "warning" : "danger";
+
           this.setState({
+            importing: false,
+            errorMessage: {show: true, message: message, type: errorType},
             accountData: {
               tokens: 0,
               balance: balance,
@@ -245,8 +252,13 @@ class Import extends Component {
           });
         } else {
           this.setState({
+            importing: false,
+            errorMessage: {show: true, message: node.message.split(":")[0]},
             accountData: {
-              balance: balance
+              tokens: 0,
+              balance: balance,
+              status: getStakeStatus("0"),
+              amount: 0
             }
           });
         }
@@ -280,6 +292,7 @@ class Import extends Component {
       address,
       hasPPK,
       error,
+      errorMessage,
       imported,
       type,
       ppkFileName,
@@ -311,6 +324,13 @@ class Import extends Component {
     return (
       <div id="app-passphrase" className="import">
         <Row>
+          {errorMessage.show && (
+            <AppAlert
+              variant={errorMessage.type}
+              title={errorMessage.message}
+              onClose={() => this.setState({errorMessage: {show: false}})}
+              dismissible />
+          )}
           <Col className="page-title">
             <h1>Import {type === ITEM_TYPES.APPLICATION ? "App" : "Node"}</h1>
           </Col>
@@ -329,7 +349,7 @@ class Import extends Component {
                     : DASHBOARD_PATHS.createNodeForm
                 )}
               >
-                Create Node.
+                Create {type === ITEM_TYPES.APPLICATION ? "App" : "Node"}
               </Link>
             </p>
           </Col>
@@ -426,6 +446,7 @@ class Import extends Component {
                           />
                           <LoadingButton
                             loading={importing}
+                            disabled={errorMessage.show && errorMessage.type === "danger"}
                             buttonProps={{
                               variant: "dark",
                               type: "submit",

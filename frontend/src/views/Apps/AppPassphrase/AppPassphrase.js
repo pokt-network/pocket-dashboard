@@ -177,7 +177,7 @@ class AppPassphrase extends Component {
   render() {
     const {
       created,
-      validPassphrase,
+      fileDownloaded,
       inputPassphraseType,
       inputPrivateKeyType,
       showPassphraseIconURL,
@@ -243,6 +243,7 @@ class AppPassphrase extends Component {
                           value={values.passPhrase}
                           type={inputPassphraseType}
                           name="passPhrase"
+                          disabled={created}
                           onChange={(data) => {
                             handleChange(data);
                           }}
@@ -336,7 +337,7 @@ class AppPassphrase extends Component {
         <Row>
           <Col>
             <Button
-              disabled={!validPassphrase}
+              disabled={!fileDownloaded}
               onClick={() =>
                 // eslint-disable-next-line react/prop-types
                 this.props.history.replace(redirectPath)

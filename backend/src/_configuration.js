@@ -4,7 +4,7 @@ import logger from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
 import {
-  errorsHandler
+  errorHandler
 } from "./apis/_helpers";
 import jwt from "express-jwt";
 import UserService from "./services/UserService";
@@ -243,5 +243,5 @@ export function configureExpress(expressApp) {
  * @param {object} expressApp Express application object.
  */
 export function handleErrors(expressApp) {
-  expressApp.use(errorsHandler);
+  expressApp.use(errorHandler);
 }

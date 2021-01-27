@@ -6,6 +6,7 @@ import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
 import Segment from "../../../core/components/Segment/Segment";
 import AppTable from "../../../core/components/AppTable";
+import AppAlert from "../../../core/components/AppAlert";
 
 class ApplicationChainList extends Chains {
   constructor(props, context) {
@@ -19,9 +20,10 @@ class ApplicationChainList extends Chains {
     const chainsHashes = chosenChains.map((ch) => ch._id);
 
     PocketApplicationService.saveAppInfoInCache({chains: chainsHashes});
+    const {id: appId} = PocketApplicationService.getApplicationInfo();
 
     // eslint-disable-next-line react/prop-types
-    this.props.history.push(_getDashboardPath(DASHBOARD_PATHS.tierSelection));
+    this.props.history.push(_getDashboardPath(`${DASHBOARD_PATHS.appDetail.replace(":id", appId)}`));
   }
 
   render() {
@@ -38,6 +40,16 @@ class ApplicationChainList extends Chains {
 
     return (
       <div className="choose-chains">
+        <AppAlert
+          className="pb-3 pt-3 mb-4"
+          title={
+            <h4 className="ml-3">ATTENTION!</h4>
+          }
+        >
+          <p>
+            Please note that the total relays per day will be divided by the total of selected chains
+                </p>
+        </AppAlert>
         <Row>
           <Col className="page-title">
             <h1>Choose chains</h1>

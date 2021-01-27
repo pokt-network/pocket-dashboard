@@ -309,7 +309,9 @@ export default class PocketService {
     const nodeResponse = await this.__pocket.rpc(pocketRpcProvider).query.getNode(addressHex);
 
     if (nodeResponse instanceof RpcError) {
-      throw new PocketNetworkError(nodeResponse.message);
+      const error = new PocketNetworkError(nodeResponse.message);
+
+      return error;
     }
 
     return nodeResponse.node;
@@ -558,7 +560,7 @@ export default class PocketService {
 
     if (transactionFee && chainID && amount && customerAddress) {
       // Include both transaction fees for stake and unstake
-      const totalAmount = BigInt(Number(amount) + (Number(transactionFee) * 2));
+      const totalAmount = BigInt(Number(amount) + 1000000);
 
       if (totalAmount) {
         const pocketRpcProvider = await getRPCProvider();
@@ -600,5 +602,16 @@ export default class PocketService {
     } else {
       throw new PocketNetworkError("Unknown error while creating an unlocked account");
     }
+  }
+
+  async getBlockHeight() {
+    const pocketRpcProvider = await getRPCProvider();
+    const heightResponse = await this.__pocket.rpc(pocketRpcProvider).query.getHeight();
+
+    if (typeGuard(heightResponse, RpcError)) {
+      throw new PocketNetworkError(heightResponse.message);
+    }
+
+    return heightResponse.height;
   }
 }

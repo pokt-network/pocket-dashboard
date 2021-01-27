@@ -25,6 +25,7 @@ class PaymentHistory extends Component {
     this.paginateAfterDateChange = this.paginateAfterDateChange.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
     this.searchChange = this.searchChange.bind(this);
+    this.clearDateFilter = this.clearDateFilter.bind(this);
 
     this.state = {
       fromDate: "",
@@ -34,6 +35,7 @@ class PaymentHistory extends Component {
       history: [],
       offset: 0,
       page: 1,
+      filtered: false,
     };
   }
 
@@ -90,6 +92,19 @@ class PaymentHistory extends Component {
         [name]: moment(date).format("YYYY-MM-DD"),
         offset: 0,
         page: 1,
+        filtered: true,
+      }, this.paginateAfterDateChange
+    );
+  }
+
+  clearDateFilter() {
+    this.setState(
+      {
+        fromDate: "",
+        toDate: "",
+        offset: 0,
+        page: 1,
+        filtered: false,
       }, this.paginateAfterDateChange
     );
   }
@@ -137,7 +152,7 @@ class PaymentHistory extends Component {
   }
 
   render() {
-    let {history, page, offset} = this.state;
+    let {history, page, offset, filtered} = this.state;
 
     history.forEach(obj => {
       obj.formatedAmount = obj.amount / 100;
@@ -248,6 +263,12 @@ class PaymentHistory extends Component {
                 </InputGroup>
               </span>
             </div>
+            <Button
+              disabled={!filtered}
+              onClick={this.clearDateFilter}
+            >
+              <span>Clear date filter</span>
+            </Button>
             <div className="payments mt-3">
               <BootstrapTable
                 remote

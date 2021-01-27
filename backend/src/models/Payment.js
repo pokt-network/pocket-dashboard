@@ -249,15 +249,14 @@ export class PaymentHistory {
   }
 
   /**
-   * @param {boolean} throwError Throw an error if is not succeed.
    *
    * @returns {boolean} If payment was succeeded or not.
    * @throws {DashboardValidationError} if throwError is true and payment is not success.
    */
-  isSuccessPayment(throwError = false) {
-    const succeeded = this.status === "succeeded" || this.currency === "pokt";
+  isSuccessPayment() {
+    const succeeded = this.status.toLowerCase() === "succeeded" ? true : false;
 
-    if (throwError && !succeeded) {
+    if (!succeeded) {
       throw new DashboardValidationError("The payment did not succeed");
     }
 

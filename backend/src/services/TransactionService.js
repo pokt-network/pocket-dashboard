@@ -1,15 +1,10 @@
 import BaseService from "./BaseService";
 import {PocketTransaction, POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
-import JobsProvider from "../providers/data/JobsProvider";
+import CronJobService from "./CronJobService";
 
 const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";
 
-const POST_TRANSFER_QUEUE = JobsProvider.getPostTransferJobQueue();
-const APP_STAKE_QUEUE = JobsProvider.getAppStakeJobQueue();
-const APP_UNSTAKE_QUEUE = JobsProvider.getAppUnstakeJobQueue();
-const NODE_STAKE_QUEUE = JobsProvider.getNodeStakeJobQueue();
-const NODE_UNSTAKE_QUEUE = JobsProvider.getNodeUnstakeJobQueue();
-const NODE_UNJAIL_QUEUE = JobsProvider.getNodeUnJailJobQueue();
+const CRON_SERVICE = new CronJobService();
 
 export default class TransactionService extends BaseService {
 
@@ -65,10 +60,10 @@ export default class TransactionService extends BaseService {
   async addTransferTransaction(transactionHash, postAction = undefined) {
     const pocketTransaction = new PocketTransaction(new Date(), transactionHash, postAction);
 
-    const saved = await this.__addTransaction(pocketTransaction);
+    let saved = await this.__addTransaction(pocketTransaction);
 
     if (saved && postAction) {
-      JobsProvider.addJob(POST_TRANSFER_QUEUE, pocketTransaction);
+      saved = await CRON_SERVICE.addPendingTransaction(pocketTransaction);
     }
 
     return saved;
@@ -84,10 +79,10 @@ export default class TransactionService extends BaseService {
   async addAppStakeTransaction(appStakeTxHash, appStakeData) {
     const pocketTransaction = new PocketTransaction(new Date(), appStakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, appStakeData));
 
-    const saved = await this.__addTransaction(pocketTransaction);
+    let saved = await this.__addTransaction(pocketTransaction);
 
     if (saved) {
-      JobsProvider.addJob(APP_STAKE_QUEUE, pocketTransaction);
+      saved = await CRON_SERVICE.addAppStakeTransaction(pocketTransaction);
     }
 
     return saved;
@@ -103,10 +98,10 @@ export default class TransactionService extends BaseService {
   async addNodeStakeTransaction(nodeStakeTxHash, nodeStakeData) {
     const pocketTransaction = new PocketTransaction(new Date(), nodeStakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.stakeNode, nodeStakeData));
 
-    const saved = await this.__addTransaction(pocketTransaction);
+    let saved = await this.__addTransaction(pocketTransaction);
 
     if (saved) {
-      JobsProvider.addJob(NODE_STAKE_QUEUE, pocketTransaction);
+      saved = CRON_SERVICE.addNodeStakeTransaction(pocketTransaction);
     }
 
     return saved;
@@ -128,10 +123,10 @@ export default class TransactionService extends BaseService {
   async addAppUnstakeTransaction(appUnstakeTxHash, emailData) {
     const pocketTransaction = new PocketTransaction(new Date(), appUnstakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.unstakeApplication, emailData));
 
-    const saved = await this.__addTransaction(pocketTransaction);
+    let saved = await this.__addTransaction(pocketTransaction);
 
     if (saved) {
-      JobsProvider.addJob(APP_UNSTAKE_QUEUE, pocketTransaction);
+      saved = await CRON_SERVICE.addAppUnstakeTransaction(pocketTransaction);
     }
 
     return saved;
@@ -153,10 +148,10 @@ export default class TransactionService extends BaseService {
   async addNodeUnstakeTransaction(nodeUnstakeTxHash, emailData) {
     const pocketTransaction = new PocketTransaction(new Date(), nodeUnstakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.unstakeNode, emailData));
 
-    const saved = await this.__addTransaction(pocketTransaction);
+    let saved = await this.__addTransaction(pocketTransaction);
 
     if (saved) {
-      JobsProvider.addJob(NODE_UNSTAKE_QUEUE, pocketTransaction);
+      saved = await CRON_SERVICE.addNodeUnstakeTransaction(pocketTransaction);
     }
 
     return saved;
@@ -178,10 +173,10 @@ export default class TransactionService extends BaseService {
   async addNodeUnJailTransaction(nodeUnJailTxHash, emailData) {
     const pocketTransaction = new PocketTransaction(new Date(), nodeUnJailTxHash, new TransactionPostAction(POST_ACTION_TYPE.unjailNode, emailData));
 
-    const saved = await this.__addTransaction(pocketTransaction);
+    let saved = await this.__addTransaction(pocketTransaction);
 
     if (saved) {
-      JobsProvider.addJob(NODE_UNJAIL_QUEUE, pocketTransaction);
+      saved = await CRON_SERVICE.addNodeUnjailTransaction(pocketTransaction);
     }
 
     return saved;
