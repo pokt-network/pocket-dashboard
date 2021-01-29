@@ -6,7 +6,7 @@ class ThirdPage extends React.Component {
     return (
       <div
         className="token-purchase-agreement"
-        style={{pageBreakAfter: "always"}}
+        style={{ pageBreakAfter: "always" }}
       >
         <Logo />
         <ol className="ordered-list" start="3">

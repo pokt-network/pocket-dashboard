@@ -1,10 +1,10 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import "./PocketElementCard.scss";
 
 class PocketElementCard extends Component {
   render() {
-    const {title, subtitle, iconURL, status} = this.props;
+    const { title, subtitle, iconURL, status } = this.props;
 
     return (
       <div className="p-card">

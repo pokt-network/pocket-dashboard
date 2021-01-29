@@ -1,17 +1,15 @@
 import express from "express";
 import PaymentService from "../services/PaymentService";
-import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helpers";
-import UserService from "../services/UserService";
+import { apiAsyncWrapper, getOptionalQueryOption, getQueryOption } from "./_helpers";
 
 const router = express.Router();
 
 const paymentService = new PaymentService();
-const userService = new UserService();
 
 /**
  * Get all available currencies.
  */
-router.get("/currencies", apiAsyncWrapper((req, res) => {
+router.get("/currencies", apiAsyncWrapper((_, res) => {
   const currencies = paymentService.getAvailableCurrencies();
 
   res.json(currencies);
@@ -75,7 +73,7 @@ router.post("/new_intent/apps", apiAsyncWrapper(async (req, res) => {
   if (data && userEmail && userEmail.toString() === data.user.toString()) {
 
     const paymentIntent = await paymentService.createPocketPaymentIntentForApps(data);
-    const {id, createdDate, currency, amount} = paymentIntent;
+    const { id, createdDate, currency, amount } = paymentIntent;
 
     await paymentService.savePaymentHistory(createdDate, id, currency, amount, data.item, data.user, data.tokens);
     res.json(paymentIntent);
@@ -112,7 +110,7 @@ router.post("/new_intent/nodes", apiAsyncWrapper(async (req, res) => {
     const paymentIntent = await paymentService.createPocketPaymentIntentForNodes(data);
 
     if (paymentIntent) {
-      const {id, createdDate, currency, amount} = paymentIntent;
+      const { id, createdDate, currency, amount } = paymentIntent;
 
       await paymentService.savePaymentHistory(createdDate, id, currency, amount, data.item, data.user, data.tokens);
     }

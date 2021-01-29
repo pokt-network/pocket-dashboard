@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import {AnsweredSecurityQuestion} from "./AnsweredSecurityQuestion";
-import {EMAIL_REGEX} from "./Regex";
-import {DashboardValidationError} from "./Exceptions";
+import { AnsweredSecurityQuestion } from "./AnsweredSecurityQuestion";
+import { EMAIL_REGEX } from "./Regex";
+import { DashboardValidationError } from "./Exceptions";
 
 const PASSWORD_MIN_LENGTH = 8;
 const SALT_ROUNDS = 10;

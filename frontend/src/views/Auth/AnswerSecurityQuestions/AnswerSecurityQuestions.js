@@ -1,10 +1,10 @@
-import React, {Component} from "react";
-import {Button, Container, Form, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Button, Container, Form, Row } from "react-bootstrap";
 import "./AnswerSecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
 import SecurityQuestionService from "../../../core/services/PocketSecurityQuestionsService";
-import {ROUTE_PATHS} from "../../../_routes";
+import { ROUTE_PATHS } from "../../../_routes";
 import PocketUserService from "../../../core/services/PocketUserService";
 
 class AnswerSecurityQuestions extends Component {
@@ -20,9 +20,9 @@ class AnswerSecurityQuestions extends Component {
         email: "",
       },
       questions: [
-        {question: ""},
-        {question: ""},
-        {question: ""},
+        { question: "" },
+        { question: "" },
+        { question: "" },
       ],
       answer: "",
       userInput: "",
@@ -63,11 +63,11 @@ class AnswerSecurityQuestions extends Component {
     }
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   async handleSubmit(e) {
@@ -79,9 +79,9 @@ class AnswerSecurityQuestions extends Component {
 
     if (answer1.length > 0 && answer2.length > 0 && answer3.length > 0) {
       const answeredQuestions = [
-        {question: this.state.questions[0].question, answer: answer1},
-        {question: this.state.questions[1].question, answer: answer2},
-        {question: this.state.questions[2].question, answer: answer3}
+        { question: this.state.questions[0].question, answer: answer1 },
+        { question: this.state.questions[1].question, answer: answer2 },
+        { question: this.state.questions[2].question, answer: answer3 }
       ];
 
       // eslint-disable-next-line react/prop-types
@@ -101,20 +101,20 @@ class AnswerSecurityQuestions extends Component {
           // eslint-disable-next-line react/prop-types
           this.props.history.push({
             pathname: ROUTE_PATHS.reset_password_email,
-            state: {email},
+            state: { email },
           });
         } else {
-          this.setState({error: "Failed to send the reset password email."});
+          this.setState({ error: "Failed to send the reset password email." });
         }
       } else {
         this.cleanFieldValues();
-        this.setState({error: "Incorrect answer"});
+        this.setState({ error: "Incorrect answer" });
       }
     }
   }
 
   render() {
-    const {questions, error} = this.state;
+    const { questions, error } = this.state;
 
     return (
       <Container fluid id={"answer-security-questions-page"}>

@@ -1,11 +1,11 @@
 import UserService from "./UserService";
-import {Node, StakingStatus} from "@pokt-network/pocket-js";
-import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
-import {ExtendedPocketNode, PocketNode, RegisteredPocketNode, StakedNodeSummary, UserPocketNode} from "../models/Node";
+import { Node, StakingStatus } from "@pokt-network/pocket-js";
+import { PrivatePocketAccount, PublicPocketAccount } from "../models/Account";
+import { ExtendedPocketNode, PocketNode, RegisteredPocketNode, StakedNodeSummary, UserPocketNode } from "../models/Node";
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
-import {DashboardError, DashboardValidationError} from "../models/Exceptions";
-import {POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
+import { DashboardError, DashboardValidationError } from "../models/Exceptions";
+import { POST_ACTION_TYPE, TransactionPostAction } from "../models/Transaction";
 import EmailService from "../services/EmailService";
 
 const NODE_COLLECTION_NAME = "Nodes";
@@ -388,7 +388,7 @@ export default class NodeService extends BasePocketService {
    * @async
    */
   async getUserNodes(userEmail, limit, offset = 0) {
-    const filter = {user: userEmail};
+    const filter = { user: userEmail };
 
     const dashboardNodesData = (await this.persistenceService.getEntities(NODE_COLLECTION_NAME, filter, limit, offset))
       .map(PocketNode.createPocketNode)

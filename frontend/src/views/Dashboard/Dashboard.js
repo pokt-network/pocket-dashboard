@@ -1,8 +1,8 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import UserService from "../../core/services/PocketUserService";
-import {Alert, Col, Dropdown, Row} from "react-bootstrap";
+import { Alert, Col, Dropdown, Row } from "react-bootstrap";
 import "./Dashboard.scss";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../_routes";
 import InfoCard from "../../core/components/InfoCard/InfoCard";
 import {
   APPLICATIONS_LIMIT,
@@ -16,10 +16,10 @@ import NetworkService from "../../core/services/PocketNetworkService";
 import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
 import NodeService from "../../core/services/PocketNodeService";
-import {formatCurrency, formatNumbers, mapStatusToField, formatNetworkData} from "../../_helpers";
+import { formatCurrency, formatNumbers, mapStatusToField, formatNetworkData } from "../../_helpers";
 import Segment from "../../core/components/Segment/Segment";
-import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AppTable from "../../core/components/AppTable";
 import AppAlert from "../../core/components/AppAlert";
 
@@ -34,7 +34,7 @@ class Dashboard extends Component {
       networkApps: [],
       networkNodes: [],
       summary: [],
-      error: {show: false, message: ""},
+      error: { show: false, message: "" },
     };
   }
 
@@ -85,20 +85,20 @@ class Dashboard extends Component {
       welcomeAlert,
       networkApps,
       networkNodes,
-      error: {show: hasError, message: errorMessage},
+      error: { show: hasError, message: errorMessage },
       chains,
       summary: [
-        {title: `US ${formatCurrency(poktPrice)}`, subtitle: "POKT Price"},
+        { title: `US ${formatCurrency(poktPrice)}`, subtitle: "POKT Price" },
         {
           title: formatNetworkData(totalStakedTokens),
-        titleAttrs: {title: totalStakedTokens ? formatNumbers(totalStakedTokens) : undefined},
+        titleAttrs: { title: totalStakedTokens ? formatNumbers(totalStakedTokens) : undefined },
           subtitle: "Total Staked Tokens",
         },
         {
           title: formatNumbers(totalStakedNodes),
           subtitle: "Total Staked nodes",
         },
-        {title: formatNumbers(totalStakedApps), subtitle: "Total Staked apps"},
+        { title: formatNumbers(totalStakedApps), subtitle: "Total Staked apps" },
       ],
       loading: false,
     });
@@ -128,7 +128,7 @@ class Dashboard extends Component {
           <Alert
             variant="primary"
             onClose={() => {
-              this.setState({welcomeAlert: false});
+              this.setState({ welcomeAlert: false });
             }}
             dismissible
           >
@@ -142,7 +142,7 @@ class Dashboard extends Component {
             variant="danger"
             title={error.message}
             dismissible
-            onClose={() => this.setState({error: {show: false}})}
+            onClose={() => this.setState({ error: { show: false } })}
           />
         )}
         <Row noGutters>

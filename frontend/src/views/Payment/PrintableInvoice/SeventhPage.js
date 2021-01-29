@@ -6,7 +6,7 @@ class SeventhPage extends React.Component {
     return (
       <div
         className="token-purchase-agreement"
-        style={{pageBreakAfter: "always"}}
+        style={{ pageBreakAfter: "always" }}
       >
         <Logo />
         <p>

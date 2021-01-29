@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
-import React, {Component} from "react";
-import {Alert, Badge, Button, Col, Modal, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Alert, Badge, Button, Col, Modal, Row } from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {BACKEND_ERRORS, DEFAULT_NETWORK_ERROR_MESSAGE, STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
-import ApplicationService, {PocketApplicationService} from "../../../core/services/PocketApplicationService";
+import { BACKEND_ERRORS, DEFAULT_NETWORK_ERROR_MESSAGE, STAKE_STATUS, TABLE_COLUMNS } from "../../../_constants";
+import ApplicationService, { PocketApplicationService } from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatDaysCountdown, getStakeStatus, formatNumbers, formatNetworkData} from "../../../_helpers";
-import {Link} from "react-router-dom";
+import { formatDaysCountdown, getStakeStatus, formatNumbers, formatNetworkData } from "../../../_helpers";
+import { Link } from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
@@ -40,7 +40,7 @@ class AppDetail extends Component {
       isFreeTier: false,
       freeTierMsg: false,
       updatingAlert: false,
-      error: {show: false, message: ""}
+      error: { show: false, message: "" }
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -70,7 +70,7 @@ class AppDetail extends Component {
       freeTierMsg = this.props.location.state.freeTierMsg;
     }
 
-    const {id} = this.props.match.params;
+    const { id } = this.props.match.params;
 
     const {
       pocketApplication,
@@ -90,7 +90,7 @@ class AppDetail extends Component {
           }
         });
       } else {
-        this.setState({loading: false, exists: false});
+        this.setState({ loading: false, exists: false });
       }
       return;
     }
@@ -99,7 +99,7 @@ class AppDetail extends Component {
     let accountBalance;
 
     if (clientAddress) {
-      const {balance} = await PocketAccountService.getPoktBalance(clientAddress);
+      const { balance } = await PocketAccountService.getPoktBalance(clientAddress);
 
       accountBalance = balance;
     } else {
@@ -107,7 +107,7 @@ class AppDetail extends Component {
     }
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
-    const {freeTier, freeTierAAT} = pocketApplication;
+    const { freeTier, freeTierAAT } = pocketApplication;
 
     const status = getStakeStatus(parseInt(networkData.status));
     const updatingAlert = pocketApplication.updatingStatus && status === STAKE_STATUS.Unstaked;
@@ -129,7 +129,7 @@ class AppDetail extends Component {
   }
 
   async deleteApplication() {
-    const {id} = this.state.pocketApplication;
+    const { id } = this.state.pocketApplication;
 
     const appsLink = `${window.location.origin}${_getDashboardPath(
       DASHBOARD_PATHS.apps
@@ -142,18 +142,18 @@ class AppDetail extends Component {
       );
 
       if (success) {
-        this.setState({deleted: true});
+        this.setState({ deleted: true });
         // eslint-disable-next-line react/prop-types
         this.props.onBreadCrumbChange(["Apps", "App Detail", "App Removed"]);
       }
     } catch (error) {
-      this.setState({deleteModal: false, error: {show: true, message: "Free tier apps can't be deleted."}});
+      this.setState({ deleteModal: false, error: { show: true, message: "Free tier apps can't be deleted." } });
     }
   }
 
-  async unstakeApplication({ppk, passphrase}) {
-    const {freeTier, id} = this.state.pocketApplication;
-    const {address} = this.state.pocketApplication.publicPocketAccount;
+  async unstakeApplication({ ppk, passphrase }) {
+    const { freeTier, id } = this.state.pocketApplication;
+    const { address } = this.state.pocketApplication.publicPocketAccount;
 
     const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
     const detail = url.replace(":id", id);
@@ -167,31 +167,31 @@ class AppDetail extends Component {
 
     if (freeTier) {
       // Create unstake transaction
-      const {success, data} = await ApplicationService.unstakeFreeTierApplication(unstakeInformation, link);
+      const { success, data } = await ApplicationService.unstakeFreeTierApplication(unstakeInformation, link);
 
       if (success) {
         window.location.reload(false);
       } else {
-        this.setState({unstake: false, ctaButtonPressed: false, message: data});
+        this.setState({ unstake: false, ctaButtonPressed: false, message: data });
       }
     } else {
       const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
 
-      const {success, data} = await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
+      const { success, data } = await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
 
       if (success) {
         window.location.reload(false);
       } else {
-        this.setState({unstake: false, ctaButtonPressed: false, message: data});
+        this.setState({ unstake: false, ctaButtonPressed: false, message: data });
       }
     }
   }
 
-  async stakeApplication({ppk, passphrase, address}) {
-    const {id} = this.state.pocketApplication;
+  async stakeApplication({ ppk, passphrase, address }) {
+    const { id } = this.state.pocketApplication;
 
     ApplicationService.removeAppInfoFromCache();
-    ApplicationService.saveAppInfoInCache({applicationID: id, address, passphrase, ppk});
+    ApplicationService.saveAppInfoInCache({ applicationID: id, address, passphrase, ppk });
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
@@ -259,12 +259,12 @@ class AppDetail extends Component {
     const generalInfo = [
       {
         title: `${formatNetworkData(stakedTokens, false)} POKT`,
-        titleAttrs: {title: stakedTokens ? formatNumbers(stakedTokens) : undefined},
+        titleAttrs: { title: stakedTokens ? formatNumbers(stakedTokens) : undefined },
         subtitle: "Staked tokens",
       },
       {
         title: `${formatNetworkData(freeTier ? 0 : accountBalance)} POKT`,
-        titleAttrs: {title: maxRelays && !freeTier ? formatNumbers(accountBalance) : undefined},
+        titleAttrs: { title: maxRelays && !freeTier ? formatNumbers(accountBalance) : undefined },
         subtitle: "Balance"
       },
       {
@@ -277,14 +277,14 @@ class AppDetail extends Component {
       },
       {
         title: formatNumbers(maxRelays * 24),
-        titleAttrs: {title: maxRelays * 24 ? formatNumbers(maxRelays * 24) : undefined},
+        titleAttrs: { title: maxRelays * 24 ? formatNumbers(maxRelays * 24) : undefined },
         subtitle: "Max Relays Per Day"
       },
     ];
 
     const contactInfo = [
-      {title: "Website", subtitle: url},
-      {title: "Contact email", subtitle: contactEmail},
+      { title: "Website", subtitle: url },
+      { title: "Contact email", subtitle: contactEmail },
     ];
 
     let aatStr = "";
@@ -374,7 +374,7 @@ class AppDetail extends Component {
               <AppAlert
                 variant="danger"
                 title={error.message}
-                onClose={() => this.setState({error: {show: false}})}
+                onClose={() => this.setState({ error: { show: false } })}
                 dismissible />
             )}
             <div className="head">
@@ -409,7 +409,7 @@ class AppDetail extends Component {
 
                   return url.replace(":id", id);
                 }}>
-                <Button className="ml-5 mr-4" variant="dark" style={{width: "120px"}}>
+                <Button className="ml-5 mr-4" variant="dark" style={{ width: "120px" }}>
                   <span>Gateway Settings</span>
                 </Button>
               </Link>
@@ -437,7 +437,7 @@ class AppDetail extends Component {
         </Row>
         <Row >
           <Col
-            style={{display: status !== STAKE_STATUS.Staked ? "none" : "block"}}
+            style={{ display: status !== STAKE_STATUS.Staked ? "none" : "block" }}
             className={chains.length === 0 ? "mb-1" : ""}>
             <Segment scroll={false} label="Networks">
               <AppTable
@@ -474,7 +474,7 @@ class AppDetail extends Component {
               <Alert variant="light" className="aat-code">
                 <span id="aat-copy" className="copy-button" onClick={this.copyAAT}> <img src={"/assets/copy.png"} alt="copy" /></span>
                 <pre>
-                  <input id="aat-value" style={{position: "absolute", left: "-9999px"}}></input>
+                  <input id="aat-value" style={{ position: "absolute", left: "-9999px" }}></input>
                   <code className="language-html" data-lang="html">
                     {"# Returns\n"}
                     <span id="aat" >{aatStr}</span>
@@ -524,12 +524,12 @@ class AppDetail extends Component {
                   to change your app description.
                 </p>
             </span>
-            <span style={{display: isFreeTier ? "none" : "inline-block"}} className="option">
+            <span style={{ display: isFreeTier ? "none" : "inline-block" }} className="option">
               <img src={"/assets/trash.svg"} alt="trash-action-icon" />
               <p>
                 <span
                   className="link"
-                  onClick={() => this.setState({deleteModal: true})}>
+                  onClick={() => this.setState({ deleteModal: true })}>
                   Remove
                   </span>{" "}
                   this App from the Dashboard.
@@ -539,7 +539,7 @@ class AppDetail extends Component {
         </Row>
         <Modal
           show={deleteModal}
-          onHide={() => this.setState({deleteModal: false})}
+          onHide={() => this.setState({ deleteModal: false })}
           animation={false}
           centered
           dialogClassName="app-modal"
@@ -554,7 +554,7 @@ class AppDetail extends Component {
             the private key assigned to it.
           </Modal.Body>
           <Modal.Footer>
-            <Button className="dark-button" onClick={() => this.setState({deleteModal: false})}>
+            <Button className="dark-button" onClick={() => this.setState({ deleteModal: false })}>
               <span>Cancel</span>
             </Button>
             <Button onClick={this.deleteApplication}>

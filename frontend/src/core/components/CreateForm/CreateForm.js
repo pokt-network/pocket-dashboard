@@ -1,4 +1,4 @@
-import {Component} from "react";
+import { Component } from "react";
 import "./CreateForm.scss";
 
 class CreateForm extends Component {
@@ -30,7 +30,7 @@ class CreateForm extends Component {
 
   async handleDrop(img, error) {
     if (error) {
-      this.setState({icon: "", imgError: error});
+      this.setState({ icon: "", imgError: error });
       return;
     }
 
@@ -51,15 +51,15 @@ class CreateForm extends Component {
     };
 
     toDataUrl(img.preview, (base64data) => {
-      this.setState({icon: base64data, imgError: ""});
+      this.setState({ icon: base64data, imgError: "" });
     });
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 }
 

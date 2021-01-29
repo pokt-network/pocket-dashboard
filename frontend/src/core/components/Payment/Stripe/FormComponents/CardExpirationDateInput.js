@@ -1,6 +1,6 @@
-import React, {Component} from "react";
-import {CardExpiryElement} from "@stripe/react-stripe-js";
-import {PaymentInputStyle} from "./ComponentStyles";
+import React, { Component } from "react";
+import { CardExpiryElement } from "@stripe/react-stripe-js";
+import { PaymentInputStyle } from "./ComponentStyles";
 
 class CardExpirationDateInput extends Component {
 

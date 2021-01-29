@@ -10,7 +10,7 @@ import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
 import moment from "moment";
-import {Configurations} from "./_configuration";
+import { Configurations } from "./_configuration";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
@@ -136,7 +136,7 @@ export const validateYup = async (values, schema) => {
   let errors = {};
   let yupErrors;
 
-  await schema.validate(values, {abortEarly: false}).catch((err) => {
+  await schema.validate(values, { abortEarly: false }).catch((err) => {
     errors = err;
   });
 

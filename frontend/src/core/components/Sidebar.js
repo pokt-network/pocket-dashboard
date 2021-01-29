@@ -1,10 +1,10 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {Col} from "react-bootstrap";
+import { Col } from "react-bootstrap";
 
 export default class Sidebar extends Component {
   render() {
-    const {children, xs, sm, lg} = this.props;
+    const { children, xs, sm, lg } = this.props;
 
     return (
       <Col xs={xs} sm={sm} lg={lg} id={"sidebar"}>

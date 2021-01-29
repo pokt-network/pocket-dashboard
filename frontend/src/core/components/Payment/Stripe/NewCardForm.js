@@ -1,10 +1,10 @@
-import React, {Component} from "react";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import PaymentContainer from "./PaymentContainer";
-import {CardCVCNumberInput, CardExpirationDateInput, CardNumberInput} from "./FormComponents";
-import {CardNumberElement, ElementsConsumer} from "@stripe/react-stripe-js";
+import { CardCVCNumberInput, CardExpirationDateInput, CardNumberInput } from "./FormComponents";
+import { CardNumberElement, ElementsConsumer } from "@stripe/react-stripe-js";
 import PropTypes from "prop-types";
-import {PAYMENT_REGION_OR_COUNTRY} from "../../../../_constants";
+import { PAYMENT_REGION_OR_COUNTRY } from "../../../../_constants";
 import "../Payment.scss";
 
 class NewCardForm extends Component {
@@ -26,11 +26,11 @@ class NewCardForm extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   /**
@@ -40,7 +40,7 @@ class NewCardForm extends Component {
    * @throws Error If validation fails.
    */
   validateForm() {
-    const {cardHolderName, billingAddressLine1, zipCode, country} = this.state.data;
+    const { cardHolderName, billingAddressLine1, zipCode, country } = this.state.data;
 
     if (!cardHolderName) {
       throw Error("Card holder name cannot be empty");
@@ -69,7 +69,7 @@ class NewCardForm extends Component {
       this.validateForm();
 
       const cardNumber = stripeElements.getElement(CardNumberElement);
-      const {cardHolderName, billingAddressLine1, zipCode, country} = this.state.data;
+      const { cardHolderName, billingAddressLine1, zipCode, country } = this.state.data;
 
       const cardData = {
         card: cardNumber,
@@ -86,14 +86,14 @@ class NewCardForm extends Component {
   }
 
   render() {
-    const {cardHolderName, billingAddressLine1, zipCode} = this.state.data;
-    const {formTitle, actionButtonName} = this.props;
+    const { cardHolderName, billingAddressLine1, zipCode } = this.state.data;
+    const { formTitle, actionButtonName } = this.props;
 
     return (
       <PaymentContainer>
         <ElementsConsumer>
           {
-            ({elements, stripe}) => (
+            ({ elements, stripe }) => (
               <div>
                 <Row>
                   <h2>{formTitle}</h2>

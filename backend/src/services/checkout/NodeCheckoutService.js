@@ -1,6 +1,6 @@
-import {BaseCheckoutService} from "./BaseCheckoutService";
-import {Configurations} from "../../_configuration";
-import {DashboardValidationError} from "../../models/Exceptions";
+import { BaseCheckoutService } from "./BaseCheckoutService";
+import { Configurations } from "../../_configuration";
+import { DashboardValidationError } from "../../models/Exceptions";
 
 export default class NodeCheckoutService extends BaseCheckoutService {
 
@@ -55,6 +55,6 @@ export default class NodeCheckoutService extends BaseCheckoutService {
     
     const usdValue = validatorPower * this.poktMarketPrice;
 
-    return {upokt, usdValue};
+    return { upokt, usdValue };
   }
 }

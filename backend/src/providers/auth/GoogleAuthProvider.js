@@ -1,7 +1,7 @@
 import BaseAuthProvider from "./BaseAuthProvider";
-import {Configurations} from "../../_configuration";
-import {google} from "googleapis";
-import {GoogleUser} from "../../models/User";
+import { Configurations } from "../../_configuration";
+import { google } from "googleapis";
+import { GoogleUser } from "../../models/User";
 
 export default class GoogleAuthProvider extends BaseAuthProvider {
 
@@ -11,7 +11,7 @@ export default class GoogleAuthProvider extends BaseAuthProvider {
   }
 
   __createGoogleAuth() {
-    const {client_id, client_secret, callback_url} = this._authProviderConfiguration;
+    const { client_id, client_secret, callback_url } = this._authProviderConfiguration;
 
     return new google.auth.OAuth2(client_id, client_secret, callback_url);
   }
@@ -45,7 +45,7 @@ export default class GoogleAuthProvider extends BaseAuthProvider {
   }
 
   async getToken(code, tokenType) {
-    const {tokens} = await this.__googleAuth.getToken(code);
+    const { tokens } = await this.__googleAuth.getToken(code);
 
     return tokens[tokenType.toLowerCase()];
   }
@@ -53,7 +53,7 @@ export default class GoogleAuthProvider extends BaseAuthProvider {
   async getUserData(token, tokenType) {
     const people = this.__getPeopleService(token, tokenType);
 
-    const {data} = await people.people.get({
+    const { data } = await people.people.get({
       resourceName: "people/me",
       personFields: "emailAddresses,names,photos"
     });

@@ -1,10 +1,10 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import Sidebar from "../../Sidebar";
-import {Col, Row} from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import MenuItem from "./MenuItem/MenuItem";
 import "./AppSidebar.scss";
 import navRoutes from "../../../../_nav";
-import {isActiveUrl} from "../../../../_helpers";
+import { isActiveUrl } from "../../../../_helpers";
 
 class AppSidebar extends Component {
   render() {

@@ -1,7 +1,7 @@
-import {Application, ApplicationParams, StakingStatus} from "@pokt-network/pocket-js";
-import {PrivatePocketAccount, PublicPocketAccount} from "./Account";
-import {EMAIL_REGEX, URL_REGEX} from "./Regex";
-import {DashboardValidationError} from "./Exceptions";
+import { Application, ApplicationParams, StakingStatus } from "@pokt-network/pocket-js";
+import { PrivatePocketAccount, PublicPocketAccount } from "./Account";
+import { EMAIL_REGEX, URL_REGEX } from "./Regex";
+import { DashboardValidationError } from "./Exceptions";
 const crypto = require("crypto");
 
 export class RegisteredPocketApplication {
@@ -11,7 +11,7 @@ export class RegisteredPocketApplication {
    * @param {StakingStatus} status Status
    */
   constructor(name, address, status) {
-    Object.assign(this, {name, address, status});
+    Object.assign(this, { name, address, status });
   }
 }
 
@@ -25,7 +25,7 @@ export class UserPocketApplication {
    * @param {number} status Status.
    */
   constructor(id, name, address, icon, stakedPOKT, status) {
-    Object.assign(this, {id, name, address, icon, stakedPOKT, status});
+    Object.assign(this, { id, name, address, icon, stakedPOKT, status });
   }
 }
 
@@ -48,7 +48,7 @@ export class PocketApplication {
    * @param {object} gatewaySettings Whitelists and keys and settings for the Gateway
    */
   constructor(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings) {
-    Object.assign(this, {name, owner, url, contactEmail, user, description, icon});
+    Object.assign(this, { name, owner, url, contactEmail, user, description, icon });
 
     this.id = "";
     this.publicPocketAccount = publicPocketAccount !== undefined ? publicPocketAccount : new PublicPocketAccount("", "");
@@ -153,7 +153,7 @@ export class PocketApplication {
    * @static
    */
   static createPocketApplication(applicationData) {
-    const {name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings} = applicationData;
+    const { name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings } = applicationData;
 
     const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings);
 
@@ -186,7 +186,7 @@ export class PocketApplication {
    * @static
    */
   static createPublicPocketApplication(applicationData) {
-    const {name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings} = applicationData;
+    const { name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings } = applicationData;
 
     const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings);
     
@@ -222,7 +222,7 @@ export class PocketApplication {
    * @static
    */
   static createPocketPrivateApplication(applicationData) {
-    const {name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings} = applicationData;
+    const { name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings } = applicationData;
     const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings);
 
     pocketApplication.id = applicationData._id ?? "";
@@ -261,7 +261,7 @@ export class PocketApplication {
    * @static
    */
   static createUserPocketApplication(applicationData, networkApplications) {
-    const {id, name, address, icon} = applicationData;
+    const { id, name, address, icon } = applicationData;
     let networkApp = networkApplications.filter(app => app.address === applicationData.address);
 
     if (networkApp.length > 0) {
@@ -281,7 +281,7 @@ export class ExtendedPocketApplication {
    * @param {Application} networkData Application data from Pocket Network.
    */
   constructor(pocketApplication, networkData) {
-    Object.assign(this, {pocketApplication, networkData});
+    Object.assign(this, { pocketApplication, networkData });
   }
 
   /**
@@ -307,7 +307,7 @@ export class ExtendedPocketApplication {
    * @static
    */
   static createNetworkApplication(publicPocketAccount, applicationParameters) {
-    const {address, publicKey} = publicPocketAccount;
+    const { address, publicKey } = publicPocketAccount;
 
     return {
       address,
@@ -330,6 +330,6 @@ export class StakedApplicationSummary {
    * @param {string} totalStaked Total staked applications.
    */
   constructor(totalApplications, averageStaked, totalStaked) {
-    Object.assign(this, {totalApplications, averageStaked, totalStaked});
+    Object.assign(this, { totalApplications, averageStaked, totalStaked });
   }
 }

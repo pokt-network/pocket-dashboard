@@ -1,18 +1,18 @@
-import React, {Component} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import {
   AuthProviderButton,
   AuthProviderType,
 } from "../../../core/components/AuthProviderButton";
 import UserService from "../../../core/services/PocketUserService";
-import {ROUTE_PATHS} from "../../../_routes";
-import {Link, Redirect} from "react-router-dom";
+import { ROUTE_PATHS } from "../../../_routes";
+import { Link, Redirect } from "react-router-dom";
 import AuthSidebar from "../../../core/components/AuthSidebar/AuthSidebar";
-import {faGithub, faGoogle} from "@fortawesome/free-brands-svg-icons";
-import {Formik} from "formik";
+import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { Formik } from "formik";
 import * as yup from "yup";
-import {VALIDATION_MESSAGES} from "../../../_constants";
-import {validateYup} from "../../../_helpers";
+import { VALIDATION_MESSAGES } from "../../../_constants";
+import { validateYup } from "../../../_helpers";
 import cls from "classnames";
 
 class Login extends Component {
@@ -52,14 +52,14 @@ class Login extends Component {
   async handleLogin(e) {
     e.preventDefault();
 
-    this.setState({loggedIn: true});
+    this.setState({ loggedIn: true });
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   async validate(values) {
@@ -72,12 +72,12 @@ class Login extends Component {
       return yupErr;
     }
 
-    const {success, data} = await UserService.login(
+    const { success, data } = await UserService.login(
       values.email, values.password
     );
 
     if (!success) {
-      const {message: err} = data.response.data;
+      const { message: err } = data.response.data;
 
       if (err === "Passwords do not match.") {
         errors.password = "Wrong password.";
@@ -102,8 +102,8 @@ class Login extends Component {
   }
 
   render() {
-    const {home, signup, forgot_password} = ROUTE_PATHS;
-    const {loggedIn} = this.state;
+    const { home, signup, forgot_password } = ROUTE_PATHS;
+    const { loggedIn } = this.state;
 
     if (loggedIn) {
       return <Redirect to={home} />;
@@ -128,14 +128,14 @@ class Login extends Component {
                   // validationSchema={this.schema}
                   onSubmit={() => {
                     UserService.showWelcomeMessage(true);
-                    this.setState({loggedIn: true});
+                    this.setState({ loggedIn: true });
                   }}
                   initialValues={this.state.data}
                   values={this.state.data}
                   validateOnChange={false}
                   validateOnBlur={false}
                 >
-                  {({handleSubmit, handleChange, values, errors}) => (
+                  {({ handleSubmit, handleChange, values, errors }) => (
                     <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
                       <Form.Group>
                         <Form.Label>Email</Form.Label>
@@ -178,7 +178,7 @@ class Login extends Component {
                       >
                         Log in
                       </Button>
-                      <div className="containerDiv" style={{display: "none"}}>
+                      <div className="containerDiv" style={{ display: "none" }}>
                         <div className="divider mt-3 mb-3">Or</div>
                         <div id={"provider-buttons"}>
                           <AuthProviderButton

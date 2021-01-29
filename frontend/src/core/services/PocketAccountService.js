@@ -24,10 +24,10 @@ export class PocketAccountService extends PocketBaseService {
     return axios
       .post(this._getURL("import"), data)
       .then((response) => {
-        return {success: true, data: response.data};
+        return { success: true, data: response.data };
       })
       .catch((err) => {
-        return {success: false, data: err.response.data};
+        return { success: false, data: err.response.data };
       });
   }
 

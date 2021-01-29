@@ -1,6 +1,6 @@
 import StripePaymentProvider from "./StripePaymentProvider";
 import TokenPaymentProvider from "./TokenPaymentProvider";
-import {Configurations} from "../../_configuration";
+import { Configurations } from "../../_configuration";
 import BasePaymentProvider from "./BasePaymentProvider";
 
 /** @type {BasePaymentProvider} */

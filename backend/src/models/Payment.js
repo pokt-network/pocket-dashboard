@@ -1,5 +1,5 @@
-import {Configurations} from "../_configuration";
-import {DashboardValidationError} from "./Exceptions";
+import { Configurations } from "../_configuration";
+import { DashboardValidationError } from "./Exceptions";
 
 export class BillingAddress {
 
@@ -9,7 +9,7 @@ export class BillingAddress {
    * @param {string} country Country.
    */
   constructor(line1, postalCode, country) {
-    Object.assign(this, {line1, postal_code: postalCode, country});
+    Object.assign(this, { line1, postal_code: postalCode, country });
   }
 
   /**
@@ -48,7 +48,7 @@ export class BillingDetails {
    * @param {BillingAddress} address Address.
    */
   constructor(name, address) {
-    Object.assign(this, {name, address});
+    Object.assign(this, { name, address });
   }
 
   /**
@@ -86,7 +86,7 @@ export class PaymentMethod {
    * @param {BillingDetails} billingDetails Billing details.
    */
   constructor(paymentMethod, user, billingDetails) {
-    Object.assign(this, {paymentMethod, user, billingDetails});
+    Object.assign(this, { paymentMethod, user, billingDetails });
   }
 
   /**
@@ -132,7 +132,7 @@ export class PaymentMethod {
    * @static
    */
   static createPaymentMethod(paymentMethodData) {
-    const {paymentMethod, user, billingDetails} = paymentMethodData;
+    const { paymentMethod, user, billingDetails } = paymentMethodData;
 
     return new PaymentMethod(paymentMethod, user, billingDetails);
   }
@@ -150,7 +150,7 @@ export class PaymentHistory {
    * @param {number} tokens Tokens used for this payment.
    */
   constructor(createdDate, paymentID, currency, amount, item, user, tokens) {
-    Object.assign(this, {createdDate, paymentID, currency, amount, item, user, tokens});
+    Object.assign(this, { createdDate, paymentID, currency, amount, item, user, tokens });
 
     // noinspection JSUnusedGlobalSymbols
     /** @type {string} */

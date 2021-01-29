@@ -5,7 +5,7 @@ const axiosInstance = () => {
 
   axios.interceptors.request.use(
     async config => {
-      const {accessToken, refreshToken, email} = UserService.getUserInfo();
+      const { accessToken, refreshToken, email } = UserService.getUserInfo();
 
     config.headers = {
       "Authorization": `Token ${accessToken}, Refresh ${refreshToken}, Email ${email}`,
@@ -31,11 +31,11 @@ const axiosInstance = () => {
         const userEmail = response.headers.authorization.split(", ")[1].split(" ")[2];
 
         // Check if the session header belongs to the current user
-        const {email} = UserService.getUserInfo();
+        const { email } = UserService.getUserInfo();
 
         // Save response session information only if it belongs to the logged in user
         if (userEmail === email) {
-          UserService.saveUserSessionInCache({accessToken, refreshToken});
+          UserService.saveUserSessionInCache({ accessToken, refreshToken });
         }
       }
     }

@@ -1,6 +1,6 @@
 import "chai/register-should";
 import PocketService from "../../src/services/PocketService";
-import {Configurations} from "../../src/_configuration";
+import { Configurations } from "../../src/_configuration";
 
 /** @type {string} */
 const FREE_TIER_PRIVATE_KEY_WITH_POKT = process.env.POCKET_FREE_TIER_ACCOUNT;
@@ -8,14 +8,18 @@ const FREE_TIER_PRIVATE_KEY_WITH_POKT = process.env.POCKET_FREE_TIER_ACCOUNT;
 const ACCOUNT_FROM_TRANSFER = process.env.TEST_ACCOUNT_FROM_TRANSFER;
 
 /** @type {string} */
-const APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT;
+const APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT =
+  process.env.TEST_APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT;
 /** @type {string} */
-const APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE = process.env.TEST_APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE;
+const APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE =
+  process.env.TEST_APPLICATION_ACCOUNT_PRIVATE_KEY_WITH_POKT_PASSPHRASE;
 
 /** @type {string} */
-const NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT = process.env.TEST_NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT;
+const NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT =
+  process.env.TEST_NODE_ACCOUNT_PRIVATE_KEY_WITH_POKT;
 /** @type {string} */
-const APPLICATION_ACCOUNT_IN_NETWORK = process.env.TEST_APPLICATION_ACCOUNT_IN_NETWORK;
+const APPLICATION_ACCOUNT_IN_NETWORK =
+  process.env.TEST_APPLICATION_ACCOUNT_IN_NETWORK;
 /** @type {string} */
 const NODE_ACCOUNT_IN_NETWORK = process.env.TEST_NODE_ACCOUNT_IN_NETWORK;
 

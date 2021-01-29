@@ -1,8 +1,8 @@
-import React, {Component} from "react";
-import {Button, Modal, Form} from "react-bootstrap";
+import React, { Component } from "react";
+import { Button, Modal, Form } from "react-bootstrap";
 import PocketSecurityQuestionsService from "../services/PocketSecurityQuestionsService";
 import PocketUserService from "../services/PocketUserService";
-import {PropTypes} from "prop-types";
+import { PropTypes } from "prop-types";
 
 class SecurityQuestionModal extends Component {
   constructor(props, context) {
@@ -21,15 +21,15 @@ class SecurityQuestionModal extends Component {
     };
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   async componentDidMount() {
-    const {email} = PocketUserService.getUserInfo();
+    const { email } = PocketUserService.getUserInfo();
 
     const {
       success,
@@ -38,17 +38,17 @@ class SecurityQuestionModal extends Component {
     );
 
     if (success !== false) {
-      this.setState({question: success.question, answer: success.answer});
+      this.setState({ question: success.question, answer: success.answer });
     }
   }
 
   checkAnswer() {
-    const {answer} = this.state;
-    const {userAnswer} = this.state.data;
-    const {onClose, onAfterValidation} = this.props;
+    const { answer } = this.state;
+    const { userAnswer } = this.state.data;
+    const { onClose, onAfterValidation } = this.props;
 
     if (answer.toLowerCase() !== userAnswer.toLowerCase()) {
-      this.setState({error: "Incorrect answer"});
+      this.setState({ error: "Incorrect answer" });
       return;
     }
 
@@ -57,9 +57,9 @@ class SecurityQuestionModal extends Component {
   }
 
   render() {
-    const {question, error} = this.state;
-    const {userAnswer} = this.state.data;
-    const {show, onClose} = this.props;
+    const { question, error } = this.state;
+    const { userAnswer } = this.state.data;
+    const { show, onClose } = this.props;
 
     return (
       <Modal

@@ -24,7 +24,7 @@ export class SecurityQuestion {
    * @param {string} question Question data.
    */
   constructor(question) {
-    Object.assign(this, {question});
+    Object.assign(this, { question });
   }
 
   /**

@@ -1,8 +1,8 @@
 import BaseAuthProvider from "./BaseAuthProvider";
-import {Configurations} from "../../_configuration";
+import { Configurations } from "../../_configuration";
 import * as queryString from "query-string";
 import axios from "axios";
-import {GithubUser} from "../../models/User";
+import { GithubUser } from "../../models/User";
 
 export default class GithubAuthProvider extends BaseAuthProvider {
 
@@ -56,7 +56,7 @@ export default class GithubAuthProvider extends BaseAuthProvider {
     });
 
     /** @type {{name: string, email: string}} */
-    const {data} = response;
+    const { data } = response;
 
     return new GithubUser(data.email, data.name);
   }

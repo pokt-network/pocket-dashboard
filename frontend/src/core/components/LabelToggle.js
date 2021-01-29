@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faAngleDown} from "@fortawesome/free-solid-svg-icons";
-import {STYLING} from "../../_constants";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleDown } from "@fortawesome/free-solid-svg-icons";
+import { STYLING } from "../../_constants";
 import PropTypes from "prop-types";
 
 // eslint-disable-next-line react/display-name
-const LabelToggle = React.forwardRef(({children, onClick}, ref) => (
+const LabelToggle = React.forwardRef(({ children, onClick }, ref) => (
   <a
     className="label-dropdown"
     href=""

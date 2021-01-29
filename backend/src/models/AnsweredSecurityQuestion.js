@@ -5,7 +5,7 @@ export class AnsweredSecurityQuestion {
    * @param {string} answer Answer data.
    */
   constructor(question, answer) {
-    Object.assign(this, {question, answer});
+    Object.assign(this, { question, answer });
   }
 
   /**

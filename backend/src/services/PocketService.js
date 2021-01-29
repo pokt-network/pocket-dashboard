@@ -16,8 +16,8 @@ import {
   UnlockedAccount,
   PocketAAT
 } from "@pokt-network/pocket-js";
-import {Configurations} from "../_configuration";
-import {PocketNetworkError} from "../models/Exceptions";
+import { Configurations } from "../_configuration";
+import { PocketNetworkError } from "../models/Exceptions";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
@@ -208,10 +208,10 @@ export default class PocketService {
    */
   async appStakeRequest(address, passphrase, chains, stakeAmount) {
 
-    const {chain_id: chainID, transaction_fee: transactionFee} = POCKET_NETWORK_CONFIGURATION;
+    const { chain_id: chainID, transaction_fee: transactionFee } = POCKET_NETWORK_CONFIGURATION;
 
     const transactionSender = await this._getTransactionSender(address, passphrase);
-    const {unlockedAccount: account} = transactionSender;
+    const { unlockedAccount: account } = transactionSender;
 
     return await transactionSender
       .appStake(
@@ -230,7 +230,7 @@ export default class PocketService {
    */
   async appUnstakeRequest(address, passphrase) {
     try {
-      const {chain_id: chainID, transaction_fee: transactionFee} = POCKET_NETWORK_CONFIGURATION;
+      const { chain_id: chainID, transaction_fee: transactionFee } = POCKET_NETWORK_CONFIGURATION;
       const transactionSender = await this._getTransactionSender(address, passphrase);
 
       return await transactionSender
@@ -519,7 +519,7 @@ export default class PocketService {
    */
   async transferFromFreeTierFund(amount, customerAddress) {
 
-    const {transaction_fee: transactionFee, chain_id: chainID} = POCKET_NETWORK_CONFIGURATION;
+    const { transaction_fee: transactionFee, chain_id: chainID } = POCKET_NETWORK_CONFIGURATION;
 
     if (transactionFee && chainID && amount && customerAddress) {
       // Include transaction fee for the stake transaction
@@ -556,7 +556,7 @@ export default class PocketService {
    */
   async transferFromMainFund(amount, customerAddress) {
 
-    const {transaction_fee: transactionFee, chain_id: chainID} = POCKET_NETWORK_CONFIGURATION;
+    const { transaction_fee: transactionFee, chain_id: chainID } = POCKET_NETWORK_CONFIGURATION;
 
     if (transactionFee && chainID && amount && customerAddress) {
       // Include both transaction fees for stake and unstake

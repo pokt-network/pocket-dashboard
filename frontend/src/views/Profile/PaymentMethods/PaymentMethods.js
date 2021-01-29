@@ -1,6 +1,6 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./PaymentMethods.scss";
-import {Col, Row} from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDisplay";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import UserService from "../../../core/services/PocketUserService";
@@ -17,7 +17,7 @@ class PaymentMethods extends Component {
     this.saveNewCard = this.saveNewCard.bind(this);
 
     this.state = {
-      alert: {show: false, text: "", variant: ""},
+      alert: { show: false, text: "", variant: "" },
       paymentMethods: [],
       newCard: false,
       loading: false,
@@ -25,18 +25,18 @@ class PaymentMethods extends Component {
   }
 
   async componentDidMount() {
-    this.setState({loading: false});
+    this.setState({ loading: false });
 
     const user = UserService.getUserInfo().email;
     const paymentMethods = await PaymentService.getPaymentMethods(user);
 
-    this.setState({paymentMethods, loading: false});
+    this.setState({ paymentMethods, loading: false });
   }
 
   async saveNewCard(e, cardData, stripe) {
     e.preventDefault();
-    const {cardHolderName: name} = cardData;
-    const billingDetails = {name};
+    const { cardHolderName: name } = cardData;
+    const billingDetails = { name };
 
     StripePaymentService.createPaymentMethod(
       stripe, cardData.card, billingDetails
@@ -61,7 +61,7 @@ class PaymentMethods extends Component {
       }
 
       if (result.paymentMethod) {
-        const {success, data} = await StripePaymentService.savePaymentMethod(
+        const { success, data } = await StripePaymentService.savePaymentMethod(
           result.paymentMethod, billingDetails
         );
 
@@ -96,7 +96,7 @@ class PaymentMethods extends Component {
   }
 
   async deleteCard(paymentMehodId) {
-    const {paymentMethods: allPaymentMethods} = this.state;
+    const { paymentMethods: allPaymentMethods } = this.state;
 
     const paymentMethods = allPaymentMethods.filter(
       (m) => m.id !== paymentMehodId
@@ -105,7 +105,7 @@ class PaymentMethods extends Component {
     const success = await PaymentService.deletePaymentMethod(paymentMehodId);
 
     if (success) {
-      this.setState({paymentMethods});
+      this.setState({ paymentMethods });
     } else {
       this.setState({
         alert: {
@@ -141,20 +141,20 @@ class PaymentMethods extends Component {
 
     return (
       <Row id="general" className="payment-methods">
-        <Col lg={{span: 10, offset: 1}} className="title-page">
+        <Col lg={{ span: 10, offset: 1 }} className="title-page">
           {alert.show && (
             <AppAlert
               variant={alert.variant}
               title={alert.text}
               dismissible
-              onClose={() => this.setState({alert: {show: false}})}
+              onClose={() => this.setState({ alert: { show: false } })}
             />
           )}
           <div className="wrapper">
             <h1> Payment methods</h1>
             <div id="cards">
               {paymentMethods.map((card, idx) => {
-                const {cardData, holder} = card;
+                const { cardData, holder } = card;
 
                 return (
                   <CardDisplay
@@ -171,7 +171,7 @@ class PaymentMethods extends Component {
             <br />
             {!newCard && (
               <p
-                onClick={() => this.setState({newCard: true})}
+                onClick={() => this.setState({ newCard: true })}
                 className="new-card"
               >
                 Add a new card

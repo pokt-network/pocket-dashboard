@@ -1,4 +1,4 @@
-import {Account} from "@pokt-network/pocket-js";
+import { Account } from "@pokt-network/pocket-js";
 
 export class PublicPocketAccount {
 
@@ -7,7 +7,7 @@ export class PublicPocketAccount {
    * @param {string} publicKey Public key in Hex.
    */
   constructor(address, publicKey) {
-    Object.assign(this, {address, publicKey});
+    Object.assign(this, { address, publicKey });
   }
 
   /**
@@ -33,6 +33,6 @@ export class PrivatePocketAccount {
    * @param {string} privateKey Unencrypted private key in Hex.
    */
   constructor(address, publicKey, privateKey) {
-    Object.assign(this, {address, publicKey, privateKey});
+    Object.assign(this, { address, publicKey, privateKey });
   }
 }

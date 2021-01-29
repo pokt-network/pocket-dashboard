@@ -1,6 +1,6 @@
 import express from "express";
 import AccountService from "../services/AccountService";
-import {apiAsyncWrapper} from "./_helpers";
+import { apiAsyncWrapper } from "./_helpers";
 
 const router = express.Router();
 
@@ -23,7 +23,7 @@ router.get("/balance/:accountAddress", apiAsyncWrapper(async (req, res) => {
 
   const balance = await accountService.getBalance(params.accountAddress);
 
-  res.json({balance});
+  res.json({ balance });
 }));
 
 router.get("/balance/pokt/:accountAddress", apiAsyncWrapper(async (req, res) => {
@@ -32,7 +32,7 @@ router.get("/balance/pokt/:accountAddress", apiAsyncWrapper(async (req, res) => 
 
   const balance = await accountService.getPoktBalance(params.accountAddress);
 
-  res.json({balance});
+  res.json({ balance });
 }));
 
 

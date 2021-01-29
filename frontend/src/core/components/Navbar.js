@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {Col, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Col, Row } from "react-bootstrap";
 import PropTypes from "prop-types";
 
 class Navbar extends Component {

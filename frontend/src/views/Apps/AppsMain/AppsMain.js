@@ -1,8 +1,8 @@
 import React from "react";
 import cls from "classnames";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import AppTable from "../../../core/components/AppTable";
-import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
+import { Button, Col, FormControl, InputGroup, Row } from "react-bootstrap";
 import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
@@ -12,11 +12,11 @@ import {
   TABLE_COLUMNS,
   STYLING,
   BACKEND_ERRORS,
-  DEFAULT_NETWORK_ERROR_MESSAGE} from "../../../_constants";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+  DEFAULT_NETWORK_ERROR_MESSAGE } from "../../../_constants";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
+import { formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField } from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import LoadingOverlay from "react-loading-overlay";
 import _ from "lodash";
@@ -62,12 +62,12 @@ class AppsMain extends Main {
 
     ApplicationService.getStakedApplicationSummary()
       .then(
-        ({totalApplications,
+        ({ totalApplications,
           totalStaked,
           averageStaked,
           error,
           name,
-          message}) => {
+          message }) => {
 
           hasError = error ? error : hasError;
           errorMessage = error ? message : errorMessage;
@@ -108,13 +108,13 @@ class AppsMain extends Main {
       if (hasError) {
         this.setState({
           loading: false,
-          error: {show: true, message: errorMessage},
+          error: { show: true, message: errorMessage },
         });
       }
   }
 
   async loadMoreUserApps(offset) {
-    const {userItems} = this.state;
+    const { userItems } = this.state;
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await ApplicationService.getAllUserApplications(
       userEmail, APPLICATIONS_LIMIT, (offset) * APPLICATIONS_LIMIT + 1
@@ -130,7 +130,7 @@ class AppsMain extends Main {
   }
 
   async loadMoreRegisteredApps(offset) {
-    const {registeredItems} = this.state;
+    const { registeredItems } = this.state;
 
     const newRegisteredItems = await ApplicationService.getAllApplications(
       APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1
@@ -165,7 +165,7 @@ class AppsMain extends Main {
       hasApps && filteredItems.length * 105 > MY_APPS_HEIGHT;
 
     const cards = [
-      {title: formatNumbers(total), subtitle: "Total of Apps"},
+      { title: formatNumbers(total), subtitle: "Total of Apps" },
       {
         title: formatNetworkData(averageStaked, false),
         subtitle: "Average POKT Staked",
@@ -198,7 +198,7 @@ class AppsMain extends Main {
               variant="danger"
               title={error.message}
               dismissible
-              onClose={() => this.setState({error: {show: false}})}
+              onClose={() => this.setState({ error: { show: false } })}
             />
           )}
           <Col sm="8" className="page-title">
@@ -237,7 +237,7 @@ class AppsMain extends Main {
                       placeholder="Search an App"
                       name="searchQuery"
                       onChange={this.handleChange}
-                      onKeyPress={({key}) => {
+                      onKeyPress={({ key }) => {
                         if (key === "Enter") {
                           this.handleSearch("name");
                         }
@@ -259,7 +259,7 @@ class AppsMain extends Main {
                 className={cls("scrollable main-list", {
                   "has-scroll": myAppsHasScroll,
                 })}
-                style={{height: `${MY_APPS_HEIGHT}px`}}
+                style={{ height: `${MY_APPS_HEIGHT}px` }}
               >
                 <InfiniteScroll
                   pageStart={0}
@@ -271,7 +271,7 @@ class AppsMain extends Main {
                 <LoadingOverlay active={userItemsTableLoading} spinner>
                   {hasApps ? (
                     filteredItems.map((app, idx) => {
-                      const {id: applicationID, name, stakedPOKT, status, icon} = app;
+                      const { id: applicationID, name, stakedPOKT, status, icon } = app;
 
                       return (
                         <Link

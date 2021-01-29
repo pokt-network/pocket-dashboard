@@ -1,8 +1,8 @@
 import express from "express";
 import UserService from "../services/UserService";
 import EmailService from "../services/EmailService";
-import {apiAsyncWrapper} from "./_helpers";
-import {DashboardValidationError} from "./../models/Exceptions";
+import { apiAsyncWrapper } from "./_helpers";
+import { DashboardValidationError } from "./../models/Exceptions";
 
 const router = express.Router();
 
@@ -229,16 +229,16 @@ router.post("/validate-token", apiAsyncWrapper(async (req, res) => {
   const tokenPayload = await userService.decodeToken(data.token, true);
 
   if (tokenPayload instanceof DashboardValidationError) {
-    res.json({success: false, data: tokenPayload.message});
+    res.json({ success: false, data: tokenPayload.message });
   } else {
     const userEmail = tokenPayload.email;
 
     if (await userService.userExists(userEmail)) {
       const user = await userService.getUser(userEmail);
 
-      res.json({success: true, data: user});
+      res.json({ success: true, data: user });
     } else {
-      res.json({success: false, data: "User does not exists or is invalid."});
+      res.json({ success: false, data: "User does not exists or is invalid." });
     }
   }
 }));
@@ -248,7 +248,7 @@ router.post("/validate-token", apiAsyncWrapper(async (req, res) => {
  */
 router.post("/verify-captcha", apiAsyncWrapper(async (req, res) => {
   /** @type {{token:string}} */
-  const {token} = req.body;
+  const { token } = req.body;
   const result = await userService.verifyCaptcha(token);
 
   res.json(result.data);

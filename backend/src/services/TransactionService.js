@@ -1,5 +1,5 @@
 import BaseService from "./BaseService";
-import {PocketTransaction, POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
+import { PocketTransaction, POST_ACTION_TYPE, TransactionPostAction } from "../models/Transaction";
 import CronJobService from "./CronJobService";
 
 const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";

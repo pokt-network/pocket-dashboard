@@ -1,11 +1,11 @@
-import React, {Component} from "react";
-import {PropTypes} from "prop-types";
+import React, { Component } from "react";
+import { PropTypes } from "prop-types";
 import "./PocketBox.scss";
 
 class PocketBox extends Component {
   state = {};
   render() {
-    const {iconUrl, children} = this.props;
+    const { iconUrl, children } = this.props;
 
     return (
       <>

@@ -1,4 +1,4 @@
-import {Component} from "react";
+import { Component } from "react";
 import _ from "lodash";
 import "../../../scss/Views/Main.scss";
 
@@ -24,20 +24,20 @@ class Main extends Component {
       loading: true,
       hasMoreUserItems: true,
       hasMoreRegisteredItems: false,
-      error: {show: false, message: ""},
+      error: { show: false, message: "" },
     };
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   handleSearch(dataField) {
-    const {userItems} = this.state;
-    const {searchQuery} = this.state.data;
+    const { userItems } = this.state;
+    const { searchQuery } = this.state.data;
 
     let filteredItems = userItems;
 
@@ -53,7 +53,7 @@ class Main extends Component {
       });
     }
 
-    this.setState({filteredItems});
+    this.setState({ filteredItems });
   }
 }
 

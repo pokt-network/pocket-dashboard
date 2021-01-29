@@ -1,13 +1,13 @@
-import React, {Component} from "react";
-import {PropTypes} from "prop-types";
-import {Dropdown} from "react-bootstrap";
+import React, { Component } from "react";
+import { PropTypes } from "prop-types";
+import { Dropdown } from "react-bootstrap";
 import Notification from "./Notification";
 import "./Notifications.scss";
 
 // eslint-disable-next-line react/display-name
-const NotificationToggle = React.forwardRef(({children, onClick}, ref) => (
+const NotificationToggle = React.forwardRef(({ children, onClick }, ref) => (
   <div
-    style={{cursor: "pointer"}}
+    style={{ cursor: "pointer" }}
     className="notifications"
     ref={ref}
     onClick={(e) => {

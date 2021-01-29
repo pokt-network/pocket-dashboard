@@ -1,8 +1,8 @@
 import PocketBaseService from "./PocketBaseService";
 import PocketUserService from "./PocketUserService";
-import {ITEM_TYPES} from "../../_constants";
+import { ITEM_TYPES } from "../../_constants";
 import SecureLS from "secure-ls";
-import {Configurations} from "../../_configuration";
+import { Configurations } from "../../_configuration";
 import axiosInstance from "./_serviceHelper";
 const axios = axiosInstance();
 
@@ -28,7 +28,7 @@ class PocketPaymentService extends PocketBaseService {
    * @param {string} paymentMethodId payment method id.
    */
   setDefaultPaymentMethod(paymentMethodId) {
-    this.ls.set("default_payment_method", {data: paymentMethodId});
+    this.ls.set("default_payment_method", { data: paymentMethodId });
   }
 
   /* Remove default payment method*/
@@ -45,7 +45,7 @@ class PocketPaymentService extends PocketBaseService {
    * @param {number} [data.validationPower] validation power.
    * @param {number} [data.validationPowerCost] cost of validation power.
    */
-  savePurchaseInfoInCache({relays, costPerRelay, validationPower, validationPowerCost}) {
+  savePurchaseInfoInCache({ relays, costPerRelay, validationPower, validationPowerCost }) {
     /**
      * The reason this is made manually is as there are only a few fields
      * and want to let clear what items from localstorage are being used,
@@ -138,7 +138,7 @@ class PocketPaymentService extends PocketBaseService {
    */
   getPaymentMethods(user) {
     return axios
-      .post(this._getURL("payment_methods"), {user})
+      .post(this._getURL("payment_methods"), { user })
       .then((response) => response.data);
   }
 
@@ -184,7 +184,7 @@ class PocketPaymentService extends PocketBaseService {
     }
 
     const user = PocketUserService.getUserInfo().email;
-    const data = {type: paymentType, user, item, currency: currencyType, amount, tokens: tokens};
+    const data = { type: paymentType, user, item, currency: currencyType, amount, tokens: tokens };
 
     let path;
 
@@ -202,10 +202,10 @@ class PocketPaymentService extends PocketBaseService {
     return axios
       .post(this._getURL(`new_intent/${path}`), data)
       .then((response) => {
-        return {success: true, data: response.data};
+        return { success: true, data: response.data };
       })
       .catch((err) => {
-        return {success: false, data: err.response};
+        return { success: false, data: err.response };
       });
   }
   /**
@@ -244,10 +244,10 @@ class PocketPaymentService extends PocketBaseService {
     return axios
       .put(this._getURL(`intent/${path}`), data)
       .then((response) => {
-        return {success: true, data: response.data};
+        return { success: true, data: response.data };
       })
       .catch((err) => {
-        return {success: false, data: err.response};
+        return { success: false, data: err.response };
       });
   }
 

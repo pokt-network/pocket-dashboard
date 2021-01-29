@@ -1,5 +1,5 @@
 import MongoDBAdapter from "./MongoDBAdapter";
-import {Configurations} from "../../../_configuration";
+import { Configurations } from "../../../_configuration";
 
 const DEFAULT_DB_PROVIDER = new MongoDBAdapter(Configurations.persistence.default);
 

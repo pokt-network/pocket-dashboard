@@ -1,5 +1,5 @@
-import {get_default_db_provider} from "./db/Index";
-import {Db, MongoClient, ObjectId} from "mongodb";
+import { get_default_db_provider } from "./db/Index";
+import { Db, MongoClient, ObjectId } from "mongodb";
 
 export default class PersistenceProvider {
   constructor() {
@@ -127,7 +127,7 @@ export default class PersistenceProvider {
       _id: new ObjectId(entityID)
     };
 
-    const result = await collection.updateOne(filter, {$set: data});
+    const result = await collection.updateOne(filter, { $set: data });
 
     this.closeConnection(connection);
 
@@ -146,7 +146,7 @@ export default class PersistenceProvider {
     const db = this.__getDB(connection);
     const collection = db.collection(entityName);
 
-    const result = await collection.updateOne(filter, {$set: data});
+    const result = await collection.updateOne(filter, { $set: data });
 
     this.closeConnection(connection);
 

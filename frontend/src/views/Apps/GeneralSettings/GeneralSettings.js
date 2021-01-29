@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
-import React, {Component} from "react";
-import {Alert, Form, Col, Row, Modal, Button, Dropdown, OverlayTrigger, Tooltip} from "react-bootstrap";
-import {Formik} from "formik";
+import React, { Component } from "react";
+import { Alert, Form, Col, Row, Modal, Button, Dropdown, OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Formik } from "formik";
 import LabelToggle from "../../../core/components/LabelToggle";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
@@ -67,8 +67,8 @@ class GeneralSettings extends Component {
     await ApplicationService.updateGatewaySettings(application);
   }
 
-  handleOriginChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleOriginChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
     this.setState({
@@ -76,8 +76,8 @@ class GeneralSettings extends Component {
     });
   }
 
-  handleUserChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleUserChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
     this.setState({
@@ -94,7 +94,7 @@ class GeneralSettings extends Component {
   }
 
   async componentDidMount() {
-    const {id} = this.props.match.params;
+    const { id } = this.props.match.params;
 
     const {
       pocketApplication,
@@ -148,15 +148,15 @@ class GeneralSettings extends Component {
         {showAlert && (
           <AppAlert
             className="pb-4 pt-4"
-            style={{height: "100px"}}
+            style={{ height: "100px" }}
             variant="primary"
             onClose={() => {
-              this.setState({showAlert: false});
+              this.setState({ showAlert: false });
             }}
             dismissible
             title={
               <>
-                <h4 className="text-uppercase" style={{paddingLeft: "15px"}}>
+                <h4 className="text-uppercase" style={{ paddingLeft: "15px" }}>
                   APPLICATION SAVED{" "}
                 </h4>
                 <p className="ml-2">
@@ -259,7 +259,7 @@ class GeneralSettings extends Component {
                 type="checkbox"
                 checked={secretKey}
                 onChange={() => {
-                  this.setState({secretKey: !secretKey});
+                  this.setState({ secretKey: !secretKey });
                   this.toggleSecretKeyRequired(!secretKey);
                 }}
                 label={
@@ -321,14 +321,14 @@ class GeneralSettings extends Component {
             </Formik>
           </Col>
         </Row>
-        <Row className="remove-app" style={{display: "none"}}>
+        <Row className="remove-app" style={{ display: "none" }}>
           <Col sm="12" md="12" lg="12" className="pl-0">
             <span className="option">
               <img src={"/assets/trash.svg"} alt="trash-action-icon" />
               <p>
                 <span
                   className="link"
-                  onClick={() => this.setState({deleteModal: true})}>
+                  onClick={() => this.setState({ deleteModal: true })}>
                   Remove
                   </span>{" "}
                   this App from the Dashboard.
@@ -339,7 +339,7 @@ class GeneralSettings extends Component {
         <Modal
           className="delete-app-settings"
           show={deleteModal}
-          onHide={() => this.setState({deleteModal: false})}
+          onHide={() => this.setState({ deleteModal: false })}
           animation={false}
           centered>
           <Modal.Header closeButton>
@@ -360,7 +360,7 @@ class GeneralSettings extends Component {
             </Formik>
           </Modal.Body>
           <Modal.Footer>
-            <Button className="light-button" onClick={() => this.setState({deleteModal: false})}>
+            <Button className="light-button" onClick={() => this.setState({ deleteModal: false })}>
               <span>Cancel</span>
             </Button>
             <Button>

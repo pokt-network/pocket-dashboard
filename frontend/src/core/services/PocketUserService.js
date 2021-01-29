@@ -1,6 +1,6 @@
 import PocketBaseService from "./PocketBaseService";
 import SecureLS from "secure-ls";
-import {Configurations} from "../../_configuration";
+import { Configurations } from "../../_configuration";
 import axiosInstance from "./_serviceHelper";
 const axios = axiosInstance();
 
@@ -26,13 +26,13 @@ class PocketUserService extends PocketBaseService {
    */
   saveUserInCache(user, session, loggedIn) {
     try {
-      this.ls.set("is_logged_in", {data: loggedIn});
-      this.ls.set("user_name", {data: user.username});
-      this.ls.set("user_email", {data: user.email});
-      this.ls.set("user_provider", {data: user.provider});
-      this.ls.set("access_token", {data: session.accessToken});
-      this.ls.set("refresh_token", {data: session.refreshToken});
-      this.ls.set("session_expiry", {data: Math.floor(+new Date() / 1000) + parseInt(Configurations.sessionLength)});
+      this.ls.set("is_logged_in", { data: loggedIn });
+      this.ls.set("user_name", { data: user.username });
+      this.ls.set("user_email", { data: user.email });
+      this.ls.set("user_provider", { data: user.provider });
+      this.ls.set("access_token", { data: session.accessToken });
+      this.ls.set("refresh_token", { data: session.refreshToken });
+      this.ls.set("session_expiry", { data: Math.floor(+new Date() / 1000) + parseInt(Configurations.sessionLength) });
     } catch (error) {
       // eslint-disable-next-line no-console
       console.log(error);
@@ -47,8 +47,8 @@ class PocketUserService extends PocketBaseService {
    * @param {boolean} loggedIn If user is logged in.
    */
   saveUserSessionInCache(session) {
-    this.ls.set("access_token", {data: session.accessToken});
-    this.ls.set("refresh_token", {data: session.refreshToken});
+    this.ls.set("access_token", { data: session.accessToken });
+    this.ls.set("refresh_token", { data: session.refreshToken });
   }
 
   /**
@@ -87,7 +87,7 @@ class PocketUserService extends PocketBaseService {
           parseInt(this.ls.get("session_expiry").data) > Math.floor(+new Date() / 1000)
     ) {
       // Update session expiry to keep user logged in
-      this.ls.set("session_expiry", {data: Math.floor(+new Date() / 1000) + parseInt(Configurations.sessionLength)});
+      this.ls.set("session_expiry", { data: Math.floor(+new Date() / 1000) + parseInt(Configurations.sessionLength) });
       return true;
     }
     return false;
@@ -143,7 +143,7 @@ class PocketUserService extends PocketBaseService {
    * @return {Promise<*>}
    */
   validateToken(token) {
-    return axios.post(this._getURL("validate-token"), {token})
+    return axios.post(this._getURL("validate-token"), { token })
       .then(response => response.data)
       .catch(err => {
         return {
@@ -547,7 +547,7 @@ class PocketUserService extends PocketBaseService {
   verifyCaptcha(token) {
 
     return axios
-      .post(this._getURL("verify-captcha"), {token})
+      .post(this._getURL("verify-captcha"), { token })
       .then(response => response.data);
   }
 
@@ -561,7 +561,7 @@ class PocketUserService extends PocketBaseService {
    */
   unsubscribeUser(email) {
     return axios
-      .post(this._getURL("unsubscribe"), {email})
+      .post(this._getURL("unsubscribe"), { email })
       .then(response => response.data);
   }
 
@@ -575,7 +575,7 @@ class PocketUserService extends PocketBaseService {
    */
   subscribeUser(email) {
     return axios
-      .post(this._getURL("subscribe"), {email})
+      .post(this._getURL("subscribe"), { email })
       .then(response => response.data);
   }
 }

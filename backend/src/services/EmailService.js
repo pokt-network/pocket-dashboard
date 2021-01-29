@@ -1,5 +1,5 @@
-import {SendGridEmailProvider} from "../providers/data/SendGridEmailProvider";
-import {Configurations} from "../_configuration";
+import { SendGridEmailProvider } from "../providers/data/SendGridEmailProvider";
+import { Configurations } from "../_configuration";
 
 export default class EmailService {
 
@@ -55,7 +55,7 @@ export default class EmailService {
    * @async
    */
   async sendTestEmail(templateID) {
-    return this.__sendEmail(templateID, {TEST: "Yes"});
+    return this.__sendEmail(templateID, { TEST: "Yes" });
   }
 
   /**

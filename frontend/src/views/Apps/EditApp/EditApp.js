@@ -1,12 +1,12 @@
 import React from "react";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import Loader from "../../../core/components/Loader";
 import UserService from "../../../core/services/PocketUserService";
-import {Formik} from "formik";
-import {appFormSchema} from "../../../_helpers";
+import { Formik } from "formik";
+import { appFormSchema } from "../../../_helpers";
 import "../../../core/components/CreateForm/CreateForm.scss";
 import AppAlert from "../../../core/components/AppAlert";
 
@@ -25,25 +25,25 @@ class EditApp extends CreateForm {
 
   async componentDidMount() {
     // eslint-disable-next-line react/prop-types
-    const {id} = this.props.match.params;
-    const {pocketApplication} = await ApplicationService.getClientApplication(
+    const { id } = this.props.match.params;
+    const { pocketApplication } = await ApplicationService.getClientApplication(
       id
     );
-    const {icon, ...appData} = pocketApplication;
+    const { icon, ...appData } = pocketApplication;
 
-    this.setState({loading: false, icon, data: {...appData}});
+    this.setState({ loading: false, icon, data: { ...appData } });
 
     this.props.onBreadCrumbChange(["Apps", "App   Information", "Edit"]);
   }
 
   async handleEdit() {
-    this.setState({success: false});
+    this.setState({ success: false });
     const user = UserService.getUserInfo().email;
-    const {id} = this.props.match.params;
-    const {name, owner, contactEmail, description, url} = this.state.data;
-    const {icon} = this.state;
+    const { id } = this.props.match.params;
+    const { name, owner, contactEmail, description, url } = this.state.data;
+    const { icon } = this.state;
 
-    const {success, data} = await ApplicationService.editApplication(id, {
+    const { success, data } = await ApplicationService.editApplication(id, {
       name,
       contactEmail,
       description,
@@ -56,12 +56,12 @@ class EditApp extends CreateForm {
     if (success) {
       this.props.history.goBack();
     } else {
-      this.setState({error: {show: true, message: data}});
+      this.setState({ error: { show: true, message: data } });
     }
   }
 
   render() {
-    const {loading, icon, error, imgError} = this.state;
+    const { loading, icon, error, imgError } = this.state;
 
     if (loading) {
       return <Loader />;
@@ -76,7 +76,7 @@ class EditApp extends CreateForm {
                 variant="danger"
                 title={error.message}
                 dismissible
-                onClose={() => this.setState({error: false})}
+                onClose={() => this.setState({ error: false })}
               />
             )}
             {/* eslint-disable-next-line react/prop-types */}
@@ -88,7 +88,7 @@ class EditApp extends CreateForm {
             <Formik
               validationSchema={appFormSchema}
               onSubmit={(data) => {
-                this.setState({data});
+                this.setState({ data });
                 this.handleEdit();
               }}
               initialValues={this.state.data}
@@ -96,7 +96,7 @@ class EditApp extends CreateForm {
               validateOnChange={false}
               validateOnBlur={false}
             >
-              {({handleSubmit, handleChange, values, errors}) => (
+              {({ handleSubmit, handleChange, values, errors }) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
                     <Form.Label>Application Name*</Form.Label>

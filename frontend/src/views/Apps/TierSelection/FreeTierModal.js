@@ -1,15 +1,15 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {Button, Modal} from "react-bootstrap";
-import {FREE_TIER_MODAL} from "./constants";
-import {Link} from "react-router-dom";
+import { Button, Modal } from "react-bootstrap";
+import { FREE_TIER_MODAL } from "./constants";
+import { Link } from "react-router-dom";
 import {
   ROUTE_PATHS,
 } from "../../../_routes";
 
 class FreeTierModal extends Component {
   render() {
-    const {show, onHide} = this.props;
+    const { show, onHide } = this.props;
 
     return (
       <Modal
@@ -29,14 +29,14 @@ class FreeTierModal extends Component {
           </p>
           <p>
             Once your app scales up you can unstake and transition to the Stake and Scale plan to get the exact amount of
-            throughput you need. If you still have questions take a look at our <a style={{fontWeight: "300", textDecoration: "none"}} rel="noopener noreferrer" target="_blank" href="https://dashboard.docs.pokt.network/docs/faq">FAQ</a>.
+            throughput you need. If you still have questions take a look at our <a style={{ fontWeight: "300", textDecoration: "none" }} rel="noopener noreferrer" target="_blank" href="https://dashboard.docs.pokt.network/docs/faq">FAQ</a>.
           </p>
           <p className="subtitle">
             <b>Pocket Network</b>
           </p>
           <p>
             In the Mainnet Launch Offering, Pocket Network Inc stakes on behalf of the app and manages the staked POKT and Application
-            Authentication Token (AAT). PNI reserves the right to revoke throughput at any time for violation of the <Link style={{fontWeight: "300", textDecoration: "none"}} rel="noopener noreferrer" target="_blank" to={ROUTE_PATHS.termsOfService}>Terms of Use</Link>.
+            Authentication Token (AAT). PNI reserves the right to revoke throughput at any time for violation of the <Link style={{ fontWeight: "300", textDecoration: "none" }} rel="noopener noreferrer" target="_blank" to={ROUTE_PATHS.termsOfService}>Terms of Use</Link>.
           </p>
           <p>Cases that may result in revocation of AAT include:</p>
           <ul className="violation-list">
@@ -52,7 +52,7 @@ class FreeTierModal extends Component {
             If you need additional bandwidth, you will always have the option to upgrade to a paid tier with additional control over your AAT and POKT.<br/>
             If you are expecting rapid growth of your application, we suggest preparing for the surge by setting up the Stake and Scale paid tier so you don&apos;t experience downtime due to exhausting your available relays.
           </p>
-          <a style={{fontWeight: "300", textDecoration: "none"}} rel="noopener noreferrer" target="_blank" href="https://dashboard.docs.pokt.network/docs/faq">Please see our FAQ for additional information.</a>
+          <a style={{ fontWeight: "300", textDecoration: "none" }} rel="noopener noreferrer" target="_blank" href="https://dashboard.docs.pokt.network/docs/faq">Please see our FAQ for additional information.</a>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={() => onHide(FREE_TIER_MODAL)}>

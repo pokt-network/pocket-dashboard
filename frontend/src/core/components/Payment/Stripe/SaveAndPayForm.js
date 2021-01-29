@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "../Payment.scss";
 import PropTypes from "prop-types";
 import PocketStripePaymentService from "../../../services/PocketStripePaymentService";
@@ -16,10 +16,10 @@ class SaveAndPayForm extends Component {
 
   handleSaveAndPayMethod(e, formData, stripe) {
     e.preventDefault();
-    const {handleAfterPayment} = this.props;
+    const { handleAfterPayment } = this.props;
 
-    const {paymentIntentSecretID} = this.props;
-    const {card, cardHolderName, billingAddressLine1, zipCode, country} = formData;
+    const { paymentIntentSecretID } = this.props;
+    const { card, cardHolderName, billingAddressLine1, zipCode, country } = formData;
     const billingDetails = {
       name: cardHolderName,
       address: {
@@ -32,11 +32,11 @@ class SaveAndPayForm extends Component {
     PocketStripePaymentService.confirmPaymentWithNewCard(stripe, paymentIntentSecretID, card, billingDetails)
       .then(result => {
         if (result.error) {
-          handleAfterPayment({success: false, data: result.error});
+          handleAfterPayment({ success: false, data: result.error });
         }
 
         if (result.paymentIntent) {
-          handleAfterPayment({success: true, data: result.paymentIntent.status});
+          handleAfterPayment({ success: true, data: result.paymentIntent.status });
         }
       });
   }

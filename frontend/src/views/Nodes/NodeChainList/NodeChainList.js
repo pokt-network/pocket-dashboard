@@ -1,12 +1,12 @@
 import React from "react";
-import {Button, Col, Form, FormControl, InputGroup, Row} from "react-bootstrap";
-import {TABLE_COLUMNS, URL_HTTPS_REGEX, VALIDATION_MESSAGES} from "../../../_constants";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import { Button, Col, Form, FormControl, InputGroup, Row } from "react-bootstrap";
+import { TABLE_COLUMNS, URL_HTTPS_REGEX, VALIDATION_MESSAGES } from "../../../_constants";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import AppAlert from "../../../core/components/AppAlert";
 import Chains from "../../../core/components/Chains/Chains";
 import Segment from "../../../core/components/Segment/Segment";
 import AppTable from "../../../core/components/AppTable";
-import {Formik} from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
 import NodeService from "../../../core/services/PocketNodeService";
 
@@ -28,18 +28,18 @@ class NodeChainList extends Chains {
   async componentDidMount() {
     super.componentDidMount();
 
-    const {address} = NodeService.getNodeInfo();
+    const { address } = NodeService.getNodeInfo();
 
-    const {networkData} = await NodeService.getNode(address);
+    const { networkData } = await NodeService.getNode(address);
 
     this.setState({
-      data: {serviceURL: networkData.service_url},
+      data: { serviceURL: networkData.service_url },
     });
   }
 
   handleChains() {
-    const {chosenChains} = this.state;
-    const {serviceURL} = this.state.data;
+    const { chosenChains } = this.state;
+    const { serviceURL } = this.state.data;
     const chainsHashes = chosenChains.map((ch) => ch._id);
 
     NodeService.saveNodeInfoInCache({
@@ -47,7 +47,7 @@ class NodeChainList extends Chains {
       serviceURL,
       chainsObject: chosenChains
     });
-    const {address} = NodeService.getNodeInfo();
+    const { address } = NodeService.getNodeInfo();
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(
@@ -56,7 +56,7 @@ class NodeChainList extends Chains {
   }
 
   render() {
-    const {filteredChains, chosenChains} = this.state;
+    const { filteredChains, chosenChains } = this.state;
     const chains = filteredChains;
 
     // Bootstrap Table selectionParams
@@ -97,7 +97,7 @@ class NodeChainList extends Chains {
                   placeholder="Search a chain"
                   name="searchChainQuery"
                   onChange={this.handleChange}
-                  onKeyPress={({key}) => {
+                  onKeyPress={({ key }) => {
                     if (key === "Enter") {
                       this.handleChainSearch();
                     }
@@ -131,12 +131,12 @@ class NodeChainList extends Chains {
           </Col>
         </Row>
         <Row className="mt-2">
-          <Col style={{paddingLeft: "0px"}}>
+          <Col style={{ paddingLeft: "0px" }}>
             <Formik
               enableReinitialize
               validationSchema={schema}
               onSubmit={async (data) => {
-                this.setState({data});
+                this.setState({ data });
                 await this.handleChains();
               }}
               initialValues={this.state.data}
@@ -144,7 +144,7 @@ class NodeChainList extends Chains {
               validateOnChange={false}
               validateOnBlur={false}
             >
-              {({handleSubmit, handleChange, values, errors}) => (
+              {({ handleSubmit, handleChange, values, errors }) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
                     <Form.Label className="service-url-label">
@@ -163,7 +163,7 @@ class NodeChainList extends Chains {
                   </Form.Group>
 
                   <Row className="mt-4">
-                    <Col style={{paddingLeft: "0px"}}>
+                    <Col style={{ paddingLeft: "0px" }}>
                       <AppAlert
                         className="pb-4 pt-4"
                         variant="warning"

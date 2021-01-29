@@ -1,13 +1,13 @@
 import BaseService from "./BaseService";
-import {get_auth_providers, getAuthProvider} from "../providers/auth/Index";
-import {AuthProviderUser, EmailUser, PocketUser} from "../models/User";
-import {AnsweredSecurityQuestion} from "../models/AnsweredSecurityQuestion";
-import {SecurityQuestion} from "../models/SecurityQuestion";
+import { get_auth_providers, getAuthProvider } from "../providers/auth/Index";
+import { AuthProviderUser, EmailUser, PocketUser } from "../models/User";
+import { AnsweredSecurityQuestion } from "../models/AnsweredSecurityQuestion";
+import { SecurityQuestion } from "../models/SecurityQuestion";
 import BaseAuthProvider from "../providers/auth/BaseAuthProvider";
-import {Configurations} from "../_configuration";
+import { Configurations } from "../_configuration";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-import {DashboardError, DashboardValidationError} from "../models/Exceptions";
+import { DashboardError, DashboardValidationError } from "../models/Exceptions";
 
 const AUTH_TOKEN_TYPE = "access_token";
 const USER_COLLECTION_NAME = "Users";
@@ -70,7 +70,7 @@ export default class UserService extends BaseService {
   async __updateLastLogin(user) {
     const userToUpdate = PocketUser.createPocketUserWithUTCLastLogin(user);
 
-    await this.persistenceService.updateEntity(USER_COLLECTION_NAME, {email: user.email}, userToUpdate);
+    await this.persistenceService.updateEntity(USER_COLLECTION_NAME, { email: user.email }, userToUpdate);
   }
 
 
@@ -103,7 +103,7 @@ export default class UserService extends BaseService {
    * @async
    */
   async userExists(userEmail, authProvider = undefined) {
-    let filter = {email: userEmail};
+    let filter = { email: userEmail };
 
     if (authProvider) {
       filter["provider"] = authProvider;
@@ -126,7 +126,7 @@ export default class UserService extends BaseService {
   async isUserValidated(userEmail, authProvider = undefined) {
     let filter = {
       email: userEmail,
-      securityQuestions: {$ne: null}
+      securityQuestions: { $ne: null }
     };
 
     if (authProvider) {
@@ -147,7 +147,7 @@ export default class UserService extends BaseService {
    * @async
    */
   async getUser(email) {
-    const filter = {email};
+    const filter = { email };
     const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     return PocketUser.removeSensitiveFields(PocketUser.createPocketUserFromDB(dbUser));
@@ -175,7 +175,7 @@ export default class UserService extends BaseService {
    * @returns {Promise<boolean>} If was saved or not.
    */
   async saveCustomerID(userEmail, userCustomerID) {
-    const filter = {email: userEmail};
+    const filter = { email: userEmail };
     const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     dbUser.customerID = userCustomerID;
@@ -234,7 +234,7 @@ export default class UserService extends BaseService {
    * @async
    */
   async authenticateUser(username, password) {
-    const filter = {$or: [{username}, {email: username}]};
+    const filter = { $or: [{ username }, { email: username }] };
     const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     if (!userDB) {
@@ -318,14 +318,14 @@ export default class UserService extends BaseService {
    */
   async addOrUpdateUserSecurityQuestions(userEmail, questions) {
 
-    const filter = {email: userEmail};
+    const filter = { email: userEmail };
     const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
     if (!userDB) {
       throw new DashboardValidationError("Invalid user.");
     }
 
-    const data = {securityQuestions: AnsweredSecurityQuestion.createAnsweredSecurityQuestions(questions)};
+    const data = { securityQuestions: AnsweredSecurityQuestion.createAnsweredSecurityQuestions(questions) };
     /** @type {{result: {n:number, ok: number}}} */
 
     const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, filter, data);
@@ -345,7 +345,7 @@ export default class UserService extends BaseService {
   async getUserSecurityQuestions(userEmail) {
     const filter = {
       email: userEmail,
-      securityQuestions: {$ne: null}
+      securityQuestions: { $ne: null }
     };
     const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
@@ -369,7 +369,7 @@ export default class UserService extends BaseService {
   async validateUserSecurityQuestions(userEmail, userAnswers) {
     const filter = {
       email: userEmail,
-      securityQuestions: {$ne: null}
+      securityQuestions: { $ne: null }
     };
     const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
 
@@ -407,7 +407,7 @@ export default class UserService extends BaseService {
     // Return the user with the latest information
     const userToUpdate = new PocketUser(user.provider, user.email, user.username, user.password, resetPasswordToken, expiringDate, user.lastLogin, user.securityQuestions, user.customerID);
 
-    const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, {email: user.email}, userToUpdate);
+    const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, { email: user.email }, userToUpdate);
 
     return result.result.ok === 1;
   }
@@ -672,17 +672,17 @@ export default class UserService extends BaseService {
    * @async
    */
   async generateNewSessionTokens(userId, userEmail) {
-    const payload = {id: userId, email: userEmail};
+    const payload = { id: userId, email: userEmail };
 
     // Access token
     const accessToken = jwt.sign({
       data: payload
-    }, Configurations.auth.jwt.secret_key, {expiresIn: Configurations.auth.jwt.expiration});
+    }, Configurations.auth.jwt.secret_key, { expiresIn: Configurations.auth.jwt.expiration });
 
     // Refresh token
     const refreshToken = jwt.sign({
       data: payload
-    }, Configurations.auth.jwt.secret_key, {expiresIn: Configurations.auth.jwt.refresh_expiration});
+    }, Configurations.auth.jwt.secret_key, { expiresIn: Configurations.auth.jwt.refresh_expiration });
 
     return {
       accessToken: accessToken,
@@ -699,7 +699,7 @@ export default class UserService extends BaseService {
    * @async
    */
   async generateToken(userEmail) {
-    const payload = {email: userEmail};
+    const payload = { email: userEmail };
 
     return jwt.sign(payload, Configurations.auth.jwt.secret_key);
   }
@@ -741,7 +741,7 @@ export default class UserService extends BaseService {
    * @async
    */
   async decodeToken(token, ignoreExpiration = false) {
-    const payload = jwt.verify(token, Configurations.auth.jwt.secret_key, {ignoreExpiration: ignoreExpiration});
+    const payload = jwt.verify(token, Configurations.auth.jwt.secret_key, { ignoreExpiration: ignoreExpiration });
 
     if (payload.name) {
       switch (payload.name) {

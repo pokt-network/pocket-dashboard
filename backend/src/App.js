@@ -1,12 +1,11 @@
 import express from "express";
-import {configureRoutes} from "./_routes";
-import {configureExpress, handleErrors} from "./_configuration";
-import {startCronJobs} from "./CronJob";
+import { configureRoutes } from "./_routes";
+import { configureExpress, handleErrors } from "./_configuration";
+import { startCronJobs } from "./CronJob";
 
 import webpack from "webpack";
 import webPackConfig from "../webpack.config";
 import webpackDevMiddleware from "webpack-dev-middleware";
-
 
 const webPackCompiler = webpack(webPackConfig);
 const app = express();
@@ -18,9 +17,11 @@ startCronJobs();
 
 // Tell express to use the webpack-dev-middleware and use the webpack.config.js
 // configuration file as a base.
-app.use(webpackDevMiddleware(webPackCompiler, {
-  publicPath: webPackConfig.output.publicPath
-}));
+app.use(
+  webpackDevMiddleware(webPackCompiler, {
+    publicPath: webPackConfig.output.publicPath
+  })
+);
 
 const PORT = process.env.PORT || 4200;
 

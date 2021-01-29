@@ -1,6 +1,6 @@
-import {BaseCheckoutService} from "./BaseCheckoutService";
-import {Configurations} from "../../_configuration";
-import {DashboardValidationError} from "../../models/Exceptions";
+import { BaseCheckoutService } from "./BaseCheckoutService";
+import { Configurations } from "../../_configuration";
+import { DashboardValidationError } from "../../models/Exceptions";
 
 /**
  * Check if a numeric option is valid
@@ -125,7 +125,7 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
       if (currRPS !== expectedRPS) {
         throw new DashboardValidationError(`Current RPS (${currRPS}) != expected RPS (${expectedRPS})`);
       }
-      return {upokt: newUpokt, usdValue: newUsdValue};
+      return { upokt: newUpokt, usdValue: newUsdValue };
     }
 
     if (currRPS > maxRPS) {
@@ -136,7 +136,7 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
       throw new DashboardValidationError(`Current RPS (${currRPS}) < max RPS (${minRPS})`);
     }
 
-    return {upokt, usdValue, maxUsdValue};
+    return { upokt, usdValue, maxUsdValue };
   }
 }
 
