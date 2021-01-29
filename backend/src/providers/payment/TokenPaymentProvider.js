@@ -1,6 +1,6 @@
-import BasePaymentProvider, {CardPaymentMethod, PaymentResult} from "./BasePaymentProvider";
-import {v4 as uuidv4} from "uuid";
-import {providerType} from "./Index";
+import BasePaymentProvider, { CardPaymentMethod, PaymentResult } from "./BasePaymentProvider";
+import { v4 as uuidv4 } from "uuid";
+import { providerType } from "./Index";
 
 class TokenPaymentProvider extends BasePaymentProvider {
 

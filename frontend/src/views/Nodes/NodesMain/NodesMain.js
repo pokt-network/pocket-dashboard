@@ -1,8 +1,8 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import cls from "classnames";
 import AppTable from "../../../core/components/AppTable";
-import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
+import { Button, Col, FormControl, InputGroup, Row } from "react-bootstrap";
 import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import UserService from "../../../core/services/PocketUserService";
@@ -14,10 +14,10 @@ import {
   STYLING,
   TABLE_COLUMNS
 } from "../../../_constants";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
+import { formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField } from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import LoadingOverlay from "react-loading-overlay";
 import NodeService from "../../../core/services/PocketNodeService";
@@ -63,7 +63,7 @@ class NodesMain extends Main {
       // console.log("mount state", this.state);
 
       NodeService.getStakedNodeSummary().then(
-        ({totalNodes, averageValidatorPower: averageRelays, averageStaked}) => {
+        ({ totalNodes, averageValidatorPower: averageRelays, averageStaked }) => {
 
           this.setState({
             total: totalNodes,
@@ -118,13 +118,13 @@ class NodesMain extends Main {
     if (hasError) {
       this.setState({
         loading: false,
-        error: {show: true, message: errorMessage},
+        error: { show: true, message: errorMessage },
       });
     }
   }
 
   async loadMoreUserNodes(offset) {
-    const {userItems} = this.state;
+    const { userItems } = this.state;
 
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await NodeService.getAllUserNodes(
@@ -141,7 +141,7 @@ class NodesMain extends Main {
   }
 
   async loadMoreRegisteredNodes(offset) {
-    const {registeredItems} = this.state;
+    const { registeredItems } = this.state;
 
     const newRegisteredItems = await NodeService.getAllNodes(
       NODES_LIMIT, offset * NODES_LIMIT + 1
@@ -176,7 +176,7 @@ class NodesMain extends Main {
       hasNodes && filteredItems.length * 105 > MY_NODES_HEIGHT;
 
     const cards = [
-      {title: formatNumbers(total), subtitle: "Total of Nodes"},
+      { title: formatNumbers(total), subtitle: "Total of Nodes" },
       {
         title: formatNetworkData(averageStaked, false, DEFAULT_POKT_DENOMINATION_BASE),
         subtitle: "Average POKT Staked",
@@ -209,7 +209,7 @@ class NodesMain extends Main {
               variant="danger"
               title={error.message}
               dismissible
-              onClose={() => this.setState({error: {show: false}})}
+              onClose={() => this.setState({ error: { show: false } })}
             />
           )}
           <Col sm="8" md="8" lg="8" className="page-title">
@@ -254,7 +254,7 @@ class NodesMain extends Main {
                         placeholder="Search a Node"
                         name="searchQuery"
                         onChange={this.handleChange}
-                        onKeyPress={({key}) => {
+                        onKeyPress={({ key }) => {
                           if (key === "Enter") {
                             this.handleSearch("name");
                           }
@@ -277,7 +277,7 @@ class NodesMain extends Main {
                 className={cls("scrollable main-list", {
                   "has-scroll": myNodessHasScroll,
                 })}
-                style={{height: `${MY_NODES_HEIGHT}px`}}
+                style={{ height: `${MY_NODES_HEIGHT}px` }}
               >
                 <InfiniteScroll
                   pageStart={0}
@@ -289,7 +289,7 @@ class NodesMain extends Main {
                   <LoadingOverlay active={userItemsTableLoading} spinner>
                     {hasNodes ? (
                       filteredItems.map((node, idx) => {
-                        const {id: nodeID, name, address, stakedPOKT, status, icon} = node;
+                        const { id: nodeID, name, address, stakedPOKT, status, icon } = node;
 
                         return (
                           <Link

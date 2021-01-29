@@ -1,8 +1,8 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./ChangePassword.scss";
-import {Col, Button, Form, Row} from "react-bootstrap";
-import {Formik} from "formik";
-import {validateYup, passwordChangeSchema} from "../../../_helpers";
+import { Col, Button, Form, Row } from "react-bootstrap";
+import { Formik } from "formik";
+import { validateYup, passwordChangeSchema } from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
 import AppAlert from "../../../core/components/AppAlert";
 
@@ -64,10 +64,10 @@ class ChangePassword extends Component {
   }
 
   async handleChangePassword() {
-    const {email} = UserService.getUserInfo();
-    const {oldPassword, password1, password2} = this.state.data;
+    const { email } = UserService.getUserInfo();
+    const { oldPassword, password1, password2 } = this.state.data;
 
-    const {success, data} = await UserService.changePassword(
+    const { success, data } = await UserService.changePassword(
       email, oldPassword, password1, password2
     );
 
@@ -91,25 +91,25 @@ class ChangePassword extends Component {
   }
 
   render() {
-    const {alert} = this.state;
+    const { alert } = this.state;
 
     return (
       <Row id="general">
-        <Col lg={{span: 10, offset: 1}} className="title-page">
+        <Col lg={{ span: 10, offset: 1 }} className="title-page">
           <div className="wrapper">
             {alert.show && (
               <AppAlert
                 variant={alert.variant}
                 title={alert.text}
                 dismissible
-                onClose={() => this.setState({alert: {show: false}})}
+                onClose={() => this.setState({ alert: { show: false } })}
               />
             )}
             <h1>Change your Password</h1>
             <Formik
               validate={this.validate}
               onSubmit={async (data) => {
-                this.setState({data});
+                this.setState({ data });
                 await this.handleChangePassword();
               }}
               initialValues={this.state.data}
@@ -117,7 +117,7 @@ class ChangePassword extends Component {
               validateOnChange={false}
               validateOnBlur={false}
             >
-              {({handleSubmit, handleChange, values, errors}) => (
+              {({ handleSubmit, handleChange, values, errors }) => (
                 <Form noValidate onSubmit={handleSubmit} id="main-form">
                   <Form.Group>
                     <Form.Label>Old password</Form.Label>

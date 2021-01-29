@@ -232,7 +232,7 @@ export function configureExpress(expressApp) {
     // Check if the request contains an email, meaning a change or private data is being requested
     if (req.body && req.body.email && !excludedPathList.includes(req.path)) {
       if (!await userService.verifySessionForClient(req.headers.authorization, req.body.email)) {
-        res.send({success: false, data: "Account doesn't belong to the client."});
+        res.send({ success: false, data: "Account doesn't belong to the client." });
       }
     }
     next();

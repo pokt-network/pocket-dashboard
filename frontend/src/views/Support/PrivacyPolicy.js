@@ -1,9 +1,9 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./PrivacyPolicy.scss";
-import {withRouter} from "react-router-dom";
-import {Container, Row} from "react-bootstrap";
+import { withRouter } from "react-router-dom";
+import { Container, Row } from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";
-import {scrollToId} from "../../_helpers";
+import { scrollToId } from "../../_helpers";
 
 class PrivacyPolicy extends Component {
   state = {};

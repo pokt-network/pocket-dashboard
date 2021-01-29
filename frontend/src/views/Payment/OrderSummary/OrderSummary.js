@@ -1,25 +1,25 @@
 /* eslint-disable react/prop-types */
-import React, {Component} from "react";
+import React, { Component } from "react";
 import cls from "classnames";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import numeral from "numeral";
 import CardDisplay from "../../../core/components/Payment/CardDisplay/CardDisplay";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import "./OrderSummary.scss";
 import Loader from "../../../core/components/Loader";
-import {ElementsConsumer} from "@stripe/react-stripe-js";
+import { ElementsConsumer } from "@stripe/react-stripe-js";
 import PaymentContainer from "../../../core/components/Payment/Stripe/PaymentContainer";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
-import {_getDashboardPath, ROUTE_PATHS, DASHBOARD_PATHS} from "../../../_routes";
+import { _getDashboardPath, ROUTE_PATHS, DASHBOARD_PATHS } from "../../../_routes";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCardNoAddressForm";
 import AppAlert from "../../../core/components/AppAlert";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
-import {formatCurrency, formatNumbers, scrollToId, capitalize} from "../../../_helpers";
+import { formatCurrency, formatNumbers, scrollToId, capitalize } from "../../../_helpers";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import LoadingButton from "../../../core/components/LoadingButton";
-import {ITEM_TYPES} from "../../../_constants";
+import { ITEM_TYPES } from "../../../_constants";
 import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
@@ -66,10 +66,10 @@ class OrderSummary extends Component {
   }
 
   componentDidMount() {
-    this.setState({loading: true});
+    this.setState({ loading: true });
     // eslint-disable-next-line react/prop-types
     if (this.props.location.state === undefined) {
-      this.setState({loading: false, unauthorized: true});
+      this.setState({ loading: false, unauthorized: true });
       return;
     }
 
@@ -145,8 +145,8 @@ class OrderSummary extends Component {
           holder: selectedPaymentMethod.billingDetails.name,
         },
         details: [
-          {value: quantity.number, text: quantity.description, format: false},
-          {value: cost.number, text: cost.description, format: true},
+          { value: quantity.number, text: quantity.description, format: false },
+          { value: cost.number, text: cost.description, format: true },
         ],
         total,
         currentAccountBalance,
@@ -159,11 +159,11 @@ class OrderSummary extends Component {
   async makePurchaseWithSavedCard(e, stripe) {
     e.preventDefault();
 
-    const {total, upoktToStake} = this.state;
+    const { total, upoktToStake } = this.state;
 
-    this.setState({purchasing: true});
+    this.setState({ purchasing: true });
 
-    const {paymentIntent, selectedPaymentMethod, type} = this.state;
+    const { paymentIntent, selectedPaymentMethod, type } = this.state;
 
 
     const result = await StripePaymentService.confirmPaymentWithSavedCard(
@@ -197,7 +197,7 @@ class OrderSummary extends Component {
       const detail = url.replace(":id", id);
       const applicationLink = `${window.location.origin}${detail}`;
 
-      this.setState({loading: true});
+      this.setState({ loading: true });
 
       const appStakeTransaction = await PocketClientService.appStakeRequest(
         address, passphrase, chains, upoktToStake.toString());
@@ -232,7 +232,7 @@ class OrderSummary extends Component {
       const detail = url.replace(":address", address);
       const nodeLink = `${window.location.origin}${detail}`;
 
-      this.setState({loading: true});
+      this.setState({ loading: true });
 
       const nodeStakeRequest = await PocketClientService.nodeStakeRequest(
         address, passphrase, chains, pokt.cost.toString(), serviceURL);
@@ -251,9 +251,9 @@ class OrderSummary extends Component {
     e.preventDefault();
 
     let selectedPaymentMethod = null;
-    const {setMethodDefault} = this.state;
-    const {cardHolderName: name} = cardData;
-    const billingDetails = {name};
+    const { setMethodDefault } = this.state;
+    const { cardHolderName: name } = cardData;
+    const billingDetails = { name };
 
     StripePaymentService.createPaymentMethod(
       stripe, cardData.card, billingDetails
@@ -279,7 +279,7 @@ class OrderSummary extends Component {
       }
 
       if (result.paymentMethod) {
-        const {success, data} = await StripePaymentService.savePaymentMethod(
+        const { success, data } = await StripePaymentService.savePaymentMethod(
           result.paymentMethod, billingDetails
         );
 
@@ -339,7 +339,7 @@ class OrderSummary extends Component {
     } = this.state;
 
     const cards = [
-      {title: formatNumbers(quantity.number), subtitle: quantity.description},
+      { title: formatNumbers(quantity.number), subtitle: quantity.description },
       {
         title: `${numeral(cost.number).format("$0,0.00")} USD`,
         subtitle: cost.description,
@@ -373,7 +373,7 @@ class OrderSummary extends Component {
         {alert.show && (
           <AppAlert
             dismissible
-            onClose={() => this.setState({alert: {show: false}})}
+            onClose={() => this.setState({ alert: { show: false } })}
             title={alert.message}
             variant={alert.variant}
           />
@@ -387,7 +387,7 @@ class OrderSummary extends Component {
             <div className="cards-container">
               <Form className="cards">
                 {paymentMethods.map((card, idx) => {
-                  const {holder, lastDigits, brand} = card;
+                  const { holder, lastDigits, brand } = card;
                   const isChecked = selectedPaymentMethod
                     ? card.id === selectedPaymentMethod.id
                     : false;
@@ -403,7 +403,7 @@ class OrderSummary extends Component {
                         })}
                         checked={isChecked}
                         onChange={() => {
-                          this.setState({selectedPaymentMethod: card});
+                          this.setState({ selectedPaymentMethod: card });
                         }}
                         id={`payment-method-${idx}`}
                       />
@@ -420,9 +420,9 @@ class OrderSummary extends Component {
                 })}
               </Form>
               <Button
-                style={{display: "inline-block"}}
+                style={{ display: "inline-block" }}
                 className="new-card-btn mb-3"
-                onClick={() => this.setState({isFormVisible: !isFormVisible})}
+                onClick={() => this.setState({ isFormVisible: !isFormVisible })}
                 disabled={isAddNewDisabled}
               >
                 Add a New Card
@@ -447,7 +447,7 @@ class OrderSummary extends Component {
                     formActionHandler={this.saveNewCard}
                     actionButtonName="Add Card"
                     setDefaultHandler={(setMethodDefault) => {
-                      this.setState({setMethodDefault});
+                      this.setState({ setMethodDefault });
                     }}
                   />
                 </>
@@ -471,7 +471,7 @@ class OrderSummary extends Component {
                 subtitle={"Total cost"}
               />
               <hr />
-              <p style={{fontSize: "12px"}}>
+              <p style={{ fontSize: "12px" }}>
                 Purchasers are not buying POKT as an investment with the expectation of profit or appreciation. <b>Purchasers are buying POKT to use it.</b><br /> <br />
 
                   To ensure purchasers are bona fide users and not investors, the Company has set a purchase maximum per user and requires users must hold POKT for <b>21 days</b> and <b>stake</b> it before transferring to another wallet or selling.<br /> <br />
@@ -481,7 +481,7 @@ class OrderSummary extends Component {
               </p>
               <Form.Check
                 checked={agreeTerms}
-                onChange={() => this.setState({agreeTerms: !agreeTerms})}
+                onChange={() => this.setState({ agreeTerms: !agreeTerms })}
                 id="terms-checkbox"
                 className="agree-terms"
                 type="checkbox"
@@ -492,7 +492,7 @@ class OrderSummary extends Component {
                       className="terms-link"
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{marginLeft: "0px"}}
+                      style={{ marginLeft: "0px" }}
                       href={ROUTE_PATHS.purchaseTerms}>
                       Purchase Terms and Conditions.
                       </a>
@@ -501,7 +501,7 @@ class OrderSummary extends Component {
               />
               <PaymentContainer>
                 <ElementsConsumer>
-                  {({_, stripe}) => (
+                  {({ _, stripe }) => (
                     <Form
                       onSubmit={(e) =>
                         this.makePurchaseWithSavedCard(e, stripe)

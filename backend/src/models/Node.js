@@ -1,7 +1,7 @@
-import {Node, NodeParams, StakingStatus} from "@pokt-network/pocket-js";
-import {PublicPocketAccount} from "./Account";
-import {EMAIL_REGEX} from "./Regex";
-import {DashboardValidationError} from "./Exceptions";
+import { Node, NodeParams, StakingStatus } from "@pokt-network/pocket-js";
+import { PublicPocketAccount } from "./Account";
+import { EMAIL_REGEX } from "./Regex";
+import { DashboardValidationError } from "./Exceptions";
 
 export class RegisteredPocketNode {
   /**
@@ -10,7 +10,7 @@ export class RegisteredPocketNode {
    * @param {StakingStatus} status Status
    */
   constructor(name, address, status) {
-    Object.assign(this, {name, address, status});
+    Object.assign(this, { name, address, status });
   }
 }
 
@@ -24,7 +24,7 @@ export class UserPocketNode {
    * @param {number} status Status.
    */
   constructor(id, name, address, icon, stakedPOKT, status) {
-    Object.assign(this, {id, name, address, icon, stakedPOKT, status});
+    Object.assign(this, { id, name, address, icon, stakedPOKT, status });
   }
 }
 
@@ -41,7 +41,7 @@ export class PocketNode {
    * @param {boolean} [updatingStatus] If is on staking status.
    */
   constructor(name, contactEmail, user, operator, description, icon, updatingStatus) {
-    Object.assign(this, {name, contactEmail, user, operator, description, icon, updatingStatus});
+    Object.assign(this, { name, contactEmail, user, operator, description, icon, updatingStatus });
 
     this.id = "";
     this.publicPocketAccount = new PublicPocketAccount("", "");
@@ -104,7 +104,7 @@ export class PocketNode {
    * @static
    */
   static createPocketNode(nodeData) {
-    const {name, contactEmail, user, operator, description, icon, publicPocketAccount, updatingStatus} = nodeData;
+    const { name, contactEmail, user, operator, description, icon, publicPocketAccount, updatingStatus } = nodeData;
     const pocketNode = new PocketNode(name, contactEmail, user, operator, description, icon, updatingStatus);
 
     pocketNode.id = nodeData._id ?? "";
@@ -144,7 +144,7 @@ export class PocketNode {
    * @static
    */
   static createUserPocketNode(nodeData, networkNodes) {
-    const {id, name, address, icon} = nodeData;
+    const { id, name, address, icon } = nodeData;
     let networkNode = networkNodes.filter(app => app.address === nodeData.address);
 
     if (networkNode.length > 0) {
@@ -164,7 +164,7 @@ export class ExtendedPocketNode {
    * @param {Node} networkData Node data from Pocket Network.
    */
   constructor(pocketNode, networkData) {
-    Object.assign(this, {pocketNode, networkData});
+    Object.assign(this, { pocketNode, networkData });
   }
 
   /**
@@ -190,7 +190,7 @@ export class ExtendedPocketNode {
    * @static
    */
   static createNetworkNode(publicPocketAccount, nodeParameters) {
-    const {address, publicKey} = publicPocketAccount;
+    const { address, publicKey } = publicPocketAccount;
 
     return {
       address,
@@ -213,6 +213,6 @@ export class StakedNodeSummary {
    * @param {string} averageValidatorPower Average of validator power.
    */
   constructor(totalNodes, averageStaked, averageValidatorPower) {
-    Object.assign(this, {totalNodes, averageStaked, averageValidatorPower});
+    Object.assign(this, { totalNodes, averageStaked, averageValidatorPower });
   }
 }

@@ -1,11 +1,11 @@
-import React, {Component} from "react";
-import {Button, Spinner} from "react-bootstrap";
-import {PropTypes} from "prop-types";
+import React, { Component } from "react";
+import { Button, Spinner } from "react-bootstrap";
+import { PropTypes } from "prop-types";
 
 class LoadingButton extends Component {
   state = {};
   render() {
-    const {children, loading, buttonProps, spinnerProps} = this.props;
+    const { children, loading, buttonProps, spinnerProps } = this.props;
 
     return (
       <Button {...buttonProps}>

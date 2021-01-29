@@ -1,8 +1,8 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import cls from "classnames";
 import BootstrapTable from "react-bootstrap-table-next";
-import {PropTypes} from "prop-types";
-import {tableShow} from "../../_helpers";
+import { PropTypes } from "prop-types";
+import { tableShow } from "../../_helpers";
 
 class AppTable extends Component {
   constructor(props, context) {
@@ -14,7 +14,7 @@ class AppTable extends Component {
   }
 
   render() {
-    const {show} = this.state;
+    const { show } = this.state;
     const {
       height,
       scroll,
@@ -35,7 +35,7 @@ class AppTable extends Component {
 
     if (toggle) {
       columnsToggle = tableShow(columns, () => {
-        this.setState({show: !show});
+        this.setState({ show: !show });
       });
     }
 

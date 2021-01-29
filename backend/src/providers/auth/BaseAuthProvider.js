@@ -1,5 +1,5 @@
 import * as queryString from "query-string";
-import {AuthProviderUser} from "../../models/User";
+import { AuthProviderUser } from "../../models/User";
 
 export default class BaseAuthProvider {
 

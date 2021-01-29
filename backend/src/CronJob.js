@@ -6,9 +6,9 @@ import CronJobService from "./services/CronJobService";
 import ApplicationService from "./services/ApplicationService";
 import cron from "node-cron";
 
-import {RpcError, typeGuard} from "@pokt-network/pocket-js";
-import {POST_ACTION_TYPE} from "./models/Transaction";
-import {BOND_STATUS, STAKE_STATUS, CronJobData} from "./models/CronJobData";
+import { RpcError, typeGuard } from "@pokt-network/pocket-js";
+import { POST_ACTION_TYPE } from "./models/Transaction";
+import { BOND_STATUS, STAKE_STATUS, CronJobData } from "./models/CronJobData";
 
 /**
  * Start the cron jobs
@@ -239,7 +239,7 @@ export function startCronJobs() {
               // Submit App Stake Email
               const postAction = appUnstakePocketTransaction.postAction;
 
-              const {contactEmail, userName, applicationData, address} = postAction.data;
+              const { contactEmail, userName, applicationData, address } = postAction.data;
 
               const {
                 pocketApplication,
@@ -290,7 +290,7 @@ export function startCronJobs() {
               }
 
               const postAction = nodeUnstakeTransaction.postAction;
-              const {contactEmail, userName, nodeData, address} = postAction.data;
+              const { contactEmail, userName, nodeData, address } = postAction.data;
 
               const {
                   pocketNode,
@@ -341,7 +341,7 @@ export function startCronJobs() {
               }
 
               const postAction = nodeUnjailTransaction.postAction;
-              const {contactEmail, userName, nodeData} = postAction.data;
+              const { contactEmail, userName, nodeData } = postAction.data;
 
               await EmailService
                   .to(contactEmail)

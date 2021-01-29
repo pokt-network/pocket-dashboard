@@ -5,25 +5,25 @@ import {
   StakedApplicationSummary,
   UserPocketApplication
 } from "../models/Application";
-import {PrivatePocketAccount, PublicPocketAccount} from "../models/Account";
-import {Application, PocketAAT, StakingStatus, typeGuard, UnlockedAccount} from "@pokt-network/pocket-js";
+import { PrivatePocketAccount, PublicPocketAccount } from "../models/Account";
+import { Application, PocketAAT, StakingStatus, typeGuard, UnlockedAccount } from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
-import {DashboardError, DashboardValidationError, PocketNetworkError} from "../models/Exceptions";
+import { DashboardError, DashboardValidationError, PocketNetworkError } from "../models/Exceptions";
 import TransactionService from "./TransactionService";
-import {POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
-import {Configurations} from "../_configuration";
-import {POKT_DENOMINATIONS} from "./PocketService";
+import { POST_ACTION_TYPE, TransactionPostAction } from "../models/Transaction";
+import { Configurations } from "../_configuration";
+import { POKT_DENOMINATIONS } from "./PocketService";
 import PocketService from "./PocketService";
-import {ObjectID} from "mongodb";
-import {Encryptor, Decryptor} from "strong-cryptor";
+import { ObjectID } from "mongodb";
+import { Encryptor, Decryptor } from "strong-cryptor";
 import EmailService from "../services/EmailService";
 
 const crypto = require("crypto");
 const cryptoKey = Configurations.persistence.default.db_encryption_key;
-const encryptor = new Encryptor({key: cryptoKey});
-const decryptor = new Decryptor({key: cryptoKey});
+const encryptor = new Encryptor({ key: cryptoKey });
+const decryptor = new Decryptor({ key: cryptoKey });
 
 const APPLICATION_COLLECTION_NAME = "Applications";
 const aws = require("aws-sdk");
@@ -397,7 +397,7 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async getUserApplications(userEmail, limit, offset = 0) {
-    const filter = {user: userEmail};
+    const filter = { user: userEmail };
 
     const dashboardApplicationData = (await this.__decryptApplicationFields(await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset)))
       .map(PocketApplication.createPocketApplication)
@@ -467,7 +467,7 @@ export default class ApplicationService extends BasePocketService {
     }
 
     try {
-      const {aat_version: aatVersion} = Configurations.pocket_network;
+      const { aat_version: aatVersion } = Configurations.pocket_network;
       const {
         publicPocketAccount: {
           publicKey: applicationPublicKeyHex
@@ -497,7 +497,7 @@ export default class ApplicationService extends BasePocketService {
     const {
       main_fund_address: mainFundAccount,
       aat_version: aatVersion,
-      free_tier: {client_pub_key: clientPublicKey, stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount}
+      free_tier: { client_pub_key: clientPublicKey, stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount }
     } = Configurations.pocket_network;
 
     if (aatVersion === undefined || upoktToStake === undefined || maxRelayPerDayAmount === undefined) {
@@ -692,7 +692,7 @@ export default class ApplicationService extends BasePocketService {
     // Create Gateway AAT using our client pub key and passed in signature
     const {
       aat_version: aatVersion,
-      free_tier: {client_pub_key: clientPublicKey}
+      free_tier: { client_pub_key: clientPublicKey }
     } = Configurations.pocket_network;
 
     application.pocketApplication.updatingStatus = true;

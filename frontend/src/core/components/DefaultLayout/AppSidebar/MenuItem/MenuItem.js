@@ -1,10 +1,10 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 class MenuItem extends Component {
   render() {
-    const {url, label, icon, isExternal, ...restProps} = this.props;
+    const { url, label, icon, isExternal, ...restProps } = this.props;
     const iconImageSource = `/assets/${icon}`;
 
     return (

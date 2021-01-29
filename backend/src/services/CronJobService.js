@@ -1,5 +1,5 @@
-import {CronJobData} from "../models/CronJobData";
-import {PocketNetworkError} from "../models/Exceptions";
+import { CronJobData } from "../models/CronJobData";
+import { PocketNetworkError } from "../models/Exceptions";
 import BaseService from "./BaseService";
 import PocketService from "./PocketService";
 

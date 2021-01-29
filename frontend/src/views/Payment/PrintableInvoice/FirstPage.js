@@ -5,7 +5,7 @@ import InfoItem from "./InfoItem";
 
 class FirstPage extends React.Component {
   render() {
-    const {invoiceItems, purchaseDetails, total} = this.props;
+    const { invoiceItems, purchaseDetails, total } = this.props;
 
     return (
       <div className="invoice-page">

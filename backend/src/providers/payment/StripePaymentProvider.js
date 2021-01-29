@@ -1,6 +1,6 @@
-import BasePaymentProvider, {CardPaymentMethod, PaymentResult} from "./BasePaymentProvider";
+import BasePaymentProvider, { CardPaymentMethod, PaymentResult } from "./BasePaymentProvider";
 import Stripe from "stripe";
-import {providerType} from "./Index";
+import { providerType } from "./Index";
 
 class StripePaymentProvider extends BasePaymentProvider {
 
@@ -50,8 +50,8 @@ class StripePaymentProvider extends BasePaymentProvider {
       return null;
     }
 
-    const {id, card, billing_details} = paymentMethodData;
-    const {brand, last4, exp_month, exp_year} = card;
+    const { id, card, billing_details } = paymentMethodData;
+    const { brand, last4, exp_month, exp_year } = card;
 
     return new CardPaymentMethod(id, brand, last4, exp_month, exp_year, billing_details);
   }
@@ -63,12 +63,12 @@ class StripePaymentProvider extends BasePaymentProvider {
   }
 
   async createCustomer(user) {
-    return await this._stripeAPIClient.customers.create({email: user});
+    return await this._stripeAPIClient.customers.create({ email: user });
   }
 
   async getCustomerCardPaymentMethods(customerID) {
     /** @type {{data:*[]}} */
-    const request = await this._stripeAPIClient.paymentMethods.list({customer: customerID, type: "card"});
+    const request = await this._stripeAPIClient.paymentMethods.list({ customer: customerID, type: "card" });
 
     if (!request.data) {
       return [];
@@ -76,8 +76,8 @@ class StripePaymentProvider extends BasePaymentProvider {
 
     return request.data.map(paymentMethodData => {
 
-      const {id, card, billing_details} = paymentMethodData;
-      const {brand, last4, exp_month, exp_year} = card;
+      const { id, card, billing_details } = paymentMethodData;
+      const { brand, last4, exp_month, exp_year } = card;
 
       return new CardPaymentMethod(id, brand, last4, exp_month, exp_year, billing_details);
     });

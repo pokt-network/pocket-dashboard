@@ -1,9 +1,9 @@
 import React from "react";
 import "./SelectValidatorPower.scss";
-import {Col, Row} from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import AppSlider from "../../../core/components/AppSlider";
-import {ITEM_TYPES, PURCHASE_ITEM_NAME} from "../../../_constants";
-import {formatNumbers, scrollToId} from "../../../_helpers";
+import { ITEM_TYPES, PURCHASE_ITEM_NAME } from "../../../_constants";
+import { formatNumbers, scrollToId } from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import PocketPaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
@@ -11,13 +11,13 @@ import AppAlert from "../../../core/components/AppAlert";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
 import Loader from "../../../core/components/Loader";
 import PocketAccountService from "../../../core/services/PocketAccountService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
 import Purchase from "../../../core/components/Purchase/Purchase";
 import NodeService from "../../../core/services/PocketNodeService";
 import UserService from "../../../core/services/PocketUserService";
 import PocketClientService from "../../../core/services/PocketClientService";
-import {Configurations} from "../../../_configuration";
+import { Configurations } from "../../../_configuration";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
 
@@ -42,9 +42,9 @@ class SelectValidatorPower extends Purchase {
         const minPowerValidator = parseInt(validatorPower.min);
 
         PocketCheckoutService.getNodeMoneyToSpent(minPowerValidator).then(
-          ({upokt, cost}) => {
+          ({ upokt, cost }) => {
             PocketAccountService.getBalance(accountAddress).then(
-              ({balance}) => {
+              ({ balance }) => {
                 // Usd value
                 const currentAccountBalance = parseFloat(balance.usd);
                 const subTotal = parseFloat(cost);
@@ -76,19 +76,19 @@ class SelectValidatorPower extends Purchase {
         );
       });
 
-      this.setState({currencies});
+      this.setState({ currencies });
     });
   }
 
   onCurrentBalanceChange(e) {
-    let {selected} = this.state;
+    let { selected } = this.state;
     const {
-      target: {value},
+      target: { value },
     } = e;
     const currentAccountBalance = parseFloat(value);
     const currentAccountBalanceUpokt = (currentAccountBalance / POCKET_NETWORK_CONFIGURATION.pokt_usd_market_price) * 1000000;
 
-    PocketCheckoutService.getNodeMoneyToSpent(selected).then(({upokt, cost}) => {
+    PocketCheckoutService.getNodeMoneyToSpent(selected).then(({ upokt, cost }) => {
       const subTotal = parseFloat(cost);
       const total = subTotal - currentAccountBalance;
       // Upokt value
@@ -108,9 +108,9 @@ class SelectValidatorPower extends Purchase {
   }
 
   onSliderChange(value) {
-    const {currentAccountBalance, currentAccountBalanceUpokt} = this.state;
+    const { currentAccountBalance, currentAccountBalanceUpokt } = this.state;
 
-    PocketCheckoutService.getNodeMoneyToSpent(value).then(({upokt, cost}) => {
+    PocketCheckoutService.getNodeMoneyToSpent(value).then(({ upokt, cost }) => {
       const subTotal = parseFloat(cost);
       const total = subTotal - currentAccountBalance;
       // Upokt value
@@ -136,7 +136,7 @@ class SelectValidatorPower extends Purchase {
       serviceURL,
       ppk,
     } = NodeService.getNodeInfo();
-    const {pocketNode} = await NodeService.getNode(address);
+    const { pocketNode } = await NodeService.getNode(address);
 
     const item = {
       account: address,
@@ -176,7 +176,7 @@ class SelectValidatorPower extends Purchase {
       ).then(() => { });
     }
 
-    return {success, data: paymentIntentData};
+    return { success, data: paymentIntentData };
   }
 
 
@@ -192,7 +192,7 @@ class SelectValidatorPower extends Purchase {
       upoktToStake
     } = this.state;
 
-    this.setState({loading: true});
+    this.setState({ loading: true });
 
     // At the moment the only available currency is USD.
     const currency = currencies[0];
@@ -205,7 +205,7 @@ class SelectValidatorPower extends Purchase {
       const totalAmount = parseFloat(numeral(total).format("0.00")).toFixed(2);
       const tokens = currentAccountBalanceUpokt / 1000000;
 
-      const {data: paymentIntentData} = await this.createPaymentIntent(selected, currency, totalAmount, tokens);
+      const { data: paymentIntentData } = await this.createPaymentIntent(selected, currency, totalAmount, tokens);
       
       PaymentService.savePurchaseInfoInCache({
         validationPower: parseInt(selected),
@@ -226,8 +226,8 @@ class SelectValidatorPower extends Purchase {
               method: "POKT Tokens"
             },
             details: [
-              {value: selected, text: PURCHASE_ITEM_NAME.NODES, format: false},
-              {value: subTotalAmount, text: `${PURCHASE_ITEM_NAME.NODES} cost`, format: true},
+              { value: selected, text: PURCHASE_ITEM_NAME.NODES, format: false },
+              { value: subTotalAmount, text: `${PURCHASE_ITEM_NAME.NODES} cost`, format: true },
             ],
             total,
             currentAccountBalance,
@@ -260,7 +260,7 @@ class SelectValidatorPower extends Purchase {
       }
     } catch (e) {
       this.setState({
-        error: {show: true, message: <h4>{e.toString()}</h4>},
+        error: { show: true, message: <h4>{e.toString()}</h4> },
         loading: false,
       });
       scrollToId("alert");
@@ -298,7 +298,7 @@ class SelectValidatorPower extends Purchase {
                 variant="danger"
                 title={error.message}
                 dismissible
-                onClose={() => this.setState({error: false})}
+                onClose={() => this.setState({ error: false })}
               />
             )}
             <h1>Run truly decentralized infrastructure</h1>
@@ -345,8 +345,8 @@ class SelectValidatorPower extends Purchase {
             <h2>Order Summary</h2>
             <AppOrderSummary
               items={[
-                {label: "Node", quantity: 1},
-                {label: PURCHASE_ITEM_NAME.NODES, quantity: selected},
+                { label: "Node", quantity: 1 },
+                { label: PURCHASE_ITEM_NAME.NODES, quantity: selected },
                 {
                   label: `${PURCHASE_ITEM_NAME.NODES} cost`,
                   quantity: `${subTotalFixed} ${currency.toUpperCase()}`,

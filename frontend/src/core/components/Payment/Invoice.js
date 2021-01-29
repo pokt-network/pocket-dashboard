@@ -1,11 +1,11 @@
-import React, {Component} from "react";
-import {Col} from "react-bootstrap";
-import {PropTypes} from "prop-types";
+import React, { Component } from "react";
+import { Col } from "react-bootstrap";
+import { PropTypes } from "prop-types";
 
 class Invoice extends Component {
   state = {};
   render() {
-    const {information, items, total, title} = this.props;
+    const { information, items, total, title } = this.props;
 
     return (
       <Col className="invoice">

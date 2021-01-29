@@ -1,7 +1,7 @@
 import BasePocketService from "./BasePocketService";
-import {Configurations} from "../_configuration";
-import {Application, Node, StakingStatus} from "@pokt-network/pocket-js";
-import {NetworkSummaryData, NetworkChain} from "../models/Network";
+import { Configurations } from "../_configuration";
+import { Application, Node, StakingStatus } from "@pokt-network/pocket-js";
+import { NetworkSummaryData, NetworkChain } from "../models/Network";
 import bigInt from "big-integer";
 
 const NETWORK_COLLECTION_NAME = "Blockchains";
@@ -15,7 +15,7 @@ export default class NetworkService extends BasePocketService {
    * @async
    */
   async getAvailableNetworkChains() {
-    const filter = {active: true};
+    const filter = { active: true };
     const networkChainData = await this.persistenceService.getEntities(NETWORK_COLLECTION_NAME, filter, 1000, 0);
 
     if (networkChainData.length > 0) {
@@ -40,7 +40,7 @@ export default class NetworkService extends BasePocketService {
     if(networkHashes === undefined) {
       return [];
     } else {
-      const filter = {active: true, _id: networkHashes};
+      const filter = { active: true, _id: networkHashes };
 
       const networkChainData = await this.persistenceService.getEntities(NETWORK_COLLECTION_NAME, filter, 1000, 0);
 

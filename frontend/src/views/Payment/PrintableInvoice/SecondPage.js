@@ -4,13 +4,13 @@ import Logo from "./Logo";
 
 class SecondPage extends React.Component {
   render() {
-    const {poktPrice, purchasedTokens} = this.props;
+    const { poktPrice, purchasedTokens } = this.props;
     const purchasedTokensTotal = purchasedTokens < 0 ? 0.00 : (purchasedTokens / 1000000).toFixed(6);
 
     return (
       <div
         className="token-purchase-agreement"
-        style={{pageBreakAfter: "always", maxWidth: "80%", margin: "auto"}}
+        style={{ pageBreakAfter: "always", maxWidth: "80%", margin: "auto" }}
       >
         <Logo />
         <h3>POCKET NETWORK, INC</h3>
@@ -35,7 +35,7 @@ class SecondPage extends React.Component {
             target= "_blank"
             rel="noopener noreferrer"
             href="https://dashboard.pokt.network/"
-            style={{textDecoration: "none"}}
+            style={{ textDecoration: "none" }}
           >
             https://dashboard.pokt.network/
           </a>{" "}

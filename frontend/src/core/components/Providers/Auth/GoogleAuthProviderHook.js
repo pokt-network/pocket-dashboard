@@ -1,4 +1,4 @@
-import {BaseAuthProviderHook} from "./BaseAuthProviderHook";
+import { BaseAuthProviderHook } from "./BaseAuthProviderHook";
 
 class GoogleAuthProviderHook extends BaseAuthProviderHook {
 

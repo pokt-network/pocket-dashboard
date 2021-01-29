@@ -37,7 +37,7 @@ class PocketNetworkService extends PocketBaseService {
    * @return {Promise|Promise<Array.<*>>}
    */
   getNetworkChains(networkHashes, indexed = true) {
-    const data = {networkHashes};
+    const data = { networkHashes };
 
     return axios.post(this._getURL("chains"), data).then((response) => {
       if (indexed) {

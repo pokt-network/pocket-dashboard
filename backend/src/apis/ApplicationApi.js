@@ -1,18 +1,18 @@
 import express from "express";
 import ApplicationService from "../services/ApplicationService";
-import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helpers";
+import { apiAsyncWrapper, getOptionalQueryOption, getQueryOption } from "./_helpers";
 import EmailService from "../services/EmailService";
-import PaymentService from "../services/PaymentService";
-import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
+// import PaymentService from "../services/PaymentService";
+// import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
 import UserService from "../services/UserService";
-import numeral from "numeral";
+// import numeral from "numeral";
 
 const router = express.Router();
 
 const userService = new UserService();
 const applicationService = new ApplicationService();
-const applicationCheckoutService = ApplicationCheckoutService.getInstance();
-const paymentService = new PaymentService();
+// const applicationCheckoutService = ApplicationCheckoutService.getInstance();
+// const paymentService = new PaymentService();
 
 /**
  * Create new application.

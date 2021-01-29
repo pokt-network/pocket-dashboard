@@ -1,9 +1,9 @@
-import React, {Component} from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import React, { Component } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DatePicker from "react-datepicker";
-import {faCalendarAlt} from "@fortawesome/free-solid-svg-icons";
+import { faCalendarAlt } from "@fortawesome/free-solid-svg-icons";
 import "./AppDatePicker.scss";
-import {PropTypes} from "prop-types";
+import { PropTypes } from "prop-types";
 
 class AppDatePicker extends Component {
   constructor(props, context) {
@@ -17,18 +17,18 @@ class AppDatePicker extends Component {
   }
 
   handleDateChange(date, onChange) {
-    this.setState({date: date});
+    this.setState({ date: date });
     if (onChange) {
       onChange(date);
     }
   }
 
   render() {
-    const {date} = this.state;
+    const { date } = this.state;
 
-    const {onChange, ...props} = this.props;
+    const { onChange, ...props } = this.props;
 
-    const DateButton = ({value, onClick}) => (
+    const DateButton = ({ value, onClick }) => (
       <button className="wrapper-btn" onClick={onClick}>
         <span>{value}</span>
         <FontAwesomeIcon icon={faCalendarAlt} className="icon" />

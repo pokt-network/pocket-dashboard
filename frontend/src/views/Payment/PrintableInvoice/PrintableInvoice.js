@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import "./PrintableInvoice.scss";
 import FirstPage from "./FirstPage";

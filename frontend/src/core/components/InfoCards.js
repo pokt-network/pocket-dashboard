@@ -1,12 +1,12 @@
-import React, {Component} from "react";
-import {Col} from "react-bootstrap";
+import React, { Component } from "react";
+import { Col } from "react-bootstrap";
 import InfoCard from "./InfoCard/InfoCard";
-import {PropTypes} from "prop-types";
+import { PropTypes } from "prop-types";
 
 class InfoCards extends Component {
   state = {};
   render() {
-    const {cards} = this.props;
+    const { cards } = this.props;
 
     return (
       <>

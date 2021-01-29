@@ -1,10 +1,10 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import DotLoader from "react-spinners/DotLoader";
-import {PropTypes} from "prop-types";
+import { PropTypes } from "prop-types";
 
 class Loader extends Component {
   render() {
-    const {loading} = this.props;
+    const { loading } = this.props;
 
     return (
       <div className="pocket-loader">

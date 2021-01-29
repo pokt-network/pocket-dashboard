@@ -6,20 +6,20 @@ const now = new Date();
 
 class NinthPage extends React.Component {
   render() {
-    const {cardHolderName} = this.props;
+    const { cardHolderName } = this.props;
 
     return (
       <div
         className="token-purchase-agreement"
-        style={{pageBreakAfter: "always"}}
+        style={{ pageBreakAfter: "always" }}
       >
         <Logo />
-        <p className="mb-5" style={{paddingLeft: "60px"}}>
+        <p className="mb-5" style={{ paddingLeft: "60px" }}>
           exercise thereof or the exercise of any other right, power or
           privilege. The rights and remedies herein provided shall be cumulative
           and not exclusive of any rights or remedies provided by law.
         </p>
-        <p style={{paddingLeft: "60px", marginBottom: 0}}>
+        <p style={{ paddingLeft: "60px", marginBottom: 0 }}>
           The Company hereby formally accepts Purchaser&lsquo;s offer, as set
           forth in the Token Purchase Terms and Conditions by and
         </p>

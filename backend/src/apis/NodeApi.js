@@ -1,17 +1,17 @@
 import express from "express";
 import NodeService from "../services/NodeService";
-import {apiAsyncWrapper, getOptionalQueryOption, getQueryOption} from "./_helpers";
-import PaymentService from "../services/PaymentService";
+import { apiAsyncWrapper, getOptionalQueryOption, getQueryOption } from "./_helpers";
+// import PaymentService from "../services/PaymentService";
 import EmailService from "../services/EmailService";
-import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
-import {CoinDenom} from "@pokt-network/pocket-js";
-import numeral from "numeral";
+// import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
+// import { CoinDenom } from "@pokt-network/pocket-js";
+// import numeral from "numeral";
 
 const router = express.Router();
 
 const nodeService = new NodeService();
-const paymentService = new PaymentService();
-const nodeCheckoutService = NodeCheckoutService.getInstance();
+// const paymentService = new PaymentService();
+// const nodeCheckoutService = NodeCheckoutService.getInstance();
 
 /**
  * Create new node.

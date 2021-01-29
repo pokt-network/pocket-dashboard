@@ -1,13 +1,13 @@
-import React, {Component} from "react";
-import {faCircle} from "@fortawesome/free-solid-svg-icons";
+import React, { Component } from "react";
+import { faCircle } from "@fortawesome/free-solid-svg-icons";
 import "./Notifications.scss";
-import {PropTypes} from "prop-types";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {Dropdown} from "react-bootstrap";
+import { PropTypes } from "prop-types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Dropdown } from "react-bootstrap";
 
 class Notification extends Component {
   render() {
-    const {children, time} = this.props;
+    const { children, time } = this.props;
 
     return (
       <Dropdown.Item>

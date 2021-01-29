@@ -1,8 +1,8 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./AppOrderSummary.scss";
-import {PropTypes} from "prop-types";
+import { PropTypes } from "prop-types";
 import LoadingButton from "../LoadingButton";
-import {Form} from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 class AppOrderSummary extends Component {
   constructor(props, context) {
@@ -18,8 +18,8 @@ class AppOrderSummary extends Component {
     };
   }
 
-  handleChange({currentTarget: input}) {
-    const {data, maxBalance} = this.state;
+  handleChange({ currentTarget: input }) {
+    const { data, maxBalance } = this.state;
 
     if (input.value.length === 0) {
       input.value = "0";
@@ -30,18 +30,18 @@ class AppOrderSummary extends Component {
     }
 
     data[input.name] = parseFloat(input.value).toFixed(2).toString();
-    this.setState({data});
+    this.setState({ data });
   }
 
   componentDidMount() {
-    const {balance} = this.props;
+    const { balance } = this.props;
 
-    this.setState({maxBalance: balance.toFixed(2), data: {balanceInput: balance.toFixed(2)}});
+    this.setState({ maxBalance: balance.toFixed(2), data: { balanceInput: balance.toFixed(2) } });
   }
 
   render() {
-    const {balanceInput} = this.state.data;
-    const {maxBalance} = this.state;
+    const { balanceInput } = this.state.data;
+    const { maxBalance } = this.state;
 
     const {
       formActionHandler,
@@ -67,7 +67,7 @@ class AppOrderSummary extends Component {
             <span className="currency">{currency}</span>
             <span className="minus">-</span>
             <Form.Control
-              style={{width: "150px"}}
+              style={{ width: "150px" }}
               type="number"
               min={0}
               max={maxBalance}

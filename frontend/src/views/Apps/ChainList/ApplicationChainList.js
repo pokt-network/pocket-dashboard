@@ -1,8 +1,8 @@
 import React from "react";
-import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
-import {TABLE_COLUMNS} from "../../../_constants";
+import { Button, Col, FormControl, InputGroup, Row } from "react-bootstrap";
+import { TABLE_COLUMNS } from "../../../_constants";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
 import Segment from "../../../core/components/Segment/Segment";
 import AppTable from "../../../core/components/AppTable";
@@ -16,18 +16,18 @@ class ApplicationChainList extends Chains {
   }
 
   handleChains() {
-    const {chosenChains} = this.state;
+    const { chosenChains } = this.state;
     const chainsHashes = chosenChains.map((ch) => ch._id);
 
-    PocketApplicationService.saveAppInfoInCache({chains: chainsHashes});
-    const {id: appId} = PocketApplicationService.getApplicationInfo();
+    PocketApplicationService.saveAppInfoInCache({ chains: chainsHashes });
+    const { id: appId } = PocketApplicationService.getApplicationInfo();
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(_getDashboardPath(`${DASHBOARD_PATHS.appDetail.replace(":id", appId)}`));
   }
 
   render() {
-    const {filteredChains, chosenChains} = this.state;
+    const { filteredChains, chosenChains } = this.state;
     const chains = filteredChains;
 
     // Bootstrap Table selectionParams
@@ -84,7 +84,7 @@ class ApplicationChainList extends Chains {
                   placeholder="Search a chain"
                   name="searchChainQuery"
                   onChange={this.handleChange}
-                  onKeyPress={({key}) => {
+                  onKeyPress={({ key }) => {
                     if (key === "Enter") {
                       this.handleChainSearch();
                     }

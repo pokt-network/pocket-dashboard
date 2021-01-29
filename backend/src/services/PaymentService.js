@@ -1,10 +1,10 @@
 import BaseService from "./BaseService";
-import {get_default_payment_provider, getTokenPaymentProvider, providerType} from "../providers/payment/Index";
-import {CardPaymentMethod, Payment, PaymentCurrencies, PaymentResult} from "../providers/payment/BasePaymentProvider";
-import {BillingDetails, PaymentHistory, PaymentMethod} from "../models/Payment";
+import { get_default_payment_provider, getTokenPaymentProvider, providerType } from "../providers/payment/Index";
+import { CardPaymentMethod, Payment, PaymentCurrencies, PaymentResult } from "../providers/payment/BasePaymentProvider";
+import { BillingDetails, PaymentHistory, PaymentMethod } from "../models/Payment";
 import UserService from "./UserService";
-import {Configurations} from "../_configuration";
-import {DashboardError, DashboardValidationError} from "../models/Exceptions";
+import { Configurations } from "../_configuration";
+import { DashboardError, DashboardValidationError } from "../models/Exceptions";
 
 const PAYMENT_METHOD_COLLECTION_NAME = "PaymentMethods";
 const PAYMENT_HISTORY_COLLECTION_NAME = "PaymentHistory";
@@ -67,7 +67,7 @@ export default class PaymentService extends BaseService {
    */
   async __createPocketPaymentForItem(userEmail, type, currency, item, amount, itemType, tokens) {
 
-    if (!Payment.validate({type, currency, item, amount})) {
+    if (!Payment.validate({ type, currency, item, amount })) {
       return false;
     }
 
@@ -133,7 +133,7 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async paymentHistoryExists(paymentHistory) {
-    const filter = {paymentID: paymentHistory.paymentID, user: paymentHistory.user};
+    const filter = { paymentID: paymentHistory.paymentID, user: paymentHistory.user };
     const dbPaymentHistory = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
 
     return dbPaymentHistory !== undefined;
@@ -178,7 +178,7 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async deletePaymentMethod(paymentMethodID, authHeader) {
-    const filter = {"paymentMethod.id": paymentMethodID};
+    const filter = { "paymentMethod.id": paymentMethodID };
     const userEmail = authHeader.split(", ")[2].split(" ")[1];
     let belongsToClient = false;
 
@@ -216,7 +216,7 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async createPocketPaymentIntentForApps(paymentIntentData) {
-    const {user, type, currency, item, amount, tokens} = paymentIntentData;
+    const { user, type, currency, item, amount, tokens } = paymentIntentData;
 
     return this.__createPocketPaymentForItem(user, type, currency, item, amount, "Application", tokens);
   }
@@ -235,7 +235,7 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async createPocketPaymentIntentForNodes(paymentIntentData) {
-    const {user, type, currency, item, amount, tokens} = paymentIntentData;
+    const { user, type, currency, item, amount, tokens } = paymentIntentData;
 
     return this.__createPocketPaymentForItem(user, type, currency, item, amount, "Node", tokens);
   }
@@ -253,7 +253,7 @@ export default class PaymentService extends BaseService {
    * @returns {Promise<PaymentHistory[]>} List of Payment history.
    */
   async getPaymentHistory(user, limit, offset = 0, fromDate = "", toDate = "", paymentID = "") {
-    let filter = {user};
+    let filter = { user };
     let dateFilter = {};
 
     if (fromDate) {
@@ -323,7 +323,7 @@ export default class PaymentService extends BaseService {
    */
   async savePaymentHistory(createdDate, paymentID, currency, amount, item, user, tokens) {
 
-    const {pokt_market_price: poktPrice} = Configurations.pocket_network;
+    const { pokt_market_price: poktPrice } = Configurations.pocket_network;
     const token = tokens === undefined ? 0 : tokens;
 
     const paymentHistory = PaymentHistory.createPaymentHistory({
@@ -358,7 +358,7 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async updatePaymentWithPrintableData(paymentId, userEmail, printableData) {
-    const filter = {paymentID: paymentId, user: userEmail};
+    const filter = { paymentID: paymentId, user: userEmail };
 
     const paymentHistoryDB = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
 
@@ -387,7 +387,7 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async markPaymentAsSuccess(paymentHistoryData) {
-    const filter = {paymentID: paymentHistoryData.paymentID, user: paymentHistoryData.user};
+    const filter = { paymentID: paymentHistoryData.paymentID, user: paymentHistoryData.user };
 
     const paymentHistoryDB = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
 
@@ -413,7 +413,7 @@ export default class PaymentService extends BaseService {
    * @returns {Promise<[]|CardPaymentMethod[]>} Payment methods.
    */
   async getUserPaymentMethods(user) {
-    const dbPaymentMethods = await this.persistenceService.getEntities(PAYMENT_METHOD_COLLECTION_NAME, {user});
+    const dbPaymentMethods = await this.persistenceService.getEntities(PAYMENT_METHOD_COLLECTION_NAME, { user });
 
     if (dbPaymentMethods) {
       const paymentMethodIds = dbPaymentMethods.map(_ => _.paymentMethod.id);
@@ -434,7 +434,7 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async getPaymentFromHistory(paymentID) {
-    const filter = {paymentID};
+    const filter = { paymentID };
     const dbPaymentHistory = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
 
     if (dbPaymentHistory) {

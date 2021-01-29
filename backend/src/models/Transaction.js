@@ -13,7 +13,7 @@ export class TransactionPostAction {
    * @param {*} data Data used in the post action.
    */
   constructor(type, data) {
-    Object.assign(this, {type, data});
+    Object.assign(this, { type, data });
   }
 }
 
@@ -26,6 +26,6 @@ export class PocketTransaction {
    * @param {boolean} completed Completed.
    */
   constructor(createdDate, hash, postAction = {}, completed = false) {
-    Object.assign(this, {createdDate, hash, postAction, completed});
+    Object.assign(this, { createdDate, hash, postAction, completed });
   }
 }

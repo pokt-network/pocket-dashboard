@@ -35,12 +35,12 @@ class PocketSecurityQuestionsService extends PocketBaseService {
     return axios.post(this._getURL("answered"), data)
       .then(response => {
         if (response.status === 200) {
-          return {success: response.data};
+          return { success: response.data };
         }
 
-        return {success: false};
+        return { success: false };
       }).catch(err => {
-        return {success: false, data: err.response};
+        return { success: false, data: err.response };
       });
   }
 
@@ -59,11 +59,11 @@ class PocketSecurityQuestionsService extends PocketBaseService {
     return axios.post(this._getURL("user/random"), data)
       .then(response => {
         if (response.status === 200) {
-          return {success: response.data};
+          return { success: response.data };
         }
-        return {success: false};
+        return { success: false };
       }).catch(err => {
-        return {success: false, data: err.response};
+        return { success: false, data: err.response };
       });
   }
 
@@ -82,11 +82,11 @@ class PocketSecurityQuestionsService extends PocketBaseService {
     return axios.post(this._getURL("user/all"), data)
       .then(response => {
         if (response.status === 200) {
-          return {success: true, data: response.data};
+          return { success: true, data: response.data };
         }
-        return {success: false};
+        return { success: false };
       }).catch(err => {
-        return {success: false, data: err.response};
+        return { success: false, data: err.response };
       });
   }
 
@@ -107,11 +107,11 @@ class PocketSecurityQuestionsService extends PocketBaseService {
     return axios.post(this._getURL("user/validate-answers"), data)
       .then(response => {
         if (response.status === 200) {
-          return {success: true, data: response.data};
+          return { success: true, data: response.data };
         }
-        return {success: false};
+        return { success: false };
       }).catch(err => {
-        return {success: false, data: err.response};
+        return { success: false, data: err.response };
       });
   }
 

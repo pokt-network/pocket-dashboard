@@ -1,4 +1,4 @@
-import {PocketTransaction} from "./Transaction";
+import { PocketTransaction } from "./Transaction";
 
 export const BOND_STATUS = {
     2: "Staked",
@@ -28,7 +28,7 @@ export class CronJobData {
      * @param {[PocketTransaction]} nodeUnjailTransactions List of NodeUnjail Transactions.
      */
     constructor(id, lastHeight, pendingTransactions, appStakeTransactions, nodeStakeTransactions, appUnstakeTransactions, nodeUnstakeTransactions, nodeUnjailTransactions) {
-        Object.assign(this, {id, lastHeight, pendingTransactions, appStakeTransactions, nodeStakeTransactions, appUnstakeTransactions, nodeUnstakeTransactions, nodeUnjailTransactions});
+        Object.assign(this, { id, lastHeight, pendingTransactions, appStakeTransactions, nodeStakeTransactions, appUnstakeTransactions, nodeUnstakeTransactions, nodeUnjailTransactions });
     }
 
     static newInstance(dbArray) {

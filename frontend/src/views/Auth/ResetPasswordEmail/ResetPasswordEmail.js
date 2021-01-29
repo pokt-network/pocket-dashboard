@@ -1,9 +1,9 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import "./ResetPasswordEmail.scss";
-import {Button, Col, Container, Row} from "react-bootstrap";
+import { Button, Col, Container, Row } from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
-import {ROUTE_PATHS} from "../../../_routes";
+import { ROUTE_PATHS } from "../../../_routes";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import AppAlert from "../../../core/components/AppAlert";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
@@ -30,27 +30,27 @@ class ResetPasswordEmail extends Component {
   componentDidMount() {
     // eslint-disable-next-line react/prop-types
     if (this.props.location.state === undefined) {
-      this.setState({unauthorized: true});
+      this.setState({ unauthorized: true });
       return;
     }
     // eslint-disable-next-line react/prop-types
-    const {email} = this.props.location.state;
+    const { email } = this.props.location.state;
 
-    this.setState({email});
+    this.setState({ email });
   }
 
   pushToHome() {
-    const {email} = this.state.email;
+    const { email } = this.state.email;
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push({
       pathname: ROUTE_PATHS.home,
-      state: {email},
+      state: { email },
     });
   }
 
   render() {
-    const {email, unauthorized, resentEmail} = this.state;
+    const { email, unauthorized, resentEmail } = this.state;
 
     /* eslint-enable jsx-a11y/alt-text */
 
@@ -67,7 +67,7 @@ class ResetPasswordEmail extends Component {
                       variant={alert.variant}
                       dismissible
                       onClose={() => {
-                        this.setState({resentEmail: false});
+                        this.setState({ resentEmail: false });
                       }}
                       title={<h4>An Email has been resent to your address</h4>}
                     />

@@ -18,7 +18,7 @@ export class CardPaymentMethod {
    */
 
   constructor(id, brand, lastDigits, expirationMonth, expirationYear, billingDetails) {
-    Object.assign(this, {id, brand, lastDigits, expirationMonth, expirationYear, billingDetails});
+    Object.assign(this, { id, brand, lastDigits, expirationMonth, expirationYear, billingDetails });
   }
 }
 
@@ -33,7 +33,7 @@ export class PaymentResult {
    * @param {string} provider The provider.
    */
   constructor(id, createdDate, paymentNumber, currency, amount, provider) {
-    Object.assign(this, {id, createdDate, amount, currency, paymentNumber, provider});
+    Object.assign(this, { id, createdDate, amount, currency, paymentNumber, provider });
   }
 }
 

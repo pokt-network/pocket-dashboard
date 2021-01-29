@@ -1,13 +1,13 @@
-import React, {Component} from "react";
-import {Alert, Button, Col, Modal, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Alert, Button, Col, Modal, Row } from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {BACKEND_ERRORS, DEFAULT_NETWORK_ERROR_MESSAGE, STAKE_STATUS, TABLE_COLUMNS} from "../../../_constants";
+import { BACKEND_ERRORS, DEFAULT_NETWORK_ERROR_MESSAGE, STAKE_STATUS, TABLE_COLUMNS } from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import {formatDaysCountdown, formatNetworkData, formatNumbers, getStakeStatus} from "../../../_helpers";
-import {Link} from "react-router-dom";
+import { formatDaysCountdown, formatNetworkData, formatNumbers, getStakeStatus } from "../../../_helpers";
+import { Link } from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
@@ -42,7 +42,7 @@ class NodeDetail extends Component {
       ctaButtonPressed: false,
       serviceUrl: "",
       updatingAlert: false,
-      error: {show: false, message: ""}
+      error: { show: false, message: "" }
     };
 
     this.deleteNode = this.deleteNode.bind(this);
@@ -56,7 +56,7 @@ class NodeDetail extends Component {
     let errorType = "";
 
     // eslint-disable-next-line react/prop-types
-    const {address} = this.props.match.params;
+    const { address } = this.props.match.params;
 
     const {
       pocketNode,
@@ -76,14 +76,14 @@ class NodeDetail extends Component {
           }
         });
       } else {
-        this.setState({loading: false, exists: false});
+        this.setState({ loading: false, exists: false });
       }
       return;
     }
 
     let chains = await NetworkService.getNetworkChains(networkData.chains);
 
-    const {balance: accountBalance} = await PocketAccountService.getPoktBalance(
+    const { balance: accountBalance } = await PocketAccountService.getPoktBalance(
       address
     );
 
@@ -113,7 +113,7 @@ class NodeDetail extends Component {
 
 
   async deleteNode() {
-    const {address} = this.state.pocketNode.publicPocketAccount;
+    const { address } = this.state.pocketNode.publicPocketAccount;
 
     const nodesLink = `${window.location.origin}${_getDashboardPath(
       DASHBOARD_PATHS.nodes
@@ -127,13 +127,13 @@ class NodeDetail extends Component {
     NodeService.removeNodeInfoFromCache();
 
     if (success) {
-      this.setState({deleted: true});
+      this.setState({ deleted: true });
       // eslint-disable-next-line react/prop-types
       this.props.onBreadCrumbChange(["Nodes", "Node Detail", "Node Removed"]);
     }
   }
 
-  async unstakeNode({ppk, passphrase, address}) {
+  async unstakeNode({ ppk, passphrase, address }) {
     const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
     const detail = url.replace(":address", address);
     const nodeLink = `${window.location.origin}${detail}`;
@@ -142,16 +142,16 @@ class NodeDetail extends Component {
 
     const nodeUnstakeTransaction = await PocketClientService.nodeUnstakeRequest(account.addressHex, passphrase);
 
-    const {success, data} = await NodeService.unstakeNode(nodeUnstakeTransaction, nodeLink);
+    const { success, data } = await NodeService.unstakeNode(nodeUnstakeTransaction, nodeLink);
 
     if (success) {
       window.location.reload(false);
     } else {
-      this.setState({unstaking: false, message: data});
+      this.setState({ unstaking: false, message: data });
     }
   }
 
-  async unjailNode({ppk, passphrase, address}) {
+  async unjailNode({ ppk, passphrase, address }) {
     const url = _getDashboardPath(DASHBOARD_PATHS.nodeDetail);
     const detail = url.replace(":address", address);
     const nodeLink = `${window.location.origin}${detail}`;
@@ -162,20 +162,20 @@ class NodeDetail extends Component {
       address, passphrase
     );
 
-    const {success, data} = await NodeService.unjailNode(
+    const { success, data } = await NodeService.unjailNode(
       nodeUnjailTransaction, nodeLink
     );
 
     if (success) {
       window.location.reload(false);
     } else {
-      this.setState({unjail: false, error: {show: true, message: data}});
+      this.setState({ unjail: false, error: { show: true, message: data } });
     }
   }
 
-  async stakeNode({ppk, passphrase, address}) {
+  async stakeNode({ ppk, passphrase, address }) {
     NodeService.removeNodeInfoFromCache();
-    NodeService.saveNodeInfoInCache({address, passphrase, ppk});
+    NodeService.saveNodeInfoInCache({ address, passphrase, ppk });
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
     PocketUserService.saveUserAction("Stake Node");
@@ -250,7 +250,7 @@ class NodeDetail extends Component {
       jailStatus = JAIL_STATUS_STR.JAILED;
       jailActionItem = (
         <p
-          onClick={() => this.setState({ctaButtonPressed: true, unjail: true})}
+          onClick={() => this.setState({ ctaButtonPressed: true, unjail: true })}
           className="unjail"
         >
           Unjail this node
@@ -267,12 +267,12 @@ class NodeDetail extends Component {
     const generalInfo = [
       {
         title: `${formatNetworkData(stakedTokens)} POKT`,
-        titleAttrs: {title: stakedTokens ? formatNumbers(stakedTokens) : undefined},
+        titleAttrs: { title: stakedTokens ? formatNumbers(stakedTokens) : undefined },
         subtitle: "Staked tokens",
       },
       {
         title: `${formatNetworkData(accountBalance)} POKT`,
-        titleAttrs: {title: accountBalance ? formatNumbers(accountBalance) : undefined},
+        titleAttrs: { title: accountBalance ? formatNumbers(accountBalance) : undefined },
         subtitle: "Balance",
       },
       {
@@ -290,15 +290,15 @@ class NodeDetail extends Component {
       },
       {
         title: formatNetworkData(stakedTokens),
-        titleAttrs: {title: stakedTokens ? formatNumbers(stakedTokens) : undefined},
+        titleAttrs: { title: stakedTokens ? formatNumbers(stakedTokens) : undefined },
         subtitle: "Validator Power"
       },
     ];
 
     const serviceURLValue = status === STAKE_STATUS.Staked ? serviceURL : "";
     const contactInfo = [
-      {title: "Service URL", subtitle: serviceURLValue || ""},
-      {title: "Contact email", subtitle: contactEmail},
+      { title: "Service URL", subtitle: serviceURLValue || "" },
+      { title: "Contact email", subtitle: contactEmail },
     ];
 
     const renderValidation = (handleFunc, breadcrumbs) => (
@@ -368,12 +368,12 @@ class NodeDetail extends Component {
             className="pb-4 pt-4"
             variant="primary"
             onClose={() => {
-              this.setState({unjailAlert: false});
+              this.setState({ unjailAlert: false });
             }}
             dismissible
             title={
               <>
-                <h4 className="text-uppercase" style={{paddingLeft: "15px"}}>
+                <h4 className="text-uppercase" style={{ paddingLeft: "15px" }}>
                   ATTENTION!{" "}
                 </h4>
                 <p className="ml-2">
@@ -410,7 +410,7 @@ class NodeDetail extends Component {
               <AppAlert
                 variant="danger"
                 title={error.message}
-                onClose={() => this.setState({error: {show: false}})}
+                onClose={() => this.setState({ error: { show: false } })}
                 dismissible
               />
             )}
@@ -452,7 +452,7 @@ class NodeDetail extends Component {
           ))}
         </Row>
         <Row>
-          <Col className={chains.length === 0 ? "mb-1" : ""} style={{display: status === STAKE_STATUS.Staked ? "block" : "none"}}>
+          <Col className={chains.length === 0 ? "mb-1" : ""} style={{ display: status === STAKE_STATUS.Staked ? "block" : "none" }}>
             <Segment scroll={false} label="Networks">
               <AppTable
                 scroll
@@ -515,7 +515,7 @@ class NodeDetail extends Component {
               <p>
                 <span
                   className="link"
-                  onClick={() => this.setState({deleteModal: true})}
+                  onClick={() => this.setState({ deleteModal: true })}
                 >
                   Remove
                 </span>{" "}
@@ -526,7 +526,7 @@ class NodeDetail extends Component {
         </Row>
         <Modal
           show={deleteModal}
-          onHide={() => this.setState({deleteModal: false})}
+          onHide={() => this.setState({ deleteModal: false })}
           animation={false}
           centered
           dialogClassName="app-modal"
@@ -542,7 +542,7 @@ class NodeDetail extends Component {
           <Modal.Footer>
             <Button
               className="dark-button"
-              onClick={() => this.setState({deleteModal: false})}>
+              onClick={() => this.setState({ deleteModal: false })}>
               <span>Cancel</span>
             </Button>
             <Button onClick={this.deleteNode}>

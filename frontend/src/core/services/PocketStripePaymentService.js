@@ -21,7 +21,7 @@ class PocketStripePaymentService extends PocketBaseService {
    */
   async __markPaymentAsSuccess(paymentID, paymentMethodID, billingDetails) {
     const user = PocketUserService.getUserInfo().email;
-    const data = {paymentID, user, paymentMethodID, billingDetails};
+    const data = { paymentID, user, paymentMethodID, billingDetails };
 
     return axios.put(this._getURL("history"), data)
       .then(response => response.data);
@@ -54,14 +54,14 @@ class PocketStripePaymentService extends PocketBaseService {
       }
     };
 
-    const data = {paymentMethod, user, billingDetails};
+    const data = { paymentMethod, user, billingDetails };
 
     return axios.post(this._getURL("payment_method"), data)
       .then(response => {
-        return {success: true, data: response.data};
+        return { success: true, data: response.data };
       })
       .catch(err => {
-        return {success: false, data: err.response.data};
+        return { success: false, data: err.response.data };
       });
   }
 

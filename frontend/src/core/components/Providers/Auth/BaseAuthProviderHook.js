@@ -1,9 +1,9 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import queryString from "query-string";
 import UserService from "../../../services/PocketUserService";
-import {Redirect} from "react-router-dom";
-import {ROUTE_PATHS} from "../../../../_routes";
+import { Redirect } from "react-router-dom";
+import { ROUTE_PATHS } from "../../../../_routes";
 
 export class BaseAuthProviderHook extends Component {
 
@@ -18,7 +18,7 @@ export class BaseAuthProviderHook extends Component {
   }
 
   componentDidMount() {
-    const {location} = this.props;
+    const { location } = this.props;
 
     // noinspection JSUnresolvedFunction
     const data = queryString.parse(location.search);

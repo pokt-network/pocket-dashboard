@@ -1,7 +1,7 @@
-import {PublicPocketAccount} from "../models/Account";
-import {CoinDenom} from "@pokt-network/pocket-js";
-import {POKT_DENOMINATIONS} from "./PocketService";
-import {Configurations} from "../_configuration";
+import { PublicPocketAccount } from "../models/Account";
+import { CoinDenom } from "@pokt-network/pocket-js";
+import { POKT_DENOMINATIONS } from "./PocketService";
+import { Configurations } from "../_configuration";
 import BasePocketService from "./BasePocketService";
 
 
@@ -51,10 +51,10 @@ export default class AccountService extends BasePocketService {
    * @async
    */
   async getBalance(accountAddress, pocketDenomination = CoinDenom.Upokt) {
-    const {pokt_market_price: poktMarketPrice} = Configurations.pocket_network;
+    const { pokt_market_price: poktMarketPrice } = Configurations.pocket_network;
     const upokt = await this.getPoktBalance(accountAddress);
     const usd = (upokt / Math.pow(10, POKT_DENOMINATIONS[pocketDenomination])) * poktMarketPrice;
 
-    return {upokt, usd};
+    return { upokt, usd };
   }
 }

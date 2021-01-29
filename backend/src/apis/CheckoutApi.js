@@ -1,8 +1,8 @@
 import express from "express";
 import ApplicationCheckoutService from "../services/checkout/ApplicationCheckoutService";
-import {apiAsyncWrapper, getQueryOption} from "./_helpers";
+import { apiAsyncWrapper, getQueryOption } from "./_helpers";
 import NodeCheckoutService from "../services/checkout/NodeCheckoutService";
-import {CoinDenom} from "@pokt-network/pocket-js";
+import { CoinDenom } from "@pokt-network/pocket-js";
 
 const router = express.Router();
 
@@ -24,9 +24,9 @@ router.get("/nodes/validator-power", apiAsyncWrapper((req, res) => {
 router.get("/applications/cost", apiAsyncWrapper((req, res) => {
   const relaysPerDay = parseInt(getQueryOption(req, "rpd"));
 
-  const {upokt, usdValue: cost} = applicationCheckoutService.getCostForRelaysPerDay(relaysPerDay);
+  const { upokt, usdValue: cost } = applicationCheckoutService.getCostForRelaysPerDay(relaysPerDay);
 
-  res.json({upokt, cost});
+  res.json({ upokt, cost });
 }));
 
 router.post("/applications/pokt", apiAsyncWrapper((req, res) => {
@@ -35,16 +35,16 @@ router.post("/applications/pokt", apiAsyncWrapper((req, res) => {
 
   const cost = applicationCheckoutService.getPoktToStake(data.money);
 
-  res.json({cost});
+  res.json({ cost });
 }));
 
 router.get("/nodes/cost", apiAsyncWrapper((req, res) => {
   const validatorPower = parseInt(getQueryOption(req, "vp"));
 
   // Add transaction fee to cost
-  const {upokt, usdValue: cost} = nodeCheckoutService.getMoneyToSpent(validatorPower);
+  const { upokt, usdValue: cost } = nodeCheckoutService.getMoneyToSpent(validatorPower);
   
-  res.json({upokt, cost});
+  res.json({ upokt, cost });
 }));
 
 router.post("/nodes/pokt", apiAsyncWrapper((req, res) => {
@@ -53,7 +53,7 @@ router.post("/nodes/pokt", apiAsyncWrapper((req, res) => {
 
   const cost = nodeCheckoutService.getPoktToStake(data.money, CoinDenom.Upokt);
 
-  res.json({cost});
+  res.json({ cost });
 }));
 
 

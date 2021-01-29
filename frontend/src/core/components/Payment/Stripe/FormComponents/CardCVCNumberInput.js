@@ -1,6 +1,6 @@
-import React, {Component} from "react";
-import {CardCvcElement} from "@stripe/react-stripe-js";
-import {PaymentInputStyle} from "./ComponentStyles";
+import React, { Component } from "react";
+import { CardCvcElement } from "@stripe/react-stripe-js";
+import { PaymentInputStyle } from "./ComponentStyles";
 
 class CardCVCNumberInput extends Component {
 

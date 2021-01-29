@@ -1,12 +1,12 @@
 import React from "react";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import Loader from "../../../core/components/Loader";
 import NodeService from "../../../core/services/PocketNodeService";
 import UserService from "../../../core/services/PocketUserService";
-import {Formik} from "formik";
-import {nodeFormSchema} from "../../../_helpers";
+import { Formik } from "formik";
+import { nodeFormSchema } from "../../../_helpers";
 import AppAlert from "../../../core/components/AppAlert";
 
 class EditNode extends CreateForm {
@@ -28,21 +28,21 @@ class EditNode extends CreateForm {
 
   async componentDidMount() {
     // eslint-disable-next-line react/prop-types
-    const {address} = this.props.match.params;
-    const {pocketNode} = await NodeService.getNode(address);
-    const {icon, ...appData} = pocketNode;
+    const { address } = this.props.match.params;
+    const { pocketNode } = await NodeService.getNode(address);
+    const { icon, ...appData } = pocketNode;
 
-    this.setState({loading: false, icon, data: {...appData}});
+    this.setState({ loading: false, icon, data: { ...appData } });
   }
 
   async handleEdit() {
-    this.setState({success: false});
+    this.setState({ success: false });
     const user = UserService.getUserInfo().email;
-    const {address} = this.props.match.params;
-    const {name, operator, contactEmail, description} = this.state.data;
-    const {icon} = this.state;
+    const { address } = this.props.match.params;
+    const { name, operator, contactEmail, description } = this.state.data;
+    const { icon } = this.state;
 
-    const {success, data} = await NodeService.editNode(address, {
+    const { success, data } = await NodeService.editNode(address, {
       name,
       contactEmail,
       description,
@@ -54,12 +54,12 @@ class EditNode extends CreateForm {
     if (success) {
       this.props.history.goBack();
     } else {
-      this.setState({error: {show: true, message: data}});
+      this.setState({ error: { show: true, message: data } });
     }
   }
 
   render() {
-    const {loading, icon, error, imgError} = this.state;
+    const { loading, icon, error, imgError } = this.state;
 
     if (loading) {
       return <Loader />;
@@ -74,7 +74,7 @@ class EditNode extends CreateForm {
                 variant="danger"
                 title={error.message}
                 dismissible
-                onClose={() => this.setState({error: false})}
+                onClose={() => this.setState({ error: false })}
               />
             )}
             <h1 className="text-uppercase">Node Information</h1>
@@ -85,7 +85,7 @@ class EditNode extends CreateForm {
             <Formik
               validationSchema={nodeFormSchema}
               onSubmit={(data) => {
-                this.setState({data});
+                this.setState({ data });
                 this.handleEdit();
               }}
               initialValues={this.state.data}
@@ -93,7 +93,7 @@ class EditNode extends CreateForm {
               validateOnChange={false}
               validateOnBlur={false}
             >
-              {({handleSubmit, handleChange, values, errors}) => (
+              {({ handleSubmit, handleChange, values, errors }) => (
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
                     <Form.Label>Node Name*</Form.Label>

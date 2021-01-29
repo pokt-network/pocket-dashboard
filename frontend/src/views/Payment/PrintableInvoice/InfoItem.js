@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const InfoItem = ({text, value}) => (
+const InfoItem = ({ text, value }) => (
   <div className="invoice-info">
     <span>{text}</span>
     <span>{value}</span>

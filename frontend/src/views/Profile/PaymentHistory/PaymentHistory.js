@@ -1,15 +1,15 @@
-import React, {Component} from "react";
-import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Button, Col, FormControl, InputGroup, Row } from "react-bootstrap";
 import "react-datepicker/dist/react-datepicker.css";
 import "./PaymentHistory.scss";
 import AppDatePicker from "../../../core/components/AppDatePicker/AppDatePicker";
 import BootstrapTable from "react-bootstrap-table-next";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faSearch} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
-import {PAYMENT_HISTORY_LIMIT} from "../../../_constants";
-import {formatCurrency} from "../../../_helpers";
+import { PAYMENT_HISTORY_LIMIT } from "../../../_constants";
+import { formatCurrency } from "../../../_helpers";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import moment from "moment";
 import PrintableInvoice from "../../Payment/PrintableInvoice/PrintableInvoice";
@@ -49,7 +49,7 @@ class PaymentHistory extends Component {
       obj.formatedAmount = obj.amount / 100;
     });
 
-    this.setState({history});
+    this.setState({ history });
   }
 
   renderExport(cell, row) {
@@ -109,7 +109,7 @@ class PaymentHistory extends Component {
     );
   }
 
-  searchChange({currentTarget: input}) {
+  searchChange({ currentTarget: input }) {
     this.setState(
       {
         input: input.value
@@ -134,8 +134,8 @@ class PaymentHistory extends Component {
     });
   }
 
-  async onTablePagination(_, {page, sizePerPage}) {
-    const {fromDate, toDate, paymentID} = this.state;
+  async onTablePagination(_, { page, sizePerPage }) {
+    const { fromDate, toDate, paymentID } = this.state;
 
     const userEmail = UserService.getUserInfo().email;
     const offset = (page - 1) * sizePerPage + 1;
@@ -148,31 +148,31 @@ class PaymentHistory extends Component {
       obj.formatedAmount = obj.amount / 100;
     });
 
-    this.setState({page, history, offset});
+    this.setState({ page, history, offset });
   }
 
   render() {
-    let {history, page, offset, filtered} = this.state;
+    let { history, page, offset, filtered } = this.state;
 
     history.forEach(obj => {
       obj.formatedAmount = obj.amount / 100;
     });
 
     const columns = [
-      {dataField: "item.name", text: "App/Node name"},
+      { dataField: "item.name", text: "App/Node name" },
       {
         dataField: "formatedAmount",
         text: "Amount",
         formatter: (cell) => formatCurrency(cell),
       },
-      {dataField: "createdDate", text: "Date"},
-      {dataField: "paymentID", text: "Invoice ref"},
-      {dataField: "export", text: "", formatter: this.renderExport},
+      { dataField: "createdDate", text: "Date" },
+      { dataField: "paymentID", text: "Invoice ref" },
+      { dataField: "export", text: "", formatter: this.renderExport },
     ];
 
-    const pageListRenderer = ({pages, onPageChange}) => {
+    const pageListRenderer = ({ pages, onPageChange }) => {
       // Only include < > when there are pages available
-      let {history} = this.state;
+      let { history } = this.state;
 
       history.forEach(obj => {
         obj.formatedAmount = obj.amount / 100;
@@ -221,8 +221,8 @@ class PaymentHistory extends Component {
     // TODO: Add table date filtering
 
     return (
-      <Row id="general" className="payment-history" style={{zIndex: "11111"}}>
-        <Col lg={{span: 10, offset: 1}} className="title-page">
+      <Row id="general" className="payment-history" style={{ zIndex: "11111" }}>
+        <Col lg={{ span: 10, offset: 1 }} className="title-page">
           <div className="wrapper">
             <h1>Payment history</h1>
             <div className="filters mt-4">
@@ -245,7 +245,7 @@ class PaymentHistory extends Component {
                     onChange={(e) => {
                       this.searchChange(e);
                     }}
-                    onKeyPress={({key}) => {
+                    onKeyPress={({ key }) => {
                       if (key === "Enter") {
                         this.handleSearch();
                       }

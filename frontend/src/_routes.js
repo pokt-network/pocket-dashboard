@@ -145,7 +145,7 @@ export const breadcrumbsRoutes = () => {
  * @type {Array<{path: string, exact: boolean, name: string, component: *}>}
  */
 const pageRoutes = [
-  {path: ROUTE_PATHS.login, exact: true, name: "Login", component: Login},
+  { path: ROUTE_PATHS.login, exact: true, name: "Login", component: Login },
   {
     path: ROUTE_PATHS.forgot_password,
     exact: true,
@@ -170,7 +170,7 @@ const pageRoutes = [
     name: "Answer Security Questions",
     component: AnswerSecurityQuestions,
   },
-  {path: ROUTE_PATHS.signup, exact: true, name: "Sign Up", component: SignUp},
+  { path: ROUTE_PATHS.signup, exact: true, name: "Sign Up", component: SignUp },
   {
     path: ROUTE_PATHS.verify_email,
     exact: true,

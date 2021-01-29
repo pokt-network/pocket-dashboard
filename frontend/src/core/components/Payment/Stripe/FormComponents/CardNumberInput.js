@@ -1,6 +1,6 @@
-import React, {Component} from "react";
-import {CardNumberElement} from "@stripe/react-stripe-js";
-import {PaymentInputStyle} from "./ComponentStyles";
+import React, { Component } from "react";
+import { CardNumberElement } from "@stripe/react-stripe-js";
+import { PaymentInputStyle } from "./ComponentStyles";
 
 class CardNumberInput extends Component {
 

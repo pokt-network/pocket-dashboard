@@ -1,4 +1,4 @@
-import {Component} from "react";
+import { Component } from "react";
 import "./Purchase.scss";
 
 class Purchase extends Component {
@@ -21,7 +21,7 @@ class Purchase extends Component {
       currentAccountBalance: 0,
       currencies: [],
       loading: true,
-      error: {show: false, message: ""},
+      error: { show: false, message: "" },
     };
   }
 

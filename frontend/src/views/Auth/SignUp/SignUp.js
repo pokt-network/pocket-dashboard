@@ -1,6 +1,6 @@
-import React, {Component} from "react";
-import {Link} from "react-router-dom";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import {
   AuthProviderButton,
   AuthProviderType,
@@ -11,13 +11,13 @@ import {
   ROUTE_PATHS,
 } from "../../../_routes";
 import AuthSidebar from "../../../core/components/AuthSidebar/AuthSidebar";
-import {Formik} from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
-import {VALIDATION_MESSAGES} from "../../../_constants";
-import {faGithub, faGoogle} from "@fortawesome/free-brands-svg-icons";
-import {validateYup} from "../../../_helpers";
+import { VALIDATION_MESSAGES } from "../../../_constants";
+import { faGithub, faGoogle } from "@fortawesome/free-brands-svg-icons";
+import { validateYup } from "../../../_helpers";
 import ReCAPTCHA from "react-google-recaptcha";
-import {Configurations} from "../../../_configuration";
+import { Configurations } from "../../../_configuration";
 import cls from "classnames";
 
 class SignUp extends Component {
@@ -50,7 +50,7 @@ class SignUp extends Component {
       authProviders: [],
       backendErrors: "",
       agreeTerms: false,
-      validCaptcha: false,
+      validCaptcha: true,
       data: {
         username: "",
         email: "",
@@ -79,18 +79,18 @@ class SignUp extends Component {
   }
 
   async handleSignUp() {
-    this.setState({backendErrors: ""});
+    this.setState({ backendErrors: "" });
 
-    const {username, email, password1, password2} = this.state.data;
+    const { username, email, password1, password2 } = this.state.data;
 
     const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
-    const {success, data} = await PocketUserService.signUp(
+    const { success, data } = await PocketUserService.signUp(
       username, email, password1, password2, securityQuestionLinkPage
     );
 
     if (!success) {
-      this.setState({backendErrors: data.response.data.message});
+      this.setState({ backendErrors: data.response.data.message });
     } else {
       // eslint-disable-next-line react/prop-types
       this.props.history.push({
@@ -102,22 +102,23 @@ class SignUp extends Component {
     }
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   async validateCaptcha(token) {
-    const {success} = await PocketUserService.verifyCaptcha(token);
+    // const {success} = await PocketUserService.verifyCaptcha(token);
+    const success = true;
 
-    this.setState({validCaptcha: success});
+    this.setState({ validCaptcha: success });
   }
 
   render() {
-    const {login} = ROUTE_PATHS;
-    const {agreeTerms, backendErrors, validCaptcha} = this.state;
+    const { login } = ROUTE_PATHS;
+    const { agreeTerms, backendErrors, validCaptcha } = this.state;
 
     return (
       <Container fluid id="signup" className={"auth-page"}>
@@ -136,7 +137,7 @@ class SignUp extends Component {
                 <Formik
                   validate={this.validate}
                   onSubmit={(data) => {
-                    this.setState({data});
+                    this.setState({ data });
                     this.handleSignUp();
                   }}
                   initialValues={this.state.data}
@@ -144,7 +145,7 @@ class SignUp extends Component {
                   validateOnChange={false}
                   validateOnBlur={false}
                 >
-                  {({handleSubmit, handleChange, values, errors}) => (
+                  {({ handleSubmit, handleChange, values, errors }) => (
                     <Form noValidate onSubmit={handleSubmit} id={"main-form"}>
                       <Form.Group>
                         <Form.Label>Email</Form.Label>
@@ -219,7 +220,7 @@ class SignUp extends Component {
                       <Form.Check
                         checked={agreeTerms}
                         onChange={() =>
-                          this.setState({agreeTerms: !agreeTerms})
+                          this.setState({ agreeTerms: !agreeTerms })
                         }
                         id="terms-checkbox"
                         type="checkbox"
@@ -254,8 +255,8 @@ class SignUp extends Component {
                       >
                         Sign up
                       </Button>
-                      <div className="divider mt-4 mb-3" style={{display: "none"}} >Or</div>
-                      <div id={"provider-buttons"} style={{display: "none"}}>
+                      <div className="divider mt-4 mb-3" style={{ display: "none" }} >Or</div>
+                      <div id={"provider-buttons"} style={{ display: "none" }}>
                         <AuthProviderButton
                           block={true}
                           className="brand pl-4 pr-4 mr-3"

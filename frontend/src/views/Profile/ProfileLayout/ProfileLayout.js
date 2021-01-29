@@ -1,15 +1,15 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./ProfileLayout.scss";
-import {Col, Row} from "react-bootstrap";
-import {Route} from "react-router-dom";
-import {profileRoutes} from "../../../_routes";
+import { Col, Row } from "react-bootstrap";
+import { Route } from "react-router-dom";
+import { profileRoutes } from "../../../_routes";
 import ProfileSidebar from "../../../core/components/ProfileSidebar/ProfileSidebar";
 
 class Profile extends Component {
   state = {};
   render() {
     // eslint-disable-next-line react/prop-types
-    const {path} = this.props.match;
+    const { path } = this.props.match;
 
     return (
       <div>

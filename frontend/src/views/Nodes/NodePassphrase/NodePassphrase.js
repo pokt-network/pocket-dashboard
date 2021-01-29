@@ -1,19 +1,19 @@
 import Passphrase from "../../../core/components/Passphrase/Passphrase";
 import NodeService from "../../../core/services/PocketNodeService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import {scrollToId} from "../../../_helpers";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
+import { scrollToId } from "../../../_helpers";
 import PocketClientService from "../../../core/services/PocketClientService";
-import {Account} from "@pokt-network/pocket-js";
+import { Account } from "@pokt-network/pocket-js";
 
 class NodePassphrase extends Passphrase {
   componentDidMount() {
-    this.setState({type: "node", fileName: "MyPocketNode"});
+    this.setState({ type: "node", fileName: "MyPocketNode" });
   }
 
   async createAccount() {
-    this.setState({loading: true});
-    const {id: nodeID} = NodeService.getNodeInfo();
-    const {passPhrase} = this.state;
+    this.setState({ loading: true });
+    const { id: nodeID } = NodeService.getNodeInfo();
+    const { passPhrase } = this.state;
 
     const nodeAccountOrError = await PocketClientService.createAndUnlockAccount(passPhrase);
 
@@ -27,7 +27,7 @@ class NodePassphrase extends Passphrase {
       const nodeBaseLink = `${window.location.origin}${_getDashboardPath(
         DASHBOARD_PATHS.nodeDetail
       )}`;
-      const {success} = await NodeService.saveNodeAccount(nodeID, {address, publicKey}, nodeBaseLink);
+      const { success } = await NodeService.saveNodeAccount(nodeID, { address, publicKey }, nodeBaseLink);
 
       if (success) {
         const privateKey = await PocketClientService.exportPrivateKey(nodeAccountOrError, passPhrase);
@@ -47,7 +47,7 @@ class NodePassphrase extends Passphrase {
         });
       }
     } else {
-      this.setState({error: {show: true, message: nodeAccountOrError.message}});
+      this.setState({ error: { show: true, message: nodeAccountOrError.message } });
       scrollToId("alert");
     }
     this.setState({

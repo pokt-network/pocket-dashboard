@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Row } from "react-bootstrap";
 import Sidebar from "../Sidebar";
 import "./AuthSidebar.scss";
 

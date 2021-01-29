@@ -1,11 +1,11 @@
-import React, {Component} from "react";
-import {PropTypes} from "prop-types";
-import {Button} from "react-bootstrap";
+import React, { Component } from "react";
+import { PropTypes } from "prop-types";
+import { Button } from "react-bootstrap";
 import "./CardDisplay.scss";
 
 class CardDisplay extends Component {
   render() {
-    const {cardData, holder, onDelete} = this.props;
+    const { cardData, holder, onDelete } = this.props;
 
     return (
       <div className={`card-display ${onDelete ? "delete" : ""}`}>
@@ -18,7 +18,7 @@ class CardDisplay extends Component {
         {onDelete && (
           <Button
             className="font-weight-light delete-card"
-            style={{fontSize: "1.1em"}}
+            style={{ fontSize: "1.1em" }}
             variant="link"
             onClick={() => onDelete(cardData)}
           >

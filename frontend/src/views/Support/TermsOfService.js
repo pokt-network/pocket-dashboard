@@ -1,9 +1,9 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./SupportPages.scss";
-import {withRouter} from "react-router-dom";
-import {Container, Row} from "react-bootstrap";
+import { withRouter } from "react-router-dom";
+import { Container, Row } from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";
-import {scrollToId} from "../../_helpers";
+import { scrollToId } from "../../_helpers";
 
 class TermsOfService extends Component {
   state = {};
@@ -16,7 +16,7 @@ class TermsOfService extends Component {
           <br />
           <Row>
             <div className="title">
-              <p style={{fontWeight: "700"}}>Site Terms Of Use<br/></p>
+              <p style={{ fontWeight: "700" }}>Site Terms Of Use<br/></p>
             </div>
             <br></br>
 
@@ -469,7 +469,7 @@ class TermsOfService extends Component {
               </li>
             </ol>
             <div>
-                <ol style={{marginLeft: "30px"}}>
+                <ol style={{ marginLeft: "30px" }}>
                   <li>
                     interfere or violate the legal rights (such as rights of
                     privacy and publicity) of others or violate others’ use or
@@ -892,7 +892,7 @@ class TermsOfService extends Component {
                 (dApp) to the Testnet.
               </li>
               <div>
-                <ol style={{marginLeft: "30px"}}>
+                <ol style={{ marginLeft: "30px" }}>
                   <li>
                     <strong>Temporary in nature.</strong>&nbsp;Testnet Tokens
                     are temporary in nature. Testnet Tokens have no monetary
