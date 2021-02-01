@@ -24,23 +24,25 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Installation
 
+To install, just use `yarn` on both backend and frontend packages. Note that we're using Node 12.15.0 LTS due to one of our libraries. We recommend using [NVM](https://github.com/nvm-sh/nvm) so you can switch versions on the fly.
+
 #### Infrastructure
 
 - MongoDB
 - Redis
 
-To run the pocket dashboard on your machine you need the next steps:
+To run the pocket dashboard on your machine, perform the following steps:
 
 #### Backend
 ```
-1. yarn install
-2. yarn build // on seperate console.
-3. yarn start // on seperate console.
+1. yarn
+2. yarn build // on a separate console.
+3. yarn start // on a seperate console.
 ```
 
 #### Frontend
 ```
-1. yarn install
+1. yarn
 3. yarn start
 ```
 
