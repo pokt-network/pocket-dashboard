@@ -1,7 +1,13 @@
 import UserService from "./UserService";
 import { Node, StakingStatus } from "@pokt-network/pocket-js";
 import { PrivatePocketAccount, PublicPocketAccount } from "../models/Account";
-import { ExtendedPocketNode, PocketNode, RegisteredPocketNode, StakedNodeSummary, UserPocketNode } from "../models/Node";
+import {
+  ExtendedPocketNode,
+  PocketNode,
+  RegisteredPocketNode,
+  StakedNodeSummary,
+  UserPocketNode,
+} from "../models/Node";
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
 import { DashboardError, DashboardValidationError } from "../models/Exceptions";
@@ -11,7 +17,6 @@ import EmailService from "../services/EmailService";
 const NODE_COLLECTION_NAME = "Nodes";
 
 export default class NodeService extends BasePocketService {
-
   constructor() {
     super();
 
@@ -28,9 +33,12 @@ export default class NodeService extends BasePocketService {
    * @async
    */
   async __persistNodeIfNotExists(node) {
-    if (!await this.nodeExists(node)) {
+    if (!(await this.nodeExists(node))) {
       /** @type {{insertedId: string, result: {n:number, ok: number}}} */
-      const result = await this.persistenceService.saveEntity(NODE_COLLECTION_NAME, node);
+      const result = await this.persistenceService.saveEntity(
+        NODE_COLLECTION_NAME,
+        node
+      );
 
       return result.result.ok === 1 ? result.insertedId : "0";
     }
@@ -50,13 +58,17 @@ export default class NodeService extends BasePocketService {
   async __updatePersistedNode(node) {
     if (await this.nodeExists(node)) {
       const filter = {
-        "publicPocketAccount.address": node.publicPocketAccount.address
+        "publicPocketAccount.address": node.publicPocketAccount.address,
       };
 
       delete node.id;
 
       /** @type {{result: {n:number, ok: number}}} */
-      const result = await this.persistenceService.updateEntity(NODE_COLLECTION_NAME, filter, node);
+      const result = await this.persistenceService.updateEntity(
+        NODE_COLLECTION_NAME,
+        filter,
+        node
+      );
 
       return result.result.ok === 1;
     }
@@ -76,7 +88,11 @@ export default class NodeService extends BasePocketService {
    */
   async __updateNodeByID(nodeID, nodeData) {
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.updateEntityByID(NODE_COLLECTION_NAME, nodeID, nodeData);
+    const result = await this.persistenceService.updateEntityByID(
+      NODE_COLLECTION_NAME,
+      nodeID,
+      nodeData
+    );
 
     return result.result.ok === 1;
   }
@@ -94,12 +110,17 @@ export default class NodeService extends BasePocketService {
     let networkNode;
 
     try {
-      networkNode = await this.pocketService.getNode(node.publicPocketAccount.address);
+      networkNode = await this.pocketService.getNode(
+        node.publicPocketAccount.address
+      );
     } catch (e) {
       const nodeParameters = await this.pocketService.getNodeParameters();
 
       // noinspection JSValidateTypes
-      networkNode = ExtendedPocketNode.createNetworkNode(node.publicPocketAccount, nodeParameters);
+      networkNode = ExtendedPocketNode.createNetworkNode(
+        node.publicPocketAccount,
+        nodeParameters
+      );
     }
 
     return ExtendedPocketNode.createExtendedPocketNode(node, networkNode);
@@ -122,11 +143,13 @@ export default class NodeService extends BasePocketService {
       filter["name"] = node.name;
     }
 
-    const dbNode = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+    const dbNode = await this.persistenceService.getEntityByFilter(
+      NODE_COLLECTION_NAME,
+      filter
+    );
 
     return dbNode !== undefined;
   }
-
 
   /**
    * Create an node on network.
@@ -146,7 +169,7 @@ export default class NodeService extends BasePocketService {
    */
   async createNode(nodeData, privateKey = "") {
     if (PocketNode.validate(nodeData)) {
-      if (!await this.userService.userExists(nodeData.user)) {
+      if (!(await this.userService.userExists(nodeData.user))) {
         throw new DashboardError("User does not exist");
       }
 
@@ -172,7 +195,11 @@ export default class NodeService extends BasePocketService {
    */
   async updateNodeData(nodeID, nodeData) {
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.updateEntityByID(NODE_COLLECTION_NAME, nodeID, nodeData);
+    const result = await this.persistenceService.updateEntityByID(
+      NODE_COLLECTION_NAME,
+      nodeID,
+      nodeData
+    );
 
     return result.result.ok === 1;
   }
@@ -188,7 +215,10 @@ export default class NodeService extends BasePocketService {
    * @async
    */
   async createNodeAccount(nodeID, accountData) {
-    const nodeDB = await this.persistenceService.getEntityByID(NODE_COLLECTION_NAME, nodeID);
+    const nodeDB = await this.persistenceService.getEntityByID(
+      NODE_COLLECTION_NAME,
+      nodeID
+    );
 
     if (!nodeDB) {
       throw new DashboardError("Node does not exists");
@@ -196,7 +226,10 @@ export default class NodeService extends BasePocketService {
 
     const node = PocketNode.createPocketNode(nodeDB);
 
-    node.publicPocketAccount = new PublicPocketAccount(accountData.address, accountData.publicKey);
+    node.publicPocketAccount = new PublicPocketAccount(
+      accountData.address,
+      accountData.publicKey
+    );
 
     await this.__updateNodeByID(nodeID, node);
 
@@ -214,10 +247,13 @@ export default class NodeService extends BasePocketService {
    */
   async importNode(nodeAddress) {
     const filter = {
-      "publicPocketAccount.address": nodeAddress
+      "publicPocketAccount.address": nodeAddress,
     };
 
-    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+    const nodeDB = await this.persistenceService.getEntityByFilter(
+      NODE_COLLECTION_NAME,
+      filter
+    );
 
     if (nodeDB) {
       throw Error("Node already exists in dashboard");
@@ -240,10 +276,13 @@ export default class NodeService extends BasePocketService {
    */
   async getNode(nodeAddress) {
     const filter = {
-      "publicPocketAccount.address": nodeAddress
+      "publicPocketAccount.address": nodeAddress,
     };
 
-    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+    const nodeDB = await this.persistenceService.getEntityByFilter(
+      NODE_COLLECTION_NAME,
+      filter
+    );
 
     if (nodeDB) {
       const node = PocketNode.createPocketNode(nodeDB);
@@ -317,8 +356,11 @@ export default class NodeService extends BasePocketService {
       if (payload instanceof DashboardValidationError) {
         throw payload;
       }
-      
-      if (node.pocketNode.user.toString() === userEmail.toString() && payload.email === userEmail.toString()) {
+
+      if (
+        node.pocketNode.user.toString() === userEmail.toString() &&
+        payload.email === userEmail.toString()
+      ) {
         return true;
       }
     }
@@ -349,7 +391,9 @@ export default class NodeService extends BasePocketService {
    * @async
    */
   async getAllNodes(limit, offset = 0) {
-    const networkApplications = await this.pocketService.getNodes(StakingStatus.Staked);
+    const networkApplications = await this.pocketService.getNodes(
+      StakingStatus.Staked
+    );
 
     return networkApplications.map(PocketNode.createRegisteredPocketNode);
   }
@@ -362,20 +406,29 @@ export default class NodeService extends BasePocketService {
    */
   async getStakedNodeSummary() {
     try {
-      const stakedNodes = await this.pocketService.getNodes(StakingStatus.Staked);
+      const stakedNodes = await this.pocketService.getNodes(
+        StakingStatus.Staked
+      );
 
-      const averageStaked = this._getAverageNetworkData(stakedNodes.map(node => Number(node.stakedTokens.toString())));
+      const averageStaked = this._getAverageNetworkData(
+        stakedNodes.map(node => Number(node.stakedTokens.toString()))
+      );
 
       // 1 VP = 1 POKT, so, the validator power value is the same for staked token.
-      const averageValidatorPower = this._getAverageNetworkData(stakedNodes.map(node => bigInt(node.stakedTokens.toString())));
+      const averageValidatorPower = this._getAverageNetworkData(
+        stakedNodes.map(node => bigInt(node.stakedTokens.toString()))
+      );
       const averageStakedResult = averageStaked / stakedNodes.length;
 
-      return new StakedNodeSummary(stakedNodes.length.toString(), averageStakedResult.toString(), averageValidatorPower.toString());
+      return new StakedNodeSummary(
+        stakedNodes.length.toString(),
+        averageStakedResult.toString(),
+        averageValidatorPower.toString()
+      );
     } catch (e) {
       return new StakedNodeSummary("0", "0", "0");
     }
   }
-
 
   /**
    * Get all nodes on network that belongs to user.
@@ -390,14 +443,21 @@ export default class NodeService extends BasePocketService {
   async getUserNodes(userEmail, limit, offset = 0) {
     const filter = { user: userEmail };
 
-    const dashboardNodesData = (await this.persistenceService.getEntities(NODE_COLLECTION_NAME, filter, limit, offset))
+    const dashboardNodesData = (
+      await this.persistenceService.getEntities(
+        NODE_COLLECTION_NAME,
+        filter,
+        limit,
+        offset
+      )
+    )
       .map(PocketNode.createPocketNode)
       .map(node => {
         return {
           id: node.id,
           name: node.name,
           address: node.publicPocketAccount.address,
-          icon: node.icon
+          icon: node.icon,
         };
       });
 
@@ -405,12 +465,14 @@ export default class NodeService extends BasePocketService {
       .map(node => node.address)
       .filter(address => address.length > 0);
 
-    const networkNodes = await this.pocketService
-      .getAllNodes(dashboardNodeAddresses);
+    const networkNodes = await this.pocketService.getAllNodes(
+      dashboardNodeAddresses
+    );
 
     if (dashboardNodesData.length > 0) {
-      return dashboardNodesData
-        .map(node => PocketNode.createUserPocketNode(node, networkNodes));
+      return dashboardNodesData.map(node =>
+        PocketNode.createUserPocketNode(node, networkNodes)
+      );
     }
 
     return [];
@@ -430,29 +492,49 @@ export default class NodeService extends BasePocketService {
    * @throws Error If private key is not valid or node does not exists on dashboard.
    * @async
    */
-  async stakeNode(nodeAddress, upoktToStake, nodeStakeTransaction, node, emailData, paymentEmailData) {
+  async stakeNode(
+    nodeAddress,
+    upoktToStake,
+    nodeStakeTransaction,
+    node,
+    emailData,
+    paymentEmailData
+  ) {
     // First transfer funds from the main fund
-    const fundingTransactionHash = await this.pocketService.transferFromMainFund(upoktToStake, nodeAddress);
+    const fundingTransactionHash = await this.pocketService.transferFromMainFund(
+      upoktToStake,
+      nodeAddress
+    );
 
     // Create post confirmation action to stake node
     const contactEmail = node.pocketNode.contactEmail;
-    const nodeStakeAction = new TransactionPostAction(POST_ACTION_TYPE.stakeNode, {
-      nodeStakeTransaction,
-      address: nodeAddress,
-      contactEmail,
-      emailData,
-      paymentEmailData
-    });
+    const nodeStakeAction = new TransactionPostAction(
+      POST_ACTION_TYPE.stakeNode,
+      {
+        nodeStakeTransaction,
+        address: nodeAddress,
+        contactEmail,
+        emailData,
+        paymentEmailData,
+      }
+    );
 
     // Create job to monitor transaction confirmation
-    const result = await this.transactionService.addTransferTransaction(fundingTransactionHash, nodeStakeAction);
+    const result = await this.transactionService.addTransferTransaction(
+      fundingTransactionHash,
+      nodeStakeAction
+    );
 
     if (!result) {
       throw new Error("Couldn't add funding transaction for processing");
     }
 
     node.pocketNode.updatingStatus = true;
-    await EmailService.to(contactEmail).sendPaymentCompletedNodeEmail(contactEmail, emailData, paymentEmailData);
+    await EmailService.to(contactEmail).sendPaymentCompletedNodeEmail(
+      contactEmail,
+      emailData,
+      paymentEmailData
+    );
 
     await this.__updatePersistedNode(node.pocketNode);
   }
@@ -469,22 +551,22 @@ export default class NodeService extends BasePocketService {
    * @async
    */
   async unstakeNode(nodeUnstakeTransaction, nodeLink, authHeader) {
-    const {
-      address,
-      raw_hex_bytes: rawHexBytes
-    } = nodeUnstakeTransaction;
+    const { address, raw_hex_bytes: rawHexBytes } = nodeUnstakeTransaction;
 
     // Retrieve the node information
     const node = await this.getNode(address);
 
-    if(node === undefined || node === null) {
+    if (node === undefined || node === null) {
       throw new Error(`Couldn't find a node with this address: ${address}`);
     }
 
     // Check if the node belogns to the client
     if (await this.verifyNodeObjectBelongsToClient(node, authHeader)) {
       // Submit transaction
-      const nodeUnstakedHash = await this.pocketService.submitRawTransaction(address, rawHexBytes);
+      const nodeUnstakedHash = await this.pocketService.submitRawTransaction(
+        address,
+        rawHexBytes
+      );
 
       // Gather email data
       const emailData = {
@@ -493,15 +575,20 @@ export default class NodeService extends BasePocketService {
         contactEmail: node.pocketNode.contactEmail,
         nodeData: {
           name: node.pocketNode.name,
-          link: nodeLink
-        }
+          link: nodeLink,
+        },
       };
 
       // Add transaction to queue
-      const result = await this.transactionService.addNodeUnstakeTransaction(nodeUnstakedHash, emailData);
+      const result = await this.transactionService.addNodeUnstakeTransaction(
+        nodeUnstakedHash,
+        emailData
+      );
 
       if (!result) {
-        throw new Error("Couldn't register app unstake transaction for email notification");
+        throw new Error(
+          "Couldn't register app unstake transaction for email notification"
+        );
       }
 
       node.pocketNode.updatingStatus = true;
@@ -521,19 +608,24 @@ export default class NodeService extends BasePocketService {
    * @async
    */
   async unJailNode(unJailTransaction, emailData) {
-    const {
-      address,
-      raw_hex_bytes: rawHexBytes
-    } = unJailTransaction;
+    const { address, raw_hex_bytes: rawHexBytes } = unJailTransaction;
 
     // Submit transaction
-    const nodeUnJailHash = await this.pocketService.submitRawTransaction(address, rawHexBytes);
+    const nodeUnJailHash = await this.pocketService.submitRawTransaction(
+      address,
+      rawHexBytes
+    );
 
     // Add transaction to queue
-    const result = await this.transactionService.addNodeUnJailTransaction(nodeUnJailHash, emailData);
+    const result = await this.transactionService.addNodeUnJailTransaction(
+      nodeUnJailHash,
+      emailData
+    );
 
     if (!result) {
-      throw new Error("Couldn't register app unjail transaction for email notification");
+      throw new Error(
+        "Couldn't register app unjail transaction for email notification"
+      );
     }
   }
 
@@ -549,10 +641,13 @@ export default class NodeService extends BasePocketService {
   async deleteNode(nodeAccountAddress, user) {
     const filter = {
       "publicPocketAccount.address": nodeAccountAddress,
-      user
+      user,
     };
 
-    const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+    const nodeDB = await this.persistenceService.getEntityByFilter(
+      NODE_COLLECTION_NAME,
+      filter
+    );
 
     await this.persistenceService.deleteEntities(NODE_COLLECTION_NAME, filter);
 
@@ -577,16 +672,19 @@ export default class NodeService extends BasePocketService {
    */
   async updateNode(nodeAccountAddress, nodeData) {
     if (PocketNode.validate(nodeData)) {
-      if (!await this.userService.userExists(nodeData.user)) {
+      if (!(await this.userService.userExists(nodeData.user))) {
         throw new DashboardError("User does not exists");
       }
 
       const node = PocketNode.createPocketNode(nodeData);
       const filter = {
-        "publicPocketAccount.address": nodeAccountAddress
+        "publicPocketAccount.address": nodeAccountAddress,
       };
 
-      const nodeDB = await this.persistenceService.getEntityByFilter(NODE_COLLECTION_NAME, filter);
+      const nodeDB = await this.persistenceService.getEntityByFilter(
+        NODE_COLLECTION_NAME,
+        filter
+      );
 
       if (!nodeDB) {
         throw new DashboardError("Node does not exists");
@@ -594,7 +692,7 @@ export default class NodeService extends BasePocketService {
 
       const nodeToEdit = {
         ...node,
-        publicPocketAccount: nodeDB.publicPocketAccount
+        publicPocketAccount: nodeDB.publicPocketAccount,
       };
 
       return this.__updatePersistedNode(nodeToEdit);
@@ -602,14 +700,14 @@ export default class NodeService extends BasePocketService {
     return false;
   }
 
-/**
- * Update a node status.
- *
- * @param {string} address Node account address.
- * @param {boolean} status Node updatingStatus.
- *
- * @async
- */
+  /**
+   * Update a node status.
+   *
+   * @param {string} address Node account address.
+   * @param {boolean} status Node updatingStatus.
+   *
+   * @async
+   */
   async changeUpdatingStatus(address, status) {
     // Retrieve the node information
     const node = await this.getNode(address);

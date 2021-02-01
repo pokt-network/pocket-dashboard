@@ -10,7 +10,12 @@ import { DashboardValidationError } from "../../models/Exceptions";
  * @returns {boolean} True or false.
  */
 function isNumericOptionValid(numericOption) {
-  return (numericOption === 0 || numericOption === "0" || numericOption === undefined || numericOption === null) === false;
+  return (
+    (numericOption === 0 ||
+      numericOption === "0" ||
+      numericOption === undefined ||
+      numericOption === null) === false
+  );
 }
 
 /**
@@ -25,7 +30,6 @@ function isNumericOptionNegative(numericOption) {
 }
 
 export default class ApplicationCheckoutService extends BaseCheckoutService {
-
   /**
    * Get instance of Application Checkout Service.
    *
@@ -36,9 +40,13 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
    */
   static getInstance(options = undefined, poktMarketPrice = undefined) {
     const serviceOptions = options ?? Configurations.pocket_network.checkout;
-    const servicePoktMarketPrice = poktMarketPrice ?? Configurations.pocket_network.pokt_market_price;
+    const servicePoktMarketPrice =
+      poktMarketPrice ?? Configurations.pocket_network.pokt_market_price;
 
-    return new ApplicationCheckoutService(serviceOptions, servicePoktMarketPrice);
+    return new ApplicationCheckoutService(
+      serviceOptions,
+      servicePoktMarketPrice
+    );
   }
 
   /**
@@ -71,8 +79,8 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
       relays_per_day: {
         min: minRelaysPerDay,
         max: maxRelaysPerDay,
-        base_relay_per_pokt: BP
-      }
+        base_relay_per_pokt: BP,
+      },
     } = this.options;
 
     const maxRPS = maxRelaysPerDay / sessionsInADay;
@@ -80,7 +88,9 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
     const baseRelayPerPOKT = BP * 100;
 
     if (relaysPerDay < minRelaysPerDay && relaysPerDay > maxRelaysPerDay) {
-      throw new DashboardValidationError("Relays per day is out of allowed range.");
+      throw new DashboardValidationError(
+        "Relays per day is out of allowed range."
+      );
     }
 
     if (poktMarketPrice <= 0) {
@@ -88,55 +98,73 @@ export default class ApplicationCheckoutService extends BaseCheckoutService {
     }
 
     if (!isNumericOptionValid(baseRelayPerPOKT)) {
-      throw new DashboardValidationError(`Base relays per POKT can never be 0, currently it's ${baseRelayPerPOKT}`);
+      throw new DashboardValidationError(
+        `Base relays per POKT can never be 0, currently it's ${baseRelayPerPOKT}`
+      );
     }
 
     if (!isNumericOptionValid(sessionsInADay)) {
-      throw new DashboardValidationError(`Sessions in a day cannot be ${sessionsInADay}`);
+      throw new DashboardValidationError(
+        `Sessions in a day cannot be ${sessionsInADay}`
+      );
     }
 
     if (!isNumericOptionValid(PR)) {
-      throw new DashboardValidationError(`Participation Rate is invalid: ${PR}`);
+      throw new DashboardValidationError(
+        `Participation Rate is invalid: ${PR}`
+      );
     }
 
-    if (!isNumericOptionValid(poktMarketPrice) || isNumericOptionNegative(poktMarketPrice)) {
-      throw new DashboardValidationError(`Invalid POKT Market Price : ${poktMarketPrice}`);
+    if (
+      !isNumericOptionValid(poktMarketPrice) ||
+      isNumericOptionNegative(poktMarketPrice)
+    ) {
+      throw new DashboardValidationError(
+        `Invalid POKT Market Price : ${poktMarketPrice}`
+      );
     }
 
     const currRPS = relaysPerDay / sessionsInADay;
 
-    const upokt = Number(((((currRPS - SA) / PR)) / BP).toFixed(6)) * 1000000;
+    const upokt = Number(((currRPS - SA) / PR / BP).toFixed(6)) * 1000000;
     const pokt = upokt / 1000000;
     const usdValue = Number((pokt * poktMarketPrice).toFixed(2));
 
     if (usdValue > maxUsdValue) {
-      throw new DashboardValidationError(`The USD value exceeds the maximum allowed: ${usdValue}>${maxUsdValue}`);
+      throw new DashboardValidationError(
+        `The USD value exceeds the maximum allowed: ${usdValue}>${maxUsdValue}`
+      );
     }
 
-    let expectedRPS = Math.trunc(((PR * (BP * (upokt/1000000))) + SA));
+    let expectedRPS = Math.trunc(PR * (BP * (upokt / 1000000)) + SA);
 
     if (currRPS !== expectedRPS) {
       const newUpokt = upokt + 1;
       const newPokt = newUpokt / 1000000;
       const newUsdValue = Number((newPokt * poktMarketPrice).toFixed(2));
 
-      expectedRPS = Math.trunc(((PR * (BP * (newUpokt / 1000000))) + SA));
+      expectedRPS = Math.trunc(PR * (BP * (newUpokt / 1000000)) + SA);
 
       if (currRPS !== expectedRPS) {
-        throw new DashboardValidationError(`Current RPS (${currRPS}) != expected RPS (${expectedRPS})`);
+        throw new DashboardValidationError(
+          `Current RPS (${currRPS}) != expected RPS (${expectedRPS})`
+        );
       }
       return { upokt: newUpokt, usdValue: newUsdValue };
     }
 
     if (currRPS > maxRPS) {
-      throw new DashboardValidationError(`Current RPS (${currRPS}) > max RPS (${maxRPS})`);
+      throw new DashboardValidationError(
+        `Current RPS (${currRPS}) > max RPS (${maxRPS})`
+      );
     }
 
     if (currRPS < minRPS) {
-      throw new DashboardValidationError(`Current RPS (${currRPS}) < max RPS (${minRPS})`);
+      throw new DashboardValidationError(
+        `Current RPS (${currRPS}) < max RPS (${minRPS})`
+      );
     }
 
     return { upokt, usdValue, maxUsdValue };
   }
 }
-

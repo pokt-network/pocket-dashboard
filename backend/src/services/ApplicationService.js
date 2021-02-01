@@ -3,14 +3,24 @@ import {
   PocketApplication,
   RegisteredPocketApplication,
   StakedApplicationSummary,
-  UserPocketApplication
+  UserPocketApplication,
 } from "../models/Application";
 import { PrivatePocketAccount, PublicPocketAccount } from "../models/Account";
-import { Application, PocketAAT, StakingStatus, typeGuard, UnlockedAccount } from "@pokt-network/pocket-js";
+import {
+  Application,
+  PocketAAT,
+  StakingStatus,
+  typeGuard,
+  UnlockedAccount,
+} from "@pokt-network/pocket-js";
 import UserService from "./UserService";
 import BasePocketService from "./BasePocketService";
 import bigInt from "big-integer";
-import { DashboardError, DashboardValidationError, PocketNetworkError } from "../models/Exceptions";
+import {
+  DashboardError,
+  DashboardValidationError,
+  PocketNetworkError,
+} from "../models/Exceptions";
 import TransactionService from "./TransactionService";
 import { POST_ACTION_TYPE, TransactionPostAction } from "../models/Transaction";
 import { Configurations } from "../_configuration";
@@ -29,7 +39,6 @@ const APPLICATION_COLLECTION_NAME = "Applications";
 const aws = require("aws-sdk");
 
 export default class ApplicationService extends BasePocketService {
-
   constructor() {
     super();
 
@@ -44,11 +53,23 @@ export default class ApplicationService extends BasePocketService {
    * @param {PocketApplication} application Application to encrypt necessary fields
    */
   async __encryptApplicationFields(application) {
-    if (application.freeTierApplicationAccount && application.freeTierApplicationAccount.privateKey && application.freeTierApplicationAccount.privateKey.length === 128) {
-      application.freeTierApplicationAccount.privateKey = encryptor.encrypt(application.freeTierApplicationAccount.privateKey);
+    if (
+      application.freeTierApplicationAccount &&
+      application.freeTierApplicationAccount.privateKey &&
+      application.freeTierApplicationAccount.privateKey.length === 128
+    ) {
+      application.freeTierApplicationAccount.privateKey = encryptor.encrypt(
+        application.freeTierApplicationAccount.privateKey
+      );
     }
-    if (application.gatewaySettings && application.gatewaySettings.secretKey && application.gatewaySettings.secretKey === 32) {
-      application.gatewaySettings.secretKey = encryptor.encrypt(application.gatewaySettings.secretKey);
+    if (
+      application.gatewaySettings &&
+      application.gatewaySettings.secretKey &&
+      application.gatewaySettings.secretKey === 32
+    ) {
+      application.gatewaySettings.secretKey = encryptor.encrypt(
+        application.gatewaySettings.secretKey
+      );
     }
     return application;
   }
@@ -59,11 +80,23 @@ export default class ApplicationService extends BasePocketService {
    * @param {PocketApplication} application Application to decrypt necessary fields
    */
   async __decryptApplicationFields(application) {
-    if (application.freeTierApplicationAccount && application.freeTierApplicationAccount.privateKey && application.freeTierApplicationAccount.privateKey.length > 128) {
-      application.freeTierApplicationAccount.privateKey = decryptor.decrypt(application.freeTierApplicationAccount.privateKey);
+    if (
+      application.freeTierApplicationAccount &&
+      application.freeTierApplicationAccount.privateKey &&
+      application.freeTierApplicationAccount.privateKey.length > 128
+    ) {
+      application.freeTierApplicationAccount.privateKey = decryptor.decrypt(
+        application.freeTierApplicationAccount.privateKey
+      );
     }
-    if (application.gatewaySettings && application.gatewaySettings.secretKey && application.gatewaySettings.secretKey > 32) {
-      application.gatewaySettings.secretKey = decryptor.decrypt(application.gatewaySettings.secretKey);
+    if (
+      application.gatewaySettings &&
+      application.gatewaySettings.secretKey &&
+      application.gatewaySettings.secretKey > 32
+    ) {
+      application.gatewaySettings.secretKey = decryptor.decrypt(
+        application.gatewaySettings.secretKey
+      );
     }
     return application;
   }
@@ -78,10 +111,15 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async __persistApplicationIfNotExists(application) {
-    if (!await this.applicationExists(application)) {
+    if (!(await this.applicationExists(application))) {
       /** @type {{insertedId: string, result: {n:number, ok: number}}} */
-      const applicationEncrypted = await this.__encryptApplicationFields(application);
-      const result = await this.persistenceService.saveEntity(APPLICATION_COLLECTION_NAME, applicationEncrypted);
+      const applicationEncrypted = await this.__encryptApplicationFields(
+        application
+      );
+      const result = await this.persistenceService.saveEntity(
+        APPLICATION_COLLECTION_NAME,
+        applicationEncrypted
+      );
 
       return result.result.ok === 1 ? result.insertedId : "0";
     }
@@ -99,15 +137,20 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async __updatePersistedApplication(application) {
-
     if (await this.applicationExists(application)) {
       const filter = {
-        "_id": ObjectID(application.id)
+        _id: ObjectID(application.id),
       };
 
       /** @type {{result: {n:number, ok: number}}} */
-      const applicationEncrypted = await this.__encryptApplicationFields(application);
-      const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, applicationEncrypted);
+      const applicationEncrypted = await this.__encryptApplicationFields(
+        application
+      );
+      const result = await this.persistenceService.updateEntity(
+        APPLICATION_COLLECTION_NAME,
+        filter,
+        applicationEncrypted
+      );
 
       return result.result.ok === 1;
     }
@@ -127,8 +170,14 @@ export default class ApplicationService extends BasePocketService {
    */
   async __updateApplicationByID(applicationID, application) {
     /** @type {{result: {n:number, ok: number}}} */
-    const applicationEncrypted = await this.__encryptApplicationFields(application);
-    const result = await this.persistenceService.updateEntityByID(APPLICATION_COLLECTION_NAME, applicationID, applicationEncrypted);
+    const applicationEncrypted = await this.__encryptApplicationFields(
+      application
+    );
+    const result = await this.persistenceService.updateEntityByID(
+      APPLICATION_COLLECTION_NAME,
+      applicationID,
+      applicationEncrypted
+    );
 
     return result.result.ok === 1;
   }
@@ -146,11 +195,21 @@ export default class ApplicationService extends BasePocketService {
     const appParameters = await this.pocketService.getApplicationParameters();
 
     try {
-      networkApplication = await this.__decryptApplicationFields(this.pocketService.getApplication(application.publicPocketAccount.address));
+      networkApplication = await this.__decryptApplicationFields(
+        this.pocketService.getApplication(
+          application.publicPocketAccount.address
+        )
+      );
     } catch (e) {
-      networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
+      networkApplication = ExtendedPocketApplication.createNetworkApplication(
+        application.publicPocketAccount,
+        appParameters
+      );
     }
-    const extendedPocketApplication = ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
+    const extendedPocketApplication = ExtendedPocketApplication.createExtendedPocketApplication(
+      application,
+      networkApplication
+    );
 
     return extendedPocketApplication;
   }
@@ -166,17 +225,26 @@ export default class ApplicationService extends BasePocketService {
   async __getExtendedPocketClientApplication(application) {
     let networkApplication;
     const appParameters = await this.pocketService.getApplicationParameters();
-    const address = application.freeTierApplicationAccount.address || application.publicPocketAccount.address;
+    const address =
+      application.freeTierApplicationAccount.address ||
+      application.publicPocketAccount.address;
 
     try {
-      networkApplication = await this.__decryptApplicationFields(this.pocketService.getApplication(address));
+      networkApplication = await this.__decryptApplicationFields(
+        this.pocketService.getApplication(address)
+      );
     } catch (e) {
-      networkApplication = ExtendedPocketApplication.createNetworkApplication(application.publicPocketAccount, appParameters);
+      networkApplication = ExtendedPocketApplication.createNetworkApplication(
+        application.publicPocketAccount,
+        appParameters
+      );
     }
 
-    return ExtendedPocketApplication.createExtendedPocketApplication(application, networkApplication);
+    return ExtendedPocketApplication.createExtendedPocketApplication(
+      application,
+      networkApplication
+    );
   }
-
 
   /**
    * Mark application as free tier.
@@ -188,13 +256,19 @@ export default class ApplicationService extends BasePocketService {
    */
   async __markApplicationAsFreeTier(application, freeTier) {
     const filter = {
-      "_id": ObjectID(application.id)
+      _id: ObjectID(application.id),
     };
 
     application.freeTier = freeTier;
     /** @type {{result: {n:number, ok: number}}} */
-    const applicationEncrypted = await this.__encryptApplicationFields(application);
-    const result = await this.persistenceService.updateEntity(APPLICATION_COLLECTION_NAME, filter, applicationEncrypted);
+    const applicationEncrypted = await this.__encryptApplicationFields(
+      application
+    );
+    const result = await this.persistenceService.updateEntity(
+      APPLICATION_COLLECTION_NAME,
+      filter,
+      applicationEncrypted
+    );
 
     return result.result.ok === 1;
   }
@@ -211,12 +285,16 @@ export default class ApplicationService extends BasePocketService {
     let filter = {};
 
     if (application.publicPocketAccount.address) {
-      filter["publicPocketAccount.address"] = application.publicPocketAccount.address;
+      filter["publicPocketAccount.address"] =
+        application.publicPocketAccount.address;
     } else {
       filter["name"] = application.name;
     }
 
-    const dbApplication = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+    const dbApplication = await this.persistenceService.getEntityByFilter(
+      APPLICATION_COLLECTION_NAME,
+      filter
+    );
 
     return dbApplication !== undefined;
   }
@@ -232,13 +310,20 @@ export default class ApplicationService extends BasePocketService {
    */
   async importApplication(applicationAddress) {
     const filter = {
-      "publicPocketAccount.address": applicationAddress
+      "publicPocketAccount.address": applicationAddress,
     };
 
-    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
+    const applicationDB = await this.__decryptApplicationFields(
+      await this.persistenceService.getEntityByFilter(
+        APPLICATION_COLLECTION_NAME,
+        filter
+      )
+    );
 
     if (applicationDB) {
-      throw new DashboardValidationError("Application already exists in dashboard");
+      throw new DashboardValidationError(
+        "Application already exists in dashboard"
+      );
     }
 
     try {
@@ -271,7 +356,9 @@ export default class ApplicationService extends BasePocketService {
       // Use token email to retrieve a list of the apps
       const application = await this.getClientApplication(applicationId);
 
-      if (application.pocketApplication.user.toString() === userEmail.toString()) {
+      if (
+        application.pocketApplication.user.toString() === userEmail.toString()
+      ) {
         return true;
       }
     }
@@ -289,13 +376,20 @@ export default class ApplicationService extends BasePocketService {
    */
   async getClientApplication(applicationId) {
     const filter = {
-      "_id": ObjectID(applicationId)
+      _id: ObjectID(applicationId),
     };
 
-    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
+    const applicationDB = await this.__decryptApplicationFields(
+      await this.persistenceService.getEntityByFilter(
+        APPLICATION_COLLECTION_NAME,
+        filter
+      )
+    );
 
     if (applicationDB) {
-      const application = PocketApplication.createPublicPocketApplication(applicationDB);
+      const application = PocketApplication.createPublicPocketApplication(
+        applicationDB
+      );
 
       return this.__getExtendedPocketClientApplication(application);
     }
@@ -314,16 +408,23 @@ export default class ApplicationService extends BasePocketService {
   async getApplication(applicationAddress) {
     try {
       const filter = {
-        "publicPocketAccount.address": applicationAddress
+        "publicPocketAccount.address": applicationAddress,
       };
 
-      const applicationDB = await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter);
+      const applicationDB = await this.persistenceService.getEntityByFilter(
+        APPLICATION_COLLECTION_NAME,
+        filter
+      );
 
       if (applicationDB) {
-        const decryptedFields = await this.__decryptApplicationFields(applicationDB);
+        const decryptedFields = await this.__decryptApplicationFields(
+          applicationDB
+        );
 
         if (decryptedFields) {
-          const application = PocketApplication.createPocketApplication(decryptedFields);
+          const application = PocketApplication.createPocketApplication(
+            decryptedFields
+          );
 
           return this.__getExtendedPocketApplication(application);
         }
@@ -345,13 +446,20 @@ export default class ApplicationService extends BasePocketService {
    */
   async getPrivateApplication(applicationId) {
     const filter = {
-      "_id": ObjectID(applicationId)
+      _id: ObjectID(applicationId),
     };
 
-    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
+    const applicationDB = await this.__decryptApplicationFields(
+      await this.persistenceService.getEntityByFilter(
+        APPLICATION_COLLECTION_NAME,
+        filter
+      )
+    );
 
     if (applicationDB) {
-      const application = PocketApplication.createPocketPrivateApplication(applicationDB);
+      const application = PocketApplication.createPocketPrivateApplication(
+        applicationDB
+      );
 
       return this.__getExtendedPocketApplication(application);
     }
@@ -381,9 +489,13 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async getAllApplications(limit, offset = 0) {
-    const networkApplications = await this.pocketService.getApplications(StakingStatus.Staked);
+    const networkApplications = await this.pocketService.getApplications(
+      StakingStatus.Staked
+    );
 
-    return networkApplications.map(PocketApplication.createRegisteredPocketApplication);
+    return networkApplications.map(
+      PocketApplication.createRegisteredPocketApplication
+    );
   }
 
   /**
@@ -399,14 +511,25 @@ export default class ApplicationService extends BasePocketService {
   async getUserApplications(userEmail, limit, offset = 0) {
     const filter = { user: userEmail };
 
-    const dashboardApplicationData = (await this.__decryptApplicationFields(await this.persistenceService.getEntities(APPLICATION_COLLECTION_NAME, filter, limit, offset)))
+    const dashboardApplicationData = (
+      await this.__decryptApplicationFields(
+        await this.persistenceService.getEntities(
+          APPLICATION_COLLECTION_NAME,
+          filter,
+          limit,
+          offset
+        )
+      )
+    )
       .map(PocketApplication.createPocketApplication)
       .map(app => {
         return {
           id: app.id,
           name: app.name,
-          address: app.freeTierApplicationAccount.address || app.publicPocketAccount.address,
-          icon: app.icon
+          address:
+            app.freeTierApplicationAccount.address ||
+            app.publicPocketAccount.address,
+          icon: app.icon,
         };
       });
 
@@ -414,12 +537,14 @@ export default class ApplicationService extends BasePocketService {
       .map(app => app.address)
       .filter(address => address.length > 0);
 
-    const networkApplications = await this.pocketService
-      .getAllApplications(dashboardApplicationAddresses);
+    const networkApplications = await this.pocketService.getAllApplications(
+      dashboardApplicationAddresses
+    );
 
     if (dashboardApplicationData.length > 0) {
-      return dashboardApplicationData
-        .map(app => PocketApplication.createUserPocketApplication(app, networkApplications));
+      return dashboardApplicationData.map(app =>
+        PocketApplication.createUserPocketApplication(app, networkApplications)
+      );
     }
 
     return [];
@@ -433,14 +558,24 @@ export default class ApplicationService extends BasePocketService {
    */
   async getStakedApplicationSummary() {
     try {
-      const stakedApplications = await this.pocketService.getApplications(StakingStatus.Staked);
+      const stakedApplications = await this.pocketService.getApplications(
+        StakingStatus.Staked
+      );
 
-      const averageStaked = this._getAverageNetworkData(stakedApplications.map(app => Number(app.stakedTokens.toString())));
-      const totalStaked = this._getAverageNetworkData(stakedApplications.map(app => bigInt(app.stakedTokens.toString())));
+      const averageStaked = this._getAverageNetworkData(
+        stakedApplications.map(app => Number(app.stakedTokens.toString()))
+      );
+      const totalStaked = this._getAverageNetworkData(
+        stakedApplications.map(app => bigInt(app.stakedTokens.toString()))
+      );
 
       const averageStakedResult = averageStaked / stakedApplications.length;
 
-      return new StakedApplicationSummary(stakedApplications.length.toString(), averageStakedResult.toString(), totalStaked.toString());
+      return new StakedApplicationSummary(
+        stakedApplications.length.toString(),
+        averageStakedResult.toString(),
+        totalStaked.toString()
+      );
     } catch (e) {
       return new StakedApplicationSummary("0", "0", "0");
     }
@@ -455,12 +590,16 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async getFreeTierAAT(applicationId) {
-
     const filter = {
-      "_id": ObjectID(applicationId)
+      _id: ObjectID(applicationId),
     };
 
-    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
+    const applicationDB = await this.__decryptApplicationFields(
+      await this.persistenceService.getEntityByFilter(
+        APPLICATION_COLLECTION_NAME,
+        filter
+      )
+    );
 
     if (!applicationDB) {
       return false;
@@ -469,16 +608,19 @@ export default class ApplicationService extends BasePocketService {
     try {
       const { aat_version: aatVersion } = Configurations.pocket_network;
       const {
-        publicPocketAccount: {
-          publicKey: applicationPublicKeyHex
-        },
+        publicPocketAccount: { publicKey: applicationPublicKeyHex },
         freeTierApplicationAccount: {
           publicKey: appAccountPublicKeyHex,
-          privateKey: appAccountPrivateKeyHex
-        }
+          privateKey: appAccountPrivateKeyHex,
+        },
       } = applicationDB;
 
-      return await PocketAAT.from(aatVersion, applicationPublicKeyHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+      return await PocketAAT.from(
+        aatVersion,
+        applicationPublicKeyHex,
+        appAccountPublicKeyHex,
+        appAccountPrivateKeyHex
+      );
     } catch (e) {
       return false;
     }
@@ -497,18 +639,30 @@ export default class ApplicationService extends BasePocketService {
     const {
       main_fund_address: mainFundAccount,
       aat_version: aatVersion,
-      free_tier: { client_pub_key: clientPublicKey, stake_amount: upoktToStake, max_relay_per_day_amount: maxRelayPerDayAmount }
+      free_tier: {
+        client_pub_key: clientPublicKey,
+        stake_amount: upoktToStake,
+        max_relay_per_day_amount: maxRelayPerDayAmount,
+      },
     } = Configurations.pocket_network;
 
-    if (aatVersion === undefined || upoktToStake === undefined || maxRelayPerDayAmount === undefined) {
-      throw new Error("Couldn't retrieve aatVersion and/or upoktToStake and/or maxRelayPerDayAmount values for free tier stake.");
+    if (
+      aatVersion === undefined ||
+      upoktToStake === undefined ||
+      maxRelayPerDayAmount === undefined
+    ) {
+      throw new Error(
+        "Couldn't retrieve aatVersion and/or upoktToStake and/or maxRelayPerDayAmount values for free tier stake."
+      );
     }
 
     // Generate a passphrase for the app account
     const passphrase = crypto.randomBytes(16).toString("hex");
 
     // Create Application credentials.
-    const appAccount = await this.pocketService.createUnlockedAccount(passphrase);
+    const appAccount = await this.pocketService.createUnlockedAccount(
+      passphrase
+    );
 
     if (!typeGuard(appAccount, UnlockedAccount)) {
       throw appAccount;
@@ -518,35 +672,53 @@ export default class ApplicationService extends BasePocketService {
     const appAccountPrivateKeyHex = appAccount.privateKey.toString("hex");
 
     // First transfer funds from the main fund to the new Application account.
-    const fundingTransactionHash = await this.pocketService.transferFromFreeTierFund(upoktToStake, appAccount.addressHex);
+    const fundingTransactionHash = await this.pocketService.transferFromFreeTierFund(
+      upoktToStake,
+      appAccount.addressHex
+    );
 
     // Create the stake transaction object
-    const appStakeTransaction = await this.pocketService.appStakeRequest(appAccount.addressHex, passphrase, stakeInformation.chains, stakeInformation.stake_amount);
+    const appStakeTransaction = await this.pocketService.appStakeRequest(
+      appAccount.addressHex,
+      passphrase,
+      stakeInformation.chains,
+      stakeInformation.stake_amount
+    );
 
     // Create post confirmation action to stake application.
     const contactEmail = application.pocketApplication.contactEmail;
 
-    const appStakeAction = new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, {
-      appStakeTransaction,
-      contactEmail,
-      emailData,
-      address: stakeInformation.app_address,
-      paymentEmailData: {
-        amountPaid: 0,
-        poktStaked: upoktToStake / Math.pow(10, POKT_DENOMINATIONS.upokt),
-        maxRelayPerDayAmount
+    const appStakeAction = new TransactionPostAction(
+      POST_ACTION_TYPE.stakeApplication,
+      {
+        appStakeTransaction,
+        contactEmail,
+        emailData,
+        address: stakeInformation.app_address,
+        paymentEmailData: {
+          amountPaid: 0,
+          poktStaked: upoktToStake / Math.pow(10, POKT_DENOMINATIONS.upokt),
+          maxRelayPerDayAmount,
+        },
       }
-    });
+    );
 
     // Create job to monitor transaction confirmation
-    const result = await this.transactionService.addTransferTransaction(fundingTransactionHash, appStakeAction);
+    const result = await this.transactionService.addTransferTransaction(
+      fundingTransactionHash,
+      appStakeAction
+    );
 
     if (!result) {
       throw new Error("Couldn't add funding transaction for processing");
     }
 
     // Set the free tier credentials.
-    application.pocketApplication.freeTierApplicationAccount = new PrivatePocketAccount(appAccount.addressHex, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+    application.pocketApplication.freeTierApplicationAccount = new PrivatePocketAccount(
+      appAccount.addressHex,
+      appAccountPublicKeyHex,
+      appAccountPrivateKeyHex
+    );
     application.pocketApplication.freeTier = true;
 
     // Backup Free Tier private keys to encrypted S3 bucket
@@ -554,34 +726,46 @@ export default class ApplicationService extends BasePocketService {
       access_key_id: awsAccessKeyID,
       secret_access_key: awsSecretAccessKey,
       region: awsRegion,
-      s3_fts_bucket: awsS3FTSBucket
+      s3_fts_bucket: awsS3FTSBucket,
     } = Configurations.aws;
 
     const s3 = new aws.S3({
       accessKeyId: awsAccessKeyID,
       secretAccessKey: awsSecretAccessKey,
-      region: awsRegion
+      region: awsRegion,
     });
 
     const s3UploadParams = {
       Bucket: awsS3FTSBucket,
       Key: appAccount.addressHex,
-      Body: JSON.stringify(application.pocketApplication.freeTierApplicationAccount),
+      Body: JSON.stringify(
+        application.pocketApplication.freeTierApplicationAccount
+      ),
     };
 
     try {
       const s3Response = await s3.upload(s3UploadParams).promise();
 
-      console.log("Free Tier account backup: "+s3Response.Location);
+      console.log("Free Tier account backup: " + s3Response.Location);
     } catch (err) {
       console.log(err);
     }
 
     // Generate app signed AAT for the free tier
-    const freeTierAAT = await PocketAAT.from(aatVersion, application.pocketApplication.publicPocketAccount.publicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+    const freeTierAAT = await PocketAAT.from(
+      aatVersion,
+      application.pocketApplication.publicPocketAccount.publicKey,
+      appAccountPublicKeyHex,
+      appAccountPrivateKeyHex
+    );
 
     // Generate signed AAT for use on the Gateway that uses our pubkey
-    const gatewayAAT = await PocketAAT.from(aatVersion, clientPublicKey, appAccountPublicKeyHex, appAccountPrivateKeyHex);
+    const gatewayAAT = await PocketAAT.from(
+      aatVersion,
+      clientPublicKey,
+      appAccountPublicKeyHex,
+      appAccountPrivateKeyHex
+    );
 
     if (typeGuard(gatewayAAT, PocketAAT) && typeGuard(freeTierAAT, PocketAAT)) {
       // Add the gateway aat
@@ -589,7 +773,7 @@ export default class ApplicationService extends BasePocketService {
         version: gatewayAAT.version,
         clientPublicKey: gatewayAAT.clientPublicKey,
         applicationPublicKey: gatewayAAT.applicationPublicKey,
-        applicationSignature: gatewayAAT.applicationSignature
+        applicationSignature: gatewayAAT.applicationSignature,
       };
 
       // Add the free tier aat
@@ -597,7 +781,7 @@ export default class ApplicationService extends BasePocketService {
         version: freeTierAAT.version,
         clientPublicKey: freeTierAAT.clientPublicKey,
         applicationPublicKey: freeTierAAT.applicationPublicKey,
-        applicationSignature: freeTierAAT.applicationSignature
+        applicationSignature: freeTierAAT.applicationSignature,
       };
 
       await this.__updatePersistedApplication(application.pocketApplication);
@@ -606,7 +790,6 @@ export default class ApplicationService extends BasePocketService {
     } else {
       throw new Error("Failed to generate AAT information.");
     }
-
   }
 
   /**
@@ -620,20 +803,32 @@ export default class ApplicationService extends BasePocketService {
   async unstakeFreeTierApplication(unstakeInformation, applicationLink) {
     // Retrieve the private application account information
 
-    const application = await this.getPrivateApplication(unstakeInformation.application_id);
-    const freeTierApplicationAccount = application.pocketApplication.freeTierApplicationAccount;
+    const application = await this.getPrivateApplication(
+      unstakeInformation.application_id
+    );
+    const freeTierApplicationAccount =
+      application.pocketApplication.freeTierApplicationAccount;
 
     // Generate a passphrase for the app account
     const passphrase = crypto.randomBytes(16).toString("hex");
 
     // Import the application to the keybase
-    const pocketAccount = await this.pocketService.importAccountFromPrivateKey(freeTierApplicationAccount.privateKey, passphrase);
+    const pocketAccount = await this.pocketService.importAccountFromPrivateKey(
+      freeTierApplicationAccount.privateKey,
+      passphrase
+    );
 
     // Create unstake transaction request
-    const appUnstakeRequest = await this.pocketService.appUnstakeRequest(pocketAccount.addressHex, passphrase);
+    const appUnstakeRequest = await this.pocketService.appUnstakeRequest(
+      pocketAccount.addressHex,
+      passphrase
+    );
 
     // Submit transaction
-    const appUnstakedTransaction = await this.pocketService.submitRawTransaction(appUnstakeRequest.address, appUnstakeRequest.txHex);
+    const appUnstakedTransaction = await this.pocketService.submitRawTransaction(
+      appUnstakeRequest.address,
+      appUnstakeRequest.txHex
+    );
 
     const emailData = {
       address: application.pocketApplication.address,
@@ -641,18 +836,26 @@ export default class ApplicationService extends BasePocketService {
       contactEmail: application.pocketApplication.contactEmail,
       applicationData: {
         name: application.pocketApplication.name,
-        link: applicationLink
-      }
+        link: applicationLink,
+      },
     };
 
     // Add transaction to queue
-    const result = await this.transactionService.addAppUnstakeTransaction(appUnstakedTransaction, emailData);
+    const result = await this.transactionService.addAppUnstakeTransaction(
+      appUnstakedTransaction,
+      emailData
+    );
 
     if (!result) {
-      throw new Error("Couldn't register app unstake transaction for email notification");
+      throw new Error(
+        "Couldn't register app unstake transaction for email notification"
+      );
     }
 
-    await this.__markApplicationAsFreeTier(application.pocketApplication, false);
+    await this.__markApplicationAsFreeTier(
+      application.pocketApplication,
+      false
+    );
   }
 
   /**
@@ -668,22 +871,39 @@ export default class ApplicationService extends BasePocketService {
    *
    * @throws {Error}
    */
-  async stakeApplication(appAddress, upoktToStake, appStakeTransaction, application, emailData, paymentEmailData, gatewayAATSignature) {
+  async stakeApplication(
+    appAddress,
+    upoktToStake,
+    appStakeTransaction,
+    application,
+    emailData,
+    paymentEmailData,
+    gatewayAATSignature
+  ) {
     // First transfer funds from the main fund
-    const fundingTransactionHash = await this.pocketService.transferFromMainFund(upoktToStake, appAddress);
+    const fundingTransactionHash = await this.pocketService.transferFromMainFund(
+      upoktToStake,
+      appAddress
+    );
 
     // Create post confirmation action to stake application
     const contactEmail = application.pocketApplication.contactEmail;
-    const appStakeAction = new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, {
-      appStakeTransaction,
-      address: appAddress,
-      contactEmail,
-      emailData,
-      paymentEmailData
-    });
+    const appStakeAction = new TransactionPostAction(
+      POST_ACTION_TYPE.stakeApplication,
+      {
+        appStakeTransaction,
+        address: appAddress,
+        contactEmail,
+        emailData,
+        paymentEmailData,
+      }
+    );
 
     // Create job to monitor transaction confirmation
-    const result = await this.transactionService.addTransferTransaction(fundingTransactionHash, appStakeAction);
+    const result = await this.transactionService.addTransferTransaction(
+      fundingTransactionHash,
+      appStakeAction
+    );
 
     if (!result) {
       throw new Error("Couldn't add funding transaction for processing");
@@ -692,7 +912,7 @@ export default class ApplicationService extends BasePocketService {
     // Create Gateway AAT using our client pub key and passed in signature
     const {
       aat_version: aatVersion,
-      free_tier: { client_pub_key: clientPublicKey }
+      free_tier: { client_pub_key: clientPublicKey },
     } = Configurations.pocket_network;
 
     application.pocketApplication.updatingStatus = true;
@@ -700,13 +920,21 @@ export default class ApplicationService extends BasePocketService {
     application.pocketApplication.gatewayAAT = {
       version: aatVersion,
       clientPublicKey: clientPublicKey,
-      applicationPublicKey: application.pocketApplication.publicPocketAccount.publicKey,
-      applicationSignature: gatewayAATSignature
+      applicationPublicKey:
+        application.pocketApplication.publicPocketAccount.publicKey,
+      applicationSignature: gatewayAATSignature,
     };
 
-    await EmailService.to(contactEmail).sendPaymentCompletedAppEmail(contactEmail, emailData, paymentEmailData);
+    await EmailService.to(contactEmail).sendPaymentCompletedAppEmail(
+      contactEmail,
+      emailData,
+      paymentEmailData
+    );
     await this.__updatePersistedApplication(application.pocketApplication);
-    await this.__markApplicationAsFreeTier(application.pocketApplication, false);
+    await this.__markApplicationAsFreeTier(
+      application.pocketApplication,
+      false
+    );
   }
 
   /**
@@ -719,18 +947,23 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async unstakeApplication(appUnstakeTransaction, applicationLink, authHeader) {
-    const {
-      address,
-      raw_hex_bytes
-    } = appUnstakeTransaction;
+    const { address, raw_hex_bytes } = appUnstakeTransaction;
 
     // Retrieve app
     const application = await this.getApplication(address);
 
     // Check if the app belogns to the client
-    if (await this.verifyApplicationBelongsToClient(application.pocketApplication.id, authHeader)) {
+    if (
+      await this.verifyApplicationBelongsToClient(
+        application.pocketApplication.id,
+        authHeader
+      )
+    ) {
       // Submit transaction
-      const appUnstakedHash = await this.pocketService.submitRawTransaction(address, raw_hex_bytes);
+      const appUnstakedHash = await this.pocketService.submitRawTransaction(
+        address,
+        raw_hex_bytes
+      );
 
       // Gather email data
       const emailData = {
@@ -739,22 +972,32 @@ export default class ApplicationService extends BasePocketService {
         contactEmail: application.pocketApplication.contactEmail,
         applicationData: {
           name: application.pocketApplication.name,
-          link: applicationLink
-        }
+          link: applicationLink,
+        },
       };
 
       // Add transaction to queue
-      const result = await this.transactionService.addAppUnstakeTransaction(appUnstakedHash, emailData);
+      const result = await this.transactionService.addAppUnstakeTransaction(
+        appUnstakedHash,
+        emailData
+      );
 
       if (!result) {
-        throw new Error("Couldn't register app unstake transaction for email notification");
+        throw new Error(
+          "Couldn't register app unstake transaction for email notification"
+        );
       }
 
       application.pocketApplication.updatingStatus = true;
 
-      await this.__markApplicationAsFreeTier(application.pocketApplication, false);
+      await this.__markApplicationAsFreeTier(
+        application.pocketApplication,
+        false
+      );
     } else {
-      throw new Error("Application doesn't belong to the provided client account.");
+      throw new Error(
+        "Application doesn't belong to the provided client account."
+      );
     }
   }
 
@@ -776,14 +1019,18 @@ export default class ApplicationService extends BasePocketService {
    */
   async createApplication(applicationData) {
     if (PocketApplication.validate(applicationData)) {
-      if (!await this.userService.userExists(applicationData.user)) {
+      if (!(await this.userService.userExists(applicationData.user))) {
         throw new DashboardError("User does not exist.");
       }
 
-      const application = PocketApplication.createPocketApplication(applicationData);
+      const application = PocketApplication.createPocketApplication(
+        applicationData
+      );
 
       if (await this.applicationExists(application)) {
-        throw new DashboardError("An application with that name already exists, please use a different name.");
+        throw new DashboardError(
+          "An application with that name already exists, please use a different name."
+        );
       }
 
       return this.__persistApplicationIfNotExists(application);
@@ -801,16 +1048,25 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async saveApplicationAccount(applicationID, accountData) {
-
-    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByID(APPLICATION_COLLECTION_NAME, applicationID));
+    const applicationDB = await this.__decryptApplicationFields(
+      await this.persistenceService.getEntityByID(
+        APPLICATION_COLLECTION_NAME,
+        applicationID
+      )
+    );
 
     if (!applicationDB) {
       throw new Error("Application does not exists");
     }
 
-    const application = PocketApplication.createPocketApplication(applicationDB);
+    const application = PocketApplication.createPocketApplication(
+      applicationDB
+    );
 
-    application.publicPocketAccount = new PublicPocketAccount(accountData.address, accountData.publicKey);
+    application.publicPocketAccount = new PublicPocketAccount(
+      accountData.address,
+      accountData.publicKey
+    );
 
     await this.__updateApplicationByID(applicationID, application);
 
@@ -828,14 +1084,22 @@ export default class ApplicationService extends BasePocketService {
    */
   async deleteApplication(applicationId, user) {
     const filter = {
-      "_id": ObjectID(applicationId),
-      user
+      _id: ObjectID(applicationId),
+      user,
     };
 
-    const applicationDB = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
+    const applicationDB = await this.__decryptApplicationFields(
+      await this.persistenceService.getEntityByFilter(
+        APPLICATION_COLLECTION_NAME,
+        filter
+      )
+    );
 
     if (applicationDB.freeTier === false) {
-      await this.persistenceService.deleteEntities(APPLICATION_COLLECTION_NAME, filter);
+      await this.persistenceService.deleteEntities(
+        APPLICATION_COLLECTION_NAME,
+        filter
+      );
 
       return PocketApplication.createPocketApplication(applicationDB);
     } else {
@@ -861,17 +1125,21 @@ export default class ApplicationService extends BasePocketService {
    * @async
    */
   async updateApplication(applicationId, applicationData) {
-
     if (PocketApplication.validate(applicationData)) {
-      if (!await this.userService.userExists(applicationData.user)) {
+      if (!(await this.userService.userExists(applicationData.user))) {
         throw new DashboardError("User does not exist");
       }
 
       const filter = {
-        "_id": ObjectID(applicationId)
+        _id: ObjectID(applicationId),
       };
 
-      const application = await this.__decryptApplicationFields(await this.persistenceService.getEntityByFilter(APPLICATION_COLLECTION_NAME, filter));
+      const application = await this.__decryptApplicationFields(
+        await this.persistenceService.getEntityByFilter(
+          APPLICATION_COLLECTION_NAME,
+          filter
+        )
+      );
 
       if (!application) {
         throw new DashboardError("Application does not exist");
@@ -888,9 +1156,12 @@ export default class ApplicationService extends BasePocketService {
       applicationToEdit.icon = applicationData.icon;
 
       if (applicationData.gatewaySettings) {
-        applicationToEdit.gatewaySettings.secretKeyRequired = applicationData.gatewaySettings.secretKeyRequired;
-        applicationToEdit.gatewaySettings.whitelistOrigins = applicationData.gatewaySettings.whitelistOrigins;
-        applicationToEdit.gatewaySettings.whitelistUserAgents = applicationData.gatewaySettings.whitelistUserAgents;
+        applicationToEdit.gatewaySettings.secretKeyRequired =
+          applicationData.gatewaySettings.secretKeyRequired;
+        applicationToEdit.gatewaySettings.whitelistOrigins =
+          applicationData.gatewaySettings.whitelistOrigins;
+        applicationToEdit.gatewaySettings.whitelistUserAgents =
+          applicationData.gatewaySettings.whitelistUserAgents;
       }
 
       return this.__updatePersistedApplication(applicationToEdit);

@@ -32,7 +32,11 @@ module.exports = {
       },
     ],
   },
-  plugins: ["jsdoc"],
-  extends: ["eslint:recommended", "plugin:jsdoc/recommended"],
+  plugins: ["jsdoc", "prettier"],
+  extends: [
+    "eslint:recommended",
+    "plugin:jsdoc/recommended",
+    "plugin:prettier/recommended",
+  ],
   parser: "babel-eslint",
 };

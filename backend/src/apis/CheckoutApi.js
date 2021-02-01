@@ -9,52 +9,77 @@ const router = express.Router();
 const applicationCheckoutService = ApplicationCheckoutService.getInstance();
 const nodeCheckoutService = NodeCheckoutService.getInstance();
 
-router.get("/applications/relays-per-day", apiAsyncWrapper((req, res) => {
-  const relaysPerDay = applicationCheckoutService.getRelaysPerDay();
+router.get(
+  "/applications/relays-per-day",
+  apiAsyncWrapper((req, res) => {
+    const relaysPerDay = applicationCheckoutService.getRelaysPerDay();
 
-  res.json(relaysPerDay);
-}));
+    res.json(relaysPerDay);
+  })
+);
 
-router.get("/nodes/validator-power", apiAsyncWrapper((req, res) => {
-  const validatorPower = nodeCheckoutService.getValidatorPowerData();
+router.get(
+  "/nodes/validator-power",
+  apiAsyncWrapper((req, res) => {
+    const validatorPower = nodeCheckoutService.getValidatorPowerData();
 
-  res.json(validatorPower);
-}));
+    res.json(validatorPower);
+  })
+);
 
-router.get("/applications/cost", apiAsyncWrapper((req, res) => {
-  const relaysPerDay = parseInt(getQueryOption(req, "rpd"));
+router.get(
+  "/applications/cost",
+  apiAsyncWrapper((req, res) => {
+    const relaysPerDay = parseInt(getQueryOption(req, "rpd"));
 
-  const { upokt, usdValue: cost } = applicationCheckoutService.getCostForRelaysPerDay(relaysPerDay);
+    const {
+      upokt,
+      usdValue: cost,
+    } = applicationCheckoutService.getCostForRelaysPerDay(relaysPerDay);
 
-  res.json({ upokt, cost });
-}));
+    res.json({ upokt, cost });
+  })
+);
 
-router.post("/applications/pokt", apiAsyncWrapper((req, res) => {
-  /** @type {{money: number}} */
-  const data = req.body;
+router.post(
+  "/applications/pokt",
+  apiAsyncWrapper((req, res) => {
+    /** @type {{money: number}} */
+    const data = req.body;
 
-  const cost = applicationCheckoutService.getPoktToStake(data.money);
+    const cost = applicationCheckoutService.getPoktToStake(data.money);
 
-  res.json({ cost });
-}));
+    res.json({ cost });
+  })
+);
 
-router.get("/nodes/cost", apiAsyncWrapper((req, res) => {
-  const validatorPower = parseInt(getQueryOption(req, "vp"));
+router.get(
+  "/nodes/cost",
+  apiAsyncWrapper((req, res) => {
+    const validatorPower = parseInt(getQueryOption(req, "vp"));
 
-  // Add transaction fee to cost
-  const { upokt, usdValue: cost } = nodeCheckoutService.getMoneyToSpent(validatorPower);
-  
-  res.json({ upokt, cost });
-}));
+    // Add transaction fee to cost
+    const { upokt, usdValue: cost } = nodeCheckoutService.getMoneyToSpent(
+      validatorPower
+    );
 
-router.post("/nodes/pokt", apiAsyncWrapper((req, res) => {
-  /** @type {{money: number}} */
-  const data = req.body;
+    res.json({ upokt, cost });
+  })
+);
 
-  const cost = nodeCheckoutService.getPoktToStake(data.money, CoinDenom.Upokt);
+router.post(
+  "/nodes/pokt",
+  apiAsyncWrapper((req, res) => {
+    /** @type {{money: number}} */
+    const data = req.body;
 
-  res.json({ cost });
-}));
+    const cost = nodeCheckoutService.getPoktToStake(
+      data.money,
+      CoinDenom.Upokt
+    );
 
+    res.json({ cost });
+  })
+);
 
 export default router;

@@ -19,7 +19,7 @@ startCronJobs();
 // configuration file as a base.
 app.use(
   webpackDevMiddleware(webPackCompiler, {
-    publicPath: webPackConfig.output.publicPath
+    publicPath: webPackConfig.output.publicPath,
   })
 );
 

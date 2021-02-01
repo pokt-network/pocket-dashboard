@@ -41,7 +41,7 @@ export function getOptionalQueryOption(request, option) {
 }
 
 // https://strongloop.com/strongblog/async-error-handling-expressjs-es7-promises-generators/
-export const apiAsyncWrapper = (fn) => (...args) => fn(...args).catch(args[2]);
+export const apiAsyncWrapper = fn => (...args) => fn(...args).catch(args[2]);
 
 /**
  * Handle API errors.
@@ -70,7 +70,7 @@ export function errorHandler(error, req, res, next) {
       console.error(`Name: ${name}, Message: ${message}`);
       res.status(500).json({ message, name }); // Server Error.
 
-      if(process.env.NODE_ENV === "development") {
+      if (process.env.NODE_ENV === "development") {
         next(error);
       }
       break;

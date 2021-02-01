@@ -1,5 +1,4 @@
 export class DashboardError extends Error {
-
   /**
    * @param {string} message Message.
    */
@@ -11,7 +10,6 @@ export class DashboardError extends Error {
 }
 
 export class DashboardValidationError extends DashboardError {
-
   /**
    * @param {string} message Message.
    */
@@ -23,7 +21,6 @@ export class DashboardValidationError extends DashboardError {
 }
 
 export class PocketNetworkError extends Error {
-
   /**
    * @param {string} message Message.
    */

@@ -7,7 +7,6 @@ import bigInt from "big-integer";
 const NETWORK_COLLECTION_NAME = "Blockchains";
 
 export default class NetworkService extends BasePocketService {
-
   /**
    * Get all blockchains available to stake
    *
@@ -16,10 +15,15 @@ export default class NetworkService extends BasePocketService {
    */
   async getAvailableNetworkChains() {
     const filter = { active: true };
-    const networkChainData = await this.persistenceService.getEntities(NETWORK_COLLECTION_NAME, filter, 1000, 0);
+    const networkChainData = await this.persistenceService.getEntities(
+      NETWORK_COLLECTION_NAME,
+      filter,
+      1000,
+      0
+    );
 
     if (networkChainData.length > 0) {
-      return networkChainData.sort(function(a, b) { 
+      return networkChainData.sort(function(a, b) {
         return parseInt(a._id, 16) - parseInt(b._id, 16);
       });
     }
@@ -36,13 +40,17 @@ export default class NetworkService extends BasePocketService {
    * @async
    */
   async getNetworkChains(networkHashes) {
-
-    if(networkHashes === undefined) {
+    if (networkHashes === undefined) {
       return [];
     } else {
       const filter = { active: true, _id: networkHashes };
 
-      const networkChainData = await this.persistenceService.getEntities(NETWORK_COLLECTION_NAME, filter, 1000, 0);
+      const networkChainData = await this.persistenceService.getEntities(
+        NETWORK_COLLECTION_NAME,
+        filter,
+        1000,
+        0
+      );
 
       if (networkChainData) {
         networkHashes.push(networkChainData);
@@ -98,8 +106,12 @@ export default class NetworkService extends BasePocketService {
    * @private
    */
   __totalStakedTokens(totalStakedApps, totalStakedNodes) {
-    const totalStakedAppTokens = this._getTotalNetworkData(totalStakedApps.map(app => bigInt(app.stakedTokens)));
-    const totalStakedNodeTokens = this._getTotalNetworkData(totalStakedNodes.map(node => bigInt(node.stakedTokens)));
+    const totalStakedAppTokens = this._getTotalNetworkData(
+      totalStakedApps.map(app => bigInt(app.stakedTokens))
+    );
+    const totalStakedNodeTokens = this._getTotalNetworkData(
+      totalStakedNodes.map(node => bigInt(node.stakedTokens))
+    );
 
     return totalStakedAppTokens.add(totalStakedNodeTokens);
   }
@@ -114,8 +126,16 @@ export default class NetworkService extends BasePocketService {
     const poktPrice = this.__getPOKTPrice();
     const stakedApplications = await this.__getStakedApplications();
     const stakedNodes = await this.__getStakedNodes();
-    const totalStakedTokens = this.__totalStakedTokens(stakedApplications, stakedNodes);
+    const totalStakedTokens = this.__totalStakedTokens(
+      stakedApplications,
+      stakedNodes
+    );
 
-    return new NetworkSummaryData(poktPrice, totalStakedTokens, stakedNodes.length.toString(), stakedApplications.length.toString());
+    return new NetworkSummaryData(
+      poktPrice,
+      totalStakedTokens,
+      stakedNodes.length.toString(),
+      stakedApplications.length.toString()
+    );
   }
 }

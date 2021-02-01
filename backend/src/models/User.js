@@ -7,7 +7,6 @@ const PASSWORD_MIN_LENGTH = 8;
 const SALT_ROUNDS = 10;
 
 export class PocketUser {
-
   /**
    * @param {string} provider Provider name.
    * @param {string} email Email of user.
@@ -19,7 +18,17 @@ export class PocketUser {
    * @param {Array<AnsweredSecurityQuestion>} [securityQuestions] Answered security question of user.
    * @param {string} [customerID] Customer ID.
    */
-  constructor(provider, email, username, password, resetPasswordToken, resetPasswordExpiration, lastLogin, securityQuestions, customerID) {
+  constructor(
+    provider,
+    email,
+    username,
+    password,
+    resetPasswordToken,
+    resetPasswordExpiration,
+    lastLogin,
+    securityQuestions,
+    customerID
+  ) {
     Object.assign(this, {
       provider: provider.toLowerCase(),
       email,
@@ -29,7 +38,7 @@ export class PocketUser {
       resetPasswordExpiration,
       lastLogin,
       securityQuestions,
-      customerID
+      customerID,
     });
   }
 
@@ -44,9 +53,18 @@ export class PocketUser {
   static createPocketUserWithUTCLastLogin(user) {
     const lastLoginUTC = new Date().toUTCString();
 
-    return new PocketUser(user.provider, user.email, user.username, user.password, user.resetPasswordToken, user.resetPasswordExpiration, lastLoginUTC, user.securityQuestions, user.customerID);
+    return new PocketUser(
+      user.provider,
+      user.email,
+      user.username,
+      user.password,
+      user.resetPasswordToken,
+      user.resetPasswordExpiration,
+      lastLoginUTC,
+      user.securityQuestions,
+      user.customerID
+    );
   }
-
 
   /**
    * Factory type to create an user object from db.
@@ -64,7 +82,17 @@ export class PocketUser {
    * @static
    */
   static createPocketUserFromDB(user) {
-    return new PocketUser(user.provider, user.email, user.username, user.password, user.resetPasswordToken, user.resetPasswordExpiration, user.lastLogin, user.securityQuestions, user.customerID);
+    return new PocketUser(
+      user.provider,
+      user.email,
+      user.username,
+      user.password,
+      user.resetPasswordToken,
+      user.resetPasswordExpiration,
+      user.lastLogin,
+      user.securityQuestions,
+      user.customerID
+    );
   }
 
   /**
@@ -76,16 +104,19 @@ export class PocketUser {
    * @static
    */
   static removeSensitiveFields(pocketUser) {
-    let user = new PocketUser(pocketUser.provider, pocketUser.email, pocketUser.username);
+    let user = new PocketUser(
+      pocketUser.provider,
+      pocketUser.email,
+      pocketUser.username
+    );
 
     user.customerID = pocketUser.customerID;
-    
+
     return user;
   }
 }
 
 export class AuthProviderUser extends PocketUser {
-
   /**
    * @param {string} provider Provider name.
    * @param {string} email Email of user.
@@ -97,21 +128,18 @@ export class AuthProviderUser extends PocketUser {
 }
 
 export class GithubUser extends AuthProviderUser {
-
   constructor(email, name) {
     super("github", email, name);
   }
 }
 
 export class GoogleUser extends AuthProviderUser {
-
   constructor(email, name) {
     super("google", email, name);
   }
 }
 
 export class EmailUser extends PocketUser {
-
   /**
    * @param {string} email Email of user.
    * @param {string} username Username of user.
@@ -135,7 +163,6 @@ export class EmailUser extends PocketUser {
    * @static
    */
   static validate(userData) {
-
     EmailUser.validateEmail(userData.email);
 
     EmailUser.validateUsername(userData.username);
@@ -155,9 +182,13 @@ export class EmailUser extends PocketUser {
    * @throws {DashboardValidationError} If validation fails.
    */
   static validatePasswords(password1, password2) {
-
-    if (password1.length < PASSWORD_MIN_LENGTH || password2.length < PASSWORD_MIN_LENGTH) {
-      throw new DashboardValidationError(`Passwords must have ${PASSWORD_MIN_LENGTH} characters at least.`);
+    if (
+      password1.length < PASSWORD_MIN_LENGTH ||
+      password2.length < PASSWORD_MIN_LENGTH
+    ) {
+      throw new DashboardValidationError(
+        `Passwords must have ${PASSWORD_MIN_LENGTH} characters at least.`
+      );
     }
 
     if (password1 !== password2) {
@@ -243,4 +274,3 @@ export class EmailUser extends PocketUser {
     return await bcrypt.compare(plainPassword, userPassword);
   }
 }
-

@@ -5,7 +5,6 @@ import axios from "axios";
 import { GithubUser } from "../../models/User";
 
 export default class GithubAuthProvider extends BaseAuthProvider {
-
   constructor() {
     super("github", Configurations.auth.providers.github);
   }

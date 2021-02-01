@@ -1,4 +1,8 @@
-import { Application, ApplicationParams, StakingStatus } from "@pokt-network/pocket-js";
+import {
+  Application,
+  ApplicationParams,
+  StakingStatus,
+} from "@pokt-network/pocket-js";
 import { PrivatePocketAccount, PublicPocketAccount } from "./Account";
 import { EMAIL_REGEX, URL_REGEX } from "./Regex";
 import { DashboardValidationError } from "./Exceptions";
@@ -30,7 +34,6 @@ export class UserPocketApplication {
 }
 
 export class PocketApplication {
-
   /**
    * @param {string} name Name.
    * @param {string} owner Owner.
@@ -47,12 +50,45 @@ export class PocketApplication {
    * @param {object} gatewayAAT PocketAAT used for Gateway access, signed by our client pub key
    * @param {object} gatewaySettings Whitelists and keys and settings for the Gateway
    */
-  constructor(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings) {
-    Object.assign(this, { name, owner, url, contactEmail, user, description, icon });
+  constructor(
+    name,
+    owner,
+    url,
+    contactEmail,
+    user,
+    description,
+    icon,
+    updatingStatus,
+    freeTier,
+    publicPocketAccount,
+    freeTierApplicationAccount,
+    freeTierAAT,
+    gatewayAAT,
+    gatewaySettings
+  ) {
+    Object.assign(this, {
+      name,
+      owner,
+      url,
+      contactEmail,
+      user,
+      description,
+      icon,
+    });
 
     this.id = "";
-    this.publicPocketAccount = publicPocketAccount !== undefined ? publicPocketAccount : new PublicPocketAccount("", "");
-    this.freeTierApplicationAccount = freeTierApplicationAccount !== undefined ? new PrivatePocketAccount(freeTierApplicationAccount.address, freeTierApplicationAccount.publicKey, freeTierApplicationAccount.privateKey) : new PrivatePocketAccount("", "", "");
+    this.publicPocketAccount =
+      publicPocketAccount !== undefined
+        ? publicPocketAccount
+        : new PublicPocketAccount("", "");
+    this.freeTierApplicationAccount =
+      freeTierApplicationAccount !== undefined
+        ? new PrivatePocketAccount(
+            freeTierApplicationAccount.address,
+            freeTierApplicationAccount.publicKey,
+            freeTierApplicationAccount.privateKey
+          )
+        : new PrivatePocketAccount("", "", "");
     this.freeTier = freeTier || false;
     this.updatingStatus = updatingStatus || false;
 
@@ -61,7 +97,7 @@ export class PocketApplication {
       version: "",
       clientPubKey: "",
       applicationPublicKey: "",
-      applicationSignature: ""
+      applicationSignature: "",
     };
 
     // Gateway AAT
@@ -69,7 +105,7 @@ export class PocketApplication {
       version: "",
       clientPubKey: "",
       applicationPublicKey: "",
-      applicationSignature: ""
+      applicationSignature: "",
     };
 
     // Gateway Settings
@@ -77,7 +113,7 @@ export class PocketApplication {
       secretKey: crypto.randomBytes(16).toString("hex"),
       secretKeyRequired: false,
       whitelistOrigins: [],
-      whitelistUserAgents: []
+      whitelistUserAgents: [],
     };
   }
 
@@ -98,17 +134,23 @@ export class PocketApplication {
    * @static
    */
   static validate(applicationData) {
-
     if (applicationData.name === "") {
       throw new DashboardValidationError("Name is not valid.");
     }
 
     if (applicationData.name.length > 20) {
-      throw new DashboardValidationError("Name length should not be greater than 20 character.");
+      throw new DashboardValidationError(
+        "Name length should not be greater than 20 character."
+      );
     }
 
-    if (applicationData.description !== "" && applicationData.description.length > 150) {
-      throw new DashboardValidationError("Description length should not be greater than 150 character.");
+    if (
+      applicationData.description !== "" &&
+      applicationData.description.length > 150
+    ) {
+      throw new DashboardValidationError(
+        "Description length should not be greater than 150 character."
+      );
     }
 
     if (applicationData.owner === "") {
@@ -153,9 +195,39 @@ export class PocketApplication {
    * @static
    */
   static createPocketApplication(applicationData) {
-    const { name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings } = applicationData;
+    const {
+      name,
+      owner,
+      url,
+      contactEmail,
+      user,
+      description,
+      icon,
+      updatingStatus,
+      freeTier,
+      publicPocketAccount,
+      freeTierApplicationAccount,
+      freeTierAAT,
+      gatewayAAT,
+      gatewaySettings,
+    } = applicationData;
 
-    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings);
+    const pocketApplication = new PocketApplication(
+      name,
+      owner,
+      url,
+      contactEmail,
+      user,
+      description,
+      icon,
+      updatingStatus,
+      freeTier,
+      publicPocketAccount,
+      freeTierApplicationAccount,
+      freeTierAAT,
+      gatewayAAT,
+      gatewaySettings
+    );
 
     pocketApplication.id = applicationData._id ?? "";
 
@@ -186,10 +258,40 @@ export class PocketApplication {
    * @static
    */
   static createPublicPocketApplication(applicationData) {
-    const { name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings } = applicationData;
+    const {
+      name,
+      owner,
+      url,
+      contactEmail,
+      user,
+      description,
+      icon,
+      updatingStatus,
+      freeTier,
+      publicPocketAccount,
+      freeTierApplicationAccount,
+      freeTierAAT,
+      gatewayAAT,
+      gatewaySettings,
+    } = applicationData;
 
-    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings);
-    
+    const pocketApplication = new PocketApplication(
+      name,
+      owner,
+      url,
+      contactEmail,
+      user,
+      description,
+      icon,
+      updatingStatus,
+      freeTier,
+      publicPocketAccount,
+      freeTierApplicationAccount,
+      freeTierAAT,
+      gatewayAAT,
+      gatewaySettings
+    );
+
     // Clean sensitive data before returning the PocketApplication object
     pocketApplication.freeTierApplicationAccount.publicKey = "";
     pocketApplication.freeTierApplicationAccount.privateKey = "";
@@ -199,7 +301,7 @@ export class PocketApplication {
 
     return pocketApplication;
   }
-  
+
   /**
    * Convenient Factory method to create a Pocket Private application.
    *
@@ -222,8 +324,38 @@ export class PocketApplication {
    * @static
    */
   static createPocketPrivateApplication(applicationData) {
-    const { name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings } = applicationData;
-    const pocketApplication = new PocketApplication(name, owner, url, contactEmail, user, description, icon, updatingStatus, freeTier, publicPocketAccount, freeTierApplicationAccount, freeTierAAT, gatewayAAT, gatewaySettings);
+    const {
+      name,
+      owner,
+      url,
+      contactEmail,
+      user,
+      description,
+      icon,
+      updatingStatus,
+      freeTier,
+      publicPocketAccount,
+      freeTierApplicationAccount,
+      freeTierAAT,
+      gatewayAAT,
+      gatewaySettings,
+    } = applicationData;
+    const pocketApplication = new PocketApplication(
+      name,
+      owner,
+      url,
+      contactEmail,
+      user,
+      description,
+      icon,
+      updatingStatus,
+      freeTier,
+      publicPocketAccount,
+      freeTierApplicationAccount,
+      freeTierAAT,
+      gatewayAAT,
+      gatewaySettings
+    );
 
     pocketApplication.id = applicationData._id ?? "";
 
@@ -244,7 +376,11 @@ export class PocketApplication {
   static createRegisteredPocketApplication(applicationData) {
     const appName = applicationData.name ?? "N/A";
 
-    return new RegisteredPocketApplication(appName, applicationData.address, applicationData.status);
+    return new RegisteredPocketApplication(
+      appName,
+      applicationData.address,
+      applicationData.status
+    );
   }
 
   /**
@@ -262,12 +398,21 @@ export class PocketApplication {
    */
   static createUserPocketApplication(applicationData, networkApplications) {
     const { id, name, address, icon } = applicationData;
-    let networkApp = networkApplications.filter(app => app.address === applicationData.address);
+    let networkApp = networkApplications.filter(
+      app => app.address === applicationData.address
+    );
 
     if (networkApp.length > 0) {
       networkApp = networkApp[0];
 
-      return new UserPocketApplication(id, name, address, icon, networkApp.stakedTokens.toString(), networkApp.status);
+      return new UserPocketApplication(
+        id,
+        name,
+        address,
+        icon,
+        networkApp.stakedTokens.toString(),
+        networkApp.status
+      );
     }
 
     return new UserPocketApplication(id, name, address, icon, "0", 0);
@@ -275,7 +420,6 @@ export class PocketApplication {
 }
 
 export class ExtendedPocketApplication {
-
   /**
    * @param {PocketApplication} pocketApplication Pocket application.
    * @param {Application} networkData Application data from Pocket Network.
@@ -317,13 +461,12 @@ export class ExtendedPocketApplication {
       chains: [],
       staked_tokens: "0",
       max_relays: "0",
-      unstaking_time: applicationParameters.unstakingTime.toString()
+      unstaking_time: applicationParameters.unstakingTime.toString(),
     };
   }
 }
 
 export class StakedApplicationSummary {
-
   /**
    * @param {string} totalApplications Total of Applications.
    * @param {string} averageStaked Average of staked applications.
