@@ -16,20 +16,22 @@ class TermsOfService extends Component {
           <br />
           <Row>
             <div className="title">
-              <p style={{ fontWeight: "700" }}>Site Terms Of Use<br/></p>
+              <p style={{ fontWeight: "700" }}>
+                Site Terms Of Use
+                <br />
+              </p>
             </div>
             <br></br>
-
           </Row>
           <Row>
-          <h2>
+            <h2>
               <strong>
                 POCKET NETWORK, INC. and POCKET NETWORK FOUNDATION
               </strong>
             </h2>
           </Row>
           <Row>
-          <p>
+            <p>
               <strong>Date of Last Update:&nbsp;July 2, 2020</strong>
             </p>
           </Row>
@@ -430,25 +432,25 @@ class TermsOfService extends Component {
                 or them as a result of, arising out of or in connection with:
               </li>
             </ol>
-              <div>
-                <ol>
-                  <li>
-                    the content you submit, transmit, store or process through
-                    the Websites and Services;
-                  </li>
-                  <li>
-                    your conduct in connection with the Websites or Services;
-                  </li>
-                  <li>your access to or use of the Websites and Services;</li>
-                  <li>
-                    your violation of this Agreement (inclusive of all terms
-                    relating to any Services); or
-                  </li>
-                  <li>
-                    your violation of any rights of another person or entity.
-                  </li>
-                </ol>
-              </div>
+            <div>
+              <ol>
+                <li>
+                  the content you submit, transmit, store or process through the
+                  Websites and Services;
+                </li>
+                <li>
+                  your conduct in connection with the Websites or Services;
+                </li>
+                <li>your access to or use of the Websites and Services;</li>
+                <li>
+                  your violation of this Agreement (inclusive of all terms
+                  relating to any Services); or
+                </li>
+                <li>
+                  your violation of any rights of another person or entity.
+                </li>
+              </ol>
+            </div>
           </Row>
           <Row>
             <p>
@@ -469,109 +471,109 @@ class TermsOfService extends Component {
               </li>
             </ol>
             <div>
-                <ol style={{ marginLeft: "30px" }}>
-                  <li>
-                    interfere or violate the legal rights (such as rights of
-                    privacy and publicity) of others or violate others’ use or
-                    enjoyment of the Websites and Services;
-                  </li>
-                  <li>
-                    attempt to do anything that does or could interfere with,
-                    disrupt, negatively affect or inhibit other users from using
-                    the Website and Services or links on the Websites or that
-                    could damage, disable, overburden or impair the functioning
-                    of the Websites, Services or our servers or any networks
-                    connected to any of our servers in any manner;
-                  </li>
-                  <li>
-                    create a false identity for the purpose of misleading or
-                    deceiving us or others or fraudulently or otherwise
-                    misrepresent yourself to be another person or a
-                    representative of another entity including, but not limited
-                    to, an authorized user of the Websites or our
-                    representatives, or fraudulently or otherwise misrepresent
-                    that you have an affiliation with a person, entity or group;
-                  </li>
-                  <li>
-                    mislead or deceive us, our representatives and any third
-                    parties who may rely on the information provided by you, by
-                    providing inaccurate or false information, which includes
-                    omissions of information;
-                  </li>
-                  <li>
-                    disguise the origin of any material transmitted via the
-                    Websites and Services (whether by forging message/packet
-                    headers or otherwise manipulating normal identification
-                    information);
-                  </li>
-                  <li>
-                    violate, infringe or misappropriate any intellectual
-                    property right of any person (such as copyright, trademarks,
-                    patents, or trade secrets, or other proprietary rights of
-                    any party) or commit a tort;
-                  </li>
-                  <li>
-                    upload files that contain viruses, Trojan horses, worms,
-                    time bombs, cancelbots, corrupted files, or any other
-                    similar software or programs that may damage the operation
-                    of another’s computer or property;
-                  </li>
-                  <li>
-                    access any content, area or functionality of the Websites
-                    and Services that you are prohibited or restricted from
-                    accessing or attempt to bypass or circumvent measures
-                    employed to prevent or limit your access to any content,
-                    area or functionality of the Websites or Services;
-                  </li>
-                  <li>
-                    obtain unauthorized access to or interfere with the
-                    performance of the servers which host the Websites and
-                    Services or any servers on any associated networks or
-                    otherwise fail to comply with any policies or procedures
-                    relating to the use of those servers;
-                  </li>
-                  <li>
-                    gain unauthorized access to any services or products, other
-                    accounts, computer systems, or networks connected to any of
-                    our servers through hacking, password mining, or any other
-                    means;
-                  </li>
-                  <li>
-                    obtain any materials or information through any means not
-                    intentionally made available through the Websites and
-                    Services;
-                  </li>
-                  <li>
-                    harvest or otherwise collect, whether aggregated or
-                    otherwise, data about others including email addresses
-                    and/or distribute or sell such data in any manner;
-                  </li>
-                  <li>
-                    use any part of the Websites and Services other than for its
-                    intended purpose;
-                  </li>
-                  <li>
-                    use any automated means or form of scraping or extracting
-                    any data, content or information on the Websites and
-                    Services unless it is expressly authorized by us;
-                  </li>
-                  <li>
-                    engage in any act that undermines or compromises the
-                    security and integrity of the computer, communication
-                    systems, networks, software application, or other computing
-                    devices used in connection with the Websites and Services;
-                  </li>
-                  <li>
-                    monitor traffic on the Websites and Services, or permit
-                    anyone to do so;
-                  </li>
-                  <li>
-                    engage in or promote any activity that violates this
-                    Agreement; and
-                  </li>
-                  <li>attempt to do any of the foregoing.</li>
-                </ol>
-              </div>
+              <ol style={{ marginLeft: "30px" }}>
+                <li>
+                  interfere or violate the legal rights (such as rights of
+                  privacy and publicity) of others or violate others’ use or
+                  enjoyment of the Websites and Services;
+                </li>
+                <li>
+                  attempt to do anything that does or could interfere with,
+                  disrupt, negatively affect or inhibit other users from using
+                  the Website and Services or links on the Websites or that
+                  could damage, disable, overburden or impair the functioning of
+                  the Websites, Services or our servers or any networks
+                  connected to any of our servers in any manner;
+                </li>
+                <li>
+                  create a false identity for the purpose of misleading or
+                  deceiving us or others or fraudulently or otherwise
+                  misrepresent yourself to be another person or a representative
+                  of another entity including, but not limited to, an authorized
+                  user of the Websites or our representatives, or fraudulently
+                  or otherwise misrepresent that you have an affiliation with a
+                  person, entity or group;
+                </li>
+                <li>
+                  mislead or deceive us, our representatives and any third
+                  parties who may rely on the information provided by you, by
+                  providing inaccurate or false information, which includes
+                  omissions of information;
+                </li>
+                <li>
+                  disguise the origin of any material transmitted via the
+                  Websites and Services (whether by forging message/packet
+                  headers or otherwise manipulating normal identification
+                  information);
+                </li>
+                <li>
+                  violate, infringe or misappropriate any intellectual property
+                  right of any person (such as copyright, trademarks, patents,
+                  or trade secrets, or other proprietary rights of any party) or
+                  commit a tort;
+                </li>
+                <li>
+                  upload files that contain viruses, Trojan horses, worms, time
+                  bombs, cancelbots, corrupted files, or any other similar
+                  software or programs that may damage the operation of
+                  another’s computer or property;
+                </li>
+                <li>
+                  access any content, area or functionality of the Websites and
+                  Services that you are prohibited or restricted from accessing
+                  or attempt to bypass or circumvent measures employed to
+                  prevent or limit your access to any content, area or
+                  functionality of the Websites or Services;
+                </li>
+                <li>
+                  obtain unauthorized access to or interfere with the
+                  performance of the servers which host the Websites and
+                  Services or any servers on any associated networks or
+                  otherwise fail to comply with any policies or procedures
+                  relating to the use of those servers;
+                </li>
+                <li>
+                  gain unauthorized access to any services or products, other
+                  accounts, computer systems, or networks connected to any of
+                  our servers through hacking, password mining, or any other
+                  means;
+                </li>
+                <li>
+                  obtain any materials or information through any means not
+                  intentionally made available through the Websites and
+                  Services;
+                </li>
+                <li>
+                  harvest or otherwise collect, whether aggregated or otherwise,
+                  data about others including email addresses and/or distribute
+                  or sell such data in any manner;
+                </li>
+                <li>
+                  use any part of the Websites and Services other than for its
+                  intended purpose;
+                </li>
+                <li>
+                  use any automated means or form of scraping or extracting any
+                  data, content or information on the Websites and Services
+                  unless it is expressly authorized by us;
+                </li>
+                <li>
+                  engage in any act that undermines or compromises the security
+                  and integrity of the computer, communication systems,
+                  networks, software application, or other computing devices
+                  used in connection with the Websites and Services;
+                </li>
+                <li>
+                  monitor traffic on the Websites and Services, or permit anyone
+                  to do so;
+                </li>
+                <li>
+                  engage in or promote any activity that violates this
+                  Agreement; and
+                </li>
+                <li>attempt to do any of the foregoing.</li>
+              </ol>
+            </div>
           </Row>
           <Row>
             <p>
@@ -740,11 +742,15 @@ class TermsOfService extends Component {
               contact us at:
             </p>
             <p>
-              Pocket Network, Inc.<br/>
-              802 E Whiting St<br/>
-              Tampa, FL 33602<br/>
-              hola@pokt.network<br/>
-              <br/>
+              Pocket Network, Inc.
+              <br />
+              802 E Whiting St
+              <br />
+              Tampa, FL 33602
+              <br />
+              hola@pokt.network
+              <br />
+              <br />
               Date of Last Update:&nbsp;July 2, 2020
             </p>
             <h1>Testnet Terms of Service</h1>

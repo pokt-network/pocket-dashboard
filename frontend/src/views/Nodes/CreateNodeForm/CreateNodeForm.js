@@ -4,7 +4,12 @@ import { Col, Form, Row } from "react-bootstrap";
 import ImageFileUpload from "../../../core/components/ImageFileUpload/ImageFileUpload";
 import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import { generateIcon, nodeFormSchema, scrollToId, getStakeStatus } from "../../../_helpers";
+import {
+  generateIcon,
+  nodeFormSchema,
+  scrollToId,
+  getStakeStatus,
+} from "../../../_helpers";
 import UserService from "../../../core/services/PocketUserService";
 import PocketUserService from "../../../core/services/PocketUserService";
 import NodeService from "../../../core/services/PocketNodeService";
@@ -73,7 +78,10 @@ class CreateNodeForm extends CreateForm {
     const nodeData = { address, publicKey: publicKey.toString("hex") };
 
     const { success } = await NodeService.saveNodeAccount(
-      nodeID, nodeData, nodeBaseLink, ppk
+      nodeID,
+      nodeData,
+      nodeBaseLink,
+      ppk
     );
 
     if (success) {
@@ -131,15 +139,22 @@ class CreateNodeForm extends CreateForm {
         adding: false,
         error: {
           show: true,
-          message: this.validateError(data.message)
-        }
+          message: this.validateError(data.message),
+        },
       });
       scrollToId("alert");
     }
   }
 
   render() {
-    const { created, agreeTerms, error, redirectPath, imgError, adding } = this.state;
+    const {
+      created,
+      agreeTerms,
+      error,
+      redirectPath,
+      imgError,
+      adding,
+    } = this.state;
 
     if (created) {
       return (
@@ -165,8 +180,8 @@ class CreateNodeForm extends CreateForm {
             )}
             <h1>Node Information</h1>
             <p className="info">
-              Fill in these questions to identify your node on your
-              dashboard. Fields marked with (*) are required to continue.
+              Fill in these questions to identify your node on your dashboard.
+              Fields marked with (*) are required to continue.
             </p>
           </Col>
         </Row>
@@ -176,7 +191,7 @@ class CreateNodeForm extends CreateForm {
               <div className="checking-margin-test" style={{ padding: "50px" }}>
                 <Formik
                   validationSchema={nodeFormSchema}
-                  onSubmit={async (data) => {
+                  onSubmit={async data => {
                     this.setState({ data });
                     await this.handleCreate();
                   }}
@@ -188,7 +203,12 @@ class CreateNodeForm extends CreateForm {
                   {({ handleSubmit, handleChange, values, errors }) => (
                     <Form noValidate onSubmit={handleSubmit}>
                       <Row>
-                        <Col sm="1" md="1" lg="1" style={{ paddingLeft: "0px" }}>
+                        <Col
+                          sm="1"
+                          md="1"
+                          lg="1"
+                          style={{ paddingLeft: "0px" }}
+                        >
                           <ImageFileUpload
                             handleDrop={(img, error) => {
                               const imgResult = img === null ? undefined : img;
@@ -196,7 +216,9 @@ class CreateNodeForm extends CreateForm {
                               this.handleDrop(imgResult ?? undefined, error);
                             }}
                           />
-                          {imgError && <p className="error mt-2 ml-3">{imgError}</p>}
+                          {imgError && (
+                            <p className="error mt-2 ml-3">{imgError}</p>
+                          )}
                         </Col>
                         <Col sm="5" md="5" lg="5">
                           <Form.Group>
@@ -218,7 +240,9 @@ class CreateNodeForm extends CreateForm {
                       <Row>
                         <Col style={{ paddingLeft: "0px" }}>
                           <Form.Group>
-                            <Form.Label>Node operator or Company name*</Form.Label>
+                            <Form.Label>
+                              Node operator or Company name*
+                            </Form.Label>
                             <Form.Control
                               name="operator"
                               placeholder="maximum of 20 characters"
@@ -249,7 +273,9 @@ class CreateNodeForm extends CreateForm {
                         </Col>
                       </Row>
                       <Form.Group>
-                        <Form.Label>Write an optional description of your node here</Form.Label>
+                        <Form.Label>
+                          Write an optional description of your node here
+                        </Form.Label>
                         <Form.Control
                           as="textarea"
                           rows="6"
@@ -265,17 +291,17 @@ class CreateNodeForm extends CreateForm {
                           {errors.description}
                         </Form.Control.Feedback>
                       </Form.Group>
-                        <LoadingButton
-                          className="pl-5 pr-5"
-                          disabled={!agreeTerms}
-                          loading={adding}
-                          buttonProps={{
-                            variant: "primary",
-                            type: "submit"
-                          }}
-                        >
+                      <LoadingButton
+                        className="pl-5 pr-5"
+                        disabled={!agreeTerms}
+                        loading={adding}
+                        buttonProps={{
+                          variant: "primary",
+                          type: "submit",
+                        }}
+                      >
                         <span>Continue</span>
-                        </LoadingButton>
+                      </LoadingButton>
                     </Form>
                   )}
                 </Formik>

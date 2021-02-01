@@ -23,7 +23,7 @@ class Unsubscribe extends Component {
   }
 
   validateSubscribe() {
-    PocketUserService.subscribeUser(this.state.email).then((result) => {
+    PocketUserService.subscribeUser(this.state.email).then(result => {
       if (result) {
         this.setState({ email: result.data });
         this.setState({
@@ -55,12 +55,16 @@ class Unsubscribe extends Component {
 
     if (queryParam === undefined || queryParam.email === undefined) {
       this.setState({
-        alertOverlay: { show: true, variant: "danger", message: "Invalid email" },
+        alertOverlay: {
+          show: true,
+          variant: "danger",
+          message: "Invalid email",
+        },
       });
       return;
     }
 
-    PocketUserService.unsubscribeUser(queryParam.email).then((result) => {
+    PocketUserService.unsubscribeUser(queryParam.email).then(result => {
       if (result) {
         this.setState({ email: result.data });
       } else {

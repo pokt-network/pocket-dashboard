@@ -70,12 +70,12 @@ class ValidateKeys extends Component {
     }
   }
 
-  readUploadedFile = (e) => {
+  readUploadedFile = e => {
     e.preventDefault();
     const reader = new FileReader();
     const ppkFileName = e.target.files[0].name;
 
-    reader.onload = (e) => {
+    reader.onload = e => {
       const { result } = e.target;
       const { data } = this.state;
       const ppkData = JSON.parse(result.trim());
@@ -107,7 +107,8 @@ class ValidateKeys extends Component {
     if (!ppkData) {
       ppk = JSON.parse(
         await PocketClientService.createPPKFromPrivateKey(
-          privateKey, passphrase
+          privateKey,
+          passphrase
         )
       );
     } else {
@@ -115,7 +116,8 @@ class ValidateKeys extends Component {
     }
 
     const account = await PocketClientService.saveAccount(
-      JSON.stringify(ppk), passphrase
+      JSON.stringify(ppk),
+      passphrase
     );
     const { addressHex } = account;
 
@@ -191,7 +193,7 @@ class ValidateKeys extends Component {
                         style={{ display: "none" }}
                         id="upload-key"
                         type="file"
-                        onChange={(e) => this.readUploadedFile(e)}
+                        onChange={e => this.readUploadedFile(e)}
                       />
                     </div>
                   </Form.Group>
@@ -265,7 +267,7 @@ class ValidateKeys extends Component {
                           onClick={
                             !validated
                               ? this.validateAccount
-                              : (e) => {
+                              : e => {
                                   e.preventDefault();
                                   handleAfterValidate({
                                     address,

@@ -12,12 +12,17 @@ import {
   DEFAULT_POKT_DENOMINATION_BASE,
   NODES_LIMIT,
   STYLING,
-  TABLE_COLUMNS
+  TABLE_COLUMNS,
 } from "../../../_constants";
 import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import { formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField } from "../../../_helpers";
+import {
+  formatNetworkData,
+  formatNumbers,
+  getStakeStatus,
+  mapStatusToField,
+} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import LoadingOverlay from "react-loading-overlay";
 import NodeService from "../../../core/services/PocketNodeService";
@@ -47,7 +52,7 @@ class NodesMain extends Main {
     let errorMessage = "";
     let errorType = "";
 
-    NodeService.getAllUserNodes(userEmail, NODES_LIMIT).then((userItems) => {
+    NodeService.getAllUserNodes(userEmail, NODES_LIMIT).then(userItems => {
       hasError = userItems.error ? userItems.error : hasError;
       errorMessage = userItems.error ? userItems.message : errorMessage;
       errorType = userItems.error ? userItems.name : errorType;
@@ -63,8 +68,11 @@ class NodesMain extends Main {
       // console.log("mount state", this.state);
 
       NodeService.getStakedNodeSummary().then(
-        ({ totalNodes, averageValidatorPower: averageRelays, averageStaked }) => {
-
+        ({
+          totalNodes,
+          averageValidatorPower: averageRelays,
+          averageStaked,
+        }) => {
           this.setState({
             total: totalNodes,
             averageRelays,
@@ -82,7 +90,7 @@ class NodesMain extends Main {
         averageStaked,
         error,
         name,
-        message
+        message,
       }) => {
         hasError = error ? error : hasError;
         errorMessage = error ? message : errorMessage;
@@ -96,9 +104,10 @@ class NodesMain extends Main {
             loading: false,
           });
         }
-      });
+      }
+    );
 
-    NodeService.getAllNodes(NODES_LIMIT).then((registeredItems) => {
+    NodeService.getAllNodes(NODES_LIMIT).then(registeredItems => {
       hasError = registeredItems.error ? registeredItems.error : hasError;
       errorMessage = registeredItems.error
         ? registeredItems.message
@@ -128,7 +137,9 @@ class NodesMain extends Main {
 
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await NodeService.getAllUserNodes(
-      userEmail, NODES_LIMIT, offset * NODES_LIMIT + 1
+      userEmail,
+      NODES_LIMIT,
+      offset * NODES_LIMIT + 1
     );
 
     const allUserItems = [...userItems, ...newUserItems];
@@ -144,7 +155,8 @@ class NodesMain extends Main {
     const { registeredItems } = this.state;
 
     const newRegisteredItems = await NodeService.getAllNodes(
-      NODES_LIMIT, offset * NODES_LIMIT + 1
+      NODES_LIMIT,
+      offset * NODES_LIMIT + 1
     );
 
     const allRegisteredItems = [...registeredItems, ...newRegisteredItems];
@@ -178,11 +190,19 @@ class NodesMain extends Main {
     const cards = [
       { title: formatNumbers(total), subtitle: "Total of Nodes" },
       {
-        title: formatNetworkData(averageStaked, false, DEFAULT_POKT_DENOMINATION_BASE),
+        title: formatNetworkData(
+          averageStaked,
+          false,
+          DEFAULT_POKT_DENOMINATION_BASE
+        ),
         subtitle: "Average POKT Staked",
       },
       {
-        title: formatNetworkData(averageRelays, false, DEFAULT_POKT_DENOMINATION_BASE),
+        title: formatNetworkData(
+          averageRelays,
+          false,
+          DEFAULT_POKT_DENOMINATION_BASE
+        ),
         subtitle: "Nodes Total POKT Staked",
       },
     ];
@@ -289,13 +309,19 @@ class NodesMain extends Main {
                   <LoadingOverlay active={userItemsTableLoading} spinner>
                     {hasNodes ? (
                       filteredItems.map((node, idx) => {
-                        const { id: nodeID, name, address, stakedPOKT, status, icon } = node;
+                        const {
+                          id: nodeID,
+                          name,
+                          address,
+                          stakedPOKT,
+                          status,
+                          icon,
+                        } = node;
 
                         return (
                           <Link
                             key={idx}
                             to={() => {
-
                               if (!address) {
                                 NodeService.saveNodeInfoInCache({
                                   nodeID,
@@ -325,19 +351,17 @@ class NodesMain extends Main {
                         );
                       })
                     ) : (
-                        <div className="empty-overlay node">
-                          <div className="node">
-                            <img
-                              src={"/assets/ball-white.svg"}
-                              alt="apps-empty-box"
-                            />
+                      <div className="empty-overlay node">
+                        <div className="node">
+                          <img
+                            src={"/assets/ball-white.svg"}
+                            alt="apps-empty-box"
+                          />
 
-                            <p>
-                              You don’t have any nodes yet
-                        </p>
-                          </div>
+                          <p>You don’t have any nodes yet</p>
                         </div>
-                      )}
+                      </div>
+                    )}
                   </LoadingOverlay>
                 </InfiniteScroll>
               </div>
@@ -350,7 +374,7 @@ class NodesMain extends Main {
             lg="6"
             className={`${
               registeredItems.length === 0 ? "segment-table-empty" : ""
-              }`}
+            }`}
           >
             <Segment bordered scroll={false} label="REGISTERED NODES">
               <div className="scroll-table">
@@ -364,7 +388,7 @@ class NodesMain extends Main {
                   <AppTable
                     classes={`flex-body ${
                       hasMoreRegisteredItems ? "loading" : ""
-                      } `}
+                    } `}
                     headerClasses="d-flex"
                     toggle={registeredItems.length > 0}
                     keyField="address"
@@ -378,7 +402,7 @@ class NodesMain extends Main {
             </Segment>
           </Col>
         </Row>
-      </div >
+      </div>
     );
   }
 }

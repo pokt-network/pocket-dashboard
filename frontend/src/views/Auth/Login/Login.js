@@ -73,7 +73,8 @@ class Login extends Component {
     }
 
     const { success, data } = await UserService.login(
-      values.email, values.password
+      values.email,
+      values.password
     );
 
     if (!success) {
@@ -85,13 +86,12 @@ class Login extends Component {
         errors.email = "Invalid email.";
       }
     } else {
-
       if (data === "User is not validated.") {
         errors.email = data;
-      }else {
+      } else {
         this.setState({
           user: data.user,
-          session: data.session
+          session: data.session,
         });
         // Save session
         UserService.saveUserInCache(this.state.user, this.state.session, true);
@@ -170,12 +170,7 @@ class Login extends Component {
                         <Link to={forgot_password}>Forgot your password?</Link>
                       </Form.Group>
 
-                      <Button
-                        type="submit"
-                        size="md"
-                        variant="primary"
-                        block
-                      >
+                      <Button type="submit" size="md" variant="primary" block>
                         Log in
                       </Button>
                       <div className="containerDiv" style={{ display: "none" }}>
@@ -187,7 +182,8 @@ class Login extends Component {
                             icon={faGoogle}
                             type={AuthProviderType.login}
                             authProvider={UserService.getAuthProvider(
-                              this.state.authProviders, "google"
+                              this.state.authProviders,
+                              "google"
                             )}
                           />
                           <AuthProviderButton
@@ -196,7 +192,8 @@ class Login extends Component {
                             icon={faGithub}
                             type={AuthProviderType.login}
                             authProvider={UserService.getAuthProvider(
-                              this.state.authProviders, "github"
+                              this.state.authProviders,
+                              "github"
                             )}
                           />
                         </div>

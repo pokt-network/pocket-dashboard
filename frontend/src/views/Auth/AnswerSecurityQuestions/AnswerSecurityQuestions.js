@@ -19,11 +19,7 @@ class AnswerSecurityQuestions extends Component {
       data: {
         email: "",
       },
-      questions: [
-        { question: "" },
-        { question: "" },
-        { question: "" },
-      ],
+      questions: [{ question: "" }, { question: "" }, { question: "" }],
       answer: "",
       userInput: "",
       error: "",
@@ -43,7 +39,7 @@ class AnswerSecurityQuestions extends Component {
 
       if (questions.success) {
         this.setState({
-          questions: questions.data
+          questions: questions.data,
         });
       }
     }
@@ -81,21 +77,27 @@ class AnswerSecurityQuestions extends Component {
       const answeredQuestions = [
         { question: this.state.questions[0].question, answer: answer1 },
         { question: this.state.questions[1].question, answer: answer2 },
-        { question: this.state.questions[2].question, answer: answer3 }
+        { question: this.state.questions[2].question, answer: answer3 },
       ];
 
       // eslint-disable-next-line react/prop-types
       const email = this.props.location.state.email;
 
       // Validate answers
-      const isValid = await SecurityQuestionService.validateUserSecurityQuestions(email, answeredQuestions);
+      const isValid = await SecurityQuestionService.validateUserSecurityQuestions(
+        email,
+        answeredQuestions
+      );
 
       // Password reset link page
       const passwordResetLinkPage = `${window.location.origin}${ROUTE_PATHS.reset_password}`;
 
       if (isValid.success === true && isValid.data === true) {
         // Send password reset email
-        const result = await PocketUserService.sendResetPasswordEmail(email, passwordResetLinkPage);
+        const result = await PocketUserService.sendResetPasswordEmail(
+          email,
+          passwordResetLinkPage
+        );
 
         if (result.success) {
           // eslint-disable-next-line react/prop-types
@@ -126,9 +128,15 @@ class AnswerSecurityQuestions extends Component {
                 Answer this question before continuing.
               </h1>
 
-              <Form autoComplete="off" id={"main-form"} onSubmit={this.handleSubmit}>
+              <Form
+                autoComplete="off"
+                id={"main-form"}
+                onSubmit={this.handleSubmit}
+              >
                 <Form.Group className="mb-4">
-                  <Form.Label id="question-label-1">{questions[0].question}</Form.Label>
+                  <Form.Label id="question-label-1">
+                    {questions[0].question}
+                  </Form.Label>
                   <Form.Control
                     id="answer-label-1"
                     onChange={this.handleChange}
@@ -141,7 +149,9 @@ class AnswerSecurityQuestions extends Component {
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                  <Form.Label id="question-label-2">{questions[1].question}</Form.Label>
+                  <Form.Label id="question-label-2">
+                    {questions[1].question}
+                  </Form.Label>
                   <Form.Control
                     id="answer-label-2"
                     onChange={this.handleChange}
@@ -154,7 +164,9 @@ class AnswerSecurityQuestions extends Component {
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                  <Form.Label id="question-label-3">{questions[2].question}</Form.Label>
+                  <Form.Label id="question-label-3">
+                    {questions[2].question}
+                  </Form.Label>
                   <Form.Control
                     id="answer-label-3"
                     onChange={this.handleChange}

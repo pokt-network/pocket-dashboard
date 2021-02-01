@@ -42,7 +42,8 @@ class PaymentHistory extends Component {
   async componentDidMount() {
     const userEmail = UserService.getUserInfo().email;
     let history = await PaymentService.getPaymentHistory(
-      userEmail, PAYMENT_HISTORY_LIMIT
+      userEmail,
+      PAYMENT_HISTORY_LIMIT
     );
 
     history.forEach(obj => {
@@ -53,19 +54,24 @@ class PaymentHistory extends Component {
   }
 
   renderExport(cell, row) {
-
     if (row.printableData) {
       this.setState({});
       return (
-        <div className="print" style={{
-          display: row.printableData !== undefined ? "block" : "none",
-          height: "32px"
-          }}>
-
+        <div
+          className="print"
+          style={{
+            display: row.printableData !== undefined ? "block" : "none",
+            height: "32px",
+          }}
+        >
           <ReactToPrint
             trigger={() => (
               <Button className="link">
-                <img className="download-invoice" src="/assets/download_invoice.svg" alt="" />
+                <img
+                  className="download-invoice"
+                  src="/assets/download_invoice.svg"
+                  alt=""
+                />
               </Button>
             )}
             content={() => this.componentRef}
@@ -73,14 +79,14 @@ class PaymentHistory extends Component {
             copyStyles={true}
           />
           <PrintableInvoice
-          ref={(el) => (this.componentRef = el)}
-          invoiceItems={row.printableData.information}
-          purchaseDetails={row.printableData.items}
-          cardHolderName={row.billingDetails.name}
-          poktPrice={row.poktPrice}
-          purchasedTokens={row.amount}
-          total={row.printableData.total}
-        />
+            ref={el => (this.componentRef = el)}
+            invoiceItems={row.printableData.information}
+            purchaseDetails={row.printableData.items}
+            cardHolderName={row.billingDetails.name}
+            poktPrice={row.poktPrice}
+            purchasedTokens={row.amount}
+            total={row.printableData.total}
+          />
         </div>
       );
     }
@@ -93,7 +99,8 @@ class PaymentHistory extends Component {
         offset: 0,
         page: 1,
         filtered: true,
-      }, this.paginateAfterDateChange
+      },
+      this.paginateAfterDateChange
     );
   }
 
@@ -105,16 +112,15 @@ class PaymentHistory extends Component {
         offset: 0,
         page: 1,
         filtered: false,
-      }, this.paginateAfterDateChange
+      },
+      this.paginateAfterDateChange
     );
   }
 
   searchChange({ currentTarget: input }) {
-    this.setState(
-      {
-        input: input.value
-      }
-    );
+    this.setState({
+      input: input.value,
+    });
   }
 
   handleSearch() {
@@ -123,7 +129,8 @@ class PaymentHistory extends Component {
         paymentID: this.state.input,
         offset: 0,
         page: 1,
-      }, this.paginateAfterDateChange
+      },
+      this.paginateAfterDateChange
     );
   }
 
@@ -141,7 +148,12 @@ class PaymentHistory extends Component {
     const offset = (page - 1) * sizePerPage + 1;
 
     let history = await PaymentService.getPaymentHistory(
-      userEmail, PAYMENT_HISTORY_LIMIT, offset, fromDate, toDate, paymentID
+      userEmail,
+      PAYMENT_HISTORY_LIMIT,
+      offset,
+      fromDate,
+      toDate,
+      paymentID
     );
 
     history.forEach(obj => {
@@ -163,7 +175,7 @@ class PaymentHistory extends Component {
       {
         dataField: "formatedAmount",
         text: "Amount",
-        formatter: (cell) => formatCurrency(cell),
+        formatter: cell => formatCurrency(cell),
       },
       { dataField: "createdDate", text: "Date" },
       { dataField: "paymentID", text: "Invoice ref" },
@@ -179,9 +191,9 @@ class PaymentHistory extends Component {
       });
 
       const hasPagesAvailable = history.length === PAYMENT_HISTORY_LIMIT;
-      const isAnIcon = (p) =>
+      const isAnIcon = p =>
         typeof p.page === "string" && p.page !== ">>" && p.page !== "<<";
-      const pageWithoutIndication = pages.filter((p) => {
+      const pageWithoutIndication = pages.filter(p => {
         const isIcon = isAnIcon(p);
 
         // Only return > when there are pages available.
@@ -228,13 +240,13 @@ class PaymentHistory extends Component {
             <div className="filters mt-4">
               <span className="filter">
                 <AppDatePicker
-                  onChange={(date) => this.handleDateChange(date, "fromDate")}
+                  onChange={date => this.handleDateChange(date, "fromDate")}
                 />
               </span>
               <p className="label-text">To</p>
               <span className="filter">
                 <AppDatePicker
-                  onChange={(date) => this.handleDateChange(date, "toDate")}
+                  onChange={date => this.handleDateChange(date, "toDate")}
                 />
               </span>
               <span className="filter search">
@@ -242,7 +254,7 @@ class PaymentHistory extends Component {
                   <FormControl
                     placeholder="Search invoice"
                     name="searchQuery"
-                    onChange={(e) => {
+                    onChange={e => {
                       this.searchChange(e);
                     }}
                     onKeyPress={({ key }) => {
@@ -263,10 +275,7 @@ class PaymentHistory extends Component {
                 </InputGroup>
               </span>
             </div>
-            <Button
-              disabled={!filtered}
-              onClick={this.clearDateFilter}
-            >
+            <Button disabled={!filtered} onClick={this.clearDateFilter}>
               <span>Clear date filter</span>
             </Button>
             <div className="payments mt-3">

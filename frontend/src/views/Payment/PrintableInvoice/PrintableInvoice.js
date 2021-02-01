@@ -12,7 +12,6 @@ import EigthPage from "./EigthPage";
 import NinthPage from "./NinthPage";
 
 class PrintableInvoice extends Component {
-
   render() {
     const {
       invoiceItems,
@@ -20,7 +19,7 @@ class PrintableInvoice extends Component {
       total,
       cardHolderName,
       poktPrice,
-      upoktTotal
+      upoktTotal,
     } = this.props;
 
     return (
@@ -30,10 +29,7 @@ class PrintableInvoice extends Component {
           purchaseDetails={purchaseDetails}
           total={total}
         />
-        <SecondPage
-          poktPrice={poktPrice}
-          purchasedTokens={upoktTotal}
-        />
+        <SecondPage poktPrice={poktPrice} purchasedTokens={upoktTotal} />
         <ThirdPage />
         <FourthPage />
         <FifthPage />
@@ -51,7 +47,7 @@ PrintableInvoice.defaultProps = {
   purchaseDetails: [],
   cardHolderName: "",
   poktPrice: "0",
-  upoktTotal: 0
+  upoktTotal: 0,
 };
 
 PrintableInvoice.propTypes = {
@@ -71,7 +67,7 @@ PrintableInvoice.propTypes = {
   cardHolderName: PropTypes.string,
   poktPrice: PropTypes.string,
   purchasedTokens: PropTypes.number,
-  upoktTotal: PropTypes.number
+  upoktTotal: PropTypes.number,
 };
 
 export default PrintableInvoice;

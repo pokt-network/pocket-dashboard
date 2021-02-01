@@ -41,7 +41,10 @@ class AppAlert extends Component {
           )}
           {title !== undefined && this.renderTitle()}
         </span>
-        <div style={{ marginLeft: iconPaths[variant] ? 48 : 0 }} className="body">
+        <div
+          style={{ marginLeft: iconPaths[variant] ? 48 : 0 }}
+          className="body"
+        >
           {children}
         </div>
       </Alert>

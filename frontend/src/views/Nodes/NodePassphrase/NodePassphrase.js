@@ -15,22 +15,37 @@ class NodePassphrase extends Passphrase {
     const { id: nodeID } = NodeService.getNodeInfo();
     const { passPhrase } = this.state;
 
-    const nodeAccountOrError = await PocketClientService.createAndUnlockAccount(passPhrase);
+    const nodeAccountOrError = await PocketClientService.createAndUnlockAccount(
+      passPhrase
+    );
 
     if (nodeAccountOrError instanceof Account) {
-      const ppkData = await PocketClientService.createPPKFromPrivateKey(nodeAccountOrError.privateKey.toString("hex"), passPhrase);
+      const ppkData = await PocketClientService.createPPKFromPrivateKey(
+        nodeAccountOrError.privateKey.toString("hex"),
+        passPhrase
+      );
       const address = nodeAccountOrError.addressHex;
       const publicKey = nodeAccountOrError.publicKey.toString("hex");
 
-      await PocketClientService.saveAccount(JSON.stringify(ppkData), passPhrase);
+      await PocketClientService.saveAccount(
+        JSON.stringify(ppkData),
+        passPhrase
+      );
 
       const nodeBaseLink = `${window.location.origin}${_getDashboardPath(
         DASHBOARD_PATHS.nodeDetail
       )}`;
-      const { success } = await NodeService.saveNodeAccount(nodeID, { address, publicKey }, nodeBaseLink);
+      const { success } = await NodeService.saveNodeAccount(
+        nodeID,
+        { address, publicKey },
+        nodeBaseLink
+      );
 
       if (success) {
-        const privateKey = await PocketClientService.exportPrivateKey(nodeAccountOrError, passPhrase);
+        const privateKey = await PocketClientService.exportPrivateKey(
+          nodeAccountOrError,
+          passPhrase
+        );
 
         NodeService.removeNodeInfoFromCache();
         NodeService.saveNodeInfoInCache({
@@ -43,11 +58,13 @@ class NodePassphrase extends Passphrase {
           created: true,
           address,
           privateKey,
-          ppkData
+          ppkData,
         });
       }
     } else {
-      this.setState({ error: { show: true, message: nodeAccountOrError.message } });
+      this.setState({
+        error: { show: true, message: nodeAccountOrError.message },
+      });
       scrollToId("alert");
     }
     this.setState({

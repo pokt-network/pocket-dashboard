@@ -54,16 +54,16 @@ class PocketNodeService extends PocketBaseService {
    * @param {Array<object>} [chainsObject] Pocket node chosen chains whole object.
    */
   saveNodeInfoInCache({
-                        nodeID,
-                        address,
-                        ppk,
-                        passphrase,
-                        chains,
-                        data,
-                        imported,
-                        serviceURL,
-                        chainsObject
-                      }) {
+    nodeID,
+    address,
+    ppk,
+    passphrase,
+    chains,
+    data,
+    imported,
+    serviceURL,
+    chainsObject,
+  }) {
     if (nodeID) {
       this.ls.set("node_id", { data: nodeID });
     }
@@ -109,14 +109,14 @@ class PocketNodeService extends PocketBaseService {
 
     return axios
       .post(this._getURL(""), data)
-      .then((response) => {
+      .then(response => {
         if (response.status === 200) {
           return { success: true, data: response.data };
         }
 
         return { success: false };
       })
-      .catch((err) => {
+      .catch(err => {
         return { success: false, data: err.response.data };
       });
   }
@@ -141,7 +141,7 @@ class PocketNodeService extends PocketBaseService {
 
     return axios
       .post(this._getURL("account"), data)
-      .then((response) => {
+      .then(response => {
         if (response.status === 200) {
           return {
             success: true,
@@ -153,7 +153,7 @@ class PocketNodeService extends PocketBaseService {
           success: false,
         };
       })
-      .catch((err) => {
+      .catch(err => {
         return {
           success: false,
           data: err.response.data.message,
@@ -178,14 +178,14 @@ class PocketNodeService extends PocketBaseService {
 
     return axios
       .put(this._getURL(`/${nodeAccountAddress}`), data)
-      .then((response) => {
+      .then(response => {
         if (response.status === 200) {
           return { success: true, data: response.data };
         }
 
         return { success: false };
       })
-      .catch((err) => {
+      .catch(err => {
         return { success: false, data: err.response.data };
       });
   }
@@ -200,8 +200,8 @@ class PocketNodeService extends PocketBaseService {
   getNode(nodeAddress) {
     return axios
       .get(this._getURL(`${nodeAddress}`))
-      .then((response) => response.data)
-      .catch((err) => {
+      .then(response => response.data)
+      .catch(err => {
         return {
           error: true,
           name: err.response.data.name,
@@ -220,8 +220,8 @@ class PocketNodeService extends PocketBaseService {
   getNetworkNode(nodeAddress) {
     return axios
       .get(this._getURL(`network/${nodeAddress}`))
-      .then((response) => response.data)
-      .catch((err) => {
+      .then(response => response.data)
+      .catch(err => {
         return {
           error: true,
           name: err.response.data.name,
@@ -238,7 +238,7 @@ class PocketNodeService extends PocketBaseService {
   getStakedNodeSummary() {
     return axios
       .get(this._getURL("summary/staked"))
-      .then((response) => response.data);
+      .then(response => response.data);
   }
 
   /**
@@ -254,8 +254,8 @@ class PocketNodeService extends PocketBaseService {
 
     return axios
       .get(this._getURL(""), { params })
-      .then((response) => response.data)
-      .catch((err) => {
+      .then(response => response.data)
+      .catch(err => {
         return {
           error: true,
           name: err.response.data.name,
@@ -277,8 +277,8 @@ class PocketNodeService extends PocketBaseService {
         offset,
       },
     })
-      .then((response) => response.data)
-      .catch((err) => {
+      .then(response => response.data)
+      .catch(err => {
         return {
           error: true,
           name: err.response.data.name,
@@ -301,7 +301,7 @@ class PocketNodeService extends PocketBaseService {
 
     return axios
       .post(this._getURL(`/${nodeAccountAddress}`), data)
-      .then((response) => response.data);
+      .then(response => response.data);
   }
 
   /**
@@ -323,10 +323,10 @@ class PocketNodeService extends PocketBaseService {
 
     return axios
       .post(this._getURL("custom/stake"), data)
-      .then((response) => {
+      .then(response => {
         return { success: true, data: response.data };
       })
-      .catch((err) => {
+      .catch(err => {
         return { success: false, error: err.response };
       });
   }
@@ -344,10 +344,10 @@ class PocketNodeService extends PocketBaseService {
 
     return axios
       .post(this._getURL("custom/unstake"), data)
-      .then((response) => {
+      .then(response => {
         return { success: true, data: response.data };
       })
-      .catch((err) => {
+      .catch(err => {
         return { success: false, data: err.response };
       });
   }
@@ -365,10 +365,10 @@ class PocketNodeService extends PocketBaseService {
 
     return axios
       .post(this._getURL("/node/unjail"), data)
-      .then((response) => {
+      .then(response => {
         return { success: true, data: response.data };
       })
-      .catch((err) => {
+      .catch(err => {
         return {
           success: false,
           name: err.response.data.name,

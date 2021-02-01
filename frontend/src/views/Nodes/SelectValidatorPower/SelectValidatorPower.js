@@ -33,12 +33,10 @@ class SelectValidatorPower extends Purchase {
   }
 
   componentDidMount() {
-    const {
-      address: accountAddress,
-    } = NodeService.getNodeInfo();
+    const { address: accountAddress } = NodeService.getNodeInfo();
 
-    PaymentService.getAvailableCurrencies().then((currencies) => {
-      PocketCheckoutService.getValidatorPower().then((validatorPower) => {
+    PaymentService.getAvailableCurrencies().then(currencies => {
+      PocketCheckoutService.getValidatorPower().then(validatorPower => {
         const minPowerValidator = parseInt(validatorPower.min);
 
         PocketCheckoutService.getNodeMoneyToSpent(minPowerValidator).then(
@@ -86,25 +84,30 @@ class SelectValidatorPower extends Purchase {
       target: { value },
     } = e;
     const currentAccountBalance = parseFloat(value);
-    const currentAccountBalanceUpokt = (currentAccountBalance / POCKET_NETWORK_CONFIGURATION.pokt_usd_market_price) * 1000000;
+    const currentAccountBalanceUpokt =
+      (currentAccountBalance /
+        POCKET_NETWORK_CONFIGURATION.pokt_usd_market_price) *
+      1000000;
 
-    PocketCheckoutService.getNodeMoneyToSpent(selected).then(({ upokt, cost }) => {
-      const subTotal = parseFloat(cost);
-      const total = subTotal - currentAccountBalance;
-      // Upokt value
-      const upoktSubTotal = parseFloat(upokt);
-      const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
+    PocketCheckoutService.getNodeMoneyToSpent(selected).then(
+      ({ upokt, cost }) => {
+        const subTotal = parseFloat(cost);
+        const total = subTotal - currentAccountBalance;
+        // Upokt value
+        const upoktSubTotal = parseFloat(upokt);
+        const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 
-      this.setState({
-        currentAccountBalance: currentAccountBalance,
-        total,
-        subTotal,
-        currentAccountBalanceUpokt,
-        upoktSubTotal,
-        upoktTotal,
-        upoktToStake: upokt
-      });
-    });
+        this.setState({
+          currentAccountBalance: currentAccountBalance,
+          total,
+          subTotal,
+          currentAccountBalanceUpokt,
+          upoktSubTotal,
+          upoktTotal,
+          upoktToStake: upokt,
+        });
+      }
+    );
   }
 
   onSliderChange(value) {
@@ -123,7 +126,7 @@ class SelectValidatorPower extends Purchase {
         upoktTotal,
         subTotal,
         total,
-        upoktToStake: upokt
+        upoktToStake: upokt,
       });
     });
   }
@@ -150,7 +153,11 @@ class SelectValidatorPower extends Purchase {
       success,
       data: paymentIntentData,
     } = await PocketPaymentService.createNewPaymentIntent(
-      ITEM_TYPES.NODE, item, currency, amountNumber, tokens
+      ITEM_TYPES.NODE,
+      item,
+      currency,
+      amountNumber,
+      tokens
     );
 
     if (!success) {
@@ -162,23 +169,33 @@ class SelectValidatorPower extends Purchase {
       const detail = url.replace(":address", address);
       const nodeLink = `${window.location.origin}${detail}`;
 
-      const savedAccount = await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+      const savedAccount = await PocketClientService.saveAccount(
+        JSON.stringify(ppk),
+        passphrase
+      );
 
       if (savedAccount instanceof Error) {
         throw savedAccount;
       }
 
       const nodeStakeRequest = await PocketClientService.nodeStakeRequest(
-        address, passphrase, chains, tokens, serviceURL);
+        address,
+        passphrase,
+        chains,
+        tokens,
+        serviceURL
+      );
 
       NodeService.stakeNode(
-        nodeStakeRequest, paymentIntentData.id, nodeLink, (validatorPower * 1000000)
-      ).then(() => { });
+        nodeStakeRequest,
+        paymentIntentData.id,
+        nodeLink,
+        validatorPower * 1000000
+      ).then(() => {});
     }
 
     return { success, data: paymentIntentData };
   }
-
 
   async goToSummary() {
     const {
@@ -189,7 +206,7 @@ class SelectValidatorPower extends Purchase {
       total,
       currentAccountBalance,
       currentAccountBalanceUpokt,
-      upoktToStake
+      upoktToStake,
     } = this.state;
 
     this.setState({ loading: true });
@@ -201,12 +218,19 @@ class SelectValidatorPower extends Purchase {
       this.validate(currency);
 
       // Avoiding floating point precision errors.
-      const subTotalAmount = parseFloat(numeral(subTotal).format("0.00")).toFixed(2);
+      const subTotalAmount = parseFloat(
+        numeral(subTotal).format("0.00")
+      ).toFixed(2);
       const totalAmount = parseFloat(numeral(total).format("0.00")).toFixed(2);
       const tokens = currentAccountBalanceUpokt / 1000000;
 
-      const { data: paymentIntentData } = await this.createPaymentIntent(selected, currency, totalAmount, tokens);
-      
+      const { data: paymentIntentData } = await this.createPaymentIntent(
+        selected,
+        currency,
+        totalAmount,
+        tokens
+      );
+
       PaymentService.savePurchaseInfoInCache({
         validationPower: parseInt(selected),
         validationPowerCost: parseFloat(totalAmount),
@@ -223,20 +247,27 @@ class SelectValidatorPower extends Purchase {
             paymentId: paymentIntentData.id,
             paymentMethod: {
               holder: user,
-              method: "POKT Tokens"
+              method: "POKT Tokens",
             },
             details: [
-              { value: selected, text: PURCHASE_ITEM_NAME.NODES, format: false },
-              { value: subTotalAmount, text: `${PURCHASE_ITEM_NAME.NODES} cost`, format: true },
+              {
+                value: selected,
+                text: PURCHASE_ITEM_NAME.NODES,
+                format: false,
+              },
+              {
+                value: subTotalAmount,
+                text: `${PURCHASE_ITEM_NAME.NODES} cost`,
+                format: true,
+              },
             ],
             total,
             currentAccountBalance,
             upoktTotal,
-            upoktToStake
+            upoktToStake,
           },
         });
       } else {
-
         // eslint-disable-next-line react/prop-types
         this.props.history.push({
           pathname: _getDashboardPath(DASHBOARD_PATHS.orderSummary),
@@ -254,7 +285,7 @@ class SelectValidatorPower extends Purchase {
             total: totalAmount,
             currentAccountBalance,
             upoktTotal,
-            upoktToStake
+            upoktToStake,
           },
         });
       }
@@ -303,16 +334,24 @@ class SelectValidatorPower extends Purchase {
             )}
             <h1>Run truly decentralized infrastructure</h1>
             <p className="subtitle">
-              15,500 POKT is the minimum stake to run a node. By increasing the Validator Power (VP) beyond the minimum stake, odds are increased that a node will be selected to produce blocks and receive the block reward.
-              <p><br /><b>Best Practices:</b> If a node stake at any time falls below the minimum stake for any reason, the stake will be burned by the protocol. For this reason, we recommend staking at least 10% beyond the minimum stake to account for any accidental or unforeseen slashing due to misconfiguration.</p>
+              15,500 POKT is the minimum stake to run a node. By increasing the
+              Validator Power (VP) beyond the minimum stake, odds are increased
+              that a node will be selected to produce blocks and receive the
+              block reward.
+              <p>
+                <br />
+                <b>Best Practices:</b> If a node stake at any time falls below
+                the minimum stake for any reason, the stake will be burned by
+                the protocol. For this reason, we recommend staking at least 10%
+                beyond the minimum stake to account for any accidental or
+                unforeseen slashing due to misconfiguration.
+              </p>
             </p>
           </Col>
         </Row>
         <Row>
           <Col sm="7" className="relays-column">
-            <h2>
-              SLIDE TO SELECT VALIDATOR POWER
-            </h2>
+            <h2>SLIDE TO SELECT VALIDATOR POWER</h2>
             <div className="calc">
               <div className="slider-wrapper">
                 <AppSlider
@@ -334,10 +373,13 @@ class SelectValidatorPower extends Purchase {
               title={<h4 className="alert-max">About VP, Validator Power:</h4>}
             >
               <p className="alert-max">
-                Each VP unit purchased on the Pocket Dashboard is represented by a POKT token on the Pocket Network. 1 VP = 1 POKT
+                Each VP unit purchased on the Pocket Dashboard is represented by
+                a POKT token on the Pocket Network. 1 VP = 1 POKT
                 <br />
                 <br />
-                *Need More validator power? If you&apos;re interested in more validator power beyond the maximum on the dashboard, please contact us.
+                *Need More validator power? If you&apos;re interested in more
+                validator power beyond the maximum on the dashboard, please
+                contact us.
               </p>
             </AppAlert>
           </Col>

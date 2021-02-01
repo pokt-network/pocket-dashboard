@@ -41,7 +41,7 @@ class ResetPassword extends Component {
 
     if (password1 === password2 && token && email) {
       PocketUserService.resetPassword(email, token, password1, password2).then(
-        (result) => {
+        result => {
           if (result) {
             // eslint-disable-next-line react/prop-types
             this.props.history.push({
@@ -58,7 +58,7 @@ class ResetPassword extends Component {
           }
         }
       );
-    } else{
+    } else {
       this.setState({
         alertOverlay: {
           show: true,
@@ -92,7 +92,7 @@ class ResetPassword extends Component {
                 <h1 className="title-password">Reset password</h1>
                 <Formik
                   validationSchema={schema}
-                  onSubmit={(data) => {
+                  onSubmit={data => {
                     this.setState({ data });
                     this.handleSubmit();
                   }}
@@ -103,7 +103,12 @@ class ResetPassword extends Component {
                   autoComplete="off"
                 >
                   {({ handleSubmit, handleChange, values, errors }) => (
-                    <Form autoComplete="off" noValidate onSubmit={handleSubmit} id={"main-form"}>
+                    <Form
+                      autoComplete="off"
+                      noValidate
+                      onSubmit={handleSubmit}
+                      id={"main-form"}
+                    >
                       <Form.Group>
                         <Form.Label>Password</Form.Label>
                         <Form.Control

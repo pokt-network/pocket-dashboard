@@ -5,7 +5,11 @@ import AppSidebar from "./AppSidebar/AppSidebar";
 import AppNavbar from "./AppNavbar/AppNavbar";
 import Banner from "../Banner/Banner";
 import Breadcrumbs from "./BreadCrumb/Breadcrumb";
-import { dashboardRoutes, ROUTE_PATHS, breadcrumbsRoutes } from "../../../_routes";
+import {
+  dashboardRoutes,
+  ROUTE_PATHS,
+  breadcrumbsRoutes,
+} from "../../../_routes";
 import UserService from "../../services/PocketUserService";
 import "./DefaultLayout.scss";
 import isArray from "lodash/isArray";
@@ -35,7 +39,9 @@ class DefaultLayout extends Component {
 
     // eslint-disable-next-line react/prop-types
     const route_path = this.props.history.location.pathname.replace(
-      ROUTE_PATHS.home, "");
+      ROUTE_PATHS.home,
+      ""
+    );
 
     const breadcrumbsMapFn = (br, idx, arr) => {
       return { label: br, active: idx === arr.length - 1 };
@@ -44,7 +50,7 @@ class DefaultLayout extends Component {
     if (route_path in breadcrumbsRoutes()) {
       breadcrumbsShow = breadcrumbsRoutes()[route_path];
     }
-    
+
     if (isArray(breadcrumbsShow)) {
       breadcrumbsShow = breadcrumbsShow.map(breadcrumbsMapFn);
     } else {
@@ -75,7 +81,7 @@ class DefaultLayout extends Component {
                     path={`${path}${route.path}`}
                     exact={route.exact}
                     name={route.name}
-                    render={(props) => (
+                    render={props => (
                       <route.component
                         {...props}
                         onBreadCrumbChange={this.onBreadCrumbChange}

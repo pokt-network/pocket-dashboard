@@ -10,14 +10,24 @@ class DeletedOverlay extends Component {
     const { text, buttonText, buttonLink } = this.props;
 
     return (
-      <div style={{ paddingTop: "0px" }} className="deleted-overlay d-flex flex-column align-items-center mt-5">
-        <img style={{ height: "440px", width: "440px" }} src={"/assets/trinity-white.svg"} alt="item-deleted-icon" />
+      <div
+        style={{ paddingTop: "0px" }}
+        className="deleted-overlay d-flex flex-column align-items-center mt-5"
+      >
+        <img
+          style={{ height: "440px", width: "440px" }}
+          src={"/assets/trinity-white.svg"}
+          alt="item-deleted-icon"
+        />
         {text}
-        <Link style={{
-          position : "absolute",
-          top: "47%",
-          left: "47.5%"
-        }} to={buttonLink}>
+        <Link
+          style={{
+            position: "absolute",
+            top: "47%",
+            left: "47.5%",
+          }}
+          to={buttonLink}
+        >
           <Button>
             <span>{buttonText}</span>
           </Button>

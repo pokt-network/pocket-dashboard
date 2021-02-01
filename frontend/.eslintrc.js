@@ -5,6 +5,7 @@ module.exports = {
     jest: true,
   },
   rules: {
+    "prettier/prettier": "warn",
     "no-console": "warn",
     "comma-spacing": "error",
     semi: ["error", "always"],
@@ -30,5 +31,6 @@ module.exports = {
       },
     ],
   },
-  extends: ["react-app", "plugin:react/recommended"],
+  plugins: ["prettier"],
+  extends: ["react-app", "plugin:prettier/recommended", "prettier/react"],
 };

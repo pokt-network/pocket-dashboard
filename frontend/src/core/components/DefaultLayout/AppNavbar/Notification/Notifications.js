@@ -10,7 +10,7 @@ const NotificationToggle = React.forwardRef(({ children, onClick }, ref) => (
     style={{ cursor: "pointer" }}
     className="notifications"
     ref={ref}
-    onClick={(e) => {
+    onClick={e => {
       e.preventDefault();
       onClick(e);
     }}

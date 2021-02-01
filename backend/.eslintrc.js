@@ -3,7 +3,7 @@ module.exports = {
     es6: true,
     mocha: true,
     node: true,
-    mongo: true
+    mongo: true,
   },
   rules: {
     "no-console": "off",
@@ -23,16 +23,16 @@ module.exports = {
       {
         blankLine: "always",
         prev: ["const", "let", "var"],
-        next: "*"
+        next: "*",
       },
       {
         blankLine: "any",
         prev: ["const", "let", "var"],
-        next: ["const", "let", "var"]
-      }
-    ]
+        next: ["const", "let", "var"],
+      },
+    ],
   },
   plugins: ["jsdoc"],
   extends: ["eslint:recommended", "plugin:jsdoc/recommended"],
-  parser: "babel-eslint"
+  parser: "babel-eslint",
 };

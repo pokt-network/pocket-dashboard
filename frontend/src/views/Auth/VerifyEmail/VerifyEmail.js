@@ -46,8 +46,9 @@ class VerifyEmail extends Component {
     const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
     UserService.resendSignUpEmail(
-      this.state.email, securityQuestionLinkPage
-    ).then((result) => {
+      this.state.email,
+      securityQuestionLinkPage
+    ).then(result => {
       this.setState({
         resentEmail: true,
         alert: {
@@ -113,8 +114,8 @@ class VerifyEmail extends Component {
                 </p>
 
                 <p className="p-style-lg">
-                  Check your junk folder, be sure to mark it as not spam
-                  to avoid any problems with notifications from dashboard.
+                  Check your junk folder, be sure to mark it as not spam to
+                  avoid any problems with notifications from dashboard.
                 </p>
                 <p className="p-style-md">Did you not receive it?</p>
                 <Button
@@ -129,12 +130,12 @@ class VerifyEmail extends Component {
             </Row>
           </>
         ) : (
-            <Row>
-              <Col>
-                <UnauthorizedAlert />
-              </Col>
-            </Row>
-          )}
+          <Row>
+            <Col>
+              <UnauthorizedAlert />
+            </Col>
+          </Row>
+        )}
       </Container>
     );
   }

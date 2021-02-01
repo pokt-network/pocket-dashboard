@@ -1,6 +1,17 @@
 import React from "react";
-import { Button, Col, Form, FormControl, InputGroup, Row } from "react-bootstrap";
-import { TABLE_COLUMNS, URL_HTTPS_REGEX, VALIDATION_MESSAGES } from "../../../_constants";
+import {
+  Button,
+  Col,
+  Form,
+  FormControl,
+  InputGroup,
+  Row,
+} from "react-bootstrap";
+import {
+  TABLE_COLUMNS,
+  URL_HTTPS_REGEX,
+  VALIDATION_MESSAGES,
+} from "../../../_constants";
 import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import AppAlert from "../../../core/components/AppAlert";
 import Chains from "../../../core/components/Chains/Chains";
@@ -40,18 +51,20 @@ class NodeChainList extends Chains {
   handleChains() {
     const { chosenChains } = this.state;
     const { serviceURL } = this.state.data;
-    const chainsHashes = chosenChains.map((ch) => ch._id);
+    const chainsHashes = chosenChains.map(ch => ch._id);
 
     NodeService.saveNodeInfoInCache({
       chains: chainsHashes,
       serviceURL,
-      chainsObject: chosenChains
+      chainsObject: chosenChains,
     });
     const { address } = NodeService.getNodeInfo();
 
     // eslint-disable-next-line react/prop-types
     this.props.history.push(
-      _getDashboardPath(`${DASHBOARD_PATHS.nodeDetail.replace(/:address/, address)}`)
+      _getDashboardPath(
+        `${DASHBOARD_PATHS.nodeDetail.replace(/:address/, address)}`
+      )
     );
   }
 
@@ -80,7 +93,10 @@ class NodeChainList extends Chains {
           <Col className="page-title">
             <h1>Choose chains</h1>
             <p>
-              Choose the chains that your Pocket Node will service. Your staked POKT will be evenly divided between these selections. You will not be able to change this selection unless you unstake and restake your node.
+              Choose the chains that your Pocket Node will service. Your staked
+              POKT will be evenly divided between these selections. You will not
+              be able to change this selection unless you unstake and restake
+              your node.
             </p>
           </Col>
         </Row>
@@ -135,7 +151,7 @@ class NodeChainList extends Chains {
             <Formik
               enableReinitialize
               validationSchema={schema}
-              onSubmit={async (data) => {
+              onSubmit={async data => {
                 this.setState({ data });
                 await this.handleChains();
               }}
@@ -148,7 +164,14 @@ class NodeChainList extends Chains {
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group>
                     <Form.Label className="service-url-label">
-                      Please provide the HTTPS endpoint of your Pocket Node. <a rel="noopener noreferrer" target="_blank" href="https://docs.pokt.network/docs/faq-for-nodes#section-what-is-the-service-uri">What is the service URL?</a>
+                      Please provide the HTTPS endpoint of your Pocket Node.{" "}
+                      <a
+                        rel="noopener noreferrer"
+                        target="_blank"
+                        href="https://docs.pokt.network/docs/faq-for-nodes#section-what-is-the-service-uri"
+                      >
+                        What is the service URL?
+                      </a>
                     </Form.Label>
                     <Form.Control
                       name="serviceURL"
@@ -172,21 +195,38 @@ class NodeChainList extends Chains {
                             <h4 className="text-uppercase">
                               WARNING, BEFORE YOU CONTINUE!{" "}
                             </h4>
-                            <p className="ml-2">
-                            </p>
+                            <p className="ml-2"></p>
                           </>
                         }
                       >
-                        <p ref={(el) => {
-                          if (el) {
-                            el.style.setProperty("font-size", "14px", "important");
-                          }
-                        }}>
-                          The key file by itself is useless without the passphrase.
-                          You&#39;ll need the key file in order to import or set up
-                          your node.
-                Before continuing, be aware that we are not responsible of any jailing or slashing that may incur due to mis-configuration of your node. If you are not completely sure if your node is configured, <a rel="noopener noreferrer" target="_blank" href="https://docs.pokt.network/docs/testing-your-node">click here</a> and make sure you have done all of the steps and tested your node BEFORE you continue.
-              </p>
+                        <p
+                          ref={el => {
+                            if (el) {
+                              el.style.setProperty(
+                                "font-size",
+                                "14px",
+                                "important"
+                              );
+                            }
+                          }}
+                        >
+                          The key file by itself is useless without the
+                          passphrase. You&#39;ll need the key file in order to
+                          import or set up your node. Before continuing, be
+                          aware that we are not responsible of any jailing or
+                          slashing that may incur due to mis-configuration of
+                          your node. If you are not completely sure if your node
+                          is configured,{" "}
+                          <a
+                            rel="noopener noreferrer"
+                            target="_blank"
+                            href="https://docs.pokt.network/docs/testing-your-node"
+                          >
+                            click here
+                          </a>{" "}
+                          and make sure you have done all of the steps and
+                          tested your node BEFORE you continue.
+                        </p>
                       </AppAlert>
                     </Col>
                   </Row>
@@ -204,7 +244,6 @@ class NodeChainList extends Chains {
             </Formik>
           </Col>
         </Row>
-
       </div>
     );
   }

@@ -40,24 +40,21 @@ class ChangePassword extends Component {
     }
 
     if (values.oldPassword.length === 0) {
-      errors.oldPassword =
-      "Old password can't be empty";
+      errors.oldPassword = "Old password can't be empty";
     }
 
     if (values.password1 === values.oldPassword) {
-      errors.password1 =
-        "New password cannot be the same as the old password";
+      errors.password1 = "New password cannot be the same as the old password";
     }
 
     if (values.password1 !== values.password2) {
-      errors.password1 =
-        "New password doesn't match the confirm password";
+      errors.password1 = "New password doesn't match the confirm password";
     }
 
     this.setState({
-      oldPassword: values.oldPassword, 
-      password1: values.password1, 
-      password2: values.password2
+      oldPassword: values.oldPassword,
+      password1: values.password1,
+      password2: values.password2,
     });
 
     return errors;
@@ -68,7 +65,10 @@ class ChangePassword extends Component {
     const { oldPassword, password1, password2 } = this.state.data;
 
     const { success, data } = await UserService.changePassword(
-      email, oldPassword, password1, password2
+      email,
+      oldPassword,
+      password1,
+      password2
     );
 
     if (success) {
@@ -108,7 +108,7 @@ class ChangePassword extends Component {
             <h1>Change your Password</h1>
             <Formik
               validate={this.validate}
-              onSubmit={async (data) => {
+              onSubmit={async data => {
                 this.setState({ data });
                 await this.handleChangePassword();
               }}

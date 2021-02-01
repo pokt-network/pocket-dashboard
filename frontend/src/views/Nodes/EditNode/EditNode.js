@@ -84,7 +84,7 @@ class EditNode extends CreateForm {
           <Col sm="5" md="5" lg="5">
             <Formik
               validationSchema={nodeFormSchema}
-              onSubmit={(data) => {
+              onSubmit={data => {
                 this.setState({ data });
                 this.handleEdit();
               }}
@@ -166,9 +166,9 @@ class EditNode extends CreateForm {
                   const imgResult = img === null ? undefined : img;
 
                   this.handleDrop(imgResult ?? undefined, error);
-                }}/>
+                }}
+              />
               {imgError && <p className="error mt-2 ml-3">{imgError}</p>}
-
             </div>
           </Col>
         </Row>

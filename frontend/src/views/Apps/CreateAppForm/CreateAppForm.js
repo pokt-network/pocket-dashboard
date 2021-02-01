@@ -7,7 +7,12 @@ import ApplicationService from "../../../core/services/PocketApplicationService"
 import PocketUserService from "../../../core/services/PocketUserService";
 import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import CreateForm from "../../../core/components/CreateForm/CreateForm";
-import { appFormSchema, generateIcon, scrollToId, getStakeStatus } from "../../../_helpers";
+import {
+  appFormSchema,
+  generateIcon,
+  scrollToId,
+  getStakeStatus,
+} from "../../../_helpers";
 import { Formik } from "formik";
 import AppAlert from "../../../core/components/AppAlert";
 import { STAKE_STATUS } from "../../../_constants";
@@ -40,7 +45,7 @@ class CreateAppForm extends CreateForm {
       PocketUserService.saveUserAction("Import App");
 
       // Prevent bugs related to leaving form mid-way and accesing again.
-      ApplicationService.saveAppInfoInCache({ imported:false });
+      ApplicationService.saveAppInfoInCache({ imported: false });
     } else {
       PocketUserService.saveUserAction("Create App");
     }
@@ -69,7 +74,11 @@ class CreateAppForm extends CreateForm {
     const applicationData = { address, publicKey: publicKey.toString("hex") };
 
     const { success } = await ApplicationService.saveApplicationAccount(
-      applicationId, applicationData, applicationBaseLink, ppk);
+      applicationId,
+      applicationData,
+      applicationBaseLink,
+      ppk
+    );
 
     if (success) {
       const { networkData } = await ApplicationService.getApplication(address);
@@ -131,7 +140,9 @@ class CreateAppForm extends CreateForm {
         });
       }
     } else {
-      this.setState({ error: { show: true, message: this.validateError(data) } });
+      this.setState({
+        error: { show: true, message: this.validateError(data) },
+      });
       scrollToId("alert");
     }
   }
@@ -188,7 +199,7 @@ class CreateAppForm extends CreateForm {
               <div className="checking-margin-test" style={{ padding: "50px" }}>
                 <Formik
                   validationSchema={appFormSchema}
-                  onSubmit={async (data) => {
+                  onSubmit={async data => {
                     this.setState({ data });
                     await this.handleCreate();
                   }}
@@ -200,7 +211,12 @@ class CreateAppForm extends CreateForm {
                   {({ handleSubmit, handleChange, values, errors }) => (
                     <Form noValidate onSubmit={handleSubmit}>
                       <Row>
-                        <Col sm="1" md="1" lg="1" style={{ paddingLeft: "0px" }}>
+                        <Col
+                          sm="1"
+                          md="1"
+                          lg="1"
+                          style={{ paddingLeft: "0px" }}
+                        >
                           <ImageFileUpload
                             handleDrop={(img, error) => {
                               const imgResult = img === null ? undefined : img;
@@ -208,15 +224,19 @@ class CreateAppForm extends CreateForm {
                               this.handleDrop(imgResult ?? undefined, error);
                             }}
                           />
-                          {imgError && <p className="error mt-2 ml-3">{imgError}</p>}
+                          {imgError && (
+                            <p className="error mt-2 ml-3">{imgError}</p>
+                          )}
                         </Col>
                         <Col style={{ paddingLeft: "0px" }}>
                           <Form.Group>
                             <Form.Label>
                               Application Name
-                      <span className={cls({ "has-error": !!errors.name })}>
+                              <span
+                                className={cls({ "has-error": !!errors.name })}
+                              >
                                 *
-                      </span>
+                              </span>
                             </Form.Label>
                             <Form.Control
                               name="name"
@@ -234,9 +254,11 @@ class CreateAppForm extends CreateForm {
                           <Form.Group>
                             <Form.Label>
                               Application Developer or Company name
-                      <span className={cls({ "has-error": !!errors.owner })}>
+                              <span
+                                className={cls({ "has-error": !!errors.owner })}
+                              >
                                 *
-                      </span>
+                              </span>
                             </Form.Label>
                             <Form.Control
                               name="owner"
@@ -256,11 +278,13 @@ class CreateAppForm extends CreateForm {
                           <Form.Group>
                             <Form.Label>
                               Contact Email
-                      <span
-                                className={cls({ "has-error": !!errors.contactEmail })}
+                              <span
+                                className={cls({
+                                  "has-error": !!errors.contactEmail,
+                                })}
                               >
                                 *
-                      </span>
+                              </span>
                             </Form.Label>
                             <Form.Control
                               placeholder="hello@example.com"
@@ -295,9 +319,9 @@ class CreateAppForm extends CreateForm {
                       <Form.Group>
                         <Form.Label>
                           Write an optional description of your app here. This
-                          information is private and will not be shared outside of
-                          your personal dashboard.
-                    </Form.Label>
+                          information is private and will not be shared outside
+                          of your personal dashboard.
+                        </Form.Label>
                         <Form.Control
                           placeholder="maximum of 150 characters"
                           as="textarea"
@@ -311,11 +335,7 @@ class CreateAppForm extends CreateForm {
                           {errors.description}
                         </Form.Control.Feedback>
                       </Form.Group>
-                      <Button
-                        disabled={false}
-                        variant="primary"
-                        type="submit"
-                      >
+                      <Button disabled={false} variant="primary" type="submit">
                         <span>Continue</span>
                       </Button>
                     </Form>
