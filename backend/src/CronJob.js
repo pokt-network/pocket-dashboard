@@ -55,7 +55,7 @@ export function startCronJobs() {
     const start = async () => {
       await asyncForEach(
         cronJobData.pendingTransactions,
-        async pocketTransaction => {
+        async (pocketTransaction) => {
           const hash = pocketTransaction.hash;
           const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
@@ -143,7 +143,7 @@ export function startCronJobs() {
     const start = async () => {
       await asyncForEach(
         cronJobData.appStakeTransactions,
-        async applicationStakePocketTransaction => {
+        async (applicationStakePocketTransaction) => {
           const hash = applicationStakePocketTransaction.hash;
           const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
@@ -210,7 +210,7 @@ export function startCronJobs() {
     const start = async () => {
       await asyncForEach(
         cronJobData.nodeStakeTransactions,
-        async nodeStakePocketTransaction => {
+        async (nodeStakePocketTransaction) => {
           const hash = nodeStakePocketTransaction.hash;
           const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
@@ -275,7 +275,7 @@ export function startCronJobs() {
     const start = async () => {
       await asyncForEach(
         cronJobData.appUnstakeTransactions,
-        async appUnstakePocketTransaction => {
+        async (appUnstakePocketTransaction) => {
           const hash = appUnstakePocketTransaction.hash;
           const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
@@ -342,7 +342,7 @@ export function startCronJobs() {
     const start = async () => {
       await asyncForEach(
         cronJobData.nodeUnstakeTransactions,
-        async nodeUnstakeTransaction => {
+        async (nodeUnstakeTransaction) => {
           const hash = nodeUnstakeTransaction.hash;
           const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 
@@ -400,7 +400,7 @@ export function startCronJobs() {
     const start = async () => {
       await asyncForEach(
         cronJobData.nodeUnjailTransactions,
-        async nodeUnjailTransaction => {
+        async (nodeUnjailTransaction) => {
           const hash = nodeUnjailTransaction.hash;
           const transactionOrError = await POCKET_SERVICE.getTransaction(hash);
 

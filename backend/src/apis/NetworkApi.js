@@ -32,8 +32,8 @@ router.post(
     let results = [];
 
     // Filter the results
-    data.networkHashes.forEach(hash => {
-      const chain = chains.find(chain => chain._id === hash);
+    data.networkHashes.forEach((hash) => {
+      const chain = chains.find((chain) => chain._id === hash);
 
       if (chain) {
         results.push(chain);

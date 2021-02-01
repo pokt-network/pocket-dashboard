@@ -214,7 +214,7 @@ export function configureExpress(expressApp) {
     })
   );
 
-  expressApp.use(async function(err, req, res, next) {
+  expressApp.use(async function (err, req, res, next) {
     // Try to renew the session if expired
     if (err.message === "jwt expired") {
       // Try to get new session tokens using the refresh token

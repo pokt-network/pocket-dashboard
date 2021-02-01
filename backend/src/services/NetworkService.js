@@ -23,7 +23,7 @@ export default class NetworkService extends BasePocketService {
     );
 
     if (networkChainData.length > 0) {
-      return networkChainData.sort(function(a, b) {
+      return networkChainData.sort(function (a, b) {
         return parseInt(a._id, 16) - parseInt(b._id, 16);
       });
     }
@@ -107,10 +107,10 @@ export default class NetworkService extends BasePocketService {
    */
   __totalStakedTokens(totalStakedApps, totalStakedNodes) {
     const totalStakedAppTokens = this._getTotalNetworkData(
-      totalStakedApps.map(app => bigInt(app.stakedTokens))
+      totalStakedApps.map((app) => bigInt(app.stakedTokens))
     );
     const totalStakedNodeTokens = this._getTotalNetworkData(
-      totalStakedNodes.map(node => bigInt(node.stakedTokens))
+      totalStakedNodes.map((node) => bigInt(node.stakedTokens))
     );
 
     return totalStakedAppTokens.add(totalStakedNodeTokens);

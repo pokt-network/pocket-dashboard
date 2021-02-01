@@ -78,7 +78,6 @@ router.post(
 router.post(
   "/user/validate-answers",
   apiAsyncWrapper(async (req, res) => {
-    /** @type {{email:string, answeredQuestions:[{question: string, answer: string}]}} */
     const data = req.body;
 
     const isValid = await userService.validateUserSecurityQuestions(

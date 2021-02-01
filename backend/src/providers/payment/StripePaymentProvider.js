@@ -109,7 +109,7 @@ class StripePaymentProvider extends BasePaymentProvider {
       return [];
     }
 
-    return request.data.map(paymentMethodData => {
+    return request.data.map((paymentMethodData) => {
       const { id, card, billing_details } = paymentMethodData;
       const { brand, last4, exp_month, exp_year } = card;
 

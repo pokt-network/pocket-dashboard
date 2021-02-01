@@ -411,12 +411,12 @@ export default class NodeService extends BasePocketService {
       );
 
       const averageStaked = this._getAverageNetworkData(
-        stakedNodes.map(node => Number(node.stakedTokens.toString()))
+        stakedNodes.map((node) => Number(node.stakedTokens.toString()))
       );
 
       // 1 VP = 1 POKT, so, the validator power value is the same for staked token.
       const averageValidatorPower = this._getAverageNetworkData(
-        stakedNodes.map(node => bigInt(node.stakedTokens.toString()))
+        stakedNodes.map((node) => bigInt(node.stakedTokens.toString()))
       );
       const averageStakedResult = averageStaked / stakedNodes.length;
 
@@ -452,7 +452,7 @@ export default class NodeService extends BasePocketService {
       )
     )
       .map(PocketNode.createPocketNode)
-      .map(node => {
+      .map((node) => {
         return {
           id: node.id,
           name: node.name,
@@ -462,15 +462,15 @@ export default class NodeService extends BasePocketService {
       });
 
     const dashboardNodeAddresses = dashboardNodesData
-      .map(node => node.address)
-      .filter(address => address.length > 0);
+      .map((node) => node.address)
+      .filter((address) => address.length > 0);
 
     const networkNodes = await this.pocketService.getAllNodes(
       dashboardNodeAddresses
     );
 
     if (dashboardNodesData.length > 0) {
-      return dashboardNodesData.map(node =>
+      return dashboardNodesData.map((node) =>
         PocketNode.createUserPocketNode(node, networkNodes)
       );
     }

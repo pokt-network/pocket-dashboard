@@ -10,21 +10,21 @@ export const STAKE_STATUS = {
   Staked: "Staked",
   Unstaking: "Unstaking",
   Unstaked: "Unstaked",
-  "2": "Staked",
-  "1": "Unstaking",
-  "0": "Unstaked",
+  2: "Staked",
+  1: "Unstaking",
+  0: "Unstaked",
 };
 
 export class CronJobData {
   /**
    * @param {string} id The ID of the entity.
    * @param {number} lastHeight The last block height.
-   * @param {[PocketTransaction]} pendingTransactions List of Pending Transactions.
-   * @param {[PocketTransaction]} appStakeTransactions List of AppStake Transactions.
-   * @param {[PocketTransaction]} nodeStakeTransactions List of NodeStake Transactions.
-   * @param {[PocketTransaction]} appUnstakeTransactions List of AppUnstake Transactions.
-   * @param {[PocketTransaction]} nodeUnstakeTransactions List of NodeUnstake Transactions.
-   * @param {[PocketTransaction]} nodeUnjailTransactions List of NodeUnjail Transactions.
+   * @param {PocketTransaction[]} pendingTransactions List of Pending Transactions.
+   * @param {PocketTransaction[]} appStakeTransactions List of AppStake Transactions.
+   * @param {PocketTransaction[]} nodeStakeTransactions List of NodeStake Transactions.
+   * @param {PocketTransaction[]} appUnstakeTransactions List of AppUnstake Transactions.
+   * @param {PocketTransaction[]} nodeUnstakeTransactions List of NodeUnstake Transactions.
+   * @param {PocketTransaction[]} nodeUnjailTransactions List of NodeUnjail Transactions.
    */
   constructor(
     id,

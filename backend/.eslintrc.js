@@ -7,6 +7,8 @@ module.exports = {
   },
   rules: {
     "no-console": "off",
+    "arrow-parens": ["error", "always"],
+    "prettier/prettier": ["error", { arrowParens: "always" }],
     "comma-spacing": "error",
     semi: ["error", "always"],
     quotes: ["error", "double"],
@@ -37,6 +39,7 @@ module.exports = {
     "eslint:recommended",
     "plugin:jsdoc/recommended",
     "plugin:prettier/recommended",
+    "prettier/babel",
   ],
   parser: "babel-eslint",
 };

@@ -134,7 +134,7 @@ export default class CronJobService extends BaseService {
   async removePendingTransaction(transaction) {
     const data = await this.getEntity();
 
-    const newArray = data.pendingTransactions.filter(obj => {
+    const newArray = data.pendingTransactions.filter((obj) => {
       return obj.hash !== transaction.hash;
     });
 
@@ -151,7 +151,7 @@ export default class CronJobService extends BaseService {
   async removeAppStakeTransaction(transaction) {
     const data = await this.getEntity();
 
-    const newArray = data.appStakeTransactions.filter(obj => {
+    const newArray = data.appStakeTransactions.filter((obj) => {
       return obj.hash !== transaction.hash;
     });
 
@@ -168,7 +168,7 @@ export default class CronJobService extends BaseService {
   async removeNodeStakeTransaction(transaction) {
     const data = await this.getEntity();
 
-    const newArray = data.nodeStakeTransactions.filter(obj => {
+    const newArray = data.nodeStakeTransactions.filter((obj) => {
       return obj.hash !== transaction.hash;
     });
 
@@ -185,7 +185,7 @@ export default class CronJobService extends BaseService {
   async removeAppUnstakeTransaction(transaction) {
     const data = await this.getEntity();
 
-    const newArray = data.appUnstakeTransactions.filter(obj => {
+    const newArray = data.appUnstakeTransactions.filter((obj) => {
       return obj.hash !== transaction.hash;
     });
 
@@ -202,7 +202,7 @@ export default class CronJobService extends BaseService {
   async removeNodeUnstakeTransaction(transaction) {
     const data = await this.getEntity();
 
-    const newArray = data.nodeUnstakeTransactions.filter(obj => {
+    const newArray = data.nodeUnstakeTransactions.filter((obj) => {
       return obj.hash !== transaction.hash;
     });
 
@@ -219,7 +219,7 @@ export default class CronJobService extends BaseService {
   async removeNodeUnjailTransaction(transaction) {
     const data = await this.getEntity();
 
-    const newArray = data.nodeUnjailTransactions.filter(obj => {
+    const newArray = data.nodeUnjailTransactions.filter((obj) => {
       return obj.hash !== transaction.hash;
     });
 

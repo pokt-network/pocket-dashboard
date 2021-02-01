@@ -32,6 +32,8 @@ export default class PaymentService extends BaseService {
   /**
    * Create an payment intent using the payment provider.
    *
+   * @async
+   * @private
    * @param {string} userCustomerID User customer ID.
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
@@ -41,8 +43,6 @@ export default class PaymentService extends BaseService {
    * @param {number} tokens Tokens used for this payment.
    *
    * @returns {Promise<PaymentResult>} A payment result of intent.
-   * @private
-   * @async
    */
   async __createPocketPaymentIntent(
     userCustomerID,
@@ -93,6 +93,8 @@ export default class PaymentService extends BaseService {
   /**
    * Create an payment intent for item.
    *
+   * @async
+   * @private
    * @param {string} userEmail User of payment intent.
    * @param {string} type Type of payment.
    * @param {string} currency Three-letter ISO currency code, in lowercase.
@@ -103,7 +105,6 @@ export default class PaymentService extends BaseService {
    *
    * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
    * @throws {DashboardValidationError} if validation fails.
-   * @async
    */
   async __createPocketPaymentForItem(
     userEmail,
@@ -161,10 +162,9 @@ export default class PaymentService extends BaseService {
   /**
    * Check if payment method exists on DB.
    *
-   * @param {PaymentMethod} paymentMethodData Payment method to check if exists.
-   *
-   * @returns {Promise<boolean>} If payment method exists or not.
    * @async
+   * @param {PaymentMethod} paymentMethodData Payment method to check if exists.
+   * @returns {Promise<boolean>} If payment method exists or not.
    */
   async paymentMethodExists(paymentMethodData) {
     const filter = {
@@ -191,10 +191,9 @@ export default class PaymentService extends BaseService {
   /**
    * Check if payment history exists on DB.
    *
-   * @param {PaymentHistory} paymentHistory Payment history to check if exists.
-   *
-   * @returns {Promise<boolean>} If payment history exists or not.
    * @async
+   * @param {PaymentHistory} paymentHistory Payment history to check if exists.
+   * @returns {Promise<boolean>} If payment history exists or not.
    */
   async paymentHistoryExists(paymentHistory) {
     const filter = {
@@ -212,14 +211,13 @@ export default class PaymentService extends BaseService {
   /**
    * Save a payment method to DB.
    *
+   * @async
    * @param {object} paymentMethodData Payment method data.
    * @param {string} paymentMethodData.user User.
    * @param {{id: string, card:*}} paymentMethodData.paymentMethod Card data.
    * @param {BillingDetails} paymentMethodData.billingDetails Billing details.
-   *
    * @returns {Promise<boolean>} If was saved or not.
    * @throws {DashboardValidationError | DashboardError} If validation fails or already exists.
-   * @async
    */
   async savePaymentMethod(paymentMethodData) {
     if (!PaymentMethod.validate(paymentMethodData)) {
@@ -244,11 +242,10 @@ export default class PaymentService extends BaseService {
   /**
    * Delete a payment method from DB.
    *
+   * @async
    * @param {string} paymentMethodID Payment method ID.
    * @param {string} authHeader Authorization header.
-   *
    * @returns {Promise<boolean>} If was deleted or not.
-   * @async
    */
   async deletePaymentMethod(paymentMethodID, authHeader) {
     const filter = { "paymentMethod.id": paymentMethodID };
@@ -258,7 +255,7 @@ export default class PaymentService extends BaseService {
     if (userEmail) {
       const paymentMethods = await this.getUserPaymentMethods(userEmail);
 
-      paymentMethods.forEach(method => {
+      paymentMethods.forEach((method) => {
         if (method.id.toString() === paymentMethodID.toString()) {
           belongsToClient = true;
         }
@@ -280,15 +277,14 @@ export default class PaymentService extends BaseService {
   /**
    * Create a payment intent for application.
    *
+   * @async
    * @param {*} paymentIntentData Payment intent data.
    * @param {string} paymentIntentData.type Type of payment.
    * @param {string} paymentIntentData.currency Three-letter ISO currency code, in lowercase.
    * @param {*} paymentIntentData.item Item to pay.
    * @param {number} paymentIntentData.amount Amount intended to be collected by this payment.
-   *
    * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
    * @throws {DashboardValidationError} if validation fails.
-   * @async
    */
   async createPocketPaymentIntentForApps(paymentIntentData) {
     const { user, type, currency, item, amount, tokens } = paymentIntentData;
@@ -307,15 +303,14 @@ export default class PaymentService extends BaseService {
   /**
    * Create an payment intent for node.
    *
+   * @async
    * @param {*} paymentIntentData Payment intent data.
    * @param {string} paymentIntentData.type Type of payment.
    * @param {string} paymentIntentData.currency Three-letter ISO currency code, in lowercase.
    * @param {*} paymentIntentData.item Item to pay.
    * @param {number} paymentIntentData.amount Amount intended to be collected by this payment.
-   *
    * @returns {Promise<PaymentResult | boolean>} A payment result of intent.
    * @throws {DashboardValidationError} if validation fails.
-   * @async
    */
   async createPocketPaymentIntentForNodes(paymentIntentData) {
     const { user, type, currency, item, amount, tokens } = paymentIntentData;
@@ -340,7 +335,6 @@ export default class PaymentService extends BaseService {
    * @param {string} [fromDate] From created date.
    * @param {string} [toDate] To created date.
    * @param {string} [paymentID] Payment ID.
-   *
    * @returns {Promise<PaymentHistory[]>} List of Payment history.
    */
   async getPaymentHistory(
@@ -383,11 +377,10 @@ export default class PaymentService extends BaseService {
   /**
    * Verify if the payment belongs to the client's account using an payment id
    *
+   * @async
    * @param {string} paymentId Application Identifier.
    * @param {string} authHeader Authorization header.
-   *
    * @returns {Promise<boolean>} True if the payment belongs to the client account or false otherwise.
-   * @async
    */
   async verifyPaymentBelongsToClient(paymentId, authHeader) {
     // Retrieve the session tokens from the auth headers
@@ -417,6 +410,7 @@ export default class PaymentService extends BaseService {
   /**
    * Save payment on history.
    *
+   * @async
    * @param {string} createdDate Date created.
    * @param {string} paymentID Payment ID.
    * @param {string} currency Currency.
@@ -424,9 +418,7 @@ export default class PaymentService extends BaseService {
    * @param {*} item Item bought.
    * @param {string} user User that belongs the payment.
    * @param {number} tokens Tokens used for this payment.
-   *
    * @returns {Promise<boolean>} If payment was saved or not.
-   * @async
    */
   async savePaymentHistory(
     createdDate,
@@ -467,12 +459,11 @@ export default class PaymentService extends BaseService {
   /**
    * Update payment history record with the printable data object.
    *
+   * @async
    * @param {string} paymentId Payment Identifier.
    * @param {string} userEmail User email.
    * @param {object} printableData Payment invoice printable data.
-   *
    * @returns {Promise<boolean>} If payment was marked or not.
-   * @async
    */
   async updatePaymentWithPrintableData(paymentId, userEmail, printableData) {
     const filter = { paymentID: paymentId, user: userEmail };
@@ -501,14 +492,13 @@ export default class PaymentService extends BaseService {
   /**
    * Mark payment as success on history.
    *
+   * @async
    * @param {object} paymentHistoryData Payment history data.
    * @param {string} paymentHistoryData.user User that belongs the payment.
    * @param {string} paymentHistoryData.paymentID Payment ID.
    * @param {string} paymentHistoryData.paymentMethodID Payment method ID.
    * @param {BillingDetails} paymentHistoryData.billingDetails Billing details.
-   *
    * @returns {Promise<boolean>} If payment was marked or not.
-   * @async
    */
   async markPaymentAsSuccess(paymentHistoryData) {
     const filter = {
@@ -544,7 +534,7 @@ export default class PaymentService extends BaseService {
    *
    * @param {string} user User email.
    *
-   * @returns {Promise<[]|CardPaymentMethod[]>} Payment methods.
+   * @returns {Promise<CardPaymentMethod[]>} Payment methods.
    */
   async getUserPaymentMethods(user) {
     const dbPaymentMethods = await this.persistenceService.getEntities(
@@ -553,7 +543,7 @@ export default class PaymentService extends BaseService {
     );
 
     if (dbPaymentMethods) {
-      const paymentMethodIds = dbPaymentMethods.map(_ => _.paymentMethod.id);
+      const paymentMethodIds = dbPaymentMethods.map((_) => _.paymentMethod.id);
       const paymentMethods = await this.__getPaymentProvider(
         providerType.stripe
       ).retrieveCardPaymentMethods(paymentMethodIds);

@@ -60,7 +60,7 @@ function getPocketDispatchers() {
     return [];
   }
 
-  return dispatchersStr.split(",").map(function(dispatcherURLStr) {
+  return dispatchersStr.split(",").map(function (dispatcherURLStr) {
     return new URL(dispatcherURLStr);
   });
 }
@@ -68,6 +68,8 @@ function getPocketDispatchers() {
 /**
  * Retrieve a Pocket RPC Provider with the AAT and client account unlocked
  *
+ * @async
+ * @returns {PocketRpcProvider} Pocket RPC Provider with the AAT and client account unlocked
  */
 async function getPocketRPCProvider() {
   const chain = POCKET_NETWORK_CONFIGURATION.chain_hash;
@@ -415,7 +417,7 @@ export default class PocketService {
         return;
       }
       // Add the result to the application list
-      response.applications.forEach(app => {
+      response.applications.forEach((app) => {
         applicationList.push(app);
       });
     }
@@ -444,7 +446,9 @@ export default class PocketService {
     }
 
     if (appAddresses.length > 0) {
-      return allApplications.filter(app => appAddresses.includes(app.address));
+      return allApplications.filter((app) =>
+        appAddresses.includes(app.address)
+      );
     }
 
     return [];
@@ -474,7 +478,7 @@ export default class PocketService {
 
     const totalPages = nodesResponse.totalPages;
 
-    nodesResponse.nodes.forEach(node => {
+    nodesResponse.nodes.forEach((node) => {
       nodeList.push(node);
     });
 
@@ -493,7 +497,7 @@ export default class PocketService {
         return;
       }
 
-      response.nodes.forEach(node => {
+      response.nodes.forEach((node) => {
         nodeList.push(node);
       });
     }
@@ -520,7 +524,7 @@ export default class PocketService {
     }
 
     if (nodeAddresses.length > 0) {
-      return allNodes.filter(node => nodeAddresses.includes(node.address));
+      return allNodes.filter((node) => nodeAddresses.includes(node.address));
     }
 
     return [];
