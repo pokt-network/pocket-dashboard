@@ -285,22 +285,31 @@ router.post(
 /**
  * Stake a free tier application.
  */
-// router.post("/freetier/stake", apiAsyncWrapper(async (req, res) => {
-// [>* @type {{stakeInformation: {client_address: string, chains: string[], stake_amount: string}, applicationLink: string}} <]
-// const data = req.body;
+router.post(
+  "/freetier/stake",
+  apiAsyncWrapper(async (req, res) => {
+    // [>* @type {{stakeInformation: {client_address: string, chains: string[], stake_amount: string}, applicationLink: string}} <]
+    const data = req.body;
 
-// const stakeInformation = data.stakeInformation;
-// const application = await applicationService.getApplication(stakeInformation.client_address);
+    const stakeInformation = data.stakeInformation;
+    const application = await applicationService.getApplication(
+      stakeInformation.client_address
+    );
 
-// const applicationEmailData = {
-// name: application.pocketApplication.name,
-// link: data.applicationLink
-// };
+    const applicationEmailData = {
+      name: application.pocketApplication.name,
+      link: data.applicationLink,
+    };
 
-// const aat = await applicationService.stakeFreeTierApplication(application, stakeInformation, applicationEmailData);
+    const aat = await applicationService.stakeFreeTierApplication(
+      application,
+      stakeInformation,
+      applicationEmailData
+    );
 
-// res.json(aat);
-// }));
+    res.json(aat);
+  })
+);
 
 /**
  * Unstake a free tier application.
