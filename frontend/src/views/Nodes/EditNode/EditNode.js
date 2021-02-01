@@ -84,7 +84,7 @@ class EditNode extends CreateForm {
           <Col sm="5" md="5" lg="5">
             <Formik
               validationSchema={nodeFormSchema}
-              onSubmit={data => {
+              onSubmit={(data) => {
                 this.setState({ data });
                 this.handleEdit();
               }}

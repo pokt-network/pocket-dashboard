@@ -23,7 +23,7 @@ class Unsubscribe extends Component {
   }
 
   validateSubscribe() {
-    PocketUserService.subscribeUser(this.state.email).then(result => {
+    PocketUserService.subscribeUser(this.state.email).then((result) => {
       if (result) {
         this.setState({ email: result.data });
         this.setState({
@@ -64,7 +64,7 @@ class Unsubscribe extends Component {
       return;
     }
 
-    PocketUserService.unsubscribeUser(queryParam.email).then(result => {
+    PocketUserService.unsubscribeUser(queryParam.email).then((result) => {
       if (result) {
         this.setState({ email: result.data });
       } else {

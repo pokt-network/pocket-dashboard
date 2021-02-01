@@ -11,7 +11,7 @@ function ImageFileUpload(props) {
     maxSize: MAX_FILE_IMG_SIZE,
     onDrop: (acceptedFiles, notAcceptedFiles) => {
       setFiles(
-        acceptedFiles.map(file =>
+        acceptedFiles.map((file) =>
           Object.assign(file, {
             preview: URL.createObjectURL(file),
           })
@@ -43,7 +43,7 @@ function ImageFileUpload(props) {
 
   useEffect(
     () => () => {
-      files.forEach(file => URL.revokeObjectURL(file.preview));
+      files.forEach((file) => URL.revokeObjectURL(file.preview));
     },
     [files]
   );

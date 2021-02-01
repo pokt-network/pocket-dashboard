@@ -3,7 +3,7 @@ import UserService from "./PocketUserService";
 
 const axiosInstance = () => {
   axios.interceptors.request.use(
-    async config => {
+    async (config) => {
       const { accessToken, refreshToken, email } = UserService.getUserInfo();
 
       config.headers = {
@@ -12,13 +12,13 @@ const axiosInstance = () => {
       };
       return config;
     },
-    error => {
+    (error) => {
       throw error;
     }
   );
 
   axios.interceptors.response.use(
-    function(response) {
+    function (response) {
       if (response.status === 401) {
         // Clear user cache and return to the login page
         UserService.removeUserFromCached();
@@ -54,7 +54,7 @@ const axiosInstance = () => {
 
       return response;
     },
-    function(error) {
+    function (error) {
       // Do something with response error
       return Promise.reject(error);
     }

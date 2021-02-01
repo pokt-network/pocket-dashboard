@@ -37,10 +37,10 @@ class CreateForm extends Component {
     const toDataUrl = (url, callback) => {
       var xhr = new XMLHttpRequest();
 
-      xhr.onload = function() {
+      xhr.onload = function () {
         var reader = new FileReader();
 
-        reader.onloadend = function() {
+        reader.onloadend = function () {
           callback(reader.result);
         };
         reader.readAsDataURL(xhr.response);
@@ -50,7 +50,7 @@ class CreateForm extends Component {
       xhr.send();
     };
 
-    toDataUrl(img.preview, base64data => {
+    toDataUrl(img.preview, (base64data) => {
       this.setState({ icon: base64data, imgError: "" });
     });
   }

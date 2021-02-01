@@ -108,7 +108,7 @@ class ChangePassword extends Component {
             <h1>Change your Password</h1>
             <Formik
               validate={this.validate}
-              onSubmit={async data => {
+              onSubmit={async (data) => {
                 this.setState({ data });
                 await this.handleChangePassword();
               }}

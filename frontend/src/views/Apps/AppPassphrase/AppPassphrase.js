@@ -235,7 +235,7 @@ class AppPassphrase extends Component {
             </p>
             <Formik
               validationSchema={this.schema}
-              onSubmit={data => {
+              onSubmit={(data) => {
                 this.setState({ data });
               }}
               initialValues={this.state.data}
@@ -264,7 +264,7 @@ class AppPassphrase extends Component {
                           type={inputPassphraseType}
                           name="passPhrase"
                           disabled={created}
-                          onChange={data => {
+                          onChange={(data) => {
                             handleChange(data);
                           }}
                           isInvalid={!!errors.passPhrase}

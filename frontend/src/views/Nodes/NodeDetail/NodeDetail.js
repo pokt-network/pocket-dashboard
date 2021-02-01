@@ -309,9 +309,7 @@ class NodeDetail extends Component {
         children:
           status === STAKE_STATUS.Unstaking ? (
             <p className="unstaking-time">{`Unstaking time: ${unstakingTime}`}</p>
-          ) : (
-            undefined
-          ),
+          ) : undefined,
       },
       {
         title: jailStatus,
@@ -417,7 +415,7 @@ class NodeDetail extends Component {
             }
           >
             <p
-              ref={el => {
+              ref={(el) => {
                 if (el) {
                   el.style.setProperty("font-size", "14px", "important");
                 }

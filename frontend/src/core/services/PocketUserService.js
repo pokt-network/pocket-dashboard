@@ -154,8 +154,8 @@ class PocketUserService extends PocketBaseService {
   validateToken(token) {
     return axios
       .post(this._getURL("validate-token"), { token })
-      .then(response => response.data)
-      .catch(err => {
+      .then((response) => response.data)
+      .catch((err) => {
         return {
           success: false,
           data: err,
@@ -171,7 +171,7 @@ class PocketUserService extends PocketBaseService {
   getAuthProviders() {
     return axios
       .get(this._getURL("auth/providers"))
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -182,7 +182,7 @@ class PocketUserService extends PocketBaseService {
    */
   getAuthProvider(authProviders, name) {
     return authProviders.filter(
-      value => value.name.toLowerCase() === name.toLowerCase()
+      (value) => value.name.toLowerCase() === name.toLowerCase()
     )[0];
   }
 
@@ -202,7 +202,7 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .post(this._getURL("auth/provider/login"), data)
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           this.saveUserInCache(response.data, true);
 
@@ -215,7 +215,7 @@ class PocketUserService extends PocketBaseService {
           success: false,
         };
       })
-      .catch(err => {
+      .catch((err) => {
         return {
           success: false,
           data: err,
@@ -240,7 +240,7 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .post(this._getURL("auth/login"), data)
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           this.saveUserInCache(response.data, true);
 
@@ -254,7 +254,7 @@ class PocketUserService extends PocketBaseService {
           success: false,
         };
       })
-      .catch(err => {
+      .catch((err) => {
         return {
           success: false,
           data: err,
@@ -291,7 +291,7 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .post(this._getURL("auth/signup"), data)
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           return {
             success: true,
@@ -302,7 +302,7 @@ class PocketUserService extends PocketBaseService {
           success: false,
         };
       })
-      .catch(err => {
+      .catch((err) => {
         return {
           success: false,
           data: err,
@@ -326,12 +326,12 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .post(this._getURL("auth/resend-signup-email"), data)
-      .then(response => {
+      .then((response) => {
         return {
           success: response.data,
         };
       })
-      .catch(err => {
+      .catch((err) => {
         return {
           success: false,
           data: err,
@@ -359,7 +359,7 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .post(this._getURL("exists"), data)
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -378,7 +378,7 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .post(this._getURL("auth/is-validated"), data)
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -397,7 +397,7 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .post(this._getURL("auth/verify-password"), data)
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -420,13 +420,13 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .put(this._getURL("auth/change-password"), data)
-      .then(response => {
+      .then((response) => {
         return {
           success: true,
           data: response.data,
         };
       })
-      .catch(err => {
+      .catch((err) => {
         return {
           success: false,
           data: err.response.data,
@@ -450,13 +450,13 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .put(this._getURL("auth/send-reset-password-email"), data)
-      .then(response => {
+      .then((response) => {
         return {
           success: true,
           data: response.data,
         };
       })
-      .catch(err => {
+      .catch((err) => {
         return {
           success: false,
           data: err.response.data,
@@ -483,13 +483,13 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .put(this._getURL("auth/reset-password"), data)
-      .then(response => {
+      .then((response) => {
         return {
           success: true,
           data: response.data,
         };
       })
-      .catch(err => {
+      .catch((err) => {
         return {
           success: false,
           data: err.response.data,
@@ -513,13 +513,13 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .put(this._getURL("auth/change-username"), data)
-      .then(response => {
+      .then((response) => {
         return {
           success: true,
           data: response.data,
         };
       })
-      .catch(err => {
+      .catch((err) => {
         return {
           success: false,
           data: err.response.data,
@@ -545,13 +545,13 @@ class PocketUserService extends PocketBaseService {
 
     return axios
       .put(this._getURL("auth/change-email"), data)
-      .then(response => {
+      .then((response) => {
         return {
           success: true,
           data: response.data,
         };
       })
-      .catch(err => {
+      .catch((err) => {
         return {
           success: false,
           data: err.response.data,
@@ -570,7 +570,7 @@ class PocketUserService extends PocketBaseService {
   verifyCaptcha(token) {
     return axios
       .post(this._getURL("verify-captcha"), { token })
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -584,7 +584,7 @@ class PocketUserService extends PocketBaseService {
   unsubscribeUser(email) {
     return axios
       .post(this._getURL("unsubscribe"), { email })
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -598,7 +598,7 @@ class PocketUserService extends PocketBaseService {
   subscribeUser(email) {
     return axios
       .post(this._getURL("subscribe"), { email })
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 }
 

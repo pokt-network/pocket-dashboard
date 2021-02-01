@@ -29,9 +29,7 @@ class AppOrderSummary extends Component {
       input.value = maxBalance.toString();
     }
 
-    data[input.name] = parseFloat(input.value)
-      .toFixed(2)
-      .toString();
+    data[input.name] = parseFloat(input.value).toFixed(2).toString();
     this.setState({ data });
   }
 
@@ -78,7 +76,7 @@ class AppOrderSummary extends Component {
               max={maxBalance}
               name="balanceInput"
               value={balanceInput}
-              onChange={e => {
+              onChange={(e) => {
                 this.handleChange(e);
                 balanceOnChange(e);
               }}

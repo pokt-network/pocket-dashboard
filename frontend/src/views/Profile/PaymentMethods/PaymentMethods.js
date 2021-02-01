@@ -42,7 +42,7 @@ class PaymentMethods extends Component {
       stripe,
       cardData.card,
       billingDetails
-    ).then(async result => {
+    ).then(async (result) => {
       if (!billingDetails.address) {
         billingDetails.address = {
           country: " ",
@@ -102,7 +102,7 @@ class PaymentMethods extends Component {
     const { paymentMethods: allPaymentMethods } = this.state;
 
     const paymentMethods = allPaymentMethods.filter(
-      m => m.id !== paymentMehodId
+      (m) => m.id !== paymentMehodId
     );
 
     const success = await PaymentService.deletePaymentMethod(paymentMehodId);
@@ -127,7 +127,7 @@ class PaymentMethods extends Component {
       newCard,
       loading,
     } = this.state;
-    const paymentMethods = allPaymentMethods.map(method => {
+    const paymentMethods = allPaymentMethods.map((method) => {
       return {
         id: method.id,
         cardData: {

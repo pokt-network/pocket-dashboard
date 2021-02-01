@@ -35,8 +35,8 @@ class SelectValidatorPower extends Purchase {
   componentDidMount() {
     const { address: accountAddress } = NodeService.getNodeInfo();
 
-    PaymentService.getAvailableCurrencies().then(currencies => {
-      PocketCheckoutService.getValidatorPower().then(validatorPower => {
+    PaymentService.getAvailableCurrencies().then((currencies) => {
+      PocketCheckoutService.getValidatorPower().then((validatorPower) => {
         const minPowerValidator = parseInt(validatorPower.min);
 
         PocketCheckoutService.getNodeMoneyToSpent(minPowerValidator).then(

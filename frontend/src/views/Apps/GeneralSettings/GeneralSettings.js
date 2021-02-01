@@ -51,10 +51,10 @@ class GeneralSettings extends Component {
     // TODO: Wrap in try/catch and add another alert state to inform user of errors
     const application = this.state.pocketApplication;
 
-    const agents = this.state.useragents.split(",").map(function(item) {
+    const agents = this.state.useragents.split(",").map(function (item) {
       return item.trim();
     });
-    const origins = this.state.origins.split(",").map(function(item) {
+    const origins = this.state.origins.split(",").map(function (item) {
       return item.trim();
     });
 
@@ -141,7 +141,7 @@ class GeneralSettings extends Component {
       showAlert,
     } = this.state;
 
-    const chainsDropdown = chains.map(function(chain) {
+    const chainsDropdown = chains.map(function (chain) {
       return (
         <Dropdown.Item key={chain.blockchain} eventKey={chain.blockchain}>
           {chain.network}
@@ -149,14 +149,14 @@ class GeneralSettings extends Component {
       );
     });
 
-    const renderTooltipWhitelistUserAgents = props => (
+    const renderTooltipWhitelistUserAgents = (props) => (
       <Tooltip {...props}>
         Add a list of user-agents allowed, seperated by commas. User-agents are
         matched by substring.
       </Tooltip>
     );
 
-    const renderTooltipWhitelistOrigins = props => (
+    const renderTooltipWhitelistOrigins = (props) => (
       <Tooltip {...props}>
         Add a list of HTTP Origin Headers that will be allowed, seperated by
         commas. Origins are matched using exact-match.
@@ -184,7 +184,7 @@ class GeneralSettings extends Component {
             }
           >
             <p
-              ref={el => {
+              ref={(el) => {
                 if (el) {
                   el.style.setProperty("font-size", "14px", "important");
                 }

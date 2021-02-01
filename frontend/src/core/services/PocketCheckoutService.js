@@ -15,7 +15,7 @@ export class PocketCheckoutService extends PocketBaseService {
   getRelaysPerDay() {
     return axios
       .get(this._getURL("applications/relays-per-day"))
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -26,7 +26,7 @@ export class PocketCheckoutService extends PocketBaseService {
   getValidatorPower() {
     return axios
       .get(this._getURL("nodes/validator-power"))
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -39,7 +39,7 @@ export class PocketCheckoutService extends PocketBaseService {
   getApplicationMoneyToSpent(relaysPerDay) {
     return axios
       .get(this._getURL(`applications/cost?rpd=${relaysPerDay}`))
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -52,7 +52,7 @@ export class PocketCheckoutService extends PocketBaseService {
   getApplicationPoktToStake(money) {
     return axios
       .post(this._getURL("applications/pokt"), { money })
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -65,7 +65,7 @@ export class PocketCheckoutService extends PocketBaseService {
   getNodeMoneyToSpent(validatorPower) {
     return axios
       .get(this._getURL(`nodes/cost?vp=${validatorPower}`))
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -78,7 +78,7 @@ export class PocketCheckoutService extends PocketBaseService {
   getNodePoktToStake(money) {
     return axios
       .post(this._getURL("nodes/pokt"), { money })
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 }
 

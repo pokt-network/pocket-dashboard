@@ -22,7 +22,7 @@ export class BaseAuthProviderHook extends Component {
     const data = queryString.parse(location.search);
 
     UserService.loginWithAuthProvider(this.providerName, data.code).then(
-      response => {
+      (response) => {
         this.setState({
           authenticated: response.success,
         });

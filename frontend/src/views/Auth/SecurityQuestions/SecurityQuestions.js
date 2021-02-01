@@ -54,7 +54,7 @@ class SecurityQuestions extends Component {
       return;
     }
 
-    PocketUserService.validateToken(queryParam.d).then(result => {
+    PocketUserService.validateToken(queryParam.d).then((result) => {
       if (result.success) {
         this.setState({ user: result.data });
       } else {
@@ -69,7 +69,7 @@ class SecurityQuestions extends Component {
       }
     });
 
-    SecurityQuestionsService.getSecurityQuestions().then(questions => {
+    SecurityQuestionsService.getSecurityQuestions().then((questions) => {
       const securityQuestions = [
         "Choose one of the security questions",
         ...questions,
@@ -232,10 +232,10 @@ class SecurityQuestions extends Component {
                       <span className="text">Select question 1</span>
                       <Form.Control
                         as="select"
-                        onChange={e => this.handleSelect(e, 0)}
+                        onChange={(e) => this.handleSelect(e, 0)}
                         className="select"
                       >
-                        {securityQuestions.map(question => (
+                        {securityQuestions.map((question) => (
                           <option key={question}>{question}</option>
                         ))}
                       </Form.Control>
@@ -254,10 +254,10 @@ class SecurityQuestions extends Component {
                       <span className="text">Select question 2</span>
                       <Form.Control
                         as="select"
-                        onChange={e => this.handleSelect(e, 1)}
+                        onChange={(e) => this.handleSelect(e, 1)}
                         className="select"
                       >
-                        {securityQuestions.map(question => (
+                        {securityQuestions.map((question) => (
                           <option key={question}>{question}</option>
                         ))}
                       </Form.Control>
@@ -276,10 +276,10 @@ class SecurityQuestions extends Component {
                       <span className="text">Select question 3</span>
                       <Form.Control
                         as="select"
-                        onChange={e => this.handleSelect(e, 2)}
+                        onChange={(e) => this.handleSelect(e, 2)}
                         className="select"
                       >
-                        {securityQuestions.map(question => (
+                        {securityQuestions.map((question) => (
                           <option key={question}>{question}</option>
                         ))}
                       </Form.Control>

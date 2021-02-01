@@ -94,10 +94,10 @@ class OrderSummary extends Component {
 
     const user = UserService.getUserInfo().email;
 
-    PaymentService.getPaymentMethods(user).then(paymentMethods => {
+    PaymentService.getPaymentMethods(user).then((paymentMethods) => {
       const selectedPaymentMethod =
         paymentMethods.find(
-          pm => PaymentService.getDefaultPaymentMethod() === pm.id
+          (pm) => PaymentService.getDefaultPaymentMethod() === pm.id
         ) || paymentMethods[0];
 
       const hasPaymentMethods = paymentMethods.length > 0;
@@ -282,7 +282,7 @@ class OrderSummary extends Component {
       stripe,
       cardData.card,
       billingDetails
-    ).then(async result => {
+    ).then(async (result) => {
       // Adding a card on checkout doesn't ask you for billing info.
       if (!billingDetails.address) {
         billingDetails.address = {
@@ -332,7 +332,7 @@ class OrderSummary extends Component {
         if (setMethodDefault || paymentMethods.length === 1) {
           PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
           selectedPaymentMethod = paymentMethods.find(
-            item => item.id === result.paymentMethod.id
+            (item) => item.id === result.paymentMethod.id
           );
         }
 
@@ -376,7 +376,7 @@ class OrderSummary extends Component {
       },
     ];
 
-    const paymentMethods = allPaymentMethods.map(data => {
+    const paymentMethods = allPaymentMethods.map((data) => {
       return {
         id: data.id,
         method: `${capitalize(data.brand)} **** **** **** ${data.lastDigits}`,
@@ -475,7 +475,7 @@ class OrderSummary extends Component {
                   <NewCardNoAddressForm
                     formActionHandler={this.saveNewCard}
                     actionButtonName="Add Card"
-                    setDefaultHandler={setMethodDefault => {
+                    setDefaultHandler={(setMethodDefault) => {
                       this.setState({ setMethodDefault });
                     }}
                   />
@@ -548,7 +548,9 @@ class OrderSummary extends Component {
                 <ElementsConsumer>
                   {({ _, stripe }) => (
                     <Form
-                      onSubmit={e => this.makePurchaseWithSavedCard(e, stripe)}
+                      onSubmit={(e) =>
+                        this.makePurchaseWithSavedCard(e, stripe)
+                      }
                       className=""
                     >
                       <LoadingButton

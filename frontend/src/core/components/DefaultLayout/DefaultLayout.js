@@ -81,7 +81,7 @@ class DefaultLayout extends Component {
                     path={`${path}${route.path}`}
                     exact={route.exact}
                     name={route.name}
-                    render={props => (
+                    render={(props) => (
                       <route.component
                         {...props}
                         onBreadCrumbChange={this.onBreadCrumbChange}

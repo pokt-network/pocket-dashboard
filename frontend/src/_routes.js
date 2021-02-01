@@ -94,7 +94,7 @@ export const PROFILE_PATHS = {
 };
 
 // Helper anonymous function to render routes within the dashboard router
-export const _getDashboardPath = path => {
+export const _getDashboardPath = (path) => {
   return `${ROUTE_PATHS.home}${path}`;
 };
 

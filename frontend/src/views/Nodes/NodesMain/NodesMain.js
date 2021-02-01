@@ -52,7 +52,7 @@ class NodesMain extends Main {
     let errorMessage = "";
     let errorType = "";
 
-    NodeService.getAllUserNodes(userEmail, NODES_LIMIT).then(userItems => {
+    NodeService.getAllUserNodes(userEmail, NODES_LIMIT).then((userItems) => {
       hasError = userItems.error ? userItems.error : hasError;
       errorMessage = userItems.error ? userItems.message : errorMessage;
       errorType = userItems.error ? userItems.name : errorType;
@@ -107,7 +107,7 @@ class NodesMain extends Main {
       }
     );
 
-    NodeService.getAllNodes(NODES_LIMIT).then(registeredItems => {
+    NodeService.getAllNodes(NODES_LIMIT).then((registeredItems) => {
       hasError = registeredItems.error ? registeredItems.error : hasError;
       errorMessage = registeredItems.error
         ? registeredItems.message
