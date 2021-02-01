@@ -57,7 +57,7 @@ export const ROUTE_PATHS = {
   termsOfService: "/support/terms-of-service",
   privacyPolicy: "/support/privacy-policy",
   unsubscribe: "/support/unsubscribe",
-  purchaseTerms: "/support/purchase-terms"
+  purchaseTerms: "/support/purchase-terms",
 };
 
 export const DASHBOARD_PATHS = {
@@ -94,7 +94,7 @@ export const PROFILE_PATHS = {
 };
 
 // Helper anonymous function to render routes within the dashboard router
-export const _getDashboardPath = (path) => {
+export const _getDashboardPath = path => {
   return `${ROUTE_PATHS.home}${path}`;
 };
 
@@ -298,10 +298,10 @@ export const dashboardRoutes = [
     component: NodeChainList,
   },
   // {
-    // path: DASHBOARD_PATHS.selectValidatorPower,
-    // exact: true,
-    // name: "Nodes Select Validator Power",
-    // component: SelectValidatorPower,
+  // path: DASHBOARD_PATHS.selectValidatorPower,
+  // exact: true,
+  // name: "Nodes Select Validator Power",
+  // component: SelectValidatorPower,
   // },
   {
     path: DASHBOARD_PATHS.nodes,
@@ -329,10 +329,10 @@ export const dashboardRoutes = [
     component: EditNode,
   },
   // {
-    // path: DASHBOARD_PATHS.invoice,
-    // exact: true,
-    // name: "Invoice",
-    // component: Checkout,
+  // path: DASHBOARD_PATHS.invoice,
+  // exact: true,
+  // name: "Invoice",
+  // component: Checkout,
   // },
   {
     path: DASHBOARD_PATHS.importApp,
@@ -365,10 +365,10 @@ export const dashboardRoutes = [
     component: SelectRelays,
   },
   // {
-    // path: DASHBOARD_PATHS.orderSummary,
-    // exact: true,
-    // name: "Order Summary",
-    // component: OrderSummary,
+  // path: DASHBOARD_PATHS.orderSummary,
+  // exact: true,
+  // name: "Order Summary",
+  // component: OrderSummary,
   // },
   {
     path: DASHBOARD_PATHS.freeTier,
@@ -398,16 +398,16 @@ export const profileRoutes = [
     component: ChangePassword,
   },
   // {
-    // path: PROFILE_PATHS.paymentHistory,
-    // exact: true,
-    // name: "Payment history",
-    // component: PaymentHistory,
+  // path: PROFILE_PATHS.paymentHistory,
+  // exact: true,
+  // name: "Payment history",
+  // component: PaymentHistory,
   // },
   // {
-    // path: PROFILE_PATHS.paymentMethods,
-    // exact: true,
-    // name: "Payment methods",
-    // component: PaymentMethods,
+  // path: PROFILE_PATHS.paymentMethods,
+  // exact: true,
+  // name: "Payment methods",
+  // component: PaymentMethods,
   // },
 ];
 

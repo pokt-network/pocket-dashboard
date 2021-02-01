@@ -22,7 +22,7 @@ class AppDropdown extends Component {
 
     this.setState({ selected });
 
-    const idx = options.map((op) => op.text).indexOf(selected);
+    const idx = options.map(op => op.text).indexOf(selected);
 
     onSelect(options[idx]);
   }
@@ -45,7 +45,7 @@ class AppDropdown extends Component {
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          {options.map((op) => (
+          {options.map(op => (
             <Dropdown.Item onClick={this.handleSelect} key={op.text}>
               {op.text}
             </Dropdown.Item>

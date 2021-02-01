@@ -20,7 +20,7 @@ class PocketNetworkService extends PocketBaseService {
    * @return {Promise|Promise<Array.<*>>}
    */
   getAvailableNetworkChains(indexed = true) {
-    return axios.get(this._getURL("chains")).then((response) => {
+    return axios.get(this._getURL("chains")).then(response => {
       if (indexed) {
         return response.data.map(PocketNetworkService.addIndex);
       }
@@ -39,18 +39,21 @@ class PocketNetworkService extends PocketBaseService {
   getNetworkChains(networkHashes, indexed = true) {
     const data = { networkHashes };
 
-    return axios.post(this._getURL("chains"), data).then((response) => {
-      if (indexed) {
-        return response.data.map(PocketNetworkService.addIndex);
-      }
-      return response.data;
-    }).catch((err) => {
-      return {
-        error: true,
-        name: err.response.data.name,
-        message: err.response.data.message,
-      };
-    });
+    return axios
+      .post(this._getURL("chains"), data)
+      .then(response => {
+        if (indexed) {
+          return response.data.map(PocketNetworkService.addIndex);
+        }
+        return response.data;
+      })
+      .catch(err => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**
@@ -61,8 +64,8 @@ class PocketNetworkService extends PocketBaseService {
   getNetworkSummaryData() {
     return axios
       .get(this._getURL("summary"))
-      .then((response) => response.data)
-      .catch((err) => {
+      .then(response => response.data)
+      .catch(err => {
         return {
           error: true,
           name: err.response.data.name,

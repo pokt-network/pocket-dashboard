@@ -2,13 +2,25 @@
 import React, { Component } from "react";
 import { Alert, Badge, Button, Col, Modal, Row } from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import { BACKEND_ERRORS, DEFAULT_NETWORK_ERROR_MESSAGE, STAKE_STATUS, TABLE_COLUMNS } from "../../../_constants";
-import ApplicationService, { PocketApplicationService } from "../../../core/services/PocketApplicationService";
+import {
+  BACKEND_ERRORS,
+  DEFAULT_NETWORK_ERROR_MESSAGE,
+  STAKE_STATUS,
+  TABLE_COLUMNS,
+} from "../../../_constants";
+import ApplicationService, {
+  PocketApplicationService,
+} from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import { formatDaysCountdown, getStakeStatus, formatNumbers, formatNetworkData } from "../../../_helpers";
+import {
+  formatDaysCountdown,
+  getStakeStatus,
+  formatNumbers,
+  formatNetworkData,
+} from "../../../_helpers";
 import { Link } from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -40,7 +52,7 @@ class AppDetail extends Component {
       isFreeTier: false,
       freeTierMsg: false,
       updatingAlert: false,
-      error: { show: false, message: "" }
+      error: { show: false, message: "" },
     };
 
     this.deleteApplication = this.deleteApplication.bind(this);
@@ -72,12 +84,8 @@ class AppDetail extends Component {
 
     const { id } = this.props.match.params;
 
-    const {
-      pocketApplication,
-      networkData,
-      error,
-      name,
-    } = await ApplicationService.getClientApplication(id) || {};
+    const { pocketApplication, networkData, error, name } =
+      (await ApplicationService.getClientApplication(id)) || {};
 
     hasError = error ? error : hasError;
     errorType = error ? name : errorType;
@@ -85,9 +93,11 @@ class AppDetail extends Component {
     if (hasError || pocketApplication === undefined) {
       if (errorType === BACKEND_ERRORS.NETWORK) {
         this.setState({
-          loading: false, error: {
-            show: true, message: DEFAULT_NETWORK_ERROR_MESSAGE
-          }
+          loading: false,
+          error: {
+            show: true,
+            message: DEFAULT_NETWORK_ERROR_MESSAGE,
+          },
         });
       } else {
         this.setState({ loading: false, exists: false });
@@ -95,11 +105,17 @@ class AppDetail extends Component {
       return;
     }
 
-    const clientAddress = pocketApplication.freeTierApplicationAccount.address !== "" && pocketApplication.freeTierApplicationAccount.address !== undefined ? pocketApplication.freeTierApplicationAccount.address : pocketApplication.publicPocketAccount.address;
+    const clientAddress =
+      pocketApplication.freeTierApplicationAccount.address !== "" &&
+      pocketApplication.freeTierApplicationAccount.address !== undefined
+        ? pocketApplication.freeTierApplicationAccount.address
+        : pocketApplication.publicPocketAccount.address;
     let accountBalance;
 
     if (clientAddress) {
-      const { balance } = await PocketAccountService.getPoktBalance(clientAddress);
+      const { balance } = await PocketAccountService.getPoktBalance(
+        clientAddress
+      );
 
       accountBalance = balance;
     } else {
@@ -110,7 +126,8 @@ class AppDetail extends Component {
     const { freeTier, freeTierAAT } = pocketApplication;
 
     const status = getStakeStatus(parseInt(networkData.status));
-    const updatingAlert = pocketApplication.updatingStatus && status === STAKE_STATUS.Unstaked;
+    const updatingAlert =
+      pocketApplication.updatingStatus && status === STAKE_STATUS.Unstaked;
 
     this.setState({
       pocketApplication,
@@ -138,7 +155,9 @@ class AppDetail extends Component {
 
     try {
       const success = await ApplicationService.deleteAppFromDashboard(
-        id, userEmail, appsLink
+        id,
+        userEmail,
+        appsLink
       );
 
       if (success) {
@@ -147,7 +166,10 @@ class AppDetail extends Component {
         this.props.onBreadCrumbChange(["Apps", "App Detail", "App Removed"]);
       }
     } catch (error) {
-      this.setState({ deleteModal: false, error: { show: true, message: "Free tier apps can't be deleted." } });
+      this.setState({
+        deleteModal: false,
+        error: { show: true, message: "Free tier apps can't be deleted." },
+      });
     }
   }
 
@@ -162,27 +184,47 @@ class AppDetail extends Component {
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
     const unstakeInformation = {
-      application_id: id
+      application_id: id,
     };
 
     if (freeTier) {
       // Create unstake transaction
-      const { success, data } = await ApplicationService.unstakeFreeTierApplication(unstakeInformation, link);
+      const {
+        success,
+        data,
+      } = await ApplicationService.unstakeFreeTierApplication(
+        unstakeInformation,
+        link
+      );
 
       if (success) {
         window.location.reload(false);
       } else {
-        this.setState({ unstake: false, ctaButtonPressed: false, message: data });
+        this.setState({
+          unstake: false,
+          ctaButtonPressed: false,
+          message: data,
+        });
       }
     } else {
-      const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(address, passphrase);
+      const appUnstakeTransaction = await PocketClientService.appUnstakeRequest(
+        address,
+        passphrase
+      );
 
-      const { success, data } = await ApplicationService.unstakeApplication(appUnstakeTransaction, link);
+      const { success, data } = await ApplicationService.unstakeApplication(
+        appUnstakeTransaction,
+        link
+      );
 
       if (success) {
         window.location.reload(false);
       } else {
-        this.setState({ unstake: false, ctaButtonPressed: false, message: data });
+        this.setState({
+          unstake: false,
+          ctaButtonPressed: false,
+          message: data,
+        });
       }
     }
   }
@@ -191,7 +233,12 @@ class AppDetail extends Component {
     const { id } = this.state.pocketApplication;
 
     ApplicationService.removeAppInfoFromCache();
-    ApplicationService.saveAppInfoInCache({ applicationID: id, address, passphrase, ppk });
+    ApplicationService.saveAppInfoInCache({
+      applicationID: id,
+      address,
+      passphrase,
+      ppk,
+    });
 
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
@@ -225,7 +272,7 @@ class AppDetail extends Component {
 
     const status = getStakeStatus(parseInt(stakeStatus));
     // const isStaked =
-      // status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
+    // status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
     let address;
     let publicKey;
@@ -252,20 +299,26 @@ class AppDetail extends Component {
       updatingAlert,
     } = this.state;
 
-    const unstakingTime = status === STAKE_STATUS.Unstaking
-      ? formatDaysCountdown(unstakingCompletionTime)
-      : undefined;
+    const unstakingTime =
+      status === STAKE_STATUS.Unstaking
+        ? formatDaysCountdown(unstakingCompletionTime)
+        : undefined;
 
     const generalInfo = [
       {
         title: `${formatNetworkData(stakedTokens, false)} POKT`,
-        titleAttrs: { title: stakedTokens ? formatNumbers(stakedTokens) : undefined },
+        titleAttrs: {
+          title: stakedTokens ? formatNumbers(stakedTokens) : undefined,
+        },
         subtitle: "Staked tokens",
       },
       {
         title: `${formatNetworkData(freeTier ? 0 : accountBalance)} POKT`,
-        titleAttrs: { title: maxRelays && !freeTier ? formatNumbers(accountBalance) : undefined },
-        subtitle: "Balance"
+        titleAttrs: {
+          title:
+            maxRelays && !freeTier ? formatNumbers(accountBalance) : undefined,
+        },
+        subtitle: "Balance",
       },
       {
         title: status,
@@ -273,12 +326,16 @@ class AppDetail extends Component {
         children:
           status === STAKE_STATUS.Unstaking ? (
             <p className="unstaking-time">{`Unstaking time: ${unstakingTime}`}</p>
-          ) : undefined,
+          ) : (
+            undefined
+          ),
       },
       {
         title: formatNumbers(maxRelays * 24),
-        titleAttrs: { title: maxRelays * 24 ? formatNumbers(maxRelays * 24) : undefined },
-        subtitle: "Max Relays Per Day"
+        titleAttrs: {
+          title: maxRelays * 24 ? formatNumbers(maxRelays * 24) : undefined,
+        },
+        subtitle: "Max Relays Per Day",
       },
     ];
 
@@ -292,14 +349,17 @@ class AppDetail extends Component {
     const renderValidation = (handleFunc, breadcrumbs) => (
       <>
         {/* eslint-disable-next-line react/prop-types */}
-        <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
+        <ValidateKeys
+          handleBreadcrumbs={this.props.onBreadCrumbChange}
           breadcrumbs={breadcrumbs}
-          address={address} handleAfterValidate={handleFunc}>
+          address={address}
+          handleAfterValidate={handleFunc}
+        >
           <h1>Confirm private key</h1>
           <p>
-            Import to the dashboard a pocket account previously created as an app
-            in the network. If your account is not an app go to create.
-        </p>
+            Import to the dashboard a pocket account previously created as an
+            app in the network. If your account is not an app go to create.
+          </p>
         </ValidateKeys>
       </>
     );
@@ -341,11 +401,19 @@ class AppDetail extends Component {
     if (deleted) {
       return (
         <DeletedOverlay
-          text={<p style={{
-            position: "absolute",
-            top: "40%",
-            left: "42.3%"
-          }}>Your application<br />was successfully removed</p>}
+          text={
+            <p
+              style={{
+                position: "absolute",
+                top: "40%",
+                left: "42.3%",
+              }}
+            >
+              Your application
+              <br />
+              was successfully removed
+            </p>
+          }
           buttonText="Go to App List"
           buttonLink={_getDashboardPath(DASHBOARD_PATHS.apps)}
         />
@@ -359,14 +427,12 @@ class AppDetail extends Component {
             {(freeTierMsg || updatingAlert) && (
               <AppAlert
                 className="pb-3 pt-3 mb-4"
-                title={
-                  <h4 className="ml-3">
-                    ATTENTION!
-                  </h4>
-                }
+                title={<h4 className="ml-3">ATTENTION!</h4>}
               >
                 <p>
-                  This staking transaction will be marked complete when the next block is generated. You will receive an email notification when your app is ready to use.
+                  This staking transaction will be marked complete when the next
+                  block is generated. You will receive an email notification
+                  when your app is ready to use.
                 </p>
               </AppAlert>
             )}
@@ -375,7 +441,8 @@ class AppDetail extends Component {
                 variant="danger"
                 title={error.message}
                 onClose={() => this.setState({ error: { show: false } })}
-                dismissible />
+                dismissible
+              />
             )}
             <div className="head">
               <img className="account-icon" src={icon} alt="app-icon" />
@@ -383,9 +450,7 @@ class AppDetail extends Component {
                 <h1 className="name d-flex align-items-center">
                   {name}
                   {freeTier && (
-                    <Badge variant="light">
-                      Launch Offering Plan
-                    </Badge>
+                    <Badge variant="light">Launch Offering Plan</Badge>
                   )}
                 </h1>
                 <h3 className="owner">{owner}</h3>
@@ -402,19 +467,26 @@ class AppDetail extends Component {
             sm="4"
             className="d-flex align-items-center justify-content-end cta-buttons"
           >
-            {status === STAKE_STATUS.Staked &&
+            {status === STAKE_STATUS.Staked && (
               <Link
                 to={() => {
-                  const url = _getDashboardPath(DASHBOARD_PATHS.generalSettings);
+                  const url = _getDashboardPath(
+                    DASHBOARD_PATHS.generalSettings
+                  );
 
                   return url.replace(":id", id);
-                }}>
-                <Button className="ml-5 mr-4" variant="dark" style={{ width: "120px" }}>
+                }}
+              >
+                <Button
+                  className="ml-5 mr-4"
+                  variant="dark"
+                  style={{ width: "120px" }}
+                >
                   <span>Gateway Settings</span>
                 </Button>
               </Link>
-            }
-                {/*<Button
+            )}
+            {/*<Button
               className="float-right cta"
               disabled={freeTierMsg || updatingAlert || status === STAKE_STATUS.Unstaking}
               onClick={() => {
@@ -429,16 +501,23 @@ class AppDetail extends Component {
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard titleAttrs={card.titleAttrs} title={card.title} subtitle={card.subtitle}>
+              <InfoCard
+                titleAttrs={card.titleAttrs}
+                title={card.title}
+                subtitle={card.subtitle}
+              >
                 {card.children || <></>}
               </InfoCard>
             </Col>
           ))}
         </Row>
-        <Row >
+        <Row>
           <Col
-            style={{ display: status !== STAKE_STATUS.Staked ? "none" : "block" }}
-            className={chains.length === 0 ? "mb-1" : ""}>
+            style={{
+              display: status !== STAKE_STATUS.Staked ? "none" : "block",
+            }}
+            className={chains.length === 0 ? "mb-1" : ""}
+          >
             <Segment scroll={false} label="Networks">
               <AppTable
                 scroll
@@ -472,12 +551,22 @@ class AppDetail extends Component {
                 <h2>AAT</h2>
               </div>
               <Alert variant="light" className="aat-code">
-                <span id="aat-copy" className="copy-button" onClick={this.copyAAT}> <img src={"/assets/copy.png"} alt="copy" /></span>
+                <span
+                  id="aat-copy"
+                  className="copy-button"
+                  onClick={this.copyAAT}
+                >
+                  {" "}
+                  <img src={"/assets/copy.png"} alt="copy" />
+                </span>
                 <pre>
-                  <input id="aat-value" style={{ position: "absolute", left: "-9999px" }}></input>
+                  <input
+                    id="aat-value"
+                    style={{ position: "absolute", left: "-9999px" }}
+                  ></input>
                   <code className="language-html" data-lang="html">
                     {"# Returns\n"}
-                    <span id="aat" >{aatStr}</span>
+                    <span id="aat">{aatStr}</span>
                   </code>
                 </pre>
               </Alert>
@@ -493,7 +582,7 @@ class AppDetail extends Component {
               </div>
             </Col>
           </Row>
-        ) :
+        ) : (
           <Row className="contact-info">
             {contactInfo.map((card, idx) => (
               <Col key={idx} sm="6" md="6" lg="6">
@@ -507,7 +596,8 @@ class AppDetail extends Component {
                 </InfoCard>
               </Col>
             ))}
-          </Row>}
+          </Row>
+        )}
         <Row className="action-buttons">
           <Col>
             <span className="option">
@@ -518,22 +608,27 @@ class AppDetail extends Component {
                     const url = _getDashboardPath(DASHBOARD_PATHS.editApp);
 
                     return url.replace(":id", id);
-                  }}>
+                  }}
+                >
                   Edit
-                  </Link>{" "}
-                  to change your app description.
-                </p>
+                </Link>{" "}
+                to change your app description.
+              </p>
             </span>
-            <span style={{ display: isFreeTier ? "none" : "inline-block" }} className="option">
+            <span
+              style={{ display: isFreeTier ? "none" : "inline-block" }}
+              className="option"
+            >
               <img src={"/assets/trash.svg"} alt="trash-action-icon" />
               <p>
                 <span
                   className="link"
-                  onClick={() => this.setState({ deleteModal: true })}>
+                  onClick={() => this.setState({ deleteModal: true })}
+                >
                   Remove
-                  </span>{" "}
-                  this App from the Dashboard.
-                </p>
+                </span>{" "}
+                this App from the Dashboard.
+              </p>
             </span>
           </Col>
         </Row>
@@ -544,17 +639,19 @@ class AppDetail extends Component {
           centered
           dialogClassName="app-modal"
         >
-          <Modal.Header closeButton>
-          </Modal.Header>
+          <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
             <h4>Are you sure you want to remove this App?</h4>
-            Your application will be removed from the Pocket Dashboard.
-            However, you will still be able to access it through the Command
-            Line Interface (CLI) or import it back into Pocket Dashboard with
-            the private key assigned to it.
+            Your application will be removed from the Pocket Dashboard. However,
+            you will still be able to access it through the Command Line
+            Interface (CLI) or import it back into Pocket Dashboard with the
+            private key assigned to it.
           </Modal.Body>
           <Modal.Footer>
-            <Button className="dark-button" onClick={() => this.setState({ deleteModal: false })}>
+            <Button
+              className="dark-button"
+              onClick={() => this.setState({ deleteModal: false })}
+            >
               <span>Cancel</span>
             </Button>
             <Button onClick={this.deleteApplication}>

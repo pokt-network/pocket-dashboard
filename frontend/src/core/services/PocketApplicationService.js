@@ -24,7 +24,6 @@ export class PocketApplicationService extends PocketBaseService {
       } else {
         aatParsed[key] = value;
       }
-
     }
     return JSON.stringify(aatParsed, null, 2);
   }
@@ -75,7 +74,7 @@ export class PocketApplicationService extends PocketBaseService {
     passphrase,
     chains,
     data,
-    imported
+    imported,
   }) {
     if (applicationID) {
       this.ls.set("app_id", { data: applicationID });
@@ -110,8 +109,8 @@ export class PocketApplicationService extends PocketBaseService {
   getApplication(applicationAddress) {
     return axios
       .get(this._getURL(`${applicationAddress}`))
-      .then((response) => response.data)
-      .catch((err) => {
+      .then(response => response.data)
+      .catch(err => {
         return {
           error: true,
           name: err.response.data.name,
@@ -121,17 +120,17 @@ export class PocketApplicationService extends PocketBaseService {
   }
 
   /**
- * Get application by using the Application id.
- *
- * @param {string} applicationId Application's id.
- *
- * @returns {Promise|Promise<*>}
- */
+   * Get application by using the Application id.
+   *
+   * @param {string} applicationId Application's id.
+   *
+   * @returns {Promise|Promise<*>}
+   */
   getClientApplication(applicationId) {
     return axios
       .get(this._getURL(`client/${applicationId}`))
-      .then((response) => response.data)
-      .catch((err) => {
+      .then(response => response.data)
+      .catch(err => {
         return {
           error: true,
           name: err.response.data.name,
@@ -150,8 +149,8 @@ export class PocketApplicationService extends PocketBaseService {
   getNetworkApplication(applicationAddress) {
     return axios
       .get(this._getURL(`network/${applicationAddress}`))
-      .then((response) => response.data)
-      .catch((err) => {
+      .then(response => response.data)
+      .catch(err => {
         return {
           error: true,
           name: err.response.data.name,
@@ -173,8 +172,8 @@ export class PocketApplicationService extends PocketBaseService {
 
     return axios
       .get(this._getURL(""), { params })
-      .then((response) => response.data)
-      .catch((err) => {
+      .then(response => response.data)
+      .catch(err => {
         return {
           error: true,
           name: err.response.data.name,
@@ -205,8 +204,8 @@ export class PocketApplicationService extends PocketBaseService {
         offset,
       },
     })
-      .then((response) => response.data)
-      .catch((err) => {
+      .then(response => response.data)
+      .catch(err => {
         return {
           error: true,
           name: err.response.data.name,
@@ -223,8 +222,8 @@ export class PocketApplicationService extends PocketBaseService {
   getStakedApplicationSummary() {
     return axios
       .get(this._getURL("summary/staked"))
-      .then((response) => response.data)
-      .catch((err) => {
+      .then(response => response.data)
+      .catch(err => {
         return {
           error: true,
           name: err.response.data.name,
@@ -253,7 +252,7 @@ export class PocketApplicationService extends PocketBaseService {
 
     return axios
       .post(this._getURL(""), data)
-      .then((response) => {
+      .then(response => {
         if (response.status === 200) {
           return {
             success: true,
@@ -265,7 +264,7 @@ export class PocketApplicationService extends PocketBaseService {
           success: false,
         };
       })
-      .catch((err) => {
+      .catch(err => {
         return {
           success: false,
           data: err.response.data.message,
@@ -284,7 +283,12 @@ export class PocketApplicationService extends PocketBaseService {
    * @return {Promise|Promise<{success:boolean, [data]: *}>}
    * @async
    */
-  async saveApplicationAccount(applicationID, applicationData, applicationBaseLink, ppkData = undefined) {
+  async saveApplicationAccount(
+    applicationID,
+    applicationData,
+    applicationBaseLink,
+    ppkData = undefined
+  ) {
     let data = { applicationID, applicationData, applicationBaseLink };
 
     if (ppkData) {
@@ -293,7 +297,7 @@ export class PocketApplicationService extends PocketBaseService {
 
     return axios
       .post(this._getURL("account"), data)
-      .then((response) => {
+      .then(response => {
         if (response.status === 200) {
           return {
             success: true,
@@ -305,7 +309,7 @@ export class PocketApplicationService extends PocketBaseService {
           success: false,
         };
       })
-      .catch((err) => {
+      .catch(err => {
         return {
           success: false,
           data: err.response.data.message,
@@ -335,7 +339,7 @@ export class PocketApplicationService extends PocketBaseService {
 
     return axios
       .put(this._getURL(`${applicationId}`), data)
-      .then((response) => {
+      .then(response => {
         if (response.status === 200) {
           return {
             success: true,
@@ -347,7 +351,7 @@ export class PocketApplicationService extends PocketBaseService {
           success: false,
         };
       })
-      .catch((err) => {
+      .catch(err => {
         return {
           success: false,
           data: err.response.data.message,
@@ -365,10 +369,10 @@ export class PocketApplicationService extends PocketBaseService {
   getFreeTierAppAAT(applicationId) {
     return axios
       .get(this._getURL(`freetier/aat/${applicationId}`))
-      .then((response) => {
+      .then(response => {
         return { success: true, data: response.data };
       })
-      .catch((err) => {
+      .catch(err => {
         return {
           success: false,
           data: err.response.data.message,
@@ -390,7 +394,7 @@ export class PocketApplicationService extends PocketBaseService {
 
     return axios
       .post(this._getURL(`${applicationId}`), data)
-      .then((response) => response.data);
+      .then(response => response.data);
   }
 
   /**
@@ -403,20 +407,23 @@ export class PocketApplicationService extends PocketBaseService {
    */
   stakeFreeTierApplication(stakeInformation, applicationLink) {
     return axios
-      .post(this._getURL("freetier/stake"), { stakeInformation, applicationLink })
-      .then((response) => {
+      .post(this._getURL("freetier/stake"), {
+        stakeInformation,
+        applicationLink,
+      })
+      .then(response => {
         return {
           success: true,
           data: response.data,
         };
       })
-      .catch((err) => {
+      .catch(err => {
         return {
           success: false,
           data: err.response.data.message,
           name: err.response.data.name,
         };
-      });;
+      });
   }
 
   /**
@@ -432,10 +439,10 @@ export class PocketApplicationService extends PocketBaseService {
 
     return axios
       .post(this._getURL("freetier/unstake"), data)
-      .then((response) => {
+      .then(response => {
         return { success: true, data: response.data };
       })
-      .catch((err) => {
+      .catch(err => {
         return { success: false, data: err.response };
       });
   }
@@ -450,10 +457,10 @@ export class PocketApplicationService extends PocketBaseService {
   stakeApplication(stakeInformation) {
     return axios
       .post(this._getURL("custom/stake"), stakeInformation)
-      .then((response) => {
+      .then(response => {
         return { success: true, data: response.data };
       })
-      .catch((err) => {
+      .catch(err => {
         return { success: false, error: err.response };
       });
   }
@@ -471,10 +478,10 @@ export class PocketApplicationService extends PocketBaseService {
 
     return axios
       .post(this._getURL("custom/unstake"), data)
-      .then((response) => {
+      .then(response => {
         return { success: true, data: response.data };
       })
-      .catch((err) => {
+      .catch(err => {
         return { success: false, data: err.response };
       });
   }
@@ -485,7 +492,7 @@ export class PocketApplicationService extends PocketBaseService {
       .then(() => {
         return { success: true };
       })
-      .catch((err) => {
+      .catch(err => {
         return { success: false };
       });
   }

@@ -5,45 +5,58 @@ import PocketStripePaymentService from "../../../services/PocketStripePaymentSer
 import NewCardForm from "./NewCardForm";
 
 class SaveAndPayForm extends Component {
-
-
   constructor(props, context) {
     super(props, context);
 
     this.handleSaveAndPayMethod = this.handleSaveAndPayMethod.bind(this);
   }
 
-
   handleSaveAndPayMethod(e, formData, stripe) {
     e.preventDefault();
     const { handleAfterPayment } = this.props;
 
     const { paymentIntentSecretID } = this.props;
-    const { card, cardHolderName, billingAddressLine1, zipCode, country } = formData;
+    const {
+      card,
+      cardHolderName,
+      billingAddressLine1,
+      zipCode,
+      country,
+    } = formData;
     const billingDetails = {
       name: cardHolderName,
       address: {
         line1: billingAddressLine1,
         postal_code: zipCode,
-        country
-      }
+        country,
+      },
     };
 
-    PocketStripePaymentService.confirmPaymentWithNewCard(stripe, paymentIntentSecretID, card, billingDetails)
-      .then(result => {
-        if (result.error) {
-          handleAfterPayment({ success: false, data: result.error });
-        }
+    PocketStripePaymentService.confirmPaymentWithNewCard(
+      stripe,
+      paymentIntentSecretID,
+      card,
+      billingDetails
+    ).then(result => {
+      if (result.error) {
+        handleAfterPayment({ success: false, data: result.error });
+      }
 
-        if (result.paymentIntent) {
-          handleAfterPayment({ success: true, data: result.paymentIntent.status });
-        }
-      });
+      if (result.paymentIntent) {
+        handleAfterPayment({
+          success: true,
+          data: result.paymentIntent.status,
+        });
+      }
+    });
   }
 
   render() {
     return (
-      <NewCardForm actionButtonName={"Save and Pay"} formActionHandler={this.handleSaveAndPayMethod}/>
+      <NewCardForm
+        actionButtonName={"Save and Pay"}
+        formActionHandler={this.handleSaveAndPayMethod}
+      />
     );
   }
 }

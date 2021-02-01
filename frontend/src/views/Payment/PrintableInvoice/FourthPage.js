@@ -70,15 +70,16 @@ class FourthPage extends React.Component {
                 <u>Intellectual Property.</u>{" "}
               </b>{" "}
               Purchaser acknowledges and agrees that the Company retains all
-              right, title and interest in all of the Company&lsquo;s intellectual
-              property contained in the Tokens, including, without limitation,
-              inventions, ideas, concepts, code, discoveries, processes, marks,
-              methods, software, compositions, formulae, techniques, information
-              and data, whether or not patentable, copyrightable or protectable
-              in trademark, and any trademarks, copyright or patents based
-              thereon. Purchaser agrees not to use, reverse engineer, modify, or
-              alter any of the Company’s intellectual property for any reason
-              without the Company’s prior written consent.
+              right, title and interest in all of the Company&lsquo;s
+              intellectual property contained in the Tokens, including, without
+              limitation, inventions, ideas, concepts, code, discoveries,
+              processes, marks, methods, software, compositions, formulae,
+              techniques, information and data, whether or not patentable,
+              copyrightable or protectable in trademark, and any trademarks,
+              copyright or patents based thereon. Purchaser agrees not to use,
+              reverse engineer, modify, or alter any of the Company’s
+              intellectual property for any reason without the Company’s prior
+              written consent.
             </p>
           </li>
           <li>

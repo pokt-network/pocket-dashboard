@@ -46,7 +46,9 @@ class Purchase extends Component {
     }
 
     if (currentAccountBalance > originalAccountBalance) {
-      throw new Error(`Current balance cannot be greater than ${originalAccountBalance} ${currency}.`);
+      throw new Error(
+        `Current balance cannot be greater than ${originalAccountBalance} ${currency}.`
+      );
     }
 
     if (subTotal < 0 || isNaN(subTotal)) {

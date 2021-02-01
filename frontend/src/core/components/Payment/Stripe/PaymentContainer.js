@@ -7,13 +7,10 @@ import { Configurations } from "../../../../_configuration";
 const STRIPE_PROMISE = loadStripe(Configurations.payment.default.client_id);
 
 class PaymentContainer extends Component {
-
   render() {
     return (
       <div className={"payment-container"}>
-        <Elements stripe={STRIPE_PROMISE}>
-          {this.props.children}
-        </Elements>
+        <Elements stripe={STRIPE_PROMISE}>{this.props.children}</Elements>
       </div>
     );
   }
@@ -22,9 +19,8 @@ class PaymentContainer extends Component {
 PaymentContainer.propTypes = {
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node
-  ])
+    PropTypes.node,
+  ]),
 };
-
 
 export default PaymentContainer;

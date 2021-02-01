@@ -18,15 +18,15 @@ export class PocketAccountService extends PocketBaseService {
   importAccount(ppkData, passphrase) {
     const data = {
       ppkData,
-      passphrase
+      passphrase,
     };
 
     return axios
       .post(this._getURL("import"), data)
-      .then((response) => {
+      .then(response => {
         return { success: true, data: response.data };
       })
-      .catch((err) => {
+      .catch(err => {
         return { success: false, data: err.response.data };
       });
   }
@@ -41,7 +41,7 @@ export class PocketAccountService extends PocketBaseService {
   getBalance(accountAddress) {
     return axios
       .get(this._getURL(`balance/${accountAddress}`))
-      .then((response) => response.data);
+      .then(response => response.data);
   }
 
   /**
@@ -54,7 +54,7 @@ export class PocketAccountService extends PocketBaseService {
   getPoktBalance(accountAddress) {
     return axios
       .get(this._getURL(`balance/pokt/${accountAddress}`))
-      .then((response) => response.data);
+      .then(response => response.data);
   }
 }
 

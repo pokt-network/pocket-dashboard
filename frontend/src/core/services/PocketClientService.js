@@ -1,8 +1,18 @@
 import { Configurations } from "../../_configuration";
-import { Configuration, Pocket, PocketAAT, typeGuard } from "@pokt-network/pocket-js";
+import {
+  Configuration,
+  Pocket,
+  PocketAAT,
+  typeGuard,
+} from "@pokt-network/pocket-js";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
-const POCKET_CONFIGURATION = new Configuration(POCKET_NETWORK_CONFIGURATION.max_dispatchers, POCKET_NETWORK_CONFIGURATION.max_sessions, 0, POCKET_NETWORK_CONFIGURATION.request_timeout);
+const POCKET_CONFIGURATION = new Configuration(
+  POCKET_NETWORK_CONFIGURATION.max_dispatchers,
+  POCKET_NETWORK_CONFIGURATION.max_sessions,
+  0,
+  POCKET_NETWORK_CONFIGURATION.request_timeout
+);
 
 /**
  * Retrieve a list of URL's from the configuration for the dispatchers.
@@ -15,15 +25,18 @@ function getPocketDispatchers() {
   if (dispatchersStr === "") {
     return [];
   }
-  return dispatchersStr.split(",").map(function (dispatcherURLStr) {
+  return dispatchersStr.split(",").map(function(dispatcherURLStr) {
     return new URL(dispatcherURLStr);
   });
 }
 
 class PocketClientService {
-
   constructor() {
-    this._pocket = new Pocket(getPocketDispatchers(), undefined, POCKET_CONFIGURATION);
+    this._pocket = new Pocket(
+      getPocketDispatchers(),
+      undefined,
+      POCKET_CONFIGURATION
+    );
   }
 
   /**
@@ -54,7 +67,10 @@ class PocketClientService {
    */
   async createAndUnlockAccount(passphrase) {
     const account = await this._pocket.keybase.createAccount(passphrase);
-    const unlockedAccount = await this._pocket.keybase.getUnlockedAccount(account.addressHex, passphrase);
+    const unlockedAccount = await this._pocket.keybase.getUnlockedAccount(
+      account.addressHex,
+      passphrase
+    );
 
     return unlockedAccount === undefined ? account : unlockedAccount;
   }
@@ -68,7 +84,10 @@ class PocketClientService {
    * @returns {Promise<Error | undefined>} Undefined if account got unlocked or an Error.
    */
   async importAccount(privateKey, passphrase) {
-    return await this._pocket.keybase.importAccount(Buffer.from(privateKey, "hex"), passphrase);
+    return await this._pocket.keybase.importAccount(
+      Buffer.from(privateKey, "hex"),
+      passphrase
+    );
   }
 
   /**
@@ -80,7 +99,12 @@ class PocketClientService {
    * @returns {Promise<string | Error>} - PPK string or error.
    */
   async createPPKFromAccount(account, passphrase) {
-    return await this._pocket.keybase.exportPPKfromAccount(account, passphrase, undefined, passphrase);
+    return await this._pocket.keybase.exportPPKfromAccount(
+      account,
+      passphrase,
+      undefined,
+      passphrase
+    );
   }
 
   /**
@@ -93,7 +117,10 @@ class PocketClientService {
    */
   async exportPrivateKey(account, passphrase) {
     /** @type {Buffer} */
-    const privateKey = await this._pocket.keybase.exportAccount(account.addressHex, passphrase);
+    const privateKey = await this._pocket.keybase.exportAccount(
+      account.addressHex,
+      passphrase
+    );
 
     return privateKey.toString("hex");
   }
@@ -144,17 +171,20 @@ class PocketClientService {
    */
   async appStakeRequest(address, passphrase, chains, stakeAmount) {
     try {
-      const { chain_id: chainID, transaction_fee: transactionFee } = POCKET_NETWORK_CONFIGURATION;
+      const {
+        chain_id: chainID,
+        transaction_fee: transactionFee,
+      } = POCKET_NETWORK_CONFIGURATION;
 
-      const transactionSender = await this._getTransactionSender(address, passphrase);
+      const transactionSender = await this._getTransactionSender(
+        address,
+        passphrase
+      );
       const { unlockedAccount: account } = transactionSender;
 
       return await transactionSender
-        .appStake(
-          account.publicKey.toString("hex"), chains, stakeAmount
-        )
+        .appStake(account.publicKey.toString("hex"), chains, stakeAmount)
         .createTransaction(chainID, transactionFee);
-
     } catch (e) {
       return e.toString();
     }
@@ -171,11 +201,22 @@ class PocketClientService {
    */
   async signGatewayAAT(address, passphrase) {
     try {
-      const { aat_version: aatVersion, gateway_client_pub_key: gatewayClientPubKey } = POCKET_NETWORK_CONFIGURATION;
+      const {
+        aat_version: aatVersion,
+        gateway_client_pub_key: gatewayClientPubKey,
+      } = POCKET_NETWORK_CONFIGURATION;
 
-      const transactionSender = await this._getTransactionSender(address, passphrase);
+      const transactionSender = await this._getTransactionSender(
+        address,
+        passphrase
+      );
       const { unlockedAccount: account } = transactionSender;
-      const gatewayAAT = await PocketAAT.from(aatVersion, gatewayClientPubKey, account.publicKey.toString("hex"), account.privateKey.toString("hex"));
+      const gatewayAAT = await PocketAAT.from(
+        aatVersion,
+        gatewayClientPubKey,
+        account.publicKey.toString("hex"),
+        account.privateKey.toString("hex")
+      );
 
       if (typeGuard(gatewayAAT, PocketAAT)) {
         return gatewayAAT.applicationSignature;
@@ -197,13 +238,18 @@ class PocketClientService {
    */
   async appUnstakeRequest(address, passphrase) {
     try {
-      const { chain_id: chainID, transaction_fee: transactionFee } = POCKET_NETWORK_CONFIGURATION;
-      const transactionSender = await this._getTransactionSender(address, passphrase);
+      const {
+        chain_id: chainID,
+        transaction_fee: transactionFee,
+      } = POCKET_NETWORK_CONFIGURATION;
+      const transactionSender = await this._getTransactionSender(
+        address,
+        passphrase
+      );
 
       return await transactionSender
         .appUnstake(address)
         .createTransaction(chainID, transactionFee);
-
     } catch (e) {
       return e.toString();
     }
@@ -219,7 +265,11 @@ class PocketClientService {
    */
   async saveAccount(ppk, passphrase) {
     // @createAndImportAccount
-    return await this._pocket.keybase.importPPKFromJSON(passphrase, ppk, passphrase);
+    return await this._pocket.keybase.importPPKFromJSON(
+      passphrase,
+      ppk,
+      passphrase
+    );
   }
 
   /**
@@ -235,14 +285,24 @@ class PocketClientService {
    */
   async nodeStakeRequest(address, passphrase, chains, stakeAmount, serviceURL) {
     try {
-      const { chain_id: chainID, transaction_fee: transactionFee } = POCKET_NETWORK_CONFIGURATION;
-      const transactionSender = await this._getTransactionSender(address, passphrase);
+      const {
+        chain_id: chainID,
+        transaction_fee: transactionFee,
+      } = POCKET_NETWORK_CONFIGURATION;
+      const transactionSender = await this._getTransactionSender(
+        address,
+        passphrase
+      );
       const { unlockedAccount: account } = transactionSender;
 
       return await transactionSender
-        .nodeStake(account.publicKey.toString("hex"), chains, Number(stakeAmount).toString(), new URL(serviceURL))
+        .nodeStake(
+          account.publicKey.toString("hex"),
+          chains,
+          Number(stakeAmount).toString(),
+          new URL(serviceURL)
+        )
         .createTransaction(chainID, transactionFee);
-
     } catch (e) {
       return e.toString();
     }
@@ -258,13 +318,18 @@ class PocketClientService {
    */
   async nodeUnstakeRequest(address, passphrase) {
     try {
-      const { chain_id: chainID, transaction_fee: transactionFee } = POCKET_NETWORK_CONFIGURATION;
-      const transactionSender = await this._getTransactionSender(address, passphrase);
+      const {
+        chain_id: chainID,
+        transaction_fee: transactionFee,
+      } = POCKET_NETWORK_CONFIGURATION;
+      const transactionSender = await this._getTransactionSender(
+        address,
+        passphrase
+      );
 
       return await transactionSender
         .nodeUnstake(address)
         .createTransaction(chainID, transactionFee);
-
     } catch (e) {
       return e.toString();
     }
@@ -280,13 +345,18 @@ class PocketClientService {
    */
   async nodeUnjailRequest(address, passphrase) {
     try {
-      const { chain_id: chainID, transaction_fee: transactionFee } = POCKET_NETWORK_CONFIGURATION;
-      const transactionSender = await this._getTransactionSender(address, passphrase);
+      const {
+        chain_id: chainID,
+        transaction_fee: transactionFee,
+      } = POCKET_NETWORK_CONFIGURATION;
+      const transactionSender = await this._getTransactionSender(
+        address,
+        passphrase
+      );
 
       return await transactionSender
         .nodeUnjail(address)
         .createTransaction(chainID, transactionFee);
-
     } catch (e) {
       return e.toString();
     }

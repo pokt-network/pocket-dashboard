@@ -12,22 +12,19 @@ import _ from "lodash";
 import moment from "moment";
 import { Configurations } from "./_configuration";
 
-export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
+export const formatCurrency = amount => numeral(amount).format("$0,0.00");
 
-export const formatNumbers = (num) => numeral(num).format("0,0");
+export const formatNumbers = num => numeral(num).format("0,0");
 
-export const upoktToPOKT = (upokt) => {
+export const upoktToPOKT = upokt => {
   return upokt / Math.pow(10, DEFAULT_POKT_DENOMINATION_BASE);
 };
 
-export const usdToPOKT = (usd) => {
+export const usdToPOKT = usd => {
   return usd / Configurations.pocket_network.pokt_usd_market_price;
 };
 
-export const formatNetworkData = (
-  pokt,
-  fixed = true
-) => {
+export const formatNetworkData = (pokt, fixed = true) => {
   const poktNumber = upoktToPOKT(pokt);
 
   return fixed
@@ -68,7 +65,7 @@ export const isActiveUrl = (match, location, name, exact = false) => {
   return location.pathname.includes(name.toLowerCase());
 };
 
-export const mapStatusToField = (item) => {
+export const mapStatusToField = item => {
   return {
     ...item,
     status: getStakeStatus(
@@ -82,10 +79,12 @@ export const generateIcon = () => {
 
   // Use current time as a 'hash' to generate icon of 250x250
   return `data:image/png;base64,${new IdentIcon(
-    `${currTime}${currTime / 2}`, 250).toString()}`;
+    `${currTime}${currTime / 2}`,
+    250
+  ).toString()}`;
 };
 
-export const getStakeStatus = (status) => {
+export const getStakeStatus = status => {
   return typeof status === "string"
     ? STAKE_STATUS[status]
     : BOND_STATUS[status];
@@ -136,13 +135,13 @@ export const validateYup = async (values, schema) => {
   let errors = {};
   let yupErrors;
 
-  await schema.validate(values, { abortEarly: false }).catch((err) => {
+  await schema.validate(values, { abortEarly: false }).catch(err => {
     errors = err;
   });
 
   if (!_.isEmpty(errors)) {
     yupErrors = {};
-    errors.inner.forEach((err) => {
+    errors.inner.forEach(err => {
       yupErrors[err.path] = err.message;
     });
   }
@@ -150,14 +149,14 @@ export const validateYup = async (values, schema) => {
   return yupErrors;
 };
 
-export const scrollToId = (id) => {
+export const scrollToId = id => {
   const elmnt = document.getElementById(id);
 
   elmnt.scrollIntoView();
 };
 
 export const tableShow = (table, handleClick) => {
-  const showFormatter = (column) => {
+  const showFormatter = column => {
     return (
       <span className="show-icon d-flex justify-content-between">
         <span>{column.text}</span>{" "}
@@ -179,15 +178,24 @@ export const tableShow = (table, handleClick) => {
   return tableFormatted;
 };
 
-export const formatDaysCountdown = (time) => {
+export const formatDaysCountdown = time => {
   const now = moment(new Date());
   const eventTime = moment(time);
   const duration = moment.duration(eventTime.diff(now));
-  const days = duration.days().toString().padStart(2, "0");
-  const hours = duration.hours().toString().padStart(2, "0");
-  const minutes = duration.minutes().toString().padStart(2, "0");
+  const days = duration
+    .days()
+    .toString()
+    .padStart(2, "0");
+  const hours = duration
+    .hours()
+    .toString()
+    .padStart(2, "0");
+  const minutes = duration
+    .minutes()
+    .toString()
+    .padStart(2, "0");
 
   return `${days}:${hours}:${minutes}`;
 };
 
-export const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+export const capitalize = str => str.charAt(0).toUpperCase() + str.slice(1);

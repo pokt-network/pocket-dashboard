@@ -39,8 +39,10 @@ class PaymentMethods extends Component {
     const billingDetails = { name };
 
     StripePaymentService.createPaymentMethod(
-      stripe, cardData.card, billingDetails
-    ).then(async (result) => {
+      stripe,
+      cardData.card,
+      billingDetails
+    ).then(async result => {
       if (!billingDetails.address) {
         billingDetails.address = {
           country: " ",
@@ -62,7 +64,8 @@ class PaymentMethods extends Component {
 
       if (result.paymentMethod) {
         const { success, data } = await StripePaymentService.savePaymentMethod(
-          result.paymentMethod, billingDetails
+          result.paymentMethod,
+          billingDetails
         );
 
         if (success) {
@@ -79,7 +82,7 @@ class PaymentMethods extends Component {
 
           this.setState({
             paymentMethods,
-            newCard: false
+            newCard: false,
           });
         } else {
           this.setState({
@@ -87,7 +90,7 @@ class PaymentMethods extends Component {
               show: true,
               variant: "danger",
               text: data.message,
-              newCard: false
+              newCard: false,
             },
           });
         }
@@ -99,7 +102,7 @@ class PaymentMethods extends Component {
     const { paymentMethods: allPaymentMethods } = this.state;
 
     const paymentMethods = allPaymentMethods.filter(
-      (m) => m.id !== paymentMehodId
+      m => m.id !== paymentMehodId
     );
 
     const success = await PaymentService.deletePaymentMethod(paymentMehodId);
@@ -124,7 +127,7 @@ class PaymentMethods extends Component {
       newCard,
       loading,
     } = this.state;
-    const paymentMethods = allPaymentMethods.map((method) => {
+    const paymentMethods = allPaymentMethods.map(method => {
       return {
         id: method.id,
         cardData: {

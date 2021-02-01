@@ -5,7 +5,8 @@ import Logo from "./Logo";
 class SecondPage extends React.Component {
   render() {
     const { poktPrice, purchasedTokens } = this.props;
-    const purchasedTokensTotal = purchasedTokens < 0 ? 0.00 : (purchasedTokens / 1000000).toFixed(6);
+    const purchasedTokensTotal =
+      purchasedTokens < 0 ? 0.0 : (purchasedTokens / 1000000).toFixed(6);
 
     return (
       <div
@@ -18,29 +19,33 @@ class SecondPage extends React.Component {
           <u>POKT Token Purchase Agreement</u>
         </h3>
         <p className="mb-5">
-          <b>NOTICE:</b> THE TERMS OF THIS AGREEMENT FORM A BINDING LEGAL CONTRACT BETWEEN YOU AND POCKET NETWORK,
-          INC (THE “COMPANY”). CAREFULLY READ ALL OF THE TERMS OF THIS AGREEMENT BEFORE CLICKING THE “I AGREE” BUTTON.
-          BY CLICKING THE “I AGREE” BUTTON YOU ACKNOWLEDGE YOUR CONSENT AND AGREEMENT TO ALL THE TERMS AND CONDITIONS SET
-          FORTH IN THIS AGREEMENT. IF YOU DO NOT AGREE TO ALL THE TERMS OF THIS AGREEMENT, DO NOT CLICK “I AGREE.” IF YOU
-          HAVE ANY QUESTIONS REGARDING THE EFFECT OF THE TERMS AND CONDITIONS IN THIS AGREEMENT, YOU ARE ADVISED TO CONSULT
-          INDEPENDENT LEGAL COUNSEL.
+          <b>NOTICE:</b> THE TERMS OF THIS AGREEMENT FORM A BINDING LEGAL
+          CONTRACT BETWEEN YOU AND POCKET NETWORK, INC (THE “COMPANY”).
+          CAREFULLY READ ALL OF THE TERMS OF THIS AGREEMENT BEFORE CLICKING THE
+          “I AGREE” BUTTON. BY CLICKING THE “I AGREE” BUTTON YOU ACKNOWLEDGE
+          YOUR CONSENT AND AGREEMENT TO ALL THE TERMS AND CONDITIONS SET FORTH
+          IN THIS AGREEMENT. IF YOU DO NOT AGREE TO ALL THE TERMS OF THIS
+          AGREEMENT, DO NOT CLICK “I AGREE.” IF YOU HAVE ANY QUESTIONS REGARDING
+          THE EFFECT OF THE TERMS AND CONDITIONS IN THIS AGREEMENT, YOU ARE
+          ADVISED TO CONSULT INDEPENDENT LEGAL COUNSEL.
         </p>
         <h6 className="mb-3">
           <u>SUMMARY</u>
         </h6>
         <p>
-          Review this POKT Token Purchase Agreement following your completion of certain questions on our online website platform
-          {" "}
+          Review this POKT Token Purchase Agreement following your completion of
+          certain questions on our online website platform{" "}
           <a
-            target= "_blank"
+            target="_blank"
             rel="noopener noreferrer"
             href="https://dashboard.pokt.network/"
             style={{ textDecoration: "none" }}
           >
             https://dashboard.pokt.network/
           </a>{" "}
-          (the “Purchasing Site”). If your responses remain accurate and correct,
-          click the checkbox and the “I AGREE” button to indicate your agreement.
+          (the “Purchasing Site”). If your responses remain accurate and
+          correct, click the checkbox and the “I AGREE” button to indicate your
+          agreement.
         </p>
         <h6 className="mb-3">
           <u>PREAMBLE</u>
@@ -100,9 +105,8 @@ class SecondPage extends React.Component {
                 Subject to the Purchasing Site Terms of Use and the terms and
                 conditions set forth herein, Purchaser, intending to be legally
                 bound, hereby irrevocably agrees to purchase from the Company{" "}
-                {purchasedTokensTotal} Tokens (the “
-                <u>Purchased Tokens</u>”) at a purchase price of $USD{" "}
-                {poktPrice} per token (the &quot;
+                {purchasedTokensTotal} Tokens (the “<u>Purchased Tokens</u>”) at
+                a purchase price of $USD {poktPrice} per token (the &quot;
                 <u>Purchase Price</u>&quot;), payable by [ETH, USD, BTC]
                 pursuant to the procedures set forth in this Agreement and via
                 the Purchasing Site.

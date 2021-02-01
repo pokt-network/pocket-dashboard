@@ -6,14 +6,12 @@ import { Redirect } from "react-router-dom";
 import { ROUTE_PATHS } from "../../../../_routes";
 
 export class BaseAuthProviderHook extends Component {
-
-
   constructor(providerName, props, context) {
     super(props, context);
 
     this.providerName = providerName;
     this.state = {
-      authenticated: false
+      authenticated: false,
     };
   }
 
@@ -23,20 +21,24 @@ export class BaseAuthProviderHook extends Component {
     // noinspection JSUnresolvedFunction
     const data = queryString.parse(location.search);
 
-    UserService.loginWithAuthProvider(this.providerName, data.code)
-      .then(response => {
+    UserService.loginWithAuthProvider(this.providerName, data.code).then(
+      response => {
         this.setState({
-          authenticated: response.success
+          authenticated: response.success,
         });
-      });
-
+      }
+    );
   }
 
   render() {
-    return (!this.state.authenticated) ? <h6>Authenticating...</h6> : <Redirect to={ROUTE_PATHS.home}/>;
+    return !this.state.authenticated ? (
+      <h6>Authenticating...</h6>
+    ) : (
+      <Redirect to={ROUTE_PATHS.home} />
+    );
   }
 }
 
 BaseAuthProviderHook.propTypes = {
-  location: PropTypes.object
+  location: PropTypes.object,
 };

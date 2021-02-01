@@ -37,7 +37,8 @@ class ForgotPassword extends Component {
 
     if (userExists) {
       const isValidated = await PocketUserService.isUserValidated(
-        email, "email"
+        email,
+        "email"
       );
 
       if (isValidated) {

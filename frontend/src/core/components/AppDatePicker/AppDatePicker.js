@@ -40,7 +40,7 @@ class AppDatePicker extends Component {
         <DatePicker
           {...props}
           selected={date}
-          onChange={(date) => this.handleDateChange(date, onChange)}
+          onChange={date => this.handleDateChange(date, onChange)}
           className="form-control"
           customInput={<DateButton />}
         />

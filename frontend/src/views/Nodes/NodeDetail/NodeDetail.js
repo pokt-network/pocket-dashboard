@@ -1,12 +1,22 @@
 import React, { Component } from "react";
 import { Alert, Button, Col, Modal, Row } from "react-bootstrap";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import { BACKEND_ERRORS, DEFAULT_NETWORK_ERROR_MESSAGE, STAKE_STATUS, TABLE_COLUMNS } from "../../../_constants";
+import {
+  BACKEND_ERRORS,
+  DEFAULT_NETWORK_ERROR_MESSAGE,
+  STAKE_STATUS,
+  TABLE_COLUMNS,
+} from "../../../_constants";
 import NetworkService from "../../../core/services/PocketNetworkService";
 import Loader from "../../../core/components/Loader";
 import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import DeletedOverlay from "../../../core/components/DeletedOverlay/DeletedOverlay";
-import { formatDaysCountdown, formatNetworkData, formatNumbers, getStakeStatus } from "../../../_helpers";
+import {
+  formatDaysCountdown,
+  formatNetworkData,
+  formatNumbers,
+  getStakeStatus,
+} from "../../../_helpers";
 import { Link } from "react-router-dom";
 import PocketUserService from "../../../core/services/PocketUserService";
 import AppTable from "../../../core/components/AppTable";
@@ -42,7 +52,7 @@ class NodeDetail extends Component {
       ctaButtonPressed: false,
       serviceUrl: "",
       updatingAlert: false,
-      error: { show: false, message: "" }
+      error: { show: false, message: "" },
     };
 
     this.deleteNode = this.deleteNode.bind(this);
@@ -58,12 +68,8 @@ class NodeDetail extends Component {
     // eslint-disable-next-line react/prop-types
     const { address } = this.props.match.params;
 
-    const {
-      pocketNode,
-      networkData,
-      error,
-      name
-    } = await NodeService.getNode(address) || {};
+    const { pocketNode, networkData, error, name } =
+      (await NodeService.getNode(address)) || {};
 
     hasError = error ? error : hasError;
     errorType = error ? name : errorType;
@@ -71,9 +77,11 @@ class NodeDetail extends Component {
     if (hasError || pocketNode === undefined) {
       if (errorType === BACKEND_ERRORS.NETWORK) {
         this.setState({
-          loading: false, error: {
-            show: true, message: DEFAULT_NETWORK_ERROR_MESSAGE
-          }
+          loading: false,
+          error: {
+            show: true,
+            message: DEFAULT_NETWORK_ERROR_MESSAGE,
+          },
         });
       } else {
         this.setState({ loading: false, exists: false });
@@ -83,9 +91,9 @@ class NodeDetail extends Component {
 
     let chains = await NetworkService.getNetworkChains(networkData.chains);
 
-    const { balance: accountBalance } = await PocketAccountService.getPoktBalance(
-      address
-    );
+    const {
+      balance: accountBalance,
+    } = await PocketAccountService.getPoktBalance(address);
 
     const nodeFromCache = NodeService.getNodeInfo();
 
@@ -94,7 +102,8 @@ class NodeDetail extends Component {
     }
 
     const status = getStakeStatus(parseInt(networkData.status));
-    const updatingAlert = pocketNode.updatingStatus && status === STAKE_STATUS.Unstaked;
+    const updatingAlert =
+      pocketNode.updatingStatus && status === STAKE_STATUS.Unstaked;
 
     this.setState({
       pocketNode,
@@ -104,13 +113,12 @@ class NodeDetail extends Component {
       serviceUrl: nodeFromCache.serviceURL,
       loading: false,
       updatingAlert,
-      unjailAlert: networkData.jailed
+      unjailAlert: networkData.jailed,
     });
 
     // eslint-disable-next-line react/prop-types
     this.props.onBreadCrumbChange(["Nodes", "Node Detail"]);
   }
-
 
   async deleteNode() {
     const { address } = this.state.pocketNode.publicPocketAccount;
@@ -121,7 +129,9 @@ class NodeDetail extends Component {
     const userEmail = PocketUserService.getUserInfo().email;
 
     const success = await NodeService.deleteNodeFromDashboard(
-      address, userEmail, nodesLink
+      address,
+      userEmail,
+      nodesLink
     );
 
     NodeService.removeNodeInfoFromCache();
@@ -138,11 +148,20 @@ class NodeDetail extends Component {
     const detail = url.replace(":address", address);
     const nodeLink = `${window.location.origin}${detail}`;
 
-    const account = await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+    const account = await PocketClientService.saveAccount(
+      JSON.stringify(ppk),
+      passphrase
+    );
 
-    const nodeUnstakeTransaction = await PocketClientService.nodeUnstakeRequest(account.addressHex, passphrase);
+    const nodeUnstakeTransaction = await PocketClientService.nodeUnstakeRequest(
+      account.addressHex,
+      passphrase
+    );
 
-    const { success, data } = await NodeService.unstakeNode(nodeUnstakeTransaction, nodeLink);
+    const { success, data } = await NodeService.unstakeNode(
+      nodeUnstakeTransaction,
+      nodeLink
+    );
 
     if (success) {
       window.location.reload(false);
@@ -159,11 +178,13 @@ class NodeDetail extends Component {
     await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
 
     const nodeUnjailTransaction = await PocketClientService.nodeUnjailRequest(
-      address, passphrase
+      address,
+      passphrase
     );
 
     const { success, data } = await NodeService.unjailNode(
-      nodeUnjailTransaction, nodeLink
+      nodeUnjailTransaction,
+      nodeLink
     );
 
     if (success) {
@@ -207,7 +228,7 @@ class NodeDetail extends Component {
 
     const status = getStakeStatus(parseInt(copyStakeStatus));
     // const isStaked =
-      // status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
+    // status !== STAKE_STATUS.Unstaked && status !== STAKE_STATUS.Unstaking;
 
     let address;
     let publicKey;
@@ -233,9 +254,10 @@ class NodeDetail extends Component {
       updatingAlert,
     } = this.state;
 
-    const unstakingTime = status === STAKE_STATUS.Unstaking
-      ? formatDaysCountdown(unstakingCompletionTime)
-      : undefined;
+    const unstakingTime =
+      status === STAKE_STATUS.Unstaking
+        ? formatDaysCountdown(unstakingCompletionTime)
+        : undefined;
 
     let jailStatus;
     let jailActionItem;
@@ -250,7 +272,9 @@ class NodeDetail extends Component {
       jailStatus = JAIL_STATUS_STR.JAILED;
       jailActionItem = (
         <p
-          onClick={() => this.setState({ ctaButtonPressed: true, unjail: true })}
+          onClick={() =>
+            this.setState({ ctaButtonPressed: true, unjail: true })
+          }
           className="unjail"
         >
           Unjail this node
@@ -267,12 +291,16 @@ class NodeDetail extends Component {
     const generalInfo = [
       {
         title: `${formatNetworkData(stakedTokens)} POKT`,
-        titleAttrs: { title: stakedTokens ? formatNumbers(stakedTokens) : undefined },
+        titleAttrs: {
+          title: stakedTokens ? formatNumbers(stakedTokens) : undefined,
+        },
         subtitle: "Staked tokens",
       },
       {
         title: `${formatNetworkData(accountBalance)} POKT`,
-        titleAttrs: { title: accountBalance ? formatNumbers(accountBalance) : undefined },
+        titleAttrs: {
+          title: accountBalance ? formatNumbers(accountBalance) : undefined,
+        },
         subtitle: "Balance",
       },
       {
@@ -281,7 +309,9 @@ class NodeDetail extends Component {
         children:
           status === STAKE_STATUS.Unstaking ? (
             <p className="unstaking-time">{`Unstaking time: ${unstakingTime}`}</p>
-          ) : undefined,
+          ) : (
+            undefined
+          ),
       },
       {
         title: jailStatus,
@@ -290,8 +320,10 @@ class NodeDetail extends Component {
       },
       {
         title: formatNetworkData(stakedTokens),
-        titleAttrs: { title: stakedTokens ? formatNumbers(stakedTokens) : undefined },
-        subtitle: "Validator Power"
+        titleAttrs: {
+          title: stakedTokens ? formatNumbers(stakedTokens) : undefined,
+        },
+        subtitle: "Validator Power",
       },
     ];
 
@@ -304,13 +336,17 @@ class NodeDetail extends Component {
     const renderValidation = (handleFunc, breadcrumbs) => (
       <>
         {/* eslint-disable-next-line react/prop-types */}
-        <ValidateKeys handleBreadcrumbs={this.props.onBreadCrumbChange}
+        <ValidateKeys
+          handleBreadcrumbs={this.props.onBreadCrumbChange}
           breadcrumbs={breadcrumbs}
-          address={address} handleAfterValidate={handleFunc}>
+          address={address}
+          handleAfterValidate={handleFunc}
+        >
           <h1>Verify private key</h1>
           <p className="validate-text">
-            Please import your account credentials before sending the Transaction.
-            Be aware that this Transaction has a 0.01 POKT fee cost.
+            Please import your account credentials before sending the
+            Transaction. Be aware that this Transaction has a 0.01 POKT fee
+            cost.
           </p>
         </ValidateKeys>
       </>
@@ -376,18 +412,21 @@ class NodeDetail extends Component {
                 <h4 className="text-uppercase" style={{ paddingLeft: "15px" }}>
                   ATTENTION!{" "}
                 </h4>
-                <p className="ml-2">
-                </p>
+                <p className="ml-2"></p>
               </>
             }
           >
-            <p ref={(el) => {
-              if (el) {
-                el.style.setProperty("font-size", "14px", "important");
-              }
-            }}>
-              This unjail transaction will be marked complete when the next block is generated. You will receive an email notification when your node is out of jail and ready to use.
-              </p>
+            <p
+              ref={el => {
+                if (el) {
+                  el.style.setProperty("font-size", "14px", "important");
+                }
+              }}
+            >
+              This unjail transaction will be marked complete when the next
+              block is generated. You will receive an email notification when
+              your node is out of jail and ready to use.
+            </p>
           </AppAlert>
         )}
         <Row>
@@ -395,14 +434,12 @@ class NodeDetail extends Component {
             {updatingAlert && (
               <AppAlert
                 className="pb-3 pt-3 mb-4"
-                title={
-                  <h4 className="ml-3">
-                    ATTENTION!
-                  </h4>
-                }
+                title={<h4 className="ml-3">ATTENTION!</h4>}
               >
                 <p>
-                  This staking transaction will be marked complete when the next block is generated. You will receive an email notification when your app is ready to use.
+                  This staking transaction will be marked complete when the next
+                  block is generated. You will receive an email notification
+                  when your app is ready to use.
                 </p>
               </AppAlert>
             )}
@@ -445,14 +482,23 @@ class NodeDetail extends Component {
         <Row className="stats">
           {generalInfo.map((card, idx) => (
             <Col key={idx}>
-              <InfoCard titleAttrs={card.titleAttrs} title={card.title} subtitle={card.subtitle}>
+              <InfoCard
+                titleAttrs={card.titleAttrs}
+                title={card.title}
+                subtitle={card.subtitle}
+              >
                 {card.children || <></>}
               </InfoCard>
             </Col>
           ))}
         </Row>
         <Row>
-          <Col className={chains.length === 0 ? "mb-1" : ""} style={{ display: status === STAKE_STATUS.Staked ? "block" : "none" }}>
+          <Col
+            className={chains.length === 0 ? "mb-1" : ""}
+            style={{
+              display: status === STAKE_STATUS.Staked ? "block" : "none",
+            }}
+          >
             <Segment scroll={false} label="Networks">
               <AppTable
                 scroll
@@ -542,7 +588,8 @@ class NodeDetail extends Component {
           <Modal.Footer>
             <Button
               className="dark-button"
-              onClick={() => this.setState({ deleteModal: false })}>
+              onClick={() => this.setState({ deleteModal: false })}
+            >
               <span>Cancel</span>
             </Button>
             <Button onClick={this.deleteNode}>

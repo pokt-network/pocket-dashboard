@@ -29,14 +29,19 @@ class AppOrderSummary extends Component {
       input.value = maxBalance.toString();
     }
 
-    data[input.name] = parseFloat(input.value).toFixed(2).toString();
+    data[input.name] = parseFloat(input.value)
+      .toFixed(2)
+      .toString();
     this.setState({ data });
   }
 
   componentDidMount() {
     const { balance } = this.props;
 
-    this.setState({ maxBalance: balance.toFixed(2), data: { balanceInput: balance.toFixed(2) } });
+    this.setState({
+      maxBalance: balance.toFixed(2),
+      data: { balanceInput: balance.toFixed(2) },
+    });
   }
 
   render() {
@@ -50,7 +55,7 @@ class AppOrderSummary extends Component {
       balanceOnChange,
       loading,
       total,
-      currency
+      currency,
     } = this.props;
 
     return (
@@ -73,7 +78,7 @@ class AppOrderSummary extends Component {
               max={maxBalance}
               name="balanceInput"
               value={balanceInput}
-              onChange={(e) => {
+              onChange={e => {
                 this.handleChange(e);
                 balanceOnChange(e);
               }}

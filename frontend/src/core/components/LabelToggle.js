@@ -11,7 +11,7 @@ const LabelToggle = React.forwardRef(({ children, onClick }, ref) => (
     className="label-dropdown"
     href=""
     ref={ref}
-    onClick={(e) => {
+    onClick={e => {
       e.preventDefault();
       onClick(e);
     }}

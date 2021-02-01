@@ -96,12 +96,12 @@ class Import extends Component {
     }
   }
 
-  readUploadedFile = (e) => {
+  readUploadedFile = e => {
     e.preventDefault();
     const reader = new FileReader();
     const ppkFileName = e.target.files[0].name;
 
-    reader.onload = (e) => {
+    reader.onload = e => {
       const { result } = e.target;
       const { data } = this.state;
       const ppkData = JSON.parse(result.trim());
@@ -118,12 +118,9 @@ class Import extends Component {
   async continue(e) {
     e.preventDefault();
 
-    const {
-      type,
-      created,
-    } = this.state;
+    const { type, created } = this.state;
 
-    if(!created) {
+    if (!created) {
       // eslint-disable-next-line react/prop-types
       this.props.history.push({
         pathname: _getDashboardPath(
@@ -161,7 +158,8 @@ class Import extends Component {
     if (!ppkData) {
       ppk = JSON.parse(
         await PocketClientService.createPPKFromPrivateKey(
-          privateKey, passphrase
+          privateKey,
+          passphrase
         )
       );
     } else {
@@ -169,11 +167,12 @@ class Import extends Component {
     }
 
     const { success, data } = await AccountService.importAccount(
-      ppk, passphrase);
+      ppk,
+      passphrase
+    );
 
     if (success) {
-      await PocketClientService.saveAccount(
-        JSON.stringify(ppk), passphrase);
+      await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
       let chains;
       const { balance } = await AccountService.getPoktBalance(data.address);
 
@@ -186,11 +185,13 @@ class Import extends Component {
         });
 
         // Retrieve the application information if available
-        const application = await ApplicationService.getNetworkApplication(data.address);
+        const application = await ApplicationService.getNetworkApplication(
+          data.address
+        );
         const appInDB = await ApplicationService.getApplication(data.address);
 
         this.setState({
-          created: appInDB !== undefined && appInDB !== null
+          created: appInDB !== undefined && appInDB !== null,
         });
 
         if (application.error === undefined) {
@@ -202,14 +203,17 @@ class Import extends Component {
               tokens: application.staked_tokens,
               balance: balance,
               status: getStakeStatus(application.status.toString()),
-              amount: application.max_relays
+              amount: application.max_relays,
             },
             // App Staked chains
-            chains: application.chains
+            chains: application.chains,
           });
         } else {
           const message = application.message.split(":")[0];
-          let errorType = message === "Failed to retrieve the app infromation" ? "warning" : "danger";
+          let errorType =
+            message === "Failed to retrieve the app infromation"
+              ? "warning"
+              : "danger";
 
           this.setState({
             importing: false,
@@ -218,8 +222,8 @@ class Import extends Component {
               tokens: 0,
               balance: balance,
               status: getStakeStatus("0"),
-              amount: 0
-            }
+              amount: 0,
+            },
           });
         }
       } else {
@@ -232,7 +236,7 @@ class Import extends Component {
         const nodeInDB = await NodeService.getNode(data.address);
 
         this.setState({
-          created: nodeInDB.pocketNode !== undefined
+          created: nodeInDB.pocketNode !== undefined,
         });
 
         if (node.error === undefined) {
@@ -245,10 +249,10 @@ class Import extends Component {
               tokens: node.tokens,
               balance: balance,
               status: getStakeStatus(node.status.toString()),
-              amount: node.max_relays
+              amount: node.max_relays,
             },
             // Node Staked chains
-            chains: node.chains
+            chains: node.chains,
           });
         } else {
           this.setState({
@@ -258,8 +262,8 @@ class Import extends Component {
               tokens: 0,
               balance: balance,
               status: getStakeStatus("0"),
-              amount: 0
-            }
+              amount: 0,
+            },
           });
         }
       }
@@ -303,7 +307,10 @@ class Import extends Component {
     const { passphrase, privateKey } = this.state.data;
 
     const generalInfo = [
-      { title: upoktToPOKT(accountData.tokens).toFixed(2), subtitle: "Staked tokens" },
+      {
+        title: upoktToPOKT(accountData.tokens).toFixed(2),
+        subtitle: "Staked tokens",
+      },
       {
         title: `${formatNumbers(accountData.balance / 1000000)} POKT`,
         subtitle: "Balance",
@@ -312,8 +319,9 @@ class Import extends Component {
       {
         title:
           type === ITEM_TYPES.APPLICATION
-          ? (formatNumbers(accountData.amount) * Configurations.pocket_network.max_sessions)
-          : formatNumbers(accountData.amount),
+            ? formatNumbers(accountData.amount) *
+              Configurations.pocket_network.max_sessions
+            : formatNumbers(accountData.amount),
         subtitle:
           type === ITEM_TYPES.APPLICATION
             ? "Max Relays per Day"
@@ -329,7 +337,8 @@ class Import extends Component {
               variant={errorMessage.type}
               title={errorMessage.message}
               onClose={() => this.setState({ errorMessage: { show: false } })}
-              dismissible />
+              dismissible
+            />
           )}
           <Col className="page-title">
             <h1>Import {type === ITEM_TYPES.APPLICATION ? "App" : "Node"}</h1>
@@ -338,8 +347,8 @@ class Import extends Component {
         <Row>
           <Col className="page-title">
             <p>
-              Use the dashboard to import a previously created Pocket {type} {" "}
-              in the network. If your account is not a
+              Use the dashboard to import a previously created Pocket {type} in
+              the network. If your account is not a
               {type === ITEM_TYPES.APPLICATION ? "n " : " "} {type} go to{" "}
               <Link
                 className="font-weight-light"
@@ -377,7 +386,7 @@ class Import extends Component {
                         style={{ display: "none" }}
                         id="upload-key"
                         type="file"
-                        onChange={(e) => this.readUploadedFile(e)}
+                        onChange={e => this.readUploadedFile(e)}
                       />
                     </div>
                   </Form.Group>
@@ -420,46 +429,48 @@ class Import extends Component {
                       </Form.Group>
                     </>
                   ) : (
-                      <>
-                        <h2>Passphrase</h2>
-                        <Form.Group className="d-flex">
-                          <Form.Control
-                            placeholder="*****************"
-                            value={passphrase}
-                            required
-                            onChange={this.handleChange}
-                            type={inputType}
-                            name="passphrase"
-                            className={error.show ? "is-invalid" : ""}
-                          />
-                          <Form.Control.Feedback
-                            className="invalid-account"
-                            type="invalid"
-                          >
-                            {error.show ? error.message : ""}
-                          </Form.Control.Feedback>
-                          <img
-                            className="eye-icon"
-                            onClick={this.changeInputType}
-                            src={showPassphraseIconURL}
-                            alt=""
-                          />
-                          <LoadingButton
-                            loading={importing}
-                            disabled={errorMessage.show && errorMessage.type === "danger"}
-                            buttonProps={{
-                              variant: "dark",
-                              type: "submit",
-                              onClick: !imported
-                                ? this.importAccount
-                                : this.continue,
-                            }}
-                          >
-                            <span>{!imported ? "Import" : "Continue"}</span>
-                          </LoadingButton>
-                        </Form.Group>
-                      </>
-                    )}
+                    <>
+                      <h2>Passphrase</h2>
+                      <Form.Group className="d-flex">
+                        <Form.Control
+                          placeholder="*****************"
+                          value={passphrase}
+                          required
+                          onChange={this.handleChange}
+                          type={inputType}
+                          name="passphrase"
+                          className={error.show ? "is-invalid" : ""}
+                        />
+                        <Form.Control.Feedback
+                          className="invalid-account"
+                          type="invalid"
+                        >
+                          {error.show ? error.message : ""}
+                        </Form.Control.Feedback>
+                        <img
+                          className="eye-icon"
+                          onClick={this.changeInputType}
+                          src={showPassphraseIconURL}
+                          alt=""
+                        />
+                        <LoadingButton
+                          loading={importing}
+                          disabled={
+                            errorMessage.show && errorMessage.type === "danger"
+                          }
+                          buttonProps={{
+                            variant: "dark",
+                            type: "submit",
+                            onClick: !imported
+                              ? this.importAccount
+                              : this.continue,
+                          }}
+                        >
+                          <span>{!imported ? "Import" : "Continue"}</span>
+                        </LoadingButton>
+                      </Form.Group>
+                    </>
+                  )}
                 </Col>
               </Form.Row>
             </Form>

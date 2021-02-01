@@ -3,7 +3,6 @@ import axiosInstance from "./_serviceHelper";
 const axios = axiosInstance();
 
 class PocketSecurityQuestionsService extends PocketBaseService {
-
   constructor() {
     super("api/security_questions");
   }
@@ -14,8 +13,7 @@ class PocketSecurityQuestionsService extends PocketBaseService {
    * @return {Promise|Promise<Array.<{string}>>}
    */
   getSecurityQuestions() {
-    return axios.get(this._getURL())
-      .then(response => response.data);
+    return axios.get(this._getURL()).then(response => response.data);
   }
 
   /**
@@ -29,17 +27,19 @@ class PocketSecurityQuestionsService extends PocketBaseService {
   async saveSecurityQuestionAnswers(email, questions) {
     const data = {
       email,
-      questions
+      questions,
     };
 
-    return axios.post(this._getURL("answered"), data)
+    return axios
+      .post(this._getURL("answered"), data)
       .then(response => {
         if (response.status === 200) {
           return { success: response.data };
         }
 
         return { success: false };
-      }).catch(err => {
+      })
+      .catch(err => {
         return { success: false, data: err.response };
       });
   }
@@ -53,16 +53,18 @@ class PocketSecurityQuestionsService extends PocketBaseService {
    */
   async getUserRandomSecurityQuestion(email) {
     const data = {
-      email
+      email,
     };
 
-    return axios.post(this._getURL("user/random"), data)
+    return axios
+      .post(this._getURL("user/random"), data)
       .then(response => {
         if (response.status === 200) {
           return { success: response.data };
         }
         return { success: false };
-      }).catch(err => {
+      })
+      .catch(err => {
         return { success: false, data: err.response };
       });
   }
@@ -76,16 +78,18 @@ class PocketSecurityQuestionsService extends PocketBaseService {
    */
   async getUserSecurityQuestions(email) {
     const data = {
-      email
+      email,
     };
 
-    return axios.post(this._getURL("user/all"), data)
+    return axios
+      .post(this._getURL("user/all"), data)
       .then(response => {
         if (response.status === 200) {
           return { success: true, data: response.data };
         }
         return { success: false };
-      }).catch(err => {
+      })
+      .catch(err => {
         return { success: false, data: err.response };
       });
   }
@@ -101,22 +105,21 @@ class PocketSecurityQuestionsService extends PocketBaseService {
   async validateUserSecurityQuestions(email, answeredQuestions) {
     const data = {
       email,
-      answeredQuestions
+      answeredQuestions,
     };
 
-    return axios.post(this._getURL("user/validate-answers"), data)
+    return axios
+      .post(this._getURL("user/validate-answers"), data)
       .then(response => {
         if (response.status === 200) {
           return { success: true, data: response.data };
         }
         return { success: false };
-      }).catch(err => {
+      })
+      .catch(err => {
         return { success: false, data: err.response };
       });
   }
-
 }
-
-
 
 export default new PocketSecurityQuestionsService();

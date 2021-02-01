@@ -40,7 +40,9 @@ class General extends Component {
       const answerSecurityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
       const { success, data } = await UserService.changeEmail(
-        currentEmail, email, answerSecurityQuestionLinkPage
+        currentEmail,
+        email,
+        answerSecurityQuestionLinkPage
       );
 
       if (success) {
@@ -59,7 +61,10 @@ class General extends Component {
 
     if (currentUsername !== username) {
       const { email } = UserService.getUserInfo();
-      const { success, data } = await UserService.changeUsername(email, username);
+      const { success, data } = await UserService.changeUsername(
+        email,
+        username
+      );
 
       if (success) {
         changedUsername = true;
@@ -149,7 +154,7 @@ class General extends Component {
               <Formik
                 enableReinitialize
                 validationSchema={schema}
-                onSubmit={(data) => {
+                onSubmit={data => {
                   const { currentEmail } = this.state;
 
                   this.setState({ data });

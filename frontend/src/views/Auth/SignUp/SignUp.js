@@ -7,9 +7,7 @@ import {
 } from "../../../core/components/AuthProviderButton";
 import PocketUserService from "../../../core/services/PocketUserService";
 import "./SignUp.scss";
-import {
-  ROUTE_PATHS,
-} from "../../../_routes";
+import { ROUTE_PATHS } from "../../../_routes";
 import AuthSidebar from "../../../core/components/AuthSidebar/AuthSidebar";
 import { Formik } from "formik";
 import * as yup from "yup";
@@ -86,7 +84,11 @@ class SignUp extends Component {
     const securityQuestionLinkPage = `${window.location.origin}${ROUTE_PATHS.security_questions}`;
 
     const { success, data } = await PocketUserService.signUp(
-      username, email, password1, password2, securityQuestionLinkPage
+      username,
+      email,
+      password1,
+      password2,
+      securityQuestionLinkPage
     );
 
     if (!success) {
@@ -136,7 +138,7 @@ class SignUp extends Component {
                 <p className="error">{backendErrors}</p>
                 <Formik
                   validate={this.validate}
-                  onSubmit={(data) => {
+                  onSubmit={data => {
                     this.setState({ data });
                     this.handleSignUp();
                   }}
@@ -255,7 +257,12 @@ class SignUp extends Component {
                       >
                         Sign up
                       </Button>
-                      <div className="divider mt-4 mb-3" style={{ display: "none" }} >Or</div>
+                      <div
+                        className="divider mt-4 mb-3"
+                        style={{ display: "none" }}
+                      >
+                        Or
+                      </div>
                       <div id={"provider-buttons"} style={{ display: "none" }}>
                         <AuthProviderButton
                           block={true}
@@ -263,7 +270,8 @@ class SignUp extends Component {
                           icon={faGoogle}
                           type={AuthProviderType.signup}
                           authProvider={PocketUserService.getAuthProvider(
-                            this.state.authProviders, "google"
+                            this.state.authProviders,
+                            "google"
                           )}
                         />
                         <AuthProviderButton
@@ -272,7 +280,8 @@ class SignUp extends Component {
                           icon={faGithub}
                           type={AuthProviderType.signup}
                           authProvider={PocketUserService.getAuthProvider(
-                            this.state.authProviders, "github"
+                            this.state.authProviders,
+                            "github"
                           )}
                         />
                       </div>

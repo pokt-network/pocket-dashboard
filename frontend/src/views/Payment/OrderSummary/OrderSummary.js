@@ -11,19 +11,27 @@ import Loader from "../../../core/components/Loader";
 import { ElementsConsumer } from "@stripe/react-stripe-js";
 import PaymentContainer from "../../../core/components/Payment/Stripe/PaymentContainer";
 import StripePaymentService from "../../../core/services/PocketStripePaymentService";
-import { _getDashboardPath, ROUTE_PATHS, DASHBOARD_PATHS } from "../../../_routes";
+import {
+  _getDashboardPath,
+  ROUTE_PATHS,
+  DASHBOARD_PATHS,
+} from "../../../_routes";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
 import NewCardNoAddressForm from "../../../core/components/Payment/Stripe/NewCardNoAddressForm";
 import AppAlert from "../../../core/components/AppAlert";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
-import { formatCurrency, formatNumbers, scrollToId, capitalize } from "../../../_helpers";
+import {
+  formatCurrency,
+  formatNumbers,
+  scrollToId,
+  capitalize,
+} from "../../../_helpers";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import LoadingButton from "../../../core/components/LoadingButton";
 import { ITEM_TYPES } from "../../../_constants";
 import NodeService from "../../../core/services/PocketNodeService";
 import PocketClientService from "../../../core/services/PocketClientService";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
-
 
 class OrderSummary extends Component {
   constructor(props, context) {
@@ -81,15 +89,15 @@ class OrderSummary extends Component {
       total,
       currentAccountBalance,
       upoktToStake,
-      upoktTotal
+      upoktTotal,
     } = this.props.location.state;
 
     const user = UserService.getUserInfo().email;
 
-    PaymentService.getPaymentMethods(user).then((paymentMethods) => {
+    PaymentService.getPaymentMethods(user).then(paymentMethods => {
       const selectedPaymentMethod =
         paymentMethods.find(
-          (pm) => PaymentService.getDefaultPaymentMethod() === pm.id
+          pm => PaymentService.getDefaultPaymentMethod() === pm.id
         ) || paymentMethods[0];
 
       const hasPaymentMethods = paymentMethods.length > 0;
@@ -110,14 +118,13 @@ class OrderSummary extends Component {
         isAddNewDisabled: !hasPaymentMethods,
       });
 
-
       const action = UserService.getUserAction();
       const appBreadcrumbs = ["Apps", action, "Checkout", "Payment"];
       const nodeBreadcrumbs = ["Nodes", action, "Checkout", "Payment"];
 
-      type === ITEM_TYPES.APPLICATION ?
-        this.props.onBreadCrumbChange(appBreadcrumbs) :
-        this.props.onBreadCrumbChange(nodeBreadcrumbs);
+      type === ITEM_TYPES.APPLICATION
+        ? this.props.onBreadCrumbChange(appBreadcrumbs)
+        : this.props.onBreadCrumbChange(nodeBreadcrumbs);
     });
   }
 
@@ -131,7 +138,7 @@ class OrderSummary extends Component {
       total,
       currentAccountBalance,
       upoktToStake,
-      upoktTotal
+      upoktTotal,
     } = this.state;
 
     return this.props.history.replace({
@@ -141,7 +148,9 @@ class OrderSummary extends Component {
         paymentId: paymentIntent.id,
         paymentMethod: {
           id: selectedPaymentMethod.id,
-          method: `${capitalize(selectedPaymentMethod.brand)} **** **** **** ${selectedPaymentMethod.lastDigits}`,
+          method: `${capitalize(selectedPaymentMethod.brand)} **** **** **** ${
+            selectedPaymentMethod.lastDigits
+          }`,
           holder: selectedPaymentMethod.billingDetails.name,
         },
         details: [
@@ -151,7 +160,7 @@ class OrderSummary extends Component {
         total,
         currentAccountBalance,
         upoktToStake,
-        upoktTotal
+        upoktTotal,
       },
     });
   }
@@ -165,9 +174,11 @@ class OrderSummary extends Component {
 
     const { paymentIntent, selectedPaymentMethod, type } = this.state;
 
-
     const result = await StripePaymentService.confirmPaymentWithSavedCard(
-      stripe, paymentIntent.paymentNumber, selectedPaymentMethod.id, selectedPaymentMethod.billingDetails
+      stripe,
+      paymentIntent.paymentNumber,
+      selectedPaymentMethod.id,
+      selectedPaymentMethod.billingDetails
     );
 
     if (result.error) {
@@ -178,7 +189,6 @@ class OrderSummary extends Component {
           variant: "warning",
           message: <h4>{result.error.message}</h4>,
         },
-
       });
       scrollToId("alert");
       return;
@@ -200,11 +210,17 @@ class OrderSummary extends Component {
       this.setState({ loading: true });
 
       const appStakeTransaction = await PocketClientService.appStakeRequest(
-        address, passphrase, chains, upoktToStake.toString());
+        address,
+        passphrase,
+        chains,
+        upoktToStake.toString()
+      );
 
       // Sign an AAT for the Gateway service using the Gateway's client pub key and app private key
       const gatewayAATSignature = await PocketClientService.signGatewayAAT(
-        address, passphrase);
+        address,
+        passphrase
+      );
 
       const stakeInformation = {
         applicationId: id,
@@ -212,11 +228,10 @@ class OrderSummary extends Component {
         paymentId: result.paymentIntent.id,
         applicationLink,
         gatewayAATSignature,
-        upoktToStake
+        upoktToStake,
       };
 
       await ApplicationService.stakeApplication(stakeInformation);
-
     } else {
       const pokt = await PocketCheckoutService.getNodePoktToStake(total);
 
@@ -235,11 +250,19 @@ class OrderSummary extends Component {
       this.setState({ loading: true });
 
       const nodeStakeRequest = await PocketClientService.nodeStakeRequest(
-        address, passphrase, chains, pokt.cost.toString(), serviceURL);
+        address,
+        passphrase,
+        chains,
+        pokt.cost.toString(),
+        serviceURL
+      );
 
       // TODO: add error handling
       NodeService.stakeNode(
-        nodeStakeRequest, result.paymentIntent.id, nodeLink, upoktToStake
+        nodeStakeRequest,
+        result.paymentIntent.id,
+        nodeLink,
+        upoktToStake
       ).then(() => {});
     }
 
@@ -256,8 +279,10 @@ class OrderSummary extends Component {
     const billingDetails = { name };
 
     StripePaymentService.createPaymentMethod(
-      stripe, cardData.card, billingDetails
-    ).then(async (result) => {
+      stripe,
+      cardData.card,
+      billingDetails
+    ).then(async result => {
       // Adding a card on checkout doesn't ask you for billing info.
       if (!billingDetails.address) {
         billingDetails.address = {
@@ -280,7 +305,8 @@ class OrderSummary extends Component {
 
       if (result.paymentMethod) {
         const { success, data } = await StripePaymentService.savePaymentMethod(
-          result.paymentMethod, billingDetails
+          result.paymentMethod,
+          billingDetails
         );
 
         if (!success) {
@@ -306,7 +332,7 @@ class OrderSummary extends Component {
         if (setMethodDefault || paymentMethods.length === 1) {
           PaymentService.setDefaultPaymentMethod(result.paymentMethod.id);
           selectedPaymentMethod = paymentMethods.find(
-            (item) => item.id === result.paymentMethod.id
+            item => item.id === result.paymentMethod.id
           );
         }
 
@@ -350,7 +376,7 @@ class OrderSummary extends Component {
       },
     ];
 
-    const paymentMethods = allPaymentMethods.map((data) => {
+    const paymentMethods = allPaymentMethods.map(data => {
       return {
         id: data.id,
         method: `${capitalize(data.brand)} **** **** **** ${data.lastDigits}`,
@@ -428,14 +454,17 @@ class OrderSummary extends Component {
                 Add a New Card
               </Button>
 
-              <img style={{
-                height: "88px",
-                width: "88px",
-                display: "inline-block",
-                float: "right",
-                marginTop: "-7px"
-              }}
-                src="/assets/stripe-payment_3.svg" alt="stripe"></img>
+              <img
+                style={{
+                  height: "88px",
+                  width: "88px",
+                  display: "inline-block",
+                  float: "right",
+                  marginTop: "-7px",
+                }}
+                src="/assets/stripe-payment_3.svg"
+                alt="stripe"
+              ></img>
 
               {isFormVisible && (
                 <>
@@ -446,7 +475,7 @@ class OrderSummary extends Component {
                   <NewCardNoAddressForm
                     formActionHandler={this.saveNewCard}
                     actionButtonName="Add Card"
-                    setDefaultHandler={(setMethodDefault) => {
+                    setDefaultHandler={setMethodDefault => {
                       this.setState({ setMethodDefault });
                     }}
                   />
@@ -472,12 +501,27 @@ class OrderSummary extends Component {
               />
               <hr />
               <p style={{ fontSize: "12px" }}>
-                Purchasers are not buying POKT as an investment with the expectation of profit or appreciation. <b>Purchasers are buying POKT to use it.</b><br /> <br />
-
-                  To ensure purchasers are bona fide users and not investors, the Company has set a purchase maximum per user and requires users must hold POKT for <b>21 days</b> and <b>stake</b> it before transferring to another wallet or selling.<br /> <br />
-
-                  Purchasers are acquiring POKT for their own account and use, and not with an intention to re-sell or distribute POKT to others. <br /> <br />
-                  Pocket Network is governed according to the Pocket Network Constitution. For more more information please read the <a target="_blank" rel="noopener noreferrer" href="https://github.com/pokt-network/governance/blob/master/constitution/constitution.md">Constitution.</a>
+                Purchasers are not buying POKT as an investment with the
+                expectation of profit or appreciation.{" "}
+                <b>Purchasers are buying POKT to use it.</b>
+                <br /> <br />
+                To ensure purchasers are bona fide users and not investors, the
+                Company has set a purchase maximum per user and requires users
+                must hold POKT for <b>21 days</b> and <b>stake</b> it before
+                transferring to another wallet or selling.
+                <br /> <br />
+                Purchasers are acquiring POKT for their own account and use, and
+                not with an intention to re-sell or distribute POKT to others.{" "}
+                <br /> <br />
+                Pocket Network is governed according to the Pocket Network
+                Constitution. For more more information please read the{" "}
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://github.com/pokt-network/governance/blob/master/constitution/constitution.md"
+                >
+                  Constitution.
+                </a>
               </p>
               <Form.Check
                 checked={agreeTerms}
@@ -493,9 +537,10 @@ class OrderSummary extends Component {
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ marginLeft: "0px" }}
-                      href={ROUTE_PATHS.purchaseTerms}>
+                      href={ROUTE_PATHS.purchaseTerms}
+                    >
                       Purchase Terms and Conditions.
-                      </a>
+                    </a>
                   </span>
                 }
               />
@@ -503,9 +548,7 @@ class OrderSummary extends Component {
                 <ElementsConsumer>
                   {({ _, stripe }) => (
                     <Form
-                      onSubmit={(e) =>
-                        this.makePurchaseWithSavedCard(e, stripe)
-                      }
+                      onSubmit={e => this.makePurchaseWithSavedCard(e, stripe)}
                       className=""
                     >
                       <LoadingButton
@@ -525,8 +568,8 @@ class OrderSummary extends Component {
               </PaymentContainer>
             </div>
           </Col>
-        </Row >
-      </div >
+        </Row>
+      </div>
     );
   }
 }

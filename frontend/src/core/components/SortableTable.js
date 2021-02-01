@@ -36,7 +36,7 @@ class SortableTable extends Component {
       ...restProps
     } = this.props;
 
-    const columns = allColumns.map((col) => {
+    const columns = allColumns.map(col => {
       return { ...col, sort: true };
     });
 
@@ -50,7 +50,7 @@ class SortableTable extends Component {
           </Col>
           <Col lg="4">
             <AppDropdown
-              onSelect={(field) => this.handleSortChange(field.dataField)}
+              onSelect={field => this.handleSortChange(field.dataField)}
               options={columns}
             />
           </Col>

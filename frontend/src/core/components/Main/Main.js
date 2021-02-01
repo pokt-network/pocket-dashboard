@@ -42,7 +42,7 @@ class Main extends Component {
     let filteredItems = userItems;
 
     if (searchQuery) {
-      filteredItems = userItems.filter((item) => {
+      filteredItems = userItems.filter(item => {
         const data = _.get(item, dataField);
 
         if (!data) {

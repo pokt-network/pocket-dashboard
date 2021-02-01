@@ -35,7 +35,7 @@ class Checkout extends Component {
       },
       applicationId: "",
       details: [],
-      total: 0.00,
+      total: 0.0,
       currentAccountBalance: 0,
       purchasedTokens: 0,
       upoktToStake: 0,
@@ -60,7 +60,7 @@ class Checkout extends Component {
       total,
       currentAccountBalance,
       upoktToStake,
-      upoktTotal
+      upoktTotal,
     } = this.props.location.state;
 
     const address =
@@ -137,8 +137,13 @@ class Checkout extends Component {
     // Save printable invoice to the DB
     const items = [
       ...details,
-      { text: "Used balance", value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(currentAccountBalance)} POKT` },
-    ].map((it) => {
+      {
+        text: "Used balance",
+        value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(
+          currentAccountBalance
+        )} POKT`,
+      },
+    ].map(it => {
       if (!it.format) {
         return it;
       }
@@ -153,10 +158,14 @@ class Checkout extends Component {
         { text: "Payment Method", value: method },
       ],
       items: items,
-      total: formatCurrency(total)
+      total: formatCurrency(total),
     };
 
-    await PocketPaymentService.updatePaymentIntent(type, paymentId, printableData);
+    await PocketPaymentService.updatePaymentIntent(
+      type,
+      paymentId,
+      printableData
+    );
   }
 
   render() {
@@ -169,7 +178,7 @@ class Checkout extends Component {
       loading,
       unauthorized,
       currentAccountBalance,
-      upoktTotal
+      upoktTotal,
     } = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
@@ -182,8 +191,13 @@ class Checkout extends Component {
 
     const items = [
       ...details,
-      { text: "Used balance", value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(currentAccountBalance)} POKT` },
-    ].map((it) => {
+      {
+        text: "Used balance",
+        value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(
+          currentAccountBalance
+        )} POKT`,
+      },
+    ].map(it => {
       if (!it.format) {
         return it;
       }
@@ -228,12 +242,11 @@ class Checkout extends Component {
       <>
         <div id="nodes-checkout">
           <Row className="mb-4">
-            <AppAlert
-              className="pb-3 pt-3"
-              title={"ATTENTION!"}
-            >
+            <AppAlert className="pb-3 pt-3" title={"ATTENTION!"}>
               <p>
-                This staking transaction will be marked complete when the next block is generated. You will receive an email notification when your {isApp ? "app" : "node"} is ready to use.
+                This staking transaction will be marked complete when the next
+                block is generated. You will receive an email notification when
+                your {isApp ? "app" : "node"} is ready to use.
               </p>
             </AppAlert>
           </Row>
@@ -273,7 +286,7 @@ class Checkout extends Component {
           copyStyles={true}
         />
         <PrintableInvoice
-          ref={(el) => (this.componentRef = el)}
+          ref={el => (this.componentRef = el)}
           invoiceItems={[
             { text: "invoice", value: id },
             { text: "bill to", value: owner },

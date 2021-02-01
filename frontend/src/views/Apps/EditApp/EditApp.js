@@ -87,7 +87,7 @@ class EditApp extends CreateForm {
           <Col sm="5" md="5" lg="5">
             <Formik
               validationSchema={appFormSchema}
-              onSubmit={(data) => {
+              onSubmit={data => {
                 this.setState({ data });
                 this.handleEdit();
               }}

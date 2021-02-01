@@ -32,7 +32,7 @@ class VerifyChangedEmail extends Component {
       return;
     }
 
-    PocketUserService.validateToken(queryParam.d).then((result) => {
+    PocketUserService.validateToken(queryParam.d).then(result => {
       if (result.success) {
         this.setState({ email: result.data });
       } else {
@@ -58,7 +58,11 @@ class VerifyChangedEmail extends Component {
         <Navbar />
 
         <Row className="content">
-          <Col id="main" md={{ span: 8, offset: 2 }} lg={{ span: 6, offset: 3 }}>
+          <Col
+            id="main"
+            md={{ span: 8, offset: 2 }}
+            lg={{ span: 6, offset: 3 }}
+          >
             {alertOverlay.show && (
               <AppAlert
                 variant={alertOverlay.variant}

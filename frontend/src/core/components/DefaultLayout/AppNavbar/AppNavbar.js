@@ -11,15 +11,26 @@ class AppNavbar extends Component {
     return (
       <Row className="app-navbar" noGutters>
         <div id="main-logo" style={{ display: "inline-flex" }}>
-          <img src="/assets/logo-dashboard-color.svg" alt="logo" useMap="#workmap"/>
+          <img
+            src="/assets/logo-dashboard-color.svg"
+            alt="logo"
+            useMap="#workmap"
+          />
           <Button
-            variant="dark" style={{ marginLeft: "40px", marginTop: "20px" }}>
-            <a target="_blank" href="https://pokt.network/dashboard-beta-version-sugestion-box/" rel="noopener noreferrer" style={{ color:"#FFFFFF" }}>
+            variant="dark"
+            style={{ marginLeft: "40px", marginTop: "20px" }}
+          >
+            <a
+              target="_blank"
+              href="https://pokt.network/dashboard-beta-version-sugestion-box/"
+              rel="noopener noreferrer"
+              style={{ color: "#FFFFFF" }}
+            >
               BETA
-              </a>
+            </a>
           </Button>
         </div>
-        
+
         <div className="items">
           {/* TODO: Uncomment when second release*/}
           {/*<div className="buttons">*/}

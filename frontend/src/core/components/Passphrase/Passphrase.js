@@ -4,7 +4,11 @@ import { Button, Col, Form, Row } from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
 import AppTable from "../../../core/components/AppTable";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import { PASSPHRASE_REGEX, TABLE_COLUMNS, VALIDATION_MESSAGES } from "../../../_constants";
+import {
+  PASSPHRASE_REGEX,
+  TABLE_COLUMNS,
+  VALIDATION_MESSAGES,
+} from "../../../_constants";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { createAndDownloadJSONFile, validateYup } from "../../../_helpers";
@@ -34,7 +38,8 @@ class Passphrase extends Component {
         .string()
         .required(VALIDATION_MESSAGES.REQUIRED)
         .matches(
-          PASSPHRASE_REGEX, "The passphrase does not meet the requirements"
+          PASSPHRASE_REGEX,
+          "The passphrase does not meet the requirements"
         ),
     });
 
@@ -101,7 +106,8 @@ class Passphrase extends Component {
         {
           passPhrase: values.passPhrase,
           validPassphrase: true,
-        }, () => {
+        },
+        () => {
           const { fileDownloaded } = this.state;
 
           if (!fileDownloaded) {
@@ -118,8 +124,7 @@ class Passphrase extends Component {
    * Handles account creation and next steps
    * @abstract
    */
-  async createAccount() {
-  }
+  async createAccount() {}
 
   downloadKeyFile() {
     const { ppkData, address } = this.state;
@@ -181,7 +186,7 @@ class Passphrase extends Component {
             </p>
             <Formik
               validationSchema={this.schema}
-              onSubmit={(data) => {
+              onSubmit={data => {
                 this.setState({ data });
               }}
               initialValues={this.state.data}
@@ -209,7 +214,7 @@ class Passphrase extends Component {
                           value={values.passPhrase}
                           type={inputPassphraseType}
                           name="passPhrase"
-                          onChange={(data) => {
+                          onChange={data => {
                             handleChange(data);
                           }}
                           isInvalid={!!errors.passPhrase}
@@ -229,7 +234,9 @@ class Passphrase extends Component {
                       <LoadingButton
                         loading={loading}
                         buttonProps={{
-                          className: cls({ "download-key-file-button": created }),
+                          className: cls({
+                            "download-key-file-button": created,
+                          }),
                           variant: !created ? "primary" : "dark",
                           type: "submit",
                           onClick: created ? this.downloadKeyFile : undefined,
@@ -272,7 +279,7 @@ class Passphrase extends Component {
           </Col>
           <Col sm="6">
             <h3>Address</h3>
-            <Form.Control readOnly value={address}/>
+            <Form.Control readOnly value={address} />
           </Col>
         </Row>
         <Row className="mt-5">
@@ -293,8 +300,8 @@ class Passphrase extends Component {
             >
               <p>
                 The key file by itself is useless without the passphrase.
-                You&#39;ll need the key file in order to import or set up
-                your node.
+                You&#39;ll need the key file in order to import or set up your
+                node.
               </p>
             </AppAlert>
           </Col>
@@ -308,7 +315,7 @@ class Passphrase extends Component {
           <Row className="stats">
             {generalInfo.map((card, idx) => (
               <Col key={idx}>
-                <InfoCard title={card.title} subtitle={card.subtitle}/>
+                <InfoCard title={card.title} subtitle={card.subtitle} />
               </Col>
             ))}
           </Row>
