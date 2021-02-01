@@ -412,12 +412,14 @@ export class PocketApplicationService extends PocketBaseService {
         applicationLink,
       })
       .then((response) => {
+        console.log("FRONTEND RESPONSE: ", response);
         return {
           success: true,
           data: response.data,
         };
       })
       .catch((err) => {
+        console.log("ERROR on PocketApplicationService: ", err);
         return {
           success: false,
           data: err.response.data.message,

@@ -2,11 +2,13 @@ import React from "react";
 import { Button, Col, FormControl, InputGroup, Row } from "react-bootstrap";
 import { TABLE_COLUMNS } from "../../../_constants";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
+import PocketClientService from "../../../core/services/PocketClientService";
 import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import Chains from "../../../core/components/Chains/Chains";
 import Segment from "../../../core/components/Segment/Segment";
 import AppTable from "../../../core/components/AppTable";
 import AppAlert from "../../../core/components/AppAlert";
+import { Configurations } from "../../../_configuration";
 
 class ApplicationChainList extends Chains {
   constructor(props, context) {
@@ -15,17 +17,61 @@ class ApplicationChainList extends Chains {
     this.handleChains = this.handleChains.bind(this);
   }
 
-  handleChains() {
+  async handleChains() {
     const { chosenChains } = this.state;
     const chainsHashes = chosenChains.map((ch) => ch._id);
 
     PocketApplicationService.saveAppInfoInCache({ chains: chainsHashes });
-    const { id: appId } = PocketApplicationService.getApplicationInfo();
+
+    const {
+      id,
+      address,
+      chains,
+      passphrase,
+    } = PocketApplicationService.getApplicationInfo();
+
+    console.log("app info:", id, address, chains, passphrase);
+
+    const unlockedAccount = await PocketClientService.getUnlockedAccount(
+      address,
+      passphrase
+    );
+    const clientAddressHex = unlockedAccount.addressHex;
+
+    console.log("acc info:", unlockedAccount, clientAddressHex);
+    const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
+
+    const detail = url.replace(":id", id);
+    const applicationLink = `${window.location.origin}${detail}`;
+
+    const stakeAmount = Configurations.pocket_network.free_tier.stake_amount.toString();
+
+    const stakeInformation = {
+      client_address: clientAddressHex,
+      chains: chains,
+      stake_amount: stakeAmount,
+    };
+
+    console.log("STAKE INFORMATION", stakeInformation);
+
+    this.setState({ creatingFreeTier: true });
+
+    const {
+      success,
+      name: errorType,
+    } = await PocketApplicationService.stakeFreeTierApplication(
+      stakeInformation,
+      applicationLink
+    );
 
     // eslint-disable-next-line react/prop-types
-    this.props.history.push(
-      _getDashboardPath(`${DASHBOARD_PATHS.appDetail.replace(":id", appId)}`)
-    );
+    if (success) {
+      this.props.history.push(
+        _getDashboardPath(`${DASHBOARD_PATHS.appDetail.replace(":id", id)}`)
+      );
+    } else {
+      console.log("RIP, see logs above");
+    }
   }
 
   render() {
