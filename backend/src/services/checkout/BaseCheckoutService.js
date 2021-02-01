@@ -8,8 +8,6 @@ import { Configurations } from "../../_configuration";
  *  @abstract
  */
 export class BaseCheckoutService extends BaseService {
-
-
   /**
    * @param {object} options Options used in checkout service.
    * @param {string} options.default_currency Default currency.
@@ -43,8 +41,11 @@ export class BaseCheckoutService extends BaseService {
   getPoktToStake(moneySpent, poktDenomination = CoinDenom.Upokt) {
     const { transaction_fee: transactionFee } = Configurations.pocket_network;
 
-    const pokt = Math.round(((moneySpent / this.poktMarketPrice) + (parseInt(transactionFee) / 1000000)));
-    let poktWithDenomination = pokt * Math.pow(10, POKT_DENOMINATIONS[poktDenomination]);
+    const pokt = Math.round(
+      moneySpent / this.poktMarketPrice + parseInt(transactionFee) / 1000000
+    );
+    let poktWithDenomination =
+      pokt * Math.pow(10, POKT_DENOMINATIONS[poktDenomination]);
 
     if (poktDenomination === CoinDenom.Upokt) {
       poktWithDenomination = Math.trunc(poktWithDenomination);
@@ -62,6 +63,5 @@ export class BaseCheckoutService extends BaseService {
    * @throws {DashboardValidationError} if value is out of allowed range.
    * @abstract
    */
-  getMoneyToSpent(value) {
-  }
+  getMoneyToSpent(value) {}
 }

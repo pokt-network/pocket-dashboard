@@ -4,9 +4,7 @@ import { POKT_DENOMINATIONS } from "./PocketService";
 import { Configurations } from "../_configuration";
 import BasePocketService from "./BasePocketService";
 
-
 export default class AccountService extends BasePocketService {
-
   /**
    * Import account into network.
    *
@@ -18,7 +16,10 @@ export default class AccountService extends BasePocketService {
    * @async
    */
   async importDashboardAccountToNetworkFromPPK(ppkData, passphrase) {
-    const applicationAccount = await this.pocketService.importAccountFromPPK(ppkData, passphrase);
+    const applicationAccount = await this.pocketService.importAccountFromPPK(
+      ppkData,
+      passphrase
+    );
 
     if (applicationAccount instanceof Error) {
       throw TypeError("Account is invalid");
@@ -51,9 +52,13 @@ export default class AccountService extends BasePocketService {
    * @async
    */
   async getBalance(accountAddress, pocketDenomination = CoinDenom.Upokt) {
-    const { pokt_market_price: poktMarketPrice } = Configurations.pocket_network;
+    const {
+      pokt_market_price: poktMarketPrice,
+    } = Configurations.pocket_network;
     const upokt = await this.getPoktBalance(accountAddress);
-    const usd = (upokt / Math.pow(10, POKT_DENOMINATIONS[pocketDenomination])) * poktMarketPrice;
+    const usd =
+      (upokt / Math.pow(10, POKT_DENOMINATIONS[pocketDenomination])) *
+      poktMarketPrice;
 
     return { upokt, usd };
   }

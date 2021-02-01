@@ -41,5 +41,4 @@ export default class MongoDBAdapter {
   getDB(connection) {
     return connection.db(this.properties.db_name);
   }
-
 }

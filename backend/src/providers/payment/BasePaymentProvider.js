@@ -1,13 +1,12 @@
 export const PaymentCurrencies = {
-  usd: "usd"
+  usd: "usd",
 };
 
 export const PaymentTypes = {
-  card: "card"
+  card: "card",
 };
 
 export class CardPaymentMethod {
-
   /**
    * @param {string} id ID of card payment method.
    * @param {string} brand Card brand.
@@ -17,13 +16,26 @@ export class CardPaymentMethod {
    * @param {object} billingDetails Billing details.
    */
 
-  constructor(id, brand, lastDigits, expirationMonth, expirationYear, billingDetails) {
-    Object.assign(this, { id, brand, lastDigits, expirationMonth, expirationYear, billingDetails });
+  constructor(
+    id,
+    brand,
+    lastDigits,
+    expirationMonth,
+    expirationYear,
+    billingDetails
+  ) {
+    Object.assign(this, {
+      id,
+      brand,
+      lastDigits,
+      expirationMonth,
+      expirationYear,
+      billingDetails,
+    });
   }
 }
 
 export class PaymentResult {
-
   /**
    * @param {string} id ID of payment.
    * @param {Date} createdDate Date of creation of payment.
@@ -33,12 +45,18 @@ export class PaymentResult {
    * @param {string} provider The provider.
    */
   constructor(id, createdDate, paymentNumber, currency, amount, provider) {
-    Object.assign(this, { id, createdDate, amount, currency, paymentNumber, provider });
+    Object.assign(this, {
+      id,
+      createdDate,
+      amount,
+      currency,
+      paymentNumber,
+      provider,
+    });
   }
 }
 
 export class Payment {
-
   /**
    * Validate payment data.
    *
@@ -52,7 +70,6 @@ export class Payment {
    * @throws Error if validation fails.
    */
   static validate(paymentData) {
-
     if (!paymentData.type) {
       throw Error("Type is required");
     }
@@ -68,7 +85,6 @@ export class Payment {
     if (!paymentData.item) {
       throw Error("Item is required");
     } else {
-
       if (!paymentData.item.account) {
         throw Error("Item account is required");
       }
@@ -83,7 +99,6 @@ export class Payment {
 }
 
 export default class BasePaymentProvider {
-
   /**
    * @param {object} paymentProviderConfiguration Payment provider configuration.
    * @param {string} paymentProviderConfiguration.client_id Client ID of Payment provider.
@@ -109,8 +124,15 @@ export default class BasePaymentProvider {
    * @async
    * @abstract
    */
-  async createPaymentIntent(userCustomerID, type, currency, item, amount, description = "", tokens) {
-  }
+  async createPaymentIntent(
+    userCustomerID,
+    type,
+    currency,
+    item,
+    amount,
+    description = "",
+    tokens
+  ) {}
 
   /**
    * Retrieve card payment method data.
@@ -121,8 +143,7 @@ export default class BasePaymentProvider {
    * @async
    * @abstract
    */
-  async retrieveCardPaymentMethod(paymentMethodID) {
-  }
+  async retrieveCardPaymentMethod(paymentMethodID) {}
 
   /**
    * Retrieve list of card payment method data.
@@ -133,8 +154,7 @@ export default class BasePaymentProvider {
    * @async
    * @abstract
    */
-  async retrieveCardPaymentMethods(paymentMethodIDs) {
-  }
+  async retrieveCardPaymentMethods(paymentMethodIDs) {}
 
   /**
    * Create a payment customer.
@@ -145,8 +165,7 @@ export default class BasePaymentProvider {
    * @async
    * @abstract
    */
-  async createCustomer(user) {
-  }
+  async createCustomer(user) {}
 
   /**
    * Retrieve a list of customer card payment methods.
@@ -157,6 +176,5 @@ export default class BasePaymentProvider {
    * @async
    * @abstract
    */
-  async getCustomerCardPaymentMethods(customerID) {
-  }
+  async getCustomerCardPaymentMethods(customerID) {}
 }

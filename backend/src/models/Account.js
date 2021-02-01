@@ -1,7 +1,6 @@
 import { Account } from "@pokt-network/pocket-js";
 
 export class PublicPocketAccount {
-
   /**
    * @param {string} address Address in Hex.
    * @param {string} publicKey Public key in Hex.
@@ -26,7 +25,6 @@ export class PublicPocketAccount {
 }
 
 export class PrivatePocketAccount {
-
   /**
    * @param {string} address Address in Hex.
    * @param {string} publicKey Public key in hex

@@ -56,7 +56,8 @@ export default class PersistenceProvider {
     const db = this.__getDB(connection);
     const collection = db.collection(entityName);
 
-    let data = await collection.find(filter)
+    let data = await collection
+      .find(filter)
       .skip(offset === 0 ? offset : offset - 1);
 
     if (limit) {
@@ -78,7 +79,7 @@ export default class PersistenceProvider {
    */
   async getEntityByID(entityName, entityID) {
     const filter = {
-      _id: new ObjectId(entityID)
+      _id: new ObjectId(entityID),
     };
 
     const data = await this.getEntities(entityName, filter);
@@ -93,7 +94,6 @@ export default class PersistenceProvider {
    * @returns {Promise<object>} Entity by filter.
    */
   async getEntityByFilter(entityName, filter) {
-
     const data = await this.getEntities(entityName, filter);
 
     return data[0];
@@ -117,14 +117,13 @@ export default class PersistenceProvider {
     return result;
   }
 
-
   async updateEntityByID(entityName, entityID, data) {
     const connection = await this.__openConnection();
     const db = this.__getDB(connection);
     const collection = db.collection(entityName);
 
     const filter = {
-      _id: new ObjectId(entityID)
+      _id: new ObjectId(entityID),
     };
 
     const result = await collection.updateOne(filter, { $set: data });
@@ -179,7 +178,7 @@ export default class PersistenceProvider {
    */
   async deleteEntityByID(entityName, entityID) {
     const filter = {
-      _id: entityID
+      _id: entityID,
     };
 
     return await this.deleteEntities(entityName, filter);

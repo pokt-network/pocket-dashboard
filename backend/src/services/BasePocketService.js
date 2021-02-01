@@ -7,7 +7,6 @@ import bigInt from "big-integer";
  * @abstract
  */
 export default class BasePocketService extends BaseService {
-
   constructor() {
     super();
     this.pocketService = new PocketService();
@@ -23,7 +22,9 @@ export default class BasePocketService extends BaseService {
    * @protected
    */
   _getAverageNetworkData(data) {
-    return data.reduce((a, b) => a.add(b), bigInt.zero).divide(bigInt(data.length));
+    return data
+      .reduce((a, b) => a.add(b), bigInt.zero)
+      .divide(bigInt(data.length));
   }
 
   /**

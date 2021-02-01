@@ -1,5 +1,4 @@
 export class NetworkChain {
-
   /**
    * @param {string} networkID Network Identifier.
    * @param {string} ticker Ticker.
@@ -20,6 +19,11 @@ export class NetworkSummaryData {
    * @param {string} totalStakedApps Total staked apps.
    */
   constructor(poktPrice, totalStakedTokens, totalStakedNodes, totalStakedApps) {
-    Object.assign(this, { poktPrice, totalStakedTokens, totalStakedApps, totalStakedNodes });
+    Object.assign(this, {
+      poktPrice,
+      totalStakedTokens,
+      totalStakedApps,
+      totalStakedNodes,
+    });
   }
 }

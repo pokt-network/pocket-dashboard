@@ -1,7 +1,20 @@
 import BaseService from "./BaseService";
-import { get_default_payment_provider, getTokenPaymentProvider, providerType } from "../providers/payment/Index";
-import { CardPaymentMethod, Payment, PaymentCurrencies, PaymentResult } from "../providers/payment/BasePaymentProvider";
-import { BillingDetails, PaymentHistory, PaymentMethod } from "../models/Payment";
+import {
+  get_default_payment_provider,
+  getTokenPaymentProvider,
+  providerType,
+} from "../providers/payment/Index";
+import {
+  CardPaymentMethod,
+  Payment,
+  PaymentCurrencies,
+  PaymentResult,
+} from "../providers/payment/BasePaymentProvider";
+import {
+  BillingDetails,
+  PaymentHistory,
+  PaymentMethod,
+} from "../models/Payment";
 import UserService from "./UserService";
 import { Configurations } from "../_configuration";
 import { DashboardError, DashboardValidationError } from "../models/Exceptions";
@@ -10,7 +23,6 @@ const PAYMENT_METHOD_COLLECTION_NAME = "PaymentMethods";
 const PAYMENT_HISTORY_COLLECTION_NAME = "PaymentHistory";
 
 export default class PaymentService extends BaseService {
-
   constructor() {
     super();
 
@@ -32,13 +44,41 @@ export default class PaymentService extends BaseService {
    * @private
    * @async
    */
-  async __createPocketPaymentIntent(userCustomerID, type, currency, item, amount, to, tokens) {
-    const description = `Acquiring ${to.toLowerCase() === "application" ? "Max Relays Per Day" : "Validator Power"} for ${to}`;
+  async __createPocketPaymentIntent(
+    userCustomerID,
+    type,
+    currency,
+    item,
+    amount,
+    to,
+    tokens
+  ) {
+    const description = `Acquiring ${
+      to.toLowerCase() === "application"
+        ? "Max Relays Per Day"
+        : "Validator Power"
+    } for ${to}`;
 
     if (amount === 0) {
-      return this.__getPaymentProvider(providerType.token).createPaymentIntent(userCustomerID, type, currency, item, amount, description, tokens);
+      return this.__getPaymentProvider(providerType.token).createPaymentIntent(
+        userCustomerID,
+        type,
+        currency,
+        item,
+        amount,
+        description,
+        tokens
+      );
     } else {
-      return this.__getPaymentProvider(providerType.stripe).createPaymentIntent(userCustomerID, type, currency, item, amount, description, tokens);
+      return this.__getPaymentProvider(providerType.stripe).createPaymentIntent(
+        userCustomerID,
+        type,
+        currency,
+        item,
+        amount,
+        description,
+        tokens
+      );
     }
   }
 
@@ -65,8 +105,15 @@ export default class PaymentService extends BaseService {
    * @throws {DashboardValidationError} if validation fails.
    * @async
    */
-  async __createPocketPaymentForItem(userEmail, type, currency, item, amount, itemType, tokens) {
-
+  async __createPocketPaymentForItem(
+    userEmail,
+    type,
+    currency,
+    item,
+    amount,
+    itemType,
+    tokens
+  ) {
     if (!Payment.validate({ type, currency, item, amount })) {
       return false;
     }
@@ -77,19 +124,29 @@ export default class PaymentService extends BaseService {
     let userCustomerID = await this.userService.getUserCustomerID(userEmail);
 
     if (!userCustomerID) {
-      const userCustomer = await this.__getPaymentProvider(provType).createCustomer(userEmail);
+      const userCustomer = await this.__getPaymentProvider(
+        provType
+      ).createCustomer(userEmail);
 
       userCustomerID = userCustomer.id;
       await this.userService.saveCustomerID(userEmail, userCustomerID);
     }
 
-    const amountFixed = Math.round(amount.toFixed(2)*100);
+    const amountFixed = Math.round(amount.toFixed(2) * 100);
     const paymentItem = {
       ...item,
-      type: itemType
+      type: itemType,
     };
 
-    return this.__createPocketPaymentIntent(userCustomerID, type, currency, paymentItem, amountFixed, itemType, tokens);
+    return this.__createPocketPaymentIntent(
+      userCustomerID,
+      type,
+      currency,
+      paymentItem,
+      amountFixed,
+      itemType,
+      tokens
+    );
   }
 
   /**
@@ -112,14 +169,21 @@ export default class PaymentService extends BaseService {
   async paymentMethodExists(paymentMethodData) {
     const filter = {
       "paymentMethod.card.brand": paymentMethodData.paymentMethod.card.brand,
-      "paymentMethod.card.country": paymentMethodData.paymentMethod.card.country,
-      "paymentMethod.card.lastDigits": paymentMethodData.paymentMethod.card.lastDigits,
-      "paymentMethod.card.expirationMonth": paymentMethodData.paymentMethod.card.expirationMonth,
-      "paymentMethod.card.expirationYear": paymentMethodData.paymentMethod.card.expirationYear,
-      "user": paymentMethodData.user
+      "paymentMethod.card.country":
+        paymentMethodData.paymentMethod.card.country,
+      "paymentMethod.card.lastDigits":
+        paymentMethodData.paymentMethod.card.lastDigits,
+      "paymentMethod.card.expirationMonth":
+        paymentMethodData.paymentMethod.card.expirationMonth,
+      "paymentMethod.card.expirationYear":
+        paymentMethodData.paymentMethod.card.expirationYear,
+      user: paymentMethodData.user,
     };
 
-    const dbPaymentMethod = await this.persistenceService.getEntityByFilter(PAYMENT_METHOD_COLLECTION_NAME, filter);
+    const dbPaymentMethod = await this.persistenceService.getEntityByFilter(
+      PAYMENT_METHOD_COLLECTION_NAME,
+      filter
+    );
 
     return dbPaymentMethod !== undefined;
   }
@@ -133,8 +197,14 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async paymentHistoryExists(paymentHistory) {
-    const filter = { paymentID: paymentHistory.paymentID, user: paymentHistory.user };
-    const dbPaymentHistory = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
+    const filter = {
+      paymentID: paymentHistory.paymentID,
+      user: paymentHistory.user,
+    };
+    const dbPaymentHistory = await this.persistenceService.getEntityByFilter(
+      PAYMENT_HISTORY_COLLECTION_NAME,
+      filter
+    );
 
     return dbPaymentHistory !== undefined;
   }
@@ -163,7 +233,10 @@ export default class PaymentService extends BaseService {
     }
 
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.saveEntity(PAYMENT_METHOD_COLLECTION_NAME, paymentMethod);
+    const result = await this.persistenceService.saveEntity(
+      PAYMENT_METHOD_COLLECTION_NAME,
+      paymentMethod
+    );
 
     return result.result.ok === 1;
   }
@@ -186,7 +259,6 @@ export default class PaymentService extends BaseService {
       const paymentMethods = await this.getUserPaymentMethods(userEmail);
 
       paymentMethods.forEach(method => {
-
         if (method.id.toString() === paymentMethodID.toString()) {
           belongsToClient = true;
         }
@@ -194,7 +266,10 @@ export default class PaymentService extends BaseService {
 
       if (belongsToClient) {
         /** @type {{result: {n:number, ok: number}}} */
-        const result = await this.persistenceService.deleteEntities(PAYMENT_METHOD_COLLECTION_NAME, filter);
+        const result = await this.persistenceService.deleteEntities(
+          PAYMENT_METHOD_COLLECTION_NAME,
+          filter
+        );
 
         return result.result.ok === 1;
       }
@@ -218,7 +293,15 @@ export default class PaymentService extends BaseService {
   async createPocketPaymentIntentForApps(paymentIntentData) {
     const { user, type, currency, item, amount, tokens } = paymentIntentData;
 
-    return this.__createPocketPaymentForItem(user, type, currency, item, amount, "Application", tokens);
+    return this.__createPocketPaymentForItem(
+      user,
+      type,
+      currency,
+      item,
+      amount,
+      "Application",
+      tokens
+    );
   }
 
   /**
@@ -237,7 +320,15 @@ export default class PaymentService extends BaseService {
   async createPocketPaymentIntentForNodes(paymentIntentData) {
     const { user, type, currency, item, amount, tokens } = paymentIntentData;
 
-    return this.__createPocketPaymentForItem(user, type, currency, item, amount, "Node", tokens);
+    return this.__createPocketPaymentForItem(
+      user,
+      type,
+      currency,
+      item,
+      amount,
+      "Node",
+      tokens
+    );
   }
 
   /**
@@ -252,7 +343,14 @@ export default class PaymentService extends BaseService {
    *
    * @returns {Promise<PaymentHistory[]>} List of Payment history.
    */
-  async getPaymentHistory(user, limit, offset = 0, fromDate = "", toDate = "", paymentID = "") {
+  async getPaymentHistory(
+    user,
+    limit,
+    offset = 0,
+    fromDate = "",
+    toDate = "",
+    paymentID = ""
+  ) {
     let filter = { user };
     let dateFilter = {};
 
@@ -272,8 +370,14 @@ export default class PaymentService extends BaseService {
       filter["paymentID"] = paymentID;
     }
 
-    return (await this.persistenceService.getEntities(PAYMENT_HISTORY_COLLECTION_NAME, filter, limit, offset))
-      .map(PaymentHistory.createPaymentHistory);
+    return (
+      await this.persistenceService.getEntities(
+        PAYMENT_HISTORY_COLLECTION_NAME,
+        filter,
+        limit,
+        offset
+      )
+    ).map(PaymentHistory.createPaymentHistory);
   }
 
   /**
@@ -299,7 +403,10 @@ export default class PaymentService extends BaseService {
       // Use token email to retrieve a list of the payments
       const paymentHistory = await this.getPaymentFromHistory(paymentId);
 
-      if (paymentHistory.user.toString() === userEmail.toString() && userEmail.toString() === payload.email.toString()) {
+      if (
+        paymentHistory.user.toString() === userEmail.toString() &&
+        userEmail.toString() === payload.email.toString()
+      ) {
         return true;
       }
     }
@@ -321,8 +428,15 @@ export default class PaymentService extends BaseService {
    * @returns {Promise<boolean>} If payment was saved or not.
    * @async
    */
-  async savePaymentHistory(createdDate, paymentID, currency, amount, item, user, tokens) {
-
+  async savePaymentHistory(
+    createdDate,
+    paymentID,
+    currency,
+    amount,
+    item,
+    user,
+    tokens
+  ) {
     const { pokt_market_price: poktPrice } = Configurations.pocket_network;
     const token = tokens === undefined ? 0 : tokens;
 
@@ -334,7 +448,7 @@ export default class PaymentService extends BaseService {
       item,
       user,
       poktPrice,
-      tokens: token
+      tokens: token,
     });
 
     if (await this.paymentHistoryExists(paymentHistory)) {
@@ -342,7 +456,10 @@ export default class PaymentService extends BaseService {
     }
 
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.saveEntity(PAYMENT_HISTORY_COLLECTION_NAME, paymentHistory);
+    const result = await this.persistenceService.saveEntity(
+      PAYMENT_HISTORY_COLLECTION_NAME,
+      paymentHistory
+    );
 
     return result.result.ok === 1;
   }
@@ -360,7 +477,10 @@ export default class PaymentService extends BaseService {
   async updatePaymentWithPrintableData(paymentId, userEmail, printableData) {
     const filter = { paymentID: paymentId, user: userEmail };
 
-    const paymentHistoryDB = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
+    const paymentHistoryDB = await this.persistenceService.getEntityByFilter(
+      PAYMENT_HISTORY_COLLECTION_NAME,
+      filter
+    );
 
     if (!paymentHistoryDB) {
       return false;
@@ -369,7 +489,11 @@ export default class PaymentService extends BaseService {
     paymentHistoryDB.printableData = printableData;
 
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.updateEntity(PAYMENT_HISTORY_COLLECTION_NAME, filter, paymentHistoryDB);
+    const result = await this.persistenceService.updateEntity(
+      PAYMENT_HISTORY_COLLECTION_NAME,
+      filter,
+      paymentHistoryDB
+    );
 
     return result.result.ok === 1;
   }
@@ -387,9 +511,15 @@ export default class PaymentService extends BaseService {
    * @async
    */
   async markPaymentAsSuccess(paymentHistoryData) {
-    const filter = { paymentID: paymentHistoryData.paymentID, user: paymentHistoryData.user };
+    const filter = {
+      paymentID: paymentHistoryData.paymentID,
+      user: paymentHistoryData.user,
+    };
 
-    const paymentHistoryDB = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
+    const paymentHistoryDB = await this.persistenceService.getEntityByFilter(
+      PAYMENT_HISTORY_COLLECTION_NAME,
+      filter
+    );
 
     if (!paymentHistoryDB) {
       return false;
@@ -400,7 +530,11 @@ export default class PaymentService extends BaseService {
     paymentHistoryDB.status = "succeeded";
 
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.updateEntity(PAYMENT_HISTORY_COLLECTION_NAME, filter, paymentHistoryDB);
+    const result = await this.persistenceService.updateEntity(
+      PAYMENT_HISTORY_COLLECTION_NAME,
+      filter,
+      paymentHistoryDB
+    );
 
     return result.result.ok === 1;
   }
@@ -413,11 +547,16 @@ export default class PaymentService extends BaseService {
    * @returns {Promise<[]|CardPaymentMethod[]>} Payment methods.
    */
   async getUserPaymentMethods(user) {
-    const dbPaymentMethods = await this.persistenceService.getEntities(PAYMENT_METHOD_COLLECTION_NAME, { user });
+    const dbPaymentMethods = await this.persistenceService.getEntities(
+      PAYMENT_METHOD_COLLECTION_NAME,
+      { user }
+    );
 
     if (dbPaymentMethods) {
       const paymentMethodIds = dbPaymentMethods.map(_ => _.paymentMethod.id);
-      const paymentMethods = await this.__getPaymentProvider(providerType.stripe).retrieveCardPaymentMethods(paymentMethodIds);
+      const paymentMethods = await this.__getPaymentProvider(
+        providerType.stripe
+      ).retrieveCardPaymentMethods(paymentMethodIds);
 
       return Promise.all(paymentMethods);
     }
@@ -435,15 +574,20 @@ export default class PaymentService extends BaseService {
    */
   async getPaymentFromHistory(paymentID) {
     const filter = { paymentID };
-    const dbPaymentHistory = await this.persistenceService.getEntityByFilter(PAYMENT_HISTORY_COLLECTION_NAME, filter);
+    const dbPaymentHistory = await this.persistenceService.getEntityByFilter(
+      PAYMENT_HISTORY_COLLECTION_NAME,
+      filter
+    );
 
     if (dbPaymentHistory) {
-      const paymentHistory = PaymentHistory.createPaymentHistory(dbPaymentHistory);
+      const paymentHistory = PaymentHistory.createPaymentHistory(
+        dbPaymentHistory
+      );
 
       if (paymentHistory) {
         return paymentHistory;
       }
-  }
+    }
 
     return null;
   }

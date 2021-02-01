@@ -6,176 +6,230 @@ import PocketService from "./PocketService";
 const COLLECTION_NAME = "CronJobData";
 
 export default class CronJobService extends BaseService {
+  constructor() {
+    super();
 
-    constructor() {
-        super();
+    this.pocketService = new PocketService();
+  }
 
-        this.pocketService = new PocketService();
-    }
+  async getEntity() {
+    const cronDB = await this.persistenceService.getEntities(COLLECTION_NAME);
 
-    async getEntity() {
-        const cronDB = await this.persistenceService.getEntities(COLLECTION_NAME);
+    if (!cronDB.length) {
+      const cronJobData = new CronJobData("", 0, [], [], []);
+      const result = await this.persistenceService.saveEntity(
+        COLLECTION_NAME,
+        cronJobData
+      );
 
-        if (!cronDB.length) {
-            const cronJobData = new CronJobData("", 0, [], [], []);
-            const result = await this.persistenceService.saveEntity(COLLECTION_NAME, cronJobData);
+      if (result.result.ok === 1) {
+        cronJobData.id = result.insertedId;
+        cronJobData.appStakeTransactions = [];
+        cronJobData.pendingTransactions = [];
+        cronJobData.nodeStakeTransactions = [];
+        cronJobData.appUnstakeTransactions = [];
+        cronJobData.nodeUnstakeTransactions = [];
+        cronJobData.nodeUnjailTransactions = [];
 
-            if (result.result.ok === 1) {
-                cronJobData.id = result.insertedId;
-                cronJobData.appStakeTransactions = [];
-                cronJobData.pendingTransactions = [];
-                cronJobData.nodeStakeTransactions = [];
-                cronJobData.appUnstakeTransactions = [];
-                cronJobData.nodeUnstakeTransactions = [];
-                cronJobData.nodeUnjailTransactions = [];
+        const updated = await this.update(cronJobData.id, cronJobData);
 
-                const updated = await this.update(cronJobData.id, cronJobData);
-
-                if (updated) {
-                    return cronJobData;
-                }
-                throw new PocketNetworkError("CronJobData could not be updated!");
-            }
+        if (updated) {
+          return cronJobData;
         }
-
-        return CronJobData.newInstance(cronDB);
+        throw new PocketNetworkError("CronJobData could not be updated!");
+      }
     }
 
-    async update(id, data) {
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, id, data);
+    return CronJobData.newInstance(cronDB);
+  }
 
-        return result.result.ok === 1;
-    }
+  async update(id, data) {
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      id,
+      data
+    );
 
-    async addPendingTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        data.pendingTransactions.push(transaction);
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+  async addPendingTransaction(transaction) {
+    const data = await this.getEntity();
 
-        return result.result.ok === 1;
-    }
+    data.pendingTransactions.push(transaction);
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
 
-    async addAppStakeTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        data.appStakeTransactions.push(transaction);
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+  async addAppStakeTransaction(transaction) {
+    const data = await this.getEntity();
 
-        return result.result.ok === 1;
-    }
+    data.appStakeTransactions.push(transaction);
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
 
-    async addNodeStakeTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        data.nodeStakeTransactions.push(transaction);
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+  async addNodeStakeTransaction(transaction) {
+    const data = await this.getEntity();
 
-        return result.result.ok === 1;
-    }
+    data.nodeStakeTransactions.push(transaction);
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
 
-    async addAppUnstakeTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        data.appUnstakeTransactions.push(transaction);
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+  async addAppUnstakeTransaction(transaction) {
+    const data = await this.getEntity();
 
-        return result.result.ok === 1;
-    }
+    data.appUnstakeTransactions.push(transaction);
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
 
-    async addNodeUnstakeTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        data.nodeUnstakeTransactions.push(transaction);
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+  async addNodeUnstakeTransaction(transaction) {
+    const data = await this.getEntity();
 
-        return result.result.ok === 1;
-    }
+    data.nodeUnstakeTransactions.push(transaction);
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
 
-    async addNodeUnjailTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        data.nodeUnjailTransactions.push(transaction);
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+  async addNodeUnjailTransaction(transaction) {
+    const data = await this.getEntity();
 
-        return result.result.ok === 1;
-    }
+    data.nodeUnjailTransactions.push(transaction);
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
 
-    async removePendingTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        const newArray = data.pendingTransactions.filter((obj) => {
-            return obj.hash !== transaction.hash;
-        });
+  async removePendingTransaction(transaction) {
+    const data = await this.getEntity();
 
-        data.pendingTransactions = newArray;
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+    const newArray = data.pendingTransactions.filter(obj => {
+      return obj.hash !== transaction.hash;
+    });
 
-        return result.result.ok === 1;
-    }
+    data.pendingTransactions = newArray;
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
 
-    async removeAppStakeTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        const newArray = data.appStakeTransactions.filter((obj) => {
-            return obj.hash !== transaction.hash;
-        });
+  async removeAppStakeTransaction(transaction) {
+    const data = await this.getEntity();
 
-        data.appStakeTransactions = newArray;
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+    const newArray = data.appStakeTransactions.filter(obj => {
+      return obj.hash !== transaction.hash;
+    });
 
-        return result.result.ok === 1;
-    }
+    data.appStakeTransactions = newArray;
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
 
-    async removeNodeStakeTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        const newArray = data.nodeStakeTransactions.filter((obj) => {
-            return obj.hash !== transaction.hash;
-        });
+  async removeNodeStakeTransaction(transaction) {
+    const data = await this.getEntity();
 
-        data.nodeStakeTransactions = newArray;
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+    const newArray = data.nodeStakeTransactions.filter(obj => {
+      return obj.hash !== transaction.hash;
+    });
 
-        return result.result.ok === 1;
-    }
+    data.nodeStakeTransactions = newArray;
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
 
-    async removeAppUnstakeTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        const newArray = data.appUnstakeTransactions.filter((obj) => {
-            return obj.hash !== transaction.hash;
-        });
+  async removeAppUnstakeTransaction(transaction) {
+    const data = await this.getEntity();
 
-        data.appUnstakeTransactions = newArray;
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+    const newArray = data.appUnstakeTransactions.filter(obj => {
+      return obj.hash !== transaction.hash;
+    });
 
-        return result.result.ok === 1;
-    }
+    data.appUnstakeTransactions = newArray;
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
 
-    async removeNodeUnstakeTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        const newArray = data.nodeUnstakeTransactions.filter((obj) => {
-            return obj.hash !== transaction.hash;
-        });
+  async removeNodeUnstakeTransaction(transaction) {
+    const data = await this.getEntity();
 
-        data.nodeUnstakeTransactions = newArray;
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+    const newArray = data.nodeUnstakeTransactions.filter(obj => {
+      return obj.hash !== transaction.hash;
+    });
 
-        return result.result.ok === 1;
-    }
+    data.nodeUnstakeTransactions = newArray;
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
 
-    async removeNodeUnjailTransaction(transaction) {
-        const data = await this.getEntity();
+    return result.result.ok === 1;
+  }
 
-        const newArray = data.nodeUnjailTransactions.filter((obj) => {
-            return obj.hash !== transaction.hash;
-        });
+  async removeNodeUnjailTransaction(transaction) {
+    const data = await this.getEntity();
 
-        data.nodeUnjailTransactions = newArray;
-        const result = await this.persistenceService.updateEntityByID(COLLECTION_NAME, data.id, data);
+    const newArray = data.nodeUnjailTransactions.filter(obj => {
+      return obj.hash !== transaction.hash;
+    });
 
-        return result.result.ok === 1;
-    }
+    data.nodeUnjailTransactions = newArray;
+    const result = await this.persistenceService.updateEntityByID(
+      COLLECTION_NAME,
+      data.id,
+      data
+    );
+
+    return result.result.ok === 1;
+  }
 }

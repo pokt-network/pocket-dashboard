@@ -2,7 +2,6 @@ import { Configurations } from "../_configuration";
 import { DashboardValidationError } from "./Exceptions";
 
 export class BillingAddress {
-
   /**
    * @param {string} line1 Line 1.
    * @param {string} postalCode Zip code.
@@ -42,7 +41,6 @@ export class BillingAddress {
 }
 
 export class BillingDetails {
-
   /**
    * @param {string} name Name.
    * @param {BillingAddress} address Address.
@@ -79,7 +77,6 @@ export class BillingDetails {
 }
 
 export class PaymentMethod {
-
   /**
    * @param {{id: string, card:*}} paymentMethod Card data.
    * @param {string} user User.
@@ -139,7 +136,6 @@ export class PaymentMethod {
 }
 
 export class PaymentHistory {
-
   /**
    * @param {string} createdDate Date created.
    * @param {string} paymentID payment ID.
@@ -150,7 +146,15 @@ export class PaymentHistory {
    * @param {number} tokens Tokens used for this payment.
    */
   constructor(createdDate, paymentID, currency, amount, item, user, tokens) {
-    Object.assign(this, { createdDate, paymentID, currency, amount, item, user, tokens });
+    Object.assign(this, {
+      createdDate,
+      paymentID,
+      currency,
+      amount,
+      item,
+      user,
+      tokens,
+    });
 
     // noinspection JSUnusedGlobalSymbols
     /** @type {string} */
@@ -187,14 +191,32 @@ export class PaymentHistory {
    */
   static createPaymentHistory(paymentHistoryData) {
     const {
-      createdDate, paymentID, currency, amount, item,
-      user, paymentMethodID, billingDetails, status, poktPrice, tokens,
-      printableData
+      createdDate,
+      paymentID,
+      currency,
+      amount,
+      item,
+      user,
+      paymentMethodID,
+      billingDetails,
+      status,
+      poktPrice,
+      tokens,
+      printableData,
     } = paymentHistoryData;
 
-    const paymentHistory = new PaymentHistory(createdDate, paymentID, currency, amount, item, user, tokens);
+    const paymentHistory = new PaymentHistory(
+      createdDate,
+      paymentID,
+      currency,
+      amount,
+      item,
+      user,
+      tokens
+    );
 
-    paymentHistory.poktPrice = poktPrice ?? Configurations.pocket_network.pokt_market_price;
+    paymentHistory.poktPrice =
+      poktPrice ?? Configurations.pocket_network.pokt_market_price;
     paymentHistory.paymentMethodID = paymentMethodID;
     paymentHistory.billingDetails = billingDetails;
     paymentHistory.status = status ?? "pending";
@@ -242,7 +264,9 @@ export class PaymentHistory {
     const isApplication = maxRelays !== undefined;
 
     if (throwError && !isApplication) {
-      throw new DashboardValidationError("The payment item is not an application");
+      throw new DashboardValidationError(
+        "The payment item is not an application"
+      );
     }
 
     return isApplication;

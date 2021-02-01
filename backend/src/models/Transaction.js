@@ -3,11 +3,10 @@ export const POST_ACTION_TYPE = {
   stakeNode: "STAKE_NODE",
   unstakeApplication: "UNSTAKE_APPLICATION",
   unstakeNode: "UNSTAKE_NODE",
-  unjailNode: "UNJAIL_NODE"
+  unjailNode: "UNJAIL_NODE",
 };
 
 export class TransactionPostAction {
-
   /**
    * @param {string} type Type of post action.
    * @param {*} data Data used in the post action.
@@ -18,7 +17,6 @@ export class TransactionPostAction {
 }
 
 export class PocketTransaction {
-
   /**
    * @param {string} createdDate Created date.
    * @param {string} hash Transaction hash.

@@ -3,14 +3,10 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
 import dotenv from "dotenv";
-import {
-  errorHandler
-} from "./apis/_helpers";
+import { errorHandler } from "./apis/_helpers";
 import jwt from "express-jwt";
 import UserService from "./services/UserService";
-import {
-  DashboardValidationError
-} from "./models/Exceptions";
+import { DashboardValidationError } from "./models/Exceptions";
 
 // Configure Environment Variables: Now .env files can be loaded and used in process.env.
 dotenv.config();
@@ -76,7 +72,7 @@ export const Configurations = {
       PaymentCompletedApp: "d-524c799dd69741d08da0b461193f8f56",
       PaymentCompletedNode: "d-30be85ce84d843d6ba894de5989d26c9",
       PaymentDeclined: "d-dd1a7b11445f471184beb8024f637d75",
-      PasswordReset: "d-4e4ea689c9d1446581aa086bbc409fdd"
+      PasswordReset: "d-4e4ea689c9d1446581aa086bbc409fdd",
     },
   },
   persistence: {
@@ -100,7 +96,8 @@ export const Configurations = {
   pocket_network: {
     jobs: {
       database_url: process.env.POCKET_NETWORK_SERVICE_WORKER_DATABASE_URL,
-      delayed_time: process.env.POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME,
+      delayed_time:
+        process.env.POCKET_NETWORK_SERVICE_WORKER_DELAYED_START_TIME,
       attempts: process.env.POCKET_NETWORK_SERVICE_WORKER_ATTEMPTS,
     },
     aat_version: process.env.POCKET_NETWORK_AAT_VERSION,
@@ -130,7 +127,8 @@ export const Configurations = {
     },
     free_tier: {
       stake_amount: process.env.POCKET_FREE_TIER_STAKE_AMOUNT,
-      max_relay_per_day_amount: process.env.POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT,
+      max_relay_per_day_amount:
+        process.env.POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT,
       fund_account: process.env.POCKET_NETWORK_FREE_TIER_FUND_ACCOUNT,
       fund_address: process.env.POCKET_NETWORK_FREE_TIER_FUND_ADDRESS,
       client_pub_key: process.env.POCKET_NETWORK_CLIENT_PUB_KEY,
@@ -140,7 +138,7 @@ export const Configurations = {
     provider_type: process.env.POCKET_NETWORK_PROVIDER_TYPE,
     http_provider_node: process.env.POCKET_NETWORK_HTTP_PROVIDER_NODE,
     main_fund_account: process.env.POCKET_NETWORK_MAIN_FUND_ACCOUNT,
-    main_fund_address: process.env.POCKET_NETWORK_MAIN_FUND_ADDRESS
+    main_fund_address: process.env.POCKET_NETWORK_MAIN_FUND_ADDRESS,
   },
   recaptcha: {
     google_server: process.env.RECAPTCHA_SERVER_SECRET,
@@ -173,56 +171,79 @@ export function configureExpress(expressApp) {
     "/api/security_questions/user/validate-answers",
     "/api/security_questions/user/all",
     "/api/security_questions/answered",
-    "login"
+    "login",
   ];
 
   expressApp.use(express.json());
-  expressApp.use(express.urlencoded({
-    extended: false
-  }));
+  expressApp.use(
+    express.urlencoded({
+      extended: false,
+    })
+  );
   expressApp.use(cookieParser());
   expressApp.use(logger("dev"));
-  expressApp.use(cors({
-    exposedHeaders: ["Authorization"],
-  }));
+  expressApp.use(
+    cors({
+      exposedHeaders: ["Authorization"],
+    })
+  );
   // JWT getToken for custom auth headers
-  expressApp.use(jwt({
-    secret: Configurations.auth.jwt.secret_key,
-    algorithms: ["HS256"],
-    getToken: function fromHeader(req) {
-      if (req.headers.authorization) {
-        let accessToken;
+  expressApp.use(
+    jwt({
+      secret: Configurations.auth.jwt.secret_key,
+      algorithms: ["HS256"],
+      getToken: function fromHeader(req) {
+        if (req.headers.authorization) {
+          let accessToken;
 
-        if (req.headers.authorization.split(", ")[0].split(" ")[0] === "Token") {
-          accessToken = req.headers.authorization.split(", ")[0].split(" ")[1];
+          if (
+            req.headers.authorization.split(", ")[0].split(" ")[0] === "Token"
+          ) {
+            accessToken = req.headers.authorization
+              .split(", ")[0]
+              .split(" ")[1];
+          }
+
+          return accessToken;
         }
 
-        return accessToken;
-      }
+        return null;
+      },
+    }).unless({
+      path: excludedPathList,
+    })
+  );
 
-      return null;
-    }
-  }).unless({
-    path: excludedPathList
-  }));
-
-  expressApp.use(async function (err, req, res, next) {
+  expressApp.use(async function(err, req, res, next) {
     // Try to renew the session if expired
     if (err.message === "jwt expired") {
       // Try to get new session tokens using the refresh token
-      if (req.headers.authorization.split(", ")[1].split(" ")[0] === "Refresh" && req.headers.authorization.split(", ")[2].split(" ")[0] === "Email") {
-        const refreshToken = req.headers.authorization.split(", ")[1].split(" ")[1];
-        const userEmail = req.headers.authorization.split(", ")[2].split(" ")[1];
+      if (
+        req.headers.authorization.split(", ")[1].split(" ")[0] === "Refresh" &&
+        req.headers.authorization.split(", ")[2].split(" ")[0] === "Email"
+      ) {
+        const refreshToken = req.headers.authorization
+          .split(", ")[1]
+          .split(" ")[1];
+        const userEmail = req.headers.authorization
+          .split(", ")[2]
+          .split(" ")[1];
 
         if (refreshToken && userEmail) {
-          const newSessionTokens = await userService.renewSessionTokens(refreshToken, userEmail);
+          const newSessionTokens = await userService.renewSessionTokens(
+            refreshToken,
+            userEmail
+          );
 
           if (newSessionTokens instanceof DashboardValidationError) {
             throw newSessionTokens;
           }
 
           // Update the auth headers with the new tokens
-          res.set("Authorization", `Token ${newSessionTokens.accessToken}, Refresh ${newSessionTokens.refreshToken}, Email ${userEmail}`);
+          res.set(
+            "Authorization",
+            `Token ${newSessionTokens.accessToken}, Refresh ${newSessionTokens.refreshToken}, Email ${userEmail}`
+          );
         }
       } else {
         res.status(401).send("Token expired, please sign in again.");
@@ -231,8 +252,16 @@ export function configureExpress(expressApp) {
 
     // Check if the request contains an email, meaning a change or private data is being requested
     if (req.body && req.body.email && !excludedPathList.includes(req.path)) {
-      if (!await userService.verifySessionForClient(req.headers.authorization, req.body.email)) {
-        res.send({ success: false, data: "Account doesn't belong to the client." });
+      if (
+        !(await userService.verifySessionForClient(
+          req.headers.authorization,
+          req.body.email
+        ))
+      ) {
+        res.send({
+          success: false,
+          data: "Account doesn't belong to the client.",
+        });
       }
     }
     next();

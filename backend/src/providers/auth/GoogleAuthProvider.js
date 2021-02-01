@@ -4,14 +4,17 @@ import { google } from "googleapis";
 import { GoogleUser } from "../../models/User";
 
 export default class GoogleAuthProvider extends BaseAuthProvider {
-
   constructor() {
     super("google", Configurations.auth.providers.google);
     this.__googleAuth = this.__createGoogleAuth();
   }
 
   __createGoogleAuth() {
-    const { client_id, client_secret, callback_url } = this._authProviderConfiguration;
+    const {
+      client_id,
+      client_secret,
+      callback_url,
+    } = this._authProviderConfiguration;
 
     return new google.auth.OAuth2(client_id, client_secret, callback_url);
   }
@@ -32,7 +35,7 @@ export default class GoogleAuthProvider extends BaseAuthProvider {
 
     return google.people({
       version: "v1",
-      auth
+      auth,
     });
   }
 
@@ -40,7 +43,7 @@ export default class GoogleAuthProvider extends BaseAuthProvider {
     return this.__googleAuth.generateAuthUrl({
       access_type: "offline",
       prompt: "consent",
-      scope: this._authProviderConfiguration.scopes
+      scope: this._authProviderConfiguration.scopes,
     });
   }
 
@@ -55,9 +58,12 @@ export default class GoogleAuthProvider extends BaseAuthProvider {
 
     const { data } = await people.people.get({
       resourceName: "people/me",
-      personFields: "emailAddresses,names,photos"
+      personFields: "emailAddresses,names,photos",
     });
 
-    return new GoogleUser(data.emailAddresses[0].value, data.names[0].displayName);
+    return new GoogleUser(
+      data.emailAddresses[0].value,
+      data.names[0].displayName
+    );
   }
 }
