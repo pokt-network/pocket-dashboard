@@ -399,7 +399,7 @@ export class PocketApplication {
   static createUserPocketApplication(applicationData, networkApplications) {
     const { id, name, address, icon } = applicationData;
     let networkApp = networkApplications.filter(
-      app => app.address === applicationData.address
+      (app) => app.address === applicationData.address
     );
 
     if (networkApp.length > 0) {

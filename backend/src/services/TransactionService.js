@@ -12,11 +12,14 @@ const CRON_SERVICE = new CronJobService();
 
 export default class TransactionService extends BaseService {
   /**
-   * @param {PocketTransaction} pocketTransaction Transaction.
+   *  Adds a transaction
+   *
+   * @async
    * @private
+   * @param {PocketTransaction} pocketTransaction Transaction.
+   * @returns {boolean } if the transaction was added correctly or not
    */
   async __addTransaction(pocketTransaction) {
-    /** @type {{result: {n:number, ok: number}}} */
     const saveResult = await this.persistenceService.saveEntity(
       PENDING_TRANSACTION_COLLECTION_NAME,
       pocketTransaction
@@ -26,8 +29,10 @@ export default class TransactionService extends BaseService {
   }
 
   /**
-   * @param {PocketTransaction} pocketTransaction transaction.
+   * @async
    * @private
+   * @param {PocketTransaction} pocketTransaction transaction.
+   * @returns {boolean} if the update was performed correctly or not
    */
   async __updateTransaction(pocketTransaction) {
     const filter = {
@@ -43,6 +48,7 @@ export default class TransactionService extends BaseService {
       // Update the only editable field for the pending transactions.
       transaction.completed = pocketTransaction.completed;
 
+      // TODO: Return only the OK and update all relevant functions that use this service
       return this.persistenceService.updateEntity(
         PENDING_TRANSACTION_COLLECTION_NAME,
         filter,
@@ -219,7 +225,9 @@ export default class TransactionService extends BaseService {
   /**
    * Mark transaction as success.
    *
+   * @async
    * @param {PocketTransaction} transaction transaction.
+   * @returns {boolean} if the transaction was marked as success
    */
   async markTransactionSuccess(transaction) {
     //

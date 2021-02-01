@@ -216,7 +216,7 @@ export default class UserService extends BaseService {
    * @returns {{name:string, consent_url:string}[]} The consent url for all Auth provider available.
    */
   getConsentProviderUrls() {
-    const result = this.__authProviders.map(provider => {
+    const result = this.__authProviders.map((provider) => {
       return {
         name: provider.name,
         consent_url: provider.getConsentURL(),
@@ -410,7 +410,7 @@ export default class UserService extends BaseService {
    * Validate user security questions.
    *
    * @param {string} userEmail Email of user.
-   * @param {[{question: string, answer: string}]} userAnswers User input answers.
+   * @param {{question: string, answer: string}[]} userAnswers User input answers.
    *
    * @returns {Promise<SecurityQuestion[]>} True or false if the answers are valid.
    * @throws {DashboardValidationError} If user is invalid.

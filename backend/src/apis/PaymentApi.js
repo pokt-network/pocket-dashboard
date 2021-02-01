@@ -28,7 +28,6 @@ router.get(
 router.post(
   "/payment_method",
   apiAsyncWrapper(async (req, res) => {
-    /** @type {{user:string, paymentMethod: {id: string, card: *}, billingDetails: {name: string, address:{line1:string, postal_code:string, country:string}}}} */
     const data = req.body;
     const userEmail = req.headers.authorization.split(", ")[2].split(" ")[1];
 
@@ -48,7 +47,6 @@ router.post(
 router.delete(
   "/payment_method/:paymentMethodID",
   apiAsyncWrapper(async (req, res) => {
-    /** @type {{paymentMethodID: string}} */
     const data = req.params;
 
     const deleted = await paymentService.deletePaymentMethod(
@@ -66,7 +64,6 @@ router.delete(
 router.post(
   "/payment_methods",
   apiAsyncWrapper(async (req, res) => {
-    /** @type {{user:string}} */
     const data = req.body;
     const userEmail = req.headers.authorization.split(", ")[2].split(" ")[1];
 
@@ -122,7 +119,6 @@ router.post(
 router.put(
   "/intent/apps",
   apiAsyncWrapper(async (req, res) => {
-    /** @type {{userEmail: string, type: string, paymentId: string, total: string, printableData: {information:[], items: [] }}} */
     const data = req.body;
 
     if (
@@ -150,7 +146,6 @@ router.put(
 router.post(
   "/new_intent/nodes",
   apiAsyncWrapper(async (req, res) => {
-    /** @type {{user:string, type:string, currency: string, item: {account:string, name:string, validatorPower: string}, amount: number, tokens: number}} */
     const data = req.body;
     const userEmail = req.headers.authorization.split(", ")[2].split(" ")[1];
 
@@ -188,7 +183,6 @@ router.post(
 router.put(
   "/intent/nodes",
   apiAsyncWrapper(async (req, res) => {
-    /** @type {{userEmail: string, type: string, paymentId: string, total: string, printableData: {information:[], items: [] }}} */
     const data = req.body;
 
     if (
@@ -275,7 +269,6 @@ router.get(
 router.put(
   "/history",
   apiAsyncWrapper(async (req, res) => {
-    /** @type {{user:string, paymentID: string, paymentMethodID:string, billingDetails: {name: string, address:{line1:string, zip_code:string, country:string}}}} */
     const data = req.body;
     const userEmail = req.headers.authorization.split(", ")[2].split(" ")[1];
 

@@ -35,6 +35,6 @@ export class SecurityQuestion {
    * @static
    */
   static createSecurityQuestions(questions) {
-    return questions.map(data => new SecurityQuestion(data.question));
+    return questions.map((data) => new SecurityQuestion(data.question));
   }
 }

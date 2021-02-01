@@ -185,7 +185,7 @@ export class PocketNode {
   static createUserPocketNode(nodeData, networkNodes) {
     const { id, name, address, icon } = nodeData;
     let networkNode = networkNodes.filter(
-      app => app.address === nodeData.address
+      (app) => app.address === nodeData.address
     );
 
     if (networkNode.length > 0) {

@@ -17,7 +17,7 @@ export class AnsweredSecurityQuestion {
    */
   static createAnsweredSecurityQuestions(questions) {
     return questions.map(
-      data => new AnsweredSecurityQuestion(data.question, data.answer)
+      (data) => new AnsweredSecurityQuestion(data.question, data.answer)
     );
   }
 
@@ -32,7 +32,7 @@ export class AnsweredSecurityQuestion {
    */
   static async validateAnsweredSecurityQuestions(userDB, userInput) {
     const answeredQuestions = userDB.securityQuestions.map(
-      data => new AnsweredSecurityQuestion(data.question, data.answer)
+      (data) => new AnsweredSecurityQuestion(data.question, data.answer)
     );
 
     for (let i = 0; i < answeredQuestions.length; i++) {

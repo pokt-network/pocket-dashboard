@@ -50,7 +50,10 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Encrypt necessary application fields before persisting
    *
+   * @async
+   * @private
    * @param {PocketApplication} application Application to encrypt necessary fields
+   * @returns {PocketApplication} returns the application with the encrypted fields.
    */
   async __encryptApplicationFields(application) {
     if (
@@ -77,7 +80,10 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Decrypt application fields before persisting
    *
+   * @async
+   * @private
    * @param {PocketApplication} application Application to decrypt necessary fields
+   * @returns {PocketApplication} applications with decrypted fields.
    */
   async __decryptApplicationFields(application) {
     if (
@@ -104,11 +110,10 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Persist application on db if not exists.
    *
-   * @param {PocketApplication} application Application to persist.
-   *
-   * @returns {Promise<string | boolean>} If application was persisted return id, if not return false.
-   * @private
    * @async
+   * @private
+   * @param {PocketApplication} application Application to persist.
+   * @returns {Promise<string | boolean>} If application was persisted return id, if not return false.
    */
   async __persistApplicationIfNotExists(application) {
     if (!(await this.applicationExists(application))) {
@@ -130,11 +135,10 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Update application on db if exists.
    *
-   * @param {PocketApplication} application Application to update.
-   *
-   * @returns {Promise<boolean>} If application was updated or not.
-   * @private
    * @async
+   * @private
+   * @param {PocketApplication} application Application to update.
+   * @returns {Promise<boolean>} If application was updated or not.
    */
   async __updatePersistedApplication(application) {
     if (await this.applicationExists(application)) {
@@ -161,12 +165,11 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Update application on db by ID.
    *
+   * @async
+   * @private
    * @param {string} applicationID Application ID.
    * @param {PocketApplication} application Application to update
-   *
    * @returns {Promise<boolean>} If application was updated or not.
-   * @private
-   * @async
    */
   async __updateApplicationByID(applicationID, application) {
     /** @type {{result: {n:number, ok: number}}} */
@@ -184,11 +187,10 @@ export default class ApplicationService extends BasePocketService {
 
   /**
    *
-   * @param {PocketApplication} application Application to add pocket data.
-   *
-   * @returns {Promise<ExtendedPocketApplication>} Pocket application with pocket data.
-   * @private
    * @async
+   * @private
+   * @param {PocketApplication} application Application to add pocket data.
+   * @returns {Promise<ExtendedPocketApplication>} Pocket application with pocket data.
    */
   async __getExtendedPocketApplication(application) {
     let networkApplication;
@@ -216,11 +218,10 @@ export default class ApplicationService extends BasePocketService {
 
   /**
    *
-   * @param {PocketApplication} application Application to add pocket data.
-   *
-   * @returns {Promise<ExtendedPocketApplication>} Pocket application with pocket data.
-   * @private
    * @async
+   * @private
+   * @param {PocketApplication} application Application to add pocket data.
+   * @returns {Promise<ExtendedPocketApplication>} Pocket application with pocket data.
    */
   async __getExtendedPocketClientApplication(application) {
     let networkApplication;
@@ -249,10 +250,11 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Mark application as free tier.
    *
+   * @async
+   * @private
    * @param {PocketApplication} application Pocket application to mark as free tier.
    * @param {boolean} freeTier If is free tier or not.
-   *
-   * @private
+   * @returns {boolean} Whether the aplication was correctly updated or not.
    */
   async __markApplicationAsFreeTier(application, freeTier) {
     const filter = {
@@ -276,10 +278,9 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Check if application exists on DB.
    *
-   * @param {PocketApplication} application Application to check if exists.
-   *
-   * @returns {Promise<boolean>} If application exists or not.
    * @async
+   * @param {PocketApplication} application Application to check if exists.
+   * @returns {Promise<boolean>} If the application exists or not.
    */
   async applicationExists(application) {
     let filter = {};
@@ -302,11 +303,11 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Import application data from network.
    *
-   * @param {string} applicationAddress Application address.
-   *
-   * @returns {Promise<Application>} Application data.
-   * @throws {DashboardValidationError | PocketNetworkError} If application already exists on dashboard or application does exist on network.
    * @async
+   * @private
+   * @param {string} applicationAddress Application address.
+   * @returns {Promise<Application>} Application data.
+   * @throws {DashboardValidationError | PocketNetworkError} If the application already exists on dashboard or application does exist on network.
    */
   async importApplication(applicationAddress) {
     const filter = {
@@ -336,11 +337,10 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Verify if the application belongs to the client's account using an application id
    *
+   * @async
    * @param {string} applicationId Application Identifier.
    * @param {string} authHeader Authorization header.
-   *
    * @returns {Promise<boolean>} True if the app belongs to the client account or false otherwise.
-   * @async
    */
   async verifyApplicationBelongsToClient(applicationId, authHeader) {
     // Retrieve the session tokens from the auth headers
@@ -369,10 +369,9 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Get client's application account data.
    *
-   * @param {string} applicationId Application address.
-   *
-   * @returns {Promise<ExtendedPocketApplication>} Application data.
    * @async
+   * @param {string} applicationId Application address.
+   * @returns {Promise<ExtendedPocketApplication>} Application data.
    */
   async getClientApplication(applicationId) {
     const filter = {
@@ -400,10 +399,9 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Get application data.
    *
-   * @param {string} applicationAddress Application address.
-   *
-   * @returns {Promise<ExtendedPocketApplication>} Application data.
    * @async
+   * @param {string} applicationAddress Application address.
+   * @returns {Promise<ExtendedPocketApplication>} Application data.
    */
   async getApplication(applicationAddress) {
     try {
@@ -439,10 +437,9 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Get private application data.
    *
-   * @param {string} applicationId Application Id.
-   *
-   * @returns {Promise<ExtendedPocketApplication>} Application data.
    * @async
+   * @param {string} applicationId Application Id.
+   * @returns {Promise<ExtendedPocketApplication>} Application data.
    */
   async getPrivateApplication(applicationId) {
     const filter = {
@@ -470,10 +467,9 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Get application data on network.
    *
-   * @param {string} applicationAddress Application address.
-   *
-   * @returns {Promise<Application>} Application data.
    * @async
+   * @param {string} applicationAddress Application address.
+   * @returns {Promise<Application>} Application data.
    */
   async getNetworkApplication(applicationAddress) {
     return this.pocketService.getApplication(applicationAddress);
@@ -501,12 +497,11 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Get all applications on network that belongs to user.
    *
+   * @async
    * @param {string} userEmail Email of user.
    * @param {number} limit Limit of query.
    * @param {number} [offset] Offset of query.
-   *
    * @returns {Promise<UserPocketApplication[]>} List of applications.
-   * @async
    */
   async getUserApplications(userEmail, limit, offset = 0) {
     const filter = { user: userEmail };
@@ -522,7 +517,7 @@ export default class ApplicationService extends BasePocketService {
       )
     )
       .map(PocketApplication.createPocketApplication)
-      .map(app => {
+      .map((app) => {
         return {
           id: app.id,
           name: app.name,
@@ -534,15 +529,15 @@ export default class ApplicationService extends BasePocketService {
       });
 
     const dashboardApplicationAddresses = dashboardApplicationData
-      .map(app => app.address)
-      .filter(address => address.length > 0);
+      .map((app) => app.address)
+      .filter((address) => address.length > 0);
 
     const networkApplications = await this.pocketService.getAllApplications(
       dashboardApplicationAddresses
     );
 
     if (dashboardApplicationData.length > 0) {
-      return dashboardApplicationData.map(app =>
+      return dashboardApplicationData.map((app) =>
         PocketApplication.createUserPocketApplication(app, networkApplications)
       );
     }
@@ -553,8 +548,8 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Get staked application summary from network.
    *
-   * @returns {Promise<StakedApplicationSummary>} Summary data of staked applications.
    * @async
+   * @returns {Promise<StakedApplicationSummary>} Summary data of staked applications.
    */
   async getStakedApplicationSummary() {
     try {
@@ -563,10 +558,10 @@ export default class ApplicationService extends BasePocketService {
       );
 
       const averageStaked = this._getAverageNetworkData(
-        stakedApplications.map(app => Number(app.stakedTokens.toString()))
+        stakedApplications.map((app) => Number(app.stakedTokens.toString()))
       );
       const totalStaked = this._getAverageNetworkData(
-        stakedApplications.map(app => bigInt(app.stakedTokens.toString()))
+        stakedApplications.map((app) => bigInt(app.stakedTokens.toString()))
       );
 
       const averageStakedResult = averageStaked / stakedApplications.length;
@@ -584,10 +579,9 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Get AAT using Free tier account.
    *
-   * @param {string} applicationId The application Identifier.
-   *
-   * @returns {Promise<PocketAAT | boolean>} AAT for application.
    * @async
+   * @param {string} applicationId The application Identifier.
+   * @returns {Promise<PocketAAT | boolean>} AAT for application.
    */
   async getFreeTierAAT(applicationId) {
     const filter = {
@@ -628,12 +622,11 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Stake a free tier application.
    *
+   * @async
    * @param {ExtendedPocketApplication} application Application to stake.
    * @param {{app_address: string, chains: string[], stake_amount: string}} stakeInformation Information for the stake action.
    * @param {{name: string, link: string}} emailData Email data.
-   *
    * @returns {Promise<PocketAAT | boolean>} If application was created or not.
-   * @async
    */
   async stakeFreeTierApplication(application, stakeInformation, emailData) {
     const {
@@ -940,11 +933,10 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Unstake application.
    *
+   * @async
    * @param {{address: string, raw_hex_bytes: string}} appUnstakeTransaction Transaction object.
    * @param {string} applicationLink Link to detail for email.
    * @param {string} authHeader Auth header.
-   *
-   * @async
    */
   async unstakeApplication(appUnstakeTransaction, applicationLink, authHeader) {
     const { address, raw_hex_bytes } = appUnstakeTransaction;
@@ -1002,8 +994,9 @@ export default class ApplicationService extends BasePocketService {
   }
 
   /**
-   * Create an application on dashboard.
+   * Create an application on the dashboard.
    *
+   * @async
    * @param {object} applicationData Application data.
    * @param {string} applicationData.name Name.
    * @param {string} applicationData.owner Owner.
@@ -1012,10 +1005,8 @@ export default class ApplicationService extends BasePocketService {
    * @param {string} applicationData.user User.
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
-   *
    * @returns {Promise<string | boolean>} If application was persisted return id, if not return false.
    * @throws {DashboardError} If validation fails or already exists.
-   * @async
    */
   async createApplication(applicationData) {
     if (PocketApplication.validate(applicationData)) {
@@ -1040,12 +1031,11 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Save an application public account.
    *
+   * @async
    * @param {string} applicationID Application ID.
    * @param {{address: string, publicKey: string}} accountData Application account data.
-   *
    * @returns {Promise<PocketApplication>} An application information.
    * @throws {Error} If application does not exists.
-   * @async
    */
   async saveApplicationAccount(applicationID, accountData) {
     const applicationDB = await this.__decryptApplicationFields(
@@ -1076,11 +1066,10 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Delete an application from dashboard.
    *
+   * @async
    * @param {string} applicationId Application Id.
    * @param {string} user Owner email of application.
-   *
    * @returns {Promise<PocketApplication>} The deleted application.
-   * @async
    */
   async deleteApplication(applicationId, user) {
     const filter = {
@@ -1110,6 +1099,7 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Update an application on network.
    *
+   * @async
    * @param {string} applicationId Application Id.
    * @param {object} applicationData Application data.
    * @param {string} applicationData.name Name.
@@ -1119,10 +1109,8 @@ export default class ApplicationService extends BasePocketService {
    * @param {string} applicationData.user User.
    * @param {string} [applicationData.description] Description.
    * @param {string} [applicationData.icon] Icon.
-   *
    * @returns {Promise<boolean>} If was updated or not.
    * @throws {DashboardError} If validation fails or does not exists.
-   * @async
    */
   async updateApplication(applicationId, applicationData) {
     if (PocketApplication.validate(applicationData)) {
@@ -1173,10 +1161,9 @@ export default class ApplicationService extends BasePocketService {
   /**
    * Update an App status.
    *
+   * @async
    * @param {string} address App account address.
    * @param {boolean} status App updatingStatus.
-   *
-   * @async
    */
   async changeUpdatingStatus(address, status) {
     // Retrieve app
