@@ -24,7 +24,7 @@ class PocketStripePaymentService extends PocketBaseService {
 
     return axios
       .put(this._getURL("history"), data)
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -58,10 +58,10 @@ class PocketStripePaymentService extends PocketBaseService {
 
     return axios
       .post(this._getURL("payment_method"), data)
-      .then(response => {
+      .then((response) => {
         return { success: true, data: response.data };
       })
-      .catch(err => {
+      .catch((err) => {
         return { success: false, data: err.response.data };
       });
   }
@@ -122,7 +122,7 @@ class PocketStripePaymentService extends PocketBaseService {
 
     return stripe
       .confirmCardPayment(paymentIntentSecretID, cardPaymentData)
-      .then(result => {
+      .then((result) => {
         if (result.paymentIntent) {
           const paymentIntent = result.paymentIntent;
 
@@ -171,7 +171,7 @@ class PocketStripePaymentService extends PocketBaseService {
 
     return stripe
       .confirmCardPayment(paymentIntentSecretID, cardPaymentData)
-      .then(result => {
+      .then((result) => {
         if (result.paymentIntent) {
           const paymentIntent = result.paymentIntent;
 

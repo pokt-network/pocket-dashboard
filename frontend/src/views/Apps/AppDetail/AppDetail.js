@@ -326,9 +326,7 @@ class AppDetail extends Component {
         children:
           status === STAKE_STATUS.Unstaking ? (
             <p className="unstaking-time">{`Unstaking time: ${unstakingTime}`}</p>
-          ) : (
-            undefined
-          ),
+          ) : undefined,
       },
       {
         title: formatNumbers(maxRelays * 24),

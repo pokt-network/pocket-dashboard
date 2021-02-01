@@ -109,7 +109,7 @@ class NewCardForm extends Component {
                 <h2>{formTitle}</h2>
               </Row>
 
-              <Form onSubmit={e => this.handlePayMethod(e, elements, stripe)}>
+              <Form onSubmit={(e) => this.handlePayMethod(e, elements, stripe)}>
                 <Row>
                   <Col sm="6" md="6" lg="6">
                     <Form.Group>
@@ -180,7 +180,7 @@ class NewCardForm extends Component {
                         onChange={this.handleChange}
                       >
                         <option />
-                        {PAYMENT_REGION_OR_COUNTRY.map(country => (
+                        {PAYMENT_REGION_OR_COUNTRY.map((country) => (
                           <option key={country.code} value={country.code}>
                             {country.name}
                           </option>

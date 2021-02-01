@@ -48,7 +48,7 @@ class VerifyEmail extends Component {
     UserService.resendSignUpEmail(
       this.state.email,
       securityQuestionLinkPage
-    ).then(result => {
+    ).then((result) => {
       this.setState({
         resentEmail: true,
         alert: {

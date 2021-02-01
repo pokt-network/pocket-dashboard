@@ -154,7 +154,7 @@ class General extends Component {
               <Formik
                 enableReinitialize
                 validationSchema={schema}
-                onSubmit={data => {
+                onSubmit={(data) => {
                   const { currentEmail } = this.state;
 
                   this.setState({ data });

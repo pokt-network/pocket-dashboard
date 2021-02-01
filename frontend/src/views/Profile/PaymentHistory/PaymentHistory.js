@@ -46,7 +46,7 @@ class PaymentHistory extends Component {
       PAYMENT_HISTORY_LIMIT
     );
 
-    history.forEach(obj => {
+    history.forEach((obj) => {
       obj.formatedAmount = obj.amount / 100;
     });
 
@@ -79,7 +79,7 @@ class PaymentHistory extends Component {
             copyStyles={true}
           />
           <PrintableInvoice
-            ref={el => (this.componentRef = el)}
+            ref={(el) => (this.componentRef = el)}
             invoiceItems={row.printableData.information}
             purchaseDetails={row.printableData.items}
             cardHolderName={row.billingDetails.name}
@@ -156,7 +156,7 @@ class PaymentHistory extends Component {
       paymentID
     );
 
-    history.forEach(obj => {
+    history.forEach((obj) => {
       obj.formatedAmount = obj.amount / 100;
     });
 
@@ -166,7 +166,7 @@ class PaymentHistory extends Component {
   render() {
     let { history, page, offset, filtered } = this.state;
 
-    history.forEach(obj => {
+    history.forEach((obj) => {
       obj.formatedAmount = obj.amount / 100;
     });
 
@@ -175,7 +175,7 @@ class PaymentHistory extends Component {
       {
         dataField: "formatedAmount",
         text: "Amount",
-        formatter: cell => formatCurrency(cell),
+        formatter: (cell) => formatCurrency(cell),
       },
       { dataField: "createdDate", text: "Date" },
       { dataField: "paymentID", text: "Invoice ref" },
@@ -186,14 +186,14 @@ class PaymentHistory extends Component {
       // Only include < > when there are pages available
       let { history } = this.state;
 
-      history.forEach(obj => {
+      history.forEach((obj) => {
         obj.formatedAmount = obj.amount / 100;
       });
 
       const hasPagesAvailable = history.length === PAYMENT_HISTORY_LIMIT;
-      const isAnIcon = p =>
+      const isAnIcon = (p) =>
         typeof p.page === "string" && p.page !== ">>" && p.page !== "<<";
-      const pageWithoutIndication = pages.filter(p => {
+      const pageWithoutIndication = pages.filter((p) => {
         const isIcon = isAnIcon(p);
 
         // Only return > when there are pages available.
@@ -240,13 +240,13 @@ class PaymentHistory extends Component {
             <div className="filters mt-4">
               <span className="filter">
                 <AppDatePicker
-                  onChange={date => this.handleDateChange(date, "fromDate")}
+                  onChange={(date) => this.handleDateChange(date, "fromDate")}
                 />
               </span>
               <p className="label-text">To</p>
               <span className="filter">
                 <AppDatePicker
-                  onChange={date => this.handleDateChange(date, "toDate")}
+                  onChange={(date) => this.handleDateChange(date, "toDate")}
                 />
               </span>
               <span className="filter search">
@@ -254,7 +254,7 @@ class PaymentHistory extends Component {
                   <FormControl
                     placeholder="Search invoice"
                     name="searchQuery"
-                    onChange={e => {
+                    onChange={(e) => {
                       this.searchChange(e);
                     }}
                     onKeyPress={({ key }) => {

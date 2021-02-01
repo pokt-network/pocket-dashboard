@@ -138,7 +138,7 @@ class SignUp extends Component {
                 <p className="error">{backendErrors}</p>
                 <Formik
                   validate={this.validate}
-                  onSubmit={data => {
+                  onSubmit={(data) => {
                     this.setState({ data });
                     this.handleSignUp();
                   }}

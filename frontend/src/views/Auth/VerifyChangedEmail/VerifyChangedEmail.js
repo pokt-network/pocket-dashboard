@@ -32,7 +32,7 @@ class VerifyChangedEmail extends Component {
       return;
     }
 
-    PocketUserService.validateToken(queryParam.d).then(result => {
+    PocketUserService.validateToken(queryParam.d).then((result) => {
       if (result.success) {
         this.setState({ email: result.data });
       } else {

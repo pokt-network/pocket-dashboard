@@ -86,7 +86,7 @@ class NewCardNoAddressForm extends Component {
                   <h2>{formTitle}</h2>
                 </Row>
               )}
-              <Form onSubmit={e => this.handlePayMethod(e, elements, stripe)}>
+              <Form onSubmit={(e) => this.handlePayMethod(e, elements, stripe)}>
                 <Row>
                   <Col md="4">
                     <Form.Group>

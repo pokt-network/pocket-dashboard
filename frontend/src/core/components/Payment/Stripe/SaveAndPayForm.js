@@ -37,7 +37,7 @@ class SaveAndPayForm extends Component {
       paymentIntentSecretID,
       card,
       billingDetails
-    ).then(result => {
+    ).then((result) => {
       if (result.error) {
         handleAfterPayment({ success: false, data: result.error });
       }

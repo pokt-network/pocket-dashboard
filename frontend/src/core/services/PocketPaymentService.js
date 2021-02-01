@@ -125,7 +125,7 @@ class PocketPaymentService extends PocketBaseService {
         limit,
         offset,
       },
-    }).then(response => response.data);
+    }).then((response) => response.data);
   }
 
   /**
@@ -138,7 +138,7 @@ class PocketPaymentService extends PocketBaseService {
   getPaymentDetail(paymentId) {
     return axios
       .get(this._getURL(`history/${paymentId}`))
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -149,7 +149,7 @@ class PocketPaymentService extends PocketBaseService {
   getPaymentMethods(user) {
     return axios
       .post(this._getURL("payment_methods"), { user })
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -160,7 +160,7 @@ class PocketPaymentService extends PocketBaseService {
   deletePaymentMethod(paymentMethodID) {
     return axios
       .delete(this._getURL(`payment_method/${paymentMethodID}`))
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -169,7 +169,7 @@ class PocketPaymentService extends PocketBaseService {
   getAvailableCurrencies() {
     return axios
       .get(this._getURL("currencies"))
-      .then(response => response.data);
+      .then((response) => response.data);
   }
 
   /**
@@ -218,10 +218,10 @@ class PocketPaymentService extends PocketBaseService {
 
     return axios
       .post(this._getURL(`new_intent/${path}`), data)
-      .then(response => {
+      .then((response) => {
         return { success: true, data: response.data };
       })
-      .catch(err => {
+      .catch((err) => {
         return { success: false, data: err.response };
       });
   }
@@ -259,10 +259,10 @@ class PocketPaymentService extends PocketBaseService {
 
     return axios
       .put(this._getURL(`intent/${path}`), data)
-      .then(response => {
+      .then((response) => {
         return { success: true, data: response.data };
       })
-      .catch(err => {
+      .catch((err) => {
         return { success: false, data: err.response };
       });
   }

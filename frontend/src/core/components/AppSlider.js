@@ -17,7 +17,7 @@ class AppSlider extends Component {
     };
   }
 
-  onSliderChange = value => {
+  onSliderChange = (value) => {
     this.setState({
       value,
     });
@@ -31,7 +31,7 @@ class AppSlider extends Component {
 
     const Handle = Slider.Handle;
 
-    const handle = props => {
+    const handle = (props) => {
       // eslint-disable-next-line react/prop-types
       const { value, dragging, index, ...restProps } = props;
 
@@ -54,7 +54,7 @@ class AppSlider extends Component {
         <Slider
           {...this.props}
           handle={handle}
-          tipFormatter={value => `${value}%`}
+          tipFormatter={(value) => `${value}%`}
           value={value}
           onChange={this.onSliderChange}
           onAfterChange={() => onChange(value)}

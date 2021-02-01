@@ -13,7 +13,7 @@ class PocketSecurityQuestionsService extends PocketBaseService {
    * @return {Promise|Promise<Array.<{string}>>}
    */
   getSecurityQuestions() {
-    return axios.get(this._getURL()).then(response => response.data);
+    return axios.get(this._getURL()).then((response) => response.data);
   }
 
   /**
@@ -32,14 +32,14 @@ class PocketSecurityQuestionsService extends PocketBaseService {
 
     return axios
       .post(this._getURL("answered"), data)
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           return { success: response.data };
         }
 
         return { success: false };
       })
-      .catch(err => {
+      .catch((err) => {
         return { success: false, data: err.response };
       });
   }
@@ -58,13 +58,13 @@ class PocketSecurityQuestionsService extends PocketBaseService {
 
     return axios
       .post(this._getURL("user/random"), data)
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           return { success: response.data };
         }
         return { success: false };
       })
-      .catch(err => {
+      .catch((err) => {
         return { success: false, data: err.response };
       });
   }
@@ -83,13 +83,13 @@ class PocketSecurityQuestionsService extends PocketBaseService {
 
     return axios
       .post(this._getURL("user/all"), data)
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           return { success: true, data: response.data };
         }
         return { success: false };
       })
-      .catch(err => {
+      .catch((err) => {
         return { success: false, data: err.response };
       });
   }
@@ -110,13 +110,13 @@ class PocketSecurityQuestionsService extends PocketBaseService {
 
     return axios
       .post(this._getURL("user/validate-answers"), data)
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           return { success: true, data: response.data };
         }
         return { success: false };
       })
-      .catch(err => {
+      .catch((err) => {
         return { success: false, data: err.response };
       });
   }

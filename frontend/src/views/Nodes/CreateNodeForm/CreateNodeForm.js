@@ -191,7 +191,7 @@ class CreateNodeForm extends CreateForm {
               <div className="checking-margin-test" style={{ padding: "50px" }}>
                 <Formik
                   validationSchema={nodeFormSchema}
-                  onSubmit={async data => {
+                  onSubmit={async (data) => {
                     this.setState({ data });
                     await this.handleCreate();
                   }}

@@ -51,7 +51,7 @@ class NodeChainList extends Chains {
   handleChains() {
     const { chosenChains } = this.state;
     const { serviceURL } = this.state.data;
-    const chainsHashes = chosenChains.map(ch => ch._id);
+    const chainsHashes = chosenChains.map((ch) => ch._id);
 
     NodeService.saveNodeInfoInCache({
       chains: chainsHashes,
@@ -151,7 +151,7 @@ class NodeChainList extends Chains {
             <Formik
               enableReinitialize
               validationSchema={schema}
-              onSubmit={async data => {
+              onSubmit={async (data) => {
                 this.setState({ data });
                 await this.handleChains();
               }}
@@ -200,7 +200,7 @@ class NodeChainList extends Chains {
                         }
                       >
                         <p
-                          ref={el => {
+                          ref={(el) => {
                             if (el) {
                               el.style.setProperty(
                                 "font-size",

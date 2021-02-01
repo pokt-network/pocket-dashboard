@@ -199,7 +199,7 @@ class CreateAppForm extends CreateForm {
               <div className="checking-margin-test" style={{ padding: "50px" }}>
                 <Formik
                   validationSchema={appFormSchema}
-                  onSubmit={async data => {
+                  onSubmit={async (data) => {
                     this.setState({ data });
                     await this.handleCreate();
                   }}

@@ -143,7 +143,7 @@ class Checkout extends Component {
           currentAccountBalance
         )} POKT`,
       },
-    ].map(it => {
+    ].map((it) => {
       if (!it.format) {
         return it;
       }
@@ -197,7 +197,7 @@ class Checkout extends Component {
           currentAccountBalance
         )} POKT`,
       },
-    ].map(it => {
+    ].map((it) => {
       if (!it.format) {
         return it;
       }
@@ -286,7 +286,7 @@ class Checkout extends Component {
           copyStyles={true}
         />
         <PrintableInvoice
-          ref={el => (this.componentRef = el)}
+          ref={(el) => (this.componentRef = el)}
           invoiceItems={[
             { text: "invoice", value: id },
             { text: "bill to", value: owner },

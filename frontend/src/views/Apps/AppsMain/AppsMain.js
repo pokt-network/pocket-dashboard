@@ -54,7 +54,7 @@ class AppsMain extends Main {
     ApplicationService.getAllUserApplications(
       userEmail,
       APPLICATIONS_LIMIT
-    ).then(userItems => {
+    ).then((userItems) => {
       hasError = userItems.error ? userItems.error : hasError;
       errorMessage = userItems.error ? userItems.message : errorMessage;
       errorType = userItems.error ? userItems.name : errorType;
@@ -93,7 +93,7 @@ class AppsMain extends Main {
     );
 
     ApplicationService.getAllApplications(APPLICATIONS_LIMIT).then(
-      registeredItems => {
+      (registeredItems) => {
         hasError = registeredItems.error ? registeredItems.error : hasError;
         errorMessage = registeredItems.error
           ? registeredItems.message

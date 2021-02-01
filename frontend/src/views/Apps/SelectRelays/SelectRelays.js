@@ -61,8 +61,8 @@ class SelectRelays extends Component {
     const chainsLength =
       chains !== undefined && chains !== null ? chains.length : 1;
 
-    PaymentService.getAvailableCurrencies().then(currencies => {
-      PocketCheckoutService.getRelaysPerDay().then(relaysPerDay => {
+    PaymentService.getAvailableCurrencies().then((currencies) => {
+      PocketCheckoutService.getRelaysPerDay().then((relaysPerDay) => {
         const minRelays = parseInt(relaysPerDay.min);
 
         PocketCheckoutService.getApplicationMoneyToSpent(minRelays).then(
