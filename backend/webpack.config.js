@@ -12,14 +12,14 @@ module.exports = {
     globalObject: "this",
     path: path.join(__dirname, "dist"),
     publicPath: "/",
-    filename: "[name].js"
+    filename: "[name].js",
   },
   target: "web",
   devtool: "inline-source-map",
   node: {
     // Need this when working with express, otherwise the build fails
-    __dirname: false,   // if you don't put this is, __dirname
-    __filename: false,  // and __filename return blank or /
+    __dirname: false, // if you don't put this is, __dirname
+    __filename: false, // and __filename return blank or /
   },
   externals: [nodeExternals()], // Need this to avoid error when working with Express
   module: {
@@ -32,21 +32,18 @@ module.exports = {
         options: {
           emitWarning: true,
           failOnError: false,
-          failOnWarning: false
-        }
+          failOnWarning: false,
+        },
       },
       {
         // Transpiles ES6-8 into ES5
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
-        }
+          loader: "babel-loader",
+        },
       },
-    ]
+    ],
   },
-  plugins: [
-    new webpack.NoEmitOnErrorsPlugin(),
-    new Dotenv()
-  ]
+  plugins: [new webpack.NoEmitOnErrorsPlugin(), new Dotenv()],
 };
