@@ -51,10 +51,7 @@ class ApplicationChainList extends Chains {
 
     this.setState({ creatingFreeTier: true });
 
-    const {
-      success,
-      name: errorType,
-    } = await PocketApplicationService.stakeFreeTierApplication(
+    const { success } = await PocketApplicationService.stakeFreeTierApplication(
       stakeInformation,
       applicationLink
     );
