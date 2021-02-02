@@ -624,7 +624,7 @@ export default class ApplicationService extends BasePocketService {
    *
    * @async
    * @param {ExtendedPocketApplication} application Application to stake.
-   * @param {{app_address: string, chains: string[], stake_amount: string}} stakeInformation Information for the stake action.
+   * @param {{client_address: string, chains: string[], stake_amount: string}} stakeInformation Information for the stake action.
    * @param {{name: string, link: string}} emailData Email data.
    * @returns {Promise<PocketAAT | boolean>} If application was created or not.
    */
@@ -687,7 +687,7 @@ export default class ApplicationService extends BasePocketService {
         appStakeTransaction,
         contactEmail,
         emailData,
-        address: stakeInformation.app_address,
+        address: stakeInformation.client_address,
         paymentEmailData: {
           amountPaid: 0,
           poktStaked: upoktToStake / Math.pow(10, POKT_DENOMINATIONS.upokt),

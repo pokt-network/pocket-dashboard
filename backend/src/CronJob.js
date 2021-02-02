@@ -81,9 +81,10 @@ export function startCronJobs() {
                   case POST_ACTION_TYPE.stakeApplication: {
                     const appStakeTransaction =
                       postAction.data.appStakeTransaction;
+
                     const stakeAppPostActionHash = await POCKET_SERVICE.submitRawTransaction(
                       appStakeTransaction.address,
-                      appStakeTransaction.raw_hex_bytes
+                      appStakeTransaction.txHex
                     );
 
                     await TRANSACTION_SERVICE.addAppStakeTransaction(
@@ -165,7 +166,6 @@ export function startCronJobs() {
             networkData,
             error,
           } = await APPLICATION_SERVICE.getApplication(address);
-
           const hasError = error ? true : false;
           const errorType = hasError === true ? error : "";
 
