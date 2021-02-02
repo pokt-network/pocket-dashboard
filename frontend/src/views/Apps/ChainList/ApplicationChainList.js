@@ -30,15 +30,12 @@ class ApplicationChainList extends Chains {
       passphrase,
     } = PocketApplicationService.getApplicationInfo();
 
-    console.log("app info:", id, address, chains, passphrase);
-
     const unlockedAccount = await PocketClientService.getUnlockedAccount(
       address,
       passphrase
     );
     const clientAddressHex = unlockedAccount.addressHex;
 
-    console.log("acc info:", unlockedAccount, clientAddressHex);
     const url = _getDashboardPath(DASHBOARD_PATHS.appDetail);
 
     const detail = url.replace(":id", id);
@@ -51,8 +48,6 @@ class ApplicationChainList extends Chains {
       chains: chains,
       stake_amount: stakeAmount,
     };
-
-    console.log("STAKE INFORMATION", stakeInformation);
 
     this.setState({ creatingFreeTier: true });
 
@@ -70,7 +65,7 @@ class ApplicationChainList extends Chains {
         _getDashboardPath(`${DASHBOARD_PATHS.appDetail.replace(":id", id)}`)
       );
     } else {
-      console.log("RIP, see logs above");
+      // TODO: handle error on UI
     }
   }
 
