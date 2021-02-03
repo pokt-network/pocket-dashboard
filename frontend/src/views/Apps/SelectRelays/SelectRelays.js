@@ -1,11 +1,11 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "../../../core/components/Purchase/Purchase.scss";
-import {Col, Row} from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 //import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import AppSlider from "../../../core/components/AppSlider";
-import {ITEM_TYPES, PURCHASE_ITEM_NAME} from "../../../_constants";
+import { ITEM_TYPES, PURCHASE_ITEM_NAME } from "../../../_constants";
 //import {STYLING} from "../../../_constants";
-import {formatNumbers, scrollToId} from "../../../_helpers";
+import { formatNumbers, scrollToId } from "../../../_helpers";
 import PaymentService from "../../../core/services/PocketPaymentService";
 import PocketPaymentService from "../../../core/services/PocketPaymentService";
 import numeral from "numeral";
@@ -15,15 +15,14 @@ import AppAlert from "../../../core/components/AppAlert";
 import PocketCheckoutService from "../../../core/services/PocketCheckoutService";
 import Loader from "../../../core/components/Loader";
 import PocketAccountService from "../../../core/services/PocketAccountService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import {isNaN} from "formik";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
+import { isNaN } from "formik";
 import AppOrderSummary from "../../../core/components/AppOrderSummary/AppOrderSummary";
 import UserService from "../../../core/services/PocketUserService";
 import PocketClientService from "../../../core/services/PocketClientService";
-import {Configurations} from "../../../_configuration";
+import { Configurations } from "../../../_configuration";
 
 const POCKET_NETWORK_CONFIGURATION = Configurations.pocket_network;
-
 
 class SelectRelays extends Component {
   constructor(props, context) {
@@ -50,79 +49,88 @@ class SelectRelays extends Component {
       currentAccountBalanceUpokt: 0,
       currencies: [],
       loading: true,
-      error: {show: false, message: ""},
+      error: { show: false, message: "" },
     };
   }
 
   componentDidMount() {
-    const {address: accountAddress, chains} = PocketApplicationService.getApplicationInfo();
-    const chainsLength = chains !== undefined && chains !== null ? chains.length : 1;
+    const {
+      address: accountAddress,
+      chains,
+    } = PocketApplicationService.getApplicationInfo();
+    const chainsLength =
+      chains !== undefined && chains !== null ? chains.length : 1;
 
-    PaymentService.getAvailableCurrencies()
-      .then(currencies => {
+    PaymentService.getAvailableCurrencies().then((currencies) => {
+      PocketCheckoutService.getRelaysPerDay().then((relaysPerDay) => {
+        const minRelays = parseInt(relaysPerDay.min);
 
-        PocketCheckoutService.getRelaysPerDay()
-          .then(relaysPerDay => {
-            const minRelays = parseInt(relaysPerDay.min);
+        PocketCheckoutService.getApplicationMoneyToSpent(minRelays).then(
+          ({ upokt, cost, maxUsd }) => {
+            PocketAccountService.getBalance(accountAddress).then(
+              ({ balance }) => {
+                // Usd value
+                const currentAccountBalance = parseFloat(balance.usd);
+                const subTotal = parseFloat(cost);
+                const maxValueUsd = parseFloat(maxUsd);
+                const total = subTotal - currentAccountBalance;
+                // Upokt value
+                const currentAccountBalanceUpokt = parseFloat(balance.upokt);
+                const upoktSubTotal = parseFloat(upokt);
+                const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
 
-            PocketCheckoutService.getApplicationMoneyToSpent(minRelays)
-              .then(({upokt, cost, maxUsd}) => {
-
-                PocketAccountService.getBalance(accountAddress)
-                  .then(({balance}) => {
-                    // Usd value
-                    const currentAccountBalance = parseFloat(balance.usd);
-                    const subTotal = parseFloat(cost);
-                    const maxValueUsd = parseFloat(maxUsd);
-                    const total = subTotal - currentAccountBalance;
-                    // Upokt value
-                    const currentAccountBalanceUpokt = parseFloat(balance.upokt);
-                    const upoktSubTotal = parseFloat(upokt);
-                    const upoktTotal = upoktSubTotal - currentAccountBalanceUpokt;
-
-                    if(total > maxValueUsd) {
-                      this.setState({
-                        error: {show: true, message: "You have exceeded the limit of US"+ maxValueUsd},
-                        loading: false,
-                      });
-                      return;
-                    }
-
-                    this.setState({
-                      currentAccountBalance: currentAccountBalance,
-                      originalAccountBalance: currentAccountBalance,
-                      currentAccountBalanceUpokt: currentAccountBalanceUpokt,
-                      originalAccountBalanceUpokt: currentAccountBalanceUpokt,
-                      minRelays: minRelays,
-                      maxRelays: parseInt(relaysPerDay.max),
-                      loading: false,
-                      relaysSelected: minRelays,
-                      relaysPerChains: minRelays / chainsLength,
-                      subTotal,
-                      total,
-                      chainsLength: chainsLength,
-                      upoktSubTotal,
-                      upoktTotal,
-                      upoktToStake: upokt
-                    });
+                if (total > maxValueUsd) {
+                  this.setState({
+                    error: {
+                      show: true,
+                      message:
+                        "You have exceeded the limit of US" + maxValueUsd,
+                    },
+                    loading: false,
                   });
-              });
-          });
+                  return;
+                }
 
-        this.setState({currencies});
+                this.setState({
+                  currentAccountBalance: currentAccountBalance,
+                  originalAccountBalance: currentAccountBalance,
+                  currentAccountBalanceUpokt: currentAccountBalanceUpokt,
+                  originalAccountBalanceUpokt: currentAccountBalanceUpokt,
+                  minRelays: minRelays,
+                  maxRelays: parseInt(relaysPerDay.max),
+                  loading: false,
+                  relaysSelected: minRelays,
+                  relaysPerChains: minRelays / chainsLength,
+                  subTotal,
+                  total,
+                  chainsLength: chainsLength,
+                  upoktSubTotal,
+                  upoktTotal,
+                  upoktToStake: upokt,
+                });
+              }
+            );
+          }
+        );
       });
+
+      this.setState({ currencies });
+    });
   }
 
   onCurrentBalanceChange(e) {
-    let {relaysSelected} = this.state;
+    let { relaysSelected } = this.state;
     const {
-      target: {value},
+      target: { value },
     } = e;
     const currentAccountBalance = parseFloat(value);
-    const currentAccountBalanceUpokt = (currentAccountBalance / POCKET_NETWORK_CONFIGURATION.pokt_usd_market_price) * 1000000;
+    const currentAccountBalanceUpokt =
+      (currentAccountBalance /
+        POCKET_NETWORK_CONFIGURATION.pokt_usd_market_price) *
+      1000000;
 
-    PocketCheckoutService.getApplicationMoneyToSpent(relaysSelected)
-      .then(({upokt, cost, maxUsd}) => {
+    PocketCheckoutService.getApplicationMoneyToSpent(relaysSelected).then(
+      ({ upokt, cost, maxUsd }) => {
         const subTotal = parseFloat(cost);
         const maxValueUsd = parseFloat(maxUsd);
         const total = subTotal - currentAccountBalance;
@@ -132,7 +140,10 @@ class SelectRelays extends Component {
 
         if (total > maxValueUsd) {
           this.setState({
-            error: {show: true, message: "You have exceeded the limit of US" + maxValueUsd},
+            error: {
+              show: true,
+              message: "You have exceeded the limit of US" + maxValueUsd,
+            },
             loading: false,
           });
           return;
@@ -145,16 +156,21 @@ class SelectRelays extends Component {
           upoktTotal,
           total,
           subTotal,
-          upoktToStake: upokt
+          upoktToStake: upokt,
         });
-      });
+      }
+    );
   }
 
   onSliderChange(value) {
-    const {currentAccountBalance, currentAccountBalanceUpokt, chainsLength} = this.state;
+    const {
+      currentAccountBalance,
+      currentAccountBalanceUpokt,
+      chainsLength,
+    } = this.state;
 
-    PocketCheckoutService.getApplicationMoneyToSpent(value)
-      .then(({upokt, cost, maxUsd}) => {
+    PocketCheckoutService.getApplicationMoneyToSpent(value).then(
+      ({ upokt, cost, maxUsd }) => {
         const subTotal = parseFloat(cost);
         const maxValueUsd = parseFloat(maxUsd);
         const total = subTotal - currentAccountBalance;
@@ -164,7 +180,10 @@ class SelectRelays extends Component {
 
         if (total > maxValueUsd) {
           this.setState({
-            error: {show: true, message: "You have exceeded the limit of US" + maxValueUsd},
+            error: {
+              show: true,
+              message: "You have exceeded the limit of US" + maxValueUsd,
+            },
             loading: false,
           });
           return;
@@ -177,9 +196,10 @@ class SelectRelays extends Component {
           upoktTotal,
           subTotal,
           total,
-          upoktToStake: upokt
+          upoktToStake: upokt,
         });
-      });
+      }
+    );
   }
 
   validate(currency) {
@@ -202,7 +222,9 @@ class SelectRelays extends Component {
     }
 
     if (currentAccountBalance > originalAccountBalance) {
-      throw new Error(`Current balance cannot be greater than ${originalAccountBalance} ${currency}.`);
+      throw new Error(
+        `Current balance cannot be greater than ${originalAccountBalance} ${currency}.`
+      );
     }
 
     if (subTotal < 0 || isNaN(subTotal)) {
@@ -216,26 +238,41 @@ class SelectRelays extends Component {
     return true;
   }
 
-  async createPaymentIntent(relays, currency, amount, currentAccountBalanceUpokt) {
+  async createPaymentIntent(
+    relays,
+    currency,
+    amount,
+    currentAccountBalanceUpokt
+  ) {
     const {
       id,
       passphrase,
       chains,
       address,
-      ppk
+      ppk,
     } = PocketApplicationService.getApplicationInfo();
-    const {pocketApplication} = await PocketApplicationService.getApplication(address);
+    const { pocketApplication } = await PocketApplicationService.getApplication(
+      address
+    );
 
     const item = {
       account: address,
       name: pocketApplication.name,
-      maxRelays: relays
+      maxRelays: relays,
     };
 
     const amountNumber = parseFloat(amount);
 
-    const {success, data: paymentIntentData} = await PocketPaymentService
-      .createNewPaymentIntent(ITEM_TYPES.APPLICATION, item, currency, amountNumber, currentAccountBalanceUpokt);
+    const {
+      success,
+      data: paymentIntentData,
+    } = await PocketPaymentService.createNewPaymentIntent(
+      ITEM_TYPES.APPLICATION,
+      item,
+      currency,
+      amountNumber,
+      currentAccountBalanceUpokt
+    );
 
     if (!success) {
       throw new Error(paymentIntentData.data.message);
@@ -246,17 +283,26 @@ class SelectRelays extends Component {
       const detail = url.replace(":id", id);
       const applicationLink = `${window.location.origin}${detail}`;
 
-      const savedAccount = await PocketClientService.saveAccount(JSON.stringify(ppk), passphrase);
+      const savedAccount = await PocketClientService.saveAccount(
+        JSON.stringify(ppk),
+        passphrase
+      );
 
       if (savedAccount instanceof Error) {
         throw savedAccount;
       }
 
       const appStakeTransaction = await PocketClientService.appStakeRequest(
-        address, passphrase, chains, this.state.upoktToStake.toString());
+        address,
+        passphrase,
+        chains,
+        this.state.upoktToStake.toString()
+      );
 
       const gatewayAATSignature = await PocketClientService.signGatewayAAT(
-        address, passphrase);
+        address,
+        passphrase
+      );
 
       const stakeInformation = {
         applicationId: id,
@@ -264,13 +310,13 @@ class SelectRelays extends Component {
         paymentId: paymentIntentData.id,
         applicationLink,
         gatewayAATSignature,
-        upoktToStake: this.state.upoktToStake
+        upoktToStake: this.state.upoktToStake,
       };
 
       await PocketApplicationService.stakeApplication(stakeInformation);
     }
 
-    return {success, data: paymentIntentData};
+    return { success, data: paymentIntentData };
   }
 
   async goToSummary() {
@@ -282,10 +328,10 @@ class SelectRelays extends Component {
       total,
       currentAccountBalance,
       currentAccountBalanceUpokt,
-      upoktToStake
+      upoktToStake,
     } = this.state;
 
-    this.setState({loading: true});
+    this.setState({ loading: true });
 
     // At the moment the only available currency is USD.
     const currency = currencies[0];
@@ -294,13 +340,23 @@ class SelectRelays extends Component {
       this.validate(currency);
 
       // Avoiding floating point precision errors.
-      const subTotalAmount = parseFloat(numeral(subTotal).format("0.00")).toFixed(2);
+      const subTotalAmount = parseFloat(
+        numeral(subTotal).format("0.00")
+      ).toFixed(2);
       const totalAmount = parseFloat(numeral(total).format("0.00")).toFixed(2);
       const tokens = currentAccountBalanceUpokt / 1000000;
 
-      const {data: paymentIntentData} = await this.createPaymentIntent(relaysSelected, currency, totalAmount, tokens);
+      const { data: paymentIntentData } = await this.createPaymentIntent(
+        relaysSelected,
+        currency,
+        totalAmount,
+        tokens
+      );
 
-      PaymentService.savePurchaseInfoInCache({relays: parseInt(relaysSelected), costPerRelay: parseFloat(totalAmount)});
+      PaymentService.savePurchaseInfoInCache({
+        relays: parseInt(relaysSelected),
+        costPerRelay: parseFloat(totalAmount),
+      });
 
       if (total === 0) {
         const user = UserService.getUserInfo().email;
@@ -313,16 +369,24 @@ class SelectRelays extends Component {
             paymentId: paymentIntentData.id,
             paymentMethod: {
               holder: user,
-              method: "POKT Tokens"
+              method: "POKT Tokens",
             },
             details: [
-              {value: relaysSelected, text: PURCHASE_ITEM_NAME.APPS, format: false},
-              {value: subTotalAmount, text: `${PURCHASE_ITEM_NAME.APPS} cost`, format: true},
+              {
+                value: relaysSelected,
+                text: PURCHASE_ITEM_NAME.APPS,
+                format: false,
+              },
+              {
+                value: subTotalAmount,
+                text: `${PURCHASE_ITEM_NAME.APPS} cost`,
+                format: true,
+              },
             ],
             total,
             currentAccountBalance,
             upoktTotal,
-            upoktToStake
+            upoktToStake,
           },
         });
       } else {
@@ -343,13 +407,13 @@ class SelectRelays extends Component {
             total: totalAmount,
             currentAccountBalance,
             upoktTotal,
-            upoktToStake
+            upoktToStake,
           },
         });
       }
     } catch (e) {
       this.setState({
-        error: {show: true, message: <h4>{e.toString()}</h4>},
+        error: { show: true, message: <h4>{e.toString()}</h4> },
         loading: false,
       });
       scrollToId("alert");
@@ -388,22 +452,20 @@ class SelectRelays extends Component {
                 variant="danger"
                 title={error.message}
                 dismissible
-                onClose={() => this.setState({error: false})}
+                onClose={() => this.setState({ error: false })}
               />
             )}
             <h1>Stake and scale</h1>
             <p className="subtitle">
-              With the Stake and Scale, you only need to pay for the API throughput
-              you application needs. If you expect your application to grow in
-              the short term, we recommend giving it a buffer.
+              With the Stake and Scale, you only need to pay for the API
+              throughput you application needs. If you expect your application
+              to grow in the short term, we recommend giving it a buffer.
             </p>
           </Col>
         </Row>
         <Row>
           <Col sm="7" className="relays-column">
-            <h2>
-              Slide to select how many relays per day to purchase
-            </h2>
+            <h2>Slide to select how many relays per day to purchase</h2>
             <div className="slider-wrapper">
               <AppSlider
                 defaultValue={minRelays}
@@ -435,12 +497,15 @@ class SelectRelays extends Component {
               title={<h4 className="alert-max">About RPD, Relays per day:</h4>}
             >
               <p className="alert-max">
-                Each RPD purchased on the Pocket Dashboard has a representation as a POKT token on the Pocket Network. Approx. 504 RPD = 1 POKT.
+                Each RPD purchased on the Pocket Dashboard has a representation
+                as a POKT token on the Pocket Network. Approx. 504 RPD = 1 POKT.
               </p>
               <br />
               <p className="alert-max">
-                *Need More Relays per Day? If you&apos;re interested in more relays beyond the maximum on the dashboard, <br />
-                please <a href="mailto:dashboard@pokt.network">contact us</a> to find a solution specially designed for your app.
+                *Need More Relays per Day? If you&apos;re interested in more
+                relays beyond the maximum on the dashboard, <br />
+                please <a href="mailto:dashboard@pokt.network">contact us</a> to
+                find a solution specially designed for your app.
               </p>
             </AppAlert>
           </Col>
@@ -448,8 +513,11 @@ class SelectRelays extends Component {
             <h2>Order Summary</h2>
             <AppOrderSummary
               items={[
-                {label: "App", quantity: 1},
-                {label: PURCHASE_ITEM_NAME.APPS, quantity: formatNumbers(relaysSelected)},
+                { label: "App", quantity: 1 },
+                {
+                  label: PURCHASE_ITEM_NAME.APPS,
+                  quantity: formatNumbers(relaysSelected),
+                },
                 {
                   label: `${PURCHASE_ITEM_NAME.APPS} Cost`,
                   quantity: `${subTotalFixed} ${currency.toUpperCase()}`,

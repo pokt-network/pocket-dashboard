@@ -1,13 +1,13 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "rc-steps/assets/index.css";
-import Steps, {Step} from "rc-steps";
+import Steps, { Step } from "rc-steps";
 import "./AppSteps.scss";
-import {PropTypes} from "prop-types";
+import { PropTypes } from "prop-types";
 
 class AppSteps extends Component {
   state = {};
   render() {
-    const {current, steps, icons} = this.props;
+    const { current, steps, icons } = this.props;
 
     return (
       <span className="app-steps">

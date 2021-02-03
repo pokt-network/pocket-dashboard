@@ -1,11 +1,11 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./SecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import SecurityQuestionsService from "../../../core/services/PocketSecurityQuestionsService";
 import AppSteps from "../../../core/components/AppSteps/AppSteps";
 import PocketUserService from "../../../core/services/PocketUserService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import qs from "qs";
 import AppAlert from "../../../core/components/AppAlert";
 
@@ -49,14 +49,14 @@ class SecurityQuestions extends Component {
 
     if (queryParam === undefined || queryParam.d === undefined) {
       this.setState({
-        alertOverlay: {show: true, variant: "danger", message: "Invalid URL"},
+        alertOverlay: { show: true, variant: "danger", message: "Invalid URL" },
       });
       return;
     }
 
     PocketUserService.validateToken(queryParam.d).then((result) => {
       if (result.success) {
-        this.setState({user: result.data});
+        this.setState({ user: result.data });
       } else {
         this.setState({
           alertOverlay: {
@@ -75,7 +75,7 @@ class SecurityQuestions extends Component {
         ...questions,
       ];
 
-      this.setState({securityQuestions});
+      this.setState({ securityQuestions });
     });
   }
 
@@ -115,24 +115,24 @@ class SecurityQuestions extends Component {
     const chosenQuestions = [...this.state.chosenQuestions];
 
     chosenQuestions[index] = e.target.value;
-    this.setState({chosenQuestions});
+    this.setState({ chosenQuestions });
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   async sendQuestions(e) {
     e.preventDefault();
-    const {user, chosenQuestions} = this.state;
-    const {answer1, answer2, answer3} = this.state.data;
+    const { user, chosenQuestions } = this.state;
+    const { answer1, answer2, answer3 } = this.state.data;
     const questions = [
-      {question: chosenQuestions[0], answer: answer1},
-      {question: chosenQuestions[1], answer: answer2},
-      {question: chosenQuestions[2], answer: answer3},
+      { question: chosenQuestions[0], answer: answer1 },
+      { question: chosenQuestions[1], answer: answer2 },
+      { question: chosenQuestions[2], answer: answer3 },
     ];
 
     let validationMsg = this.validateQuestions(questions);
@@ -157,7 +157,8 @@ class SecurityQuestions extends Component {
     const {
       success,
     } = await SecurityQuestionsService.saveSecurityQuestionAnswers(
-      user.email, questions
+      user.email,
+      questions
     );
 
     if (!success) {
@@ -178,8 +179,8 @@ class SecurityQuestions extends Component {
   }
 
   render() {
-    const {securityQuestions, alert, alertOverlay} = this.state;
-    const {answer1, answer2, answer3} = this.state.data;
+    const { securityQuestions, alert, alertOverlay } = this.state;
+    const { answer1, answer2, answer3 } = this.state.data;
 
     const icons = [
       /* eslint-disable jsx-a11y/alt-text */
@@ -195,7 +196,7 @@ class SecurityQuestions extends Component {
         {!alertOverlay.show ? (
           <>
             <Row className="mb-3">
-              <Col lg={{span: 8, offset: 2}} className="mb-5">
+              <Col lg={{ span: 8, offset: 2 }} className="mb-5">
                 <AppSteps
                   icons={icons}
                   steps={[
@@ -210,15 +211,15 @@ class SecurityQuestions extends Component {
             <Row className="mt-5">
               <Col
                 id="main"
-                md={{span: 6, offset: 2}}
-                lg={{span: 4, offset: 4}}
+                md={{ span: 6, offset: 2 }}
+                lg={{ span: 4, offset: 4 }}
               >
                 {alert.show && (
                   <AppAlert
                     variant={alert.variant}
                     title={alert.message}
                     dismissible
-                    onClose={() => this.setState({alert: {show: false}})}
+                    onClose={() => this.setState({ alert: { show: false } })}
                   />
                 )}
                 <h1 className="text-uppercase">
@@ -305,7 +306,7 @@ class SecurityQuestions extends Component {
           </>
         ) : (
           <Row>
-            <Col lg={{span: 10, offset: 1}} md={{span: 6, offset: 2}}>
+            <Col lg={{ span: 10, offset: 1 }} md={{ span: 6, offset: 2 }}>
               <AppAlert
                 variant={alertOverlay.variant}
                 title={alertOverlay.message}

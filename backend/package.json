@@ -6,10 +6,6 @@
     "url": "https://github.com/pokt-network/pocket-dashboard",
     "type": "git"
   },
-  "eslintIgnore": [
-    "webpack.config.js",
-    "dist/"
-  ],
   "author": "Codemera",
   "license": "MIT",
   "scripts": {
@@ -21,7 +17,7 @@
     "test:services": "mocha test/services",
     "test:providers": "mocha test/providers",
     "test:models": "mocha test/models",
-    "lint": "eslint ."
+    "lint": "eslint src/"
   },
   "husky": {
     "hooks": {
@@ -44,86 +40,13 @@
       "test/setupTests.js"
     ]
   },
-  "eslintConfig": {
-    "env": {
-      "es6": true,
-      "mocha": true,
-      "node": true,
-      "mongo": true
-    },
-    "rules": {
-      "no-console": "off",
-      "comma-spacing": "error",
-      "semi": [
-        "error",
-        "always"
-      ],
-      "quotes": [
-        "error",
-        "double"
-      ],
-      "no-unused-vars": "off",
-      "eqeqeq": "error",
-      "no-alert": "error",
-      "curly": "error",
-      "brace-style": [
-        "error",
-        "1tbs"
-      ],
-      "object-curly-spacing": [
-        "error",
-        "never"
-      ],
-      "function-call-argument-newline": [
-        "error",
-        "never"
-      ],
-      "one-var-declaration-per-line": [
-        "error",
-        "always"
-      ],
-      "padding-line-between-statements": [
-        "error",
-        {
-          "blankLine": "always",
-          "prev": [
-            "const",
-            "let",
-            "var"
-          ],
-          "next": "*"
-        },
-        {
-          "blankLine": "any",
-          "prev": [
-            "const",
-            "let",
-            "var"
-          ],
-          "next": [
-            "const",
-            "let",
-            "var"
-          ]
-        }
-      ]
-    },
-    "plugins": [
-      "jsdoc"
-    ],
-    "extends": [
-      "eslint:recommended",
-      "plugin:jsdoc/recommended"
-    ],
-    "parser": "babel-eslint"
-  },
   "dependencies": {
     "@babel/runtime": "^7.8.4",
     "@pokt-network/pocket-js": "0.6.3-rc",
     "@sendgrid/client": "^7.2.0",
     "@sendgrid/mail": "^7.1.0",
     "aws-sdk": "^2.727.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bcrypt": "^5.0.0",
     "big-integer": "^1.6.48",
     "bull": "^3.14.0",
@@ -161,9 +84,12 @@
     "debug": "^2.6.9",
     "dotenv-webpack": "^1.7.0",
     "eslint": "^6.8.0",
+    "eslint-config-prettier": "^7.2.0",
     "eslint-loader": "^3.0.3",
-    "eslint-plugin-jsdoc": "^22.1.0",
+    "eslint-plugin-jsdoc": "^31.6.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "mocha": "^8.1.3",
+    "prettier": "^2.2.1",
     "sinon": "^9.0.1",
     "subpackage": "^1.1.0",
     "webpack": "^4.41.6",

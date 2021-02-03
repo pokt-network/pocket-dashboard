@@ -1,7 +1,6 @@
-import {Configurations} from "../../_configuration";
+import { Configurations } from "../../_configuration";
 
 class PocketBaseService {
-
   /**
    * @param {string} baseServiceURL Base service URL (ex. "api/user")
    */

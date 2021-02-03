@@ -1,8 +1,8 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import AppDropdown from "./AppDropdown/AppDropdown";
-import {Col, Row} from "react-bootstrap";
-import {PropTypes} from "prop-types";
+import { Col, Row } from "react-bootstrap";
+import { PropTypes } from "prop-types";
 
 class SortableTable extends Component {
   constructor(props, context) {
@@ -24,7 +24,7 @@ class SortableTable extends Component {
   };
 
   handleSortChange(field) {
-    this.setState({field});
+    this.setState({ field });
   }
 
   render() {
@@ -37,10 +37,10 @@ class SortableTable extends Component {
     } = this.props;
 
     const columns = allColumns.map((col) => {
-      return {...col, sort: true};
+      return { ...col, sort: true };
     });
 
-    const {field, order} = this.state;
+    const { field, order } = this.state;
 
     return (
       <>

@@ -1,14 +1,14 @@
-import React, {Component} from "react";
-import {Button, Col, Container, Form, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
-import {Formik} from "formik";
+import { Formik } from "formik";
 import * as yup from "yup";
-import {VALIDATION_MESSAGES} from "../../../_constants";
+import { VALIDATION_MESSAGES } from "../../../_constants";
 import PocketUserService from "../../../core/services/PocketUserService";
 import "./ResetPassword.scss";
 import AppAlert from "../../../core/components/AppAlert";
-import {ROUTE_PATHS} from "../../../_routes";
+import { ROUTE_PATHS } from "../../../_routes";
 
 class ResetPassword extends Component {
   constructor(props, context) {
@@ -36,8 +36,8 @@ class ResetPassword extends Component {
     const token = params.get("d");
     const email = params.get("e");
 
-    const {password1} = this.state.data;
-    const {password2} = this.state.data;
+    const { password1 } = this.state.data;
+    const { password2 } = this.state.data;
 
     if (password1 === password2 && token && email) {
       PocketUserService.resetPassword(email, token, password1, password2).then(
@@ -58,7 +58,7 @@ class ResetPassword extends Component {
           }
         }
       );
-    } else{
+    } else {
       this.setState({
         alertOverlay: {
           show: true,
@@ -70,7 +70,7 @@ class ResetPassword extends Component {
   }
 
   render() {
-    const {alertOverlay} = this.state;
+    const { alertOverlay } = this.state;
     const schema = yup.object().shape({
       password1: yup
         .string()
@@ -93,7 +93,7 @@ class ResetPassword extends Component {
                 <Formik
                   validationSchema={schema}
                   onSubmit={(data) => {
-                    this.setState({data});
+                    this.setState({ data });
                     this.handleSubmit();
                   }}
                   initialValues={this.state.data}
@@ -102,8 +102,13 @@ class ResetPassword extends Component {
                   validateOnBlur={false}
                   autoComplete="off"
                 >
-                  {({handleSubmit, handleChange, values, errors}) => (
-                    <Form autoComplete="off" noValidate onSubmit={handleSubmit} id={"main-form"}>
+                  {({ handleSubmit, handleChange, values, errors }) => (
+                    <Form
+                      autoComplete="off"
+                      noValidate
+                      onSubmit={handleSubmit}
+                      id={"main-form"}
+                    >
                       <Form.Group>
                         <Form.Label>Password</Form.Label>
                         <Form.Control
@@ -150,7 +155,7 @@ class ResetPassword extends Component {
           </Row>
         ) : (
           <Row>
-            <Col lg={{span: 10, offset: 1}} md={{span: 6, offset: 2}}>
+            <Col lg={{ span: 10, offset: 1 }} md={{ span: 6, offset: 2 }}>
               <AppAlert
                 variant={alertOverlay.variant}
                 title={alertOverlay.message}

@@ -1,13 +1,13 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import isEmpty from "lodash/isEmpty";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import PaymentContainer from "./PaymentContainer";
 import {
   CardCVCNumberInput,
   CardExpirationDateInput,
   CardNumberInput,
 } from "./FormComponents";
-import {CardNumberElement, ElementsConsumer} from "@stripe/react-stripe-js";
+import { CardNumberElement, ElementsConsumer } from "@stripe/react-stripe-js";
 import PropTypes from "prop-types";
 import "../Payment.scss";
 
@@ -29,11 +29,11 @@ class NewCardNoAddressForm extends Component {
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   /**
@@ -43,7 +43,7 @@ class NewCardNoAddressForm extends Component {
    * @throws Error If validation fails.
    */
   validateForm() {
-    const {cardHolderName} = this.state.data;
+    const { cardHolderName } = this.state.data;
 
     if (!cardHolderName) {
       throw Error("Card holder name cannot be empty");
@@ -58,7 +58,7 @@ class NewCardNoAddressForm extends Component {
       this.validateForm();
 
       const cardNumber = stripeElements.getElement(CardNumberElement);
-      const {cardHolderName} = this.state.data;
+      const { cardHolderName } = this.state.data;
 
       const cardData = {
         card: cardNumber,
@@ -72,14 +72,14 @@ class NewCardNoAddressForm extends Component {
   }
 
   render() {
-    const {agreeDefault} = this.state;
-    const {cardHolderName} = this.state.data;
-    const {formTitle, actionButtonName, setDefaultHandler} = this.props;
+    const { agreeDefault } = this.state;
+    const { cardHolderName } = this.state.data;
+    const { formTitle, actionButtonName, setDefaultHandler } = this.props;
 
     return (
       <PaymentContainer>
         <ElementsConsumer>
-          {({elements, stripe}) => (
+          {({ elements, stripe }) => (
             <div>
               {!isEmpty(formTitle) && (
                 <Row>
@@ -126,7 +126,7 @@ class NewCardNoAddressForm extends Component {
                     <Form.Check
                       checked={agreeDefault}
                       onChange={() => {
-                        this.setState({agreeDefault: !agreeDefault});
+                        this.setState({ agreeDefault: !agreeDefault });
                         setDefaultHandler(!agreeDefault);
                       }}
                       id="terms-checkbox"

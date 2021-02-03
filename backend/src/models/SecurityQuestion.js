@@ -15,16 +15,15 @@ export const SECURITY_QUESTIONS = [
   "In what city does your nearest sibling live?",
   "What is your maternal grandmother's maiden name?",
   "In what city or town was your first job?",
-  "What is the name of the place your wedding reception was held?"
+  "What is the name of the place your wedding reception was held?",
 ];
 
 export class SecurityQuestion {
-
   /**
    * @param {string} question Question data.
    */
   constructor(question) {
-    Object.assign(this, {question});
+    Object.assign(this, { question });
   }
 
   /**
@@ -36,7 +35,6 @@ export class SecurityQuestion {
    * @static
    */
   static createSecurityQuestions(questions) {
-    return questions.map(data => new SecurityQuestion(data.question));
+    return questions.map((data) => new SecurityQuestion(data.question));
   }
-
 }

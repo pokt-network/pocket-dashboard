@@ -1,9 +1,8 @@
-import {BaseCheckoutService} from "./BaseCheckoutService";
-import {Configurations} from "../../_configuration";
-import {DashboardValidationError} from "../../models/Exceptions";
+import { BaseCheckoutService } from "./BaseCheckoutService";
+import { Configurations } from "../../_configuration";
+import { DashboardValidationError } from "../../models/Exceptions";
 
 export default class NodeCheckoutService extends BaseCheckoutService {
-
   /**
    * Get instance of Node Checkout Service.
    *
@@ -14,7 +13,8 @@ export default class NodeCheckoutService extends BaseCheckoutService {
    */
   static getInstance(options = undefined, poktMarketPrice = undefined) {
     const serviceOptions = options ?? Configurations.pocket_network.checkout;
-    const servicePoktMarketPrice = poktMarketPrice ?? Configurations.pocket_network.pokt_market_price;
+    const servicePoktMarketPrice =
+      poktMarketPrice ?? Configurations.pocket_network.pokt_market_price;
 
     return new NodeCheckoutService(serviceOptions, servicePoktMarketPrice);
   }
@@ -41,20 +41,22 @@ export default class NodeCheckoutService extends BaseCheckoutService {
    */
   getMoneyToSpent(validatorPower) {
     const {
-      validator_power: {
-        min: minValidatorPower,
-        max: maxValidatorPower,
-      }
+      validator_power: { min: minValidatorPower, max: maxValidatorPower },
     } = this.options;
 
-    if (validatorPower < minValidatorPower && validatorPower > maxValidatorPower) {
-      throw new DashboardValidationError("Validator power is out of allowed range.");
+    if (
+      validatorPower < minValidatorPower &&
+      validatorPower > maxValidatorPower
+    ) {
+      throw new DashboardValidationError(
+        "Validator power is out of allowed range."
+      );
     }
 
     const upokt = validatorPower * 1000000;
-    
+
     const usdValue = validatorPower * this.poktMarketPrice;
 
-    return {upokt, usdValue};
+    return { upokt, usdValue };
   }
 }

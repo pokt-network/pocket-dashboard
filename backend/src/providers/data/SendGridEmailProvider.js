@@ -28,7 +28,10 @@ export class SendGridEmailProvider {
    */
   async sendEmailWithTemplate(templateID, toEmail, fromEmail, templateData) {
     const message = {
-      to: toEmail, from: fromEmail, templateId: templateID, dynamic_template_data: templateData
+      to: toEmail,
+      from: fromEmail,
+      templateId: templateID,
+      dynamic_template_data: templateData,
     };
 
     return mail.send(message);
@@ -47,8 +50,8 @@ export class SendGridEmailProvider {
       method: "POST",
       url: `/${this.__apiVersion}/asm/suppressions/global`,
       body: {
-        recipient_emails: [email]
-      }
+        recipient_emails: [email],
+      },
     };
 
     return client.request(requestData);
@@ -65,7 +68,7 @@ export class SendGridEmailProvider {
   async subscribeEmail(email) {
     const requestData = {
       method: "DELETE",
-      url: `/${this.__apiVersion}/asm/suppressions/global/${email}`
+      url: `/${this.__apiVersion}/asm/suppressions/global/${email}`,
     };
 
     return client.request(requestData);

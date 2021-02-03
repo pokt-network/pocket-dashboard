@@ -1,4 +1,4 @@
-import {Component} from "react";
+import { Component } from "react";
 import NetworkService from "../../services/PocketNetworkService";
 import "./Chains.scss";
 
@@ -25,29 +25,29 @@ class Chains extends Component {
   async componentDidMount() {
     const chains = await NetworkService.getAvailableNetworkChains();
 
-    this.setState({chains, filteredChains: chains});
+    this.setState({ chains, filteredChains: chains });
   }
 
   handleChainSearch() {
-    const {chains} = this.state;
-    const {searchChainQuery} = this.state.data;
+    const { chains } = this.state;
+    const { searchChainQuery } = this.state.data;
 
     const filteredChains = chains.filter((c) =>
       c.network.toLowerCase().includes(searchChainQuery.toLowerCase())
     );
 
-    this.setState({filteredChains});
+    this.setState({ filteredChains });
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   onRowSelect(row, isSelect, rowIndex, e) {
-    let {chosenChains} = this.state;
+    let { chosenChains } = this.state;
 
     if (isSelect) {
       chosenChains = [...chosenChains, row];
@@ -55,11 +55,11 @@ class Chains extends Component {
       chosenChains = chosenChains.filter((chain) => chain._id !== row._id);
     }
 
-    this.setState({chosenChains});
+    this.setState({ chosenChains });
   }
 
   onRowSelectAll(isSelect, rows, e) {
-    let {chosenChains} = this.state;
+    let { chosenChains } = this.state;
 
     if (isSelect) {
       chosenChains = rows;
@@ -67,7 +67,7 @@ class Chains extends Component {
       chosenChains = [];
     }
 
-    this.setState({chosenChains});
+    this.setState({ chosenChains });
   }
 }
 

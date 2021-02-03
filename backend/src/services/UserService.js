@@ -1,19 +1,18 @@
 import BaseService from "./BaseService";
-import {get_auth_providers, getAuthProvider} from "../providers/auth/Index";
-import {AuthProviderUser, EmailUser, PocketUser} from "../models/User";
-import {AnsweredSecurityQuestion} from "../models/AnsweredSecurityQuestion";
-import {SecurityQuestion} from "../models/SecurityQuestion";
+import { get_auth_providers, getAuthProvider } from "../providers/auth/Index";
+import { AuthProviderUser, EmailUser, PocketUser } from "../models/User";
+import { AnsweredSecurityQuestion } from "../models/AnsweredSecurityQuestion";
+import { SecurityQuestion } from "../models/SecurityQuestion";
 import BaseAuthProvider from "../providers/auth/BaseAuthProvider";
-import {Configurations} from "../_configuration";
+import { Configurations } from "../_configuration";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-import {DashboardError, DashboardValidationError} from "../models/Exceptions";
+import { DashboardError, DashboardValidationError } from "../models/Exceptions";
 
 const AUTH_TOKEN_TYPE = "access_token";
 const USER_COLLECTION_NAME = "Users";
 
 export default class UserService extends BaseService {
-
   constructor() {
     super();
 
@@ -38,7 +37,6 @@ export default class UserService extends BaseService {
     return authProvider.getUserData(accessToken, AUTH_TOKEN_TYPE);
   }
 
-
   /**
    * Persist user if not exists at Pocket database.
    *
@@ -49,10 +47,12 @@ export default class UserService extends BaseService {
    * @async
    */
   async __persistUserIfNotExists(user) {
-
-    if (!await this.userExists(user.email)) {
+    if (!(await this.userExists(user.email))) {
       /** @type {{result: {n:number, ok: number}}} */
-      const result = await this.persistenceService.saveEntity(USER_COLLECTION_NAME, user);
+      const result = await this.persistenceService.saveEntity(
+        USER_COLLECTION_NAME,
+        user
+      );
 
       return result.result.ok === 1;
     }
@@ -70,9 +70,12 @@ export default class UserService extends BaseService {
   async __updateLastLogin(user) {
     const userToUpdate = PocketUser.createPocketUserWithUTCLastLogin(user);
 
-    await this.persistenceService.updateEntity(USER_COLLECTION_NAME, {email: user.email}, userToUpdate);
+    await this.persistenceService.updateEntity(
+      USER_COLLECTION_NAME,
+      { email: user.email },
+      userToUpdate
+    );
   }
-
 
   /**
    * Get user from DB.
@@ -87,10 +90,13 @@ export default class UserService extends BaseService {
   async __getUser(userEmail, provider = "email") {
     const filter = {
       email: userEmail,
-      provider
+      provider,
     };
 
-    return await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    return await this.persistenceService.getEntityByFilter(
+      USER_COLLECTION_NAME,
+      filter
+    );
   }
 
   /**
@@ -103,13 +109,16 @@ export default class UserService extends BaseService {
    * @async
    */
   async userExists(userEmail, authProvider = undefined) {
-    let filter = {email: userEmail};
+    let filter = { email: userEmail };
 
     if (authProvider) {
       filter["provider"] = authProvider;
     }
 
-    const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const dbUser = await this.persistenceService.getEntityByFilter(
+      USER_COLLECTION_NAME,
+      filter
+    );
 
     return dbUser !== undefined;
   }
@@ -126,14 +135,17 @@ export default class UserService extends BaseService {
   async isUserValidated(userEmail, authProvider = undefined) {
     let filter = {
       email: userEmail,
-      securityQuestions: {$ne: null}
+      securityQuestions: { $ne: null },
     };
 
     if (authProvider) {
       filter["provider"] = authProvider;
     }
 
-    const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const dbUser = await this.persistenceService.getEntityByFilter(
+      USER_COLLECTION_NAME,
+      filter
+    );
 
     return dbUser !== undefined;
   }
@@ -147,10 +159,15 @@ export default class UserService extends BaseService {
    * @async
    */
   async getUser(email) {
-    const filter = {email};
-    const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const filter = { email };
+    const dbUser = await this.persistenceService.getEntityByFilter(
+      USER_COLLECTION_NAME,
+      filter
+    );
 
-    return PocketUser.removeSensitiveFields(PocketUser.createPocketUserFromDB(dbUser));
+    return PocketUser.removeSensitiveFields(
+      PocketUser.createPocketUserFromDB(dbUser)
+    );
   }
 
   /**
@@ -175,13 +192,20 @@ export default class UserService extends BaseService {
    * @returns {Promise<boolean>} If was saved or not.
    */
   async saveCustomerID(userEmail, userCustomerID) {
-    const filter = {email: userEmail};
-    const dbUser = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const filter = { email: userEmail };
+    const dbUser = await this.persistenceService.getEntityByFilter(
+      USER_COLLECTION_NAME,
+      filter
+    );
 
     dbUser.customerID = userCustomerID;
 
     /** @type {{result: {n:number, ok: number}}} */
-    const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, dbUser._id, dbUser);
+    const result = await this.persistenceService.updateEntityByID(
+      USER_COLLECTION_NAME,
+      dbUser._id,
+      dbUser
+    );
 
     return result.result.ok === 1;
   }
@@ -192,10 +216,10 @@ export default class UserService extends BaseService {
    * @returns {{name:string, consent_url:string}[]} The consent url for all Auth provider available.
    */
   getConsentProviderUrls() {
-    const result = this.__authProviders.map(provider => {
+    const result = this.__authProviders.map((provider) => {
       return {
         name: provider.name,
-        consent_url: provider.getConsentURL()
+        consent_url: provider.getConsentURL(),
       };
     });
 
@@ -234,8 +258,11 @@ export default class UserService extends BaseService {
    * @async
    */
   async authenticateUser(username, password) {
-    const filter = {$or: [{username}, {email: username}]};
-    const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const filter = { $or: [{ username }, { email: username }] };
+    const userDB = await this.persistenceService.getEntityByFilter(
+      USER_COLLECTION_NAME,
+      filter
+    );
 
     if (!userDB) {
       throw new DashboardError("Invalid username.");
@@ -248,14 +275,20 @@ export default class UserService extends BaseService {
     }
 
     // Check if password is correct
-    const passwordValidated = await EmailUser.validatePassword(password, pocketUser.password);
+    const passwordValidated = await EmailUser.validatePassword(
+      password,
+      pocketUser.password
+    );
 
     if (!passwordValidated) {
       throw new DashboardValidationError("Passwords do not match.");
     }
 
     // Access and refresh tokens generation
-    const tokens = await this.generateNewSessionTokens(userDB._id, userDB.email);
+    const tokens = await this.generateNewSessionTokens(
+      userDB._id,
+      userDB.email
+    );
 
     // Update last login of user on DB.
     await this.__updateLastLogin(pocketUser);
@@ -264,7 +297,7 @@ export default class UserService extends BaseService {
 
     return {
       user: user,
-      session: tokens
+      session: tokens,
     };
   }
 
@@ -287,7 +320,11 @@ export default class UserService extends BaseService {
         throw new DashboardError("This email is already registered");
       }
 
-      const emailPocketUser = await EmailUser.createEmailUserWithEncryptedPassword(userData.email, userData.username, userData.password1);
+      const emailPocketUser = await EmailUser.createEmailUserWithEncryptedPassword(
+        userData.email,
+        userData.username,
+        userData.password1
+      );
 
       // Create the user if not exists on DB.
       return await this.__persistUserIfNotExists(emailPocketUser);
@@ -317,18 +354,28 @@ export default class UserService extends BaseService {
    * @async
    */
   async addOrUpdateUserSecurityQuestions(userEmail, questions) {
-
-    const filter = {email: userEmail};
-    const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const filter = { email: userEmail };
+    const userDB = await this.persistenceService.getEntityByFilter(
+      USER_COLLECTION_NAME,
+      filter
+    );
 
     if (!userDB) {
       throw new DashboardValidationError("Invalid user.");
     }
 
-    const data = {securityQuestions: AnsweredSecurityQuestion.createAnsweredSecurityQuestions(questions)};
+    const data = {
+      securityQuestions: AnsweredSecurityQuestion.createAnsweredSecurityQuestions(
+        questions
+      ),
+    };
     /** @type {{result: {n:number, ok: number}}} */
 
-    const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, filter, data);
+    const result = await this.persistenceService.updateEntity(
+      USER_COLLECTION_NAME,
+      filter,
+      data
+    );
 
     return result.result.ok === 1;
   }
@@ -345,9 +392,12 @@ export default class UserService extends BaseService {
   async getUserSecurityQuestions(userEmail) {
     const filter = {
       email: userEmail,
-      securityQuestions: {$ne: null}
+      securityQuestions: { $ne: null },
     };
-    const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const userDB = await this.persistenceService.getEntityByFilter(
+      USER_COLLECTION_NAME,
+      filter
+    );
 
     if (!userDB) {
       throw new DashboardValidationError("Invalid user.");
@@ -360,7 +410,7 @@ export default class UserService extends BaseService {
    * Validate user security questions.
    *
    * @param {string} userEmail Email of user.
-   * @param {[{question: string, answer: string}]} userAnswers User input answers.
+   * @param {{question: string, answer: string}[]} userAnswers User input answers.
    *
    * @returns {Promise<SecurityQuestion[]>} True or false if the answers are valid.
    * @throws {DashboardValidationError} If user is invalid.
@@ -369,14 +419,20 @@ export default class UserService extends BaseService {
   async validateUserSecurityQuestions(userEmail, userAnswers) {
     const filter = {
       email: userEmail,
-      securityQuestions: {$ne: null}
+      securityQuestions: { $ne: null },
     };
-    const userDB = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const userDB = await this.persistenceService.getEntityByFilter(
+      USER_COLLECTION_NAME,
+      filter
+    );
 
     if (!userDB) {
       throw new DashboardValidationError("Invalid user.");
     }
-    const isValid = await AnsweredSecurityQuestion.validateAnsweredSecurityQuestions(userDB, userAnswers);
+    const isValid = await AnsweredSecurityQuestion.validateAnsweredSecurityQuestions(
+      userDB,
+      userAnswers
+    );
 
     return isValid;
   }
@@ -391,9 +447,12 @@ export default class UserService extends BaseService {
    */
   async generateResetPasswordToken(userEmail) {
     const filter = {
-      email: userEmail
+      email: userEmail,
     };
-    const user = await this.persistenceService.getEntityByFilter(USER_COLLECTION_NAME, filter);
+    const user = await this.persistenceService.getEntityByFilter(
+      USER_COLLECTION_NAME,
+      filter
+    );
 
     // Generate the password reset token
     const resetPasswordToken = await this.generateToken(user.email);
@@ -401,13 +460,27 @@ export default class UserService extends BaseService {
     // Generate expiring date for the password reset token
     const actualDate = new Date();
 
-    actualDate.setHours(actualDate.getHours()+1);
+    actualDate.setHours(actualDate.getHours() + 1);
     const expiringDate = actualDate.toUTCString();
 
     // Return the user with the latest information
-    const userToUpdate = new PocketUser(user.provider, user.email, user.username, user.password, resetPasswordToken, expiringDate, user.lastLogin, user.securityQuestions, user.customerID);
+    const userToUpdate = new PocketUser(
+      user.provider,
+      user.email,
+      user.username,
+      user.password,
+      resetPasswordToken,
+      expiringDate,
+      user.lastLogin,
+      user.securityQuestions,
+      user.customerID
+    );
 
-    const result = await this.persistenceService.updateEntity(USER_COLLECTION_NAME, {email: user.email}, userToUpdate);
+    const result = await this.persistenceService.updateEntity(
+      USER_COLLECTION_NAME,
+      { email: user.email },
+      userToUpdate
+    );
 
     return result.result.ok === 1;
   }
@@ -447,7 +520,9 @@ export default class UserService extends BaseService {
     if (userDB.resetPasswordToken) {
       return userDB.resetPasswordToken;
     } else {
-      throw new DashboardValidationError("No reset password token is available.");
+      throw new DashboardValidationError(
+        "No reset password token is available."
+      );
     }
   }
 
@@ -462,7 +537,6 @@ export default class UserService extends BaseService {
    * @async
    */
   async verifyPasswordResetToken(userDB, providedToken) {
-
     if (!userDB) {
       throw new DashboardValidationError("Invalid user.");
     }
@@ -508,7 +582,6 @@ export default class UserService extends BaseService {
 
     if (this.verifyPasswordResetToken(userDB, token)) {
       if (EmailUser.validatePasswords(password1, password2)) {
-
         // Update the user password.
         userDB.password = await EmailUser.encryptPassword(password1);
         // Remove current token and expiration date
@@ -516,7 +589,11 @@ export default class UserService extends BaseService {
         userDB.resetPasswordExpiration = null;
 
         /** @type {{result: {n:number, ok: number}}} */
-        const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);
+        const result = await this.persistenceService.updateEntityByID(
+          USER_COLLECTION_NAME,
+          userDB._id,
+          userDB
+        );
 
         return result.result.ok === 1;
       } else {
@@ -548,16 +625,21 @@ export default class UserService extends BaseService {
 
     if (isVerified) {
       if (EmailUser.validatePasswords(password1, password2)) {
-
         // Update the user password.
         userDB.password = await EmailUser.encryptPassword(password1);
 
         /** @type {{result: {n:number, ok: number}}} */
-        const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);
+        const result = await this.persistenceService.updateEntityByID(
+          USER_COLLECTION_NAME,
+          userDB._id,
+          userDB
+        );
 
         return result.result.ok === 1;
       } else {
-        throw new DashboardValidationError("New password doesn't match the confirm password.");
+        throw new DashboardValidationError(
+          "New password doesn't match the confirm password."
+        );
       }
     } else {
       throw new DashboardValidationError("Failed to validate old password.");
@@ -586,7 +668,11 @@ export default class UserService extends BaseService {
       userDB.username = username;
 
       /** @type {{result: {n:number, ok: number}}} */
-      const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);
+      const result = await this.persistenceService.updateEntityByID(
+        USER_COLLECTION_NAME,
+        userDB._id,
+        userDB
+      );
 
       return result.result.ok === 1;
     }
@@ -614,7 +700,11 @@ export default class UserService extends BaseService {
       userDB.email = newEmail;
 
       /** @type {{result: {n:number, ok: number}}} */
-      const result = await this.persistenceService.updateEntityByID(USER_COLLECTION_NAME, userDB._id, userDB);
+      const result = await this.persistenceService.updateEntityByID(
+        USER_COLLECTION_NAME,
+        userDB._id,
+        userDB
+      );
 
       return result.result.ok === 1;
     }
@@ -630,16 +720,16 @@ export default class UserService extends BaseService {
    * @async
    */
   async renewSessionTokens(token, userEmail) {
-
     const payload = await this.decodeToken(token, true);
 
     if (payload instanceof DashboardValidationError) {
       return payload;
-
     }
     // Validate if the account belongs to the client
     if (payload.email !== userEmail) {
-      return new DashboardValidationError("Failed to renew session, client email doesn't match the token payload email.");
+      return new DashboardValidationError(
+        "Failed to renew session, client email doesn't match the token payload email."
+      );
     }
 
     // Check if the user exists in the DB
@@ -649,17 +739,19 @@ export default class UserService extends BaseService {
       const userId = userDB._id.toString();
       const id = payload.id.toString();
 
-      if (userId === id ) {
+      if (userId === id) {
         // Return the new session tokens
         return await this.generateNewSessionTokens(id, payload.email);
       } else {
-        return new DashboardValidationError("Failed to renew session, provided information doesn't match database.");
+        return new DashboardValidationError(
+          "Failed to renew session, provided information doesn't match database."
+        );
       }
-
     } else {
-      return new DashboardValidationError("Failed to renew session, no user exists for the provided email.");
+      return new DashboardValidationError(
+        "Failed to renew session, no user exists for the provided email."
+      );
     }
-
   }
 
   /**
@@ -672,21 +764,29 @@ export default class UserService extends BaseService {
    * @async
    */
   async generateNewSessionTokens(userId, userEmail) {
-    const payload = {id: userId, email: userEmail};
+    const payload = { id: userId, email: userEmail };
 
     // Access token
-    const accessToken = jwt.sign({
-      data: payload
-    }, Configurations.auth.jwt.secret_key, {expiresIn: Configurations.auth.jwt.expiration});
+    const accessToken = jwt.sign(
+      {
+        data: payload,
+      },
+      Configurations.auth.jwt.secret_key,
+      { expiresIn: Configurations.auth.jwt.expiration }
+    );
 
     // Refresh token
-    const refreshToken = jwt.sign({
-      data: payload
-    }, Configurations.auth.jwt.secret_key, {expiresIn: Configurations.auth.jwt.refresh_expiration});
+    const refreshToken = jwt.sign(
+      {
+        data: payload,
+      },
+      Configurations.auth.jwt.secret_key,
+      { expiresIn: Configurations.auth.jwt.refresh_expiration }
+    );
 
     return {
       accessToken: accessToken,
-      refreshToken: refreshToken
+      refreshToken: refreshToken,
     };
   }
 
@@ -699,7 +799,7 @@ export default class UserService extends BaseService {
    * @async
    */
   async generateToken(userEmail) {
-    const payload = {email: userEmail};
+    const payload = { email: userEmail };
 
     return jwt.sign(payload, Configurations.auth.jwt.secret_key);
   }
@@ -741,14 +841,18 @@ export default class UserService extends BaseService {
    * @async
    */
   async decodeToken(token, ignoreExpiration = false) {
-    const payload = jwt.verify(token, Configurations.auth.jwt.secret_key, {ignoreExpiration: ignoreExpiration});
+    const payload = jwt.verify(token, Configurations.auth.jwt.secret_key, {
+      ignoreExpiration: ignoreExpiration,
+    });
 
     if (payload.name) {
       switch (payload.name) {
         case "TokenExpiredError":
           return new DashboardValidationError("Token is expired.");
         case "JsonWebTokenError":
-          return new DashboardValidationError("Token malformed or signature invalid.");
+          return new DashboardValidationError(
+            "Token malformed or signature invalid."
+          );
         case "NotBeforeError":
           return new DashboardValidationError("Token not active.");
         default:
@@ -779,4 +883,3 @@ export default class UserService extends BaseService {
     );
   }
 }
-

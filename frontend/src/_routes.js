@@ -57,7 +57,7 @@ export const ROUTE_PATHS = {
   termsOfService: "/support/terms-of-service",
   privacyPolicy: "/support/privacy-policy",
   unsubscribe: "/support/unsubscribe",
-  purchaseTerms: "/support/purchase-terms"
+  purchaseTerms: "/support/purchase-terms",
 };
 
 export const DASHBOARD_PATHS = {
@@ -145,7 +145,7 @@ export const breadcrumbsRoutes = () => {
  * @type {Array<{path: string, exact: boolean, name: string, component: *}>}
  */
 const pageRoutes = [
-  {path: ROUTE_PATHS.login, exact: true, name: "Login", component: Login},
+  { path: ROUTE_PATHS.login, exact: true, name: "Login", component: Login },
   {
     path: ROUTE_PATHS.forgot_password,
     exact: true,
@@ -170,7 +170,7 @@ const pageRoutes = [
     name: "Answer Security Questions",
     component: AnswerSecurityQuestions,
   },
-  {path: ROUTE_PATHS.signup, exact: true, name: "Sign Up", component: SignUp},
+  { path: ROUTE_PATHS.signup, exact: true, name: "Sign Up", component: SignUp },
   {
     path: ROUTE_PATHS.verify_email,
     exact: true,
@@ -298,10 +298,10 @@ export const dashboardRoutes = [
     component: NodeChainList,
   },
   // {
-    // path: DASHBOARD_PATHS.selectValidatorPower,
-    // exact: true,
-    // name: "Nodes Select Validator Power",
-    // component: SelectValidatorPower,
+  // path: DASHBOARD_PATHS.selectValidatorPower,
+  // exact: true,
+  // name: "Nodes Select Validator Power",
+  // component: SelectValidatorPower,
   // },
   {
     path: DASHBOARD_PATHS.nodes,
@@ -329,10 +329,10 @@ export const dashboardRoutes = [
     component: EditNode,
   },
   // {
-    // path: DASHBOARD_PATHS.invoice,
-    // exact: true,
-    // name: "Invoice",
-    // component: Checkout,
+  // path: DASHBOARD_PATHS.invoice,
+  // exact: true,
+  // name: "Invoice",
+  // component: Checkout,
   // },
   {
     path: DASHBOARD_PATHS.importApp,
@@ -365,10 +365,10 @@ export const dashboardRoutes = [
     component: SelectRelays,
   },
   // {
-    // path: DASHBOARD_PATHS.orderSummary,
-    // exact: true,
-    // name: "Order Summary",
-    // component: OrderSummary,
+  // path: DASHBOARD_PATHS.orderSummary,
+  // exact: true,
+  // name: "Order Summary",
+  // component: OrderSummary,
   // },
   {
     path: DASHBOARD_PATHS.freeTier,
@@ -398,16 +398,16 @@ export const profileRoutes = [
     component: ChangePassword,
   },
   // {
-    // path: PROFILE_PATHS.paymentHistory,
-    // exact: true,
-    // name: "Payment history",
-    // component: PaymentHistory,
+  // path: PROFILE_PATHS.paymentHistory,
+  // exact: true,
+  // name: "Payment history",
+  // component: PaymentHistory,
   // },
   // {
-    // path: PROFILE_PATHS.paymentMethods,
-    // exact: true,
-    // name: "Payment methods",
-    // component: PaymentMethods,
+  // path: PROFILE_PATHS.paymentMethods,
+  // exact: true,
+  // name: "Payment methods",
+  // component: PaymentMethods,
   // },
 ];
 

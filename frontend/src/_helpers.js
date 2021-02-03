@@ -10,7 +10,7 @@ import * as IdentIcon from "identicon.js";
 import * as yup from "yup";
 import _ from "lodash";
 import moment from "moment";
-import {Configurations} from "./_configuration";
+import { Configurations } from "./_configuration";
 
 export const formatCurrency = (amount) => numeral(amount).format("$0,0.00");
 
@@ -24,10 +24,7 @@ export const usdToPOKT = (usd) => {
   return usd / Configurations.pocket_network.pokt_usd_market_price;
 };
 
-export const formatNetworkData = (
-  pokt,
-  fixed = true
-) => {
+export const formatNetworkData = (pokt, fixed = true) => {
   const poktNumber = upoktToPOKT(pokt);
 
   return fixed
@@ -82,7 +79,9 @@ export const generateIcon = () => {
 
   // Use current time as a 'hash' to generate icon of 250x250
   return `data:image/png;base64,${new IdentIcon(
-    `${currTime}${currTime / 2}`, 250).toString()}`;
+    `${currTime}${currTime / 2}`,
+    250
+  ).toString()}`;
 };
 
 export const getStakeStatus = (status) => {
@@ -136,7 +135,7 @@ export const validateYup = async (values, schema) => {
   let errors = {};
   let yupErrors;
 
-  await schema.validate(values, {abortEarly: false}).catch((err) => {
+  await schema.validate(values, { abortEarly: false }).catch((err) => {
     errors = err;
   });
 

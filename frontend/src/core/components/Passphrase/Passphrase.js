@@ -1,18 +1,22 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./Passphrase.scss";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
 import AppTable from "../../../core/components/AppTable";
 import InfoCard from "../../../core/components/InfoCard/InfoCard";
-import {PASSPHRASE_REGEX, TABLE_COLUMNS, VALIDATION_MESSAGES} from "../../../_constants";
-import {Formik} from "formik";
+import {
+  PASSPHRASE_REGEX,
+  TABLE_COLUMNS,
+  VALIDATION_MESSAGES,
+} from "../../../_constants";
+import { Formik } from "formik";
 import * as yup from "yup";
-import {createAndDownloadJSONFile, validateYup} from "../../../_helpers";
+import { createAndDownloadJSONFile, validateYup } from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import LoadingButton from "../../../core/components/LoadingButton";
 import cls from "classnames";
 import isEmpty from "lodash/isEmpty";
-import {Configurations} from "../../../_configuration";
+import { Configurations } from "../../../_configuration";
 
 class Passphrase extends Component {
   constructor(props, context) {
@@ -34,7 +38,8 @@ class Passphrase extends Component {
         .string()
         .required(VALIDATION_MESSAGES.REQUIRED)
         .matches(
-          PASSPHRASE_REGEX, "The passphrase does not meet the requirements"
+          PASSPHRASE_REGEX,
+          "The passphrase does not meet the requirements"
         ),
     });
 
@@ -51,7 +56,7 @@ class Passphrase extends Component {
       privateKey: "",
       address: "",
       chains: [],
-      error: {show: false, message: ""},
+      error: { show: false, message: "" },
       data: {
         passPhrase: "",
       },
@@ -62,7 +67,7 @@ class Passphrase extends Component {
   }
 
   changePassphraseInputType() {
-    const {inputPassphraseType} = this.state;
+    const { inputPassphraseType } = this.state;
 
     if (inputPassphraseType === "text") {
       this.setState({
@@ -78,7 +83,7 @@ class Passphrase extends Component {
   }
 
   changePrivateKeyInputType() {
-    const {inputPrivateKeyType} = this.state;
+    const { inputPrivateKeyType } = this.state;
 
     if (inputPrivateKeyType === "text") {
       this.setState({
@@ -101,8 +106,9 @@ class Passphrase extends Component {
         {
           passPhrase: values.passPhrase,
           validPassphrase: true,
-        }, () => {
-          const {fileDownloaded} = this.state;
+        },
+        () => {
+          const { fileDownloaded } = this.state;
 
           if (!fileDownloaded) {
             this.createAccount();
@@ -110,7 +116,7 @@ class Passphrase extends Component {
         }
       );
     } else {
-      this.setState({validPassphrase: false});
+      this.setState({ validPassphrase: false });
     }
   }
 
@@ -118,11 +124,10 @@ class Passphrase extends Component {
    * Handles account creation and next steps
    * @abstract
    */
-  async createAccount() {
-  }
+  async createAccount() {}
 
   downloadKeyFile() {
-    const {ppkData, address} = this.state;
+    const { ppkData, address } = this.state;
 
     createAndDownloadJSONFile(`MyPocketNode-${address}`, ppkData);
 
@@ -147,9 +152,9 @@ class Passphrase extends Component {
     } = this.state;
 
     const generalInfo = [
-      {title: "0 POKT", subtitle: "Staked tokens"},
-      {title: "0 POKT", subtitle: "Balance"},
-      {title: Configurations.stakeDefaultStatus, subtitle: "Stake status"},
+      { title: "0 POKT", subtitle: "Staked tokens" },
+      { title: "0 POKT", subtitle: "Balance" },
+      { title: Configurations.stakeDefaultStatus, subtitle: "Stake status" },
       {
         title: 0,
         subtitle: "Validator Power",
@@ -165,7 +170,7 @@ class Passphrase extends Component {
                 variant="danger"
                 title={error.message}
                 dismissible
-                onClose={() => this.setState({error: {show: false}})}
+                onClose={() => this.setState({ error: { show: false } })}
               />
             )}
             <h1>Create node</h1>
@@ -182,7 +187,7 @@ class Passphrase extends Component {
             <Formik
               validationSchema={this.schema}
               onSubmit={(data) => {
-                this.setState({data});
+                this.setState({ data });
               }}
               initialValues={this.state.data}
               values={this.state.data}
@@ -190,7 +195,7 @@ class Passphrase extends Component {
               validateOnBlur={false}
               validate={this.handlePassphrase}
             >
-              {({handleSubmit, handleChange, values, errors}) => (
+              {({ handleSubmit, handleChange, values, errors }) => (
                 <Form
                   noValidate
                   onSubmit={handleSubmit}
@@ -229,7 +234,9 @@ class Passphrase extends Component {
                       <LoadingButton
                         loading={loading}
                         buttonProps={{
-                          className: cls({"download-key-file-button": created}),
+                          className: cls({
+                            "download-key-file-button": created,
+                          }),
                           variant: !created ? "primary" : "dark",
                           type: "submit",
                           onClick: created ? this.downloadKeyFile : undefined,
@@ -272,7 +279,7 @@ class Passphrase extends Component {
           </Col>
           <Col sm="6">
             <h3>Address</h3>
-            <Form.Control readOnly value={address}/>
+            <Form.Control readOnly value={address} />
           </Col>
         </Row>
         <Row className="mt-5">
@@ -293,13 +300,13 @@ class Passphrase extends Component {
             >
               <p>
                 The key file by itself is useless without the passphrase.
-                You&#39;ll need the key file in order to import or set up
-                your node.
+                You&#39;ll need the key file in order to import or set up your
+                node.
               </p>
             </AppAlert>
           </Col>
         </Row>
-        <div style={{display: "none"}}>
+        <div style={{ display: "none" }}>
           <Row>
             <Col className="page-title">
               <h1>General information</h1>
@@ -308,7 +315,7 @@ class Passphrase extends Component {
           <Row className="stats">
             {generalInfo.map((card, idx) => (
               <Col key={idx}>
-                <InfoCard title={card.title} subtitle={card.subtitle}/>
+                <InfoCard title={card.title} subtitle={card.subtitle} />
               </Col>
             ))}
           </Row>

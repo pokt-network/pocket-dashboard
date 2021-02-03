@@ -1,7 +1,7 @@
-import React, {Component} from "react";
-import {Link} from "react-router-dom";
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import AppAlert from "./AppAlert";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../_routes";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../_routes";
 
 class UnauthorizedAlert extends Component {
   state = {};

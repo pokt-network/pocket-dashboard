@@ -1,12 +1,16 @@
 import StripePaymentProvider from "./StripePaymentProvider";
 import TokenPaymentProvider from "./TokenPaymentProvider";
-import {Configurations} from "../../_configuration";
+import { Configurations } from "../../_configuration";
 import BasePaymentProvider from "./BasePaymentProvider";
 
 /** @type {BasePaymentProvider} */
-const DEFAULT_PAYMENT_PROVIDER = new StripePaymentProvider(Configurations.payment.default);
+const DEFAULT_PAYMENT_PROVIDER = new StripePaymentProvider(
+  Configurations.payment.default
+);
 /** @type {BasePaymentProvider} */
-const TOKEN_PAYMENT_PROVIDER = new TokenPaymentProvider(Configurations.payment.default);
+const TOKEN_PAYMENT_PROVIDER = new TokenPaymentProvider(
+  Configurations.payment.default
+);
 
 /**
  * @returns {BasePaymentProvider} The default payment provider.
@@ -24,5 +28,5 @@ export function getTokenPaymentProvider() {
 
 export const providerType = {
   stripe: "stripe",
-  token: "token"
+  token: "token",
 };

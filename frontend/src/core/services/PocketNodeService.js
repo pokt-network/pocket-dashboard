@@ -1,6 +1,6 @@
 import PocketBaseService from "./PocketBaseService";
 import SecureLS from "secure-ls";
-import {Configurations} from "../../_configuration";
+import { Configurations } from "../../_configuration";
 import axiosInstance from "./_serviceHelper";
 const axios = axiosInstance();
 
@@ -54,42 +54,42 @@ class PocketNodeService extends PocketBaseService {
    * @param {Array<object>} [chainsObject] Pocket node chosen chains whole object.
    */
   saveNodeInfoInCache({
-                        nodeID,
-                        address,
-                        ppk,
-                        passphrase,
-                        chains,
-                        data,
-                        imported,
-                        serviceURL,
-                        chainsObject
-                      }) {
+    nodeID,
+    address,
+    ppk,
+    passphrase,
+    chains,
+    data,
+    imported,
+    serviceURL,
+    chainsObject,
+  }) {
     if (nodeID) {
-      this.ls.set("node_id", {data: nodeID});
+      this.ls.set("node_id", { data: nodeID });
     }
     if (address) {
-      this.ls.set("node_address", {data: address});
+      this.ls.set("node_address", { data: address });
     }
     if (ppk) {
-      this.ls.set("node_ppk", {data: ppk});
+      this.ls.set("node_ppk", { data: ppk });
     }
     if (passphrase) {
-      this.ls.set("node_passphrase", {data: passphrase});
+      this.ls.set("node_passphrase", { data: passphrase });
     }
     if (chains) {
-      this.ls.set("node_chains", {data: chains});
+      this.ls.set("node_chains", { data: chains });
     }
     if (data) {
-      this.ls.set("node_data", {data: data});
+      this.ls.set("node_data", { data: data });
     }
     if (serviceURL) {
-      this.ls.set("node_service_url", {data: serviceURL});
+      this.ls.set("node_service_url", { data: serviceURL });
     }
     if (imported !== undefined) {
-      this.ls.set("node_imported", {data: imported});
+      this.ls.set("node_imported", { data: imported });
     }
     if (chainsObject) {
-      this.ls.set("node_chains_object", {data: chainsObject});
+      this.ls.set("node_chains_object", { data: chainsObject });
     }
   }
 
@@ -105,19 +105,19 @@ class PocketNodeService extends PocketBaseService {
    * @param {string} node.user User Email.
    */
   createNode(node) {
-    const data = {node};
+    const data = { node };
 
     return axios
       .post(this._getURL(""), data)
       .then((response) => {
         if (response.status === 200) {
-          return {success: true, data: response.data};
+          return { success: true, data: response.data };
         }
 
-        return {success: false};
+        return { success: false };
       })
       .catch((err) => {
-        return {success: false, data: err.response.data};
+        return { success: false, data: err.response.data };
       });
   }
 
@@ -133,7 +133,7 @@ class PocketNodeService extends PocketBaseService {
    * @async
    */
   async saveNodeAccount(nodeID, nodeData, nodeBaseLink, ppkData = undefined) {
-    let data = {nodeID, nodeData, nodeBaseLink};
+    let data = { nodeID, nodeData, nodeBaseLink };
 
     if (ppkData) {
       data["ppkData"] = ppkData;
@@ -174,19 +174,19 @@ class PocketNodeService extends PocketBaseService {
    * @param {string} nodeData.user User Email.
    */
   editNode(nodeAccountAddress, nodeData) {
-    const data = {...nodeData};
+    const data = { ...nodeData };
 
     return axios
       .put(this._getURL(`/${nodeAccountAddress}`), data)
       .then((response) => {
         if (response.status === 200) {
-          return {success: true, data: response.data};
+          return { success: true, data: response.data };
         }
 
-        return {success: false};
+        return { success: false };
       })
       .catch((err) => {
-        return {success: false, data: err.response.data};
+        return { success: false, data: err.response.data };
       });
   }
 
@@ -250,10 +250,10 @@ class PocketNodeService extends PocketBaseService {
    * @return {Promise|Promise<Array.<*>>}
    */
   getAllNodes(limit, offset = 0) {
-    const params = {limit, offset};
+    const params = { limit, offset };
 
     return axios
-      .get(this._getURL(""), {params})
+      .get(this._getURL(""), { params })
       .then((response) => response.data)
       .catch((err) => {
         return {
@@ -297,7 +297,7 @@ class PocketNodeService extends PocketBaseService {
    * @returns {Promise|Promise<*>}
    */
   deleteNodeFromDashboard(nodeAccountAddress, userEmail, nodesLink) {
-    const data = {user: userEmail, nodesLink};
+    const data = { user: userEmail, nodesLink };
 
     return axios
       .post(this._getURL(`/${nodeAccountAddress}`), data)
@@ -316,7 +316,7 @@ class PocketNodeService extends PocketBaseService {
   stakeNode(nodeStakeTransaction, paymentId, nodeLink, upoktToStake) {
     const data = {
       nodeStakeTransaction,
-      payment: {id: paymentId},
+      payment: { id: paymentId },
       nodeLink,
       upoktToStake: upoktToStake,
     };
@@ -324,10 +324,10 @@ class PocketNodeService extends PocketBaseService {
     return axios
       .post(this._getURL("custom/stake"), data)
       .then((response) => {
-        return {success: true, data: response.data};
+        return { success: true, data: response.data };
       })
       .catch((err) => {
-        return {success: false, error: err.response};
+        return { success: false, error: err.response };
       });
   }
 
@@ -340,15 +340,15 @@ class PocketNodeService extends PocketBaseService {
    * @returns {Promise|Promise<*>}
    */
   unstakeNode(nodeUnstakeTransaction, nodeLink) {
-    const data = {nodeUnstakeTransaction, nodeLink};
+    const data = { nodeUnstakeTransaction, nodeLink };
 
     return axios
       .post(this._getURL("custom/unstake"), data)
       .then((response) => {
-        return {success: true, data: response.data};
+        return { success: true, data: response.data };
       })
       .catch((err) => {
-        return {success: false, data: err.response};
+        return { success: false, data: err.response };
       });
   }
 
@@ -361,12 +361,12 @@ class PocketNodeService extends PocketBaseService {
    * @returns {Promise|Promise<*>}
    */
   unjailNode(nodeUnJailTransaction, nodeLink) {
-    const data = {nodeUnJailTransaction, nodeLink};
+    const data = { nodeUnJailTransaction, nodeLink };
 
     return axios
       .post(this._getURL("/node/unjail"), data)
       .then((response) => {
-        return {success: true, data: response.data};
+        return { success: true, data: response.data };
       })
       .catch((err) => {
         return {

@@ -51,7 +51,7 @@ export class PocketCheckoutService extends PocketBaseService {
    */
   getApplicationPoktToStake(money) {
     return axios
-      .post(this._getURL("applications/pokt"), {money})
+      .post(this._getURL("applications/pokt"), { money })
       .then((response) => response.data);
   }
 
@@ -68,7 +68,6 @@ export class PocketCheckoutService extends PocketBaseService {
       .then((response) => response.data);
   }
 
-
   /**
    * Get money to spent.
    *
@@ -78,7 +77,7 @@ export class PocketCheckoutService extends PocketBaseService {
    */
   getNodePoktToStake(money) {
     return axios
-      .post(this._getURL("nodes/pokt"), {money})
+      .post(this._getURL("nodes/pokt"), { money })
       .then((response) => response.data);
   }
 }

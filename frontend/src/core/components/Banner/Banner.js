@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from "react";
-import {animated, useTransition} from "react-spring";
+import React, { useState, useEffect } from "react";
+import { animated, useTransition } from "react-spring";
 import "./Banner.scss";
 
 const BANNER_HEIGHT = 48;
@@ -19,17 +19,17 @@ function Banner() {
   }, [visible]);
 
   const transitions = useTransition(visible, null, {
-    from: {height: 0},
-    enter: {height: BANNER_HEIGHT},
-    leave: {height: 0},
+    from: { height: 0 },
+    enter: { height: BANNER_HEIGHT },
+    leave: { height: 0 },
   });
 
-  return transitions.map(({item: visible, key, props}) => {
+  return transitions.map(({ item: visible, key, props }) => {
     return (
       visible && (
         <animated.div
           key={key}
-          style={{...props, overflow: "hidden"}}
+          style={{ ...props, overflow: "hidden" }}
           class="top_banner"
         >
           <p>

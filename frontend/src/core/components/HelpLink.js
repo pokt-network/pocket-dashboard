@@ -1,16 +1,15 @@
-import React, {Component} from "react";
-import {Link} from "react-router-dom";
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-
 
 export default class HelpLink extends Component {
   render() {
-    const {link} = this.props;
+    const { link } = this.props;
 
     return (
       <div className="help-link">
         <Link to={link}>
-          <img src="/assets/FAQ.svg" alt="help-link"/>
+          <img src="/assets/FAQ.svg" alt="help-link" />
         </Link>
       </div>
     );

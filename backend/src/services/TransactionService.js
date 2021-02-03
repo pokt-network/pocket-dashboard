@@ -1,5 +1,9 @@
 import BaseService from "./BaseService";
-import {PocketTransaction, POST_ACTION_TYPE, TransactionPostAction} from "../models/Transaction";
+import {
+  PocketTransaction,
+  POST_ACTION_TYPE,
+  TransactionPostAction,
+} from "../models/Transaction";
 import CronJobService from "./CronJobService";
 
 const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";
@@ -7,37 +11,49 @@ const PENDING_TRANSACTION_COLLECTION_NAME = "PendingTransactions";
 const CRON_SERVICE = new CronJobService();
 
 export default class TransactionService extends BaseService {
-
   /**
-   * @param {PocketTransaction} pocketTransaction Transaction.
+   *  Adds a transaction
+   *
+   * @async
    * @private
+   * @param {PocketTransaction} pocketTransaction Transaction.
+   * @returns {boolean } if the transaction was added correctly or not
    */
   async __addTransaction(pocketTransaction) {
-
-    /** @type {{result: {n:number, ok: number}}} */
-    const saveResult = await this.persistenceService
-      .saveEntity(PENDING_TRANSACTION_COLLECTION_NAME, pocketTransaction);
+    const saveResult = await this.persistenceService.saveEntity(
+      PENDING_TRANSACTION_COLLECTION_NAME,
+      pocketTransaction
+    );
 
     return saveResult.result.ok === 1;
   }
 
   /**
-   * @param {PocketTransaction} pocketTransaction transaction.
+   * @async
    * @private
+   * @param {PocketTransaction} pocketTransaction transaction.
+   * @returns {boolean} if the update was performed correctly or not
    */
   async __updateTransaction(pocketTransaction) {
-
     const filter = {
-      hash: pocketTransaction.hash
+      hash: pocketTransaction.hash,
     };
 
-    let transaction = await this.persistenceService.getEntityByFilter(PENDING_TRANSACTION_COLLECTION_NAME, filter);
+    let transaction = await this.persistenceService.getEntityByFilter(
+      PENDING_TRANSACTION_COLLECTION_NAME,
+      filter
+    );
 
     if (transaction) {
       // Update the only editable field for the pending transactions.
       transaction.completed = pocketTransaction.completed;
 
-      return this.persistenceService.updateEntity(PENDING_TRANSACTION_COLLECTION_NAME, filter, transaction);
+      // TODO: Return only the OK and update all relevant functions that use this service
+      return this.persistenceService.updateEntity(
+        PENDING_TRANSACTION_COLLECTION_NAME,
+        filter,
+        transaction
+      );
     }
 
     return false;
@@ -58,7 +74,11 @@ export default class TransactionService extends BaseService {
    * @returns {Promise<boolean>} If was added or not.
    */
   async addTransferTransaction(transactionHash, postAction = undefined) {
-    const pocketTransaction = new PocketTransaction(new Date(), transactionHash, postAction);
+    const pocketTransaction = new PocketTransaction(
+      new Date(),
+      transactionHash,
+      postAction
+    );
 
     let saved = await this.__addTransaction(pocketTransaction);
 
@@ -77,7 +97,11 @@ export default class TransactionService extends BaseService {
    * @returns {Promise<boolean>} if was added or not.
    */
   async addAppStakeTransaction(appStakeTxHash, appStakeData) {
-    const pocketTransaction = new PocketTransaction(new Date(), appStakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, appStakeData));
+    const pocketTransaction = new PocketTransaction(
+      new Date(),
+      appStakeTxHash,
+      new TransactionPostAction(POST_ACTION_TYPE.stakeApplication, appStakeData)
+    );
 
     let saved = await this.__addTransaction(pocketTransaction);
 
@@ -96,7 +120,11 @@ export default class TransactionService extends BaseService {
    * @returns {Promise<boolean>} if was added or not.
    */
   async addNodeStakeTransaction(nodeStakeTxHash, nodeStakeData) {
-    const pocketTransaction = new PocketTransaction(new Date(), nodeStakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.stakeNode, nodeStakeData));
+    const pocketTransaction = new PocketTransaction(
+      new Date(),
+      nodeStakeTxHash,
+      new TransactionPostAction(POST_ACTION_TYPE.stakeNode, nodeStakeData)
+    );
 
     let saved = await this.__addTransaction(pocketTransaction);
 
@@ -121,7 +149,11 @@ export default class TransactionService extends BaseService {
    * @returns {Promise<boolean>} if was added or not.
    */
   async addAppUnstakeTransaction(appUnstakeTxHash, emailData) {
-    const pocketTransaction = new PocketTransaction(new Date(), appUnstakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.unstakeApplication, emailData));
+    const pocketTransaction = new PocketTransaction(
+      new Date(),
+      appUnstakeTxHash,
+      new TransactionPostAction(POST_ACTION_TYPE.unstakeApplication, emailData)
+    );
 
     let saved = await this.__addTransaction(pocketTransaction);
 
@@ -146,7 +178,11 @@ export default class TransactionService extends BaseService {
    * @returns {Promise<boolean>} if was added or not.
    */
   async addNodeUnstakeTransaction(nodeUnstakeTxHash, emailData) {
-    const pocketTransaction = new PocketTransaction(new Date(), nodeUnstakeTxHash, new TransactionPostAction(POST_ACTION_TYPE.unstakeNode, emailData));
+    const pocketTransaction = new PocketTransaction(
+      new Date(),
+      nodeUnstakeTxHash,
+      new TransactionPostAction(POST_ACTION_TYPE.unstakeNode, emailData)
+    );
 
     let saved = await this.__addTransaction(pocketTransaction);
 
@@ -171,7 +207,11 @@ export default class TransactionService extends BaseService {
    * @returns {Promise<boolean>} if was added or not.
    */
   async addNodeUnJailTransaction(nodeUnJailTxHash, emailData) {
-    const pocketTransaction = new PocketTransaction(new Date(), nodeUnJailTxHash, new TransactionPostAction(POST_ACTION_TYPE.unjailNode, emailData));
+    const pocketTransaction = new PocketTransaction(
+      new Date(),
+      nodeUnJailTxHash,
+      new TransactionPostAction(POST_ACTION_TYPE.unjailNode, emailData)
+    );
 
     let saved = await this.__addTransaction(pocketTransaction);
 
@@ -185,7 +225,9 @@ export default class TransactionService extends BaseService {
   /**
    * Mark transaction as success.
    *
+   * @async
    * @param {PocketTransaction} transaction transaction.
+   * @returns {boolean} if the transaction was marked as success
    */
   async markTransactionSuccess(transaction) {
     //

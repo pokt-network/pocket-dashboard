@@ -1,22 +1,23 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import cls from "classnames";
 import "./AppPassphrase.scss";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import AppAlert from "../../../core/components/AppAlert";
-import {
-  VALIDATION_MESSAGES,
-  PASSPHRASE_REGEX,
-} from "../../../_constants";
-import {Formik} from "formik";
+import { VALIDATION_MESSAGES, PASSPHRASE_REGEX } from "../../../_constants";
+import { Formik } from "formik";
 import * as yup from "yup";
 import isEmpty from "lodash/isEmpty";
-import {createAndDownloadJSONFile, scrollToId, validateYup} from "../../../_helpers";
+import {
+  createAndDownloadJSONFile,
+  scrollToId,
+  validateYup,
+} from "../../../_helpers";
 import PocketApplicationService from "../../../core/services/PocketApplicationService";
 import ApplicationService from "../../../core/services/PocketApplicationService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import LoadingButton from "../../../core/components/LoadingButton";
 import PocketClientService from "../../../core/services/PocketClientService";
-import {Account} from "@pokt-network/pocket-js";
+import { Account } from "@pokt-network/pocket-js";
 
 class AppPassphrase extends Component {
   constructor(props, context) {
@@ -38,7 +39,8 @@ class AppPassphrase extends Component {
         .string()
         .required(VALIDATION_MESSAGES.REQUIRED)
         .matches(
-          PASSPHRASE_REGEX, "The passphrase does not meet the requirements"
+          PASSPHRASE_REGEX,
+          "The passphrase does not meet the requirements"
         ),
     });
 
@@ -53,19 +55,19 @@ class AppPassphrase extends Component {
       privateKey: "",
       address: "",
       chains: [],
-      error: {show: false, message: ""},
+      error: { show: false, message: "" },
       data: {
         passPhrase: "",
       },
       redirectPath: "",
       redirectParams: {},
       loading: false,
-      ppkData: {}
+      ppkData: {},
     };
   }
 
   changePassphraseInputType() {
-    const {inputPassphraseType} = this.state;
+    const { inputPassphraseType } = this.state;
 
     if (inputPassphraseType === "text") {
       this.setState({
@@ -81,7 +83,7 @@ class AppPassphrase extends Component {
   }
 
   changePrivateKeyInputType() {
-    const {inputPrivateKeyType} = this.state;
+    const { inputPrivateKeyType } = this.state;
 
     if (inputPrivateKeyType === "text") {
       this.setState({
@@ -104,8 +106,9 @@ class AppPassphrase extends Component {
         {
           passPhrase: values.passPhrase,
           validPassphrase: true,
-        }, () => {
-          const {fileDownloaded} = this.state;
+        },
+        () => {
+          const { fileDownloaded } = this.state;
 
           if (!fileDownloaded) {
             this.createApplicationAccount();
@@ -113,19 +116,24 @@ class AppPassphrase extends Component {
         }
       );
     } else {
-      this.setState({validPassphrase: false});
+      this.setState({ validPassphrase: false });
     }
   }
 
   async createApplicationAccount() {
-    this.setState({loading: true});
+    this.setState({ loading: true });
     const applicationInfo = PocketApplicationService.getApplicationInfo();
-    const {passPhrase} = this.state;
+    const { passPhrase } = this.state;
 
-    const applicationAccountOrError = await PocketClientService.createAndUnlockAccount(passPhrase);
+    const applicationAccountOrError = await PocketClientService.createAndUnlockAccount(
+      passPhrase
+    );
 
     if (applicationAccountOrError instanceof Account) {
-      const ppkData = await PocketClientService.createPPKFromPrivateKey(applicationAccountOrError.privateKey.toString("hex"), passPhrase);
+      const ppkData = await PocketClientService.createPPKFromPrivateKey(
+        applicationAccountOrError.privateKey.toString("hex"),
+        passPhrase
+      );
       const address = applicationAccountOrError.addressHex;
       const publicKey = applicationAccountOrError.publicKey.toString("hex");
 
@@ -133,39 +141,52 @@ class AppPassphrase extends Component {
       PocketApplicationService.saveAppInfoInCache({
         applicationID: applicationInfo.id,
         passphrase: passPhrase,
-        address
+        address,
       });
 
-      await PocketClientService.saveAccount(JSON.stringify(ppkData), passPhrase);
+      await PocketClientService.saveAccount(
+        JSON.stringify(ppkData),
+        passPhrase
+      );
 
       const applicationBaseLink = `${window.location.origin}${_getDashboardPath(
         DASHBOARD_PATHS.appDetail
       )}`;
 
-      const {success} = await ApplicationService
-        .saveApplicationAccount(applicationInfo.id, {address, publicKey}, applicationBaseLink);
+      const { success } = await ApplicationService.saveApplicationAccount(
+        applicationInfo.id,
+        { address, publicKey },
+        applicationBaseLink
+      );
 
       if (success) {
-        const privateKey = await PocketClientService.exportPrivateKey(applicationAccountOrError, passPhrase);
+        const privateKey = await PocketClientService.exportPrivateKey(
+          applicationAccountOrError,
+          passPhrase
+        );
 
         this.setState({
           created: true,
           address,
           privateKey,
-          redirectPath: _getDashboardPath(DASHBOARD_PATHS.applicationChainsList),
+          redirectPath: _getDashboardPath(
+            DASHBOARD_PATHS.applicationChainsList
+          ),
           ppkData: ppkData,
         });
       }
     } else {
-      this.setState({error: {show: true, message: applicationAccountOrError.message}});
+      this.setState({
+        error: { show: true, message: applicationAccountOrError.message },
+      });
       scrollToId("alert");
     }
 
-    this.setState({loading: false});
+    this.setState({ loading: false });
   }
 
   async downloadKeyFile() {
-    const {ppkData, address} = this.state;
+    const { ppkData, address } = this.state;
 
     createAndDownloadJSONFile(`MyPocketApplication-${address}`, ppkData);
 
@@ -189,7 +210,6 @@ class AppPassphrase extends Component {
       loading,
     } = this.state;
 
-
     return (
       <div id="app-passphrase">
         <Row>
@@ -199,7 +219,7 @@ class AppPassphrase extends Component {
                 variant="danger"
                 title={error.message}
                 dismissible
-                onClose={() => this.setState({error: {show: false}})}
+                onClose={() => this.setState({ error: { show: false } })}
               />
             )}
             <h1>Create App</h1>
@@ -210,13 +230,13 @@ class AppPassphrase extends Component {
             <h2>Protect your private key with a passphrase</h2>
             <p>
               Write down a Passphrase to protect your key file. This should
-              have: minimum of 15 alphanumeric symbols with one capital letter, 
+              have: minimum of 15 alphanumeric symbols with one capital letter,
               one lowercase letter, one special character and one number.
             </p>
             <Formik
               validationSchema={this.schema}
               onSubmit={(data) => {
-                this.setState({data});
+                this.setState({ data });
               }}
               initialValues={this.state.data}
               values={this.state.data}
@@ -224,7 +244,7 @@ class AppPassphrase extends Component {
               validateOnBlur={false}
               validate={this.handlePassphrase}
             >
-              {({handleSubmit, handleChange, values, errors}) => (
+              {({ handleSubmit, handleChange, values, errors }) => (
                 <Form
                   noValidate
                   onSubmit={handleSubmit}
@@ -264,7 +284,9 @@ class AppPassphrase extends Component {
                       <LoadingButton
                         loading={loading}
                         buttonProps={{
-                          className: cls({"download-key-file-button": created}),
+                          className: cls({
+                            "download-key-file-button": created,
+                          }),
                           variant: !created ? "primary" : "dark",
                           type: "submit",
                           onClick: created ? this.downloadKeyFile : undefined,
@@ -307,7 +329,7 @@ class AppPassphrase extends Component {
           </Col>
           <Col sm="6">
             <h3>Address</h3>
-            <Form.Control readOnly value={address}/>
+            <Form.Control readOnly value={address} />
           </Col>
         </Row>
         <Row className="mt-5">
@@ -327,9 +349,9 @@ class AppPassphrase extends Component {
               }
             >
               <p>
-              The key file by itself is useless without the passphrase.
-              You&#39;ll need the key file in order to import or set up your 
-              application.
+                The key file by itself is useless without the passphrase.
+                You&#39;ll need the key file in order to import or set up your
+                application.
               </p>
             </AppAlert>
           </Col>

@@ -1,8 +1,8 @@
 import React from "react";
 import cls from "classnames";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import AppTable from "../../../core/components/AppTable";
-import {Button, Col, FormControl, InputGroup, Row} from "react-bootstrap";
+import { Button, Col, FormControl, InputGroup, Row } from "react-bootstrap";
 import InfoCards from "../../../core/components/InfoCards";
 import PocketElementCard from "../../../core/components/PocketElementCard/PocketElementCard";
 import ApplicationService from "../../../core/services/PocketApplicationService";
@@ -12,11 +12,17 @@ import {
   TABLE_COLUMNS,
   STYLING,
   BACKEND_ERRORS,
-  DEFAULT_NETWORK_ERROR_MESSAGE} from "../../../_constants";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
+  DEFAULT_NETWORK_ERROR_MESSAGE,
+} from "../../../_constants";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
 import Loader from "../../../core/components/Loader";
 import Main from "../../../core/components/Main/Main";
-import {formatNetworkData, formatNumbers, getStakeStatus, mapStatusToField} from "../../../_helpers";
+import {
+  formatNetworkData,
+  formatNumbers,
+  getStakeStatus,
+  mapStatusToField,
+} from "../../../_helpers";
 import Segment from "../../../core/components/Segment/Segment";
 import LoadingOverlay from "react-loading-overlay";
 import _ from "lodash";
@@ -45,47 +51,49 @@ class AppsMain extends Main {
     let errorMessage = "";
     let errorType = "";
 
-    ApplicationService.getAllUserApplications(userEmail, APPLICATIONS_LIMIT)
-      .then(userItems => {
-        hasError = userItems.error ? userItems.error : hasError;
-        errorMessage = userItems.error ? userItems.message : errorMessage;
-        errorType = userItems.error ? userItems.name : errorType;
+    ApplicationService.getAllUserApplications(
+      userEmail,
+      APPLICATIONS_LIMIT
+    ).then((userItems) => {
+      hasError = userItems.error ? userItems.error : hasError;
+      errorMessage = userItems.error ? userItems.message : errorMessage;
+      errorType = userItems.error ? userItems.name : errorType;
 
-        if (!userItems.error) {
+      if (!userItems.error) {
+        this.setState({
+          userItems,
+          filteredItems: userItems,
+          hasApps: userItems.length > 0,
+        });
+      }
+    });
+
+    ApplicationService.getStakedApplicationSummary().then(
+      ({
+        totalApplications,
+        totalStaked,
+        averageStaked,
+        error,
+        name,
+        message,
+      }) => {
+        hasError = error ? error : hasError;
+        errorMessage = error ? message : errorMessage;
+        errorType = error ? name : errorType;
+
+        if (!error) {
           this.setState({
-            userItems,
-            filteredItems: userItems,
-            hasApps: userItems.length > 0,
+            total: totalApplications,
+            totalStaked,
+            averageStaked,
+            loading: false,
           });
         }
-      });
+      }
+    );
 
-    ApplicationService.getStakedApplicationSummary()
-      .then(
-        ({totalApplications,
-          totalStaked,
-          averageStaked,
-          error,
-          name,
-          message}) => {
-
-          hasError = error ? error : hasError;
-          errorMessage = error ? message : errorMessage;
-          errorType = error ? name : errorType;
-
-          if (!error) {
-            this.setState({
-              total: totalApplications,
-              totalStaked,
-              averageStaked,
-              loading: false,
-            });
-          }
-        }
-      );
-
-    ApplicationService.getAllApplications(APPLICATIONS_LIMIT)
-      .then(registeredItems => {
+    ApplicationService.getAllApplications(APPLICATIONS_LIMIT).then(
+      (registeredItems) => {
         hasError = registeredItems.error ? registeredItems.error : hasError;
         errorMessage = registeredItems.error
           ? registeredItems.message
@@ -93,31 +101,33 @@ class AppsMain extends Main {
         errorType = registeredItems.error ? registeredItems.name : errorType;
 
         if (!registeredItems.error) {
-            this.setState({
-              registeredItems,
-              loading: false,
-            });
-          }
+          this.setState({
+            registeredItems,
+            loading: false,
+          });
         }
-      );
-
-      if (errorType === BACKEND_ERRORS.NETWORK) {
-        errorMessage = DEFAULT_NETWORK_ERROR_MESSAGE;
       }
+    );
 
-      if (hasError) {
-        this.setState({
-          loading: false,
-          error: {show: true, message: errorMessage},
-        });
-      }
+    if (errorType === BACKEND_ERRORS.NETWORK) {
+      errorMessage = DEFAULT_NETWORK_ERROR_MESSAGE;
+    }
+
+    if (hasError) {
+      this.setState({
+        loading: false,
+        error: { show: true, message: errorMessage },
+      });
+    }
   }
 
   async loadMoreUserApps(offset) {
-    const {userItems} = this.state;
+    const { userItems } = this.state;
     const userEmail = UserService.getUserInfo().email;
     const newUserItems = await ApplicationService.getAllUserApplications(
-      userEmail, APPLICATIONS_LIMIT, (offset) * APPLICATIONS_LIMIT + 1
+      userEmail,
+      APPLICATIONS_LIMIT,
+      offset * APPLICATIONS_LIMIT + 1
     );
 
     const allUserItems = [...userItems, ...newUserItems];
@@ -130,10 +140,11 @@ class AppsMain extends Main {
   }
 
   async loadMoreRegisteredApps(offset) {
-    const {registeredItems} = this.state;
+    const { registeredItems } = this.state;
 
     const newRegisteredItems = await ApplicationService.getAllApplications(
-      APPLICATIONS_LIMIT, offset * APPLICATIONS_LIMIT + 1
+      APPLICATIONS_LIMIT,
+      offset * APPLICATIONS_LIMIT + 1
     );
 
     const allRegisteredItems = [...registeredItems, ...newRegisteredItems];
@@ -157,7 +168,7 @@ class AppsMain extends Main {
       hasApps,
       hasMoreUserItems,
       hasMoreRegisteredItems,
-      error
+      error,
     } = this.state;
 
     const registeredItems = allRegisteredItems.map(mapStatusToField);
@@ -165,7 +176,7 @@ class AppsMain extends Main {
       hasApps && filteredItems.length * 105 > MY_APPS_HEIGHT;
 
     const cards = [
-      {title: formatNumbers(total), subtitle: "Total of Apps"},
+      { title: formatNumbers(total), subtitle: "Total of Apps" },
       {
         title: formatNetworkData(averageStaked, false),
         subtitle: "Average POKT Staked",
@@ -187,7 +198,7 @@ class AppsMain extends Main {
     );
 
     if (loading) {
-      return <Loader/>;
+      return <Loader />;
     }
 
     return (
@@ -198,7 +209,7 @@ class AppsMain extends Main {
               variant="danger"
               title={error.message}
               dismissible
-              onClose={() => this.setState({error: {show: false}})}
+              onClose={() => this.setState({ error: { show: false } })}
             />
           )}
           <Col sm="8" className="page-title">
@@ -225,7 +236,7 @@ class AppsMain extends Main {
           </Col>
         </Row>
         <Row className="stats">
-          <InfoCards cards={cards}/>
+          <InfoCards cards={cards} />
         </Row>
         <Row className="mb-4 app-tables">
           <Col sm="6" className="my-items-segment">
@@ -237,7 +248,7 @@ class AppsMain extends Main {
                       placeholder="Search an App"
                       name="searchQuery"
                       onChange={this.handleChange}
-                      onKeyPress={({key}) => {
+                      onKeyPress={({ key }) => {
                         if (key === "Enter") {
                           this.handleSearch("name");
                         }
@@ -249,7 +260,7 @@ class AppsMain extends Main {
                         onClick={this.handleChainSearch}
                         variant="outline-primary"
                       >
-                        <img src={"/assets/search.svg"} alt="search-icon"/>
+                        <img src={"/assets/search.svg"} alt="search-icon" />
                       </Button>
                     </InputGroup.Append>
                   </InputGroup>
@@ -259,7 +270,7 @@ class AppsMain extends Main {
                 className={cls("scrollable main-list", {
                   "has-scroll": myAppsHasScroll,
                 })}
-                style={{height: `${MY_APPS_HEIGHT}px`}}
+                style={{ height: `${MY_APPS_HEIGHT}px` }}
               >
                 <InfiniteScroll
                   pageStart={0}
@@ -268,16 +279,22 @@ class AppsMain extends Main {
                   hasMore={hasApps && hasMoreUserItems}
                   loader={loader}
                 >
-                <LoadingOverlay active={userItemsTableLoading} spinner>
-                  {hasApps ? (
-                    filteredItems.map((app, idx) => {
-                      const {id: applicationID, name, stakedPOKT, status, icon} = app;
+                  <LoadingOverlay active={userItemsTableLoading} spinner>
+                    {hasApps ? (
+                      filteredItems.map((app, idx) => {
+                        const {
+                          id: applicationID,
+                          name,
+                          stakedPOKT,
+                          status,
+                          icon,
+                        } = app;
 
-                      return (
-                        <Link
-                          key={idx}
-                          to={() => {
-                            if (!applicationID) {
+                        return (
+                          <Link
+                            key={idx}
+                            to={() => {
+                              if (!applicationID) {
                                 ApplicationService.saveAppInfoInCache({
                                   applicationID,
                                 });
@@ -295,7 +312,9 @@ class AppsMain extends Main {
                             <PocketElementCard
                               title={name}
                               subtitle={`Staked POKT: ${formatNetworkData(
-                                stakedPOKT, false)} POKT`}
+                                stakedPOKT,
+                                false
+                              )} POKT`}
                               status={getStakeStatus(
                                 _.isNumber(status) ? status : parseInt(status)
                               )}
@@ -310,13 +329,10 @@ class AppsMain extends Main {
                           src={"/assets/triangle-gray.svg"}
                           alt="apps-empty-box"
                         />
-                        <p>
-                          You don&apos;t have any apps yet.
-                        </p>
-
+                        <p>You don&apos;t have any apps yet.</p>
                       </div>
                     )}
-                </LoadingOverlay>
+                  </LoadingOverlay>
                 </InfiniteScroll>
               </div>
             </Segment>
@@ -347,7 +363,7 @@ class AppsMain extends Main {
                     columns={TABLE_COLUMNS.APPS}
                     bordered={false}
                     loading={allItemsTableLoading}
-                    />
+                  />
                 </InfiniteScroll>
               </div>
             </Segment>

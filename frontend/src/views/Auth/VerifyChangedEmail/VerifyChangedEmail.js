@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {Container, Row, Col} from "react-bootstrap";
+import React, { Component } from "react";
+import { Container, Row, Col } from "react-bootstrap";
 import Navbar from "../../../core/components/Navbar";
 import qs from "qs";
 import AppAlert from "../../../core/components/AppAlert";
@@ -27,14 +27,14 @@ class VerifyChangedEmail extends Component {
 
     if (queryParam === undefined || queryParam.d === undefined) {
       this.setState({
-        alertOverlay: {show: true, variant: "danger", message: "Invalid URL"},
+        alertOverlay: { show: true, variant: "danger", message: "Invalid URL" },
       });
       return;
     }
 
     PocketUserService.validateToken(queryParam.d).then((result) => {
       if (result.success) {
-        this.setState({email: result.data});
+        this.setState({ email: result.data });
       } else {
         this.setState({
           alertOverlay: {
@@ -51,14 +51,18 @@ class VerifyChangedEmail extends Component {
   }
 
   render() {
-    const {alertOverlay} = this.state;
+    const { alertOverlay } = this.state;
 
     return (
       <Container fluid>
         <Navbar />
 
         <Row className="content">
-          <Col id="main" md={{span: 8, offset: 2}} lg={{span: 6, offset: 3}}>
+          <Col
+            id="main"
+            md={{ span: 8, offset: 2 }}
+            lg={{ span: 6, offset: 3 }}
+          >
             {alertOverlay.show && (
               <AppAlert
                 variant={alertOverlay.variant}

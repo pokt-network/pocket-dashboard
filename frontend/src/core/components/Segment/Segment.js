@@ -1,11 +1,11 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./Segment.scss";
-import {PropTypes} from "prop-types";
+import { PropTypes } from "prop-types";
 import cls from "classnames";
 
 class Segment extends Component {
   render() {
-    const {children, label, sideItem, scroll, bordered, empty} = this.props;
+    const { children, label, sideItem, scroll, bordered, empty } = this.props;
 
     return (
       <div

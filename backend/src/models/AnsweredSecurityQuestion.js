@@ -1,11 +1,10 @@
 export class AnsweredSecurityQuestion {
-
   /**
    * @param {string} question Question data.
    * @param {string} answer Answer data.
    */
   constructor(question, answer) {
-    Object.assign(this, {question, answer});
+    Object.assign(this, { question, answer });
   }
 
   /**
@@ -17,7 +16,9 @@ export class AnsweredSecurityQuestion {
    * @static
    */
   static createAnsweredSecurityQuestions(questions) {
-    return questions.map(data => new AnsweredSecurityQuestion(data.question, data.answer));
+    return questions.map(
+      (data) => new AnsweredSecurityQuestion(data.question, data.answer)
+    );
   }
 
   /**
@@ -30,12 +31,12 @@ export class AnsweredSecurityQuestion {
    * @static
    */
   static async validateAnsweredSecurityQuestions(userDB, userInput) {
-    const answeredQuestions = userDB.securityQuestions.map(data => new AnsweredSecurityQuestion(data.question, data.answer));
+    const answeredQuestions = userDB.securityQuestions.map(
+      (data) => new AnsweredSecurityQuestion(data.question, data.answer)
+    );
 
     for (let i = 0; i < answeredQuestions.length; i++) {
-
       if (answeredQuestions[i].question === userInput[i].question) {
-
         if (answeredQuestions[i].answer !== userInput[i].answer) {
           return false;
         }
@@ -46,5 +47,4 @@ export class AnsweredSecurityQuestion {
 
     return true;
   }
-
 }

@@ -1,15 +1,15 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import isEmpty from "lodash/isEmpty";
 import isString from "lodash/isString";
-import {PropTypes} from "prop-types";
-import {Alert} from "react-bootstrap";
-import {DEFAULT_ERROR_MESSAGE} from "../../_constants";
+import { PropTypes } from "prop-types";
+import { Alert } from "react-bootstrap";
+import { DEFAULT_ERROR_MESSAGE } from "../../_constants";
 
 const VARIANT_DANGER = "danger";
 
 class AppAlert extends Component {
   renderTitle() {
-    const {title, variant} = this.props;
+    const { title, variant } = this.props;
 
     if (isString(title) && !isEmpty(title)) {
       return <h4>{title}</h4>;
@@ -26,7 +26,7 @@ class AppAlert extends Component {
   }
 
   render() {
-    const {title, children, className, variant, ...restProps} = this.props;
+    const { title, children, className, variant, ...restProps } = this.props;
 
     const iconPaths = {
       warning: "/assets/yellow_alert.svg",
@@ -41,7 +41,10 @@ class AppAlert extends Component {
           )}
           {title !== undefined && this.renderTitle()}
         </span>
-        <div style={{marginLeft: iconPaths[variant] ? 48 : 0}} className="body">
+        <div
+          style={{ marginLeft: iconPaths[variant] ? 48 : 0 }}
+          className="body"
+        >
           {children}
         </div>
       </Alert>

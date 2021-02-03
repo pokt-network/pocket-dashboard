@@ -1,8 +1,7 @@
 import * as queryString from "query-string";
-import {AuthProviderUser} from "../../models/User";
+import { AuthProviderUser } from "../../models/User";
 
 export default class BaseAuthProvider {
-
   /**
    * @param {string} name Name of Auth backend provider.
    * @param {object} authProviderConfiguration Authentication provider basic configuration.
@@ -27,8 +26,7 @@ export default class BaseAuthProvider {
    * @returns {string} the consent URL.
    * @abstract
    */
-  getConsentURL() {
-  }
+  getConsentURL() {}
 
   /**
    * Get code from consent redirect url.
@@ -64,8 +62,7 @@ export default class BaseAuthProvider {
    * @returns {Promise<string>} Access token.
    * @abstract
    */
-  async getToken(code, tokenType) {
-  }
+  async getToken(code, tokenType) {}
 
   /**
    * Get User data from Auth provider.
@@ -76,6 +73,5 @@ export default class BaseAuthProvider {
    * @returns {Promise<AuthProviderUser>} Auth provider user.
    * @abstract
    */
-  async getUserData(token, tokenType) {
-  }
+  async getUserData(token, tokenType) {}
 }

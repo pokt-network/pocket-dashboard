@@ -1,4 +1,4 @@
-import {Component} from "react";
+import { Component } from "react";
 import "./Purchase.scss";
 
 class Purchase extends Component {
@@ -21,7 +21,7 @@ class Purchase extends Component {
       currentAccountBalance: 0,
       currencies: [],
       loading: true,
-      error: {show: false, message: ""},
+      error: { show: false, message: "" },
     };
   }
 
@@ -46,7 +46,9 @@ class Purchase extends Component {
     }
 
     if (currentAccountBalance > originalAccountBalance) {
-      throw new Error(`Current balance cannot be greater than ${originalAccountBalance} ${currency}.`);
+      throw new Error(
+        `Current balance cannot be greater than ${originalAccountBalance} ${currency}.`
+      );
     }
 
     if (subTotal < 0 || isNaN(subTotal)) {

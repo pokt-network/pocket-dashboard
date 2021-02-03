@@ -20,7 +20,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "big-integer": "^1.6.48",
     "bootstrap": "^4.4.1",
     "classnames": "^2.2.6",
@@ -58,85 +58,18 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "yarn lint"
     }
   },
-  "eslintConfig": {
-    "env": {
-      "es6": true,
-      "node": true,
-      "jest": true
-    },
-    "rules": {
-      "no-console": "warn",
-      "comma-spacing": "error",
-      "semi": [
-        "error",
-        "always"
-      ],
-      "quotes": [
-        "error",
-        "double"
-      ],
-      "eqeqeq": "error",
-      "no-alert": "error",
-      "curly": "error",
-      "brace-style": [
-        "error",
-        "1tbs"
-      ],
-      "object-curly-spacing": [
-        "error",
-        "never"
-      ],
-      "function-call-argument-newline": [
-        "error",
-        "never"
-      ],
-      "one-var-declaration-per-line": [
-        "error",
-        "always"
-      ],
-      "padding-line-between-statements": [
-        "error",
-        {
-          "blankLine": "always",
-          "prev": [
-            "const",
-            "let",
-            "var"
-          ],
-          "next": "*"
-        },
-        {
-          "blankLine": "any",
-          "prev": [
-            "const",
-            "let",
-            "var"
-          ],
-          "next": [
-            "const",
-            "let",
-            "var"
-          ]
-        }
-      ]
-    },
-    "extends": [
-      "react-app",
-      "plugin:react/recommended"
-    ]
-  },
-  "eslintIgnore": [
-    "serviceWorker.js"
-  ],
   "devDependencies": {
     "eslint": "^6.8.0",
+    "eslint-config-prettier": "^7.2.0",
     "eslint-config-react-app": "^5.2.0",
     "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-react": "^7.19.0",
-    "node-sass": "^4.13.1"
+    "eslint-plugin-prettier": "^3.3.1",
+    "eslint-plugin-react": "^7.22.0",
+    "node-sass": "^4.13.1",
+    "prettier": "^2.2.1"
   },
   "scripts": {
     "start": "node_modules/.bin/react-scripts --max_old_space_size=8192 start",

@@ -1,4 +1,4 @@
-import {Db, MongoClient} from "mongodb";
+import { Db, MongoClient } from "mongodb";
 
 export default class MongoDBAdapter {
   /**
@@ -41,5 +41,4 @@ export default class MongoDBAdapter {
   getDB(connection) {
     return connection.db(this.properties.db_name);
   }
-
 }

@@ -1,7 +1,7 @@
-import {Node, NodeParams, StakingStatus} from "@pokt-network/pocket-js";
-import {PublicPocketAccount} from "./Account";
-import {EMAIL_REGEX} from "./Regex";
-import {DashboardValidationError} from "./Exceptions";
+import { Node, NodeParams, StakingStatus } from "@pokt-network/pocket-js";
+import { PublicPocketAccount } from "./Account";
+import { EMAIL_REGEX } from "./Regex";
+import { DashboardValidationError } from "./Exceptions";
 
 export class RegisteredPocketNode {
   /**
@@ -10,7 +10,7 @@ export class RegisteredPocketNode {
    * @param {StakingStatus} status Status
    */
   constructor(name, address, status) {
-    Object.assign(this, {name, address, status});
+    Object.assign(this, { name, address, status });
   }
 }
 
@@ -24,13 +24,11 @@ export class UserPocketNode {
    * @param {number} status Status.
    */
   constructor(id, name, address, icon, stakedPOKT, status) {
-    Object.assign(this, {id, name, address, icon, stakedPOKT, status});
+    Object.assign(this, { id, name, address, icon, stakedPOKT, status });
   }
 }
 
-
 export class PocketNode {
-
   /**
    * @param {string} name Name.
    * @param {string} contactEmail A support contact email.
@@ -40,8 +38,24 @@ export class PocketNode {
    * @param {string} [icon] Icon.
    * @param {boolean} [updatingStatus] If is on staking status.
    */
-  constructor(name, contactEmail, user, operator, description, icon, updatingStatus) {
-    Object.assign(this, {name, contactEmail, user, operator, description, icon, updatingStatus});
+  constructor(
+    name,
+    contactEmail,
+    user,
+    operator,
+    description,
+    icon,
+    updatingStatus
+  ) {
+    Object.assign(this, {
+      name,
+      contactEmail,
+      user,
+      operator,
+      description,
+      icon,
+      updatingStatus,
+    });
 
     this.id = "";
     this.publicPocketAccount = new PublicPocketAccount("", "");
@@ -63,17 +77,20 @@ export class PocketNode {
    * @static
    */
   static validate(nodeData) {
-
     if (nodeData.name === "") {
       throw new DashboardValidationError("Name is not valid.");
     }
 
     if (nodeData.name.length > 20) {
-      throw new DashboardValidationError("Name length should not be greater than 20 character.");
+      throw new DashboardValidationError(
+        "Name length should not be greater than 20 character."
+      );
     }
 
     if (nodeData.description !== "" && nodeData.description.length > 150) {
-      throw new DashboardValidationError("Description length should not be greater than 150 character.");
+      throw new DashboardValidationError(
+        "Description length should not be greater than 150 character."
+      );
     }
 
     if (!EMAIL_REGEX.test(nodeData.contactEmail)) {
@@ -104,11 +121,29 @@ export class PocketNode {
    * @static
    */
   static createPocketNode(nodeData) {
-    const {name, contactEmail, user, operator, description, icon, publicPocketAccount, updatingStatus} = nodeData;
-    const pocketNode = new PocketNode(name, contactEmail, user, operator, description, icon, updatingStatus);
+    const {
+      name,
+      contactEmail,
+      user,
+      operator,
+      description,
+      icon,
+      publicPocketAccount,
+      updatingStatus,
+    } = nodeData;
+    const pocketNode = new PocketNode(
+      name,
+      contactEmail,
+      user,
+      operator,
+      description,
+      icon,
+      updatingStatus
+    );
 
     pocketNode.id = nodeData._id ?? "";
-    pocketNode.publicPocketAccount = publicPocketAccount ?? new PublicPocketAccount("", "");
+    pocketNode.publicPocketAccount =
+      publicPocketAccount ?? new PublicPocketAccount("", "");
 
     return pocketNode;
   }
@@ -127,7 +162,11 @@ export class PocketNode {
   static createRegisteredPocketNode(nodeData) {
     const nodeName = nodeData.name ?? "N/A";
 
-    return new RegisteredPocketNode(nodeName, nodeData.address, nodeData.status);
+    return new RegisteredPocketNode(
+      nodeName,
+      nodeData.address,
+      nodeData.status
+    );
   }
 
   /**
@@ -144,13 +183,22 @@ export class PocketNode {
    * @static
    */
   static createUserPocketNode(nodeData, networkNodes) {
-    const {id, name, address, icon} = nodeData;
-    let networkNode = networkNodes.filter(app => app.address === nodeData.address);
+    const { id, name, address, icon } = nodeData;
+    let networkNode = networkNodes.filter(
+      (app) => app.address === nodeData.address
+    );
 
     if (networkNode.length > 0) {
       networkNode = networkNode[0];
 
-      return new UserPocketNode(id, name, address, icon, networkNode.stakedTokens.toString(), networkNode.status);
+      return new UserPocketNode(
+        id,
+        name,
+        address,
+        icon,
+        networkNode.stakedTokens.toString(),
+        networkNode.status
+      );
     }
 
     return new UserPocketNode(id, name, address, icon, "0", 0);
@@ -158,13 +206,12 @@ export class PocketNode {
 }
 
 export class ExtendedPocketNode {
-
   /**
    * @param {PocketNode} pocketNode Pocket node.
    * @param {Node} networkData Node data from Pocket Network.
    */
   constructor(pocketNode, networkData) {
-    Object.assign(this, {pocketNode, networkData});
+    Object.assign(this, { pocketNode, networkData });
   }
 
   /**
@@ -190,7 +237,7 @@ export class ExtendedPocketNode {
    * @static
    */
   static createNetworkNode(publicPocketAccount, nodeParameters) {
-    const {address, publicKey} = publicPocketAccount;
+    const { address, publicKey } = publicPocketAccount;
 
     return {
       address,
@@ -200,19 +247,18 @@ export class ExtendedPocketNode {
       service_url: "",
       chains: [],
       tokens: "0",
-      unstaking_time: nodeParameters.unstakingTime.toString()
+      unstaking_time: nodeParameters.unstakingTime.toString(),
     };
   }
 }
 
 export class StakedNodeSummary {
-
   /**
    * @param {string} totalNodes Total of Nodes.
    * @param {string} averageStaked Average of staked nodes.
    * @param {string} averageValidatorPower Average of validator power.
    */
   constructor(totalNodes, averageStaked, averageValidatorPower) {
-    Object.assign(this, {totalNodes, averageStaked, averageValidatorPower});
+    Object.assign(this, { totalNodes, averageStaked, averageValidatorPower });
   }
 }

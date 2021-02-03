@@ -1,16 +1,16 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import Tooltip from "rc-tooltip";
-import {STYLING} from "../../_constants";
-import {formatNumbers} from "../../_helpers";
+import { STYLING } from "../../_constants";
+import { formatNumbers } from "../../_helpers";
 
 class AppSlider extends Component {
   constructor(props) {
     super(props);
 
     // eslint-disable-next-line react/prop-types
-    const {defaultValue} = this.props;
+    const { defaultValue } = this.props;
 
     this.state = {
       value: defaultValue || 0,
@@ -24,16 +24,16 @@ class AppSlider extends Component {
   };
 
   render() {
-    const {value} = this.state;
+    const { value } = this.state;
 
     // eslint-disable-next-line react/prop-types
-    const {onChange} = this.props;
+    const { onChange } = this.props;
 
     const Handle = Slider.Handle;
 
     const handle = (props) => {
       // eslint-disable-next-line react/prop-types
-      const {value, dragging, index, ...restProps} = props;
+      const { value, dragging, index, ...restProps } = props;
 
       return (
         <Tooltip
@@ -58,8 +58,8 @@ class AppSlider extends Component {
           value={value}
           onChange={this.onSliderChange}
           onAfterChange={() => onChange(value)}
-          railStyle={{backgroundColor: STYLING.whiteSmoke, height: 10}}
-          trackStyle={{backgroundColor: STYLING.primaryColor, height: 10}}
+          railStyle={{ backgroundColor: STYLING.whiteSmoke, height: 10 }}
+          trackStyle={{ backgroundColor: STYLING.primaryColor, height: 10 }}
           handleStyle={{
             borderColor: "#fbfdff",
             height: 28,

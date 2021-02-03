@@ -1,13 +1,12 @@
-import {Account} from "@pokt-network/pocket-js";
+import { Account } from "@pokt-network/pocket-js";
 
 export class PublicPocketAccount {
-
   /**
    * @param {string} address Address in Hex.
    * @param {string} publicKey Public key in Hex.
    */
   constructor(address, publicKey) {
-    Object.assign(this, {address, publicKey});
+    Object.assign(this, { address, publicKey });
   }
 
   /**
@@ -26,13 +25,12 @@ export class PublicPocketAccount {
 }
 
 export class PrivatePocketAccount {
-
   /**
    * @param {string} address Address in Hex.
    * @param {string} publicKey Public key in hex
    * @param {string} privateKey Unencrypted private key in Hex.
    */
   constructor(address, publicKey, privateKey) {
-    Object.assign(this, {address, publicKey, privateKey});
+    Object.assign(this, { address, publicKey, privateKey });
   }
 }

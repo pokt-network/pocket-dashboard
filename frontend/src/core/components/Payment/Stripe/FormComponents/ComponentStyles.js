@@ -8,5 +8,5 @@ export const PaymentInputStyle = {
     "::placeholder": {
       color: "#afafaf",
     },
-  }
+  },
 };

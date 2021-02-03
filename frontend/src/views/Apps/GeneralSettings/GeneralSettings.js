@@ -1,7 +1,17 @@
 /* eslint-disable react/prop-types */
-import React, {Component} from "react";
-import {Alert, Form, Col, Row, Modal, Button, Dropdown, OverlayTrigger, Tooltip} from "react-bootstrap";
-import {Formik} from "formik";
+import React, { Component } from "react";
+import {
+  Alert,
+  Form,
+  Col,
+  Row,
+  Modal,
+  Button,
+  Dropdown,
+  OverlayTrigger,
+  Tooltip,
+} from "react-bootstrap";
+import { Formik } from "formik";
 import LabelToggle from "../../../core/components/LabelToggle";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import NetworkService from "../../../core/services/PocketNetworkService";
@@ -9,7 +19,6 @@ import AppAlert from "../../../core/components/AppAlert";
 import "./GeneralSettings.scss";
 
 class GeneralSettings extends Component {
-
   constructor(props, context) {
     super(props, context);
 
@@ -23,7 +32,7 @@ class GeneralSettings extends Component {
       secretKey: false,
       appId: "",
       endpoint: "",
-      showAlert: false
+      showAlert: false,
     };
 
     this.toggleSecretKeyRequired = this.toggleSecretKeyRequired.bind(this);
@@ -41,7 +50,7 @@ class GeneralSettings extends Component {
   async saveChanges() {
     // TODO: Wrap in try/catch and add another alert state to inform user of errors
     const application = this.state.pocketApplication;
-    
+
     const agents = this.state.useragents.split(",").map(function (item) {
       return item.trim();
     });
@@ -55,7 +64,7 @@ class GeneralSettings extends Component {
     await ApplicationService.updateGatewaySettings(application);
 
     this.setState({
-      showAlert: true
+      showAlert: true,
     });
   }
 
@@ -67,42 +76,44 @@ class GeneralSettings extends Component {
     await ApplicationService.updateGatewaySettings(application);
   }
 
-  handleOriginChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleOriginChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
     this.setState({
-      origins: data[input.name]
+      origins: data[input.name],
     });
   }
 
-  handleUserChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleUserChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
     this.setState({
-      useragents: data[input.name]
+      useragents: data[input.name],
     });
   }
 
   chainSelect(blockchain) {
-    const endpoint = "https://{0}.gateway.pokt.network/v1/{1}".replace("{0}", blockchain).replace("{1}", this.state.appId);
+    const endpoint = "https://{0}.gateway.pokt.network/v1/{1}"
+      .replace("{0}", blockchain)
+      .replace("{1}", this.state.appId);
 
     this.setState({
-      endpoint: endpoint
+      endpoint: endpoint,
     });
   }
 
   async componentDidMount() {
-    const {id} = this.props.match.params;
+    const { id } = this.props.match.params;
 
-    const {
-      pocketApplication,
-      networkData
-    } = await ApplicationService.getClientApplication(id) || {};
+    const { pocketApplication, networkData } =
+      (await ApplicationService.getClientApplication(id)) || {};
 
     const chains = await NetworkService.getNetworkChains(networkData.chains);
-    const endpoint = "https://{0}.gateway.pokt.network/v1/{1}".replace("{0}", chains[0].blockchain).replace("{1}", id);
+    const endpoint = "https://{0}.gateway.pokt.network/v1/{1}"
+      .replace("{0}", chains[0].blockchain)
+      .replace("{1}", id);
 
     this.setState({
       chains,
@@ -117,7 +128,6 @@ class GeneralSettings extends Component {
   }
 
   render() {
-
     const {
       deleteModal,
       chains,
@@ -128,19 +138,29 @@ class GeneralSettings extends Component {
       appId,
       pocketApplication,
       endpoint,
-      showAlert
+      showAlert,
     } = this.state;
 
     const chainsDropdown = chains.map(function (chain) {
-      return <Dropdown.Item key={chain.blockchain} eventKey={chain.blockchain}>{chain.network}</Dropdown.Item>;
+      return (
+        <Dropdown.Item key={chain.blockchain} eventKey={chain.blockchain}>
+          {chain.network}
+        </Dropdown.Item>
+      );
     });
 
-    const renderTooltipWhitelistUserAgents = props => (
-      <Tooltip {...props}>Add a list of user-agents allowed, seperated by commas. User-agents are matched by substring.</Tooltip>
+    const renderTooltipWhitelistUserAgents = (props) => (
+      <Tooltip {...props}>
+        Add a list of user-agents allowed, seperated by commas. User-agents are
+        matched by substring.
+      </Tooltip>
     );
 
-    const renderTooltipWhitelistOrigins = props => (
-      <Tooltip {...props}>Add a list of HTTP Origin Headers that will be allowed, seperated by commas. Origins are matched using exact-match.</Tooltip>
+    const renderTooltipWhitelistOrigins = (props) => (
+      <Tooltip {...props}>
+        Add a list of HTTP Origin Headers that will be allowed, seperated by
+        commas. Origins are matched using exact-match.
+      </Tooltip>
     );
 
     return (
@@ -148,29 +168,30 @@ class GeneralSettings extends Component {
         {showAlert && (
           <AppAlert
             className="pb-4 pt-4"
-            style={{height: "100px"}}
+            style={{ height: "100px" }}
             variant="primary"
             onClose={() => {
-              this.setState({showAlert: false});
+              this.setState({ showAlert: false });
             }}
             dismissible
             title={
               <>
-                <h4 className="text-uppercase" style={{paddingLeft: "15px"}}>
+                <h4 className="text-uppercase" style={{ paddingLeft: "15px" }}>
                   APPLICATION SAVED{" "}
                 </h4>
-                <p className="ml-2">
-                </p>
+                <p className="ml-2"></p>
               </>
             }
           >
-            <p ref={(el) => {
-              if (el) {
-                el.style.setProperty("font-size", "14px", "important");
-              }
-            }}>
+            <p
+              ref={(el) => {
+                if (el) {
+                  el.style.setProperty("font-size", "14px", "important");
+                }
+              }}
+            >
               Your information has been updated.
-              </p>
+            </p>
           </AppAlert>
         )}
         <Row>
@@ -191,29 +212,44 @@ class GeneralSettings extends Component {
             <h2 className="mb-0 pt-2">Gateway Keys</h2>
           </Col>
           <Col sm="1" md="1" lg="1" className="btn-sc pr-0">
-            <Button
-              variant="primary" onClick={this.saveChanges}>
+            <Button variant="primary" onClick={this.saveChanges}>
               <span>Save Changes</span>
             </Button>
           </Col>
           <p className="mt-2">
-            For information on setting up your application, please see the <a rel="noopener noreferrer" href="https://dashboard.docs.pokt.network/docs/gateway-overview" target="_blank">Gateway Documentation.</a>
+            For information on setting up your application, please see the{" "}
+            <a
+              rel="noopener noreferrer"
+              href="https://dashboard.docs.pokt.network/docs/gateway-overview"
+              target="_blank"
+            >
+              Gateway Documentation.
+            </a>
           </p>
         </Row>
         <Row className="gateway-data">
           <Col sm="6" md="6" lg="6" className="pl-0">
             <div className="page-title">
               <h3 className="pl-4">Application ID</h3>
-              <Alert variant="light">{appId}
-                <div className="copy-icon" onClick={() => this.copy("appId")}><img src={"/assets/copy.png"} alt="copy-icon" /></div>
+              <Alert variant="light">
+                {appId}
+                <div className="copy-icon" onClick={() => this.copy("appId")}>
+                  <img src={"/assets/copy.png"} alt="copy-icon" />
+                </div>
               </Alert>
             </div>
           </Col>
           <Col sm="6" md="6" lg="6" className="pr-0">
             <div className="page-title">
               <h3 className="pl-4">Application Secret Key</h3>
-              <Alert variant="light">{appSecretKey}
-                <div className="copy-icon" onClick={() => this.copy("appSecretKey")}><img src={"/assets/copy.png"} alt="copy-icon" /></div>
+              <Alert variant="light">
+                {appSecretKey}
+                <div
+                  className="copy-icon"
+                  onClick={() => this.copy("appSecretKey")}
+                >
+                  <img src={"/assets/copy.png"} alt="copy-icon" />
+                </div>
               </Alert>
             </div>
           </Col>
@@ -229,16 +265,17 @@ class GeneralSettings extends Component {
               <Dropdown.Toggle as={LabelToggle} id="dropdown-basic">
                 {"Staked Networks"}
               </Dropdown.Toggle>
-              <Dropdown.Menu>
-                {chainsDropdown}
-              </Dropdown.Menu>
+              <Dropdown.Menu>{chainsDropdown}</Dropdown.Menu>
             </Dropdown>
           </Col>
         </Row>
         <Row className="alert-endpoint mb-4">
           <Col sm="12" md="12" lg="12" className="pl-0 pr-0">
-            <Alert variant="light">{endpoint}
-              <div className="copy-icon" onClick={() => this.copy("endpoint")} ><img src={"/assets/copy.png"} alt="copy-icon" /></div>
+            <Alert variant="light">
+              {endpoint}
+              <div className="copy-icon" onClick={() => this.copy("endpoint")}>
+                <img src={"/assets/copy.png"} alt="copy-icon" />
+              </div>
             </Alert>
           </Col>
         </Row>
@@ -246,7 +283,8 @@ class GeneralSettings extends Component {
           <Col className="page-title pl-0">
             <h2>Security</h2>
             <p>
-              To maximize security for your application, you can set the secret key to required or whitelist user-agents and origins.
+              To maximize security for your application, you can set the secret
+              key to required or whitelist user-agents and origins.
             </p>
           </Col>
         </Row>
@@ -259,12 +297,10 @@ class GeneralSettings extends Component {
                 type="checkbox"
                 checked={secretKey}
                 onChange={() => {
-                  this.setState({secretKey: !secretKey});
+                  this.setState({ secretKey: !secretKey });
                   this.toggleSecretKeyRequired(!secretKey);
                 }}
-                label={
-                  <p>Require application secret for all requests</p>
-                }
+                label={<p>Require application secret for all requests</p>}
               />
             </div>
           </Col>
@@ -276,8 +312,15 @@ class GeneralSettings extends Component {
                 <Form.Group>
                   <Form.Label className="pl-4">
                     Whitelist User-Agents
-                    <OverlayTrigger placement="top" overlay={renderTooltipWhitelistUserAgents}>
-                      <img className="tooltip-i" src={"/assets/i-circle.svg"} alt="info-action-icon" />
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={renderTooltipWhitelistUserAgents}
+                    >
+                      <img
+                        className="tooltip-i"
+                        src={"/assets/i-circle.svg"}
+                        alt="info-action-icon"
+                      />
                     </OverlayTrigger>
                   </Form.Label>
                   <Row>
@@ -302,8 +345,15 @@ class GeneralSettings extends Component {
                 <Form.Group>
                   <Form.Label className="pl-4">
                     Whitelist Origins
-                    <OverlayTrigger placement="top" overlay={renderTooltipWhitelistOrigins}>
-                      <img className="tooltip-i" src={"/assets/i-circle.svg"} alt="info-action-icon" />
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={renderTooltipWhitelistOrigins}
+                    >
+                      <img
+                        className="tooltip-i"
+                        src={"/assets/i-circle.svg"}
+                        alt="info-action-icon"
+                      />
                     </OverlayTrigger>
                   </Form.Label>
                   <Row>
@@ -321,46 +371,55 @@ class GeneralSettings extends Component {
             </Formik>
           </Col>
         </Row>
-        <Row className="remove-app" style={{display: "none"}}>
+        <Row className="remove-app" style={{ display: "none" }}>
           <Col sm="12" md="12" lg="12" className="pl-0">
             <span className="option">
               <img src={"/assets/trash.svg"} alt="trash-action-icon" />
               <p>
                 <span
                   className="link"
-                  onClick={() => this.setState({deleteModal: true})}>
+                  onClick={() => this.setState({ deleteModal: true })}
+                >
                   Remove
-                  </span>{" "}
-                  this App from the Dashboard.
-                </p>
+                </span>{" "}
+                this App from the Dashboard.
+              </p>
             </span>
           </Col>
         </Row>
         <Modal
           className="delete-app-settings"
           show={deleteModal}
-          onHide={() => this.setState({deleteModal: false})}
+          onHide={() => this.setState({ deleteModal: false })}
           animation={false}
-          centered>
+          centered
+        >
           <Modal.Header closeButton>
-            <Modal.Title>Are you sure you want to delete this APP fom the Pocket Gateway?</Modal.Title>
+            <Modal.Title>
+              Are you sure you want to delete this APP fom the Pocket Gateway?
+            </Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <p className="mb-4">Deleting this will result in any services using this application will no longer be able to access blockchain data.</p>
+            <p className="mb-4">
+              Deleting this will result in any services using this application
+              will no longer be able to access blockchain data.
+            </p>
             <Formik>
               <Form>
                 <Form.Group>
-                  <Form.Label className="pl-4">TYPE DELETE TO CONFIRM</Form.Label>
-                  <Form.Control
-                    name="delete"
-                    placeholder="Delete"
-                  />
+                  <Form.Label className="pl-4">
+                    TYPE DELETE TO CONFIRM
+                  </Form.Label>
+                  <Form.Control name="delete" placeholder="Delete" />
                 </Form.Group>
               </Form>
             </Formik>
           </Modal.Body>
           <Modal.Footer>
-            <Button className="light-button" onClick={() => this.setState({deleteModal: false})}>
+            <Button
+              className="light-button"
+              onClick={() => this.setState({ deleteModal: false })}
+            >
               <span>Cancel</span>
             </Button>
             <Button>

@@ -1,6 +1,6 @@
-import React, {Component} from "react";
-import {Button, Col, Form, Row} from "react-bootstrap";
-import {PropTypes} from "prop-types";
+import React, { Component } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import { PropTypes } from "prop-types";
 import PocketClientService from "../../services/PocketClientService";
 
 class ValidateKeys extends Component {
@@ -19,7 +19,7 @@ class ValidateKeys extends Component {
     this.state = {
       ppk: "",
       created: false,
-      error: {show: false, message: ""},
+      error: { show: false, message: "" },
       hasPPK: false,
       inputType: "password",
       validPassphrase: false,
@@ -40,22 +40,22 @@ class ValidateKeys extends Component {
   }
 
   componentDidMount() {
-    const {breadcrumbs, handleBreadcrumbs} = this.props;
+    const { breadcrumbs, handleBreadcrumbs } = this.props;
 
     if (handleBreadcrumbs) {
       handleBreadcrumbs(breadcrumbs);
     }
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   changeInputType() {
-    const {inputType} = this.state;
+    const { inputType } = this.state;
 
     if (inputType === "text") {
       this.setState({
@@ -76,14 +76,14 @@ class ValidateKeys extends Component {
     const ppkFileName = e.target.files[0].name;
 
     reader.onload = (e) => {
-      const {result} = e.target;
-      const {data} = this.state;
+      const { result } = e.target;
+      const { data } = this.state;
       const ppkData = JSON.parse(result.trim());
 
       this.setState({
         ppkFileName,
         hasPPK: true,
-        data: {...data, privateKey: "", ppkData},
+        data: { ...data, privateKey: "", ppkData },
       });
     };
 
@@ -93,13 +93,13 @@ class ValidateKeys extends Component {
   async validateAccount(e) {
     e.preventDefault();
 
-    const {address} = this.props;
-    const {privateKey, passphrase, ppkData} = this.state.data;
+    const { address } = this.props;
+    const { privateKey, passphrase, ppkData } = this.state.data;
     let ppk;
 
     if (!passphrase) {
       this.setState({
-        error: {show: true, message: "Your passphrase cannot be empty"},
+        error: { show: true, message: "Your passphrase cannot be empty" },
       });
       return;
     }
@@ -107,7 +107,8 @@ class ValidateKeys extends Component {
     if (!ppkData) {
       ppk = JSON.parse(
         await PocketClientService.createPPKFromPrivateKey(
-          privateKey, passphrase
+          privateKey,
+          passphrase
         )
       );
     } else {
@@ -115,15 +116,16 @@ class ValidateKeys extends Component {
     }
 
     const account = await PocketClientService.saveAccount(
-      JSON.stringify(ppk), passphrase
+      JSON.stringify(ppk),
+      passphrase
     );
-    const {addressHex} = account;
+    const { addressHex } = account;
 
     const validated = addressHex === address;
 
     if (validated) {
       this.setState({
-        error: {show: false},
+        error: { show: false },
         validated: true,
         address: address,
         ppk: ppk,
@@ -150,7 +152,7 @@ class ValidateKeys extends Component {
       ppkFileName,
     } = this.state;
 
-    const {passphrase, privateKey} = this.state.data;
+    const { passphrase, privateKey } = this.state.data;
 
     const {
       children,
@@ -188,7 +190,7 @@ class ValidateKeys extends Component {
                         <span className="pr-4 pl-4">Upload key file</span>
                       </label>
                       <input
-                        style={{display: "none"}}
+                        style={{ display: "none" }}
                         id="upload-key"
                         type="file"
                         onChange={(e) => this.readUploadedFile(e)}
@@ -227,7 +229,7 @@ class ValidateKeys extends Component {
                           type="submit"
                           disabled={privateKey.length === 0}
                           onClick={() => {
-                            this.setState({hasPPK: true});
+                            this.setState({ hasPPK: true });
                           }}
                         >
                           <span>continue </span>

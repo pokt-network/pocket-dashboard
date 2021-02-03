@@ -1,6 +1,6 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {Button} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import UserService from "../services/PocketUserService";
 
 export const AuthProviderType = {
@@ -16,7 +16,7 @@ export class AuthProviderButton extends Component {
   }
 
   onButtonClick(e) {
-    const {consent_url} = this.props.authProvider;
+    const { consent_url } = this.props.authProvider;
 
     UserService.showWelcomeMessage(true);
 
@@ -24,7 +24,7 @@ export class AuthProviderButton extends Component {
   }
 
   render() {
-    const {block, icon, className, authProvider, type} = this.props;
+    const { block, icon, className, authProvider, type } = this.props;
 
     return (
       <Button
@@ -34,7 +34,8 @@ export class AuthProviderButton extends Component {
         block={block}
         onClick={this.onButtonClick}
       >
-        {icon ? <img alt="" src={`/assets/${authProvider.name}.svg`} /> : null} {type} with{" "}
+        {icon ? <img alt="" src={`/assets/${authProvider.name}.svg`} /> : null}{" "}
+        {type} with{" "}
         {authProvider.name.slice(0, 1).toUpperCase() +
           authProvider.name.slice(1, authProvider.name.length)}
       </Button>

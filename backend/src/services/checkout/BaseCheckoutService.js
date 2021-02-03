@@ -1,15 +1,13 @@
-import {POKT_DENOMINATIONS} from "../PocketService";
+import { POKT_DENOMINATIONS } from "../PocketService";
 import BaseService from "../BaseService";
-import {CoinDenom} from "@pokt-network/pocket-js";
-import {DashboardValidationError} from "../../models/Exceptions";
-import {Configurations} from "../../_configuration";
+import { CoinDenom } from "@pokt-network/pocket-js";
+import { DashboardValidationError } from "../../models/Exceptions";
+import { Configurations } from "../../_configuration";
 
 /**
  *  @abstract
  */
 export class BaseCheckoutService extends BaseService {
-
-
   /**
    * @param {object} options Options used in checkout service.
    * @param {string} options.default_currency Default currency.
@@ -41,10 +39,13 @@ export class BaseCheckoutService extends BaseService {
    * @returns {number} Pokt to use.
    */
   getPoktToStake(moneySpent, poktDenomination = CoinDenom.Upokt) {
-    const {transaction_fee: transactionFee} = Configurations.pocket_network;
+    const { transaction_fee: transactionFee } = Configurations.pocket_network;
 
-    const pokt = Math.round(((moneySpent / this.poktMarketPrice) + (parseInt(transactionFee) / 1000000)));
-    let poktWithDenomination = pokt * Math.pow(10, POKT_DENOMINATIONS[poktDenomination]);
+    const pokt = Math.round(
+      moneySpent / this.poktMarketPrice + parseInt(transactionFee) / 1000000
+    );
+    let poktWithDenomination =
+      pokt * Math.pow(10, POKT_DENOMINATIONS[poktDenomination]);
 
     if (poktDenomination === CoinDenom.Upokt) {
       poktWithDenomination = Math.trunc(poktWithDenomination);
@@ -62,6 +63,5 @@ export class BaseCheckoutService extends BaseService {
    * @throws {DashboardValidationError} if value is out of allowed range.
    * @abstract
    */
-  getMoneyToSpent(value) {
-  }
+  getMoneyToSpent(value) {}
 }

@@ -1,10 +1,10 @@
-import React, {Component} from "react";
-import {Button, Container, Form, Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Button, Container, Form, Row } from "react-bootstrap";
 import "./AnswerSecurityQuestions.scss";
 import Navbar from "../../../core/components/Navbar";
 import PocketBox from "../../../core/components/PocketBox/PocketBox";
 import SecurityQuestionService from "../../../core/services/PocketSecurityQuestionsService";
-import {ROUTE_PATHS} from "../../../_routes";
+import { ROUTE_PATHS } from "../../../_routes";
 import PocketUserService from "../../../core/services/PocketUserService";
 
 class AnswerSecurityQuestions extends Component {
@@ -19,11 +19,7 @@ class AnswerSecurityQuestions extends Component {
       data: {
         email: "",
       },
-      questions: [
-        {question: ""},
-        {question: ""},
-        {question: ""},
-      ],
+      questions: [{ question: "" }, { question: "" }, { question: "" }],
       answer: "",
       userInput: "",
       error: "",
@@ -43,7 +39,7 @@ class AnswerSecurityQuestions extends Component {
 
       if (questions.success) {
         this.setState({
-          questions: questions.data
+          questions: questions.data,
         });
       }
     }
@@ -63,11 +59,11 @@ class AnswerSecurityQuestions extends Component {
     }
   }
 
-  handleChange({currentTarget: input}) {
-    const data = {...this.state.data};
+  handleChange({ currentTarget: input }) {
+    const data = { ...this.state.data };
 
     data[input.name] = input.value;
-    this.setState({data});
+    this.setState({ data });
   }
 
   async handleSubmit(e) {
@@ -79,42 +75,48 @@ class AnswerSecurityQuestions extends Component {
 
     if (answer1.length > 0 && answer2.length > 0 && answer3.length > 0) {
       const answeredQuestions = [
-        {question: this.state.questions[0].question, answer: answer1},
-        {question: this.state.questions[1].question, answer: answer2},
-        {question: this.state.questions[2].question, answer: answer3}
+        { question: this.state.questions[0].question, answer: answer1 },
+        { question: this.state.questions[1].question, answer: answer2 },
+        { question: this.state.questions[2].question, answer: answer3 },
       ];
 
       // eslint-disable-next-line react/prop-types
       const email = this.props.location.state.email;
 
       // Validate answers
-      const isValid = await SecurityQuestionService.validateUserSecurityQuestions(email, answeredQuestions);
+      const isValid = await SecurityQuestionService.validateUserSecurityQuestions(
+        email,
+        answeredQuestions
+      );
 
       // Password reset link page
       const passwordResetLinkPage = `${window.location.origin}${ROUTE_PATHS.reset_password}`;
 
       if (isValid.success === true && isValid.data === true) {
         // Send password reset email
-        const result = await PocketUserService.sendResetPasswordEmail(email, passwordResetLinkPage);
+        const result = await PocketUserService.sendResetPasswordEmail(
+          email,
+          passwordResetLinkPage
+        );
 
         if (result.success) {
           // eslint-disable-next-line react/prop-types
           this.props.history.push({
             pathname: ROUTE_PATHS.reset_password_email,
-            state: {email},
+            state: { email },
           });
         } else {
-          this.setState({error: "Failed to send the reset password email."});
+          this.setState({ error: "Failed to send the reset password email." });
         }
       } else {
         this.cleanFieldValues();
-        this.setState({error: "Incorrect answer"});
+        this.setState({ error: "Incorrect answer" });
       }
     }
   }
 
   render() {
-    const {questions, error} = this.state;
+    const { questions, error } = this.state;
 
     return (
       <Container fluid id={"answer-security-questions-page"}>
@@ -126,9 +128,15 @@ class AnswerSecurityQuestions extends Component {
                 Answer this question before continuing.
               </h1>
 
-              <Form autoComplete="off" id={"main-form"} onSubmit={this.handleSubmit}>
+              <Form
+                autoComplete="off"
+                id={"main-form"}
+                onSubmit={this.handleSubmit}
+              >
                 <Form.Group className="mb-4">
-                  <Form.Label id="question-label-1">{questions[0].question}</Form.Label>
+                  <Form.Label id="question-label-1">
+                    {questions[0].question}
+                  </Form.Label>
                   <Form.Control
                     id="answer-label-1"
                     onChange={this.handleChange}
@@ -141,7 +149,9 @@ class AnswerSecurityQuestions extends Component {
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                  <Form.Label id="question-label-2">{questions[1].question}</Form.Label>
+                  <Form.Label id="question-label-2">
+                    {questions[1].question}
+                  </Form.Label>
                   <Form.Control
                     id="answer-label-2"
                     onChange={this.handleChange}
@@ -154,7 +164,9 @@ class AnswerSecurityQuestions extends Component {
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-4">
-                  <Form.Label id="question-label-3">{questions[2].question}</Form.Label>
+                  <Form.Label id="question-label-3">
+                    {questions[2].question}
+                  </Form.Label>
                   <Form.Control
                     id="answer-label-3"
                     onChange={this.handleChange}

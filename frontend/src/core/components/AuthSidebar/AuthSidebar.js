@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {Row} from "react-bootstrap";
+import React, { Component } from "react";
+import { Row } from "react-bootstrap";
 import Sidebar from "../Sidebar";
 import "./AuthSidebar.scss";
 
@@ -8,8 +8,19 @@ export default class AuthSidebar extends Component {
     return (
       <Sidebar sm={3}>
         <map name="workmap">
-          <area target="_blank" shape="rect" coords="0,0,115,45" alt="Pocket" href="https://pokt.network" />
-          <area shape="rect" coords="125,0,238,43" alt="Dashboard" href={`${window.location.origin}/login`} />
+          <area
+            target="_blank"
+            shape="rect"
+            coords="0,0,115,45"
+            alt="Pocket"
+            href="https://pokt.network"
+          />
+          <area
+            shape="rect"
+            coords="125,0,238,43"
+            alt="Dashboard"
+            href={`${window.location.origin}/login`}
+          />
         </map>
         <img
           id="logo-white"

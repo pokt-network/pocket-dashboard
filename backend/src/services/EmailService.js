@@ -1,13 +1,14 @@
-import {SendGridEmailProvider} from "../providers/data/SendGridEmailProvider";
-import {Configurations} from "../_configuration";
+import { SendGridEmailProvider } from "../providers/data/SendGridEmailProvider";
+import { Configurations } from "../_configuration";
 
 export default class EmailService {
-
   /**
    * @param {string} toEmail Recipient of email.
    */
   constructor(toEmail) {
-    this.emailProvider = new SendGridEmailProvider(Configurations.email.api_key);
+    this.emailProvider = new SendGridEmailProvider(
+      Configurations.email.api_key
+    );
     this.__toEmail = toEmail;
   }
 
@@ -37,7 +38,12 @@ export default class EmailService {
 
     try {
       /** @type {{statusCode: number}[]} */
-      const emailResponse = await this.emailProvider.sendEmailWithTemplate(templateID, this.__toEmail, fromEmail, templateData);
+      const emailResponse = await this.emailProvider.sendEmailWithTemplate(
+        templateID,
+        this.__toEmail,
+        fromEmail,
+        templateData
+      );
 
       return emailResponse[0].statusCode === 202;
     } catch (e) {
@@ -55,7 +61,7 @@ export default class EmailService {
    * @async
    */
   async sendTestEmail(templateID) {
-    return this.__sendEmail(templateID, {TEST: "Yes"});
+    return this.__sendEmail(templateID, { TEST: "Yes" });
   }
 
   /**
@@ -67,7 +73,9 @@ export default class EmailService {
   async unsubscribeEmail() {
     try {
       /** @type {{statusCode: number}[]} */
-      const emailResponse = await this.emailProvider.unsubscribeEmail(this.__toEmail);
+      const emailResponse = await this.emailProvider.unsubscribeEmail(
+        this.__toEmail
+      );
 
       return emailResponse[0].statusCode === 201;
     } catch (e) {
@@ -85,7 +93,9 @@ export default class EmailService {
   async subscribeEmail() {
     try {
       /** @type {{statusCode: number}[]} */
-      const emailResponse = await this.emailProvider.subscribeEmail(this.__toEmail);
+      const emailResponse = await this.emailProvider.subscribeEmail(
+        this.__toEmail
+      );
 
       return emailResponse[0].statusCode === 204;
     } catch (e) {
@@ -104,7 +114,7 @@ export default class EmailService {
     const data = {
       USER_NAME: userName,
       USER_EMAIL: this.__toEmail,
-      POST_VALIDATION_LINK: postValidationLink
+      POST_VALIDATION_LINK: postValidationLink,
     };
 
     await this.__sendEmail(Configurations.email.template_ids.SignUp, data);
@@ -119,10 +129,13 @@ export default class EmailService {
   async sendEmailChangedEmail(userName, postValidationLink) {
     const data = {
       USER_NAME: userName,
-      POST_VALIDATION_LINK: postValidationLink
+      POST_VALIDATION_LINK: postValidationLink,
     };
 
-    await this.__sendEmail(Configurations.email.template_ids.EmailChanged, data);
+    await this.__sendEmail(
+      Configurations.email.template_ids.EmailChanged,
+      data
+    );
   }
 
   /**
@@ -132,10 +145,13 @@ export default class EmailService {
    */
   async sendPasswordChangedEmail(userName) {
     const data = {
-      USER_NAME: userName
+      USER_NAME: userName,
     };
 
-    await this.__sendEmail(Configurations.email.template_ids.PasswordChanged, data);
+    await this.__sendEmail(
+      Configurations.email.template_ids.PasswordChanged,
+      data
+    );
   }
 
   /**
@@ -150,10 +166,13 @@ export default class EmailService {
 
     const data = {
       USER_NAME: email,
-      POST_VALIDATION_LINK: postValidationLink
+      POST_VALIDATION_LINK: postValidationLink,
     };
 
-    await this.__sendEmail(Configurations.email.template_ids.PasswordReset, data);
+    await this.__sendEmail(
+      Configurations.email.template_ids.PasswordReset,
+      data
+    );
   }
 
   /**
@@ -168,10 +187,13 @@ export default class EmailService {
       ACTION: action,
       USER_NAME: userName,
       NODE_NAME: nodeData.name,
-      NODE_LINK: nodeData.link
+      NODE_LINK: nodeData.link,
     };
 
-    await this.__sendEmail(Configurations.email.template_ids.CreateOrImportNode, data);
+    await this.__sendEmail(
+      Configurations.email.template_ids.CreateOrImportNode,
+      data
+    );
   }
 
   /**
@@ -184,7 +206,7 @@ export default class EmailService {
     const data = {
       USER_NAME: userName,
       NODE_NAME: nodeData.name,
-      NODES_LINK: nodeData.nodesLink
+      NODES_LINK: nodeData.nodesLink,
     };
 
     await this.__sendEmail(Configurations.email.template_ids.NodeDeleted, data);
@@ -200,10 +222,13 @@ export default class EmailService {
     const data = {
       USER_NAME: userName,
       NODE_NAME: nodeData.name,
-      NODE_LINK: nodeData.link
+      NODE_LINK: nodeData.link,
     };
 
-    await this.__sendEmail(Configurations.email.template_ids.NodeUnJailed, data);
+    await this.__sendEmail(
+      Configurations.email.template_ids.NodeUnJailed,
+      data
+    );
   }
 
   /**
@@ -220,7 +245,7 @@ export default class EmailService {
       NODE_LINK: nodeData.link,
       PAY_AMOUNT: paymentData.amountPaid.toString(),
       VALIDATOR_POWER: paymentData.validatorPowerAmount,
-      POKT_STAKED: paymentData.poktStaked
+      POKT_STAKED: paymentData.poktStaked,
     };
 
     await this.__sendEmail(Configurations.email.template_ids.StakeNode, data);
@@ -236,7 +261,7 @@ export default class EmailService {
     const data = {
       USER_NAME: userName,
       NODE_NAME: nodeData.name,
-      NODE_LINK: nodeData.link
+      NODE_LINK: nodeData.link,
     };
 
     await this.__sendEmail(Configurations.email.template_ids.UnstakeNode, data);
@@ -254,10 +279,13 @@ export default class EmailService {
       ACTION: action,
       USER_NAME: userName,
       APP_NAME: applicationData.name,
-      APP_LINK: applicationData.link
+      APP_LINK: applicationData.link,
     };
 
-    await this.__sendEmail(Configurations.email.template_ids.CreateOrImportApp, data);
+    await this.__sendEmail(
+      Configurations.email.template_ids.CreateOrImportApp,
+      data
+    );
   }
 
   /**
@@ -270,7 +298,7 @@ export default class EmailService {
     const data = {
       USER_NAME: userName,
       APP_NAME: applicationData.name,
-      APPS_LINK: applicationData.appsLink
+      APPS_LINK: applicationData.appsLink,
     };
 
     await this.__sendEmail(Configurations.email.template_ids.AppDeleted, data);
@@ -290,7 +318,7 @@ export default class EmailService {
       APP_LINK: applicationData.link,
       PAY_AMOUNT: paymentData.amountPaid.toString(),
       MAX_RELAYS_PER_DAY_AMOUNT: paymentData.maxRelayPerDayAmount,
-      POKT_STAKED: paymentData.poktStaked
+      POKT_STAKED: paymentData.poktStaked,
     };
 
     await this.__sendEmail(Configurations.email.template_ids.StakeApp, data);
@@ -306,7 +334,7 @@ export default class EmailService {
     const data = {
       USER_NAME: userName,
       APP_NAME: applicationData.name,
-      APP_LINK: applicationData.link
+      APP_LINK: applicationData.link,
     };
 
     await this.__sendEmail(Configurations.email.template_ids.UnstakeApp, data);
@@ -323,10 +351,13 @@ export default class EmailService {
     const data = {
       USER_NAME: userName,
       USER_PAYMENT_METHOD_LINK: userPaymentMethodLink,
-      PAY_AMOUNT: paymentData.amountPaid
+      PAY_AMOUNT: paymentData.amountPaid,
     };
 
-    await this.__sendEmail(Configurations.email.template_ids.PaymentDeclined, data);
+    await this.__sendEmail(
+      Configurations.email.template_ids.PaymentDeclined,
+      data
+    );
   }
 
   /**
@@ -343,10 +374,13 @@ export default class EmailService {
       APP_LINK: applicationData.link,
       PAY_AMOUNT: paymentData.amountPaid.toString(),
       MAX_RELAYS_PER_DAY_AMOUNT: paymentData.maxRelayPerDayAmount,
-      POKT_STAKED: paymentData.poktStaked
+      POKT_STAKED: paymentData.poktStaked,
     };
 
-    await this.__sendEmail(Configurations.email.template_ids.PaymentCompletedApp, data);
+    await this.__sendEmail(
+      Configurations.email.template_ids.PaymentCompletedApp,
+      data
+    );
   }
 
   /**
@@ -363,9 +397,12 @@ export default class EmailService {
       NODE_LINK: nodeData.link,
       PAY_AMOUNT: paymentData.amountPaid.toString(),
       VALIDATOR_POWER: paymentData.validatorPowerAmount,
-      POKT_STAKED: paymentData.poktStaked
+      POKT_STAKED: paymentData.poktStaked,
     };
 
-    await this.__sendEmail(Configurations.email.template_ids.PaymentCompletedNode, data);
+    await this.__sendEmail(
+      Configurations.email.template_ids.PaymentCompletedNode,
+      data
+    );
   }
 }

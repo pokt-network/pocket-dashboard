@@ -4,7 +4,6 @@ import axiosInstance from "./_serviceHelper";
 const axios = axiosInstance();
 
 class PocketStripePaymentService extends PocketBaseService {
-
   constructor() {
     super("api/payments");
   }
@@ -21,10 +20,11 @@ class PocketStripePaymentService extends PocketBaseService {
    */
   async __markPaymentAsSuccess(paymentID, paymentMethodID, billingDetails) {
     const user = PocketUserService.getUserInfo().email;
-    const data = {paymentID, user, paymentMethodID, billingDetails};
+    const data = { paymentID, user, paymentMethodID, billingDetails };
 
-    return axios.put(this._getURL("history"), data)
-      .then(response => response.data);
+    return axios
+      .put(this._getURL("history"), data)
+      .then((response) => response.data);
   }
 
   /**
@@ -50,18 +50,19 @@ class PocketStripePaymentService extends PocketBaseService {
         country: paymentMethodData.card.country,
         expirationMonth: paymentMethodData.card.exp_month,
         expirationYear: paymentMethodData.card.exp_year,
-        lastDigits: paymentMethodData.card.last4
-      }
+        lastDigits: paymentMethodData.card.last4,
+      },
     };
 
-    const data = {paymentMethod, user, billingDetails};
+    const data = { paymentMethod, user, billingDetails };
 
-    return axios.post(this._getURL("payment_method"), data)
-      .then(response => {
-        return {success: true, data: response.data};
+    return axios
+      .post(this._getURL("payment_method"), data)
+      .then((response) => {
+        return { success: true, data: response.data };
       })
-      .catch(err => {
-        return {success: false, data: err.response.data};
+      .catch((err) => {
+        return { success: false, data: err.response.data };
       });
   }
 
@@ -83,7 +84,7 @@ class PocketStripePaymentService extends PocketBaseService {
     const cardData = {
       type: "card",
       card: card,
-      billing_details: billingDetails
+      billing_details: billingDetails,
     };
 
     return stripe.createPaymentMethod(cardData);
@@ -101,7 +102,12 @@ class PocketStripePaymentService extends PocketBaseService {
    * @return {Promise<*>}
    * @async
    */
-  async confirmPaymentWithNewCard(stripe, paymentIntentSecretID, card, billingDetails) {
+  async confirmPaymentWithNewCard(
+    stripe,
+    paymentIntentSecretID,
+    card,
+    billingDetails
+  ) {
     if (!stripe || !card) {
       return false;
     }
@@ -109,19 +115,27 @@ class PocketStripePaymentService extends PocketBaseService {
     const cardPaymentData = {
       payment_method: {
         card,
-        billing_details: billingDetails
+        billing_details: billingDetails,
       },
-      setup_future_usage: "on_session"
+      setup_future_usage: "on_session",
     };
 
-    return stripe.confirmCardPayment(paymentIntentSecretID, cardPaymentData)
-      .then(result => {
+    return stripe
+      .confirmCardPayment(paymentIntentSecretID, cardPaymentData)
+      .then((result) => {
         if (result.paymentIntent) {
           const paymentIntent = result.paymentIntent;
 
           if (paymentIntent.status.toLowerCase() === "succeeded") {
-            this.__savePaymentMethod(paymentIntent.payment_method, billingDetails);
-            this.__markPaymentAsSuccess(paymentIntent.id, paymentIntent.payment_method, billingDetails);
+            this.__savePaymentMethod(
+              paymentIntent.payment_method,
+              billingDetails
+            );
+            this.__markPaymentAsSuccess(
+              paymentIntent.id,
+              paymentIntent.payment_method,
+              billingDetails
+            );
           }
         }
 
@@ -140,27 +154,38 @@ class PocketStripePaymentService extends PocketBaseService {
    * @return {Promise<*>}
    * @async
    */
-  async confirmPaymentWithSavedCard(stripe, paymentIntentSecretID, paymentMethodID, billingDetails) {
+  async confirmPaymentWithSavedCard(
+    stripe,
+    paymentIntentSecretID,
+    paymentMethodID,
+    billingDetails
+  ) {
     if (!stripe || !paymentIntentSecretID || !paymentMethodID) {
       return false;
     }
 
     const cardPaymentData = {
       payment_method: paymentMethodID,
-      setup_future_usage: "on_session"
+      setup_future_usage: "on_session",
     };
 
-    return stripe.confirmCardPayment(paymentIntentSecretID, cardPaymentData).then(result => {
-      if (result.paymentIntent) {
-        const paymentIntent = result.paymentIntent;
+    return stripe
+      .confirmCardPayment(paymentIntentSecretID, cardPaymentData)
+      .then((result) => {
+        if (result.paymentIntent) {
+          const paymentIntent = result.paymentIntent;
 
-        if (paymentIntent.status.toLowerCase() === "succeeded") {
-          this.__markPaymentAsSuccess(paymentIntent.id, paymentIntent.payment_method, billingDetails);
+          if (paymentIntent.status.toLowerCase() === "succeeded") {
+            this.__markPaymentAsSuccess(
+              paymentIntent.id,
+              paymentIntent.payment_method,
+              billingDetails
+            );
+          }
         }
-      }
 
-      return result;
-    });
+        return result;
+      });
   }
 }
 

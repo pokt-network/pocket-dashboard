@@ -1,10 +1,14 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {Component} from "react";
-import {Dropdown} from "react-bootstrap";
+import React, { Component } from "react";
+import { Dropdown } from "react-bootstrap";
 import UserService from "../../../services/PocketUserService";
 import "./LoginStatus.scss";
-import {Redirect, withRouter} from "react-router-dom";
-import {_getDashboardPath, DASHBOARD_PATHS, ROUTE_PATHS} from "../../../../_routes";
+import { Redirect, withRouter } from "react-router-dom";
+import {
+  _getDashboardPath,
+  DASHBOARD_PATHS,
+  ROUTE_PATHS,
+} from "../../../../_routes";
 import LabelToggle from "../../LabelToggle";
 
 class LoginStatus extends Component {
@@ -21,7 +25,7 @@ class LoginStatus extends Component {
 
   logout() {
     UserService.logout();
-    this.setState({loggedOut: true});
+    this.setState({ loggedOut: true });
   }
 
   goToProfile() {
@@ -30,8 +34,8 @@ class LoginStatus extends Component {
   }
 
   render() {
-    const {loggedOut} = this.state;
-    const {login} = ROUTE_PATHS;
+    const { loggedOut } = this.state;
+    const { login } = ROUTE_PATHS;
 
     if (loggedOut) {
       return <Redirect to={login} />;

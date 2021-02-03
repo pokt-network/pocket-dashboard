@@ -1,19 +1,19 @@
 /* eslint-disable react/prop-types */
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "./Checkout.scss";
-import {Button, Col, Row} from "react-bootstrap";
+import { Button, Col, Row } from "react-bootstrap";
 import ReactToPrint from "react-to-print";
 import has from "lodash/has";
 import Invoice from "../../../core/components/Payment/Invoice";
-import {formatCurrency, usdToPOKT} from "../../../_helpers";
+import { formatCurrency, usdToPOKT } from "../../../_helpers";
 import moment from "moment";
-import {ITEM_TYPES} from "../../../_constants";
+import { ITEM_TYPES } from "../../../_constants";
 import ApplicationService from "../../../core/services/PocketApplicationService";
 import NodeService from "../../../core/services/PocketNodeService";
 import UserService from "../../../core/services/PocketUserService";
 import PaymentService from "../../../core/services/PocketPaymentService";
-import {_getDashboardPath, DASHBOARD_PATHS} from "../../../_routes";
-import {Link} from "react-router-dom";
+import { _getDashboardPath, DASHBOARD_PATHS } from "../../../_routes";
+import { Link } from "react-router-dom";
 import UnauthorizedAlert from "../../../core/components/UnauthorizedAlert";
 import Loader from "../../../core/components/Loader";
 import AppAlert from "../../../core/components/AppAlert";
@@ -35,7 +35,7 @@ class Checkout extends Component {
       },
       applicationId: "",
       details: [],
-      total: 0.00,
+      total: 0.0,
       currentAccountBalance: 0,
       purchasedTokens: 0,
       upoktToStake: 0,
@@ -46,9 +46,9 @@ class Checkout extends Component {
   }
 
   async componentDidMount() {
-    this.setState({loading: true});
+    this.setState({ loading: true });
     if (this.props.location.state === undefined) {
-      this.setState({loading: false, unauthorized: true});
+      this.setState({ loading: false, unauthorized: true });
       return;
     }
 
@@ -60,7 +60,7 @@ class Checkout extends Component {
       total,
       currentAccountBalance,
       upoktToStake,
-      upoktTotal
+      upoktTotal,
     } = this.props.location.state;
 
     const address =
@@ -73,7 +73,28 @@ class Checkout extends Component {
         ? ApplicationService.getApplicationInfo().id
         : NodeService.getNodeInfo().address;
 
-    const purchasedTokens = {cost: upoktToStake};
+    const purchasedTokens = { cost: upoktToStake };
+
+    this._isMounted = true;
+    window.onpopstate = () => {
+      if (this._isMounted) {
+        const isApp = type === ITEM_TYPES.APPLICATION;
+
+        const route = isApp
+          ? DASHBOARD_PATHS.appDetail
+          : DASHBOARD_PATHS.nodeDetail;
+        let url = _getDashboardPath(route);
+
+        if (isApp) {
+          url = url.replace(":id", applicationId);
+        } else {
+          url = url.replace(":address", applicationId);
+        }
+
+        // eslint-disable-next-line react/prop-types
+        this.props.history.push(url);
+      }
+    };
 
     this._isMounted = true;
     window.onpopstate = () => {
@@ -124,7 +145,7 @@ class Checkout extends Component {
       paymentMethod,
     });
 
-    const {owner, method} = this.state.invoice;
+    const { owner, method } = this.state.invoice;
 
     const action = UserService.getUserAction();
     const appBreadcrumbs = ["Apps", action, "Checkout", "Invoice"];
@@ -137,30 +158,39 @@ class Checkout extends Component {
     // Save printable invoice to the DB
     const items = [
       ...details,
-      {text: "Used balance", value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(currentAccountBalance)} POKT`},
+      {
+        text: "Used balance",
+        value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(
+          currentAccountBalance
+        )} POKT`,
+      },
     ].map((it) => {
       if (!it.format) {
         return it;
       }
-      return {text: it.text, value: `${formatCurrency(it.value)} USD`};
+      return { text: it.text, value: `${formatCurrency(it.value)} USD` };
     });
 
     const printableData = {
       information: [
-        {text: "Date", value: date},
-        {text: "Bill to", value: owner},
-        {text: "Invoice", value: id},
-        {text: "Payment Method", value: method},
+        { text: "Date", value: date },
+        { text: "Bill to", value: owner },
+        { text: "Invoice", value: id },
+        { text: "Payment Method", value: method },
       ],
       items: items,
-      total: formatCurrency(total)
+      total: formatCurrency(total),
     };
 
-    await PocketPaymentService.updatePaymentIntent(type, paymentId, printableData);
+    await PocketPaymentService.updatePaymentIntent(
+      type,
+      paymentId,
+      printableData
+    );
   }
 
   render() {
-    const {owner, id, date, method, poktPrice} = this.state.invoice;
+    const { owner, id, date, method, poktPrice } = this.state.invoice;
     const {
       applicationId,
       details,
@@ -169,25 +199,30 @@ class Checkout extends Component {
       loading,
       unauthorized,
       currentAccountBalance,
-      upoktTotal
+      upoktTotal,
     } = this.state;
     const isApp = type === ITEM_TYPES.APPLICATION;
 
     const information = [
-      {text: "Date", value: date},
-      {text: "Bill to", value: owner},
-      {text: "Invoice", value: id},
-      {text: "Payment Method", value: method},
+      { text: "Date", value: date },
+      { text: "Bill to", value: owner },
+      { text: "Invoice", value: id },
+      { text: "Payment Method", value: method },
     ];
 
     const items = [
       ...details,
-      {text: "Used balance", value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(currentAccountBalance)} POKT`},
+      {
+        text: "Used balance",
+        value: `${formatCurrency(currentAccountBalance)} USD = ${usdToPOKT(
+          currentAccountBalance
+        )} POKT`,
+      },
     ].map((it) => {
       if (!it.format) {
         return it;
       }
-      return {text: it.text, value: `${formatCurrency(it.value)} USD`};
+      return { text: it.text, value: `${formatCurrency(it.value)} USD` };
     });
 
     const totalAmount = formatCurrency(total);
@@ -228,12 +263,11 @@ class Checkout extends Component {
       <>
         <div id="nodes-checkout">
           <Row className="mb-4">
-            <AppAlert
-              className="pb-3 pt-3"
-              title={"ATTENTION!"}
-            >
+            <AppAlert className="pb-3 pt-3" title={"ATTENTION!"}>
               <p>
-                This staking transaction will be marked complete when the next block is generated. You will receive an email notification when your {isApp ? "app" : "node"} is ready to use.
+                This staking transaction will be marked complete when the next
+                block is generated. You will receive an email notification when
+                your {isApp ? "app" : "node"} is ready to use.
               </p>
             </AppAlert>
           </Row>
@@ -275,10 +309,10 @@ class Checkout extends Component {
         <PrintableInvoice
           ref={(el) => (this.componentRef = el)}
           invoiceItems={[
-            {text: "invoice", value: id},
-            {text: "bill to", value: owner},
-            {text: "date", value: date},
-            {text: "payment method", value: method},
+            { text: "invoice", value: id },
+            { text: "bill to", value: owner },
+            { text: "date", value: date },
+            { text: "payment method", value: method },
           ]}
           purchaseDetails={items}
           cardHolderName={owner}

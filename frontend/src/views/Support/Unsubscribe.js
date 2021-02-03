@@ -1,7 +1,7 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import "../Support/SupportPages.scss";
-import {withRouter} from "react-router-dom";
-import {Container, Row, Button, Col} from "react-bootstrap";
+import { withRouter } from "react-router-dom";
+import { Container, Row, Button, Col } from "react-bootstrap";
 import Navbar from "../../core/components/Navbar";
 import qs from "qs";
 import PocketUserService from "../../core/services/PocketUserService";
@@ -25,7 +25,7 @@ class Unsubscribe extends Component {
   validateSubscribe() {
     PocketUserService.subscribeUser(this.state.email).then((result) => {
       if (result) {
-        this.setState({email: result.data});
+        this.setState({ email: result.data });
         this.setState({
           alertOverlay: {
             show: true,
@@ -51,18 +51,22 @@ class Unsubscribe extends Component {
       ignoreQueryPrefix: true,
     });
 
-    this.setState({email: queryParam.email});
+    this.setState({ email: queryParam.email });
 
     if (queryParam === undefined || queryParam.email === undefined) {
       this.setState({
-        alertOverlay: {show: true, variant: "danger", message: "Invalid email"},
+        alertOverlay: {
+          show: true,
+          variant: "danger",
+          message: "Invalid email",
+        },
       });
       return;
     }
 
     PocketUserService.unsubscribeUser(queryParam.email).then((result) => {
       if (result) {
-        this.setState({email: result.data});
+        this.setState({ email: result.data });
       } else {
         this.setState({
           alertOverlay: {
@@ -76,7 +80,7 @@ class Unsubscribe extends Component {
   }
 
   render() {
-    const {alertOverlay} = this.state;
+    const { alertOverlay } = this.state;
 
     return (
       <Container fluid id="privacy-policy">
@@ -112,7 +116,7 @@ class Unsubscribe extends Component {
           </div>
         ) : (
           <Row>
-            <Col lg={{span: 10, offset: 1}} md={{span: 6, offset: 2}}>
+            <Col lg={{ span: 10, offset: 1 }} md={{ span: 6, offset: 2 }}>
               <AppAlert
                 variant={alertOverlay.variant}
                 title={alertOverlay.message}

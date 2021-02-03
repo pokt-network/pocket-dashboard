@@ -6,10 +6,14 @@ class EigthPage extends React.Component {
     return (
       <div
         className="token-purchase-agreement"
-        style={{pageBreakAfter: "always"}}
+        style={{ pageBreakAfter: "always" }}
       >
         <Logo />
-        <ol className="ordered-list" start="2" style={{paddingInlineStart: "50px"}}>
+        <ol
+          className="ordered-list"
+          start="2"
+          style={{ paddingInlineStart: "50px" }}
+        >
           <li>
             <p>
               <b>Counterparts.</b> This Agreement may be executed in any number

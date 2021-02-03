@@ -11,14 +11,14 @@ export const profile = {
       icon: "profile/key.svg",
     },
     // {
-      // name: "Payment methods",
-      // url: "/dashboard/profile/payments",
-      // icon: "profile/payment_methods.svg",
+    // name: "Payment methods",
+    // url: "/dashboard/profile/payments",
+    // icon: "profile/payment_methods.svg",
     // },
     // {
-      // name: "Payment History",
-      // url: "/dashboard/profile/payment-history",
-      // icon: "profile/payment_history.svg",
+    // name: "Payment History",
+    // url: "/dashboard/profile/payment-history",
+    // icon: "profile/payment_history.svg",
     // },
   ],
 };

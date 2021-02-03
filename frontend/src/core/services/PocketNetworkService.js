@@ -37,20 +37,23 @@ class PocketNetworkService extends PocketBaseService {
    * @return {Promise|Promise<Array.<*>>}
    */
   getNetworkChains(networkHashes, indexed = true) {
-    const data = {networkHashes};
+    const data = { networkHashes };
 
-    return axios.post(this._getURL("chains"), data).then((response) => {
-      if (indexed) {
-        return response.data.map(PocketNetworkService.addIndex);
-      }
-      return response.data;
-    }).catch((err) => {
-      return {
-        error: true,
-        name: err.response.data.name,
-        message: err.response.data.message,
-      };
-    });
+    return axios
+      .post(this._getURL("chains"), data)
+      .then((response) => {
+        if (indexed) {
+          return response.data.map(PocketNetworkService.addIndex);
+        }
+        return response.data;
+      })
+      .catch((err) => {
+        return {
+          error: true,
+          name: err.response.data.name,
+          message: err.response.data.message,
+        };
+      });
   }
 
   /**
