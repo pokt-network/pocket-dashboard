@@ -49,7 +49,6 @@ class Dashboard extends Component {
     let errorType = "";
 
     const {
-      poktPrice,
       totalStakedTokens,
       totalStakedApps,
       totalStakedNodes,
@@ -94,7 +93,7 @@ class Dashboard extends Component {
       error: { show: hasError, message: errorMessage },
       chains,
       summary: [
-        { title: `US ${formatCurrency(poktPrice)}`, subtitle: "POKT Price" },
+        { title: `US ${formatCurrency(0.13)}`, subtitle: "POKT Price" },
         {
           title: formatNetworkData(totalStakedTokens),
           titleAttrs: {
