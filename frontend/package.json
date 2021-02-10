@@ -6,7 +6,7 @@
     "url": "https://github.com/pokt-network/pocket-dashboard",
     "type": "git"
   },
-  "author": "Codemera",
+  "author": "Pocket Network",
   "license": "MIT",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.27",
@@ -61,6 +61,15 @@
       "pre-commit": "yarn lint"
     }
   },
+  "bundlewatch": {
+    "files": [
+      {
+        "path": "public/*.js",
+        "maxSize": "1600kb",
+        "compression": "gzip"
+      }
+    ]
+  },
   "devDependencies": {
     "@storybook/addon-actions": "^6.1.17",
     "@storybook/addon-essentials": "^6.1.17",
@@ -89,11 +98,7 @@
     "build-storybook": "build-storybook -s public"
   },
   "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    "production": [">0.2%", "not dead", "not op_mini all"],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
