@@ -1,0 +1,17 @@
+{
+  "name": "@pokt-network/dashboard-monorepo",
+  "description": "Pocket Network's dashboard monorepo—the place to manage your apps visually.",
+  "repository": "https://github.com/pokt-network/pocket-dashboard",
+  "author": "Pocket Network <hola@pokt.network>",
+  "contributors": [
+    "Enrique Ortiz <hi@enriqueortiz.dev>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^3.22.1"
+  },
+  "scripts": {
+    "init:db": "sh scripts/init-db.sh"
+  }
+}

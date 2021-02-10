@@ -35,15 +35,15 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        working-directory: backend
+        working-directory: packages/backend
         run: yarn
 
       - name: Running lint
-        working-directory: backend
+        working-directory: packages/backend
         run: yarn lint
 
       - name: Running prod build
-        working-directory: backend
+        working-directory: packages/backend
         run: yarn build:prod
 
   # Frontend CI
@@ -63,9 +63,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install dependencies
-        working-directory: frontend
+        working-directory: packages/frontend
         run: yarn
 
       - name: Running lint
-        working-directory: frontend
+        working-directory: packages/frontend
         run: yarn lint
