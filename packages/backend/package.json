@@ -24,15 +24,6 @@
       "pre-commit": "npm run lint"
     }
   },
-  "babel": {
-    "presets": [
-      "@babel/preset-env"
-    ],
-    "plugins": [
-      "@babel/transform-runtime",
-      "@babel/plugin-syntax-bigint"
-    ]
-  },
   "mocha": {
     "exit": true,
     "require": "@babel/register",
@@ -79,6 +70,7 @@
     "@babel/register": "^7.8.6",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.6",
+    "babel-plugin-module-resolver": "^4.1.0",
     "chai": "^4.2.0",
     "chai-http": "^4.3.0",
     "debug": "^2.6.9",
