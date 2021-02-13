@@ -6,10 +6,10 @@ module.exports = {
   },
   rules: {
     "prettier/prettier": "warn",
-    "no-console": "warn",
+    "no-console": "off",
     "comma-spacing": "error",
     semi: ["error", "always"],
-    quotes: ["error", "double"],
+    quotes: ["error", "double", { allowTemplateLiterals: true }],
     eqeqeq: "error",
     "no-alert": "error",
     curly: "error",
