@@ -1,5 +1,5 @@
 import express from "express";
-import AccountService from "../services/AccountService";
+import AccountService from "services/AccountService";
 import { apiAsyncWrapper } from "./_helpers";
 
 const router = express.Router();
