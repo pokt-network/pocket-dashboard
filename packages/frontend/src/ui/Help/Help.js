@@ -23,7 +23,7 @@ function Help({ hint, children }) {
         ref={buttonElement}
         description={hint}
         onClick={open}
-        size={2 * GU}
+        size={3 * GU}
         css={`
           margin-top: ${insideFieldLabel ? -3 : 0}px;
           margin-left: ${insideBoxHeading || insideFieldLabel ? 1 * GU : 0}px;
@@ -46,14 +46,15 @@ function Help({ hint, children }) {
             position: relative;
             max-width: ${48 * GU}px;
             min-width: ${20 * GU}px;
-            padding: ${3 * GU}px;
+            min-height: ${20 * GU}px;
+            padding: ${5 * GU}px;
             &:before {
               content: "";
               position: absolute;
               top: 0;
               left: 0;
               bottom: 0;
-              width: ${0.5 * GU}px;
+              width: ${1 * GU}px;
               background: ${theme.help};
             }
           `}

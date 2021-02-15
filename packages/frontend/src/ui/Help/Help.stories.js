@@ -1,22 +1,24 @@
 import React from "react";
-import { Root } from "ui/Root/Root";
 import Help from "ui/Help/Help";
 
 export default {
   title: "pocketUI/Help",
   component: Help,
   argTypes: {
-    children: { control: "text", defaultValue: "Log in" },
-    hint: { control: "text", defaultValue: "Log in" },
+    children: {
+      control: "text",
+      defaultValue:
+        "I am a help hint. Here you will get useful information about something, if implemented correctly!",
+    },
+    hint: {
+      control: "text",
+      defaultValue: "What is this for?",
+    },
   },
 };
 
 const Template = (args) => {
-  return (
-    <Root.Provider>
-      <Help {...args} />
-    </Root.Provider>
-  );
+  return <Help {...args} />;
 };
 
 export const Primary = Template.bind({});

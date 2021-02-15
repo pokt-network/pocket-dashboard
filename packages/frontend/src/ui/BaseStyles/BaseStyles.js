@@ -1,10 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { createGlobalStyle } from "styled-components";
-import { PublicUrl } from "../../providers/PublicUrl";
-import { DEFAULT_FONT_FAMILY, MONOSPACE_FONT_FAMILY } from "../../utils";
-import { textStyle } from "../../style";
-import { useTheme } from "../../theme";
+import { DEFAULT_FONT_FAMILY, MONOSPACE_FONT_FAMILY } from "ui/utils";
+import { textStyle } from "ui/style";
+import { useTheme } from "ui/theme";
 
 import overpassLightWoff2 from "./assets/overpass/overpass-light.woff2";
 import overpassRegularWoff2 from "./assets/overpass/overpass-regular.woff2";
@@ -125,4 +124,4 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-export default PublicUrl.hocWrap(BaseStyles);
+export default BaseStyles;
