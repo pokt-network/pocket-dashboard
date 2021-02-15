@@ -9,4 +9,3 @@ export * from "./keycodes";
 export * from "./math";
 export * from "./miscellaneous";
 export * from "./url";
-export * from "./web3";
