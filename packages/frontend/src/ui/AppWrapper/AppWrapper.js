@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Root } from "ui/Root/Root";
 import BaseStyles from "ui/BaseStyles/BaseStyles";
+import "@fontsource/inter";
+import "@fontsource/source-code-pro";
 
 export default function AppWrapper({ children }) {
   return (
