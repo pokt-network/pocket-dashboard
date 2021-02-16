@@ -1,5 +1,6 @@
 import React, { Suspense, lazy } from "react";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
+import { ViewportProvider } from "use-viewport";
 import { AppWrapper } from "ui";
 import Home from "views/Home/Home";
 
@@ -15,18 +16,20 @@ const Dashboard = lazy(() => import("views/Dashboard/Dashboard"));
 function App() {
   return (
     <AppWrapper>
-      <Router>
-        <Switch>
-          <Route exact path="/">
-            <Home />
-          </Route>
-          <Route path="/dashboard">
-            <Suspense fallback={<div>Loading...</div>}>
-              <Dashboard />
-            </Suspense>
-          </Route>
-        </Switch>
-      </Router>
+      <ViewportProvider>
+        <Router>
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route path="/dashboard">
+              <Suspense fallback={<div>Loading...</div>}>
+                <Dashboard />
+              </Suspense>
+            </Route>
+          </Switch>
+        </Router>
+      </ViewportProvider>
     </AppWrapper>
   );
 }
