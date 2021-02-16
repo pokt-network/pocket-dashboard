@@ -95,7 +95,6 @@ const GlobalStyle = createGlobalStyle`
     height: 0;
     min-height: 100vh;
     color: ${(p) => p.theme.content};
-    background: ${(p) => p.theme.background};
     font-family: ${(p) => p.fontFamily};
     ${(p) => p.textStyleCss};
   }
