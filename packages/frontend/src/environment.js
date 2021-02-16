@@ -1,7 +1,4 @@
 const ENV_VARS = {
-  ENABLE_SENTRY() {
-    return process.env.REACT_APP_ENABLE_SENTRY === "1";
-  },
   TIMESCALE_DB_ENDPOINT() {
     return process.env.RECT_APP_TIMESCALEDB_ENDPOINT ?? "";
   },

@@ -23,6 +23,7 @@ export {
   TextInput,
 };
 
-// Theme, utils
+// Theme, utils and style helpers
 export * from "ui/theme";
 export * from "ui/utils";
+export * from "ui/style";

@@ -1,6 +1,6 @@
 import PocketBaseService from "./PocketBaseService";
 import SecureLS from "secure-ls";
-import { Configurations } from "../../_configuration";
+import { Configurations } from "../../environment";
 import axiosInstance from "./_serviceHelper";
 const axios = axiosInstance();
 

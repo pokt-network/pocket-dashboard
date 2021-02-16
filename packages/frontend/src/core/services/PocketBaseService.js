@@ -1,4 +1,4 @@
-import { Configurations } from "../../_configuration";
+import { Configurations } from "../../environment";
 
 class PocketBaseService {
   /**
