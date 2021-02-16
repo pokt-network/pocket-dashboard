@@ -2,7 +2,8 @@ import React from "react";
 import "styled-components/macro";
 import { Button, TextInput, textStyle, GU, RADIUS } from "ui";
 
-export default function Login() {
+export default function Signup() {
+  console.log("hey?");
   return (
     <div
       css={`

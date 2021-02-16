@@ -1,4 +1,4 @@
-import React, { lazy } from "react";
+import React, { Suspense, lazy } from "react";
 import { HashRouter as Router, Switch, Route } from "react-router-dom";
 import { AppWrapper } from "ui";
 import Home from "views/Home/Home";
@@ -20,8 +20,10 @@ function App() {
           <Route exact path="/">
             <Home />
           </Route>
-          <Route exact path="/dashboard">
-            <Dashboard />
+          <Route path="/dashboard">
+            <Suspense fallback={<div>Loading...</div>}>
+              <Dashboard />
+            </Suspense>
           </Route>
         </Switch>
       </Router>

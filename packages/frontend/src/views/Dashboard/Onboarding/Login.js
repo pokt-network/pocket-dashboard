@@ -23,7 +23,7 @@ export default function Login() {
             ${textStyle("title2")}
           `}
         >
-          Get Started
+          Welcome back
         </h2>
         <TextInput />
         <TextInput />
