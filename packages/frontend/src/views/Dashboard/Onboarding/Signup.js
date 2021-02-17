@@ -12,10 +12,12 @@ import {
   GU,
   RADIUS,
 } from "ui";
+import OnboardingHeader from "components/OnboardingHeader/OnboardingHeader";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [repeatedPassword, setRepeatedPassword] = useState("");
   const [checked, setChecked] = useState(false);
   const theme = useTheme();
   const { within } = useViewport();
@@ -25,6 +27,10 @@ export default function Login() {
   const onCheckChange = useCallback((e) => setChecked(e), []);
   const onUsernameChange = useCallback((e) => setUsername(e.target.value), []);
   const onPasswordChange = useCallback((e) => setPassword(e.target.value), []);
+  const onRepeatedPasswordChange = useCallback(
+    (e) => setRepeatedPassword(e.target.value),
+    []
+  );
 
   return (
     <div
@@ -38,17 +44,8 @@ export default function Login() {
         background: ${theme.background};
       `}
     >
-      <h1
-        css={`
-          position: absolute;
-          top: ${4 * GU}px;
-          left: ${5 * GU}px;
-          ${textStyle("title1")}
-        `}
-      >
-        Pocket Dashboard
-      </h1>
-      <div
+      <OnboardingHeader />
+      <main
         css={`
           width: 100%;
           height: auto;
@@ -86,6 +83,14 @@ export default function Login() {
             type="password"
           />
         </Field>
+        <Field label="Repeat Password" required>
+          <TextInput
+            wide
+            value={repeatedPassword}
+            onChange={onRepeatedPasswordChange}
+            type="password"
+          />
+        </Field>
         <label
           css={`
             margin-bottom: ${6 * GU}px;
@@ -96,6 +101,7 @@ export default function Login() {
           <CheckBox
             checked={checked}
             onChange={onCheckChange}
+            aria-label="I agree to the pocket Dashboard terms and conditions"
             css={`
               display: inline-block;
             `}
@@ -125,7 +131,7 @@ export default function Login() {
         >
           Sign up
         </Button>
-      </div>
+      </main>
     </div>
   );
 }

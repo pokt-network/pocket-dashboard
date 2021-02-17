@@ -5,6 +5,7 @@ import "styled-components/macro";
 import Login from "views/Dashboard/Onboarding/Login";
 import Signup from "views/Dashboard/Onboarding/Signup";
 import ForgotPassword from "views/Dashboard/Onboarding/ForgotPassword";
+import NewPassword from "views/Dashboard/Onboarding/NewPassword";
 
 export default function Dashboard() {
   const { path } = useRouteMatch();
@@ -44,6 +45,9 @@ export default function Dashboard() {
         </Route>
         <Route exact path={`${path}/forgotpassword`}>
           <ForgotPassword />
+        </Route>
+        <Route exact path={`${path}/newpassword`}>
+          <NewPassword />
         </Route>
         <Route exact path={`${path}/home`}>
           <Login />

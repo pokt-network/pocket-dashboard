@@ -1,22 +1,13 @@
 import React, { useCallback, useState } from "react";
 import "styled-components/macro";
-import {
-  Button,
-  Field,
-  Link,
-  TextInput,
-  textStyle,
-  useTheme,
-  GU,
-  RADIUS,
-} from "ui";
+import { Button, Field, TextInput, textStyle, useTheme, GU, RADIUS } from "ui";
 import OnboardingHeader from "components/OnboardingHeader/OnboardingHeader";
 
-export default function ForgotPassword() {
-  const [email, setEmail] = useState("");
+export default function NewPassword() {
+  const [password, setPassword] = useState("");
   const theme = useTheme();
 
-  const onEmailChange = useCallback((e) => setEmail(e.target.value), []);
+  const onPasswordChange = useCallback((e) => setPassword(e.target.value), []);
 
   return (
     <div
@@ -50,32 +41,28 @@ export default function ForgotPassword() {
             margin-bottom: ${6 * GU}px;
           `}
         >
-          Reset your password
+          Set your new password
         </h2>
-        <p
-          css={`
-            margin-bottom: ${6 * GU}px;
-          `}
-        >
-          If the email you specify exists, we'll send an email with instructions
-          for resetting your email. Remember you can{" "}
-          <Link href="#">contact us</Link> if you have any issues.
-        </p>
         <Field
-          label="Email"
+          label="Password"
           required
           css={`
             margin-bottom: ${6 * GU}px;
           `}
         >
-          <TextInput wide value={email} onChange={onEmailChange} type="email" />
+          <TextInput
+            wide
+            value={password}
+            onChange={onPasswordChange}
+            type="email"
+          />
         </Field>
         <Button
           css={`
             margin-bottom: ${2 * GU}px;
           `}
         >
-          Send email
+          Set new password
         </Button>
       </main>
     </div>

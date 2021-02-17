@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import "styled-components/macro";
 import {
   Button,
@@ -10,19 +11,15 @@ import {
   GU,
   RADIUS,
 } from "ui";
+import OnboardingHeader from "components/OnboardingHeader/OnboardingHeader";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [repeatedPassword, setRepeatedPassword] = useState("");
   const theme = useTheme();
 
   const onUsernameChange = useCallback((e) => setUsername(e.target.value), []);
   const onPasswordChange = useCallback((e) => setPassword(e.target.value), []);
-  const onRepeatedPasswordChange = useCallback(
-    (e) => setRepeatedPassword(e.target.value),
-    []
-  );
 
   return (
     <div
@@ -36,17 +33,8 @@ export default function Login() {
         background: ${theme.background};
       `}
     >
-      <h1
-        css={`
-          position: absolute;
-          top: ${4 * GU}px;
-          left: ${5 * GU}px;
-          ${textStyle("title1")}
-        `}
-      >
-        Pocket Dashboard
-      </h1>
-      <div
+      <OnboardingHeader />
+      <main
         css={`
           width: 100%;
           height: auto;
@@ -90,28 +78,19 @@ export default function Login() {
             type="password"
           />
         </Field>
-        <Field
-          label="Repeat Password"
-          required
-          css={`
-            margin-bottom: ${6 * GU}px;
-          `}
-        >
-          <TextInput
-            wide
-            value={repeatedPassword}
-            onChange={onRepeatedPasswordChange}
-            type="password"
-          />
-        </Field>
-        <Link
+        <RouterLink
+          to={{
+            pathname: "dashboard/forgotpassword",
+          }}
+          component={Link}
+          external={false}
           css={`
             text-align: left;
             margin-bottom: ${6 * GU}px;
           `}
         >
           Forgot your password?
-        </Link>
+        </RouterLink>
         <Button
           css={`
             margin-bottom: ${2 * GU}px;
@@ -124,9 +103,18 @@ export default function Login() {
             text-align: center;
           `}
         >
-          Don't have an account? <Link>Get started.</Link>
+          Don't have an account?{" "}
+          <RouterLink
+            to={{
+              pathname: "dashboard/signup",
+            }}
+            component={Link}
+            external={false}
+          >
+            Get started.
+          </RouterLink>
         </p>
-      </div>
+      </main>
     </div>
   );
 }
