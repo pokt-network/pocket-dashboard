@@ -4,7 +4,7 @@ import App from "App";
 import env from "environment";
 import initializeSentry from "sentry";
 
-const REACT_AXE_THROTTLE_TIME = 1000;
+const REACT_AXE_THROTTLE_TIME = 2500;
 
 initializeSentry();
 // react-axe is a package that lets us test the a11y of all the components in the app.
