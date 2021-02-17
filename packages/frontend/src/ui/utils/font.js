@@ -1,12 +1,10 @@
 import { warnOnce } from "./environment";
 
-// Using generic names so we can change the font if needed, while using these
-// generic names in our components.
-export const DEFAULT_FONT_FAMILY = "pocket-ui";
-export const MONOSPACE_FONT_FAMILY = "pocket-ui-monospace";
+export const DEFAULT_FONT_FAMILY = "Inter";
+export const MONOSPACE_FONT_FAMILY = "Source Code Pro";
 
 export const monospace = () => `
-  font-family: ${MONOSPACE_FONT_FAMILY}, monospace;
+  font-family: "Source Code Pro", monospace;
 `;
 const FONT_SIZES = {
   xxsmall: "11px",

@@ -11,7 +11,7 @@ import ButtonBase from "../ButtonBase/ButtonBase";
 const SIZE_STYLES = {
   medium: {
     textStyleName: "body2",
-    height: 6 * GU,
+    height: 8 * GU,
     padding: 3 * GU,
     iconPadding: 2 * GU,
     minWidth: 23 * GU,
