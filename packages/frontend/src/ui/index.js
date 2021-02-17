@@ -7,6 +7,7 @@ import Field from "ui/Field/Field";
 import Help from "ui/Help/Help";
 import Link from "ui/Link/Link";
 import Popover from "ui/Popover/Popover";
+import Split from "ui/Split/Split";
 import Switch from "ui/Switch/Switch";
 import TextCopy from "ui/TextCopy/TextCopy";
 import TextInput from "ui/TextInput/TextInput";
@@ -22,6 +23,7 @@ export {
   Help,
   Link,
   Popover,
+  Split,
   Switch,
   TextCopy,
   TextInput,
