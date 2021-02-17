@@ -77,15 +77,24 @@ export default function MenuPanel() {
         </ButtonBase>
         {MENU_ROUTES.map(({ icon, id, title }) => (
           <MenuPanelButton
+            active={activeId === id}
+            element={id === "docs" ? "a" : "button"}
+            href={
+              id === "docs"
+                ? "https://dashboard.docs.pokt.network/docs/using-pocket-gateway#"
+                : ""
+            }
+            external={id === "docs"}
+            icon={icon}
             key={id}
             label={title}
-            icon={icon}
-            active={activeId === id}
-            onClick={() =>
-              history.push({
-                pathname: `/${DASHBOARD_BASE_PREFIX}/${id}`,
-              })
-            }
+            onClick={() => {
+              if (id !== "docs") {
+                history.push({
+                  pathname: `/${DASHBOARD_BASE_PREFIX}/${id}`,
+                });
+              }
+            }}
           />
         ))}
       </div>
@@ -93,7 +102,7 @@ export default function MenuPanel() {
   );
 }
 
-function MenuPanelButton({ label = "test", active, icon, onClick }) {
+function MenuPanelButton({ active, icon, label, onClick, ...props }) {
   const { openProgress } = useSpring({
     to: { openProgress: Number(active) },
     config: springs.smooth,
@@ -112,6 +121,7 @@ function MenuPanelButton({ label = "test", active, icon, onClick }) {
         background: ${active ? theme.surfacePressed : "transparent"};
       `}
       onClick={onClick}
+      {...props}
     >
       <animated.div
         css={`
