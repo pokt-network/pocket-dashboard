@@ -1,13 +1,16 @@
 import React from "react";
 import { useViewport } from "use-viewport";
 import "styled-components/macro";
-import { useTheme, GU } from "ui";
+import { ButtonBase, useTheme, GU } from "ui";
 import NavigationBar from "views/Dashboard/NavigationBar";
+import MenuPanelButton from "components/MenuPanel/MenuPanelButton";
+import PocketLogo from "assets/pnlogo.png";
 
 export default function DashboardView({ children }) {
   const theme = useTheme();
   const { within } = useViewport();
   const compactMode = within(-1, "medium");
+  const [active, setActive] = React.useState(false);
 
   return (
     <div
@@ -29,8 +32,29 @@ export default function DashboardView({ children }) {
             background: ${theme.surface};
             border-radius: 0px 20px 20px 0;
             flex-grow: 0;
+            padding: ${3 * GU}px 0;
+            button:not(last-child) {
+              margin-bottom: ${7 * GU}px;
+            }
           `}
-        ></div>
+        >
+          <ButtonBase
+            css={`
+              width: 100%;
+              position: relative;
+              &:active {
+                top: 1px;
+              }
+            `}
+          >
+            <img src={PocketLogo} alt="Pocket Network Logo link" />
+          </ButtonBase>
+          <MenuPanelButton
+            label="Network"
+            active={active}
+            onClick={() => setActive((a) => !a)}
+          />
+        </div>
       )}
       <main
         css={`
