@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import { animated, useSpring } from "react-spring";
 import { useViewport } from "use-viewport";
@@ -6,6 +7,8 @@ import "styled-components/macro";
 import { ButtonBase, useTheme, springs, GU, RADIUS } from "ui";
 import ButtonIcon from "components/MenuPanel/ButtonIcon.png";
 import PocketLogo from "assets/pnlogo.png";
+
+const DASHBOARD_BASE_PREFIX = "dashboard";
 
 const MENU_ROUTES = [
   {
@@ -25,11 +28,26 @@ const MENU_ROUTES = [
   },
 ];
 
+function getLocationId(pathname) {
+  const [, , id = ""] = pathname.split("/");
+
+  return id;
+}
+
 export default function MenuPanel() {
+  const { pathname } = useLocation();
+  const history = useHistory();
   const theme = useTheme();
   const { within } = useViewport();
+  const [activeId, setActiveId] = useState(() => getLocationId(pathname));
+
   const compactMode = within(-1, "medium");
-  const [active, setActive] = React.useState(false);
+
+  useEffect(() => {
+    const [, , id = ""] = pathname.split("/");
+
+    setActiveId(id);
+  }, [pathname]);
 
   return (
     !compactMode && (
@@ -62,8 +80,12 @@ export default function MenuPanel() {
             key={id}
             label={title}
             icon={icon}
-            active={active}
-            onClick={() => setActive((a) => !a)}
+            active={activeId === id}
+            onClick={() =>
+              history.push({
+                pathname: `/${DASHBOARD_BASE_PREFIX}/${id}`,
+              })
+            }
           />
         ))}
       </div>

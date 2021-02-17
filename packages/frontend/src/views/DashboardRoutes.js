@@ -56,6 +56,11 @@ export default function DashboardRoutes() {
             <NetworkStatus />
           </Dashboard>
         </Route>
+        <Route exact path={`${path}/apps`}>
+          <Dashboard>
+            <NetworkStatus />
+          </Dashboard>
+        </Route>
         <Route exact path={`${path}/apps/setup`}>
           <Dashboard>
             <Login />
