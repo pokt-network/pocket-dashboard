@@ -1,10 +1,29 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { animated, useSpring } from "react-spring";
 import { useViewport } from "use-viewport";
 import "styled-components/macro";
 import { ButtonBase, useTheme, springs, GU, RADIUS } from "ui";
 import ButtonIcon from "components/MenuPanel/ButtonIcon.png";
 import PocketLogo from "assets/pnlogo.png";
+
+const MENU_ROUTES = [
+  {
+    icon: ButtonIcon,
+    id: "home",
+    title: "Network",
+  },
+  {
+    icon: ButtonIcon,
+    id: "apps",
+    title: "Apps",
+  },
+  {
+    icon: ButtonIcon,
+    id: "docs",
+    title: "Docs",
+  },
+];
 
 export default function MenuPanel() {
   const theme = useTheme();
@@ -38,17 +57,21 @@ export default function MenuPanel() {
         >
           <img src={PocketLogo} alt="Pocket Network Logo link" />
         </ButtonBase>
-        <MenuPanelButton
-          label="Network"
-          active={active}
-          onClick={() => setActive((a) => !a)}
-        />
+        {MENU_ROUTES.map(({ icon, id, title }) => (
+          <MenuPanelButton
+            key={id}
+            label={title}
+            icon={icon}
+            active={active}
+            onClick={() => setActive((a) => !a)}
+          />
+        ))}
       </div>
     )
   );
 }
 
-function MenuPanelButton({ label = "test", active, onClick }) {
+function MenuPanelButton({ label = "test", active, icon, onClick }) {
   const { openProgress } = useSpring({
     to: { openProgress: Number(active) },
     config: springs.smooth,
@@ -97,9 +120,16 @@ function MenuPanelButton({ label = "test", active, onClick }) {
           }
         `}
       >
-        <img src={ButtonIcon} alt={`${label} icon`} />
+        <img src={icon} alt={`${label} icon`} />
         {label}
       </div>
     </ButtonBase>
   );
 }
+
+MenuPanelButton.propTypes = {
+  active: PropTypes.bool,
+  icon: PropTypes.string,
+  label: PropTypes.string,
+  onClcik: PropTypes.func,
+};
