@@ -2,6 +2,7 @@
   "name": "pocket-dashboard",
   "version": "1.0.0",
   "description": "Pocket dashboard",
+  "homepage": "./",
   "repository": {
     "url": "https://github.com/pokt-network/pocket-dashboard",
     "type": "git"
