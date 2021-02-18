@@ -37,16 +37,16 @@ function labelCompat(parts) {
     React.isValidElement(parts)
   ) {
     warnOnce(
-      "CircleGraph:label:string",
-      "CircleGraph: the function passed to the label should not " +
-        "return a React node anymore: please check the CircleGraph documentation."
+      "MultiCircleGraph:label:string",
+      "MultiCircleGraph: the function passed to the label should not " +
+        "return a React node anymore: please check the MultiCircleGraph documentation."
     );
     return { value: String(parts) };
   }
   return parts;
 }
 
-function CircleGraph({ color, label, size, strokeWidth, values }) {
+function MultiCircleGraph({ color, label, size, strokeWidth, values }) {
   const theme = useTheme();
   const transitions = useTransition(values, (v) => v, {
     from: (v) => 0,
@@ -205,7 +205,7 @@ function CircleGraph({ color, label, size, strokeWidth, values }) {
   );
 }
 
-CircleGraph.propTypes = {
+MultiCircleGraph.propTypes = {
   color: PropTypes.oneOfType([PropTypes.func, PropTypes.string]),
   label: PropTypes.oneOfType([PropTypes.node, PropTypes.func]),
   size: PropTypes.number,
@@ -213,9 +213,9 @@ CircleGraph.propTypes = {
   values: PropTypes.arrayOf([PropTypes.number]).isRequired,
 };
 
-CircleGraph.defaultProps = {
+MultiCircleGraph.defaultProps = {
   size: SIZE_DEFAULT,
   strokeWidth: STROKE_WIDTH,
 };
 
-export default CircleGraph;
+export default MultiCircleGraph;
