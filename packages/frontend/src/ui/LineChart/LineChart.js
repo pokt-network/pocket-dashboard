@@ -42,6 +42,7 @@ function useMeasuredWidth() {
 
 function LineChart({
   animDelay,
+  backgroundFill,
   borderColor,
   color,
   dotRadius,
@@ -49,6 +50,7 @@ function LineChart({
   label,
   labelColor,
   lines: linesProps,
+  renderCheckpoints,
   reset,
   springConfig,
   total,
@@ -112,7 +114,7 @@ function LineChart({
       height={chartHeight}
       rx="3"
       ry="3"
-      fill="#ffffff"
+      fill={backgroundFill}
       strokeWidth="1"
       stroke={borderColor}
     />
@@ -175,17 +177,20 @@ function LineChart({
                   stroke={line.color || color(lineIndex, { lines })}
                   strokeWidth="2"
                 />
-                {line.values.slice(1, -1).map((val, index) => (
-                  <circle
-                    key={index}
-                    cx={getX(index + 1) * progress}
-                    cy={getY(val, progress, chartHeight)}
-                    r={dotRadius}
-                    fill="white"
-                    stroke={line.color || color(lineIndex, { lines })}
-                    strokeWidth="1"
-                  />
-                ))}
+                {renderCheckpoints &&
+                  line.values
+                    .slice(1, -1)
+                    .map((val, index) => (
+                      <circle
+                        key={index}
+                        cx={getX(index + 1) * progress}
+                        cy={getY(val, progress, chartHeight)}
+                        r={dotRadius}
+                        fill="white"
+                        stroke={line.color || color(lineIndex, { lines })}
+                        strokeWidth="1"
+                      />
+                    ))}
               </g>
             ))}
             <line
@@ -231,8 +236,10 @@ LineChart.propTypes = {
   height: PropTypes.number,
   dotRadius: PropTypes.number,
   animDelay: PropTypes.number,
+  backgroundFill: PropTypes.string,
   borderColor: PropTypes.string,
   labelColor: PropTypes.string,
+  renderCheckpoints: PropTypes.bool,
   reset: PropTypes.bool,
   lines: PropTypes.arrayOf(
     PropTypes.oneOfType([
@@ -255,6 +262,8 @@ LineChart.defaultProps = {
   height: 200,
   dotRadius: 7 / 2,
   animDelay: 500,
+  backgroundFill: "#ffffff",
+  renderCheckpoints: true,
   reset: false,
   borderColor: "rgba(209, 209, 209, 0.5)",
   labelColor: "#6d777b",
