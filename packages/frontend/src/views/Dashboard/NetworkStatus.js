@@ -34,7 +34,7 @@ export default function NetworkStatus() {
                   display: flex;
                   justify-content: space-between;
                 }
-                li:not(last-child) {
+                li:not(:last-child) {
                   margin-bottom: ${6 * GU}px;
                 }
               `}

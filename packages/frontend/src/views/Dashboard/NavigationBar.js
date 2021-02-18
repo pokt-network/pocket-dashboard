@@ -26,7 +26,7 @@ export default function NavigationBar() {
           li {
             display: inline-block;
           }
-          li:not(last-child) {
+          li:not(:last-child) {
             margin-right: ${7 * GU}px;
           }
         `}

@@ -59,7 +59,7 @@ export default function MenuPanel() {
           border-radius: 0px 20px 20px 0;
           flex-grow: 0;
           padding: ${3 * GU}px 0;
-          button:not(last-child) {
+          button:not(:last-child) {
             margin-bottom: ${7 * GU}px;
           }
         `}
