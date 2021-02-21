@@ -19,7 +19,7 @@ const MENU_ROUTES = [
   {
     icon: ButtonIcon,
     id: "apps",
-    title: "Apps",
+    title: "My Apps",
   },
   {
     icon: ButtonIcon,
