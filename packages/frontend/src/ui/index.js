@@ -5,10 +5,15 @@ import CheckBox from "ui/CheckBox/CheckBox";
 import CircleGraph from "ui/CircleGraph/CircleGraph";
 import Field from "ui/Field/Field";
 import Help from "ui/Help/Help";
+import LineChart from "ui/LineChart/LineChart";
 import Link from "ui/Link/Link";
 import Popover from "ui/Popover/Popover";
 import Split from "ui/Split/Split";
 import Switch from "ui/Switch/Switch";
+import Table from "ui/Table/Table";
+import TableCell from "ui/Table/TableCell";
+import TableHeader from "ui/Table/TableHeader";
+import TableRow from "ui/Table/TableRow";
 import TextCopy from "ui/TextCopy/TextCopy";
 import TextInput from "ui/TextInput/TextInput";
 
@@ -21,10 +26,15 @@ export {
   CircleGraph,
   Field,
   Help,
+  LineChart,
   Link,
   Popover,
   Split,
   Switch,
+  Table,
+  TableCell,
+  TableHeader,
+  TableRow,
   TextCopy,
   TextInput,
 };
