@@ -8,7 +8,7 @@ import React, {
 import { Spring } from "react-spring/renderprops";
 import "styled-components/macro";
 import PropTypes from "ui/prop-types";
-import { springs } from "ui";
+import { springs } from "ui/style";
 import { unselectable } from "ui";
 
 const LABELS_HEIGHT = 30;
@@ -193,14 +193,6 @@ function LineChart({
                     ))}
               </g>
             ))}
-            <line
-              x1={getX(valuesCount - 1) * progress}
-              y1="0"
-              x2={getX(valuesCount - 1) * progress}
-              y2={chartHeight}
-              stroke="#DAEAEF"
-              strokeWidth="3"
-            />
           </g>
           {labels && (
             <g transform={`translate(0,${chartHeight})`}>
