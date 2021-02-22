@@ -93,7 +93,7 @@ const WrapperTextInput = React.forwardRef(
       adornmentPosition,
       adornmentSettings: {
         width: adornmentWidth = 36,
-        padding: adornmentPadding = 4,
+        padding: adornmentPadding = 10,
       },
       ...props
     },
