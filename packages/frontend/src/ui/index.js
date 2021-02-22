@@ -40,6 +40,7 @@ export {
 };
 
 // Theme, utils and style helpers
+export * from "ui/icons";
+export * from "ui/style";
 export * from "ui/theme";
 export * from "ui/utils";
-export * from "ui/style";
