@@ -112,8 +112,6 @@ class PopoverBase extends React.Component {
   initPopper() {
     const { opener } = this.props;
 
-    console.log(this._popperElement.current, opener, "hey");
-
     if (!this._popper && opener) {
       this._popper = new Popper(
         opener,
