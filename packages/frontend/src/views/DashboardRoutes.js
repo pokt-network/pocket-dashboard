@@ -2,6 +2,7 @@ import React from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 import { useViewport } from "use-viewport";
 import "styled-components/macro";
+import Create from "views/Dashboard/Create/Create";
 import Dashboard from "views/Dashboard/Dashboard";
 import NetworkStatus from "views/Dashboard/NetworkStatus";
 import ForgotPassword from "views/Onboarding/ForgotPassword";
@@ -58,7 +59,7 @@ export default function DashboardRoutes() {
         </Route>
         <Route exact path={`${path}/apps`}>
           <Dashboard>
-            <NetworkStatus />
+            <Create />
           </Dashboard>
         </Route>
         <Route exact path={`${path}/apps/setup`}>
