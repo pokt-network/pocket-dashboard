@@ -14,6 +14,7 @@ export default function DashboardView({ children }) {
         flex-direction: row;
         background: #051829;
         color: white;
+        overflow-x: hidden;
       `}
     >
       <MenuPanel />
@@ -32,6 +33,7 @@ export default function DashboardView({ children }) {
           css={`
             /* TODO: This is a bit smelly. Might wanna adopt a spacer component to avoid leaky margins. */
             margin-bottom: ${9 * GU}px;
+            overflow-x: hidden;
           `}
         >
           <NavigationBar />

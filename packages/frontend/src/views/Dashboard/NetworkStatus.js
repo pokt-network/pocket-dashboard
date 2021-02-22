@@ -82,18 +82,18 @@ export default function NetworkStatus() {
                 css={`
                   ${!compactMode &&
                   `
-          max-height: ${56 * GU}px;
-          overflow-y: scroll;
-        `}
+                    max-height: ${56 * GU}px;
+                    overflow-y: scroll;
+                  `}
                 `}
               >
                 <div
                   css={`
                     ${!compactMode &&
                     `
-                max-height: ${35 * GU}px;
-                overflow-y: scroll;
-              `}
+                      max-height: ${35 * GU}px;
+                      overflow-y: scroll;
+                    `}
                   `}
                 >
                   <Table
@@ -201,7 +201,7 @@ export default function NetworkStatus() {
               </Box>
             }
             invert="horizontal"
-          />{" "}
+          />
         </>
       )}
     />
