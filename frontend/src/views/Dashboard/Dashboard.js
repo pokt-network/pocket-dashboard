@@ -93,7 +93,6 @@ class Dashboard extends Component {
       error: { show: hasError, message: errorMessage },
       chains,
       summary: [
-        { title: `US ${formatCurrency(0.13)}`, subtitle: "POKT Price" },
         {
           title: formatNetworkData(totalStakedTokens),
           titleAttrs: {
@@ -102,14 +101,6 @@ class Dashboard extends Component {
               : undefined,
           },
           subtitle: "Total Staked Tokens",
-        },
-        {
-          title: formatNumbers(totalStakedNodes),
-          subtitle: "Total Staked nodes",
-        },
-        {
-          title: formatNumbers(totalStakedApps),
-          subtitle: "Total Staked apps",
         },
       ],
       loading: false,
