@@ -17,7 +17,6 @@ import Loader from "../../core/components/Loader";
 import ApplicationService from "../../core/services/PocketApplicationService";
 import NodeService from "../../core/services/PocketNodeService";
 import {
-  formatCurrency,
   formatNumbers,
   mapStatusToField,
   formatNetworkData,
@@ -50,8 +49,6 @@ class Dashboard extends Component {
 
     const {
       totalStakedTokens,
-      totalStakedApps,
-      totalStakedNodes,
       error,
       name,
       message,
