@@ -24,7 +24,7 @@ jobs:
       working-directory: frontend
       env:
         GENERATE_SOURCEMAP: false
-        PUBLIC_URL: https://dashboard.pokt.network
+        PUBLIC_URL: https://old.dashboard.pokt.network
         REACT_APP_BACKEND_URL: https://api.dashboard.pokt.network:4200
         REACT_APP_POCKET_NETWORK_MAX_DISPATCHER: 10
         REACT_APP_POCKET_NETWORK_MAX_SESSIONS: 24
@@ -125,8 +125,8 @@ jobs:
         envkey_POCKET_FREE_TIER_MAX_RELAY_PER_DAY_AMOUNT: 10000000
         envkey_POCKET_NETWORK_PROVIDER_TYPE: HTTP
         envkey_POCKET_NETWORK_HTTP_PROVIDER_NODE: https://node1.dashboard.mainnet.pokt.network
-        envkey_AUTH_PROVIDER_GITHUB_CALLBACK_URL: https://dashboard.pokt.network/api/auth/provider/github
-        envkey_AUTH_PROVIDER_GOOGLE_CALLBACK_URL: https://dashboard.pokt.network/api/auth/provider/google
+        envkey_AUTH_PROVIDER_GITHUB_CALLBACK_URL: https://old.dashboard.pokt.network/api/auth/provider/github
+        envkey_AUTH_PROVIDER_GOOGLE_CALLBACK_URL: https://old.dashboard.pokt.network/api/auth/provider/google
         envkey_EMAIL_FROM: dashboard@pokt.network
         envkey_CHECKOUT_DEFAULT_CURRENCY: USD
         envkey_CHECKOUT_MAX_USD_VALUE: 20000
